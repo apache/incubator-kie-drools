@@ -22,13 +22,14 @@ import java.util.Map;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.builder.Scope;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.builder.fluent.Scope;
 import org.kie.internal.command.RegistryContext;
 
 public class SetVariableCommandFromLastReturn
-    implements
-    ExecutableCommand<Object> {
+        implements
+        ExecutableCommand<Object> {
+
     private String identifier;
     private String contextName;
     private Scope scope = Scope.REQUEST;
@@ -53,34 +54,32 @@ public class SetVariableCommandFromLastReturn
 
     public Object execute(Context context) {
         Context targetCtx;
-        if ( this.contextName == null ) {
+        if (this.contextName == null) {
             targetCtx = context;
         } else {
-            targetCtx = ( (RegistryContext) context ).getContextManager().getContext( this.contextName );
+            targetCtx = ((RegistryContext) context).getContextManager().getContext(this.contextName);
         }
 
-        GetDefaultValue sim = (GetDefaultValue) context.get( "simulator" );
+        GetDefaultValue sim = (GetDefaultValue) context.get("simulator");
 
         Object o = sim.getObject();
         // for FactHandle's we store the handle on a map and the actual object as
-        if ( o instanceof FactHandle ) {
-            Map<String, FactHandle> handles = (Map<String, FactHandle>) targetCtx.get( "h" );
-            if ( handles == null ) {
+        if (o instanceof FactHandle) {
+            Map<String, FactHandle> handles = (Map<String, FactHandle>) targetCtx.get("h");
+            if (handles == null) {
                 handles = new HashMap<String, FactHandle>();
-                targetCtx.set( "h",
-                               handles );
+                targetCtx.set("h",
+                              handles);
             }
-            handles.put( identifier,
-                         (FactHandle) o );
+            handles.put(identifier,
+                        (FactHandle) o);
 
             o = ((InternalFactHandle) o).getObject();
-
         }
 
-        targetCtx.set( identifier,
-                       o );
+        targetCtx.set(identifier,
+                      o);
 
         return o;
     }
-
 }

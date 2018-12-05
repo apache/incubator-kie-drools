@@ -31,7 +31,7 @@ public interface InternalExecutable extends Executable {
                 .flatMap(batch -> batch.getCommands().stream())
                 .noneMatch(NotTransactionalCommand.class::isInstance);
     }
-    
+
     default boolean requiresDispose() {
         return getBatches().stream()
                 .flatMap(batch -> batch.getCommands().stream())

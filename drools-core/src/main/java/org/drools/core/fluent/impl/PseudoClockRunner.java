@@ -38,13 +38,13 @@ import org.kie.api.time.SessionPseudoClock;
 
 public class PseudoClockRunner implements InternalLocalRunner {
 
-    private final Map<String, Context>    appContexts = new HashMap<>();
-    private ConversationContextManager    cvnManager = new ConversationContextManager();
-    private long                          counter;
+    private final Map<String, Context> appContexts = new HashMap<>();
+    private ConversationContextManager cvnManager = new ConversationContextManager();
+    private long counter;
 
     private Set<KieSession> ksessions = new HashSet<>();
 
-    private PriorityQueue<Batch> queue = new PriorityQueue<>( BatchSorter.instance);
+    private PriorityQueue<Batch> queue = new PriorityQueue<>(BatchSorter.instance);
 
     private final long startTime;
 
@@ -52,60 +52,60 @@ public class PseudoClockRunner implements InternalLocalRunner {
         this(System.currentTimeMillis());
     }
 
-    public PseudoClockRunner( long startTime ) {
+    public PseudoClockRunner(long startTime) {
         this.startTime = startTime;
     }
 
     @Override
-    public RequestContext execute( Executable executable, RequestContext ctx ) {
-        executeBatches( ( (InternalExecutable) executable ), ctx );
-        executeQueue( ctx );
+    public RequestContext execute(Executable executable, RequestContext ctx) {
+        executeBatches(((InternalExecutable) executable), ctx);
+        executeQueue(ctx);
         return ctx;
     }
 
-    private void executeBatches( InternalExecutable executable, RequestContext ctx ) {
+    private void executeBatches(InternalExecutable executable, RequestContext ctx) {
         for (Batch batch : executable.getBatches()) {
-            if ( batch.getDistance() == 0L ) {
-                executeBatch( batch, ctx );
+            if (batch.getDistance() == 0L) {
+                executeBatch(batch, ctx);
             } else {
-                queue.add( batch );
+                queue.add(batch);
             }
         }
     }
 
-    private void executeQueue( RequestContext ctx ) {
-        while ( !queue.isEmpty() ) {
+    private void executeQueue(RequestContext ctx) {
+        while (!queue.isEmpty()) {
             Batch batch = queue.remove();
             long timeNow = startTime + batch.getDistance();
-            for ( KieSession ksession : ksessions  ) {
+            for (KieSession ksession : ksessions) {
                 updateKieSessionTime(timeNow, batch.getDistance(), ksession); // make sure all sessions are set to timeNow
             }
 
-            for (Command cmd : batch.getCommands() ) {
-                Object returned = ((ExecutableCommand)cmd).execute( ctx );
-                if ( returned != null ) {
-                    ctx.setResult( returned );
-                    if ( returned instanceof KieSession ) {
-                        KieSession ksession = ( KieSession ) returned;
+            for (Command cmd : batch.getCommands()) {
+                Object returned = ((ExecutableCommand) cmd).execute(ctx);
+                if (returned != null) {
+                    ctx.setResult(returned);
+                    if (returned instanceof KieSession) {
+                        KieSession ksession = (KieSession) returned;
                         updateKieSessionTime(timeNow, batch.getDistance(), ksession); // make sure all sessions are set to timeNow
-                        ksessions.add((KieSession)returned);
+                        ksessions.add((KieSession) returned);
                     }
                 }
             }
         }
     }
 
-    private void executeBatch( Batch batch, RequestContext ctx ) {
+    private void executeBatch(Batch batch, RequestContext ctx) {
         // anything with a temporal distance of 0 is executed now
         // everything else must be handled by a priority queue and timer afterwards.
-        for (Command cmd : batch.getCommands() ) {
-            Object returned = ((ExecutableCommand)cmd).execute( ctx );
-            if ( returned != null ) {
-                ctx.setResult( returned );
-                if ( returned instanceof KieSession ) {
-                    KieSession ksession = ( KieSession ) returned;
-                    updateKieSessionTime( startTime, 0, ksession ); // make sure all sessions are set to timeNow
-                    ksessions.add((KieSession)returned);
+        for (Command cmd : batch.getCommands()) {
+            Object returned = ((ExecutableCommand) cmd).execute(ctx);
+            if (returned != null) {
+                ctx.setResult(returned);
+                if (returned instanceof KieSession) {
+                    KieSession ksession = (KieSession) returned;
+                    updateKieSessionTime(startTime, 0, ksession); // make sure all sessions are set to timeNow
+                    ksessions.add((KieSession) returned);
                 }
             }
         }
@@ -114,24 +114,23 @@ public class PseudoClockRunner implements InternalLocalRunner {
     private void updateKieSessionTime(long timeNow, long distance, KieSession ksession) {
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        if ( clock.getCurrentTime() != timeNow ) {
-            long               newTime     = startTime + distance;
-            long               currentTime = clock.getCurrentTime();
-            clock.advanceTime( newTime - currentTime,
-                               TimeUnit.MILLISECONDS );
+        if (clock.getCurrentTime() != timeNow) {
+            long newTime = startTime + distance;
+            long currentTime = clock.getCurrentTime();
+            clock.advanceTime(newTime - currentTime,
+                              TimeUnit.MILLISECONDS);
         }
     }
 
     private static class BatchSorter implements Comparator<Batch> {
-        public static BatchSorter instance = new BatchSorter();
 
+        public static BatchSorter instance = new BatchSorter();
 
         @Override
         public int compare(Batch o1, Batch o2) {
-            if(o1.getDistance() > o2.getDistance()) {
+            if (o1.getDistance() > o2.getDistance()) {
                 return 1;
-            }
-            else if(o1.getDistance() < o2.getDistance()) {
+            } else if (o1.getDistance() < o2.getDistance()) {
                 return -1;
             }
 
@@ -140,8 +139,8 @@ public class PseudoClockRunner implements InternalLocalRunner {
     }
 
     public RequestContext createContext() {
-        return new RequestContextImpl( counter++,
-                                       new ContextManagerImpl( appContexts ),
-                                       cvnManager );
+        return new RequestContextImpl(counter++,
+                                      new ContextManagerImpl(appContexts),
+                                      cvnManager);
     }
 }
