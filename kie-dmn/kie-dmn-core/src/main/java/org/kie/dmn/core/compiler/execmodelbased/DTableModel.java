@@ -16,13 +16,18 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.model.functions.Block3;
+import org.drools.model.functions.Function2;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -62,9 +67,9 @@ public class DTableModel {
     private final String tableName;
     private final HitPolicy hitPolicy;
 
-    private final List<DColumnModel> columns;
-    private final List<DRowModel> rows;
-    private final List<DOutputModel> outputs;
+    protected final List<DColumnModel> columns;
+    protected final List<DRowModel> rows;
+    protected final List<DOutputModel> outputs;
 
     private final Map<String, Type> variableTypes;
     private final org.kie.dmn.feel.runtime.decisiontables.DecisionTable dtable;
@@ -121,41 +126,80 @@ public class DTableModel {
         return outputs.stream().allMatch( o -> o.compiledDefault != null );
     }
 
-    private void initInputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
-        int index = 1;
+    protected void iterateOverRows(BiConsumer<DRowModel, Integer> rowsFeelExpressionGeneration) {
+        int rowIndex = 1;
+        for (DRowModel row : rows) {
+            rowsFeelExpressionGeneration.accept(row, rowIndex);
+            rowIndex++;
+        }
+    }
+
+    protected void initRows(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
+        iterateOverRows((row, rowIndex) -> row.compiledOutputs = row.outputs.stream().map(expr -> compileFeelExpression(dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex)).collect(toList()));
+    }
+
+    protected ClassOrInterfaceDeclaration[][] generateRows(CompilerContext feelctx) {
+        List<ClassOrInterfaceDeclaration[]> allRows = new ArrayList<>();
+        iterateOverRows((row, integer) -> {
+            ClassOrInterfaceDeclaration[] rowCompiledOutputs = row.outputs.stream().map(expr -> feel.generateFeelExpressionSource(expr, feelctx)).toArray(ClassOrInterfaceDeclaration[]::new);
+            allRows.add(rowCompiledOutputs);
+        });
+        return allRows.toArray(new ClassOrInterfaceDeclaration[0][0]);
+    }
+
+    protected void iterateOverInputClauses(BiConsumer<DColumnModel, Integer> inputFeelExpressionGeneration) {
+        int index = 0;
         for (DColumnModel column : columns) {
             String inputValuesText = getInputValuesText( column.inputClause );
             if (inputValuesText != null && !inputValuesText.isEmpty()) {
                 column.inputTests = feel.evaluateUnaryTests( inputValuesText, variableTypes );
             }
-            column.compiledInputClause = compileFeelExpression( column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index++ );
-        }
-    }
-
-    private void initRows( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
-        int index = 1;
-        for (DRowModel row : rows) {
-            int rowIndex = index;
-            row.compiledOutputs = row.outputs.stream().map( expr -> compileFeelExpression( dt, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, compilationCache, expr, rowIndex ) ).collect( toList() );
+            inputFeelExpressionGeneration.accept(column, index);
             index++;
         }
     }
 
-    private CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
-        return compilationCache.computeIfAbsent(expr, e -> e == null || e.isEmpty() ? ctx -> null : (CompiledFEELExpression ) feel.compile( model, element, msg, dtName, e, feelctx, index ) );
+    protected void initInputClauses(CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache) {
+        iterateOverInputClauses((column, index) -> column.compiledInputClause = compileFeelExpression(column.inputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, compilationCache, column.getName(), index));
     }
 
-    private void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+    protected List<ClassOrInterfaceDeclaration> generateInputClauses(CompilerContext feelctx) {
+        List<ClassOrInterfaceDeclaration> inputClauses = new ArrayList<>();
+        iterateOverInputClauses((column, index) -> inputClauses.add(feel.generateFeelExpressionSource(column.getName(), feelctx)));
+        return inputClauses;
+    }
+
+    protected void iterateOverOutputClauses(BiConsumer<DOutputModel, String> ouputFeelExpressionGeneration) {
         for (DOutputModel output : outputs) {
             output.outputValues = getOutputValuesTests( output );
             String defaultValue = output.outputClause.getDefaultOutputEntry() != null ? output.outputClause.getDefaultOutputEntry().getText() : null;
             if (defaultValue != null && !defaultValue.isEmpty()) {
-                output.compiledDefault = compileFeelExpression( output.outputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue, 0 );
+                ouputFeelExpressionGeneration.accept(output, defaultValue);
             }
         }
     }
 
-    private List<UnaryTest> getOutputValuesTests( DOutputModel output ) {
+    protected void initOutputClauses( CompilerContext feelctx, Map<String, CompiledFEELExpression> compilationCache ) {
+        iterateOverOutputClauses((output, defaultValue) -> output.compiledDefault = compileFeelExpression(output.outputClause, feel, feelctx, Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, compilationCache, defaultValue,  0));
+    }
+
+    public  Map<String, ClassOrInterfaceDeclaration> generateOutputClauses(CompilerContext feelctx) {
+        Map<String, ClassOrInterfaceDeclaration> outputClauses = new HashMap<>();
+        iterateOverOutputClauses((output, defaultValue) -> outputClauses.put(defaultValue, feel.generateFeelExpressionSource(defaultValue, feelctx)));
+        return outputClauses;
+    }
+
+    protected CompiledFEELExpression compileFeelExpression( DMNElement element, DMNFEELHelper feel, CompilerContext feelctx, Msg.Message msg, Map<String, CompiledFEELExpression> compilationCache, String expr, int index ) {
+        return compilationCache.computeIfAbsent(expr, e -> {
+            if (e == null || e.isEmpty()) {
+                return ctx -> null;
+            } else {
+                return (CompiledFEELExpression) feel.compile(model, element, msg, dtName, e, feelctx, index);
+            }
+        });
+    }
+
+    protected List<UnaryTest> getOutputValuesTests( DOutputModel output ) {
         String outputValuesText = Optional.ofNullable( output.outputClause.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
         output.typeRef = inferTypeRef(model, dt, output.outputClause);
         if (outputValuesText != null && !outputValuesText.isEmpty()) {
@@ -224,9 +268,9 @@ public class DTableModel {
     public static class DRowModel {
 
         private final List<String> inputs;
-        private final List<String> outputs;
+        protected final List<String> outputs;
 
-        private List<CompiledFEELExpression> compiledOutputs;
+        protected List<CompiledFEELExpression> compiledOutputs;
 
         DRowModel(DecisionRule dr) {
             this.inputs = dr.getInputEntry().stream()
@@ -250,7 +294,7 @@ public class DTableModel {
         private final Type type;
 
         private List<UnaryTest> inputTests;
-        private CompiledFEELExpression compiledInputClause;
+        protected CompiledFEELExpression compiledInputClause;
 
         DColumnModel(InputClause inputClause) {
             this.inputClause = inputClause;
@@ -298,9 +342,9 @@ public class DTableModel {
     }
 
     public static class DOutputModel {
-        private final OutputClause outputClause;
-        private List<UnaryTest> outputValues;
-        private CompiledFEELExpression compiledDefault;
+        protected final OutputClause outputClause;
+        protected List<UnaryTest> outputValues;
+        protected CompiledFEELExpression compiledDefault;
         private BaseDMNTypeImpl typeRef;
 
         DOutputModel( OutputClause outputClause ) {
