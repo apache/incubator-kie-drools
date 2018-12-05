@@ -28,17 +28,22 @@ import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.model.api.DecisionTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompiler {
+    private GeneratorsEnum[] ALL_GENERATORS = new GeneratorsEnum[] {
+            GeneratorsEnum.EVALUATOR,
+            GeneratorsEnum.UNIT,
+            GeneratorsEnum.EXEC_MODEL,
+            GeneratorsEnum.UNARY_TESTS,
+            GeneratorsEnum.FEEL_EXPRESSION,
+
+    };
+
     List<AfterGeneratingSourcesListener> afterGeneratingSourcesListeners = new ArrayList<>();
 
     public void register(AfterGeneratingSourcesListener listener) {
         afterGeneratingSourcesListeners.add(listener);
     }
-
-    static final Logger logger = LoggerFactory.getLogger(ExecModelDMNMavenSourceCompiler.class);
 
     public ExecModelDMNMavenSourceCompiler(DMNCompilerImpl compiler) {
         super(compiler);
@@ -65,5 +70,10 @@ public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompil
         }
 
         return null;
+    }
+
+    @Override
+    protected GeneratorsEnum[] getGenerators() {
+        return ALL_GENERATORS;
     }
 }

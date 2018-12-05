@@ -43,21 +43,27 @@ public class ExecModelDMNClassLoaderCompiler extends DMNEvaluatorCompiler {
     @Override
     protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt) {
         String decisionName = ExecModelDMNEvaluatorCompiler.getDecisionTableName(dtName, dt);
+        // This is used just to get the compiled class name, but it only needs the namespace and the table name. exec model DTableModel is used instead
         DTableModel dTableModel = new DTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt);
-        String className = dTableModel.getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR);
-        Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(className);
+        String evaluatorClassName = dTableModel.getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.EVALUATOR);
+        Optional<String> generatedClass = dmnRuleClassFile.getCompiledClass(evaluatorClassName);
 
         return generatedClass.map(gc -> {
             try {
-                Class<?> clazz = getRootClassLoader().loadClass(gc);
-                AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) clazz.newInstance();
-                evaluatorInstance.initParameters(ctx, dTableModel, node);
+                Class<?> evaluatorClass = getRootClassLoader().loadClass(gc);
+                AbstractModelEvaluator evaluatorInstance = (AbstractModelEvaluator) evaluatorClass.newInstance();
 
-                logger.debug("Read compiled evaluator from class loader: " + className);
+                String feelExpressionClassName = dTableModel.getGeneratedClassName(ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION);
+                Class<?> feelExpressionClass = getRootClassLoader().loadClass(feelExpressionClassName);
+                DTableModel execModelDTableModel = new ExecModelDTableModel(ctx.getFeelHelper(), model, dtName, decisionName, dt, feelExpressionClass);
+
+                evaluatorInstance.initParameters(ctx, execModelDTableModel, node);
+
+                logger.debug("Read compiled evaluator from class loader: " + evaluatorClassName);
                 return evaluatorInstance;
             } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Cannot instantiate class" + e);
             }
-        }).orElseThrow(() -> new RuntimeException("Cannot instantiate evaluator"));
+        }).orElseThrow(() -> new RuntimeException("No evaluator class found in file: " + dmnRuleClassFile));
     }
 }

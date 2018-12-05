@@ -22,6 +22,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
     private static final String TEMPLATE_CLASS = "TemplateCompiledFEELExpression";
 
     private final BaseNode ast;
+    private final DefaultMode defaultBackend;
     private DirectCompilerResult compiledExpression;
 
     private final CompilerBytecodeLoader compiler = new CompilerBytecodeLoader();
@@ -34,15 +35,19 @@ public class ProcessedExpression extends ProcessedFEELUnit {
             List<FEELProfile> profiles) {
 
         super(expression, ctx, profiles);
-
+        this.defaultBackend = defaultBackend;
         ParseTree tree = parser.compilation_unit();
         ast = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes()));
+    }
 
+    public CompiledFEELExpression getResult() {
         if (defaultBackend == Compiled) {
             defaultResult = getCompiled();
         } else { // "legacy" interpreted AST compilation:
             defaultResult = getInterpreted();
         }
+
+        return this;
     }
 
     private DirectCompilerResult getCompilerResult() {
@@ -91,12 +96,8 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         return new CompiledExecutableExpression(compiledFEELExpression);
     }
 
-    public CompiledFEELExpression getCompiledFEELExpression() {
-        return defaultResult;
-    }
-
     @Override
     public Object apply(EvaluationContext evaluationContext) {
-        return getCompiledFEELExpression().apply(evaluationContext);
+        return defaultResult.apply(evaluationContext);
     }
 }
