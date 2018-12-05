@@ -35,8 +35,8 @@ public class BayesWeaverService implements KieWeaverService<BayesPackage> {
         BayesPackage registeredPkg = internalPkg.getResourceTypePackages()
                 .computeIfAbsent(ResourceType.BAYES, rt -> new BayesPackage(kiePkg.getName()));
 
-        for (String name : registeredPkg.listJunctionTrees()) {
-            registeredPkg.addJunctionTree(name, registeredPkg.getJunctionTree(name));
+        for (String name : bayesPkg.listJunctionTrees()) {
+            registeredPkg.addJunctionTree(name, bayesPkg.getJunctionTree(name));
         }
     }
 

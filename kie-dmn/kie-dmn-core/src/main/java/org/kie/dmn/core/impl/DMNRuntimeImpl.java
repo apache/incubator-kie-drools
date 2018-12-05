@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.KieBase;
@@ -104,7 +105,7 @@ public class DMNRuntimeImpl
         if( kpkg == null ) {
             return null;
         }
-        Map<ResourceType, ResourceTypePackage> map = kpkg.getResourceTypePackages();
+        ResourceTypePackageRegistry map = kpkg.getResourceTypePackages();
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
     }
@@ -117,7 +118,7 @@ public class DMNRuntimeImpl
         if( kpkg == null ) {
             return null;
         }
-        Map<ResourceType, ResourceTypePackage> map = kpkg.getResourceTypePackages();
+        ResourceTypePackageRegistry map = kpkg.getResourceTypePackages();
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModelById( modelId ) : null;
     }
