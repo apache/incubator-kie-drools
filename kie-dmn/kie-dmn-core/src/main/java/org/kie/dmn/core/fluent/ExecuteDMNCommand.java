@@ -45,6 +45,9 @@ public class ExecuteDMNCommand implements ExecutableCommand<DMNResult> {
         DMNResult dmnResult = dmnRuntime.evaluateAll(activeModel, dmnContext);
         registryContext.register(DMNResult.class, dmnResult);
 
+        // reset context
+        registryContext.register(DMNContext.class, DMNFactory.newContext());
+
         return dmnResult;
     }
 }
