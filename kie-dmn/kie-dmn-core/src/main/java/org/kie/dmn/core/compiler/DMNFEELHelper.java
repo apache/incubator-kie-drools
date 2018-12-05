@@ -231,7 +231,7 @@ public class DMNFEELHelper {
                                                                msg.getSourceId().equals( element.getId() ))) );
     }
 
-    public ClassOrInterfaceDeclaration compileUnaryTests(String unaryTests, DMNCompilerContext ctx, Type inputColumnType) {
+    public ClassOrInterfaceDeclaration generateUnaryTestsSource(String unaryTests, DMNCompilerContext ctx, Type inputColumnType) {
         CompilerContext compilerContext =
                 ctx.toCompilerContext()
                         .addInputVariableType("?", inputColumnType);
@@ -272,5 +272,13 @@ public class DMNFEELHelper {
         CompiledExpression compiled = feel.compile( expr, feelctx );
         processEvents( model, element, msg, expr, dtableName, index );
         return compiled;
+    }
+
+    public ClassOrInterfaceDeclaration generateFeelExpressionSource(String input, CompilerContext compilerContext1) {
+
+        CompilationUnit compilationUnit = ((FEELImpl) feel).generateExpressionSource(input, compilerContext1);
+        return compilationUnit.getType(0)
+                .asClassOrInterfaceDeclaration()
+                .setStatic(true);
     }
 }

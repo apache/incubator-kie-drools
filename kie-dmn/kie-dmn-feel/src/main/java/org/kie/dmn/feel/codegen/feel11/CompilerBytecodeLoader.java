@@ -47,6 +47,12 @@ public class CompilerBytecodeLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(CompilerBytecodeLoader.class);
 
+    public interface GenerateClassListener {
+        void generatedClass(CompilationUnit cu);
+    }
+
+    public static GenerateClassListener generateClassListener;
+
     public static class TemplateLoader extends ClassLoader {
 
         public TemplateLoader(ClassLoader parent) {
@@ -164,6 +170,10 @@ public class CompilerBytecodeLoader {
         fieldDeclarations.stream()
                 .filter(fd -> fd.getVariable(0).getName().asString().startsWith("UT"))
                 .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
+
+        if (generateClassListener != null) {
+            generateClassListener.generatedClass(cu);
+        }
 
         LOG.debug("{}", cu);
         return cu;

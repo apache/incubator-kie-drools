@@ -25,12 +25,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.drools.javaparser.ast.CompilationUnit;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
+import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedFEELUnit;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
-import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -105,7 +106,15 @@ public class FEELImpl
                 expression,
                 ctx,
                 ProcessedFEELUnit.DefaultMode.of(doCompile || ctx.isDoCompile()),
-                profiles);
+                profiles).getResult();
+    }
+
+    public CompilationUnit generateExpressionSource(String expression, CompilerContext ctx) {
+        return new ProcessedExpression(
+                expression,
+                ctx,
+                ProcessedFEELUnit.DefaultMode.of(doCompile || ctx.isDoCompile()),
+                profiles).getSourceCode();
     }
 
     @Override
