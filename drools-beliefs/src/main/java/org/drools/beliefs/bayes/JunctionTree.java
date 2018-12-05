@@ -17,20 +17,33 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
+import org.kie.api.internal.assembler.ProcessedResource;
+import org.kie.api.io.Resource;
 
 import java.util.List;
 
-public class JunctionTree {
+public class JunctionTree implements ProcessedResource {
     private Graph<BayesVariable>    graph;
     private JunctionTreeClique      root;
     private JunctionTreeClique[]    jtNodes;
     private JunctionTreeSeparator[] jtSeps;
+    private String namespace;
+    private final Resource resource;
+    private String name;
 
     public JunctionTree(Graph<BayesVariable> graph, JunctionTreeClique root, JunctionTreeClique[] jtNodes, JunctionTreeSeparator[] jtSeps) {
-        this( graph, root, jtNodes, jtSeps, true );
+        this( null, null, null, graph, root, jtNodes, jtSeps, true );
     }
 
-    public JunctionTree(Graph<BayesVariable> graph, JunctionTreeClique root, JunctionTreeClique[] jtNodes, JunctionTreeSeparator[] jtSeps, boolean init) {
+
+    public JunctionTree(Resource resource, String namespace, String name, Graph<BayesVariable> graph, JunctionTreeClique root, JunctionTreeClique[] jtNodes, JunctionTreeSeparator[] jtSeps) {
+        this( resource, namespace, name, graph, root, jtNodes, jtSeps, true );
+    }
+
+    public JunctionTree(Resource resource, String namespace, String name, Graph<BayesVariable> graph, JunctionTreeClique root, JunctionTreeClique[] jtNodes, JunctionTreeSeparator[] jtSeps, boolean init) {
+        this.resource = resource;
+        this.namespace = namespace;
+        this.name = name;
         this.graph = graph;
         this.root = root;
         this.jtNodes = jtNodes;
@@ -111,5 +124,16 @@ public class JunctionTree {
         this.jtNodes = jtNodes;
     }
 
+    public String getNamespace() {
+        return namespace;
+    }
 
+    @Override
+    public Resource getResource() {
+        return resource;
+    }
+
+    public String getName() {
+        return this.name;
+    }
 }

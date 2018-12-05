@@ -19,6 +19,7 @@ import org.drools.beliefs.graph.Edge;
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
 import org.drools.core.util.bitmask.OpenBitSet;
+import org.kie.api.io.Resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,14 +49,23 @@ public class JunctionTreeBuilder {
             }
         }
     }
+
     public JunctionTree build() {
-        return build( true );
+        return build(true);
     }
 
     public JunctionTree build(boolean init) {
+        return build( null, null, null, init );
+    }
+
+    public JunctionTree build(Resource resource, String namespace, String name) {
+        return build( resource, namespace, name, true );
+    }
+
+    public JunctionTree build(Resource resource, String namespace, String name, boolean init) {
         moralize();
         List<OpenBitSet>  cliques = triangulate();
-        return junctionTree(cliques, init);
+        return junctionTree(resource, namespace, name, cliques, init);
     }
 
 
@@ -214,6 +224,10 @@ public class JunctionTreeBuilder {
     }
 
     public JunctionTree junctionTree(List<OpenBitSet> cliques, boolean init) {
+        return junctionTree(null, null, null, cliques, init);
+    }
+
+    public JunctionTree junctionTree(Resource resource, String namespace, String name, List<OpenBitSet> cliques, boolean init) {
         List<SeparatorSet> list = new ArrayList<SeparatorSet>();
         for ( int i = 0; i < cliques.size(); i++ ) {
             for ( int j = i+1; j < cliques.size(); j++ ) {
@@ -259,7 +273,7 @@ public class JunctionTreeBuilder {
 
         mapNodeToCliqueFamily(varNodeToCliques, jtNodes);
 
-        return new JunctionTree(graph, jtNodes[0], jtNodes, jtSeps, init);
+        return new JunctionTree(resource, namespace, name, graph, jtNodes[0], jtNodes, jtSeps, init);
     }
 
 
@@ -384,6 +398,4 @@ public class JunctionTreeBuilder {
         }
         return list;
     }
-
-
 }

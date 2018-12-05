@@ -120,7 +120,9 @@ public interface InternalKnowledgeBase extends KieBase {
     void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
     void removeRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
 
+    @Deprecated
     void addProcess( Process process );
+    @Deprecated
     void removeProcess( final String id );
 
     void addGlobal(String identifier, Class clazz);
