@@ -44,6 +44,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
@@ -166,7 +167,7 @@ import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder,
-                                             org.drools.compiler.builder.AssemblerContext,
+                                             DroolsAssemblerContext,
                                              AssemblerContext {
 
     private static final String JAVA_ROOT = "src/main/java/";

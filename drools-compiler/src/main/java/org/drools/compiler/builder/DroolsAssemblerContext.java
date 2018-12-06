@@ -35,7 +35,7 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
  * classes such as {@link PackageBuildContext} and {@link RuleBuildContext}.
  * It should be regarded as an implementation detail, and it should be deprecated
  */
-public interface AssemblerContext {
+public interface DroolsAssemblerContext {
 
     Map<String, Class<?>> getGlobals();
 

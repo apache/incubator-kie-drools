@@ -22,7 +22,7 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.builder.AssemblerContext;
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
@@ -824,7 +824,7 @@ public final class DialectUtil {
         }
 
         String namespace = context.getRuleDescr().getNamespace();
-        AssemblerContext packageBuilder = context.getKnowledgeBuilder();
+        DroolsAssemblerContext packageBuilder = context.getKnowledgeBuilder();
 
         Class<?> clazz = null;
         try {
