@@ -28,10 +28,22 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.AssemblerContext;
 import org.kie.internal.builder.KnowledgeBuilderError;
 
+/**
+ * A base implementation for an {@link KieAssemblerService}, following simple conventions.
+ * @param <T> type of the package that is being assembled
+ * @param <U> type of the processed resource that will be assembled for each given {@link Resource}
+ */
 public abstract class AbstractAssemblerService<T extends ResourceTypePackage<U>, U extends ProcessedResource> implements KieAssemblerService {
 
+    /**
+     * Factory for a package of type T
+     * @param namespace namespace of the package (e.g. a Java package name)
+     */
     protected abstract T createPackage(String namespace);
 
+    /**
+     * Factory for the ResourceProcessor subclass that will process Resources that this assembler supports
+     */
     protected abstract ResourceProcessor<U> createResourceProcessor(Resource resource);
 
     @Override
