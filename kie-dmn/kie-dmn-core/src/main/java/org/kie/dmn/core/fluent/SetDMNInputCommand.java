@@ -19,6 +19,7 @@ package org.kie.dmn.core.fluent;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.internal.command.RegistryContext;
 
@@ -37,7 +38,10 @@ public class SetDMNInputCommand implements ExecutableCommand<Void> {
         RegistryContext registryContext = (RegistryContext) context;
         DMNContext dmnContext = registryContext
                 .computeIfAbsent(DMNContext.class,
-                                 clazz -> DMNFactory.newContext());
+                                 clazz -> {
+                                     DMNRuntime dmnRuntime = registryContext.lookup(DMNRuntime.class);
+                                     return dmnRuntime != null ? dmnRuntime.newContext() : DMNFactory.newContext();
+                                 });
         dmnContext.set(name, value);
         return null;
     }

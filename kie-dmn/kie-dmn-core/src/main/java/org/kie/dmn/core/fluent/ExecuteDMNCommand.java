@@ -40,13 +40,13 @@ public class ExecuteDMNCommand implements ExecutableCommand<DMNResult> {
             throw new IllegalStateException("No DMNRuntime available");
         }
         if (dmnContext == null) {
-            dmnContext = DMNFactory.newContext();
+            dmnContext = dmnRuntime.newContext();
         }
         DMNResult dmnResult = dmnRuntime.evaluateAll(activeModel, dmnContext);
         registryContext.register(DMNResult.class, dmnResult);
 
         // reset context
-        registryContext.register(DMNContext.class, DMNFactory.newContext());
+        registryContext.register(DMNContext.class, dmnRuntime.newContext());
 
         return dmnResult;
     }
