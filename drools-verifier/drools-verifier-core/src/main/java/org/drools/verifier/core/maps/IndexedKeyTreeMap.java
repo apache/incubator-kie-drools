@@ -73,13 +73,15 @@ public class IndexedKeyTreeMap<T extends HasIndex & HasKeys>
     protected T remove(final UUIDKey uuidKey) {
         final T remove = super.remove(uuidKey);
 
-        doForAll(remove.getIndex(),
-                 new Callback<T>() {
-                     @Override
-                     public void callback(final T t) {
-                         t.setIndex(t.getIndex() - 1);
-                     }
-                 });
+        if (remove != null) {
+            doForAll(remove.getIndex(),
+                     new Callback<T>() {
+                         @Override
+                         public void callback(final T t) {
+                             t.setIndex(t.getIndex() - 1);
+                         }
+                     });
+        }
 
         return remove;
     }
