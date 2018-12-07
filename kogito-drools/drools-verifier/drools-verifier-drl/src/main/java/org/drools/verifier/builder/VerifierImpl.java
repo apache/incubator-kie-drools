@@ -34,13 +34,12 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.verifier.visitor.PackageDescrVisitor;
-import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.builder.KnowledgeBuilderError;
 
 /**
  * This is the main user class for verifier. This will use rules to validate
@@ -77,7 +76,7 @@ public class VerifierImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeorg.drools.verifier.Verifier#addPackageDescr(org.kie.lang.descr.
      * PackageDescr)
      */
@@ -100,7 +99,7 @@ public class VerifierImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.kie.verifier.Verifier#reloadAnalysisKnowledgeBase()
      */
     public synchronized void reloadVerifierKnowledgeBase() throws Exception {
@@ -109,7 +108,7 @@ public class VerifierImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.kie.verifier.Verifier#fireAnalysis()
      */
     public boolean fireAnalysis() {
@@ -162,7 +161,7 @@ public class VerifierImpl
 
     /**
      * Returns the verifier results as <code>AnalysisResult</code> object.
-     * 
+     *
      * @return Analysis result
      */
     public VerifierReport getResult() {
@@ -182,7 +181,7 @@ public class VerifierImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.kie.verifier.Verifier#dispose()
      */
     public void dispose() {
@@ -193,8 +192,8 @@ public class VerifierImpl
         }
     }
 
-    
-    
+
+
     public void addResourcesToVerify(Resource resource, ResourceType type,
             ResourceConfiguration config) {
         verifierPackageBuilder.addKnowledgeResource( resource,
@@ -211,9 +210,9 @@ public class VerifierImpl
             } else {
                 errors.add( new VerifierError( "Verifier could not form a PackageDescr from the resources that it was trying to verify." ) );
             }
-        
+
     }
-    
+
     public void addResourcesToVerify(Resource resource,
                                      ResourceType type) {
 
@@ -241,9 +240,9 @@ public class VerifierImpl
     }
 
     /**
-     * 
+     *
      * Adds meta data from DRL to package and rule.
-     * 
+     *
      * @param drl Package DRL
      */
     private void addDrlData(String drl) {

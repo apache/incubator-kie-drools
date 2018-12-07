@@ -33,7 +33,7 @@ public class NumericIntegerConditionInspector
     public boolean subsumes(Object other) {
         if (other instanceof NumericIntegerConditionInspector) {
             final NumericIntegerConditionInspector anotherPoint = (NumericIntegerConditionInspector) other;
-            if (anotherPoint != null) {
+            if (anotherPoint != null && anotherPoint.getValue() != null) {
                 if ((anotherPoint.getOperator().equals(Operator.LESS_THAN) && operator.equals(Operator.LESS_OR_EQUAL))) {
                     return covers(anotherPoint.getValue() - 1);
                 } else if ((anotherPoint.getOperator().equals(Operator.GREATER_OR_EQUAL) && operator.equals(Operator.GREATER_THAN))) {
