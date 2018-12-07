@@ -19,6 +19,7 @@ package org.drools.examples.helloworld;
 import org.kie.api.KieServices;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -37,10 +38,10 @@ public class HelloWorldExample {
         // From the kie services, a container is created from the classpath
         KieContainer kc = ks.getKieClasspathContainer();
 
-        execute( kc );
+        execute( ks, kc );
     }
 
-    public static void execute( KieContainer kc ) {
+    public static void execute( KieServices ks, KieContainer kc ) {
         // From the container, a session is created based on
         // its definition and configuration in the META-INF/kmodule.xml file
         KieSession ksession = kc.newKieSession("HelloWorldKS");
@@ -48,19 +49,18 @@ public class HelloWorldExample {
         // Once the session is created, the application can interact with it
         // In this case it is setting a global as defined in the
         // org/drools/examples/helloworld/HelloWorld.drl file
-        ksession.setGlobal( "list",
-                            new ArrayList<Object>() );
+        ksession.setGlobal( "list", new ArrayList<Object>() );
 
         // The application can also setup listeners
         ksession.addEventListener( new DebugAgendaEventListener() );
         ksession.addEventListener( new DebugRuleRuntimeEventListener() );
 
-        // To setup a file based audit logger, uncomment the next line
-        // KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./helloworld" );
+        // Set up a file based audit logger
+        KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./target/helloworld" );
 
-        // To setup a ThreadedFileLogger, so that the audit view reflects events whilst debugging,
+        // To set up a ThreadedFileLogger, so that the audit view reflects events whilst debugging,
         // uncomment the next line
-        // KieRuntimeLogger logger = ks.getLoggers().newThreadedFileLogger( ksession, "./helloworld", 1000 );
+        // KieRuntimeLogger logger = ks.getLoggers().newThreadedFileLogger( ksession, "./target/helloworld", 1000 );
 
         // The application can insert facts into the session
         final Message message = new Message();
@@ -71,8 +71,8 @@ public class HelloWorldExample {
         // and fire the rules
         ksession.fireAllRules();
 
-        // Remove comment if using logging
-        // logger.close();
+        // Close logger
+        logger.close();
 
         // and then dispose the session
         ksession.dispose();
