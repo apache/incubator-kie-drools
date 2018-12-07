@@ -28,4 +28,6 @@ public @interface WidResult {
     String name() default "";
 
     String type() default "new StringDataType()";
+
+    String runtimeType() default "String";
 }

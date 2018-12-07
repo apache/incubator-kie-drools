@@ -81,6 +81,7 @@ public class WidInfo {
                     this.parameters.put(widParam.name(),
                                         new InternalWidParamsAndResults(widParam.name(),
                                                                         widParam.type(),
+                                                                        widParam.runtimeType(),
                                                                         widParam.required()));
                 }
             }
@@ -98,6 +99,7 @@ public class WidInfo {
                     this.results.put(widResult.name(),
                                      new InternalWidParamsAndResults(widResult.name(),
                                                                      widResult.type(),
+                                                                     widResult.runtimeType(),
                                                                      false));
                 }
             }
@@ -142,13 +144,16 @@ public class WidInfo {
 
         private String name;
         private String type;
+        private String runtimeType;
         private boolean required;
 
         public InternalWidParamsAndResults(String name,
                                            String type,
+                                           String runtimeType,
                                            boolean required) {
             this.name = name;
             this.type = type;
+            this.runtimeType = runtimeType;
             this.required = required;
         }
 
@@ -166,6 +171,14 @@ public class WidInfo {
 
         public void setType(String type) {
             this.type = type;
+        }
+
+        public String getRuntimeType() {
+            return runtimeType;
+        }
+
+        public void setRuntimeType(String runtimeType) {
+            this.runtimeType = runtimeType;
         }
 
         public boolean isRequired() {

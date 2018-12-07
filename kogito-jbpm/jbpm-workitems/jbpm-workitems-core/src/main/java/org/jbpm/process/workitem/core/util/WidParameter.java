@@ -29,5 +29,7 @@ public @interface WidParameter {
 
     String type() default "new StringDataType()";
 
+    String runtimeType() default "String";
+
     boolean required() default false;
 }

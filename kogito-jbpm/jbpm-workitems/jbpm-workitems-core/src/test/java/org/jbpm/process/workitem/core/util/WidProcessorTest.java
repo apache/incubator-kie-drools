@@ -337,11 +337,15 @@ public class WidProcessorTest {
         assertTrue(widParameters[0].required());
         assertEquals("new StringDataType()",
                      widParameters[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
         assertEquals("sampleParamTwo",
                      widParameters[1].name());
         assertTrue(widParameters[1].required());
         assertEquals("new StringDataType()",
                      widParameters[1].type());
+        assertEquals("String",
+                     widParameters[1].runtimeType());
 
         WidResult[] widResults = widInfo.results();
         assertEquals(1,
@@ -350,6 +354,8 @@ public class WidProcessorTest {
                      widResults[0].name());
         assertEquals("new StringDataType()",
                      widResults[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
 
         WidParameterValues[] widParameterValues = widInfo.parameterValues();
         assertEquals(2,
@@ -426,11 +432,15 @@ public class WidProcessorTest {
         assertTrue(widParameters[0].required());
         assertEquals("new StringDataType()",
                      widParameters[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
         assertEquals("sampleParamTwo",
                      widParameters[1].name());
         assertTrue(widParameters[1].required());
         assertEquals("new StringDataType()",
                      widParameters[1].type());
+        assertEquals("String",
+                     widParameters[1].runtimeType());
 
         WidResult[] widResults = widInfo.results();
         assertEquals(1,
@@ -439,6 +449,8 @@ public class WidProcessorTest {
                      widResults[0].name());
         assertEquals("new StringDataType()",
                      widResults[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
 
         WidParameterValues[] widParameterValues = widInfo.parameterValues();
         assertEquals(2,
@@ -642,11 +654,15 @@ public class WidProcessorTest {
         assertTrue(widParameters[0].required());
         assertEquals("new StringDataType()",
                      widParameters[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
         assertEquals("sampleParamTwo",
                      widParameters[1].name());
         assertTrue(widParameters[1].required());
         assertEquals("new StringDataType()",
                      widParameters[1].type());
+        assertEquals("String",
+                     widParameters[1].runtimeType());
 
         WidResult[] widResults = widInfo.results();
         assertEquals(1,
@@ -655,6 +671,8 @@ public class WidProcessorTest {
                      widResults[0].name());
         assertEquals("new StringDataType()",
                      widResults[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
 
         WidParameterValues[] widParameterValues = widInfo.parameterValues();
         assertEquals(2,
@@ -740,11 +758,15 @@ public class WidProcessorTest {
         assertTrue(widParameters[0].required());
         assertEquals("new StringDataType()",
                      widParameters[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
         assertEquals("sampleParamTwo",
                      widParameters[1].name());
         assertTrue(widParameters[1].required());
         assertEquals("new StringDataType()",
                      widParameters[1].type());
+        assertEquals("String",
+                     widParameters[1].runtimeType());
 
         WidResult[] widResults = widInfo.results();
         assertEquals(1,
@@ -753,6 +775,8 @@ public class WidProcessorTest {
                      widResults[0].name());
         assertEquals("new StringDataType()",
                      widResults[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
 
         WidParameterValues[] widParameterValues = widInfo.parameterValues();
         assertEquals(2,
@@ -839,11 +863,15 @@ public class WidProcessorTest {
         assertTrue(widParameters[0].required());
         assertEquals("new StringDataType()",
                      widParameters[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
         assertEquals("sampleParamTwo",
                      widParameters[1].name());
         assertTrue(widParameters[1].required());
         assertEquals("new StringDataType()",
                      widParameters[1].type());
+        assertEquals("String",
+                     widParameters[1].runtimeType());
 
         WidResult[] widResults = widInfo.results();
         assertEquals(1,
@@ -852,6 +880,8 @@ public class WidProcessorTest {
                      widResults[0].name());
         assertEquals("new StringDataType()",
                      widResults[0].type());
+        assertEquals("String",
+                     widParameters[0].runtimeType());
 
         WidParameterValues[] widParameterValues = widInfo.parameterValues();
         assertEquals(2,
@@ -914,10 +944,14 @@ public class WidProcessorTest {
 
         WidInfo widInfoObj = new WidInfo(widInfoList);
         assertNotNull(widInfoObj);
-        assertEquals("mvel: new com.sample.MyWorkItemHandler(\\\"testAccessToken\\\")", widInfoObj.getDefaultHandler());
-        assertEquals("mvel: new com.sample.MyWorkItemHandler(\"testAccessToken\")", widInfoObj.getDefaultHandlerUnEscaped());
-        assertEquals("new com.sample.MyWorkItemHandler(\\\"testAccessToken\\\")", widInfoObj.getDefaultHandlerNoType());
-        assertEquals("new com.sample.MyWorkItemHandler(\"testAccessToken\")", widInfoObj.getDefaultHandlerNoTypeUnEscaped());
+        assertEquals("mvel: new com.sample.MyWorkItemHandler(\\\"testAccessToken\\\")",
+                     widInfoObj.getDefaultHandler());
+        assertEquals("mvel: new com.sample.MyWorkItemHandler(\"testAccessToken\")",
+                     widInfoObj.getDefaultHandlerUnEscaped());
+        assertEquals("new com.sample.MyWorkItemHandler(\\\"testAccessToken\\\")",
+                     widInfoObj.getDefaultHandlerNoType());
+        assertEquals("new com.sample.MyWorkItemHandler(\"testAccessToken\")",
+                     widInfoObj.getDefaultHandlerNoTypeUnEscaped());
     }
 
     private Compiler compileWithGenerator() {
