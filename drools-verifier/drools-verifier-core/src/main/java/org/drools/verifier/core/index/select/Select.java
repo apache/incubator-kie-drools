@@ -60,6 +60,9 @@ public class Select<T> {
                 final Value key = subMap.firstKey();
                 final List<T> list = getT(subMap,
                                           key);
+                if (list == null) {
+                    return null;
+                }
                 return new Entry(key,
                                  list.iterator().next());
             } catch (NoSuchElementException e) {
@@ -86,6 +89,9 @@ public class Select<T> {
                 final Value key = subMap.lastKey();
                 final List<T> list = getT(subMap,
                                           key);
+                if (list == null) {
+                    return null;
+                }
                 return new Entry<T>(key,
                                     list.get(list.size() - 1));
             } catch (NoSuchElementException e) {

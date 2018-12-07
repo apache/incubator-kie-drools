@@ -18,6 +18,7 @@ package org.drools.verifier.core.cache.inspectors.condition;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
@@ -121,7 +122,7 @@ public class StringConditionInspector
 
             final StringConditionInspector otherInspector = (StringConditionInspector) other;
 
-            if (getValue().isEmpty() || ((StringConditionInspector) other).getValue()
+            if (getValue() == null || getValue().isEmpty() || ((StringConditionInspector) other).getValue()
                     .isEmpty()) {
                 return false;
             }
@@ -243,9 +244,9 @@ public class StringConditionInspector
 
         switch (operator) {
             case STR_STARTS_WITH:
-                return getValue().startsWith(otherValue.toString());
+                return getValue() != null && getValue().startsWith(otherValue.toString());
             case STR_ENDS_WITH:
-                return getValue().endsWith(otherValue.toString());
+                return getValue() != null && getValue().endsWith(otherValue.toString());
             case MATCHES:
             case SOUNDSLIKE:
                 return valueIsEqualTo(otherValue);
@@ -345,7 +346,7 @@ public class StringConditionInspector
                             || operatorsAre((StringConditionInspector) other,
                                             Operator.GREATER_OR_EQUAL,
                                             Operator.GREATER_THAN)) {
-                        return getValue().equals(((StringConditionInspector) other).getValue());
+                        return Objects.equals(getValue(), ((StringConditionInspector) other).getValue());
                     } else {
                         switch (((StringConditionInspector) other).getOperator()) {
                             case IN:
@@ -353,7 +354,7 @@ public class StringConditionInspector
                             case EQUALS:
                             case MATCHES:
                             case SOUNDSLIKE:
-                                return getValue().equals(((StringConditionInspector) other).getValue());
+                                return Objects.equals(getValue(), ((StringConditionInspector) other).getValue());
                         }
                     }
                     break;
