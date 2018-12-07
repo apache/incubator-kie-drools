@@ -51,8 +51,13 @@ public class PrioritisedScheduledThreadPoolExecutor extends ScheduledThreadPoolE
             ScheduledFuture<?> alreadyScheduled = scheduled.get(requestId);
             logger.debug("Checking if request with id {} is already scheduled {}", requestId, alreadyScheduled);
             if (alreadyScheduled != null) {
-                logger.debug("Request {} is already scheduled", requestId);
-                return false;
+                if (alreadyScheduled.isDone()) {
+                    logger.debug("Request {} is already completed so remove it and reschedule", requestId);
+                    scheduled.remove(requestId);                    
+                } else {
+                    logger.debug("Request {} is already scheduled", requestId);
+                    return false;
+                }
             }
         }
         super.schedule(command, delay, unit);

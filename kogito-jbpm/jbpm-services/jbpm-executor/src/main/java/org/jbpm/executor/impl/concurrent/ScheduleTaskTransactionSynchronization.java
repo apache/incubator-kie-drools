@@ -52,7 +52,7 @@ public class ScheduleTaskTransactionSynchronization implements TransactionSynchr
     @Override
     public void afterCompletion(int status) {
         
-        if (status == TransactionManager.STATUS_COMMITTED) {
+        if (status == TransactionManager.STATUS_COMMITTED && scheduler != null) {
             PrioritisedRunnable jobExecution = new PrioritisedRunnable(requestInfo.getId(), requestInfo.getPriority(), requestInfo.getTime(), jobProcessor);
             if (date == null) {
                 logger.debug("Directly executing request {}", requestInfo.getId());

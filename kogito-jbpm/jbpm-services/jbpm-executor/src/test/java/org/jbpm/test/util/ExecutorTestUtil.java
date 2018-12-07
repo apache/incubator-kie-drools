@@ -57,7 +57,7 @@ public class ExecutorTestUtil {
      * 
      * @return Properties containing the datasource properties.
      */
-    private static Properties getDatasourceProperties() { 
+    public static Properties getDatasourceProperties() { 
         boolean propertiesNotFound = false;
         
         // Central place to set additional H2 properties

@@ -428,7 +428,11 @@ public class ExecutorImpl implements Executor {
         eventSupport.fireBeforeJobCancelled(job, null);
         try {
             
-            executorStoreService.removeRequest(requestId, (T) -> {((PrioritisedScheduledThreadPoolExecutor) scheduler).cancel(requestId);});
+            executorStoreService.removeRequest(requestId, (T) -> {
+                    if (scheduler != null) {
+                        ((PrioritisedScheduledThreadPoolExecutor) scheduler).cancel(requestId);
+                    }
+                });
             eventSupport.fireAfterJobCancelled(job, null);
         } catch (Throwable e) {
             eventSupport.fireAfterJobCancelled(job, e);
