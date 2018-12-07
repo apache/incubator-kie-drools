@@ -32,21 +32,20 @@ then
     System.out.println( $s );
 end
 
-
 rule "go1"
 when
     String( this == "go1" )
     isContainedIn("Office", "House"; )
 then
-    System.out.println( "office is in the house" );
+    System.out.println( "Office is in the House" );
 end
 
 rule "go2"
 when
     String( this == "go2" )
-    isContainedIn("Draw", "House"; )
+    isContainedIn("Drawer", "House"; )
 then
-    System.out.println( "Draw in the House" );
+    System.out.println( "Drawer is in the House" );
 end
 
 rule "go3"
@@ -54,16 +53,15 @@ when
     String( this == "go3" )
     isContainedIn("Key", "Office"; )
 then
-    System.out.println( "Key in the Office" );
+    System.out.println( "Key is in the Office" );
 end
-
 
 rule "go4"
 when
     String( this == "go4" )
     isContainedIn(thing, "Office"; )
 then
-    System.out.println( "thing " + thing + " is in the Office" );
+    System.out.println(thing + " is in the Office" );
 end
 
 rule "go5"
@@ -71,5 +69,5 @@ when
     String( this == "go5" )
     isContainedIn(thing, location; )
 then
-    System.out.println( "thing " + thing + " is in " + location );
+    System.out.println(thing + " is in " + location );
 end

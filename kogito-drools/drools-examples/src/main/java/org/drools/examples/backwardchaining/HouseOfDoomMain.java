@@ -32,7 +32,7 @@ public class HouseOfDoomMain {
         ksession.insert( new Location("Desk", "Office") );
         ksession.insert( new Location("Chair", "Office") );
         ksession.insert( new Location("Computer", "Desk") );
-        ksession.insert( new Location("Draw", "Desk") );
+        ksession.insert( new Location("Drawer", "Desk") );
 
         ksession.insert( "go1" );
         ksession.fireAllRules();
@@ -46,7 +46,7 @@ public class HouseOfDoomMain {
         ksession.fireAllRules();
         System.out.println("---");
 
-        ksession.insert( new Location("Key", "Draw") );
+        ksession.insert( new Location("Key", "Drawer") );
         ksession.fireAllRules();
         System.out.println("---");
 
