@@ -159,7 +159,7 @@ public class KnowledgeBaseImpl
     // lock for entire rulebase, used for dynamic updates
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private transient Map<String, TypeDeclaration> classTypeDeclaration;
+    private final transient Map<String, TypeDeclaration> classTypeDeclaration = new ConcurrentHashMap<String, TypeDeclaration>();
 
     private ClassFieldAccessorCache classFieldAccessorCache;
     /** The root Rete-OO for this <code>RuleBase</code>. */
@@ -205,8 +205,6 @@ public class KnowledgeBaseImpl
         this.pkgs = new HashMap<String, InternalKnowledgePackage>();
         this.processes = new HashMap<String, Process>();
         this.globals = new HashMap<String, Class<?>>();
-
-        this.classTypeDeclaration = new HashMap<String, TypeDeclaration>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
         kieComponentFactory = getConfiguration().getComponentFactory();
@@ -603,8 +601,6 @@ public class KnowledgeBaseImpl
      * @throws ClassNotFoundException
      */
     private void populateTypeDeclarationMaps() throws ClassNotFoundException {
-        // FIXME: readLock
-        this.classTypeDeclaration = new HashMap<String, TypeDeclaration>();
         for (InternalKnowledgePackage pkg : this.pkgs.values()) {
             for (TypeDeclaration type : pkg.getTypeDeclarations().values()) {
                 type.setTypeClass(this.rootClassLoader.loadClass(type.getTypeClassName()));
