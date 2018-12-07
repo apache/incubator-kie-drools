@@ -106,7 +106,7 @@ public class DroolsExamplesApp extends JFrame {
 
         contentPane.add(new JButton(new AbstractAction("HelloWorldExample") {
             public void actionPerformed(ActionEvent e) {
-                HelloWorldExample.execute( kieContainer );
+                HelloWorldExample.execute(KieServices.Factory.get(), kieContainer );
             }
         }));
         contentPane.add(new JButton(new AbstractAction("FibonacciExample") {
