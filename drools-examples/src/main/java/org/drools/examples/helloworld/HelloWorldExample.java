@@ -16,6 +16,9 @@
 
 package org.drools.examples.helloworld;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.api.KieServices;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
@@ -23,25 +26,19 @@ import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
 public class HelloWorldExample {
 
     public static final void main(final String[] args) {
-        // KieServices is the factory for all KIE services 
-        KieServices ks = KieServices.Factory.get();
-        
         // From the kie services, a container is created from the classpath
-        KieContainer kc = ks.getKieClasspathContainer();
+        KieContainer kc = KieServices.get().getKieClasspathContainer();
 
-        execute( ks, kc );
+        execute( kc );
     }
 
-    public static void execute( KieServices ks, KieContainer kc ) {
+    public static void execute( KieContainer kc ) {
         // From the container, a session is created based on
         // its definition and configuration in the META-INF/kmodule.xml file
         KieSession ksession = kc.newKieSession("HelloWorldKS");
@@ -56,7 +53,7 @@ public class HelloWorldExample {
         ksession.addEventListener( new DebugRuleRuntimeEventListener() );
 
         // Set up a file based audit logger
-        KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./target/helloworld" );
+        KieRuntimeLogger logger = KieServices.get().getLoggers().newFileLogger( ksession, "./target/helloworld" );
 
         // To set up a ThreadedFileLogger, so that the audit view reflects events whilst debugging,
         // uncomment the next line
