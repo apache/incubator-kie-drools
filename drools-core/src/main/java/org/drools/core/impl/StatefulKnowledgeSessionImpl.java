@@ -499,6 +499,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void dispose() {
         alive = false;
+
+        this.agendaEventSupport.clear();
+
+        if (processRuntime != null) {
+            this.processRuntime.dispose();
+        }
+
         if (pool != null) {
             pool.release(this);
             return;
@@ -523,13 +530,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.ruleRuntimeEventSupport.clear();
         this.ruleEventListenerSupport.clear();
-        this.agendaEventSupport.clear();
         for (KieBaseEventListener listener : kieBaseEventListeners) {
             this.kBase.removeEventListener(listener);
-        }
-
-        if (processRuntime != null) {
-            this.processRuntime.dispose();
         }
 
         this.timerService.shutdown();
