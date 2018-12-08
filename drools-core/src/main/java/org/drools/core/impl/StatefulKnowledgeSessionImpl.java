@@ -1097,8 +1097,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         timerService.reset();
 
-        this.processRuntime = null;
-
         this.initialFactHandle = initInitialFact(kBase, null);
     }
 
