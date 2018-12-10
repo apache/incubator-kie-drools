@@ -31,4 +31,6 @@ public interface KieContainerFluent {
     RuleUnitExecutorFluent newRuleUnitExecutor();
 
     RuleUnitExecutorFluent newRuleUnitExecutor(String sessionName);
+
+    DMNRuntimeFluent newDMNRuntime();
 }
