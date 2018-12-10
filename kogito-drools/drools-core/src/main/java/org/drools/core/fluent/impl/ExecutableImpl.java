@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.command.ExecutableCommand;
+import org.kie.internal.builder.fluent.CommandBasedExecutable;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 
-public class ExecutableImpl implements InternalExecutable {
+public class ExecutableImpl implements InternalExecutable,
+                                       CommandBasedExecutable {
 
     private FluentComponentFactory factory;
     private ExecutableBuilder executableBuilder;
@@ -54,6 +56,7 @@ public class ExecutableImpl implements InternalExecutable {
         this.factory = factory;
     }
 
+    @Override
     public void addCommand(ExecutableCommand cmd) {
         if (batch == null) {
             batch = new BatchImpl();

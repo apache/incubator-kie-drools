@@ -26,8 +26,6 @@ import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.model.functions.Block3;
-import org.drools.model.functions.Function2;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
