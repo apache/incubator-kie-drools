@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -47,12 +46,34 @@ import org.slf4j.LoggerFactory;
 
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
-    private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
 
     private static final Map<String, Method> accessorCache = new ConcurrentHashMap<>();
 
     public static String normalizeVariableName(String name) {
-        return SPACES_PATTERN.matcher( name.trim() ).replaceAll( " " );
+        // private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
+        // return SPACES_PATTERN.matcher( name.trim() ).replaceAll( " " );
+
+        // The above code was refactored for performance reasons
+        // Check org.drools.benchmarks.dmn.runtime.DMNEvaluateDecisionNameLengthBenchmark
+
+        int pos = 0, size = name.length();
+        char[] target = new char[size];
+        boolean space = false;
+
+        for (int i = 0; i < size; i++) {
+            char c = name.charAt(i);
+            // need to check for both non-breaking spaces and control characters, like the original regex does
+            if (Character.isSpaceChar(c) || Character.isWhitespace(c)) {
+               space = true;
+            } else {
+                if (space && pos != 0) {
+                    target[pos++] = ' ';
+                }
+                target[pos++] = c;
+                space = false;
+            }
+        }
+        return new String(target, 0, pos);
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
