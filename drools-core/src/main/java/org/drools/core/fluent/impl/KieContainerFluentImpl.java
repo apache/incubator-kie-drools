@@ -21,6 +21,7 @@ import java.util.function.BiFunction;
 import org.drools.core.command.NewKieSessionCommand;
 import org.drools.core.command.NewRuleUnitExecutorCommand;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.fluent.DMNRuntimeFluent;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieContainerFluent;
 import org.kie.internal.builder.fluent.KieSessionFluent;
@@ -65,5 +66,10 @@ public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, E
         NewRuleUnitExecutorCommand cmd = new NewRuleUnitExecutorCommand(sessionName);
         ctx.addCommand(cmd);
         return new RuleUnitExecutorFluentImpl(ctx);
+    }
+
+    @Override
+    public DMNRuntimeFluent newDMNRuntime() {
+        return DMNRuntimeFluent.create(ctx);
     }
 }
