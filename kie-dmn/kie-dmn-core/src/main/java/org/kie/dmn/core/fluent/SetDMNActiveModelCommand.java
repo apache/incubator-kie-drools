@@ -30,15 +30,15 @@ public class SetDMNActiveModelCommand implements ExecutableCommand<DMNModel> {
 
     private String namespace;
     private String modelName;
-    private Resource resource;
+    private String resourcePath;
 
     public SetDMNActiveModelCommand(String namespace, String modelName) {
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
         this.modelName = Objects.requireNonNull(modelName, "modelName cannot be null");
     }
 
-    public SetDMNActiveModelCommand(Resource resource) {
-        this.resource = Objects.requireNonNull(resource, "resource cannot be null");
+    public SetDMNActiveModelCommand(String resourcePath) {
+        this.resourcePath = Objects.requireNonNull(resourcePath, "resource cannot be null");
     }
 
     @Override
@@ -60,11 +60,11 @@ public class SetDMNActiveModelCommand implements ExecutableCommand<DMNModel> {
                     .ofNullable(dmnRuntime.getModel(namespace, modelName))
                     .orElseThrow(() -> new IllegalStateException("Cannot find a DMN model with namespace=" + namespace + " and modelName=" + modelName));
         }
-        else if(resource != null) {
+        else if(resourcePath != null) {
             return dmnRuntime.getModels().stream()
-                    .filter(model -> resource.getSourcePath().equals(model.getResource().getSourcePath()))
+                    .filter(model -> Objects.equals(resourcePath, model.getResource().getSourcePath()))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Cannot find a DMN model with resource=" + resource));
+                    .orElseThrow(() -> new IllegalStateException("Cannot find a DMN model with resource=" + resourcePath));
         }
         throw new IllegalStateException("This should not happen");
     }

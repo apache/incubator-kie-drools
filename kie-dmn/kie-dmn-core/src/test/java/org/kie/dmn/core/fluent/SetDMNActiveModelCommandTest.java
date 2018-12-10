@@ -72,7 +72,7 @@ public class SetDMNActiveModelCommandTest {
 
     @Test
     public void executeWithResource() {
-        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(resource);
+        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(resource.getSourcePath());
 
         try {
             setDMNActiveModelCommand.execute(registryContext);
