@@ -19,8 +19,10 @@ package org.kie.internal.builder.fluent;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.utils.ClassLoaderUtil;
 
-public interface ExecutableBuilder extends TimeFluent<ExecutableBuilder>, ContextFluent<ExecutableBuilder, ExecutableBuilder> {
+public interface ExecutableBuilder extends TimeFluent<ExecutableBuilder>,
+                                           ContextFluent<ExecutableBuilder, ExecutableBuilder> {
 
     KieContainerFluent getKieContainer(ReleaseId releaseId);
 
@@ -30,7 +32,9 @@ public interface ExecutableBuilder extends TimeFluent<ExecutableBuilder>, Contex
 
     static ExecutableBuilder create() {
         try {
-            return (ExecutableBuilder) Class.forName( "org.drools.core.fluent.impl.ExecutableBuilderImpl" ).newInstance();
+            return (ExecutableBuilder) ClassLoaderUtil.getClassLoader(null, null, true)
+                    .loadClass("org.drools.core.fluent.impl.ExecutableBuilderImpl")
+                    .newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Unable to instance ExecutableRunner", e);
         }

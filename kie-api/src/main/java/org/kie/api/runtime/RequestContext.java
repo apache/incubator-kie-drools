@@ -21,10 +21,13 @@ import java.util.Map;
 import org.kie.api.KieBase;
 
 public interface RequestContext extends Context {
+
     Object getResult();
+
     void setResult(Object result);
 
     RequestContext with(KieBase kieBase);
+
     RequestContext with(KieSession kieSession);
 
     Context getConversationContext();
@@ -37,13 +40,22 @@ public interface RequestContext extends Context {
 
     void removeOutput(String identifier);
 
+    @SuppressWarnings("unchecked")
+    default <T> T getOutput(String identifier) {
+        return (T) getOutputs().get(identifier);
+    }
+
+    default boolean hasOutput(String identifier) {
+        return getOutputs().containsKey(identifier);
+    }
+
     static RequestContext create() {
         return create(RequestContext.class.getClassLoader());
     }
-    
+
     static RequestContext create(ClassLoader classLoader) {
         try {
-            return (RequestContext) Class.forName( "org.drools.core.command.RequestContextImpl", true, classLoader ).newInstance();
+            return (RequestContext) Class.forName("org.drools.core.command.RequestContextImpl", true, classLoader).newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Unable to instance RequestContext", e);
         }
