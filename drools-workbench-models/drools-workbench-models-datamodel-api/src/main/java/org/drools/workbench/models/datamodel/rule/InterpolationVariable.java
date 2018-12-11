@@ -15,61 +15,67 @@
  */
 package org.drools.workbench.models.datamodel.rule;
 
+import java.util.Objects;
+
 public class InterpolationVariable {
 
     private String varName;
     private String dataType;
     private String factType;
     private String factField;
+    private String operator;
 
     public InterpolationVariable() {
         //For Errai marshalling...
     }
 
-    public InterpolationVariable( String varName,
-                                  String dataType ) {
+    public InterpolationVariable(String varName,
+                                 String dataType) {
         this.varName = varName;
         this.dataType = dataType;
     }
 
-    public InterpolationVariable( String varName,
-                                  String dataType,
-                                  String factType,
-                                  String factField ) {
+    public InterpolationVariable(String varName,
+                                 String dataType,
+                                 String factType,
+                                 String factField) {
         this.varName = varName;
         this.dataType = dataType;
         this.factType = factType;
         this.factField = factField;
     }
 
-    private boolean equalOrNull( Object lhs,
-                                 Object rhs ) {
-        if ( lhs == null && rhs == null ) {
-            return true;
-        }
-        if ( lhs != null && rhs == null ) {
-            return false;
-        }
-        if ( lhs == null && rhs != null ) {
-            return false;
-        }
-        return lhs.equals( rhs );
+    public InterpolationVariable(String varName,
+                                 String dataType,
+                                 String factType,
+                                 String factField,
+                                 String operator) {
+        this.varName = varName;
+        this.dataType = dataType;
+        this.factType = factType;
+        this.factField = factField;
+        this.operator = operator;
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( obj == null ) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if ( !( obj instanceof InterpolationVariable ) ) {
+        if (!(obj instanceof InterpolationVariable)) {
             return false;
         }
         InterpolationVariable that = (InterpolationVariable) obj;
-        return equalOrNull( this.varName,
-                            that.varName ) && equalOrNull( this.dataType,
-                                                           that.dataType ) && equalOrNull( this.factType,
-                                                                                           that.factType ) && equalOrNull( this.factField,
-                                                                                                                           that.factField );
+        return Objects.equals(this.varName,
+                              that.varName)
+                && Objects.equals(this.dataType,
+                                  that.dataType)
+                && Objects.equals(this.factType,
+                                  that.factType)
+                && Objects.equals(this.factField,
+                                  that.factField)
+                && Objects.equals(this.operator,
+                                  that.operator);
     }
 
     public String getDataType() {
@@ -80,37 +86,46 @@ public class InterpolationVariable {
         return factField;
     }
 
+    public void setFactField(String factField) {
+        this.factField = factField;
+    }
+
     public String getFactType() {
         return factType;
+    }
+
+    public void setFactType(String factType) {
+        this.factType = factType;
     }
 
     public String getVarName() {
         return varName;
     }
 
-    @Override
-    public int hashCode() {
-        int result = ( varName == null ? 1 : varName.hashCode() );
-        result = ~~result;
-        result = result + 31 * ( dataType == null ? 7 : dataType.hashCode() );
-        result = ~~result;
-        result = result + 31 * ( factType == null ? 7 : factType.hashCode() );
-        result = ~~result;
-        result = result + 31 * ( factField == null ? 7 : factField.hashCode() );
-        result = ~~result;
-        return result;
-    }
-
-    public void setFactField( String factField ) {
-        this.factField = factField;
-    }
-
-    public void setFactType( String factType ) {
-        this.factType = factType;
-    }
-
-    public void setVarName( String varName ) {
+    public void setVarName(String varName) {
         this.varName = varName;
     }
 
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (varName == null ? 1 : varName.hashCode());
+        result = ~~result;
+        result = result + 31 * (dataType == null ? 7 : dataType.hashCode());
+        result = ~~result;
+        result = result + 31 * (factType == null ? 7 : factType.hashCode());
+        result = ~~result;
+        result = result + 31 * (factField == null ? 7 : factField.hashCode());
+        result = ~~result;
+        result = result + 31 * (operator == null ? 7 : operator.hashCode());
+        result = ~~result;
+        return result;
+    }
 }
