@@ -258,7 +258,8 @@ public class RuleModelVisitor {
         InterpolationVariable var = new InterpolationVariable(sfc.getValue(),
                                                               sfc.getFieldType(),
                                                               (factPattern == null ? "" : factPattern.getFactType()),
-                                                              sfc.getFieldName());
+                                                              sfc.getFieldName(),
+                                                              sfc.getOperator());
         if (BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey(var)) {
             vars.put(var,
                      vars.size());
