@@ -25,38 +25,46 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 
+/**
+ * A package containing BPM processes
+ */
 public class ProcessPackage implements ResourceTypePackage<Process> {
 
-    private final Map<String, Process> ruleFlows = new HashMap<>();
-    private final ResourceType resourceType;
-
-    public ProcessPackage(ResourceType resourceType) {
-        this.resourceType = resourceType;
+    public static ProcessPackage getOrCreate(ResourceTypePackageRegistry rtps) {
+        ProcessPackage rtp = (ProcessPackage) rtps.get(ResourceType.BPMN2);
+        if (rtp == null) {
+            rtp = new ProcessPackage();
+            // register the same instance for all types. There is no distinction
+            rtps.put(ResourceType.BPMN2, rtp);
+            rtps.put(ResourceType.DRF, rtp);
+            rtps.put(ResourceType.CMMN, rtp);
+        }
+        return rtp;
     }
+
+    private final Map<String, Process> ruleFlows = new HashMap<>();
 
     public Map<String, Process> getRuleFlows() {
         return this.ruleFlows;
     }
 
-    public void addProcess(Process process) {
-        this.ruleFlows.put(process.getId(), process);
-    }
-
+    /**
+     * The ResourceType for {@link ProcessPackage} is always BPMN2,
+     * but there is no distinction between DRF, and CMMN as they all live under
+     * the same package.
+     */
     @Override
     public ResourceType getResourceType() {
-        return this.resourceType;
-    }
-
-    public String getNamespace() {
-        return "$$PROCESS$$";
+        return ResourceType.BPMN2;
     }
 
     public Process lookup(String id) {
         return ruleFlows.get(id);
     }
 
+    @Override
     public void add(Process processedResource) {
-        getRuleFlows().put(processedResource.getId(), processedResource);
+        this.ruleFlows.put(processedResource.getId(), processedResource);
     }
 
     public Iterator<Process> iterator() {

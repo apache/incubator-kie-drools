@@ -481,11 +481,7 @@ public class KnowledgePackageImpl
      */
     public void addProcess(Process process) {
         ResourceTypePackageRegistry rtps = getResourceTypePackages();
-        ProcessPackage rtp = (ProcessPackage) rtps.get(ResourceType.BPMN2);
-        if (rtp == null) {
-            rtp = new ProcessPackage(ResourceType.BPMN2);
-            rtps.put(ResourceType.BPMN2, rtp);
-        }
+        ProcessPackage rtp = ProcessPackage.getOrCreate(rtps);
         rtp.add(process);
     }
 
