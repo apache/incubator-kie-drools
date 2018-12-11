@@ -20,11 +20,10 @@ import java.util.List;
 
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface ProcessBuilder {
 
     List<Process> addProcessFromXml(Resource resource) throws IOException;
 
-    List<KnowledgeBuilderResult> getErrors();
+    List<BaseKnowledgeBuilderResultImpl> getErrors();
 }
