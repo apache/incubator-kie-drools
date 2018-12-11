@@ -174,6 +174,7 @@
           <artifactId>findbugs-maven-plugin</artifactId>
           <configuration>
             <excludeFilterFile>${project.basedir}/src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
+            <maxHeap>1024</maxHeap> <!-- MB -->
           </configuration>
         </plugin>
         <plugin>
