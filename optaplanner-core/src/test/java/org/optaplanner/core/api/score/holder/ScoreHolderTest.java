@@ -42,14 +42,14 @@ public class ScoreHolderTest {
     }
 
     private ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new AbstractScoreHolder(constraintMatchEnabled, SimpleScore.ZERO) {
+        return new AbstractScoreHolder<SimpleScore>(constraintMatchEnabled, SimpleScore.ZERO) {
             @Override
-            public Score<?> extractScore(int initScore) {
+            public SimpleScore extractScore(int initScore) {
                 return SimpleScore.of(0);
             }
 
             @Override
-            public void configureConstraintWeight(org.kie.api.definition.rule.Rule rule, Score constraintWeight) {
+            public void configureConstraintWeight(org.kie.api.definition.rule.Rule rule, SimpleScore constraintWeight) {
                 throw new UnsupportedOperationException();
             }
         };
