@@ -87,7 +87,7 @@ public class ExecutionFrameImpl
 
     @Override
     public void setValue(String symbol, Object value) {
-        this.variables.put( EvalHelper.normalizeVariableName( symbol ), value );
+        this.variables.put( symbol, value );
     }
 
     @Override

@@ -41,6 +41,7 @@ import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
+import org.kie.dmn.feel.util.EvalHelper;
 
 /**
  * Language runtime entry point
@@ -78,7 +79,7 @@ public class FEELImpl
         Map<String, FEELFunction> functions = new HashMap<>();
         for (FEELProfile p : profiles) {
             for (FEELFunction f : p.getFEELFunctions()) {
-                frame.setValue(f.getName(), f);
+                frame.setValue( EvalHelper.normalizeVariableName( f.getName() ), f);
                 functions.put(f.getName(), f);
             }
         }

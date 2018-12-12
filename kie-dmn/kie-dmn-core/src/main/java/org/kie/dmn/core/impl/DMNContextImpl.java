@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class DMNContextImpl implements DMNContext {
     private static final String DEFAULT_IDENT = "    ";
@@ -39,12 +40,12 @@ public class DMNContextImpl implements DMNContext {
 
     @Override
     public Object set(String name, Object value) {
-        return getCurrentEntries().put(name, value);
+        return getCurrentEntries().put( EvalHelper.normalizeVariableName( name ), value);
     }
 
     @Override
     public Object get(String name) {
-        return getCurrentEntries().get(name);
+        return getCurrentEntries().get( EvalHelper.normalizeVariableName( name ) );
     }
 
     private Map<String, Object> getCurrentEntries() {
