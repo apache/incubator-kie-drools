@@ -31,16 +31,18 @@ public final class DMNRuntimeEventManagerUtils {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventManagerUtils.class );
 
-    public static void fireBeforeEvaluateDecision( DMNRuntimeEventManager eventManager, DecisionNode decision, DMNResult result) {
+    public static BeforeEvaluateDecisionEvent fireBeforeEvaluateDecision(DMNRuntimeEventManager eventManager, DecisionNode decision, DMNResult result) {
         if( eventManager.hasListeners() ) {
             BeforeEvaluateDecisionEvent event = new BeforeEvaluateDecisionEventImpl( decision, result );
             notifyListeners( eventManager, l -> l.beforeEvaluateDecision( event ) );
+            return event;
         }
+        return null;
     }
 
-    public static void fireAfterEvaluateDecision( DMNRuntimeEventManager eventManager, DecisionNode decision, DMNResult result) {
+    public static void fireAfterEvaluateDecision( DMNRuntimeEventManager eventManager, DecisionNode decision, DMNResult result, BeforeEvaluateDecisionEvent beforeEvaluateDecisionEvent) {
         if( eventManager.hasListeners() ) {
-            AfterEvaluateDecisionEvent event = new AfterEvaluateDecisionEventImpl(decision, result);
+            AfterEvaluateDecisionEvent event = new AfterEvaluateDecisionEventImpl(decision, result, beforeEvaluateDecisionEvent);
             notifyListeners(eventManager, l -> l.afterEvaluateDecision(event));
         }
     }
