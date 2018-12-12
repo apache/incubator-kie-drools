@@ -45,7 +45,7 @@ public class DMNContextImpl implements DMNContext {
 
     @Override
     public Object get(String name) {
-        return getCurrentEntries().get( EvalHelper.normalizeVariableName( name ) );
+        return getCurrentEntries().get( name );
     }
 
     private Map<String, Object> getCurrentEntries() {
