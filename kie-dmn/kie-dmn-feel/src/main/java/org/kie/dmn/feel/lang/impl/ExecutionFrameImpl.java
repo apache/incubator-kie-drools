@@ -27,11 +27,17 @@ public class ExecutionFrameImpl
 
     private ExecutionFrame parentFrame;
 
-    private Map<String, Object> variables = new HashMap<>();
+    private Map<String, Object> variables;
     private Object rootObject;
 
     public ExecutionFrameImpl(ExecutionFrame parentFrame) {
         this.parentFrame = parentFrame;
+        this.variables = new HashMap<>();
+    }
+
+    public ExecutionFrameImpl(ExecutionFrame parentFrame, int size) {
+        this.parentFrame = parentFrame;
+        this.variables = new HashMap<>(size);
     }
 
     public ExecutionFrame getParentFrame() {

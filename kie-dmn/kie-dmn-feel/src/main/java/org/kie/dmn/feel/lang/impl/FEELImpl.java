@@ -176,7 +176,7 @@ public class FEELImpl
      */
     public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
-        EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager);
+        EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager, inputVariables.size());
         if (customFrame.isPresent()) {
             ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
             ExecutionFrameImpl interveawedFrame = customFrame.get();
