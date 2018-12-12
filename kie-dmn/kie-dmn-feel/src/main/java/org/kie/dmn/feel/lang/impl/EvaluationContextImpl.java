@@ -45,12 +45,16 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager) {
+        this(cl, eventsManager, 32);
+    }
+
+    public EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, int size) {
         this(cl, eventsManager, new ArrayDeque<>());
         // we create a rootFrame to hold all the built in functions
         push( RootExecutionFrame.INSTANCE );
         // and then create a global frame to be the starting frame
         // for function evaluation
-        ExecutionFrameImpl global = new ExecutionFrameImpl( RootExecutionFrame.INSTANCE );
+        ExecutionFrameImpl global = new ExecutionFrameImpl(RootExecutionFrame.INSTANCE, size);
         push( global );
     }
 
@@ -58,6 +62,7 @@ public class EvaluationContextImpl implements EvaluationContext {
         this(dmnRuntime.getRootClassLoader(), eventsManager);
         this.dmnRuntime = dmnRuntime;
     }
+
 
     @Override
     public EvaluationContext current() {
@@ -149,10 +154,11 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public Map<String, Object> getAllValues() {
-        Map<String, Object> values = new HashMap<>(  );
         if (stack.peek().getRootObject() != null) {
             throw new RuntimeException();
         }
+        int initialCapacity = (stack.peek().getAllValues().size() + stack.peekLast().getAllValues().size()) * 2;
+        Map<String, Object> values = new HashMap<>(initialCapacity);
         Iterator<ExecutionFrame> it = stack.descendingIterator();
         while ( it.hasNext() ) {
             values.putAll( it.next().getAllValues() );
