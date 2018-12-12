@@ -106,7 +106,11 @@ public class EvalHelper {
                 space = false;
             }
         }
-        return target == null ? name : new String(target, 0, pos);
+
+        if (target != null) {
+            return new String(target, 0, pos);
+        }
+        return space ? name.substring( 0, size-1 ) : name;
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
