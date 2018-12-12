@@ -34,7 +34,7 @@ import org.kie.internal.command.RegistryContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class SetDMNActiveModelCommandTest {
+public class GetDMNModelCommandTest {
 
     static KieServices ks;
     static ReleaseId releaseId;
@@ -63,34 +63,34 @@ public class SetDMNActiveModelCommandTest {
     public void execute() {
         String namespace = "http://www.trisotech.com/definitions/_99ccd4df-41ac-43c3-a563-d58f43149829";
         String modelName = "typecheck in DT";
-        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(namespace, modelName);
+        GetDMNModelCommand getDMNModelCommand = new GetDMNModelCommand(namespace, modelName);
 
         try {
-            setDMNActiveModelCommand.execute(registryContext);
+            getDMNModelCommand.execute(registryContext);
             fail();
         } catch (IllegalStateException ignored) {
 
         }
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
-        DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);
+        DMNModel dmnModel = getDMNModelCommand.execute(registryContext);
         assertEquals(namespace, dmnModel.getNamespace());
         assertEquals(modelName, dmnModel.getName());
     }
 
     @Test
     public void executeWithResource() {
-        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(resource.getSourcePath());
+        GetDMNModelCommand getDMNModelCommand = new GetDMNModelCommand(resource.getSourcePath());
 
         try {
-            setDMNActiveModelCommand.execute(registryContext);
+            getDMNModelCommand.execute(registryContext);
             fail();
         } catch (IllegalStateException ignored) {
 
         }
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
-        DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);
+        DMNModel dmnModel = getDMNModelCommand.execute(registryContext);
         assertEquals(resource.getSourcePath(), dmnModel.getResource().getSourcePath());
     }
 }

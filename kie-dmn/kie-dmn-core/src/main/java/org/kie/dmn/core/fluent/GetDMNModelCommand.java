@@ -18,23 +18,19 @@ package org.kie.dmn.core.fluent;
 
 import org.kie.api.runtime.Context;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.internal.command.RegistryContext;
 
-public class SetDMNActiveModelCommand extends AbstractDMNModelCommand {
+public class GetDMNModelCommand extends AbstractDMNModelCommand {
 
-    public SetDMNActiveModelCommand(String namespace, String modelName) {
+    public GetDMNModelCommand(String namespace, String modelName) {
         super(namespace, modelName);
     }
 
-    public SetDMNActiveModelCommand(String resourcePath) {
+    public GetDMNModelCommand(String resourcePath) {
         super(resourcePath);
     }
 
     @Override
     public DMNModel execute(Context context) {
-        RegistryContext registryContext = (RegistryContext) context;
-        DMNModel activeModel = getDMNModel(context);;
-        registryContext.register(DMNModel.class, activeModel);
-        return activeModel;
+        return getDMNModel(context);
     }
 }
