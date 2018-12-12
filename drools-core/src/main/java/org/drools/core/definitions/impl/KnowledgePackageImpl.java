@@ -261,6 +261,7 @@ public class KnowledgePackageImpl
         out.writeObject(this.entryPointsIds);
         out.writeObject(this.windowDeclarations);
         out.writeObject(this.traitRegistry);
+        out.writeObject(this.resourceTypePackages);
         // writing the whole stream as a byte array
         if (!isDroolsStream) {
             bytes.flush();
@@ -307,6 +308,7 @@ public class KnowledgePackageImpl
         this.entryPointsIds = (Set<String>) in.readObject();
         this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
         this.traitRegistry = (TraitRegistry) in.readObject();
+        this.resourceTypePackages = (ResourceTypePackageRegistry) in.readObject();
 
         in.setStore(null);
 

@@ -17,17 +17,17 @@
 
 package org.drools.core.definitions;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
-public class ResourceTypePackageRegistry {
+public class ResourceTypePackageRegistry implements Serializable {
 
     private final Map<ResourceType, ResourceTypePackage<?>> packages = new HashMap<>();
 

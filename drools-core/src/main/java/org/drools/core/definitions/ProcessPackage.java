@@ -30,6 +30,10 @@ import org.kie.api.io.ResourceType;
  */
 public class ProcessPackage implements ResourceTypePackage<Process> {
 
+    /**
+     * Finds or creates and registers a package in the given registry instance
+     * @return the package that has been found
+     */
     public static ProcessPackage getOrCreate(ResourceTypePackageRegistry rtps) {
         ProcessPackage rtp = (ProcessPackage) rtps.get(ResourceType.BPMN2);
         if (rtp == null) {
