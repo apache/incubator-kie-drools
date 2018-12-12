@@ -97,7 +97,7 @@ KieContainer kieContainer = kieServices.getKieClasspathContainer();
 +
 [source,java]
 ----
-DMNRuntime dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+DMNRuntime dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
 
 String namespace = "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a";
 String modelName = "dmn-movieticket-ageclassification";
