@@ -43,6 +43,8 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.feel.util.EvalHelper;
 
+import static org.kie.dmn.feel.util.EvalHelper.normalizeInputVariables;
+
 /**
  * Language runtime entry point
  */
@@ -156,7 +158,7 @@ public class FEELImpl
     @Override
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
         CompiledFEELExpression e = (CompiledFEELExpression) expr;
-        return e.apply(newEvaluationContext(Collections.EMPTY_SET, inputVariables));
+        return e.apply(newEvaluationContext(Collections.EMPTY_SET, normalizeInputVariables( inputVariables )));
     }
     
     @Override

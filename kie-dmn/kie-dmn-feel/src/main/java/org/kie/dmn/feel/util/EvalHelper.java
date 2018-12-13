@@ -28,6 +28,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalQueries;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -43,6 +44,8 @@ import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toList;
 
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
@@ -74,6 +77,24 @@ public class EvalHelper {
             }
         }
         return new String(target, 0, pos);
+    }
+
+    public static <T> T normalizeInputVariables(T input) {
+        if ( input instanceof Map ) {
+            Map<String, Object> map = (( Map<String, Object> ) input);
+            Map<String, Object> normalizedMap = new HashMap<>( map.size() );
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                normalizedMap.put( normalizeVariableName( entry.getKey() ), normalizeInputVariables( entry.getValue() ) );
+            }
+            return ( T ) normalizedMap;
+        }
+        if ( input instanceof Collection ) {
+            return ( T ) (( Collection ) input).stream().map( EvalHelper::normalizeInputVariables ).collect( toList() );
+        }
+        if ( input instanceof Object[] ) {
+            return ( T ) Stream.of( (( Object[] ) input)).map( EvalHelper::normalizeInputVariables ).collect( toList() );
+        }
+        return input;
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
