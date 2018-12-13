@@ -57,23 +57,60 @@ public class EvalHelper {
         // Check org.drools.benchmarks.dmn.runtime.DMNEvaluateDecisionNameLengthBenchmark
 
         int pos = 0, size = name.length();
-        char[] target = new char[size];
+        char[] target = null;
         boolean space = false;
 
-        for (int i = 0; i < size; i++) {
+        int i = 1;
+        int firstChar = name.charAt(0);
+        if (Character.isSpaceChar(firstChar) || Character.isWhitespace(firstChar)) {
+            for (; i < size; i++) {
+                char c = name.charAt(i);
+                if (!Character.isSpaceChar(c) && !Character.isWhitespace(c)) {
+                    break;
+                }
+            }
+            target = new char[size-i];
+        } else {
+            pos++;
+        }
+
+        for (; i < size; i++) {
             char c = name.charAt(i);
             // need to check for both non-breaking spaces and control characters, like the original regex does
-            if (Character.isSpaceChar(c) || Character.isWhitespace(c)) {
-               space = true;
-            } else {
-                if (space && pos != 0) {
-                    target[pos++] = ' ';
+            if (c == ' ') {
+                if (space && target == null) {
+                    target = new char[size];
+                    System.arraycopy( name.toCharArray(), 0, target, 0, pos );
                 }
-                target[pos++] = c;
+                space = true;
+            } else if (Character.isSpaceChar(c) || Character.isWhitespace(c)) {
+                if (target == null) {
+                    target = new char[size];
+                    System.arraycopy( name.toCharArray(), 0, target, 0, pos );
+                }
+                space = true;
+            } else {
+                if (space) {
+                    if (target != null) {
+                        target[pos++] = ' ';
+                        target[pos++] = c;
+                    } else {
+                        pos += 2;
+                    }
+                } else {
+                    if (target != null) {
+                        target[pos] = c;
+                    }
+                    pos++;
+                }
                 space = false;
             }
         }
-        return new String(target, 0, pos);
+
+        if (target != null) {
+            return new String(target, 0, pos);
+        }
+        return space ? name.substring( 0, size-1 ) : name;
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
