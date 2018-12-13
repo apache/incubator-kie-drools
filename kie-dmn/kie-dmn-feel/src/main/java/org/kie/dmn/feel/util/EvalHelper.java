@@ -56,6 +56,10 @@ public class EvalHelper {
         // The above code was refactored for performance reasons
         // Check org.drools.benchmarks.dmn.runtime.DMNEvaluateDecisionNameLengthBenchmark
 
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+
         int pos = 0, size = name.length();
         char[] target = null;
         boolean space = false;
