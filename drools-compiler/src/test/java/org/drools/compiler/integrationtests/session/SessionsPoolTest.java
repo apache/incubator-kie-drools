@@ -275,8 +275,12 @@ public class SessionsPoolTest {
             ksession.dispose();
         }
         ksession = pool.newKieSession();
-        Assertions.assertThat(ksession.getAgendaEventListeners()).hasSize(0);
-        Assertions.assertThat(ksession.getRuleRuntimeEventListeners()).hasSize(0);
-        Assertions.assertThat(((EventSupport) ksession).getRuleEventSupport().getEventListeners()).hasSize(0);
+        try {
+            Assertions.assertThat(ksession.getAgendaEventListeners()).hasSize(0);
+            Assertions.assertThat(ksession.getRuleRuntimeEventListeners()).hasSize(0);
+            Assertions.assertThat(((EventSupport) ksession).getRuleEventSupport().getEventListeners()).hasSize(0);
+        } finally {
+            ksession.dispose();
+        }
     }
 }
