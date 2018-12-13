@@ -25,7 +25,7 @@ public class BeforeEvaluateDecisionEventImpl
 
     private DecisionNode  decision;
     private DMNResult     result;
-    private Object        metadata;
+    private long          timestamp;
 
     public BeforeEvaluateDecisionEventImpl(DecisionNode decision, DMNResult result) {
         this.decision = decision;
@@ -42,12 +42,12 @@ public class BeforeEvaluateDecisionEventImpl
         return this.result;
     }
 
-    public Object getMetadata() {
-        return metadata;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setMetadata(Object metadata) {
-        this.metadata = metadata;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
