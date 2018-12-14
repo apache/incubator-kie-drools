@@ -62,6 +62,6 @@ public abstract class AbstractDMNModelCommand implements ExecutableCommand<DMNMo
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Cannot find a DMN model with resource=" + resourcePath));
         }
-        throw new IllegalStateException("This should not happen");
+        throw new IllegalStateException("Both resourcePath and namespace+modelName are not set, this should not happen");
     }
 }

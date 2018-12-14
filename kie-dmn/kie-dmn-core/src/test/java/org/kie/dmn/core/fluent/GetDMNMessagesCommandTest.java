@@ -26,8 +26,8 @@ import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.internal.command.RegistryContext;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class GetDMNMessagesCommandTest {
 
@@ -36,12 +36,10 @@ public class GetDMNMessagesCommandTest {
         RegistryContext registryContext = new ContextImpl();
         GetDMNMessagesCommand getDMNMessagesCommand = new GetDMNMessagesCommand();
 
-        try {
-            getDMNMessagesCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
+        assertThatThrownBy(() -> getDMNMessagesCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("There is no DMNResult available");
 
-        }
         DMNResultImpl dmnResult = new DMNResultImpl(null);
         dmnResult.setContext(new DMNContextImpl());
 

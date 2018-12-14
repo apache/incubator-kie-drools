@@ -31,8 +31,8 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.internal.command.RegistryContext;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class SetDMNActiveModelCommandTest {
 
@@ -65,12 +65,10 @@ public class SetDMNActiveModelCommandTest {
         String modelName = "typecheck in DT";
         SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(namespace, modelName);
 
-        try {
-            setDMNActiveModelCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
+        assertThatThrownBy(() -> setDMNActiveModelCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("There is no DMNRuntime available");
 
-        }
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
         DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);
@@ -82,12 +80,10 @@ public class SetDMNActiveModelCommandTest {
     public void executeWithResource() {
         SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(resource.getSourcePath());
 
-        try {
-            setDMNActiveModelCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
+        assertThatThrownBy(() -> setDMNActiveModelCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("There is no DMNRuntime available");
 
-        }
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
         DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);
