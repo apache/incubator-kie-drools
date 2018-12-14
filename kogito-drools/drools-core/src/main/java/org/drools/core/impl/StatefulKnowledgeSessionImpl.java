@@ -1087,6 +1087,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.globalResolver.clear();
         this.kieBaseEventListeners.clear();
+        this.ruleRuntimeEventSupport.clear();
+        this.ruleEventListenerSupport.clear();
+        this.agendaEventSupport.clear();
+
         this.handleFactory.clear( 0, 0 );
         this.propagationIdCounter.set(0);
         this.opCounter.set(0);
