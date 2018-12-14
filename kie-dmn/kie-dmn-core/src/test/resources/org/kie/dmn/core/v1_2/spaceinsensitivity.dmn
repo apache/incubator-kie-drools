@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/dmn/definitions/_abd715a0-c39f-4232-9b08-53eff5232d82" id="_abd715a0-c39f-4232-9b08-53eff5232d82" namespace="http://www.trisotech.com/dmn/definitions/_abd715a0-c39f-4232-9b08-53eff5232d82"          exporter="DMN Modeler" exporterVersion="6.1.16" name="Drawing 1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tPerson" label="tPerson">
+        <semantic:itemComponent id="_36398633-2267-464f-9b3a-6df8c2734248" name="first name">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_8ab6045c-c029-4411-98b6-b5aa70694510" name="my person">
+        <semantic:variable name="my person" id="_5964ea3a-b3ab-4534-a15b-313912e98d7a" typeRef="tPerson"/>
+    </semantic:inputData>
+    <semantic:decision id="_9a4d1a14-1b42-43e3-ab1b-50d517bde1c8" name="my decision">
+        <semantic:variable name="my decision" id="_9dc0fa2a-c945-4949-b406-210497e9d1c0" typeRef="string"/>
+        <semantic:informationRequirement id="_ce648a60-367a-4548-a0c0-bc49ba86c71f">
+            <semantic:requiredInput href="#_8ab6045c-c029-4411-98b6-b5aa70694510"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_5f63d144-0d61-49bc-a660-24296d0df741" typeRef="string" triso:expressionId="_6adc2969-f4ae-458b-b9f1-559ee9a8dde2">
+            <semantic:text>"Hello, " + my person.first name</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_8ef65e3a-d3b8-4e86-9098-7753fc8c2ae5" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_e847df59-d486-41ee-89ac-0e0e78edf995" dmnElementRef="_8ab6045c-c029-4411-98b6-b5aa70694510">
+                <dc:Bounds x="265.7588291168213" y="247.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_abd715a0-c39f-4232-9b08-53eff5232d82_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="284.9968013763428" y="270.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_1ddfbbf4-02ea-4a82-ab94-91b3ed65861b" dmnElementRef="_9a4d1a14-1b42-43e3-ab1b-50d517bde1c8">
+                <dc:Bounds x="257" y="132.99999618530273" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_abd715a0-c39f-4232-9b08-53eff5232d82_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="260" y="156.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_24569cb3-249c-4a01-896a-b00b27a1db68" dmnElementRef="_ce648a60-367a-4548-a0c0-bc49ba86c71f">
+                <di:waypoint x="333.4968013763428" y="247.99999618530273"/>
+                <di:waypoint x="333.5" y="192.99999618530273"/>
+                <dmndi:DMNLabel sharedStyle="LS_abd715a0-c39f-4232-9b08-53eff5232d82_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_abd715a0-c39f-4232-9b08-53eff5232d82_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
