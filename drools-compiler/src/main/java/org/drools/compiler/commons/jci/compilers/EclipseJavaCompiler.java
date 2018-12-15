@@ -276,7 +276,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                         return null;
                     }
 
-                    if ( ClassUtils.isWindows() || ClassUtils.isOSX() ) {
+                    if ( ClassUtils.isCaseSenstiveOS() ) {
                         // check it really is a class, this issue is due to windows case sensitivity issues for the class org.kie.Process and path org/droosl/process
                         try {
                             pClassLoader.loadClass( pClazzName );

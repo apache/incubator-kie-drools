@@ -15,6 +15,12 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,15 +36,25 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_FINAL;
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.GOTO;
+import static org.mvel2.asm.Opcodes.ICONST_0;
+import static org.mvel2.asm.Opcodes.IFNE;
+import static org.mvel2.asm.Opcodes.IFNULL;
+import static org.mvel2.asm.Opcodes.IF_ICMPLE;
+import static org.mvel2.asm.Opcodes.ILOAD;
+import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
+import static org.mvel2.asm.Opcodes.IRETURN;
+import static org.mvel2.asm.Opcodes.ISTORE;
 
 public final class GeneratorHelper {
 
@@ -89,8 +105,12 @@ public final class GeneratorHelper {
         return obj.getClass().getClassLoader();
     }
 
-    static ClassGenerator createInvokerClassGenerator(final InvokerStub stub, final WorkingMemory workingMemory) {
-        String className = stub.getPackageName() + "." + stub.getGeneratedInvokerClassName();
+    static ClassGenerator createInvokerClassGenerator(InvokerStub stub, WorkingMemory workingMemory) {
+        return createInvokerClassGenerator(stub, "", workingMemory);
+    }
+
+    static ClassGenerator createInvokerClassGenerator(InvokerStub stub, String classSuffix, WorkingMemory workingMemory) {
+        String className = stub.getPackageName() + "." + stub.getGeneratedInvokerClassName() + classSuffix;
         ClassLoader classLoader = getClassLoader(stub, workingMemory);
         return createInvokerClassGenerator(className, stub, classLoader, getTypeResolver(stub, workingMemory, classLoader));
     }
@@ -109,7 +129,7 @@ public final class GeneratorHelper {
                 mv.visitInsn(IRETURN);
             }
         })
-                .addMethod(ACC_PUBLIC, "getMethodBytecode", generator.methodDescr(List.class), new GetMethodBytecodeMethod(data))
+                .addMethod(ACC_PUBLIC, "getMethodBytecode", generator.methodDescr(String.class), new GetMethodBytecodeMethod(data))
                 .addMethod(ACC_PUBLIC, "equals", generator.methodDescr(Boolean.TYPE, Object.class), new EqualsMethod());
 
         return generator;
@@ -146,7 +166,7 @@ public final class GeneratorHelper {
             push(data.getPackageName());
             push(data.getMethodName());
             push(data.getInternalRuleClassName() + ".class");
-            invokeStatic(RuleImpl.class, "getMethodBytecode", List.class, Class.class, String.class, String.class, String.class, String.class);
+            invokeStatic(RuleImpl.class, "getMethodBytecode", String.class, Class.class, String.class, String.class, String.class, String.class);
             mv.visitInsn(ARETURN);
         }
     }
@@ -167,11 +187,11 @@ public final class GeneratorHelper {
             mv.visitInsn(IRETURN);
             mv.visitLabel(l2);
             mv.visitVarInsn(ALOAD, 0);
-            invokeThis("getMethodBytecode", List.class);
+            invokeThis("getMethodBytecode", String.class);
             mv.visitVarInsn(ALOAD, 1);
             cast(CompiledInvoker.class);
-            invokeInterface(CompiledInvoker.class, "getMethodBytecode", List.class);
-            invokeStatic(MethodComparator.class, "compareBytecode", Boolean.TYPE, List.class, List.class);
+            invokeInterface(CompiledInvoker.class, "getMethodBytecode", String.class);
+            invokeStatic(MethodComparator.class, "compareBytecode", Boolean.TYPE, String.class, String.class);
             // return MethodComparator.compareBytecode(getMethodBytecode(), ((CompiledInvoker)object).getMethodBytecode());
             mv.visitInsn(IRETURN);
         }

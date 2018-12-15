@@ -3912,7 +3912,6 @@ public class IncrementalCompilationTest {
     }
 
     @Test
-    @Ignore("requires mvel 2.4.3.Final")
     public void testArgumentRedefinitionInStaticInvocation() {
         // RHDM-709
         final String ARG1 = "package org.test;" +
