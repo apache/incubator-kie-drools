@@ -26,8 +26,6 @@ public class EvalHelperTest {
 
     @Test
     public void testNormalizeSpace() {
-        String HARD_SPACE = String.valueOf(((char) 160));
-
         assertNull(normalizeVariableName(null));
         assertEquals("", normalizeVariableName(""));
         assertEquals("", normalizeVariableName(" "));
@@ -45,9 +43,10 @@ public class EvalHelperTest {
         assertEquals("a", normalizeVariableName("  a  "));
         assertEquals("a b c", normalizeVariableName("  a  b   c  "));
         assertEquals("a b c", normalizeVariableName("a\t\f\r  b\u000B   c\n"));
-        assertEquals("a b c", normalizeVariableName("a\t\f\r  " + HARD_SPACE + HARD_SPACE + "b\u000B   c\n"));
+        assertEquals("a b c", normalizeVariableName("a\t\f\r  \u00A0\u00A0b\u000B   c\n"));
         assertEquals("b", normalizeVariableName(" b"));
         assertEquals("b", normalizeVariableName("b "));
         assertEquals("ab c", normalizeVariableName("ab c  "));
+        assertEquals("a b", normalizeVariableName("a\u00A0b"));
     }
 }
