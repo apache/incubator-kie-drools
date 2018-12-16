@@ -21,6 +21,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.jbpm.process.instance.command.UpdateTimerCommand;
 import org.jbpm.test.JbpmTestCase;
+import org.jbpm.test.listener.process.DefaultCountDownProcessEventListener;
 import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +43,8 @@ public class TimerUpdateTest extends JbpmTestCase {
     private static final String TIMER_FILE = "org/jbpm/test/functional/timer/UpdateTimer.bpmn2";
     private static final String PROCESS_NAME = "UpdateTimer";
     private static final String TIMER_NAME = "Timer";
+
+    private static final String TIMER_NO_NAME_FILE = "org/jbpm/test/functional/timer/UpdateTimerNoName.bpmn2";
 
     private static final String START_TIMER_FILE = "org/jbpm/test/functional/timer/UpdateStartTimer.bpmn2";
     private static final String START_PROCESS_NAME = "UpdateStartTimer";
@@ -125,6 +128,45 @@ public class TimerUpdateTest extends JbpmTestCase {
         kieSession.execute(new UpdateTimerCommand(id, TIMER_NAME, 3));
 
         countDownListener.waitTillCompleted();
+        Assertions.assertThat(timerHasFired()).isTrue();
+        long firedTime = timerFiredTime();
+        long timeDifference = Math.abs(firedTime - startTime - 3000);
+        logger.info("Start time: " + startTime + ", fired time: " + firedTime + ", difference: " + (firedTime-startTime));
+        Assertions.assertThat(timeDifference).isLessThan(500);
+
+        Assertions.assertThat(kieSession.getProcessInstance(id)).isNull();
+    }
+
+    @Test(timeout = 30000)
+    public void updateTimerWithoutNameTest() {
+        DefaultCountDownProcessEventListener listener = new DefaultCountDownProcessEventListener(1) {
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName() == null) {
+                    countDown();
+                }
+            }
+        };
+        //delay is set for 5s
+        setProcessScenario(TIMER_NO_NAME_FILE);
+
+        kieSession.addEventListener(listener);
+        final List<Long> list = new ArrayList<Long>();
+        kieSession.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+
+        Assertions.assertThat(list).isEmpty();
+        long id = kieSession.startProcess(PROCESS_NAME).getId();
+        long startTime = System.currentTimeMillis();
+        Assertions.assertThat(list).isNotEmpty();
+        //set delay to 3s
+        kieSession.execute(new UpdateTimerCommand(id, 1, 3));
+
+        listener.waitTillCompleted();
         Assertions.assertThat(timerHasFired()).isTrue();
         long firedTime = timerFiredTime();
         long timeDifference = Math.abs(firedTime - startTime - 3000);

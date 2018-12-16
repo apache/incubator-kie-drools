@@ -119,7 +119,7 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
         for (NodeInstance nodeInstance : wfp.getNodeInstances(true)) {
             if (nodeInstance instanceof TimerNodeInstance) {
                 TimerNodeInstance tni = (TimerNodeInstance) nodeInstance;
-                if (tni.getNodeName().equals(timerName) || tni.getTimerId() == timerId) {
+                if (tni.getTimerId() == timerId || (tni.getNodeName() != null && tni.getNodeName().equals(timerName))) {
                     TimerInstance timer = tm.getTimerMap().get(tni.getTimerId());
                     
                     TimerInstance newTimer = rescheduleTimer(timer, tm);
@@ -133,7 +133,7 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
             } else if (nodeInstance instanceof StateBasedNodeInstance) {
                 StateBasedNodeInstance sbni = (StateBasedNodeInstance) nodeInstance;
                 List<Long> timerList = sbni.getTimerInstances();
-                if (sbni.getNodeName().equals(timerName) || (timerList != null && timerList.contains(timerId))) {
+                if ((timerList != null && timerList.contains(timerId)) || (sbni.getNodeName() != null && sbni.getNodeName().equals(timerName))) {
                     
                     if (timerList != null && timerList.size() == 1) {
                         TimerInstance timer = tm.getTimerMap().get(timerList.get(0));
