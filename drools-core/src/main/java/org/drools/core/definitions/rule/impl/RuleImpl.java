@@ -173,7 +173,7 @@ public class RuleImpl implements Externalizable,
         out.writeObject( metaAttributes );
         out.writeObject( requiredDeclarations );
 
-        if ( this.consequence instanceof CompiledInvoker) {
+        if ( isCompiledInvoker( this.consequence ) ) {
             out.writeObject( null );
             out.writeObject( null );
         } else {
@@ -195,6 +195,14 @@ public class RuleImpl implements Externalizable,
         out.writeInt(ruleFlags);
 
         out.writeObject( ruleUnitClassName );
+    }
+
+    private static boolean isCompiledInvoker( Consequence consequence ) {
+        if ( consequence instanceof CompiledInvoker ) {
+            return true;
+        }
+
+        return consequence instanceof SafeConsequence && ( (SafeConsequence) consequence ).wrapsCompiledInvoker();
     }
 
     @SuppressWarnings("unchecked")
@@ -896,6 +904,10 @@ public class RuleImpl implements Externalizable,
                     return null;
                 }
             }, KiePolicyHelper.getAccessContext());
+        }
+
+        public boolean wrapsCompiledInvoker() {
+            return this.delegate instanceof CompiledInvoker;
         }
     }
 
