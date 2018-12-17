@@ -119,7 +119,7 @@ public final class ConstraintMatch implements Serializable, Comparable<Constrain
 
     @Override
     public String toString() {
-        return getIdentificationString() + "=" + getScore();
+        return getIdentificationString() + "=" + score;
     }
 
 }

@@ -185,7 +185,7 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
 
     @Override
     public String toString() {
-        return getConstraintId() + "=" + getScore();
+        return getConstraintId() + "=" + score;
     }
 
 }
