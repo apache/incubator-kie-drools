@@ -128,7 +128,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        if ( this.expression instanceof CompiledInvoker ) {
+        if ( isCompiledInvoker(this.expression) ) {
             out.writeObject( null );
         } else {
             out.writeObject( this.expression );
@@ -137,6 +137,14 @@ public class PredicateConstraint extends MutableTypeConstraint
         out.writeObject( this.previousDeclarations );
         out.writeObject( this.localDeclarations );
         out.writeObject( this.cloned );
+    }
+
+    private static boolean isCompiledInvoker(PredicateExpression expression) {
+        if ( expression instanceof CompiledInvoker ) {
+            return true;
+        }
+
+        return expression instanceof SafePredicateExpression && ( (SafePredicateExpression) expression ).wrapsCompiledInvoker();
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -413,6 +421,10 @@ public class PredicateConstraint extends MutableTypeConstraint
                     return delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, workingMemory, context);
                 }
             }, KiePolicyHelper.getAccessContext());
+        }
+
+        public boolean wrapsCompiledInvoker() {
+            return this.delegate instanceof CompiledInvoker;
         }
     }
 }
