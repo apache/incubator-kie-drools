@@ -886,13 +886,15 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                         List<ConstraintMatch> filteredConstraintMatchList = constraintMatchSet.stream()
                                 .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
                                 .collect(toList());
-                        Score sum = filteredConstraintMatchList.stream()
-                                .map(ConstraintMatch::getScore)
-                                .reduce(Score::add).orElse(HardSoftScore.ZERO);
+                        HardMediumSoftScore sum = filteredConstraintMatchList.stream()
+                                .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
+                                .reduce(HardMediumSoftScore::add)
+                                .orElse(HardMediumSoftScore.ZERO);
                         String justificationTalkCodes = filteredConstraintMatchList.stream()
                                 .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
                                 .filter(justification -> justification instanceof MeetingAssignment && justification != meetingAssignment)
-                                .distinct().map(o -> Long.toString(((MeetingAssignment) o).getMeeting().getId())).collect(joining(", "));
+                                .distinct().map(o -> Long.toString(((MeetingAssignment) o).getMeeting().getId()))
+                                .collect(joining(", "));
                         commentString.append("\n    ").append(sum.toShortString())
                                 .append(" for ").append(filteredConstraintMatchList.size())
                                 .append(" ").append(constraintName).append("s")

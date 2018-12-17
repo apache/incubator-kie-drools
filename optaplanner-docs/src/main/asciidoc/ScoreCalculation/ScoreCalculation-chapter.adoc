@@ -1262,21 +1262,22 @@ get the ``ConstraintMatchTotal``s from the ``ScoreDirector``:
 
 [source,java,options="nowrap"]
 ----
-for (ConstraintMatchTotal constraintMatchTotal : guiScoreDirector.getConstraintMatchTotals()) {
+Collection<ConstraintMatchTotal> constraintMatchTotals = guiScoreDirector.getConstraintMatchTotals();
+for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
     String constraintName = constraintMatchTotal.getConstraintName();
     // The score impact of that constraint
-    Score scoreTotal = constraintMatchTotal.getScoreTotal();
+    HardSoftScore totalScore = (HardSoftScore) constraintMatchTotal.getScore();
 
     for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
         List<Object> justificationList = constraintMatch.getJustificationList();
-        Score score = constraintMatch.getScore();
+        HardSoftScore score = (HardSoftScore) constraintMatch.getScore();
         ...
     }
 }
 ----
 
-Each `ConstraintMatchTotal` is one constraint (so  one score rule) and has a part of the overall score.
-The sum of `ConstraintMatchTotal.getScoreTotal()` equals the overall score.
+Each `ConstraintMatchTotal` represents one constraint (so one score rule) and has a part of the overall score.
+The sum of all the `ConstraintMatchTotal.getScore()` equals to the overall score.
 
 [NOTE]
 ====
@@ -1302,18 +1303,18 @@ for (CloudProcess process : cloudBalance.getProcessList()) {
         continue;
     }
     // The score impact of that planning entity
-    Score scoreTotal = indictment.getScoreTotal();
+    HardSoftScore totalScore = (HardSoftScore) indictment.getScore();
 
     for (ConstraintMatch constraintMatch : indictment.getConstraintMatchSet()) {
         String constraintName = constraintMatch.getConstraintName();
-        Score score = constraintMatch.getScore();
+        HardSoftScore score = (HardSoftScore) constraintMatch.getScore();
         ...
     }
 }
 ----
 
 Each `Indictment` is the sum of all constraints where that justification object is involved with.
-The sum of `Indictment.getScoreTotal()` differs from the overall score,
+The sum of all the `Indictment.getScoreTotal()` differs from the overall score,
 because multiple ``Indictment``s can share the same `ConstraintMatch`.
 
 [NOTE]

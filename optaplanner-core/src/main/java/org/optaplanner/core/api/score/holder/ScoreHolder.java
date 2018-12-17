@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
  * @param <Score_> the {@link Score} type
  * @see AbstractScoreHolder
  */
-public interface ScoreHolder<Score_ extends Score> {
+public interface ScoreHolder<Score_ extends Score<Score_>> {
 
     /**
      * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.

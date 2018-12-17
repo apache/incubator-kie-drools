@@ -26,6 +26,7 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
 import static org.mockito.Mockito.*;
@@ -36,7 +37,7 @@ public abstract class AbstractScoreHolderTest {
     protected final static Object OTHER_JUSTIFICATION = new Object();
     protected final static Object UNDO_JUSTIFICATION = new Object();
 
-    private static interface TestModedAssertion extends ModedAssertion<TestModedAssertion> {
+    private interface TestModedAssertion extends ModedAssertion<TestModedAssertion> {
     }
 
     protected RuleContext mockRuleContext(String ruleName, Object... justifications) {
@@ -85,7 +86,7 @@ public abstract class AbstractScoreHolderTest {
         agendaItem.getCallback().run();
     }
 
-    protected ConstraintMatchTotal findConstraintMatchTotal(ScoreHolder scoreHolder, String ruleName) {
+    protected ConstraintMatchTotal findConstraintMatchTotal(ScoreHolder<?> scoreHolder, String ruleName) {
         Collection<ConstraintMatchTotal> constraintMatchTotals = scoreHolder.getConstraintMatchTotals();
         Optional<ConstraintMatchTotal> first = constraintMatchTotals.stream()
                 .filter(constraintMatchTotal -> constraintMatchTotal.getConstraintName().equals(ruleName)).findFirst();

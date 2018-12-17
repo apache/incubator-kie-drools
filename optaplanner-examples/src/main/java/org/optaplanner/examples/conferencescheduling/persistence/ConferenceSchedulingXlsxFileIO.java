@@ -1489,7 +1489,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
 
         protected void nextTalkListCell(List<Talk> talkList, Function<Talk, String> stringFunction,
-                                        String[] filteredConstraintNames, Predicate<List<Object>> isValidJustificationList) {
+                String[] filteredConstraintNames, Predicate<List<Object>> isValidJustificationList) {
             nextTalkListCell(false, talkList, stringFunction, filteredConstraintNames, false, isValidJustificationList);
         }
 
@@ -1502,14 +1502,15 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
         }
 
         protected void nextTalkListCell(boolean unavailable, List<Talk> talkList, Function<Talk, String> stringFunction,
-                                        String[] filteredConstraintNames, boolean isPrintedView, Predicate<List<Object>> isValidJustificationList) {
+                String[] filteredConstraintNames, boolean isPrintedView, Predicate<List<Object>> isValidJustificationList) {
             List<String> filteredConstraintNameList = (filteredConstraintNames == null) ? null
                     : Arrays.asList(filteredConstraintNames);
             if (talkList == null) {
                 talkList = Collections.emptyList();
             }
             HardMediumSoftScore score = talkList.stream()
-                    .map(indictmentMap::get).filter(Objects::nonNull)
+                    .map(indictmentMap::get)
+                    .filter(Objects::nonNull)
                     .flatMap(indictment -> indictment.getConstraintMatchSet().stream())
                     // Filter out filtered constraints
                     .filter(constraintMatch -> filteredConstraintNameList == null
@@ -1565,9 +1566,10 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                                     .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName)
                                             && (isValidJustificationList == null || isValidJustificationList.test(constraintMatch.getJustificationList())))
                                     .collect(toList());
-                            Score sum = filteredConstraintMatchList.stream()
-                                    .map(ConstraintMatch::getScore)
-                                    .reduce(Score::add).orElse(HardMediumSoftScore.ZERO);
+                            HardMediumSoftScore sum = filteredConstraintMatchList.stream()
+                                    .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
+                                    .reduce(HardMediumSoftScore::add)
+                                    .orElse(HardMediumSoftScore.ZERO);
                             String justificationTalkCodes = filteredConstraintMatchList.stream()
                                     .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
                                     .filter(justification -> justification instanceof Talk && justification != talk)

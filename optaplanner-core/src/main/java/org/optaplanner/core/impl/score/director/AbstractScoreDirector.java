@@ -276,8 +276,12 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         StringBuilder scoreExplanation = new StringBuilder((constraintMatchTotals.size() + 4 + 2 * INDICTMENT_LIMIT) * 80);
         scoreExplanation.append("Explanation of score (").append(workingScore).append("):\n");
         scoreExplanation.append("    Constraint match totals:\n");
+        Comparator<ConstraintMatchTotal> constraintMatchTotalComparator
+                = Comparator.<ConstraintMatchTotal, Score>comparing(ConstraintMatchTotal::getScore);
+        Comparator<ConstraintMatch> constraintMatchComparator
+                = Comparator.<ConstraintMatch, Score>comparing(ConstraintMatch::getScore);
         constraintMatchTotals.stream()
-                .sorted(new ConstraintMatchTotalScoreComparator())
+                .sorted(constraintMatchTotalComparator)
                 .forEach(constraintMatchTotal -> {
                     Set<ConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
                     scoreExplanation
@@ -285,7 +289,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                             .append(": constraint (").append(constraintMatchTotal.getConstraintName())
                             .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
                     constraintMatchSet.stream()
-                            .sorted(constraintMatchScoreComparator).limit(CONSTRAINT_MATCH_LIMIT)
+                            .sorted(constraintMatchComparator)
+                            .limit(CONSTRAINT_MATCH_LIMIT)
                             .forEach(constraintMatch -> scoreExplanation
                                     .append("            ").append(constraintMatch.getScore().toShortString())
                                     .append(": justifications (").append(constraintMatch.getJustificationList())
@@ -298,8 +303,11 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         Collection<Indictment> indictments = getIndictmentMap().values();
         scoreExplanation.append("    Indictments (top ").append(INDICTMENT_LIMIT)
                 .append(" of ").append(indictments.size()).append("):\n");
+        Comparator<Indictment> indictmentComparator
+                = Comparator.<Indictment, Score>comparing(Indictment::getScore);
         indictments.stream()
-                .sorted(new IndictmentScoreComparator()).limit(INDICTMENT_LIMIT)
+                .sorted(indictmentComparator)
+                .limit(INDICTMENT_LIMIT)
                 .forEach(indictment -> {
                     Set<ConstraintMatch> constraintMatchSet = indictment.getConstraintMatchSet();
                     scoreExplanation
