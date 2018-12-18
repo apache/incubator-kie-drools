@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.decisiontable.parser;
 
@@ -39,10 +39,10 @@ public class RhsBuilder implements SourceBuilder {
 
     /**
      * @param boundVariable Pass in a bound variable if there is one.
-     * Any cells below then will be called as methods on it. 
+     * Any cells below then will be called as methods on it.
      * Leaving it blank will make it work in "classic" mode.
      */
-    public RhsBuilder( ActionType.Code code, int row, int column, String boundVariable ) {
+    public RhsBuilder(ActionType.Code code, int row, int column, String boundVariable) {
         this.actionTypeCode = code;
         this.headerRow = row;
         this.headerCol = column;
@@ -51,35 +51,33 @@ public class RhsBuilder implements SourceBuilder {
         this.values = new ArrayList<String>();
     }
 
-    
-    public ActionType.Code getActionTypeCode(){
+    public ActionType.Code getActionTypeCode() {
         return this.actionTypeCode;
     }
 
-    
     public void addTemplate(int row, int column, String content) {
-        Integer key = new Integer( column );
+        Integer key = new Integer(column);
         content = content.trim();
-        if ( isBoundVar() ) {
+        if (isBoundVar()) {
             content = variable + "." + content + ";";
         }
-        this.templates.put( key, content );
+        this.templates.put(key, content);
     }
 
     private boolean isBoundVar() {
-        return !("".equals( variable ));
+        return !("".equals(variable));
     }
 
     public void addCellValue(int row, int column, String value) {
         hasValues = true;
-        String template = (String) this.templates.get( new Integer( column ) );
-        if( template == null ){
-            throw new DecisionTableParseException( "No code snippet for " +
-                    this.actionTypeCode + ", above cell " +
-                    RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
+        String template = (String) this.templates.get(new Integer(column));
+        if (template == null) {
+            throw new DecisionTableParseException("No code snippet for " +
+                                                          this.actionTypeCode + ", above cell " +
+                                                          RuleSheetParserUtil.rc2name(this.headerRow + 2, this.headerCol));
         }
         SnippetBuilder snip = new SnippetBuilder(template);
-        this.values.add(snip.build( value ));
+        this.values.add(snip.build(value));
     }
 
     public void clearValues() {
@@ -89,10 +87,12 @@ public class RhsBuilder implements SourceBuilder {
 
     public String getResult() {
         StringBuffer buf = new StringBuffer();
-        for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
-            buf.append( iter.next() );
+        for (Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
+            String next = iter.next();
+            String replace = next.replace("\n", "\\n");
+            buf.append(replace);
             if (iter.hasNext()) {
-                buf.append( '\n' );
+                buf.append('\n');
             }
         }
         return buf.toString();
