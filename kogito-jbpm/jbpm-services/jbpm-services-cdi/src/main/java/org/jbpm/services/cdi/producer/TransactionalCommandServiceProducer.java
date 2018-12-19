@@ -21,11 +21,11 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.cdi.Audit;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorManager;
 
 public class TransactionalCommandServiceProducer {
 

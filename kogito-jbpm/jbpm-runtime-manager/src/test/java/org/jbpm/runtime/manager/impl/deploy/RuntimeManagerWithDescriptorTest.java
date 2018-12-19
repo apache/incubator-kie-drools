@@ -16,6 +16,16 @@
 
 package org.jbpm.runtime.manager.impl.deploy;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.SessionConfiguration;
@@ -25,7 +35,6 @@ import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.After;
 import org.junit.Before;
@@ -61,17 +70,10 @@ import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorManager;
 import org.kie.internal.task.api.UserGroupCallback;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

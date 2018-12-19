@@ -41,7 +41,6 @@ import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.kie.services.impl.query.QueryServiceImpl;
 import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
@@ -59,6 +58,7 @@ import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 
 public class DefaultCaseServiceConfigurator implements CaseServiceConfigurator {
 

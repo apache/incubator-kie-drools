@@ -379,6 +379,7 @@
               org.kie.internal.runtime.manager,
               org.kie.internal.runtime.manager.cdi.qualifier,
               org.kie.internal.runtime.manager.context,
+              org.kie.internal.runtime.manager.deploy,
               org.kie.internal.task.api,
               org.kie.internal.task.api.model,
               org.kie.internal.task.query,

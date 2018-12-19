@@ -16,8 +16,6 @@
 
 package org.jbpm.test.services;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +37,6 @@ import org.jbpm.casemgmt.api.model.CaseRole;
 import org.jbpm.casemgmt.api.model.CaseStage;
 import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.utils.CaseServiceConfigurator;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
@@ -63,6 +60,9 @@ import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
+
+import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractCaseServicesTest extends AbstractServicesTest {
 

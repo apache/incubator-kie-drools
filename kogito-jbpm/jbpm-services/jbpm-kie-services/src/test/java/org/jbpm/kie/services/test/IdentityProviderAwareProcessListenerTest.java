@@ -25,7 +25,6 @@ import java.util.List;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.junit.After;
@@ -36,6 +35,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.NamedObjectModel;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

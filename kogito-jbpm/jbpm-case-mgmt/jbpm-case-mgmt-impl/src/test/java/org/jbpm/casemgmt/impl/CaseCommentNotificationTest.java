@@ -16,11 +16,6 @@
 
 package org.jbpm.casemgmt.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +30,6 @@ import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.casemgmt.impl.util.CommentNotificationEventListenerFactory;
 import org.jbpm.casemgmt.impl.util.TestNotificationPublisher;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.After;
@@ -44,8 +38,14 @@ import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class CaseCommentNotificationTest extends AbstractCaseServicesBaseTest {
 

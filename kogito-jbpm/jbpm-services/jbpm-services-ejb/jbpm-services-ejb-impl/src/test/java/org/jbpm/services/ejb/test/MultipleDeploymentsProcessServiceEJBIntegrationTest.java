@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 
@@ -29,7 +30,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.ejb.api.DefinitionServiceEJBLocal;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
@@ -44,9 +44,12 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.scanner.KieMavenRepository;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 @RunWith(Arquillian.class)

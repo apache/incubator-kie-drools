@@ -24,7 +24,7 @@ import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorIO;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorIO;
 
 /**
  * Use this generator to create new xsd when changes have been made to deployment descriptor object structure.

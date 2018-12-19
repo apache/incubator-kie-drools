@@ -16,13 +16,6 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -34,7 +27,6 @@ import java.util.Map;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.junit.After;
@@ -48,9 +40,17 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ProcessServiceImplWithoutAuditTest extends AbstractKieServicesBaseTest {
 

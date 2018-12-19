@@ -4,7 +4,7 @@
   <version>6.5.0.Final-redhat-17</version>
   <strategy>SINGLETON</strategy>
   <mergeMode>MERGE_COLLECTIONS</mergeMode>
-  <deploymentDescriptor class="org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl">
+  <deploymentDescriptor class="org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl">
     <persistenceUnit>org.jbpm.domain</persistenceUnit>
     <auditPersistenceUnit>org.jbpm.domain</auditPersistenceUnit>
     <auditMode>JPA</auditMode>

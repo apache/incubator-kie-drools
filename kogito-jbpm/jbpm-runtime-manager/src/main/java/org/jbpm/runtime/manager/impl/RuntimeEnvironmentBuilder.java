@@ -18,6 +18,7 @@ package org.jbpm.runtime.manager.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -28,7 +29,7 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManagerUtil;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorMerger;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.kie.api.KieBase;
@@ -53,6 +54,7 @@ import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorManager;
 import org.kie.scanner.KieMavenRepository;
 
 /**
@@ -198,7 +200,7 @@ public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFacto
     	KieContainer kieContainer = ks.newKieContainer(releaseId);
     	
     	DeploymentDescriptorManager descriptorManager = new DeploymentDescriptorManager();
-    	List<DeploymentDescriptor> descriptorHierarchy = descriptorManager.getDeploymentDescriptorHierarchy(kieContainer);
+        List<DeploymentDescriptor> descriptorHierarchy = DeploymentDescriptorManagerUtil.getDeploymentDescriptorHierarchy(descriptorManager, kieContainer);
     	DeploymentDescriptorMerger merger = new DeploymentDescriptorMerger();
 		DeploymentDescriptor descriptor = merger.merge(descriptorHierarchy, MergeMode.MERGE_COLLECTIONS);
 

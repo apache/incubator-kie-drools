@@ -29,7 +29,6 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.kie.test.util.CountDownListenerFactory;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
@@ -46,11 +45,14 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class RuntimeDataServiceImplSecurityTest extends AbstractKieServicesBaseTest {

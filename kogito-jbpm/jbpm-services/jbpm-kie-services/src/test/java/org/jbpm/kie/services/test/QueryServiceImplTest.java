@@ -16,20 +16,17 @@
 
 package org.jbpm.kie.services.test;
 
-import static java.util.Collections.emptyList;
-import static org.jbpm.services.api.query.QueryResultMapper.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
@@ -46,7 +43,6 @@ import org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceWithCustomVarsQue
 import org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceWithVarsQueryMapper;
 import org.jbpm.kie.services.test.objects.TestQueryParamBuilderFactory;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceCustomDesc;
@@ -76,9 +72,27 @@ import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Collections.emptyList;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSINSTANCEID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSNAME;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_START;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_STATUS;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASKID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_NAME;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_VALUE;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_VAR_NAME;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
 

@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
@@ -46,6 +46,7 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.scanner.KieMavenRepository;
 

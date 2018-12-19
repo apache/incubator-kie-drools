@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,7 +35,6 @@ import org.jbpm.kie.test.objects.OtherPerson;
 import org.jbpm.kie.test.objects.Person;
 import org.jbpm.kie.test.objects.Thing;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
@@ -56,11 +56,15 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {

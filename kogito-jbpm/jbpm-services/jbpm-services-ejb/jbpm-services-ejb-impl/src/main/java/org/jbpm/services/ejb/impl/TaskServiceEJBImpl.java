@@ -25,7 +25,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.identity.UserDataServiceProvider;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.UserTaskService;
@@ -51,6 +50,7 @@ import org.kie.api.task.model.User;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorManager;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;

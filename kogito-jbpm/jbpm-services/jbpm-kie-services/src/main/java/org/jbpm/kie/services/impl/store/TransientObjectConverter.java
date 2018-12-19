@@ -16,14 +16,15 @@
 
 package org.jbpm.kie.services.impl.store;
 
-import org.jbpm.runtime.manager.impl.deploy.TransientNamedObjectModel;
-import org.jbpm.runtime.manager.impl.deploy.TransientObjectModel;
+
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.internal.runtime.manager.deploy.TransientNamedObjectModel;
+import org.kie.internal.runtime.manager.deploy.TransientObjectModel;
 
 
 public class TransientObjectConverter implements Converter {

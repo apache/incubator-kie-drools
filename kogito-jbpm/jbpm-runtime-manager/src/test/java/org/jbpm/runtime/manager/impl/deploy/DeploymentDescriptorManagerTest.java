@@ -44,6 +44,9 @@ import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorIO;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -141,7 +144,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         assertNotNull(kieContainer);
 
-        List<DeploymentDescriptor> descriptorHierarchy = manager.getDeploymentDescriptorHierarchy(kieContainer);
+        List<DeploymentDescriptor> descriptorHierarchy = DeploymentDescriptorManagerUtil.getDeploymentDescriptorHierarchy(manager, kieContainer);
         assertNotNull(descriptorHierarchy);
         assertEquals(1, descriptorHierarchy.size());
 
@@ -183,8 +186,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         assertNotNull(kieContainer);
 
-        List<DeploymentDescriptor> descriptorHierarchy = manager
-                .getDeploymentDescriptorHierarchy(kieContainer);
+        List<DeploymentDescriptor> descriptorHierarchy = DeploymentDescriptorManagerUtil.getDeploymentDescriptorHierarchy(manager, kieContainer);
         assertNotNull(descriptorHierarchy);
         assertEquals(2, descriptorHierarchy.size());
 
@@ -260,7 +262,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         assertNotNull(kieContainer);
 
-        List<DeploymentDescriptor> descriptorHierarchy = manager.getDeploymentDescriptorHierarchy(kieContainer);
+        List<DeploymentDescriptor> descriptorHierarchy = DeploymentDescriptorManagerUtil.getDeploymentDescriptorHierarchy(manager, kieContainer);
         assertNotNull(descriptorHierarchy);
         assertEquals(3, descriptorHierarchy.size());
 
@@ -353,7 +355,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         assertNotNull(kieContainer);
 
-        List<DeploymentDescriptor> descriptorHierarchy = manager.getDeploymentDescriptorHierarchy(kieContainer);
+        List<DeploymentDescriptor> descriptorHierarchy = DeploymentDescriptorManagerUtil.getDeploymentDescriptorHierarchy(manager, kieContainer);
         assertNotNull(descriptorHierarchy);
         assertEquals(3, descriptorHierarchy.size());
 

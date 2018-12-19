@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.ejb.EJB;
 import javax.inject.Inject;
 
@@ -32,7 +33,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
@@ -57,9 +57,12 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.scanner.KieMavenRepository;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 @RunWith(Arquillian.class)

@@ -16,8 +16,6 @@
 
 package org.jbpm.runtime.manager.impl.deploy;
 
-import static org.junit.Assert.*;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,6 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Assume;
 import org.junit.Test;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
@@ -34,6 +31,13 @@ import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class DeploymentDescriptorMergerTest {
 

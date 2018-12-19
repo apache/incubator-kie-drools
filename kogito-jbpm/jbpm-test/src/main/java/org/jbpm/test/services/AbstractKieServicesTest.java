@@ -21,7 +21,6 @@ import java.util.ServiceLoader;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
@@ -39,6 +38,7 @@ import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 
 public abstract class AbstractKieServicesTest extends AbstractServicesTest {
 

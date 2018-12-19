@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.persistence.EntityManagerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -37,10 +38,10 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.codec.binary.Base64;
+import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
-import org.appformer.maven.support.DependencyFilter;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.JavaSerializableResolverStrategy;
@@ -50,8 +51,7 @@ import org.jbpm.kie.services.impl.bpmn2.ProcessDescriptor;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManagerUtil;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorMerger;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DefinitionService;
@@ -79,6 +79,8 @@ import org.kie.internal.runtime.conf.ObjectModelResolver;
 import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorManager;
 import org.kie.scanner.KieMavenRepository;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
@@ -251,13 +253,13 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     	DeploymentDescriptor descriptor = deploymentUnit.getDeploymentDescriptor();
     	if (descriptor == null || ((DeploymentDescriptorImpl)descriptor).isEmpty()) { // skip empty descriptors as its default can override settings
 	    	DeploymentDescriptorManager descriptorManager = new DeploymentDescriptorManager("org.jbpm.domain");
-	    	List<DeploymentDescriptor> descriptorHierarchy = descriptorManager.getDeploymentDescriptorHierarchy(kieContainer);
+            List<DeploymentDescriptor> descriptorHierarchy = DeploymentDescriptorManagerUtil.getDeploymentDescriptorHierarchy(descriptorManager, kieContainer);
 
 			descriptor = merger.merge(descriptorHierarchy, mode);
 			deploymentUnit.setDeploymentDescriptor(descriptor);
     	} else if (descriptor != null && !deploymentUnit.isDeployed()) {
     		DeploymentDescriptorManager descriptorManager = new DeploymentDescriptorManager("org.jbpm.domain");
-	    	List<DeploymentDescriptor> descriptorHierarchy = descriptorManager.getDeploymentDescriptorHierarchy(kieContainer);
+            List<DeploymentDescriptor> descriptorHierarchy = DeploymentDescriptorManagerUtil.getDeploymentDescriptorHierarchy(descriptorManager, kieContainer);
 
 	    	descriptorHierarchy.add(0, descriptor);
 	    	descriptor = merger.merge(descriptorHierarchy, mode);

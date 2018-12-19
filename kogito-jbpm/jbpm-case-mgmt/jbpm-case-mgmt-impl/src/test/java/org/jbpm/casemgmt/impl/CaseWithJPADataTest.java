@@ -16,11 +16,6 @@
 
 package org.jbpm.casemgmt.impl;
 
-import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +30,6 @@ import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.impl.marshalling.CaseMarshallerFactory;
 import org.jbpm.casemgmt.impl.objects.Patient;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.junit.Test;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
@@ -43,8 +37,14 @@ import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class CaseWithJPADataTest extends AbstractCaseServicesBaseTest {
 

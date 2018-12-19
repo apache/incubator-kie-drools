@@ -28,7 +28,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 import org.drools.core.impl.EnvironmentFactory;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
@@ -42,6 +41,7 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorManager;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;

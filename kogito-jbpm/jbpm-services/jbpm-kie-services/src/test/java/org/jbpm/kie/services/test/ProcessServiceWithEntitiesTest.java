@@ -30,7 +30,6 @@ import org.drools.persistence.jpa.marshaller.VariableEntity;
 import org.hibernate.LazyInitializationException;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.junit.After;
 import org.junit.Before;
@@ -40,11 +39,15 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.ObjectModel;
+import org.kie.internal.runtime.manager.deploy.DeploymentDescriptorImpl;
 import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ProcessServiceWithEntitiesTest extends AbstractKieServicesBaseTest {
