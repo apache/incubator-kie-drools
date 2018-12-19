@@ -241,7 +241,7 @@ public class PlannerBenchmarkResult {
         String[] levelLabels = solverBenchmarkResultList.get(0).getScoreDefinition().getLevelLabels();
         if (scoreLevel >= levelLabels.length) {
             // Occurs when mixing multiple examples in the same benchmark run, such as GeneralOptaPlannerBenchmarkApp
-            return "Unknown-" + (scoreLevel - levelLabels.length);
+            return "unknown-" + (scoreLevel - levelLabels.length);
         }
         return levelLabels[scoreLevel];
     }
