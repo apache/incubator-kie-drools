@@ -55,66 +55,86 @@ public class EvalHelper {
 
         // The above code was refactored for performance reasons
         // Check org.drools.benchmarks.dmn.runtime.DMNEvaluateDecisionNameLengthBenchmark
+        // This method tries to return the original String whenever possible to avoid allocation of char[]
 
         if (name == null || name.isEmpty()) {
             return name;
         }
 
-        int pos = 0, size = name.length();
-        char[] target = null;
-        boolean space = false;
+        // Find the first valid char, used to skip leading spaces
+        int firstValid = 0, size = name.length();
 
-        int i = 1;
-        int firstChar = name.charAt(0);
-        if (Character.isSpaceChar(firstChar) || Character.isWhitespace(firstChar)) {
-            for (; i < size; i++) {
-                char c = name.charAt(i);
-                if (!Character.isSpaceChar(c) && !Character.isWhitespace(c)) {
+        for (; firstValid < size; firstValid++) {
+            if (isValidChar(name.charAt(firstValid))) {
+                break;
+            }
+        }
+        if (firstValid == size) {
+            return "";
+        }
+
+        // Finds the last valid char, either before a non-regular space, the first of multiple spaces or the last char
+        int lastValid = 0, trailing = 0;
+        boolean inWhitespace = false;
+
+        for (int i = firstValid; i < size; i++) {
+            if (isValidChar(name.charAt(i))) {
+                lastValid = i + 1;
+                inWhitespace = false;
+            } else {
+                if (inWhitespace) {
+                    break;
+                }
+                inWhitespace = true;
+                if (name.charAt(i) != ' ') {
                     break;
                 }
             }
-            target = new char[size-i];
-        } else {
-            pos++;
         }
 
-        for (; i < size; i++) {
+        // Counts the number of spaces after 'lastValid' (to remove possible trailing spaces)
+        for (int i = lastValid; i < size && !isValidChar(name.charAt(i)); i++) {
+            trailing++;
+        }
+        if (lastValid + trailing == size) {
+            return firstValid != 0 || trailing != 0 ? name.substring(firstValid, lastValid) : name;
+        }
+
+        // There are valid chars after 'lastValid' and substring won't do (full normalization is required)
+        int pos = 0;
+        char[] target = new char[size-firstValid];
+
+        // Copy the chars know to be valid to the new array
+        for (int i = firstValid; i < lastValid; i++) {
+            target[pos++] = name.charAt(i);
+        }
+
+        // Copy valid chars after 'lastValid' to new array
+        // Many whitespaces are collapsed into one and trailing spaces are ignored
+        for (int i = lastValid + 1; i < size; i++) {
             char c = name.charAt(i);
-            // need to check for both non-breaking spaces and control characters, like the original regex does
-            if (c == ' ') {
-                if (space && target == null) {
-                    target = new char[size];
-                    System.arraycopy( name.toCharArray(), 0, target, 0, pos );
+            if (isValidChar(c)) {
+                if (inWhitespace) {
+                    target[pos++] = ' ';
                 }
-                space = true;
-            } else if (Character.isSpaceChar(c) || Character.isWhitespace(c)) {
-                if (target == null) {
-                    target = new char[size];
-                    System.arraycopy( name.toCharArray(), 0, target, 0, pos );
-                }
-                space = true;
+                target[pos++] = c;
+                inWhitespace = false;
             } else {
-                if (space) {
-                    if (target != null) {
-                        target[pos++] = ' ';
-                        target[pos++] = c;
-                    } else {
-                        pos += 2;
-                    }
-                } else {
-                    if (target != null) {
-                        target[pos] = c;
-                    }
-                    pos++;
-                }
-                space = false;
+                inWhitespace = true;
             }
         }
+        return new String(target, 0, pos);
+    }
 
-        if (target != null) {
-            return new String(target, 0, pos);
+    /**
+     * This method defines what characters are valid for the output of normalizeVariableName. Spaces and control characters are invalid.
+     * There is a fast-path for well known characters
+     */
+    private static boolean isValidChar(char c) {
+        if ( c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' ) {
+            return true;
         }
-        return space ? name.substring( 0, size-1 ) : name;
+        return c != ' ' && c != '\u00A0' && !Character.isWhitespace(c) && !Character.isWhitespace(c);
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
