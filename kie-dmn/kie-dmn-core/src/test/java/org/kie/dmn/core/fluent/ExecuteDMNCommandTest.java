@@ -27,9 +27,9 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.internal.command.RegistryContext;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 public class ExecuteDMNCommandTest {
 
@@ -38,21 +38,15 @@ public class ExecuteDMNCommandTest {
         RegistryContext registryContext = new ContextImpl();
         ExecuteDMNCommand executeDMNCommand = new ExecuteDMNCommand();
 
-        try {
-            executeDMNCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
-
-        }
+        assertThatThrownBy(() -> executeDMNCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("No DMN active model defined");
 
         registryContext.register(DMNModel.class, new DMNModelImpl(null));
 
-        try {
-            executeDMNCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
-
-        }
+        assertThatThrownBy(() -> executeDMNCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("No DMNRuntime available");
 
         DMNContext dmnContext = DMNFactory.newContext();
         dmnContext.set("example", 10);

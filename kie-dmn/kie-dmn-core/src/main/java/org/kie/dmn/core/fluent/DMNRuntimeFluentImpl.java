@@ -17,7 +17,6 @@
 package org.kie.dmn.core.fluent;
 
 import org.drools.core.fluent.impl.BaseBatchFluent;
-import org.kie.api.io.Resource;
 import org.kie.internal.builder.fluent.CommandBasedExecutable;
 import org.kie.internal.builder.fluent.DMNRuntimeFluent;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
@@ -50,8 +49,20 @@ public class DMNRuntimeFluentImpl extends BaseBatchFluent<DMNRuntimeFluent, Exec
     }
 
     @Override
-    public DMNRuntimeFluent setActiveModel(Resource resource) {
-        ctx.addCommand(new SetDMNActiveModelCommand(resource));
+    public DMNRuntimeFluent setActiveModel(String resourcePath) {
+        ctx.addCommand(new SetDMNActiveModelCommand(resourcePath));
+        return this;
+    }
+
+    @Override
+    public DMNRuntimeFluent getModel(String namespace, String modelName) {
+        ctx.addCommand(new GetDMNModelCommand(namespace, modelName));
+        return this;
+    }
+
+    @Override
+    public DMNRuntimeFluent getModel(String resourcePath) {
+        ctx.addCommand(new GetDMNModelCommand(resourcePath));
         return this;
     }
 

@@ -34,7 +34,7 @@ import org.kie.internal.command.RegistryContext;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 
-public class SetDMNActiveModelCommandTest {
+public class GetDMNModelCommandTest {
 
     static KieServices ks;
     static ReleaseId releaseId;
@@ -55,7 +55,6 @@ public class SetDMNActiveModelCommandTest {
     @Before
     public void init() {
         registryContext = new ContextImpl();
-
         dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
     }
 
@@ -63,30 +62,30 @@ public class SetDMNActiveModelCommandTest {
     public void execute() {
         String namespace = "http://www.trisotech.com/definitions/_99ccd4df-41ac-43c3-a563-d58f43149829";
         String modelName = "typecheck in DT";
-        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(namespace, modelName);
+        GetDMNModelCommand getDMNModelCommand = new GetDMNModelCommand(namespace, modelName);
 
-        assertThatThrownBy(() -> setDMNActiveModelCommand.execute(registryContext))
+        assertThatThrownBy(() -> getDMNModelCommand.execute(registryContext))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("There is no DMNRuntime available");
 
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
-        DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);
+        DMNModel dmnModel = getDMNModelCommand.execute(registryContext);
         assertEquals(namespace, dmnModel.getNamespace());
         assertEquals(modelName, dmnModel.getName());
     }
 
     @Test
     public void executeWithResource() {
-        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(resource.getSourcePath());
+        GetDMNModelCommand getDMNModelCommand = new GetDMNModelCommand(resource.getSourcePath());
 
-        assertThatThrownBy(() -> setDMNActiveModelCommand.execute(registryContext))
+        assertThatThrownBy(() -> getDMNModelCommand.execute(registryContext))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("There is no DMNRuntime available");
 
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
-        DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);
+        DMNModel dmnModel = getDMNModelCommand.execute(registryContext);
         assertEquals(resource.getSourcePath(), dmnModel.getResource().getSourcePath());
     }
 }
