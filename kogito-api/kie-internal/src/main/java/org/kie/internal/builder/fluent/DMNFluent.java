@@ -16,8 +16,6 @@
 
 package org.kie.internal.builder.fluent;
 
-import org.kie.api.io.Resource;
-
 /**
  * See {@link DMNRuntimeFluent}
  */
@@ -27,7 +25,11 @@ public interface DMNFluent<T extends DMNFluent, U> {
 
     T setActiveModel(String namespace, String modelName);
 
-    T setActiveModel(Resource resource);
+    T setActiveModel(String resourcePath);
+
+    T getModel(String namespace, String modelName);
+
+    T getModel(String resourcePath);
 
     T evaluateModel();
 
