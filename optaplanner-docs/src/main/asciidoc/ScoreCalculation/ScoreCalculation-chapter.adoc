@@ -1277,7 +1277,7 @@ for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
 ----
 
 Each `ConstraintMatchTotal` represents one constraint (so one score rule) and has a part of the overall score.
-The sum of all the `ConstraintMatchTotal.getScore()` equals to the overall score.
+The sum of all the `ConstraintMatchTotal.getScore()` equals the overall score.
 
 [NOTE]
 ====
