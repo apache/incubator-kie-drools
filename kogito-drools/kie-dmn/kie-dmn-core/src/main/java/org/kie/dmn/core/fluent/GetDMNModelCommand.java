@@ -16,16 +16,21 @@
 
 package org.kie.dmn.core.fluent;
 
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.internal.command.RegistryContext;
+import org.kie.api.runtime.Context;
+import org.kie.dmn.api.core.DMNModel;
 
-public abstract class AbstractDMNResultCommand {
+public class GetDMNModelCommand extends AbstractDMNModelCommand {
 
-    protected DMNResult extractDMNResult(RegistryContext context) {
-        DMNResult dmnResult = context.lookup(DMNResult.class);
-        if (dmnResult == null) {
-            throw new IllegalStateException("There is no DMNResult available");
-        }
-        return dmnResult;
+    public GetDMNModelCommand(String namespace, String modelName) {
+        super(namespace, modelName);
+    }
+
+    public GetDMNModelCommand(String resourcePath) {
+        super(resourcePath);
+    }
+
+    @Override
+    public DMNModel execute(Context context) {
+        return getDMNModel(context);
     }
 }

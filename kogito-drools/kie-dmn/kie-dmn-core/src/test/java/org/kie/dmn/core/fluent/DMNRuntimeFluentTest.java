@@ -27,6 +27,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
@@ -51,6 +52,8 @@ public class DMNRuntimeFluentTest {
                 .setInput("a number", 0)
                 .evaluateModel()
                 .out("dmnResult")
+                .getModel("http://www.trisotech.com/definitions/_99ccd4df-41ac-43c3-a563-d58f43149829", "typecheck in DT")
+                .out("dmnModel")
                 .getAllContext()
                 .out("result")
                 .getMessages()
@@ -62,9 +65,11 @@ public class DMNRuntimeFluentTest {
         Map<String, Object> resultMap = requestContext.getOutput("result");
         DMNResult dmnResult = requestContext.getOutput("dmnResult");
         List<DMNMessage> messages = requestContext.getOutput("messages");
+        DMNModel dmnModel = requestContext.getOutput("dmnModel");
 
         assertEquals(47, ((BigDecimal) resultMap.get("an odd decision")).intValue());
         assertNotNull(dmnResult);
         assertEquals(0, messages.size());
+        assertNotNull(dmnModel);
     }
 }
