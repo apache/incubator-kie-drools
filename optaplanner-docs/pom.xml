@@ -44,7 +44,7 @@
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
-          <version>1.5.5</version>
+          <version>1.5.7.1</version>
           <configuration>
             <imagesDir>.</imagesDir>
             <attributes>
@@ -90,12 +90,12 @@
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj</artifactId>
-              <version>1.5.5</version>
+              <version>1.5.8.1</version>
             </dependency>
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj-pdf</artifactId>
-              <version>1.5.0-alpha.15</version>
+              <version>1.5.0-alpha.16</version>
             </dependency>
           </dependencies>
         </plugin>
