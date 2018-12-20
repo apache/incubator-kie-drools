@@ -16,6 +16,7 @@
 
 package org.drools.scorecards;
 
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public final class TestUtil {
                 packageNames.add(knownPkgName + "." + javaModelId);
             }
         }
-        String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId;
+        String basePkgName = DEFAULT_ROOT_PACKAGE + "." + javaModelId;
         packageNames.add(basePkgName);
         return packageNames;
     }

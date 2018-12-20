@@ -27,6 +27,10 @@ public class ScoreCard {
     private boolean enableRC;
     private boolean pointsBelow;
     private Map ranking;
+    
+    public ScoreCard() {
+    	// necessary for JAXB
+    }
 
     public ScoreCard(String modelName) {
         if (modelName == null || modelName.trim().isEmpty()) {

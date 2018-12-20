@@ -154,5 +154,13 @@ public class RegTargetBit {
 		return true;
 	}
 
+
+
+	@Override
+	public String toString() {
+		return "RegTargetBit [context=" + context + ", target=" + target + ", value=" + value + ", weight=" + weight
+				+ ", normalized=" + normalized + ", cumulative=" + cumulative + ", index=" + index + "]";
+	}
+
 	
 }

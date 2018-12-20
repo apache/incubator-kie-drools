@@ -40,6 +40,7 @@ then
     }
 end
 
+@comment{
 rule "Cleanup data_@{name}"
 salience -10000
 when
@@ -48,5 +49,7 @@ when
 then
     delete( $data );
 end
+}
+
 @end{}
 @includeNamed{'modelMarkRule'}

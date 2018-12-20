@@ -35,7 +35,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         final String drl = GuidedScoreCardDRLPersistence.marshal(model);
         assertNotNull(drl);
 
-        assertEquals(17,
+        assertEquals(16,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
@@ -53,7 +53,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         final String drl = GuidedScoreCardDRLPersistence.marshal(model);
         assertNotNull(drl);
 
-        assertEquals(17,
+        assertEquals(16,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
@@ -72,7 +72,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(17,
+        assertEquals(16,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
@@ -92,7 +92,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(17,
+        assertEquals(16,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
@@ -113,7 +113,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(17,
+        assertEquals(16,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 
@@ -134,7 +134,7 @@ public class GuidedScoreCardDRLPersistenceTest {
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(17,
+        assertEquals(16,
                      StringUtil.countMatches(drl,
                                              "rule \""));
 

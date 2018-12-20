@@ -20,13 +20,13 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
 import org.dmg.pmml.pmml_4_2.descr.Extension;
 import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
@@ -34,7 +34,10 @@ import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.pmml.pmml_4_2.PMML4Exception;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.kie.pmml.pmml_4_2.PMML4Model;
 import org.kie.pmml.pmml_4_2.PMML4Unit;
@@ -66,6 +69,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     protected final static String OUTPUT_TEMPLATE_NAME = "OutputPOJOTemplate";
     protected final static String RULE_UNIT_TEMPLATE_NAME = "RuleUnitTemplate";
     protected static TemplateRegistry templateRegistry;
+    private static String BASIC_OUTPUT_POJO_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/global/outputbean.mvel";
     public final static String PMML_JAVA_PACKAGE_NAME = "org.kie.pmml.pmml_4_2.model";
     private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
@@ -285,7 +289,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     }
 
     @Override
-    public Map.Entry<String, String> getMappedRuleUnit() {
+    public Map.Entry<String, String> getMappedRuleUnit() throws PMML4Exception {
         Map<String, String> result = new HashMap<>();
         if (!templateRegistry.contains(this.getRuleUnitTemplateName())) {
             this.addRuleUnitTemplateToRegistry(templateRegistry);
@@ -302,19 +306,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
         if (this instanceof Miningmodel) {
             vars.put("miningPojoClassName", this.getMiningPojoClassName());
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            TemplateRuntime.execute(templateRegistry.getNamedTemplate(this.getRuleUnitTemplateName()),
-                                    null,
-                                    new MapVariableResolverFactory(vars),
-                                    baos);
-        } catch (TemplateError te) {
-            return null;
-        } catch (TemplateRuntimeError tre) {
-            // need to figure out logging here
-            return null;
-        }
-        result.put(this.getModelPackageName() + "." + className, new String(baos.toByteArray()));
+        processTemplate(this.getRuleUnitTemplateName(), vars, this.getModelPackageName() + "." + className, result);
 
         return result.isEmpty() ? null : result.entrySet().iterator().next();
     }
@@ -430,6 +422,78 @@ public abstract class AbstractModel<T> implements PMML4Model {
                 new ArrayList<>(outputFieldMap.values()) :
                 new ArrayList<>();
     }
+    
+    private void setSimilarVarValues(String className, String name, String displayValue, Map<String, Object> vars) {
+        vars.put("name", name);
+        vars.put("className", className);
+        vars.put("displayValue", displayValue);
+        vars.put("packageName", this.getModelPackageName());
+        vars.put("modelId", this.getModelId());
+    }
+
+    private void processTemplate(String templateId,
+                                 Map<String, Object> vars,
+                                 String resultKey,
+                                 Map<String, String> results) throws PMML4Exception {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            TemplateRuntime.execute(templateRegistry.getNamedTemplate(templateId),
+                                    null,
+                                    new MapVariableResolverFactory(vars),
+                                    baos);
+            results.put(resultKey, new String(baos.toByteArray()));
+        } catch (Throwable cause) {
+            throw new PMML4Exception(this.getModelId(), "Error applying template - " + templateId, cause);
+        }
+    }
+
+    @Override
+    public Map<String, String> getOutputTargetPojos() throws PMML4Exception {
+    	String templateId = getModelId()+"_OUTPUT_BEAN_TEMPLATE";
+    	if (!templateRegistry.contains(templateId)) {
+    		addTemplateToRegistry(templateId, BASIC_OUTPUT_POJO_TEMPLATE, templateRegistry);
+    	}
+    	Map<String,String> results = new HashMap<>();
+		String packageName = this.getModelPackageName();
+    	Map<String,MiningField> fields = this.getFilteredMiningFieldMap(true, FIELDUSAGETYPE.PREDICTED, FIELDUSAGETYPE.TARGET);
+    	if (fields != null && !fields.isEmpty()) {
+            for (MiningField mf : fields.values()) {
+                Map<String, Object> vars = new HashMap<>();
+                String className = helper.compactUpperCase(mf.getName());
+                setSimilarVarValues(className, mf.getName(), className, vars);
+                PMMLDataField ddf = getOwner().findDataDictionaryEntry(mf.getName());
+                if (ddf != null) {
+                    vars.put("typeName", ddf.getType());
+                } else {
+                    vars.put("typeName", "String");
+                }
+                processTemplate(templateId, vars, packageName + "." + className, results);
+            }
+    	}
+    	Map<String,OutputField> flds = this.getOutputFieldMap();
+    	if (flds != null && !flds.isEmpty()) {
+            for (OutputField of : flds.values()) {
+                Map<String, Object> vars = new HashMap<>();
+                String className = helper.compactUpperCase(of.getName());
+                setSimilarVarValues(className, of.getName(), className, vars);
+                String typeName = "String";
+                if (of.getDataType() != null) {
+                    typeName = helper.mapDatatype(of.getDataType(), true);
+                } else {
+                    if (RESULTFEATURE.PROBABILITY.equals(of.getFeature())) {
+                        typeName = helper.mapDatatype(DATATYPE.DOUBLE, true);
+                    } else if (of.getTargetField() != null) {
+                        PMMLDataField ddf = getOwner().findDataDictionaryEntry(of.getTargetField());
+                        if (ddf != null) {
+                            typeName = ddf.getType();
+                        }
+                    }
+                }
+                vars.put("typeName", typeName);
+                processTemplate(templateId, vars, packageName + "." + className, results);
+            }
+    	}
+    	return results;
+    }
 
     /**
      * Default method returns an empty Map
@@ -515,4 +579,17 @@ public abstract class AbstractModel<T> implements PMML4Model {
     public Serializable getRawModel() {
         return (Serializable) this.rawModel;
     }
+
+
+	protected synchronized TemplateRegistry addTemplateToRegistry(String templateId, String templatePath,
+			TemplateRegistry registry) {
+		if (!registry.contains(templateId)) {
+			InputStream istrm = Scorecard.class.getResourceAsStream(templatePath);
+			if (istrm != null) {
+				CompiledTemplate ct = TemplateCompiler.compileTemplate(istrm);
+				registry.addNamedTemplate(templateId, ct);
+			}
+		}
+		return registry;
+	}
 }
