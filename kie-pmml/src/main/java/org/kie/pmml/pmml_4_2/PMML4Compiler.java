@@ -527,6 +527,7 @@ public class PMML4Compiler {
                 models.forEach(model -> {
                     Map.Entry<String, String> inputPojo = model.getMappedMiningPojo();
                     Map.Entry<String, String> ruleUnit = model.getMappedRuleUnit();
+                    Map<String, String> outputs = model.getOutputTargetPojos();
                     Map.Entry<String, String> outcome = null;
                     if (model.getModelType() == PMML4ModelType.TREE) {
                         outcome = ((Treemodel) model).getTreeNodeJava();
@@ -539,6 +540,9 @@ public class PMML4Compiler {
                     }
                     if (outcome != null) {
                         javaClasses.put(outcome.getKey(), outcome.getValue());
+                    }
+                    if (outputs != null) {
+                    	javaClasses.putAll(outputs);
                     }
                 });
             }

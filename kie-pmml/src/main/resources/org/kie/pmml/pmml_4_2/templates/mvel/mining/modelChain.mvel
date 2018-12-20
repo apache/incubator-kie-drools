@@ -30,12 +30,6 @@ import org.kie.api.pmml.PMML4Result;
 
 @code{ int salienceValue; }
 
-declare @{miningModel.targetField}
-   value: Double
-   weight: Double
-end
-
-
 rule "Start Mining - @{miningModel.modelId}"
 salience 1000
 when

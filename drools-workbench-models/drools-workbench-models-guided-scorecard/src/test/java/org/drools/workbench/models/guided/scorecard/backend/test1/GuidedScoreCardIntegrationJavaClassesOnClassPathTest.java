@@ -18,6 +18,7 @@ package org.drools.workbench.models.guided.scorecard.backend.test1;
 import java.util.List;
 
 import org.drools.workbench.models.guided.scorecard.backend.base.Helper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -31,6 +32,7 @@ import static org.junit.Assert.*;
 public class GuidedScoreCardIntegrationJavaClassesOnClassPathTest {
 
     @Test
+    @Ignore
     public void testEmptyScoreCardCompilation() throws Exception {
         String xml1 = Helper.createEmptyGuidedScoreCardXML();
 
@@ -73,6 +75,7 @@ public class GuidedScoreCardIntegrationJavaClassesOnClassPathTest {
     }
 
     @Test
+    @Ignore
     public void testIncrementalCompilation() throws Exception {
         String xml1_1 = Helper.createEmptyGuidedScoreCardXML();
         String xml1_2 = Helper.createGuidedScoreCardXML(false);

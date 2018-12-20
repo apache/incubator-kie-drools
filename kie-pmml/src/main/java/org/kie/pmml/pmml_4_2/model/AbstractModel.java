@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.pmml_4_2.descr.DATATYPE;
 import org.dmg.pmml.pmml_4_2.descr.DataDictionary;
 import org.dmg.pmml.pmml_4_2.descr.Extension;
 import org.dmg.pmml.pmml_4_2.descr.FIELDUSAGETYPE;
@@ -34,6 +35,8 @@ import org.dmg.pmml.pmml_4_2.descr.MiningField;
 import org.dmg.pmml.pmml_4_2.descr.MiningSchema;
 import org.dmg.pmml.pmml_4_2.descr.Output;
 import org.dmg.pmml.pmml_4_2.descr.OutputField;
+import org.dmg.pmml.pmml_4_2.descr.RESULTFEATURE;
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.pmml.pmml_4_2.PMML4Helper;
 import org.kie.pmml.pmml_4_2.PMML4Model;
@@ -66,6 +69,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
     protected final static String OUTPUT_TEMPLATE_NAME = "OutputPOJOTemplate";
     protected final static String RULE_UNIT_TEMPLATE_NAME = "RuleUnitTemplate";
     protected static TemplateRegistry templateRegistry;
+    private static String BASIC_OUTPUT_POJO_TEMPLATE = "/org/kie/pmml/pmml_4_2/templates/mvel/global/outputbean.mvel";
     public final static String PMML_JAVA_PACKAGE_NAME = "org.kie.pmml.pmml_4_2.model";
     private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
@@ -430,6 +434,90 @@ public abstract class AbstractModel<T> implements PMML4Model {
                 new ArrayList<>(outputFieldMap.values()) :
                 new ArrayList<>();
     }
+    
+    @Override
+    public Map<String,String> getOutputTargetPojos() {
+    	String templateId = getModelId()+"_OUTPUT_BEAN_TEMPLATE";
+    	if (!templateRegistry.contains(templateId)) {
+    		addTemplateToRegistry(templateId, BASIC_OUTPUT_POJO_TEMPLATE, templateRegistry);
+    	}
+    	Map<String,String> results = new HashMap<>();
+		String packageName = this.getModelPackageName();
+    	Map<String,MiningField> fields = this.getFilteredMiningFieldMap(true, FIELDUSAGETYPE.PREDICTED, FIELDUSAGETYPE.TARGET);
+    	if (fields != null && !fields.isEmpty()) {
+    		fields.values().forEach(mf -> {
+    			Map<String,Object> vars = new HashMap<>();
+    			String className = helper.compactUpperCase(mf.getName());
+    			vars.put("name", mf.getName());
+    			vars.put("className", className);
+    			vars.put("displayValue", className);
+    			vars.put("packageName", this.getModelPackageName());
+    			vars.put("modelId", this.getModelId());
+    			PMMLDataField ddf = getOwner().findDataDictionaryEntry(mf.getName());
+    			if (ddf != null) {
+    				vars.put("typeName", ddf.getType());
+    			} else {
+    				vars.put("typeName", "String");
+    			}
+    	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	        try {
+    	            TemplateRuntime.execute(templateRegistry.getNamedTemplate(templateId),
+    	                                    null,
+    	                                    new MapVariableResolverFactory(vars),
+    	                                    baos);
+    	            String key = packageName+"."+className;
+    	            results.put(key, new String(baos.toByteArray()));
+    	        } catch (TemplateError te) {
+    	            te.printStackTrace();
+    	        } catch (TemplateRuntimeError tre) {
+    	            // need to figure out logging here
+    	            tre.printStackTrace();
+    	        }
+    			
+    		});
+    	}
+    	Map<String,OutputField> flds = this.getOutputFieldMap();
+    	if (flds != null && !flds.isEmpty()) {
+    		flds.values().forEach(of -> {
+    			Map<String,Object> vars = new HashMap<>();
+    			String className = helper.compactUpperCase(of.getName());
+    			vars.put("name", of.getName());
+    			vars.put("className", className);
+    			vars.put("displayValue", className);
+    			vars.put("packageName", packageName);
+    			vars.put("modelId", this.getModelId());
+    			String typeName = "String";
+    			if (of.getDataType() != null) {
+    				typeName = helper.mapDatatype(of.getDataType(), true);
+    			} else {
+    				if (RESULTFEATURE.PROBABILITY.equals(of.getFeature())) {
+    						typeName = helper.mapDatatype(DATATYPE.DOUBLE, true);
+    				} else if (of.getTargetField() != null) {
+    					PMMLDataField ddf = getOwner().findDataDictionaryEntry(of.getTargetField());
+    					if (ddf != null) {
+    						typeName = ddf.getType();
+    					}
+    				}
+    			}
+    			vars.put("typeName", typeName);
+    	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	        try {
+    	            TemplateRuntime.execute(templateRegistry.getNamedTemplate(templateId),
+    	                                    null,
+    	                                    new MapVariableResolverFactory(vars),
+    	                                    baos);
+    	            String key = packageName+"."+className;
+    	            results.put(key, new String(baos.toByteArray()));
+    	        } catch (TemplateError te) {
+    	            te.printStackTrace();
+    	        } catch (TemplateRuntimeError tre) {
+    	            // need to figure out logging here
+    	            tre.printStackTrace();
+    	        }
+    		});
+    	}
+    	return results;
+    }
 
     /**
      * Default method returns an empty Map
@@ -515,4 +603,17 @@ public abstract class AbstractModel<T> implements PMML4Model {
     public Serializable getRawModel() {
         return (Serializable) this.rawModel;
     }
+
+
+	protected synchronized TemplateRegistry addTemplateToRegistry(String templateId, String templatePath,
+			TemplateRegistry registry) {
+		if (!registry.contains(templateId)) {
+			InputStream istrm = Scorecard.class.getResourceAsStream(templatePath);
+			if (istrm != null) {
+				CompiledTemplate ct = TemplateCompiler.compileTemplate(istrm);
+				registry.addNamedTemplate(templateId, ct);
+			}
+		}
+		return registry;
+	}
 }

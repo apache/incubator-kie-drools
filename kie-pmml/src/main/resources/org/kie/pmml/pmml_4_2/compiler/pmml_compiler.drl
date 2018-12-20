@@ -186,7 +186,7 @@ then
         //map.put("categorical","categorical".equalsIgnoreCase($fld.optype.v alue));
         //map.put("continuous","continuous".equalsIgnoreCase($fld.optype.v alue));
         //map.put("ordinal","ordinal".equalsIgnoreCase($fld.optype.v alue));
-    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
+//    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
 //    utils.applyTemplate("updateIOField.drlt", utils, registry, map, theory);
 
 end
@@ -377,8 +377,8 @@ then
 //        map.put("categorical","categorical".equalsIgnoreCase(opt));
 //        map.put("continuous","continuous".equalsIgnoreCase(opt));
 //        map.put("ordinal","ordinal".equalsIgnoreCase(opt));
-    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
-//    utils.applyTemplate("updateIOField.drlt", utils, registry, map, theory);
+//    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
+    utils.applyTemplate("updateIOField.drlt", utils, registry, map, theory);
 end
 
 
@@ -1699,7 +1699,7 @@ then
         map.put( "modelType", $mt );
         map.put( "tgtType", $tgtType );
         map.put( "type", utils.mapDatatype( utils.mapFeatureType( $tf.dataType, $feat ) ) );
-    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
+//    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
     utils.applyTemplate( "updateIOField.drlt", utils, registry, map, theory );
 end
 

@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.pmml_4_2.model.tree;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +36,7 @@ import java.util.Set;
     defaultChld : String
 end
  */
+@SuppressWarnings("rawtypes")
 public class TreeNode {
     private String context;
     private String id;
@@ -48,6 +48,9 @@ public class TreeNode {
     private String defaultChld;
 
 
+    public TreeNode() {
+    	// Necessary for JAXB
+    }
 
     public TreeNode(String correlationId, String context, String id, String parent, List children, int recordCount,
             Map counts, Map confidence, String defaultChld) {
@@ -113,6 +116,7 @@ public class TreeNode {
         return distributedScores.getWeightedDistribution();
     }
 
+    @SuppressWarnings("unchecked")
     public static class ScoreDistributions {
         private Map<String, Map<String,ScoreDistributionInfo>> distributions = new HashMap<>();
         private Map<String, Double> recordsPerNode;

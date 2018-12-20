@@ -34,6 +34,7 @@ public interface PMML4Model {
     public PMML4Model getParentModel();
     public void setParentModel(PMML4Model parentModel);
     public Map<String,PMML4Model> getChildModels();
+    public Map<String,String> getOutputTargetPojos();
     public List<MiningField> getRawMiningFields();
     public List<OutputField> getRawOutputFields();
     public List<PMMLMiningField> getMiningFields();

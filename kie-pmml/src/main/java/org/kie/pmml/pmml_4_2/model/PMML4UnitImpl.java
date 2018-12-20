@@ -289,4 +289,9 @@ public class PMML4UnitImpl implements PMML4Unit {
         PMML4Model model = getModelsMap().get(modelName);
         return model != null ? model.getExternalBeansMiningRules() : null;
     }
+
+	@Override
+	public PMMLDataField findDataDictionaryEntry(String fieldName) {
+		return this.dataDictionaryMap.get(fieldName);
+	}
 }
