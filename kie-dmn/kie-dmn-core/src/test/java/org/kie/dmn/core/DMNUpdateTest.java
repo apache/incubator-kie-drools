@@ -1,13 +1,41 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.dmn.core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.compiler.kie.builder.impl.KieProject;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.io.Resource;
+import org.kie.api.marshalling.KieMarshallers;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -17,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModule {
 
@@ -39,11 +67,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         Assert.assertNotNull(runtime);
         assertThat(runtime.getModels(), hasSize(1));
 
-        final DMNContext dmnContext = runtime.newContext();
-        dmnContext.set("Full Name", "John Doe");
-
-        final DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
-        assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult(), is("Hello John Doe"));
+        check0001_input_data_string(runtime);
 
         final ReleaseId v101 = ks.newReleaseId("org.kie", "dmn-test", "1.0.1");
         KieHelper.createAndDeployJar(ks,
@@ -76,11 +100,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         Assert.assertNotNull(runtime);
         assertThat(runtime.getModels(), hasSize(1));
 
-        final DMNContext dmnContext = runtime.newContext();
-        dmnContext.set("Full Name", "John Doe");
-
-        final DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
-        assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult(), is("Hello John Doe"));
+        check0001_input_data_string(runtime);
 
         final ReleaseId v101 = ks.newReleaseId("org.kie", "dmn-test", "1.0.1");
         final Resource newClassPathResource = ks.getResources().newClassPathResource("0001-input-data-string-itIT.dmn", this.getClass());
@@ -116,11 +136,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         Assert.assertNotNull(runtime);
         assertThat(runtime.getModels(), hasSize(1));
 
-        final DMNContext dmnContext = runtime.newContext();
-        dmnContext.set("Full Name", "John Doe");
-
-        final DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
-        assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult(), is("Hello John Doe"));
+        check0001_input_data_string(runtime);
 
         final ReleaseId v101 = ks.newReleaseId("org.kie", "dmn-test", "1.0.1");
         final Resource newClassPathResource = ks.getResources().newClassPathResource("0001-input-data-string-itIT.dmn", this.getClass());
@@ -149,11 +165,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         Assert.assertNotNull(runtime);
         assertThat(runtime.getModels(), hasSize(1));
 
-        final DMNContext dmnContext3 = runtime.newContext();
-        dmnContext3.set("Full Name", "John Doe");
-
-        final DMNResult evaluateAll3 = runtime.evaluateAll(runtime.getModels().get(0), dmnContext3);
-        assertThat(evaluateAll3.getDecisionResultByName("Greeting Message").getResult(), is("Hello John Doe"));
+        check0001_input_data_string(runtime);
 
         updateResults = kieContainer.updateToVersion(v101);
         assertThat(updateResults.hasMessages(Level.ERROR), is(false));
@@ -229,5 +241,75 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
         assertThat(runtime.getModels(), hasSize(1));
+    }
+
+    @Test
+    public void testKieMarshaller() throws Exception {
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
+        KieHelper.createAndDeployJar(ks,
+                                     v100,
+                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+
+        KieContainer kieContainer = ks.newKieContainer(v100);
+        KieSession kieSession = kieContainer.newKieSession();
+        KieBase kieBase = kieSession.getKieBase();
+        DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+
+        check0001_input_data_string(runtime);
+
+        KieMarshallers kieMarshallers = ks.getMarshallers();
+        Marshaller marshaller = kieMarshallers.newMarshaller(kieBase);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        marshaller.marshall(baos, kieSession);
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        baos.close();
+        kieSession = marshaller.unmarshall(bais);
+        bais.close();
+
+        runtime = kieSession.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+
+        check0001_input_data_string(runtime);
+    }
+
+    @Test
+    public void test_as_kie_wb_common_services_backend_Builder() throws Exception {
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
+        final KieModule kieModule = KieHelper.createAndDeployJar(ks,
+                                                                 v100,
+                                                                 wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+
+        final KieContainer kieContainer = ks.newKieContainer(v100);
+        final KieSession kieSession = kieContainer.newKieSession();
+        final DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+
+        check0001_input_data_string(runtime);
+
+        // the below is performed by the WB at: https://github.com/kiegroup/kie-wb-common/blob/master/kie-wb-common-services/kie-wb-common-services-backend/src/main/java/org/kie/workbench/common/services/backend/builder/core/Builder.java#L592
+        final KieProject kieProject = new KieModuleKieProject((InternalKieModule) kieModule, null);
+        final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
+        final KieSession kieSession2 = kieContainer2.newKieSession(); // exhibit the issue.
+        final DMNRuntime runtime2 = kieSession2.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime2);
+        assertThat(runtime2.getModels(), hasSize(1));
+
+        check0001_input_data_string(runtime2);
+    }
+
+    private void check0001_input_data_string(final DMNRuntime runtime) {
+        final DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("Full Name", "John Doe");
+        final DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
+        LOG.debug("{}", evaluateAll);
+        assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult(), is("Hello John Doe"));
     }
 }

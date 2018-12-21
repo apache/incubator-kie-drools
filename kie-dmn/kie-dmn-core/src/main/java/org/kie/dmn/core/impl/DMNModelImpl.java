@@ -95,6 +95,10 @@ public class DMNModelImpl
     private Map<String, QName> importAliases = new HashMap<>();
     private ImportChain importChain;
 
+    public DMNModelImpl() {
+        // needed because Externalizable.
+    }
+
     public DMNModelImpl(Definitions definitions) {
         this.definitions = definitions;
         wireTypeRegistry(definitions);
