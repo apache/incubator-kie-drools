@@ -47,11 +47,11 @@ import org.kie.test.util.db.PoolingDataSourceWrapper;
 
 public class DBUnavilabilityExecutorTest{
     
-    protected ExecutorService executorService;
     public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
+    private ExecutorService executorService;
     
-    protected EntityManagerFactory emf = null;
     
+    private EntityManagerFactory emf = null;    
  
 	private PoolingDataSourceWrapper pds;
 	
@@ -107,7 +107,7 @@ public class DBUnavilabilityExecutorTest{
         return countDownListener;
     }
     
-    @Test(timeout=10000)
+    @Test(timeout=60000)
     public void reoccurringExecutionTest() throws Exception {
         CountDownAsyncJobListener countDownListener = configureListener(2);
         
