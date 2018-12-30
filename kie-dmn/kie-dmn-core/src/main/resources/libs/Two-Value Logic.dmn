@@ -56,4 +56,25 @@
         </semantic:encapsulatedLogic>
     </semantic:businessKnowledgeModel>
 
+    <semantic:businessKnowledgeModel id="_tvl_sum" name="sum">
+        <semantic:variable name="sum" id="_tvl_sum_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_sum_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_sum_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_sum_4">
+                    <semantic:variable name="class" id="_tvl_sum_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_sum_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_sum_7">
+                    <semantic:variable name="method signature" id="_tvl_sum_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_sum_9">
+                        <semantic:text>"sum( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
 </semantic:definitions>

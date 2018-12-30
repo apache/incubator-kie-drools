@@ -34,4 +34,14 @@
         </semantic:literalExpression>
     </semantic:decision>
 
+    <semantic:decision id="_test_sum_1" name="Test Sum">
+        <semantic:variable name="Test Sum" id="_test_sum_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_sum_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_sum"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_sum_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.sum( [1, null, 2, 3, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
 </semantic:definitions>

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -82,5 +83,26 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Test Any"), is(Boolean.TRUE));
     }
+
+    @Test
+    public void testFunctionSum() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
+                this.getClass(),
+                "/libs/Two-Value Logic.dmn");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
+                "Two-Value Logic Tests");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test Sum");
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Test Sum"), is(new BigDecimal(6, MathContext.DECIMAL128 )));
+    }
+
 }
 
