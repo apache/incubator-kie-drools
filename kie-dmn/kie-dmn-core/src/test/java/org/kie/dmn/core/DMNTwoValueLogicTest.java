@@ -56,12 +56,12 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test All");
+        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test all");
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Test All"), is(Boolean.TRUE));
+        assertThat(result.get("Test all"), is(Boolean.TRUE));
     }
 
     @Test
@@ -76,12 +76,12 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test Any");
+        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test any");
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Test Any"), is(Boolean.TRUE));
+        assertThat(result.get("Test any"), is(Boolean.TRUE));
     }
 
     @Test
@@ -96,12 +96,32 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test Sum");
+        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test sum");
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Test Sum"), is(new BigDecimal(6, MathContext.DECIMAL128 )));
+        assertThat(result.get("Test sum"), is(new BigDecimal(6, MathContext.DECIMAL128 )));
+    }
+
+    @Test
+    public void testFunctionMean() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
+                this.getClass(),
+                "/libs/Two-Value Logic.dmn");
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
+                "Two-Value Logic Tests");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test mean");
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Test mean"), is(new BigDecimal(20, MathContext.DECIMAL128 )));
     }
 
 }

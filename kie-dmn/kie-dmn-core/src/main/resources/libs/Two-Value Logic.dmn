@@ -77,4 +77,25 @@
         </semantic:encapsulatedLogic>
     </semantic:businessKnowledgeModel>
 
+    <semantic:businessKnowledgeModel id="_tvl_mean" name="mean">
+        <semantic:variable name="mean" id="_tvl_mean_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_mean_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_mean_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_mean_4">
+                    <semantic:variable name="class" id="_tvl_mean_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mean_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_mean_7">
+                    <semantic:variable name="method signature" id="_tvl_mean_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mean_9">
+                        <semantic:text>"mean( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
 </semantic:definitions>

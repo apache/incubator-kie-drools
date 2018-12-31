@@ -54,7 +54,7 @@ public class SumFunctionTest {
 
     @Test
     public void invokeListParam() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke((List) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResult(sumFunction.invoke((List) null), null);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class SumFunctionTest {
 
     @Test
     public void invokeArrayParam() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke((Object[]) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResult(sumFunction.invoke((Object[]) null), null);
     }
 
     @Test

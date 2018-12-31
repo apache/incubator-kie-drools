@@ -35,7 +35,7 @@ public class AnyFunctionTest {
 
     @Test
     public void invokeBooleanParamNull() {
-        FunctionTestUtil.assertResultNull(anyFunction.invoke((Boolean) null));
+        FunctionTestUtil.assertResult(anyFunction.invoke((Boolean) null), false);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class AnyFunctionTest {
 
     @Test
     public void invokeArrayParamNull() {
-        FunctionTestUtil.assertResultError(anyFunction.invoke((Object[]) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResult(anyFunction.invoke((Object[]) null), false);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class AnyFunctionTest {
 
     @Test
     public void invokeArrayParamReturnNull() {
-        FunctionTestUtil.assertResultNull(anyFunction.invoke(new Object[]{Boolean.FALSE, null, Boolean.FALSE}));
+        FunctionTestUtil.assertResult(anyFunction.invoke(new Object[]{Boolean.FALSE, null, Boolean.FALSE}), false);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class AnyFunctionTest {
 
     @Test
     public void invokeListParamNull() {
-        FunctionTestUtil.assertResultError(anyFunction.invoke((List) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResult(anyFunction.invoke((List) null), false);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class AnyFunctionTest {
 
     @Test
     public void invokeListParamReturnNull() {
-        FunctionTestUtil.assertResultNull(anyFunction.invoke(Arrays.asList(Boolean.FALSE, null, Boolean.FALSE)));
+        FunctionTestUtil.assertResult(anyFunction.invoke(Arrays.asList(Boolean.FALSE, null, Boolean.FALSE)), false);
     }
 
     @Test

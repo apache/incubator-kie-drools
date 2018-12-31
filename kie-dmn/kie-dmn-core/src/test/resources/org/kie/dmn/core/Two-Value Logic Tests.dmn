@@ -14,8 +14,8 @@
                      xmlns:drools="http://www.drools.org/kie/dmn/1.1"
                      drools:modelName="Two-Value Logic"/>
                      
-    <semantic:decision id="_test_all_1" name="Test All">
-        <semantic:variable name="Test All" id="_test_all_2" typeRef="Any"/>
+    <semantic:decision id="_test_all_1" name="Test all">
+        <semantic:variable name="Test all" id="_test_all_2" typeRef="Any"/>
         <semantic:knowledgeRequirement id="_test_all_3">
             <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_all"/>
         </semantic:knowledgeRequirement>
@@ -24,8 +24,8 @@
         </semantic:literalExpression>
     </semantic:decision>
     
-    <semantic:decision id="_test_any_1" name="Test Any">
-        <semantic:variable name="Test Any" id="_test_any_2" typeRef="Any"/>
+    <semantic:decision id="_test_any_1" name="Test any">
+        <semantic:variable name="Test any" id="_test_any_2" typeRef="Any"/>
         <semantic:knowledgeRequirement id="_test_any_3">
             <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_any"/>
         </semantic:knowledgeRequirement>
@@ -34,13 +34,23 @@
         </semantic:literalExpression>
     </semantic:decision>
 
-    <semantic:decision id="_test_sum_1" name="Test Sum">
-        <semantic:variable name="Test Sum" id="_test_sum_2" typeRef="Any"/>
+    <semantic:decision id="_test_sum_1" name="Test sum">
+        <semantic:variable name="Test sum" id="_test_sum_2" typeRef="Any"/>
         <semantic:knowledgeRequirement id="_test_sum_3">
             <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_sum"/>
         </semantic:knowledgeRequirement>
         <semantic:literalExpression id="_test_sum_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
             <semantic:text>tvl.sum( [1, null, 2, 3, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_mean_1" name="Test mean">
+        <semantic:variable name="Test mean" id="_test_mean_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_mean_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_mean"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_mean_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.mean( [10, null, 20, 30, null] )</semantic:text>
         </semantic:literalExpression>
     </semantic:decision>
 

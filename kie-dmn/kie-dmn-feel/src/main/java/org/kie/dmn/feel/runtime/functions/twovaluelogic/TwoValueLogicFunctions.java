@@ -7,6 +7,7 @@ public class TwoValueLogicFunctions {
     private static AllFunction allFunction = new AllFunction();
     private static AnyFunction anyFunction = new AnyFunction();
     private static SumFunction sumFunction = new SumFunction();
+    private static MeanFunction meanFunction = new MeanFunction();
 
     public static Boolean all(List<Boolean> list) {
         return allFunction.invoke(list).cata(e -> Boolean.FALSE, Function.identity());
@@ -19,4 +20,9 @@ public class TwoValueLogicFunctions {
     public static Number sum(List<Boolean> list) {
         return sumFunction.invoke(list).cata(e -> null, Function.identity());
     }
+
+    public static Number mean(List<Number> list) {
+        return meanFunction.invoke(list).cata(e -> null, Function.identity());
+    }
+
 }
