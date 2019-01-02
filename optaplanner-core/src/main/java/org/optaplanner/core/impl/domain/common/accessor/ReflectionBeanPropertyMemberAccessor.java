@@ -34,6 +34,10 @@ public final class ReflectionBeanPropertyMemberAccessor implements MemberAccesso
     private final Method setterMethod;
 
     public ReflectionBeanPropertyMemberAccessor(Method getterMethod) {
+        this(getterMethod, false);
+    }
+
+    public ReflectionBeanPropertyMemberAccessor(Method getterMethod, boolean getterOnly) {
         this.getterMethod = getterMethod;
         getterMethod.setAccessible(true); // Performance hack by avoiding security checks
         Class<?> declaringClass = getterMethod.getDeclaringClass();
@@ -42,9 +46,13 @@ public final class ReflectionBeanPropertyMemberAccessor implements MemberAccesso
         }
         propertyType = getterMethod.getReturnType();
         propertyName = ReflectionHelper.getGetterPropertyName(getterMethod);
-        setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
-        if (setterMethod != null) {
-            setterMethod.setAccessible(true); // Performance hack by avoiding security checks
+        if (getterOnly) {
+            setterMethod = null;
+        } else {
+            setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
+            if (setterMethod != null) {
+                setterMethod.setAccessible(true); // Performance hack by avoiding security checks
+            }
         }
     }
 

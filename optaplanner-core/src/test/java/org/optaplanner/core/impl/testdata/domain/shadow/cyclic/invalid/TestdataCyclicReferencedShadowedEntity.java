@@ -43,7 +43,7 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
     }
 
     private TestdataValue value;
-    private boolean barber;
+    private Boolean barber;
     private boolean cutsOwnHair;
 
     public TestdataCyclicReferencedShadowedEntity() {
@@ -70,11 +70,11 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
     @CustomShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class,
             sources = {@PlanningVariableReference(variableName = "value"),
                     @PlanningVariableReference(variableName = "cutsOwnHair")})
-    public boolean isBarber() {
+    public Boolean isBarber() {
         return barber;
     }
 
-    public void setBarber(boolean barber) {
+    public void setBarber(Boolean barber) {
         this.barber = barber;
     }
 
@@ -111,7 +111,7 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
             // The barber cuts the hair of everyone in the village who does not cut his/her own hair
             // Does the barber cut his own hair?
             TestdataValue value = entity.getValue();
-            boolean barber = !entity.isCutsOwnHair();
+            Boolean barber = !entity.isCutsOwnHair();
             scoreDirector.beforeVariableChanged(entity, "barber");
             entity.setBarber(value != null && barber);
             scoreDirector.afterVariableChanged(entity, "barber");

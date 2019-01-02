@@ -42,6 +42,10 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
     private final BiConsumer setterFunction;
 
     public LambdaBeanPropertyMemberAccessor(Method getterMethod) {
+        this(getterMethod, false);
+    }
+
+    public LambdaBeanPropertyMemberAccessor(Method getterMethod, boolean getterOnly) {
         this.getterMethod = getterMethod;
         Class<?> declaringClass = getterMethod.getDeclaringClass();
         if (!ReflectionHelper.isGetterMethod(getterMethod)) {
@@ -53,8 +57,13 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
         // MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(declaringClass, MethodHandles.lookup())
         MethodHandles.Lookup lookup = MethodHandles.lookup();
         getterFunction = createGetterFunction(lookup);
-        setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
-        setterFunction = createSetterFunction(lookup);
+        if (getterOnly) {
+            setterMethod = null;
+            setterFunction = null;
+        } else {
+            setterMethod = ReflectionHelper.getSetterMethod(declaringClass, getterMethod.getReturnType(), propertyName);
+            setterFunction = createSetterFunction(lookup);
+        }
     }
 
     private Function createGetterFunction(MethodHandles.Lookup lookup) {
