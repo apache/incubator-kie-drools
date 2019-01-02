@@ -48,6 +48,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -1337,6 +1338,12 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
                                 acceptHeaderValue);
             } else if ("DELETE".equals(method)) {
                 builder = RequestBuilder.delete().setUri(urlStr);
+            } else if ("PATCH".equals(method)) {
+                builder = RequestBuilder.patch().setUri(urlStr);
+                setBody(builder,
+                        params);
+                addAcceptHeader(builder,
+                                acceptHeaderValue);
             } else {
                 throw new IllegalArgumentException("Method " + method + " is not supported");
             }
@@ -1363,6 +1370,12 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler imple
                                 acceptHeaderValue);
             } else if ("DELETE".equals(method)) {
                 theMethod = new HttpDelete(urlStr);
+            } else if ("PATCH".equals(method)) {
+                theMethod = new HttpPatch(urlStr);
+                setBody(theMethod,
+                        params);
+                addAcceptHeader(theMethod,
+                                acceptHeaderValue);
             } else {
                 throw new IllegalArgumentException("Method " + method + " is not supported");
             }

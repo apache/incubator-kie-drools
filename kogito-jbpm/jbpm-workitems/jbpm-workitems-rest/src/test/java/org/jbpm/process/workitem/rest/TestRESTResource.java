@@ -32,6 +32,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -83,6 +84,15 @@ public class TestRESTResource {
     public Person putXml(Person person) {
         person.setName("Put " + person.getName());
         return person;
+    }
+
+    @PATCH
+    @Path("/xml")
+    @Consumes("application/xml")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response patchXml(Person person) {
+        person.setName("Patch " + person.getName());
+        return Response.status(Status.NO_CONTENT).build();
     }
 
     @PUT

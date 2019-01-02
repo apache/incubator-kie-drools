@@ -571,6 +571,40 @@ public class RestWorkItemHandlerTest {
     }
 
     @Test
+    public void testPATCHOperation() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter("Url",
+                              serverURL + "/xml");
+        workItem.setParameter("Method",
+                              "PATCH");
+        workItem.setParameter(PARAM_CONTENT_TYPE,
+                              "application/xml");
+        workItem.setParameter(PARAM_CONTENT_TYPE_CHARSET,
+                              "UTF-8");
+        workItem.setParameter(contentParamName,
+                              "<person><name>john</name><age>25</age></person>");
+
+        WorkItemManager manager = new TestWorkItemManager();
+        handler.executeWorkItem(workItem,
+                                manager);
+
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(PARAM_RESULT);
+        assertNull("result should be  null",
+                      result);
+        int responseCode = (Integer) results.get(PARAM_STATUS);
+        assertNotNull(responseCode);
+        assertEquals(204,
+                     responseCode);
+        String responseMsg = (String) results.get(PARAM_STATUS_MSG);
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") + " successfully completed No Content",
+                     responseMsg);
+    }
+
+    @Test
     public void testDELETEOperation() {
         RESTWorkItemHandler handler = new RESTWorkItemHandler();
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
