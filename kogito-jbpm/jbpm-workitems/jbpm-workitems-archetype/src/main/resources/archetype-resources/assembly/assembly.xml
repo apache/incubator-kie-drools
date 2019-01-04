@@ -25,6 +25,7 @@
         <include>index.html</include>
         <include>*.json</include>
         <include>*.xml</include>
+        <include>*.bpmn2</include>
       </includes>
     </fileSet>
     <fileSet>
@@ -33,7 +34,8 @@
       <includes>
         <include>repoconf.part</include>
         <include>repoindex.html</include>
-        <include>icon.png</include>
+        <include>*.png</include>
+        <include>*.bpmn2</include>
       </includes>
     </fileSet>
   </fileSets>

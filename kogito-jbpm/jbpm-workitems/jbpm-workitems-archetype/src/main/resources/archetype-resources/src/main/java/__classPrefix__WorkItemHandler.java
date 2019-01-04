@@ -24,12 +24,17 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.jbpm.process.workitem.core.util.Wid;
 import org.jbpm.process.workitem.core.util.WidParameter;
 import org.jbpm.process.workitem.core.util.WidResult;
+import org.jbpm.process.workitem.core.util.service.WidAction;
+import org.jbpm.process.workitem.core.util.service.WidAuth;
+import org.jbpm.process.workitem.core.util.service.WidService;
 import org.jbpm.process.workitem.core.util.WidMavenDepends;
 
 @Wid(widfile="${classPrefix}Definitions.wid", name="${classPrefix}Definitions",
-        displayName="${classPrefix}Definitions", icon="",
+        displayName="${classPrefix}Definitions",
         defaultHandler="mvel: new ${package}.${classPrefix}WorkItemHandler()",
         documentation = "${artifactId}/index.html",
+        category = "${artifactId}",
+        icon = "icon.png",
         parameters={
             @WidParameter(name="SampleParam", required = true),
             @WidParameter(name="SampleParamTwo", required = true)
@@ -39,7 +44,15 @@ import org.jbpm.process.workitem.core.util.WidMavenDepends;
         },
         mavenDepends={
             @WidMavenDepends(group="${groupId}", artifact="${artifactId}", version="${archetypeVersion}")
-        })
+        },
+        serviceInfo = @WidService(category = "${artifactId}", description = "${description}",
+                keywords = "",
+                action = @WidAction(title = "Sample Title"),
+                authinfo = @WidAuth(required = true, params = {"SampleParam", "SampleParamTwo"},
+                        paramsdescription = {"SampleParam", "SampleParamTwo"},
+                        referencesite = "referenceSiteURL")
+        )
+)
 public class ${classPrefix}WorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     public void executeWorkItem(WorkItem workItem,

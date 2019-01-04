@@ -110,32 +110,75 @@ public class WidProcessor extends AbstractProcessor {
                                                          "Unable to find option \"generateTemplates\", using default (false).");
             }
 
-            List<String> templateResourceList = new ArrayList();
-            if (processingEnv.getOptions().containsKey("templateResources")) {
-                templateResourceList = Arrays.asList(processingEnv.getOptions().get("templateResources").split(","));
-            } else {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
-                                                         "Unable to find option \"templateResources\", using default (none).");
-            }
-
             if (generateTemplates) {
-                for (String templateResource : templateResourceList) {
-                    String templateInfo[] = templateResource.split(":");
-                    writeStream(getFileObject("",
-                                              templateInfo[0]),
-                                getTemplateData(templateInfo[1],
-                                                wrappedResults));
+                if (processingEnv.getOptions().containsKey("templateResources")) {
+                    List<String> templateResourceList = Arrays.asList(processingEnv.getOptions().get("templateResources").split(","));
+
+                    for (String templateResource : templateResourceList) {
+                        String templateInfo[] = templateResource.split(":");
+                        writeStream(getFileObject("",
+                                                  templateInfo[0]),
+                                    getTemplateData(templateInfo[1],
+                                                    wrappedResults));
+                    }
+                } else {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                                                             "Unable to find option \"templateResources\", using default (none).");
                 }
             } else {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
                                                          "Not generating templates.");
             }
+
+            boolean generateWids = false;
+            if (processingEnv.getOptions().containsKey("generateWids")) {
+                generateWids = Boolean.parseBoolean(processingEnv.getOptions().get("generateWids"));
+            } else {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                                                         "Unable to find option \"generateWids\", using default (false).");
+            }
+
+            if (generateWids) {
+                if (processingEnv.getOptions().containsKey("widsResources")) {
+                    String widInfo[] = processingEnv.getOptions().get("widsResources").split(":");
+
+                    generateWids(widInfo, wrappedResults);
+
+                } else {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                                                             "Unable to find option \"widsResources\", using default (none).");
+                }
+            } else {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                                                         "Not generating wids.");
+            }
+
         } catch (Exception e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
                                                      MessageFormat.format("Error post-processing workitem annotations: {0}.",
                                                                           e.getMessage()));
         }
         return true;
+    }
+
+    public void generateWids(String[] widInfo, Map<String, WidInfo> wrappedResults) throws IOException {
+        // generate "all" wid
+        writeStream(getFileObject("",
+                                  widInfo[0]),
+                    getTemplateData(widInfo[1],
+                                    wrappedResults));
+
+        // generate handler wids
+        Set<String> resultKeys = wrappedResults.keySet();
+        for(String key : resultKeys) {
+            Map<String, WidInfo> keyMap = new HashMap<>();
+            keyMap.put(key, wrappedResults.get(key));
+            writeStream(getFileObject("",
+                                      wrappedResults.get(key).getName() + ".wid"),
+                        getTemplateData(widInfo[1],
+                                        keyMap));
+        }
+
     }
 
     public byte[] getTemplateData(String templateResource,

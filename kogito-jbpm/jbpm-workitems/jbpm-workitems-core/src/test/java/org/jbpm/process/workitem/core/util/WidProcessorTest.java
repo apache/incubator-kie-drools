@@ -600,7 +600,9 @@ public class WidProcessorTest {
 
         List<String> processorOptions = Arrays.asList("-AwidName=testwid",
                                                       "-AgenerateTemplates=true",
-                                                      "-AtemplateResources=testwid.wid:dummytemplate.st,testwid.json:dummytemplate.st,index.html:dummytemplate.st");
+                                                      "-AgenerateWids=true",
+                                                      "-AwidsResources=testwid.wid:dummytemplate.st",
+                                                      "-AtemplateResources=index.html:dummytemplate.st");
 
         Compiler compiler = compileWithGenerator(processorOptions);
         compiler.compile(source1);
