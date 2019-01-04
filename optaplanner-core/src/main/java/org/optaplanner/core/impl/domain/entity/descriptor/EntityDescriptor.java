@@ -56,7 +56,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFacto
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.PinEntityFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.*;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
+import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -189,8 +191,14 @@ public class EntityDescriptor<Solution_> {
         Class<? extends Annotation> variableAnnotationClass = ConfigUtils.extractAnnotationClass(
                 member, VARIABLE_ANNOTATION_CLASSES);
         if (variableAnnotationClass != null) {
+            MemberAccessorFactory.MemberAccessorType memberAccessorType;
+            if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
+                memberAccessorType = FIELD_OR_GETTER_METHOD;
+            } else {
+                memberAccessorType = FIELD_OR_GETTER_METHOD_WITH_SETTER;
+            }
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
-                    member, FIELD_OR_GETTER_METHOD_WITH_SETTER, variableAnnotationClass);
+                    member, memberAccessorType, variableAnnotationClass);
             registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
         }
     }
