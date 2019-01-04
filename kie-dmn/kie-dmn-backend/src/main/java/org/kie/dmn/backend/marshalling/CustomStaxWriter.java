@@ -27,9 +27,13 @@ public class CustomStaxWriter extends StaxWriter implements AutoCloseable {
     }
 
     public void writeNamespace(String prefix, String uri) throws XMLStreamException {
-        out.writeNamespace(prefix, uri);
+        if (prefix.equals(out.getPrefix(uri))) {
+            // Do nothing: XStream internals actually already provided this mapping.
+        } else {
+            out.writeNamespace(prefix, uri);
+        }
     }
-    
+
     public void setDefaultNamespace(String uri) throws XMLStreamException {
         out.setDefaultNamespace(uri);
     }

@@ -37,13 +37,16 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.util.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
@@ -311,5 +314,46 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
         LOG.debug("{}", evaluateAll);
         assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult(), is("Hello John Doe"));
+    }
+
+    @Test
+    public void test_as_kie_wb_common_services_backend_Builder2() throws Exception {
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
+        final KieModule kieModule = KieHelper.createAndDeployJar(ks,
+                                                                 v100,
+                                                                 wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("v1_2/dmn-hotcold.dmn", this.getClass())));
+
+        final KieContainer kieContainer = ks.newKieContainer(v100);
+        final KieSession kieSession = kieContainer.newKieSession();
+        final DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+
+        checkDMNHotColdDMN12WithNSScattered(runtime);
+
+        // the below is performed by the WB at: https://github.com/kiegroup/kie-wb-common/blob/master/kie-wb-common-services/kie-wb-common-services-backend/src/main/java/org/kie/workbench/common/services/backend/builder/core/Builder.java#L592
+        final KieProject kieProject = new KieModuleKieProject((InternalKieModule) kieModule, null);
+        final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
+        final KieSession kieSession2 = kieContainer2.newKieSession(); // exhibit the issue.
+        final DMNRuntime runtime2 = kieSession2.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime2);
+        assertThat(runtime2.getModels(), hasSize(1));
+
+        checkDMNHotColdDMN12WithNSScattered(runtime2);
+    }
+
+    private void checkDMNHotColdDMN12WithNSScattered(final DMNRuntime runtime) {
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_41A586D4-CEE9-420F-9289-7E0249B2EA34", "dmn1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false));
+        final DMNContext context = DMNFactory.newContext();
+        context.set("temperature", 3);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.info("{}", dmnResult);
+        assertThat(dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getContext().get("is it cold?"), is("hot"));
     }
 }
