@@ -362,7 +362,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void setState(final int state, String outcome) {
-	    super.setState(state, outcome);
         // TODO move most of this to ProcessInstanceImpl
         if (state == ProcessInstance.STATE_COMPLETED
                 || state == ProcessInstance.STATE_ABORTED) {
@@ -378,6 +377,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
             InternalProcessRuntime processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
             processRuntime.getProcessEventSupport().fireBeforeProcessCompleted(this, kruntime);
+            // JBPM-8094 - set state after event
+            super.setState(state, outcome);
+
             // deactivate all node instances of this process instance
             while (!nodeInstances.isEmpty()) {
                 NodeInstance nodeInstance = nodeInstances.get(0);
@@ -413,6 +415,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                     processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
                 }
             }
+        } else {
+            super.setState(state, outcome);
         }
 	}
 

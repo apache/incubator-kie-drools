@@ -54,7 +54,7 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
     }
 
     @Override
-    public void beforeProcessCompleted(ProcessCompletedEvent event) {
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
         if (event.getProcessInstance().getState() == ProcessInstance.STATE_ABORTED) {
             processesAborted.add(event.getProcessInstance().getProcessId());
         } else {

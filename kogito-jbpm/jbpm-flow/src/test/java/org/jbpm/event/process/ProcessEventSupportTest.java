@@ -173,6 +173,92 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         assertEquals( "Start", ((ProcessNodeTriggeredEvent) processEventList.get(14)).getNodeInstance().getNodeName());
         assertEquals( "org.drools.core.process.event", ((ProcessStartedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
     }
+
+    @Test
+    public void testProcessEventListenerProcessState() throws Exception {
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        // create a simple package with one process to test the events
+        final InternalKnowledgePackage pkg = new KnowledgePackageImpl("org.drools.test");
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.core.process.event");
+        process.setName("Event Process");
+
+        StartNode startNode = new StartNode();
+        startNode.setName("Start");
+        startNode.setId(1);
+        process.addNode(startNode);
+
+        ActionNode actionNode = new ActionNode();
+        actionNode.setName("Print");
+        DroolsAction action = new DroolsConsequenceAction("java", null);
+        action.setMetaData("Action", new Action() {
+
+            public void execute(ProcessContext context) throws Exception {
+                logger.info("Executed action");
+            }
+        });
+        actionNode.setAction(action);
+        actionNode.setId(2);
+        process.addNode(actionNode);
+        new ConnectionImpl(startNode, Node.CONNECTION_DEFAULT_TYPE, actionNode, Node.CONNECTION_DEFAULT_TYPE);
+
+        EndNode endNode = new EndNode();
+        endNode.setName("End");
+        endNode.setId(3);
+        process.addNode(endNode);
+        new ConnectionImpl(actionNode, Node.CONNECTION_DEFAULT_TYPE, endNode, Node.CONNECTION_DEFAULT_TYPE);
+
+        pkg.addProcess(process);
+        List<KiePackage> pkgs = new ArrayList<KiePackage>();
+        pkgs.add(pkg);
+        kbase.addPackages(pkgs);
+
+        KieSession session = kbase.newKieSession();
+        final List<Integer> processEventStatusList = new ArrayList<Integer>();
+        final ProcessEventListener processEventListener = new ProcessEventListener() {
+
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+            }
+
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+            }
+
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                processEventStatusList.add(new Integer(event.getProcessInstance().getState()));
+            }
+
+            public void afterProcessStarted(ProcessStartedEvent event) {
+            }
+
+            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+            }
+
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+            }
+
+            public void beforeProcessCompleted(ProcessCompletedEvent event) {
+                processEventStatusList.add(new Integer(event.getProcessInstance().getState()));
+            }
+
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+            }
+
+            public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+            }
+
+            public void afterVariableChanged(ProcessVariableChangedEvent event) {
+            }
+
+        };
+        session.addEventListener(processEventListener);
+
+        // execute the process
+        session.startProcess("org.drools.core.process.event");
+        assertEquals(2, processEventStatusList.size());
+        assertEquals(new Integer(ProcessInstance.STATE_ACTIVE), processEventStatusList.get(0));
+        assertEquals(new Integer(ProcessInstance.STATE_COMPLETED), processEventStatusList.get(1));
+    }
     
 	@Test
     public void testProcessEventListenerWithEvent() throws Exception {
