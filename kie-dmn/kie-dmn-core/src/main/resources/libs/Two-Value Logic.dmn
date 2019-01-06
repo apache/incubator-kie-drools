@@ -182,4 +182,25 @@
         </semantic:encapsulatedLogic>
     </semantic:businessKnowledgeModel>
 
+    <semantic:businessKnowledgeModel id="_tvl_mode" name="mode">
+        <semantic:variable name="mode" id="_tvl_mode_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_mode_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_mode_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_mode_4">
+                    <semantic:variable name="class" id="_tvl_mode_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mode_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_mode_7">
+                    <semantic:variable name="method signature" id="_tvl_mode_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mode_9">
+                        <semantic:text>"mode( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
 </semantic:definitions>

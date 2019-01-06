@@ -94,4 +94,14 @@
         </semantic:literalExpression>
     </semantic:decision>
 
+    <semantic:decision id="_test_mode_1" name="Test mode">
+        <semantic:variable name="Test mode" id="_test_mode_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_mode_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_mode"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_mode_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.mode( [10, null, 20, 30, 20, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
 </semantic:definitions>

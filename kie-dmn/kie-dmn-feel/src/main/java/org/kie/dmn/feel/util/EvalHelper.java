@@ -138,7 +138,8 @@ public class EvalHelper {
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
-        if ( !(value instanceof Number
+        if ( value == null ||
+                !(value instanceof Number
                 || value instanceof String)
                 || (value instanceof Double
                 && (value.toString().equals("NaN") || value.toString().equals("Infinity") || value.toString().equals("-Infinity"))) ) {
@@ -151,8 +152,12 @@ public class EvalHelper {
             } else if ( value instanceof BigInteger ) {
                 value = new BigDecimal( (BigInteger) value, MathContext.DECIMAL128 );
             } else if ( value instanceof String ) {
-                // we need to remove leading zeros to prevent octal conversion
-                value = new BigDecimal( ((String) value).replaceFirst("^0+(?!$)", ""), MathContext.DECIMAL128 );
+                try {
+                    // we need to remove leading zeros to prevent octal conversion
+                    value = new BigDecimal( ((String) value).replaceFirst("^0+(?!$)", ""), MathContext.DECIMAL128 );
+                } catch (NumberFormatException e) {
+                    return null;
+                }
             } else {
                 // doubleValue() sometimes produce rounding errors, so we need to use toString() instead
                 // We also need to remove trailing zeros, if there are some so for 10d we get BigDecimal.valueOf(10)

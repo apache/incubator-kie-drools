@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -117,5 +118,11 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
     public void testFunctionMedian() {
         runTest("Test median", new BigDecimal(20, MathContext.DECIMAL128 ));
     }
+
+    @Test
+    public void testFunctionMode() {
+        runTest("Test mode", Arrays.asList( new BigDecimal(20, MathContext.DECIMAL128 ) ) );
+    }
+
 }
 
