@@ -98,5 +98,10 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
         runTest("Test mean", new BigDecimal(20, MathContext.DECIMAL128 ));
     }
 
+    @Test
+    public void testFunctionCount() {
+        runTest("Test count", new BigDecimal(3, MathContext.DECIMAL128 ));
+    }
+
 }
 

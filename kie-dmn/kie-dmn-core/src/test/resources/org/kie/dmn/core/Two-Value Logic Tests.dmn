@@ -54,4 +54,14 @@
         </semantic:literalExpression>
     </semantic:decision>
 
+    <semantic:decision id="_test_count_1" name="Test count">
+        <semantic:variable name="Test count" id="_test_count_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_count_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_count"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_count_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.count( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
 </semantic:definitions>

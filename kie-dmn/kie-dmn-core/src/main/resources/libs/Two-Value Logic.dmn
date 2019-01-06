@@ -98,4 +98,25 @@
         </semantic:encapsulatedLogic>
     </semantic:businessKnowledgeModel>
 
+    <semantic:businessKnowledgeModel id="_tvl_count" name="count">
+        <semantic:variable name="count" id="_tvl_count_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_count_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_count_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_count_4">
+                    <semantic:variable name="class" id="_tvl_count_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_count_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_count_7">
+                    <semantic:variable name="method signature" id="_tvl_count_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_count_9">
+                        <semantic:text>"count( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
 </semantic:definitions>
