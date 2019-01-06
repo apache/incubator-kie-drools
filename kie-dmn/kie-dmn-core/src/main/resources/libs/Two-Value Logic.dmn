@@ -161,4 +161,25 @@
         </semantic:encapsulatedLogic>
     </semantic:businessKnowledgeModel>
 
+    <semantic:businessKnowledgeModel id="_tvl_median" name="median">
+        <semantic:variable name="median" id="_tvl_median_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_median_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_median_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_median_4">
+                    <semantic:variable name="class" id="_tvl_median_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_median_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_median_7">
+                    <semantic:variable name="method signature" id="_tvl_median_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_median_9">
+                        <semantic:text>"median( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
 </semantic:definitions>

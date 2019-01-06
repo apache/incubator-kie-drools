@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;

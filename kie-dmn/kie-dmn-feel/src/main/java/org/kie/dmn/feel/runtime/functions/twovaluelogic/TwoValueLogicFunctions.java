@@ -11,6 +11,7 @@ public class TwoValueLogicFunctions {
     private static CountFunction countFunction = new CountFunction();
     private static MaxFunction maxFunction = new MaxFunction();
     private static MinFunction minFunction = new MinFunction();
+    private static MedianFunction medianFunction = MedianFunction.INSTANCE;
 
     public static Boolean all(List<Boolean> list) {
         return allFunction.invoke(list).cata(e -> Boolean.FALSE, Function.identity());
@@ -38,6 +39,10 @@ public class TwoValueLogicFunctions {
 
     public static Object min(List<Number> list) {
         return minFunction.invoke(list).cata(e -> null, Function.identity());
+    }
+
+    public static Number median(List<Number> list) {
+        return medianFunction.invoke(list).cata(e -> null, Function.identity());
     }
 
 }

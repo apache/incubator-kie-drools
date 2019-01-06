@@ -112,5 +112,10 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
     public void testFunctionMin() {
         runTest("Test min", new BigDecimal(10, MathContext.DECIMAL128 ));
     }
+
+    @Test
+    public void testFunctionMedian() {
+        runTest("Test median", new BigDecimal(20, MathContext.DECIMAL128 ));
+    }
 }
 
