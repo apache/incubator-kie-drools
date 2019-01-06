@@ -103,5 +103,14 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
         runTest("Test count", new BigDecimal(3, MathContext.DECIMAL128 ));
     }
 
+    @Test
+    public void testFunctionMax() {
+        runTest("Test max", new BigDecimal(30, MathContext.DECIMAL128 ));
+    }
+
+    @Test
+    public void testFunctionMin() {
+        runTest("Test min", new BigDecimal(10, MathContext.DECIMAL128 ));
+    }
 }
 

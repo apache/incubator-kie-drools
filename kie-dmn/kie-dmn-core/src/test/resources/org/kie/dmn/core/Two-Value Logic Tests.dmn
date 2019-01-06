@@ -64,4 +64,24 @@
         </semantic:literalExpression>
     </semantic:decision>
 
+    <semantic:decision id="_test_max_1" name="Test max">
+        <semantic:variable name="Test max" id="_test_max_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_max_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_max"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_max_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.max( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_min_1" name="Test min">
+        <semantic:variable name="Test min" id="_test_min_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_min_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic#_tvl_min"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_min_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.min( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
 </semantic:definitions>

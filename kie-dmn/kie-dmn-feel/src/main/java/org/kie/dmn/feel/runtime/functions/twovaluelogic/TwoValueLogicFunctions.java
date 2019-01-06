@@ -9,6 +9,8 @@ public class TwoValueLogicFunctions {
     private static SumFunction sumFunction = new SumFunction();
     private static MeanFunction meanFunction = new MeanFunction();
     private static CountFunction countFunction = new CountFunction();
+    private static MaxFunction maxFunction = new MaxFunction();
+    private static MinFunction minFunction = new MinFunction();
 
     public static Boolean all(List<Boolean> list) {
         return allFunction.invoke(list).cata(e -> Boolean.FALSE, Function.identity());
@@ -28,6 +30,14 @@ public class TwoValueLogicFunctions {
 
     public static Number count(List<Number> list) {
         return countFunction.invoke(list).cata(e -> null, Function.identity());
+    }
+
+    public static Object max(List<Number> list) {
+        return maxFunction.invoke(list).cata(e -> null, Function.identity());
+    }
+
+    public static Object min(List<Number> list) {
+        return minFunction.invoke(list).cata(e -> null, Function.identity());
     }
 
 }

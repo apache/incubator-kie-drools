@@ -119,4 +119,46 @@
         </semantic:encapsulatedLogic>
     </semantic:businessKnowledgeModel>
 
+    <semantic:businessKnowledgeModel id="_tvl_max" name="max">
+        <semantic:variable name="max" id="_tvl_max_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_max_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_max_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_max_4">
+                    <semantic:variable name="class" id="_tvl_max_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_max_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_max_7">
+                    <semantic:variable name="method signature" id="_tvl_max_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_max_9">
+                        <semantic:text>"max( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_min" name="min">
+        <semantic:variable name="min" id="_tvl_min_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_min_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_min_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_min_4">
+                    <semantic:variable name="class" id="_tvl_min_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_min_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_min_7">
+                    <semantic:variable name="method signature" id="_tvl_min_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_min_9">
+                        <semantic:text>"min( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
 </semantic:definitions>
