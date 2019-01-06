@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.dmn.api.core.*;
 import org.kie.dmn.core.api.DMNFactory;
@@ -36,7 +37,18 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+/**
+ * The goal of this test case is just test that the functions are wired properly on the
+ * combined decision service.
+ *
+ * The functions themselves are tested directly, using unit tests, and as such this
+ * test case only has a single scenario for each function.
+ */
 public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
+
+    private static DMNRuntime runtime;
+    private static DMNContext context;
+    private static DMNModel dmnModel;
 
     public DMNTwoValueLogicTest(final boolean useExecModelCompiler) {
         super(useExecModelCompiler);
@@ -44,84 +56,46 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNTwoValueLogicTest.class);
 
-    @Test
-    public void testFunctionAll() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
-                this.getClass(),
+    @BeforeClass
+    public static void setup() {
+        runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
+                DMNTwoValueLogicTest.class,
                 "/libs/Two-Value Logic.dmn");
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
+        dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
                 "Two-Value Logic Tests");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+        context = DMNFactory.newContext();
+    }
 
-        final DMNContext context = DMNFactory.newContext();
 
-        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test all");
+    private void runTest(String decisionName, Object expected) {
+        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, decisionName);
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Test all"), is(Boolean.TRUE));
+        assertThat(result.get(decisionName), is(expected));
+    }
+
+    @Test
+    public void testFunctionAll() {
+        runTest("Test all", Boolean.TRUE);
     }
 
     @Test
     public void testFunctionAny() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
-                this.getClass(),
-                "/libs/Two-Value Logic.dmn");
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
-                "Two-Value Logic Tests");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
-
-        final DMNContext context = DMNFactory.newContext();
-
-        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test any");
-        LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-
-        final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Test any"), is(Boolean.TRUE));
+        runTest("Test any", Boolean.TRUE);
     }
 
     @Test
     public void testFunctionSum() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
-                this.getClass(),
-                "/libs/Two-Value Logic.dmn");
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
-                "Two-Value Logic Tests");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
-
-        final DMNContext context = DMNFactory.newContext();
-
-        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test sum");
-        LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-
-        final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Test sum"), is(new BigDecimal(6, MathContext.DECIMAL128 )));
+        runTest("Test sum", new BigDecimal(6, MathContext.DECIMAL128 ));
     }
 
     @Test
     public void testFunctionMean() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Two-Value Logic Tests.dmn",
-                this.getClass(),
-                "/libs/Two-Value Logic.dmn");
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967",
-                "Two-Value Logic Tests");
-        assertThat(dmnModel, notNullValue());
-        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
-
-        final DMNContext context = DMNFactory.newContext();
-
-        final DMNResult dmnResult = runtime.evaluateByName(dmnModel, context, "Test mean");
-        LOG.debug("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-
-        final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Test mean"), is(new BigDecimal(20, MathContext.DECIMAL128 )));
+        runTest("Test mean", new BigDecimal(20, MathContext.DECIMAL128 ));
     }
 
 }
