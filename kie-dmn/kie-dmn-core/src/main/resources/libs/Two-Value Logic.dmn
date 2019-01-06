@@ -203,4 +203,25 @@
         </semantic:encapsulatedLogic>
     </semantic:businessKnowledgeModel>
 
+    <semantic:businessKnowledgeModel id="_tvl_stddev" name="stddev">
+        <semantic:variable name="stddev" id="_tvl_stddev_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_stddev_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_stddev_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_stddev_4">
+                    <semantic:variable name="class" id="_tvl_stddev_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_stddev_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_stddev_7">
+                    <semantic:variable name="method signature" id="_tvl_stddev_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_stddev_9">
+                        <semantic:text>"stddev( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
 </semantic:definitions>

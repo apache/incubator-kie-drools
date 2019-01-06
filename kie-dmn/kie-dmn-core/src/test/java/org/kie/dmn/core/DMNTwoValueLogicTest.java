@@ -124,5 +124,9 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
         runTest("Test mode", Arrays.asList( new BigDecimal(20, MathContext.DECIMAL128 ) ) );
     }
 
+    @Test
+    public void testFunctionStddev() {
+        runTest("Test stddev", new BigDecimal("8.164965809277260327324280249019638", MathContext.DECIMAL128 ) );
+    }
 }
 
