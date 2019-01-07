@@ -21,13 +21,16 @@ import org.kie.api.io.ResourceType;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public class BayesPackage implements ResourceTypePackage {
+public class BayesPackage implements ResourceTypePackage<JunctionTree> {
     private Map<String, JunctionTree> trees;
+    private String namespace;
 
-    public BayesPackage() {
-        trees = new HashMap<String, JunctionTree>();
+    public BayesPackage(String namespace) {
+        this.trees = new HashMap<String, JunctionTree>();
+        this.namespace = namespace;
     }
 
     public Collection<String> listJunctionTrees() {
@@ -48,5 +51,15 @@ public class BayesPackage implements ResourceTypePackage {
     @Override
     public ResourceType getResourceType() {
         return ResourceType.BAYES;
+    }
+
+    @Override
+    public void add(JunctionTree processedResource) {
+        addJunctionTree(processedResource.getName(), processedResource);
+    }
+
+    @Override
+    public Iterator<JunctionTree> iterator() {
+        return trees.values().iterator();
     }
 }

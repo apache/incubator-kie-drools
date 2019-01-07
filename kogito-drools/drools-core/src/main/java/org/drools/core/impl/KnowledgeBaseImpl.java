@@ -100,10 +100,8 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -168,7 +166,7 @@ public class KnowledgeBaseImpl
     private transient Map<Integer, SegmentMemory.Prototype> segmentProtos = new ConcurrentHashMap<Integer, SegmentMemory.Prototype>();
 
     private KieComponentFactory kieComponentFactory;
-    
+
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
 
@@ -262,7 +260,7 @@ public class KnowledgeBaseImpl
             kieBaseListeners.remove( listener );
         }
     }
-    
+
     public Collection<KieBaseEventListener> getKieBaseEventListeners() {
         return Collections.unmodifiableCollection( kieBaseListeners );
     }
@@ -316,7 +314,7 @@ public class KnowledgeBaseImpl
         InternalKnowledgePackage p = getPackage(packageName);
         return p == null ? null : p.getRule( ruleName );
     }
-    
+
     public Query getQuery(String packageName,
                           String queryName) {
         return getPackage(packageName).getRule( queryName );
@@ -478,7 +476,7 @@ public class KnowledgeBaseImpl
         this.reteooBuilder = (ReteooBuilder) droolsStream.readObject();
         this.reteooBuilder.setRuleBase(this);
         this.rete = (Rete) droolsStream.readObject();
-        
+
         this.resolvedReleaseId = (ReleaseId) droolsStream.readObject();
 
         ( (DroolsObjectInputStream) droolsStream ).bindAllExtractors(this);
@@ -562,7 +560,7 @@ public class KnowledgeBaseImpl
 
         droolsStream.writeObject(this.reteooBuilder);
         droolsStream.writeObject(this.rete);
-        
+
         droolsStream.writeObject(this.resolvedReleaseId);
 
         if (!isDrools) {
@@ -715,7 +713,7 @@ public class KnowledgeBaseImpl
         clonedPkgs.sort(Comparator.comparing( (InternalKnowledgePackage p) -> p.getRules().size() ).reversed().thenComparing( InternalKnowledgePackage::getName ));
         enqueueModification( () -> internalAddPackages( clonedPkgs ) );
     }
-    
+
     @Override
     public Future<KiePackage> addPackage( final KiePackage newPkg ) {
         InternalKnowledgePackage clonedPkg = ((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader);
@@ -925,9 +923,7 @@ public class KnowledgeBaseImpl
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
                 KieWeavers weavers = ServiceRegistry.getInstance().get( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                    ResourceType rt = rtkKpg.getResourceType();
-                    KieWeaverService factory = weavers.getWeavers().get( rt );
-                    factory.weave( this, newPkg, rtkKpg );
+                    weavers.weave( this, newPkg, rtkKpg );
                 }
             }
 
@@ -1227,7 +1223,7 @@ public class KnowledgeBaseImpl
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll(newPkg.getImports());
-        
+
         // Merge static imports
         for (String staticImport : newPkg.getStaticImports()) {
             pkg.addStaticImport(staticImport);
@@ -1320,12 +1316,9 @@ public class KnowledgeBaseImpl
         }
 
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
+            KieWeavers weavers = ServiceRegistry.getInstance().get(KieWeavers.class);
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
-                ResourceType rt = rtkKpg.getResourceType();
-                KieWeavers weavers = ServiceRegistry.getInstance().get(KieWeavers.class);
-
-                KieWeaverService weaver = weavers.getWeavers().get(rt);
-                weaver.merge( this, pkg, rtkKpg );
+                weavers.merge( this, pkg, rtkKpg );
             }
         }
     }
@@ -1749,9 +1742,9 @@ public class KnowledgeBaseImpl
             }
 
             List<TypeDeclaration> removedTypes = pkg.removeTypesGeneratedFromResource(resource);
-            
+
             boolean resourceTypePackageSomethingRemoved = pkg.removeFromResourceTypePackageGeneratedFromResource( resource );
-            
+
             modified |= !rulesToBeRemoved.isEmpty()
                         || !functionsToBeRemoved.isEmpty()
                         || !processesToBeRemoved.isEmpty()

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.kie.api.internal.io.ResourceTypePackage;
 
 public interface DMNPackage
-        extends ResourceTypePackage {
+        extends ResourceTypePackage<DMNModel> {
     String getNamespace();
 
     DMNModel getModel(String name);

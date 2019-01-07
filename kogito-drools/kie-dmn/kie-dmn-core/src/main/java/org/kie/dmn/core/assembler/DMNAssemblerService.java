@@ -30,6 +30,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.Resource;
@@ -156,17 +157,12 @@ public class DMNAssemblerService implements KieAssemblerService {
             InternalKnowledgePackage kpkgs = pkgReg.getPackage();
             kpkgs.addCloningResource( DMN_COMPILER_CACHE_KEY, dmnCompiler );
 
-            Map<ResourceType, ResourceTypePackage> rpkg = kpkgs.getResourceTypePackages();
+            ResourceTypePackageRegistry rpkg = kpkgs.getResourceTypePackages();
 
-            DMNPackageImpl dmnpkg = (DMNPackageImpl) rpkg.get( ResourceType.DMN );
-            if ( dmnpkg == null ) {
-                dmnpkg = new DMNPackageImpl( namespace );
-                rpkg.put(ResourceType.DMN, dmnpkg);
-            } else {
-                if ( dmnpkg.getModel( model.getName() ) != null ) {
-                    kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, namespace, "Duplicate model name " + model.getName() + " in namespace " + namespace));
-                    logger.error( "Duplicate model name {} in namespace {}", model.getName(), namespace );
-                }
+            DMNPackageImpl dmnpkg = rpkg.computeIfAbsent(ResourceType.DMN, rtp -> new DMNPackageImpl(namespace));
+            if ( dmnpkg.getModel( model.getName() ) != null ) {
+                kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, namespace, "Duplicate model name " + model.getName() + " in namespace " + namespace));
+                logger.error( "Duplicate model name {} in namespace {}", model.getName(), namespace );
             }
             dmnpkg.addModel( model.getName(), model );
             for (DMNMessage m : model.getMessages()) {

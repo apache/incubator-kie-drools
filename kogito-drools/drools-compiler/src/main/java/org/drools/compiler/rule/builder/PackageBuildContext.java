@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -31,6 +30,7 @@ import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Dialectable;
 import org.drools.core.rule.MVELDialectRuntimeData;
@@ -43,7 +43,7 @@ public class PackageBuildContext {
     // current package
     private InternalKnowledgePackage    pkg;
 
-    private KnowledgeBuilderImpl        kBuilder;
+    private DroolsAssemblerContext kBuilder;
 
     // the contianer descr
     private BaseDescr                   parentDescr;
@@ -80,7 +80,7 @@ public class PackageBuildContext {
     /**
      * Default constructor
      */
-    public void init(final KnowledgeBuilderImpl kBuilder,
+    public void init(final DroolsAssemblerContext kBuilder,
                      final InternalKnowledgePackage pkg,
                      final BaseDescr parentDescr,
                      final DialectCompiletimeRegistry dialectRegistry,
@@ -218,7 +218,7 @@ public class PackageBuildContext {
         return this.kBuilder.getBuilderConfiguration();
     }
     
-    public KnowledgeBuilderImpl getKnowledgeBuilder() {
+    public DroolsAssemblerContext getKnowledgeBuilder() {
         return this.kBuilder;
     }
 

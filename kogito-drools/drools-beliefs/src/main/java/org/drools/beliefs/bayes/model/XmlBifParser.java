@@ -15,18 +15,6 @@
 
 package org.drools.beliefs.bayes.model;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.beliefs.bayes.BayesNetwork;
-import org.drools.beliefs.bayes.BayesVariable;
-import org.drools.beliefs.bayes.assembler.BayesNetworkAssemblerError;
-import org.drools.beliefs.graph.GraphNode;
-import org.drools.beliefs.graph.impl.EdgeImpl;
-import org.drools.compiler.compiler.ParserError;
-import org.drools.core.io.internal.InternalResource;
-import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -37,11 +25,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.beliefs.bayes.BayesNetwork;
+import org.drools.beliefs.bayes.BayesVariable;
+import org.drools.beliefs.bayes.assembler.BayesNetworkAssemblerError;
+import org.drools.beliefs.graph.GraphNode;
+import org.drools.beliefs.graph.impl.EdgeImpl;
+import org.drools.compiler.compiler.ParserError;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderError;
+
 import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
 public class XmlBifParser {
 
-    public static Bif loadBif(Resource resource, KnowledgeBuilderErrors errors) {
+    public static Bif loadBif(Resource resource, ArrayList<KnowledgeBuilderError> errors) {
         InputStream is = null;
         try {
             is = resource.getInputStream();

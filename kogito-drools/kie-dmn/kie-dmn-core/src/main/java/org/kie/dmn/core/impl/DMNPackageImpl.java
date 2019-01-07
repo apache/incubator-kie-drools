@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,21 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
         return ResourceType.DMN;
     }
 
-    public DMNModel addModel( String name, DMNModel model ) {
+    public DMNModel lookup( String name ) {
+        return getModel(name);
+    }
+
+    @Override
+    public void add(DMNModel processedResource) {
+        addModel(processedResource.getName(), processedResource);
+    }
+
+    @Override
+    public Iterator<DMNModel> iterator() {
+        return getAllModels().values().iterator();
+    }
+
+    public DMNModel addModel(String name, DMNModel model ) {
         return models.put( name, model );
     }
 
@@ -92,7 +107,7 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
     public boolean removeResource(Resource resource) {
         return models.entrySet().removeIf( kv -> resource.equals( kv.getValue().getResource() ) );
     }
-    
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.namespace );

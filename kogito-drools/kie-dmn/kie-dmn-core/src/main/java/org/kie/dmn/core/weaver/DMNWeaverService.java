@@ -19,6 +19,7 @@ package org.kie.dmn.core.weaver;
 import java.util.Map;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.io.ResourceTypePackage;
@@ -37,12 +38,8 @@ public class DMNWeaverService implements KieWeaverService<DMNPackage> {
 
     @Override
     public void merge(KieBase kieBase, KiePackage kiePkg, DMNPackage dmnpkg) {
-        Map<ResourceType, ResourceTypePackage> map = ((InternalKnowledgePackage)kiePkg).getResourceTypePackages();
-        DMNPackageImpl existing  = (DMNPackageImpl) map.get( ResourceType.DMN );
-        if ( existing == null ) {
-            existing = new DMNPackageImpl( dmnpkg.getNamespace() );
-            map.put(ResourceType.DMN, existing);
-        }
+        ResourceTypePackageRegistry registry = ((InternalKnowledgePackage)kiePkg).getResourceTypePackages();
+        DMNPackageImpl existing = registry.computeIfAbsent(ResourceType.DMN, rt -> new DMNPackageImpl(dmnpkg.getNamespace()));
 
         for ( Map.Entry<String, DMNModel> entry : dmnpkg.getAllModels().entrySet() ) {
             existing.addModel( entry.getKey(), entry.getValue() );
