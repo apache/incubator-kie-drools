@@ -378,14 +378,18 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     		((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
             	.getNodeInstance(connection.getTo());
     }
-    
+
     protected void triggerNodeInstance(org.jbpm.workflow.instance.NodeInstance nodeInstance, String type) {
+        triggerNodeInstance(nodeInstance, type, true);
+    }
+    
+    protected void triggerNodeInstance(org.jbpm.workflow.instance.NodeInstance nodeInstance, String type, boolean fireEvents) {
     	boolean hidden = false;
     	if (getNode().getMetaData().get("hidden") != null) {
     		hidden = true;
     	}
     	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-    	if (!hidden) {
+    	if (!hidden && fireEvents) {
     		((InternalProcessRuntime) kruntime.getProcessRuntime())
     			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
     	}
@@ -398,7 +402,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 break;
             }
         }
-        if (!hidden) {
+        if (!hidden && fireEvents) {
         	((InternalProcessRuntime) kruntime.getProcessRuntime())
         		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
         }
@@ -412,14 +416,18 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	if (remove) {
     		cancel();
         }
-    	triggerNode(getNodeId());
+    	triggerNode(getNodeId(), remove == false);
+    }
+
+    public void triggerNode(long nodeId) {
+        triggerNode(nodeId, true);
     }
     
-    public void triggerNode(long nodeId) {
+    public void triggerNode(long nodeId, boolean fireEvents) {
     	org.jbpm.workflow.instance.NodeInstance nodeInstance = (org.jbpm.workflow.instance.NodeInstance)
     		((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
             	.getNodeInstance(getNode().getNodeContainer().getNode(nodeId));
-    	triggerNodeInstance(nodeInstance, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+    	triggerNodeInstance(nodeInstance, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, fireEvents);
     }
     
     public Context resolveContext(String contextId, Object param) {

@@ -70,8 +70,6 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
     private KModuleDeploymentUnit deploymentUnit;
     private Long processInstanceId = null;
     
-    
-
     @Before
     public void prepare() {
         configureServices();
@@ -159,7 +157,7 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
     }
     
     @Test
-    public void testCancelAndTriger() {
+    public void testCancelAndTrigger() {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
         assertNotNull(processInstanceId);
         
@@ -194,7 +192,7 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
     }
     
     @Test
-    public void testRetriggerNodeInstance() {
+    public void testReTriggerNodeInstance() {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
         assertNotNull(processInstanceId);
         
@@ -214,6 +212,13 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         activeNodes = processAdminService.getActiveNodeInstances(processInstanceId);
         assertNotNull(activeNodes);
         assertEquals(1, activeNodes.size());
+
+        Collection<NodeInstanceDesc> completedNodes = runtimeDataService.getProcessInstanceHistoryCompleted(processInstanceId, new QueryFilter());
+        assertNotNull(completedNodes);
+        assertEquals(2, completedNodes.size());
+        final List<NodeInstanceDesc> nodeInstances = completedNodes.stream().filter(node -> node.getId().equals(active.getId())).collect(Collectors.toList());
+        assertEquals(1, nodeInstances.size());
+        assertTrue(nodeInstances.get(0).isCompleted());
         
         NodeInstanceDesc activeRetriggered = activeNodes.iterator().next();        
         assertFalse(active.getId().longValue() == activeRetriggered.getId().longValue());
@@ -226,7 +231,7 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
     }
     
     @Test
-    public void testCancelAndTrigerAnotherNode() {
+    public void testCancelAndTriggerAnotherNode() {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
         assertNotNull(processInstanceId);
         
@@ -266,7 +271,7 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
     }
     
     @Test
-    public void testTrigerLastActionNode() {
+    public void testTriggerLastActionNode() {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
         assertNotNull(processInstanceId);
         
