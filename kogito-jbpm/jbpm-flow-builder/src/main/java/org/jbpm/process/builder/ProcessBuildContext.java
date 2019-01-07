@@ -16,7 +16,7 @@
 
 package org.jbpm.process.builder;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -31,7 +31,7 @@ public class ProcessBuildContext extends PackageBuildContext {
     private ProcessDescr processDescr;
     private DialectCompiletimeRegistry dialectRegistry;
 
-    public ProcessBuildContext(final KnowledgeBuilderImpl pkgBuilder,
+    public ProcessBuildContext(final DroolsAssemblerContext assemblerContext,
                                final InternalKnowledgePackage pkg,
                                final Process process,
                                final BaseDescr processDescr,
@@ -40,7 +40,7 @@ public class ProcessBuildContext extends PackageBuildContext {
         this.process = process;
         this.processDescr = (ProcessDescr) processDescr;
         this.dialectRegistry = dialectRegistry;
-        init( pkgBuilder,
+        init( assemblerContext,
               pkg,
               processDescr,
               dialectRegistry,
