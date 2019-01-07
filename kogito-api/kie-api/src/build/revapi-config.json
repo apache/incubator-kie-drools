@@ -204,7 +204,98 @@
           "classSimpleName": "WorkItemManagerFluent",
           "elementKind": "interface",
           "justification": "Moved fluent builder interfaces to kie-internal"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.internal.assembler.KieAssemblers::addResource(java.lang.Object, org.kie.api.io.Resource, org.kie.api.io.ResourceType, org.kie.api.io.ResourceConfiguration) throws java.lang.Exception",
+          "package": "org.kie.api.internal.assembler",
+          "classSimpleName": "KieAssemblers",
+          "methodName": "addResource",
+          "elementKind": "method",
+          "justification": "expose a method to add resource via assemblers, without explicitly 'getting' the specific assembler"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.internal.assembler.KieAssemblers::addResources(java.lang.Object, java.util.List<org.kie.api.io.ResourceWithConfiguration>, org.kie.api.io.ResourceType) throws java.lang.Exception",
+          "package": "org.kie.api.internal.assembler",
+          "classSimpleName": "KieAssemblers",
+          "methodName": "addResources",
+          "elementKind": "method",
+          "justification": "expose a method to add resource via assemblers, without explicitly 'getting' the specific assembler"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<org.kie.api.io.ResourceType, org.kie.api.internal.assembler.KieAssemblerService> org.kie.api.internal.assembler.KieAssemblers::getAssemblers()",
+          "package": "org.kie.api.internal.assembler",
+          "classSimpleName": "KieAssemblers",
+          "methodName": "getAssemblers",
+          "elementKind": "method",
+          "justification": "remove method to get internal state (Map) of the Assemblers service, provide methods to delegate to available assemblers instead"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.internal.io.ResourceTypePackage<T>::add(T)",
+          "package": "org.kie.api.internal.io",
+          "classSimpleName": "ResourceTypePackage",
+          "methodName": "add",
+          "elementKind": "method",
+          "justification": "generic method to add an element to a package"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Iterator<T> java.lang.Iterable<T>::iterator() @ org.kie.api.internal.io.ResourceTypePackage<T>",
+          "package": "org.kie.api.internal.io",
+          "classSimpleName": "ResourceTypePackage",
+          "methodName": "iterator",
+          "elementKind": "method",
+          "justification": "made packages iterable, returning their contents"
+        },
+        {
+          "code": "java.generics.elementNowParameterized",
+          "old": "interface org.kie.api.internal.io.ResourceTypePackage",
+          "new": "interface org.kie.api.internal.io.ResourceTypePackage<T extends java.lang.Object>",
+          "package": "org.kie.api.internal.io",
+          "classSimpleName": "ResourceTypePackage",
+          "elementKind": "interface",
+          "justification": "packages are now generic in the type of their contents"
+        },
+        {
+          "code": "java.generics.formalTypeParameterAdded",
+          "old": "interface org.kie.api.internal.io.ResourceTypePackage",
+          "new": "interface org.kie.api.internal.io.ResourceTypePackage<T extends java.lang.Object>",
+          "package": "org.kie.api.internal.io",
+          "classSimpleName": "ResourceTypePackage",
+          "elementKind": "interface",
+          "justification": "type of the contents of a package"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<org.kie.api.io.ResourceType, org.kie.api.internal.weaver.KieWeaverService> org.kie.api.internal.weaver.KieWeavers::getWeavers()",
+          "package": "org.kie.api.internal.weaver",
+          "classSimpleName": "KieWeavers",
+          "methodName": "getWeavers",
+          "elementKind": "method",
+          "justification": "remove method to get internal state (Map) of the Weavers service, provide methods to delegate to available weavers instead"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.internal.weaver.KieWeavers::merge(org.kie.api.KieBase, org.kie.api.definition.KiePackage, org.kie.api.internal.io.ResourceTypePackage)",
+          "package": "org.kie.api.internal.weaver",
+          "classSimpleName": "KieWeavers",
+          "methodName": "merge",
+          "elementKind": "method",
+          "justification": "expose a method to merge packages, without explicitly 'getting' the specific weaver"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.internal.weaver.KieWeavers::weave(org.kie.api.KieBase, org.kie.api.definition.KiePackage, org.kie.api.internal.io.ResourceTypePackage)",
+          "package": "org.kie.api.internal.weaver",
+          "classSimpleName": "KieWeavers",
+          "methodName": "weave",
+          "elementKind": "method",
+          "justification": "expose a method to weave packages, without explicitly 'getting' the specific weaver"
         }
+
       ]
     }
   }
