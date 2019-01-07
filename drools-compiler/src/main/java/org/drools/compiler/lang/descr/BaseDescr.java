@@ -23,6 +23,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Objects;
 
 /**
  * This is the super type for all pattern AST nodes.
@@ -79,6 +80,7 @@ public class BaseDescr
     }
 
     public void setNamespace(String namespace) {
+        Objects.requireNonNull(namespace);
         this.namespace = namespace;
     }
 

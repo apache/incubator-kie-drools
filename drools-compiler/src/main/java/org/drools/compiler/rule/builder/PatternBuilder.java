@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -62,6 +61,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
@@ -349,7 +349,7 @@ public class PatternBuilder
 
     private TypeDeclaration getTypeDeclaration(RuleBuildContext context, Class<?> userProvidedClass) {
         String packageName = ClassUtils.getPackage(userProvidedClass);
-        KnowledgeBuilderImpl kbuilder = context.getKnowledgeBuilder();
+        DroolsAssemblerContext kbuilder = context.getKnowledgeBuilder();
         PackageRegistry pkgr = kbuilder.getPackageRegistry(packageName);
         TypeDeclaration typeDeclaration = pkgr != null ? pkgr.getPackage().getTypeDeclaration(userProvidedClass) : null;
         if (typeDeclaration == null && kbuilder.getKnowledgeBase() != null) {

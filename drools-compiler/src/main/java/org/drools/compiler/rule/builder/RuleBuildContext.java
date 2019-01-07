@@ -18,12 +18,12 @@ package org.drools.compiler.rule.builder;
 
 import java.util.Optional;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.core.beliefsystem.abductive.Abductive;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -64,7 +64,7 @@ public class RuleBuildContext extends PackageBuildContext {
     /**
      * Default constructor
      */
-    public RuleBuildContext(final KnowledgeBuilderImpl kBuilder,
+    public RuleBuildContext(final DroolsAssemblerContext kBuilder,
                             final RuleDescr ruleDescr,
                             final DialectCompiletimeRegistry dialectCompiletimeRegistry,
                             final InternalKnowledgePackage pkg,

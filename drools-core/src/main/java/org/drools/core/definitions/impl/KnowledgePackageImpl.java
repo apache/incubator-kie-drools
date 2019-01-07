@@ -40,10 +40,13 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.ProcessPackage;
+import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.definitions.rule.impl.GlobalImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.rule.Collect;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
@@ -58,7 +61,9 @@ import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -93,8 +98,6 @@ public class KnowledgePackageImpl
 
     private Map<String, FactTemplate> factTemplates;
 
-    private Map<String, Process> ruleFlows;
-
     // private JavaDialectData packageCompilationData;
     private DialectRuntimeRegistry dialectRuntimeRegistry;
 
@@ -108,7 +111,7 @@ public class KnowledgePackageImpl
 
     private TraitRegistry traitRegistry;
 
-    private Map<ResourceType, ResourceTypePackage> resourceTypePackages;
+    private ResourceTypePackageRegistry resourceTypePackages;
 
     private Map<String, Object> cloningResources = new HashMap<>();
 
@@ -145,7 +148,6 @@ public class KnowledgePackageImpl
         this.name = name;
         this.accumulateFunctions = Collections.emptyMap();
         this.staticImports = Collections.emptySet();
-        this.ruleFlows = Collections.emptyMap();
         this.globals = Collections.emptyMap();
         this.factTemplates = Collections.emptyMap();
         this.functions = Collections.emptyMap();
@@ -153,13 +155,10 @@ public class KnowledgePackageImpl
         this.classFieldAccessorStore = new ClassFieldAccessorStore();
         this.entryPointsIds = Collections.emptySet();
         this.windowDeclarations = Collections.emptyMap();
-        this.resourceTypePackages = Collections.emptyMap();
+        this.resourceTypePackages = new ResourceTypePackageRegistry();
     }
 
-    public Map<ResourceType, ResourceTypePackage> getResourceTypePackages() {
-        if (resourceTypePackages == Collections.EMPTY_MAP) {
-            resourceTypePackages = new HashMap<ResourceType, ResourceTypePackage>();
-        }
+    public ResourceTypePackageRegistry getResourceTypePackages() {
         return resourceTypePackages;
     }
 
@@ -255,7 +254,6 @@ public class KnowledgePackageImpl
         out.writeObject(this.functions);
         out.writeObject(this.accumulateFunctions);
         out.writeObject(this.factTemplates);
-        out.writeObject(this.ruleFlows);
         out.writeObject(this.globals);
         out.writeBoolean(this.valid);
         out.writeBoolean(this.needStreamMode);
@@ -303,7 +301,6 @@ public class KnowledgePackageImpl
         this.functions = (Map<String, Function>) in.readObject();
         this.accumulateFunctions = (Map<String, AccumulateFunction>) in.readObject();
         this.factTemplates = (Map) in.readObject();
-        this.ruleFlows = (Map) in.readObject();
         this.globals = (Map<String, String>) in.readObject();
         this.valid = in.readBoolean();
         this.needStreamMode = in.readBoolean();
@@ -311,7 +308,7 @@ public class KnowledgePackageImpl
         this.entryPointsIds = (Set<String>) in.readObject();
         this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
         this.traitRegistry = (TraitRegistry) in.readObject();
-        this.resourceTypePackages = (Map<ResourceType, ResourceTypePackage>) in.readObject();
+        this.resourceTypePackages = (ResourceTypePackageRegistry) in.readObject();
 
         in.setStore(null);
 
@@ -485,11 +482,9 @@ public class KnowledgePackageImpl
      * Add a rule flow to this package.
      */
     public void addProcess(Process process) {
-        if (this.ruleFlows == Collections.EMPTY_MAP) {
-            this.ruleFlows = new HashMap<String, Process>();
-        }
-        this.ruleFlows.put(process.getId(),
-                           process);
+        ResourceTypePackageRegistry rtps = getResourceTypePackages();
+        ProcessPackage rtp = ProcessPackage.getOrCreate(rtps);
+        rtp.add(process);
     }
 
     /**
@@ -497,17 +492,19 @@ public class KnowledgePackageImpl
      * be Collections.EMPTY_MAP if none have been added.
      */
     public Map<String, Process> getRuleFlows() {
-        return this.ruleFlows;
+        ProcessPackage rtp = (ProcessPackage) getResourceTypePackages().get(ResourceType.BPMN2);
+        return rtp == null? Collections.emptyMap() : rtp.getRuleFlows();
     }
 
     /**
      * Rule flows can be removed by ID.
      */
     public void removeRuleFlow(String id) {
-        if (!this.ruleFlows.containsKey(id)) {
+        ProcessPackage rtp = (ProcessPackage) getResourceTypePackages().get(ResourceType.BPMN2);
+        if (rtp == null || rtp.lookup(id) == null) {
             throw new IllegalArgumentException("The rule flow with id [" + id + "] is not part of this package.");
         }
-        this.ruleFlows.remove(id);
+        rtp.remove(id);
     }
 
     public void removeRule(RuleImpl rule) {
@@ -595,7 +592,6 @@ public class KnowledgePackageImpl
     public void clear() {
         this.rules.clear();
         this.dialectRuntimeRegistry.clear();
-        this.ruleFlows.clear();
         this.imports.clear();
         this.functions.clear();
         this.accumulateFunctions.clear();
@@ -683,22 +679,16 @@ public class KnowledgePackageImpl
         List<RuleImpl> rulesToBeRemoved = removeRulesGeneratedFromResource(resource);
         List<TypeDeclaration> typesToBeRemoved = removeTypesGeneratedFromResource(resource);
         List<Function> functionsToBeRemoved = removeFunctionsGeneratedFromResource(resource);
-        List<Process> processesToBeRemoved = removeProcessesGeneratedFromResource(resource);
         boolean resourceTypePackageSomethingRemoved = removeFromResourceTypePackageGeneratedFromResource(resource);
         return !rulesToBeRemoved.isEmpty()
                 || !typesToBeRemoved.isEmpty()
                 || !functionsToBeRemoved.isEmpty()
-                || !processesToBeRemoved.isEmpty()
                 || resourceTypePackageSomethingRemoved;
     }
 
     @Override
     public boolean removeFromResourceTypePackageGeneratedFromResource(Resource resource) {
-        boolean somethingWasRemoved = false;
-        for (ResourceTypePackage rtp : resourceTypePackages.values()) {
-            somethingWasRemoved = rtp.removeResource(resource) || somethingWasRemoved;
-        }
-        return somethingWasRemoved;
+        return resourceTypePackages.remove(resource);
     }
 
     public List<TypeDeclaration> removeTypesGeneratedFromResource(Resource resource) {
@@ -777,12 +767,17 @@ public class KnowledgePackageImpl
     }
 
     private void removeProcess(Process process) {
-        ruleFlows.remove(process.getId());
+        ProcessPackage rtp = (ProcessPackage) getResourceTypePackages().get(ResourceType.BPMN2);
+        if (rtp != null) rtp.remove(process.getId());
     }
 
     private List<Process> getProcessesGeneratedFromResource(Resource resource) {
+        ProcessPackage rtp = (ProcessPackage) getResourceTypePackages().get(ResourceType.BPMN2);
+        if (rtp == null) {
+            return Collections.emptyList();
+        }
         List<Process> processesFromResource = new ArrayList<Process>();
-        for (Process process : ruleFlows.values()) {
+        for (Process process : rtp) {
             if (resource.equals(process.getResource())) {
                 processesFromResource.add(process);
             }

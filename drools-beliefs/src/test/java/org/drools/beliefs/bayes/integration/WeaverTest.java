@@ -19,6 +19,7 @@ import org.drools.beliefs.bayes.JunctionTree;
 import org.drools.beliefs.bayes.assembler.BayesPackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class WeaverTest {
         kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         InternalKnowledgePackage kpkg = (InternalKnowledgePackage) kbase.getKiePackage("org.drools.beliefs.bayes.integration");
-        Map<ResourceType, ResourceTypePackage> map = kpkg.getResourceTypePackages();
+        ResourceTypePackageRegistry map = kpkg.getResourceTypePackages();
         BayesPackage existing  = (BayesPackage) map.get( ResourceType.BAYES );
         JunctionTree jtree =  existing.getJunctionTree("Garden");
         assertNotNull( jtree );

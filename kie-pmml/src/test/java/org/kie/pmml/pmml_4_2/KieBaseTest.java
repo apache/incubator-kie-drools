@@ -22,13 +22,14 @@ import org.junit.Test;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.services.KieAssemblersImpl;
 import org.kie.pmml.assembler.PMMLAssemblerService;
 
 public class KieBaseTest {
 
     @Test
     public void testKieBaseCompilation() {
-        KieAssemblers kieAssemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
+        KieAssemblersImpl kieAssemblers = (KieAssemblersImpl) ServiceRegistry.getInstance().get(KieAssemblers.class);
         PMMLAssemblerService assembler = (PMMLAssemblerService)kieAssemblers.getAssemblers().get(ResourceType.PMML);
         assertNotNull(assembler);
     }

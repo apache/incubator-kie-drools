@@ -44,13 +44,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
-import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
-import org.drools.compiler.compiler.CMMNCaseFactory;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -74,7 +72,6 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
-import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.compiler.compiler.ResourceConversionResult;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
@@ -138,8 +135,8 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
-import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
+import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -147,6 +144,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
+import org.kie.internal.builder.AssemblerContext;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -168,7 +166,9 @@ import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInn
 import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
 
-public class KnowledgeBuilderImpl implements KnowledgeBuilder {
+public class KnowledgeBuilderImpl implements KnowledgeBuilder,
+                                             DroolsAssemblerContext,
+                                             AssemblerContext {
 
     private static final String JAVA_ROOT = "src/main/java/";
 
@@ -697,49 +697,25 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
      * Add a ruleflow (.rfm) asset to this package.
      */
     public void addRuleFlow(Reader processSource) {
-        addProcessFromXml(processSource);
+        addKnowledgeResource(
+                new ReaderResource(processSource, ResourceType.DRF),
+                ResourceType.DRF,
+                null);
     }
 
+    @Deprecated
     public void addProcessFromXml(Resource resource) {
-        if (processBuilder == null) {
-            throw new RuntimeException("Unable to instantiate a process assembler");
-        }
-
-        if (ResourceType.DRF.equals(resource.getResourceType())) {
-            addBuilderResult(new DeprecatedResourceTypeWarning(resource, "RF"));
-        }
-
-        this.resource = resource;
-
-        try {
-            List<Process> processes = processBuilder.addProcessFromXml(resource);
-            List<BaseKnowledgeBuilderResultImpl> errors = processBuilder.getErrors();
-            if (errors.isEmpty()) {
-                if (this.kBase != null && processes != null) {
-                    for (Process process : processes) {
-                        if (filterAccepts(ResourceChange.Type.PROCESS, process.getNamespace(), process.getId())) {
-                            this.kBase.addProcess(process);
-                        }
-                    }
-                }
-            } else {
-                this.results.addAll(errors);
-                errors.clear();
-            }
-        } catch (Exception e) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            }
-            addBuilderResult(new ProcessLoadError(resource, "Unable to load process.", e));
-        }
-        this.results = getResults(this.results);
-        this.resource = null;
+        addKnowledgeResource(
+                resource,
+                resource.getResourceType(),
+                resource.getConfiguration());
     }
 
     public ProcessBuilder getProcessBuilder() {
         return processBuilder;
     }
 
+    @Deprecated
     public void addProcessFromXml( Reader processSource) {
         addProcessFromXml(new ReaderResource(processSource, ResourceType.DRF));
     }
@@ -765,14 +741,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addDsl(resource);
             } else if (ResourceType.XDRL.equals(type)) {
                 addPackageFromXml(resource);
-            } else if (ResourceType.DRF.equals(type)) {
-                addProcessFromXml(resource);
-            } else if (ResourceType.BPMN2.equals(type)) {
-                BPMN2ProcessFactory.configurePackageBuilder(this);
-                addProcessFromXml(resource);
-            } else if (ResourceType.CMMN.equals(type)) {
-                CMMNCaseFactory.configurePackageBuilder(this);
-                addProcessFromXml(resource);
             } else if (ResourceType.DTABLE.equals(type)) {
                 addPackageFromDecisionTable(resource, configuration);
             } else if (ResourceType.PKG.equals(type)) {
@@ -807,28 +775,17 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                    ResourceConfiguration configuration) throws Exception {
         KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
 
-        KieAssemblerService assembler = assemblers.getAssemblers().get(type);
-
-        if (assembler != null) {
-            assembler.addResource(this,
-                                  resource,
-                                  type,
-                                  configuration);
-        } else {
-            throw new RuntimeException("Unknown resource type: " + type);
-        }
+        assemblers.addResource(this,
+                              resource,
+                              type,
+                              configuration);
     }
 
+    @Deprecated
     void addPackageForExternalType(ResourceType type, List<ResourceWithConfiguration> resources) throws Exception {
         KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
 
-        KieAssemblerService assembler = assemblers.getAssemblers().get(type);
-
-        if (assembler != null) {
-            assembler.addResources(this, resources, type);
-        } else {
-            throw new RuntimeException("Unknown resource type: " + type);
-        }
+        assemblers.addResources(this, resources, type);
     }
 
     void addPackageFromXSD(Resource resource,
@@ -1012,6 +969,19 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public void addBuilderResult(KnowledgeBuilderResult result) {
         this.results.add(result);
+    }
+
+    @Override
+    public <T extends ResourceTypePackage<?>> T computeIfAbsent(
+            ResourceType resourceType,
+            String namespace, java.util.function.Function<? super ResourceType, T> mappingFunction) {
+
+        PackageRegistry pkgReg = getOrCreatePackageRegistry(new PackageDescr(namespace));
+        InternalKnowledgePackage kpkgs = pkgReg.getPackage();
+        return kpkgs.getResourceTypePackages()
+                .computeIfAbsent(
+                        resourceType,
+                        mappingFunction);
     }
 
     public PackageRegistry getOrCreatePackageRegistry(PackageDescr packageDescr) {
@@ -2015,6 +1985,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private List<KnowledgeBuilderResult> getInfoList() {
         return getResultList(ResultSeverity.INFO);
+    }
+
+    @Override
+    public void reportError(KnowledgeBuilderError error) {
+        getErrors().add(error);
     }
 
     /**

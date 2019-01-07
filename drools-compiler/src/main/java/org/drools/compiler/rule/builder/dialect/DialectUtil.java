@@ -15,7 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -23,6 +22,7 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
@@ -43,11 +43,9 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.AllSetBitMask;
@@ -826,7 +824,7 @@ public final class DialectUtil {
         }
 
         String namespace = context.getRuleDescr().getNamespace();
-        KnowledgeBuilderImpl packageBuilder = context.getKnowledgeBuilder();
+        DroolsAssemblerContext packageBuilder = context.getKnowledgeBuilder();
 
         Class<?> clazz = null;
         try {
