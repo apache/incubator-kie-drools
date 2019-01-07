@@ -17,23 +17,50 @@
 package org.kie.internal.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.api.io.ResourceWithConfiguration;
 
 public class KieAssemblersImpl implements KieAssemblers, Consumer<KieAssemblerService> {
     private Map<ResourceType, KieAssemblerService> assemblers;
 
     public KieAssemblersImpl() {
-        assemblers = new HashMap<ResourceType, KieAssemblerService>();
+        assemblers = new HashMap<>();
+    }
+
+    public Map<ResourceType, KieAssemblerService> getAssemblers() {
+        return assemblers;
     }
 
     @Override
-    public Map<ResourceType, KieAssemblerService> getAssemblers() {
-        return this.assemblers;
+    public void addResource(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+        KieAssemblerService assembler = assemblers.get(type);
+        if (assembler != null) {
+            assembler.addResource(knowledgeBuilder,
+                                  resource,
+                                  type,
+                                  configuration);
+        } else {
+            throw new RuntimeException("Unknown resource type: " + type);
+        }
+
+    }
+
+    @Override
+    public void addResources(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+        KieAssemblerService assembler = assemblers.get(type);
+        if (assembler != null) {
+            assembler.addResources(knowledgeBuilder, resources, type);
+        } else {
+            throw new RuntimeException("Unknown resource type: " + type);
+        }
     }
 
     @Override

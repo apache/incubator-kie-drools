@@ -78,6 +78,7 @@
               org.kie.api.event,
               org.kie.api.executor,
               org.kie.api.internal.assembler,
+              org.kie.api.internal.io,
               org.kie.api.internal.runtime,
               org.kie.api.internal.weaver,
               org.kie.api.internal.runtime.beliefs,
