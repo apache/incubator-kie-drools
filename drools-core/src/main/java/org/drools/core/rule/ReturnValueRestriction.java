@@ -16,12 +16,19 @@
 
 package org.drools.core.rule;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -32,14 +39,6 @@ import org.drools.core.spi.ReturnValueExpression.SafeReturnValueExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class ReturnValueRestriction
     implements
@@ -142,7 +141,7 @@ public class ReturnValueRestriction
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        if ( this.expression instanceof CompiledInvoker ) {
+        if ( ReturnValueExpression.isCompiledInvoker(this.expression) ) {
             out.writeObject( null );
         } else {
             out.writeObject( this.expression );

@@ -16,7 +16,12 @@
 
 package org.drools.core.spi;
 
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
+
 import org.drools.core.WorkingMemory;
+import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * Consequence to be fired upon successful match of a <code>Rule</code>.
@@ -41,5 +46,34 @@ public interface Consequence
      */
     void evaluate(KnowledgeHelper knowledgeHelper,
                   WorkingMemory workingMemory) throws Exception;
-    
+
+    public static boolean isCompiledInvoker(final Consequence consequence) {
+        return (consequence instanceof CompiledInvoker)
+                || (consequence instanceof SafeConsequence && ((SafeConsequence) consequence).wrapsCompiledInvoker());
+    }
+
+    public class SafeConsequence implements Consequence, Serializable {
+        private static final long serialVersionUID = -8109957972163261899L;
+        private final Consequence delegate;
+        public SafeConsequence( Consequence delegate ) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public String getName() {
+            return this.delegate.getName();
+        }
+
+        @Override
+        public void evaluate(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory) throws Exception {
+            AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+                delegate.evaluate(knowledgeHelper, workingMemory);
+                return null;
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public boolean wrapsCompiledInvoker() {
+            return this.delegate instanceof CompiledInvoker;
+        }
+    }
 }
