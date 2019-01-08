@@ -227,7 +227,14 @@ public interface Accumulator
             }, KiePolicyHelper.getAccessContext());
         }
         
-        
+        public boolean wrapsCompiledInvoker() {
+            return delegate instanceof CompiledInvoker;
+        }
+    }
+
+    public static boolean isCompiledInvoker(final Accumulator accumulator) {
+        return (accumulator instanceof CompiledInvoker)
+                || (accumulator instanceof SafeAccumulator && ((SafeAccumulator) accumulator).wrapsCompiledInvoker());
     }
 
 }

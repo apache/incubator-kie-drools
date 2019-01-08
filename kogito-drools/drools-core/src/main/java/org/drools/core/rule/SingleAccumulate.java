@@ -25,7 +25,6 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
@@ -55,10 +54,10 @@ public class SingleAccumulate extends Accumulate {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
-        if ( accumulator instanceof CompiledInvoker) {
-            out.writeObject( null );
+        if (Accumulator.isCompiledInvoker(accumulator)) {
+            out.writeObject(null);
         } else {
-            out.writeObject( accumulator );
+            out.writeObject(accumulator);
         }
     }
 

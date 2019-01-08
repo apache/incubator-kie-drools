@@ -76,7 +76,13 @@ public interface ReturnValueExpression
             delegate.replaceDeclaration(declaration, resolved);
         }
 
+        public boolean wrapsCompiledInvoker() {
+            return delegate instanceof CompiledInvoker;
+        }
     }
 
-    
+    public static boolean isCompiledInvoker(final ReturnValueExpression expression) {
+        return (expression instanceof CompiledInvoker)
+                || (expression instanceof SafeReturnValueExpression && ((SafeReturnValueExpression) expression).wrapsCompiledInvoker());
+    }
 }

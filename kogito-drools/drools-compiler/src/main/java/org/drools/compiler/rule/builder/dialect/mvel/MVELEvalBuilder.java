@@ -31,11 +31,11 @@ import org.drools.core.base.mvel.MVELEvalExpression;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.EvalCondition.SafeEvalExpression;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.spi.EvalExpression.SafeEvalExpression;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.internal.security.KiePolicyHelper;
 

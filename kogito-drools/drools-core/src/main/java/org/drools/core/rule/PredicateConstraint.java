@@ -16,11 +16,18 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.WorkingMemory;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PredicateExpression;
@@ -28,19 +35,6 @@ import org.drools.core.spi.Restriction;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A predicate can be written as a top level constraint or be nested
@@ -128,7 +122,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        if ( this.expression instanceof CompiledInvoker ) {
+        if ( PredicateExpression.isCompiledInvoker(this.expression) ) {
             out.writeObject( null );
         } else {
             out.writeObject( this.expression );
@@ -163,7 +157,7 @@ public class PredicateConstraint extends MutableTypeConstraint
     }
 
     public void wire(Object object) {
-        setPredicateExpression( KiePolicyHelper.isPolicyEnabled() ? new SafePredicateExpression( (PredicateExpression) object ):(PredicateExpression) object );
+        setPredicateExpression( KiePolicyHelper.isPolicyEnabled() ? new PredicateExpression.SafePredicateExpression((PredicateExpression) object ):(PredicateExpression) object );
         for ( PredicateConstraint clone : this.cloned ) {
             clone.wire( object );
         }
@@ -382,37 +376,5 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     public Evaluator getEvaluator() {
         return null;
-    }
-
-    public static class SafePredicateExpression implements PredicateExpression, Serializable {
-        private static final long serialVersionUID = -4570820770000524010L;
-        private PredicateExpression delegate;
-
-        public SafePredicateExpression(PredicateExpression delegate) {
-            this.delegate = delegate;
-        }
-
-        public Object createContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return delegate.createContext();
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        public boolean evaluate(final InternalFactHandle handle,
-                final Tuple tuple, 
-                final Declaration[] previousDeclarations, 
-                final Declaration[] localDeclarations, 
-                final WorkingMemory workingMemory, 
-                final Object context) throws Exception {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    return delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, workingMemory, context);
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
     }
 }

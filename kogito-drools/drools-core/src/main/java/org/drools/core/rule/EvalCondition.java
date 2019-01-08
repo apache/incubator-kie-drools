@@ -16,26 +16,21 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.base.mvel.MVELEvalExpression;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.EvalExpression;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.base.mvel.MVELEvalExpression;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class EvalCondition extends ConditionalElement
     implements
@@ -80,7 +75,7 @@ public class EvalCondition extends ConditionalElement
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        if ( this.expression instanceof CompiledInvoker ) {
+        if ( EvalExpression.isCompiledInvoker(this.expression) ) {
             out.writeObject( null );
         } else {
             out.writeObject( this.expression );
@@ -94,7 +89,7 @@ public class EvalCondition extends ConditionalElement
     }
 
     public void wire(Object object) {
-        EvalExpression expression = KiePolicyHelper.isPolicyEnabled() ? new SafeEvalExpression((EvalExpression) object) : (EvalExpression) object;
+        EvalExpression expression = KiePolicyHelper.isPolicyEnabled() ? new EvalExpression.SafeEvalExpression((EvalExpression) object) : (EvalExpression) object;
         setEvalExpression( expression );
         for ( EvalCondition clone : this.cloned ) {
             clone.wireClone( expression );
@@ -220,46 +215,5 @@ public class EvalCondition extends ConditionalElement
     @Override
     public String toString() {
         return this.expression.toString();
-    }
-
-    public static class SafeEvalExpression implements EvalExpression, Serializable {
-        private static final long serialVersionUID = -5682290553015978731L;
-        private EvalExpression delegate;
-        public SafeEvalExpression(EvalExpression delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public Object createContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return delegate.createContext();
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public boolean evaluate(final Tuple tuple, 
-                final Declaration[] requiredDeclarations, 
-                final WorkingMemory workingMemory, 
-                final Object context) throws Exception {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() throws Exception {
-                    return delegate.evaluate(tuple, requiredDeclarations, workingMemory, context);
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public void replaceDeclaration(Declaration declaration, Declaration resolved) {
-            delegate.replaceDeclaration(declaration, resolved);
-        }
-        
-        @Override
-        public SafeEvalExpression clone() {
-            return new SafeEvalExpression( this.delegate.clone() );
-        }
     }
 }
