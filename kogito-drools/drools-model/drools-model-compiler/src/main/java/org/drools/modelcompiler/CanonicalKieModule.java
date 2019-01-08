@@ -135,23 +135,29 @@ public class CanonicalKieModule implements InternalKieModule {
         this.moduleClassLoader = (( ProjectClassLoader ) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration( kBaseModel, moduleClassLoader, conf );
 
-        KnowledgePackagesBuildResult knowledgePackagesBuildResult = ((AbstractKieModule)internalKieModule).buildKnowledgePackages(kBaseModel, kieProject, messages);
-        if(knowledgePackagesBuildResult.hasErrors()) {
-            return null;
-        }
-
         CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent( kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, messages, kBaseConf) );
         checkStreamMode( kBaseModel, conf, kpkgs.getKiePackages() );
         InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
 
-        Collection<KiePackage> pkgs = knowledgePackagesBuildResult.getPkgs();
-        for(KiePackage pk : pkgs) {
-            if(kieBase.getPackage(pk.getName()) == null) {
-                kieBase.addPackages(pkgs);
+        if ( hasNonModelResources( kBaseModel, kieProject ) ) {
+            KnowledgePackagesBuildResult knowledgePackagesBuildResult = (( AbstractKieModule ) internalKieModule).buildKnowledgePackages( kBaseModel, kieProject, messages );
+            if ( knowledgePackagesBuildResult.hasErrors() ) {
+                return null;
+            }
+
+            Collection<KiePackage> pkgs = knowledgePackagesBuildResult.getPkgs();
+            for (KiePackage pk : pkgs) {
+                if ( kieBase.getPackage( pk.getName() ) == null ) {
+                    kieBase.addPackages( pkgs );
+                }
             }
         }
 
         return kieBase;
+    }
+
+    private boolean hasNonModelResources( KieBaseModelImpl kBaseModel, KieProject kieProject ) {
+        return kieProject.getKieModuleForKBase(kBaseModel.getName()).getFileNames().stream().anyMatch( s -> s.endsWith( ".dmn" ) );
     }
 
     private CanonicalKiePackages createKiePackages( KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf ) {
@@ -289,8 +295,11 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private static Collection<String> findRuleClassesNames( ClassLoader kieProjectCL) {
         String modelFiles;
-        try {
-            modelFiles = new String( IoUtils.readBytesFromInputStream( kieProjectCL.getResourceAsStream( MODEL_FILE ) ) );
+        try (InputStream modelFileStream = kieProjectCL.getResourceAsStream( MODEL_FILE )) {
+            if (modelFileStream == null) {
+                return Collections.emptyList();
+            }
+            modelFiles = new String( IoUtils.readBytesFromInputStream( modelFileStream ) );
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
