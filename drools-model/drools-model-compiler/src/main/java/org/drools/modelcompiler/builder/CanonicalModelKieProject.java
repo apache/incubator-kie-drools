@@ -55,6 +55,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
     @Override
     protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
+        if (getInternalKieModule().getKieModuleModel() != kBaseModel.getKModule()) {
+            // if the KieBase belongs to a different kmodule it is not necessary to build it
+            return null;
+        }
         ModelBuilderImpl modelBuilder = new ModelBuilderImpl(getBuilderConfiguration( kBaseModel, kModule ), isPattern);
         modelBuilders.add(modelBuilder);
         return modelBuilder;
@@ -90,5 +94,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         }
 
         modelWriter.writeModelFile(modelFiles, trgMfs);
+    }
+
+    @Override
+    protected boolean compileIncludedKieBases() {
+        return false;
     }
 }

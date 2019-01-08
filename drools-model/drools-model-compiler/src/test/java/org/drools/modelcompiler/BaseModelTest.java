@@ -44,13 +44,23 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public abstract class BaseModelTest {
-    public static enum RUN_TYPE {
-        FLOW_DSL,
-        PATTERN_DSL,
-        STANDARD_FROM_DRL,
-        STANDARD_WITH_ALPHA_NETWORK,
-        PATTERN_WITH_ALPHA_NETWORK,
-        FLOW_WITH_ALPHA_NETWORK;
+    public enum RUN_TYPE {
+        FLOW_DSL( false ),
+        PATTERN_DSL( false ),
+        STANDARD_FROM_DRL( false ),
+        STANDARD_WITH_ALPHA_NETWORK( true ),
+        PATTERN_WITH_ALPHA_NETWORK( true ),
+        FLOW_WITH_ALPHA_NETWORK( true );
+
+        private boolean alphaNetworkCompiler;
+
+        RUN_TYPE( boolean isAlphaNetworkCompiler ) {
+            this.alphaNetworkCompiler = isAlphaNetworkCompiler;
+        }
+
+        public boolean isAlphaNetworkCompiler() {
+            return alphaNetworkCompiler;
+        }
     }
 
     final static Object[] PLAIN = {
@@ -85,12 +95,7 @@ public abstract class BaseModelTest {
     }
 
     protected KieSession getKieSession(String... rules) {
-        KieModuleModel kproj;
-        if (asList(PATTERN_WITH_ALPHA_NETWORK, STANDARD_WITH_ALPHA_NETWORK, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
-            kproj = getKieModuleModelWithAlphaNetworkCompiler();
-        } else {
-            kproj = null;
-        }
+        KieModuleModel kproj = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
         return getKieSession(kproj, rules);
     }
 
