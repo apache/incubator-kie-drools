@@ -210,7 +210,9 @@ public abstract class AbstractKieProject implements KieProject {
                                                     ResultsImpl messages ) {
         InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
         KnowledgeBuilder kbuilder = createKnowledgeBuilder( kBaseModel, kModule );
-        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+        if (kbuilder == null) {
+            return null;
+        }
 
         Set<Asset> assets = new HashSet<>();
 
@@ -227,7 +229,9 @@ public abstract class AbstractKieProject implements KieProject {
                 allIncludesAreValid = false;
                 continue;
             }
-            addFiles( assets, getKieBaseModel(include), includeModule );
+            if (compileIncludedKieBases()) {
+                addFiles( assets, getKieBaseModel( include ), includeModule );
+            }
         }
 
         if (!allIncludesAreValid) {
@@ -235,6 +239,8 @@ public abstract class AbstractKieProject implements KieProject {
         }
 
         addFiles( assets, kBaseModel, kModule );
+
+        CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         if (assets.isEmpty()) {
             if (kModule instanceof FileKieModule) {
@@ -268,6 +274,10 @@ public abstract class AbstractKieProject implements KieProject {
         kModule.cacheResultsForKieBase(kBaseModel.getName(), messages);
 
         return kbuilder;
+    }
+
+    protected boolean compileIncludedKieBases() {
+        return true;
     }
 
     protected KnowledgeBuilder createKnowledgeBuilder( KieBaseModelImpl kBaseModel, InternalKieModule kModule ) {
