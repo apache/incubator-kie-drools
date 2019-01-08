@@ -4,10 +4,9 @@
     xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns="http://www.kie.org/libs/twovaluelogic"
-    id="_9d4f5c03-3a50-415b-9f96-8006d756ba73"
-    namespace="http://www.kie.org/libs/twovaluelogic"
-    exporter="DMN Modeler" exporterVersion="6.1.17"
+    xmlns="http://www.kie.org/libs/twovaluelogic/1.0"
+    id="_two_value_logic_1_0"
+    namespace="http://www.kie.org/libs/twovaluelogic/1.0"
     name="Two-Value Logic">
 
     <semantic:itemDefinition name="tBooleanList" isCollection="true" label="tBooleanList">

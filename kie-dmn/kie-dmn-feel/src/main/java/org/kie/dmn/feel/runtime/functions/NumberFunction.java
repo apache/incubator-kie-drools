@@ -49,11 +49,13 @@ public class NumberFunction
         if ( decimal != null ) {
             from = from.replaceAll( "\\" + decimal, "." );
         }
-        
-        try {
-            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( from ) );
-        } catch (Exception e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "unable to calculate final number result", e));
+
+        BigDecimal result = EvalHelper.getBigDecimalOrNull( from );
+        if( from != null && result == null ) {
+            // conversion failed
+            return FEELFnResult.ofError( new InvalidParametersEvent(Severity.ERROR, "unable to calculate final number result" ) );
+        } else {
+            return FEELFnResult.ofResult( result );
         }
     }
 
