@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class PlanningIdLookUpStrategy implements LookUpStrategy {
@@ -55,7 +56,16 @@ public class PlanningIdLookUpStrategy implements LookUpStrategy {
     @Override
     public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         Object planningId = extractPlanningId(externalObject);
-        return (E) idToWorkingObjectMap.get(planningId);
+        E workingObject = (E) idToWorkingObjectMap.get(planningId);
+        if (workingObject == null) {
+            throw new IllegalStateException("The externalObject (" + externalObject + ") with planningId (" + planningId
+                    + ") has no known workingObject (" + workingObject + ").\n"
+                    + "Maybe the workingObject was never added because the planning solution doesn't have a @"
+                    + ProblemFactCollectionProperty.class.getSimpleName()
+                    + " annotation on a member with instances of the externalObject's class ("
+                    + externalObject.getClass() + ").");
+        }
+        return workingObject;
     }
 
     protected Object extractPlanningId(Object externalObject) {
