@@ -1,12 +1,12 @@
 /*
  * Copyright 2011 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,60 +24,69 @@ public class BRLConditionVariableColumn extends ConditionCol52
         implements
         BRLVariableColumn {
 
-    private static final long serialVersionUID = 540l;
-
-    private String varName;
-    private String factType;
-
     /**
      * Available fields for this type of column.
      */
     public static final String FIELD_VAR_NAME = "varName";
-
     public static final String FIELD_FACT_TYPE = "factType";
+    private static final long serialVersionUID = 540l;
+    private String varName;
+    private String factType;
 
     public BRLConditionVariableColumn() {
     }
 
-    public BRLConditionVariableColumn( String varName,
-                                       String fieldType ) {
+    public BRLConditionVariableColumn(String varName,
+                                      String fieldType) {
         this.varName = varName;
-        super.setFieldType( fieldType );
+        super.setFieldType(fieldType);
     }
 
-    public BRLConditionVariableColumn( String varName,
-                                       String fieldType,
-                                       String factType,
-                                       String factField ) {
+    public BRLConditionVariableColumn(String varName,
+                                      String fieldType,
+                                      String factType,
+                                      String factField) {
         this.varName = varName;
         this.factType = factType;
-        super.setFactField( factField );
-        super.setFieldType( fieldType );
+        super.setFactField(factField);
+        super.setFieldType(fieldType);
+    }
+
+    public BRLConditionVariableColumn(String varName,
+                                      String fieldType,
+                                      String factType,
+                                      String factField,
+                                      String operator) {
+        this(varName,
+             fieldType,
+             factType,
+             factField);
+        this.setOperator(operator);
     }
 
     @Override
-    public List<BaseColumnFieldDiff> diff( BaseColumn otherColumn ) {
-        if ( otherColumn == null ) {
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) {
             return null;
         }
 
-        List<BaseColumnFieldDiff> result = conditionCol52SpecificDiff( otherColumn );
+        List<BaseColumnFieldDiff> result = conditionCol52SpecificDiff(otherColumn);
         BRLConditionVariableColumn other = (BRLConditionVariableColumn) otherColumn;
 
         // Field: varName.
-        if ( !isEqualOrNull( this.getVarName(),
-                             other.getVarName() ) ) {
-            result.add( new BaseColumnFieldDiffImpl( FIELD_VAR_NAME,
-                                                     this.getVarName(),
-                                                     other.getVarName() ) );
+        if (!isEqualOrNull(this.getVarName(),
+                           other.getVarName())) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VAR_NAME,
+                                                   this.getVarName(),
+                                                   other.getVarName()));
         }
 
         // Field: factType.
-        if ( !isEqualOrNull( this.getFactType(),
-                             other.getFactType() ) ) {
-            result.add( new BaseColumnFieldDiffImpl( FIELD_FACT_TYPE,
-                                                     this.getFactType(),
-                                                     other.getFactType() ) );
+        if (!isEqualOrNull(this.getFactType(),
+                           other.getFactType())) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE,
+                                                   this.getFactType(),
+                                                   other.getFactType()));
         }
 
         return result;
@@ -114,9 +123,9 @@ public class BRLConditionVariableColumn extends ConditionCol52
     @Override
     public int hashCode() {
         int result = varName != null ? varName.hashCode() : 0;
-        result=~~result;
+        result = ~~result;
         result = 31 * result + (factType != null ? factType.hashCode() : 0);
-        result=~~result;
+        result = ~~result;
         return result;
     }
 }
