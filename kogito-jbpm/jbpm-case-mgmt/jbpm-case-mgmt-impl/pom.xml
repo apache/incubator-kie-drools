@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm-case-mgmt</artifactId>
-    <version>7.16.0-SNAPSHOT</version>
+    <version>7.17.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbpm-case-mgmt-impl</artifactId>
   <name>jBPM :: Case Management Impl</name>
