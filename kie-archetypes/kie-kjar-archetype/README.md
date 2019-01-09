@@ -16,12 +16,12 @@ base kjar from this archetype.
 mvn archetype:generate 
    -DarchetypeGroupId=org.kie 
    -DarchetypeArtifactId=kie-kjar-archetype 
-   -DarchetypeVersion=7.16.0-SNAPSHOT
+   -DarchetypeVersion=7.17.0-SNAPSHOT
 ```
 or use this one-liner
 
 ```
-mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-kjar-archetype -DarchetypeVersion=7.16.0-SNAPSHOT
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-kjar-archetype -DarchetypeVersion=7.17.0-SNAPSHOT
 ```
 4. Change the prompted values during the generation as needed (or leave the defaults)
 5. Compile and test your generated base kjar project with 
@@ -40,13 +40,13 @@ case kjar from this archetype.
 mvn archetype:generate 
    -DarchetypeGroupId=org.kie 
    -DarchetypeArtifactId=kie-kjar-archetype 
-   -DarchetypeVersion=7.16.0-SNAPSHOT
+   -DarchetypeVersion=7.17.0-SNAPSHOT
    -DcaseProject=true
 ```
 or use this one-liner
 
 ```
-mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-kjar-archetype -DarchetypeVersion=7.16.0-SNAPSHOT -DcaseProject=true
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-kjar-archetype -DarchetypeVersion=7.17.0-SNAPSHOT -DcaseProject=true
 ```
 4. Change the prompted values during the generation as needed (or leave the defaults)
 5. Compile and test your generated case kjar project with 

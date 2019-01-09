@@ -14,12 +14,12 @@ project from this archetype.
 mvn archetype:generate 
    -DarchetypeGroupId=org.kie 
    -DarchetypeArtifactId=kie-model-archetype 
-   -DarchetypeVersion=7.16.0-SNAPSHOT
+   -DarchetypeVersion=7.17.0-SNAPSHOT
 ```
 or use this one-liner
 
 ```
-mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-model-archetype -DarchetypeVersion=7.16.0-SNAPSHOT
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-model-archetype -DarchetypeVersion=7.17.0-SNAPSHOT
 ```
 4. Change the prompted values during the generation as needed (or leave the defaults)
 5. Compile and test your generated project with 
