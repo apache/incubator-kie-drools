@@ -13,6 +13,11 @@
  */
 package org.drools.compiler.lang;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.MissingTokenException;
@@ -71,11 +76,6 @@ import org.drools.compiler.lang.descr.UnitDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.util.StringUtils;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
@@ -3161,7 +3161,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                             CEDescrBuilder.class,
                             null);
                     lhsAnd(source,
-                            false);
+                            true);
                     if (state.failed)
                         return null;
 
