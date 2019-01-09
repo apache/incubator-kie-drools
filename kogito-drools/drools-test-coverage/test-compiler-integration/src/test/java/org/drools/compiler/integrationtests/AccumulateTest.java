@@ -3828,4 +3828,62 @@ public class AccumulateTest {
             kieSession.dispose();
         }
     }
+
+    @Test
+    public void testNestedAccumulateWithPrefixAnd() {
+        final String drl =
+                "rule R when\n" +
+                "    String($l: length)\n" +
+                "    accumulate(\n" +
+                "        (and\n" +
+                "            Integer(this == $l) \n" +
+                "            accumulate(\n" +
+                "                Long() \n" +
+                "                ;$counter: count(1);$counter <= 4)\n" +
+                "         )\n" +
+                "        ;$mainCounter: count(1);$mainCounter <= 2\n" +
+                "    )\n" +
+                "then\n " +
+                "end";
+
+        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieSession kieSession = kieBase.newKieSession();
+
+        try {
+            kieSession.insert("test");
+            kieSession.insert(4);
+            assertEquals(1, kieSession.fireAllRules());
+        } finally {
+            kieSession.dispose();
+        }
+    }
+
+    @Test
+    public void testNestedAccumulateWithInfixAnd() {
+        final String drl =
+                "rule R when\n" +
+                "    String($l: length)\n" +
+                "    accumulate(\n" +
+                "        (\n" +
+                "            Integer(this == $l) and\n" +
+                "            accumulate(\n" +
+                "                Long() \n" +
+                "                ;$counter: count(1);$counter <= 4)\n" +
+                "         )\n" +
+                "        ;$mainCounter: count(1);$mainCounter <= 2\n" +
+                "    )\n" +
+                "then\n " +
+                "end";
+
+        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieSession kieSession = kieBase.newKieSession();
+
+        try {
+            kieSession.insert("test");
+            kieSession.insert(4);
+            assertEquals(1, kieSession.fireAllRules());
+        } finally {
+            kieSession.dispose();
+        }
+    }
 }
