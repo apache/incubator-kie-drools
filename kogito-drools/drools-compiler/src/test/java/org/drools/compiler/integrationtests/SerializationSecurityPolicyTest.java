@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -25,7 +26,6 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -42,10 +42,10 @@ public class SerializationSecurityPolicyTest extends CommonTestMethodBase {
 
     @Before
     public void init() {
-        final String enginePolicy = SerializationSecurityPolicyTest.class.getResource("serialization-rules.policy").getFile();
-        final String kiePolicy = SerializationSecurityPolicyTest.class.getResource("serialization-rules.policy").getFile();
-        System.setProperty("java.security.policy", enginePolicy);
-        System.setProperty("kie.security.policy", kiePolicy);
+        final String policy = SerializationSecurityPolicyTest.class.getResource("serialization-rules.policy").getFile();
+        System.setProperty("java.security.policy", policy);
+        System.setProperty("kie.security.policy", policy);
+        Policy.getPolicy().refresh();
         System.setSecurityManager(new SecurityManager());
     }
 
@@ -57,7 +57,6 @@ public class SerializationSecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore( "This test causes problems to surefire, so it will be disabled for now. It works when executed by itself.")
     public void testSerialization() throws IOException, ClassNotFoundException {
         final String rule =
                 " rule R " +

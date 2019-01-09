@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.security.Policy;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.After;
 import org.junit.Assert;
@@ -43,9 +45,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
         String kiePolicy = SecurityPolicyTest.class.getResource("rules.policy").getFile();
         System.setProperty("java.security.policy", enginePolicy);
         System.setProperty("kie.security.policy", kiePolicy);
-
-        TestSecurityManager tsm = new TestSecurityManager();
-        System.setSecurityManager(tsm);
+        Policy.getPolicy().refresh();
+        System.setSecurityManager(new TestSecurityManager());
     }
 
     @After
@@ -56,7 +57,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testUntrustedJavaConsequence() throws Exception {
+    public void testUntrustedJavaConsequence() {
         String drl = "package org.foo.bar\n" +
                 "rule R1 when\n" +
                 "then\n" +
@@ -83,7 +84,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testUntrustedMvelConsequence() throws Exception {
+    public void testUntrustedMvelConsequence() {
         String drl = "package org.foo.bar\n" +
                 "rule R1 dialect \"mvel\" when\n" +
                 "then\n" +
@@ -110,7 +111,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testSerializationUntrustedMvelConsequence() throws Exception {
+    public void testSerializationUntrustedMvelConsequence() {
         String drl = "package org.foo.bar\n" +
                 "rule R1 dialect \"mvel\" when\n" +
                 "then\n" +
@@ -136,7 +137,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testUntrustedJavaSalience() throws Exception {
+    public void testUntrustedJavaSalience() {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
                 "rule R1 dialect \"java\" salience( MaliciousExitHelper.exit() ) \n" +
@@ -164,7 +165,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testUntrustedMVELSalience() throws Exception {
+    public void testUntrustedMVELSalience() {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
                 "rule R1 dialect \"mvel\" salience( MaliciousExitHelper.exit() ) \n" +
@@ -195,7 +196,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testCustomAccumulate() throws Exception {
+    public void testCustomAccumulate() {
         String drl = "package org.foo.bar\n" +
                 "rule testRule\n" + 
                 "    when\n" + 
@@ -227,7 +228,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testCustomAccumulateMVEL() throws Exception {
+    public void testCustomAccumulateMVEL() {
         String drl = "package org.foo.bar\n" +
                 "rule testRule dialect \"mvel\" \n" + 
                 "    when\n" + 
@@ -268,7 +269,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testAccumulateFunctionMVEL() throws Exception {
+    public void testAccumulateFunctionMVEL() {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
                 "rule testRule dialect \"mvel\" \n" + 
@@ -308,7 +309,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testAccumulateFunctionJava() throws Exception {
+    public void testAccumulateFunctionJava() {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
                 "rule testRule dialect \"java\" \n" + 
@@ -348,7 +349,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testUntrustedEnabled() throws Exception {
+    public void testUntrustedEnabled() {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
                 "rule R1 enabled( MaliciousExitHelper.isEnabled() ) \n" +
@@ -376,7 +377,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testUntrustedMVELEnabled() throws Exception {
+    public void testUntrustedMVELEnabled() {
         String drl = "package org.foo.bar\n" +
                 "import "+MaliciousExitHelper.class.getName().replace('$', '.')+" \n" +
                 "rule R1 dialect \"mvel\" enabled( MaliciousExitHelper.isEnabled() ) \n" +
@@ -418,6 +419,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     }
     
     public static class TestSecurityManager extends SecurityManager {
+
         @Override
         public void checkExit(int status) {
             super.checkExit(status);
