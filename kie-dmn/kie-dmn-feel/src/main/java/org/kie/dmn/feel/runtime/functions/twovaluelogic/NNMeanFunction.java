@@ -28,11 +28,13 @@ import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
 
-public class MeanFunction
+public class NNMeanFunction
         extends BaseFEELFunction {
 
-    public MeanFunction() {
-        super( "tvl mean" );
+    public static final NNMeanFunction INSTANCE = new NNMeanFunction();
+
+    public NNMeanFunction() {
+        super( "nn mean" );
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) List list) {

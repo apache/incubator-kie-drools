@@ -24,13 +24,13 @@ import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
-public class AnyFunctionTest {
+public class NNAnyFunctionTest {
 
-    private AnyFunction anyFunction;
+    private NNAnyFunction anyFunction;
 
     @Before
     public void setUp() {
-        anyFunction = new AnyFunction();
+        anyFunction = new NNAnyFunction();
     }
 
     @Test

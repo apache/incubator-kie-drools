@@ -25,11 +25,13 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 import java.util.Arrays;
 import java.util.List;
 
-public class MaxFunction
+public class NNMinFunction
         extends BaseFEELFunction {
 
-    public MaxFunction() {
-        super( "tvl max" );
+    public static final NNMinFunction INSTANCE = new NNMinFunction();
+
+    public NNMinFunction() {
+        super( "nn min" );
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("list") List list) {
@@ -37,18 +39,18 @@ public class MaxFunction
             return FEELFnResult.ofResult( null );
         } else {
             try {
-                Comparable max = null;
+                Comparable min = null;
                 for( int i = 0; i < list.size(); i++ ) {
                     Comparable candidate = (Comparable) list.get( i );
                     if( candidate == null ) {
                         continue;
-                    } else if( max == null ) {
-                        max = candidate;
-                    } else if( max.compareTo( candidate ) < 0 ) {
-                        max = candidate;
+                    } else if( min == null ) {
+                        min = candidate;
+                    } else if( min.compareTo( candidate ) > 0 ) {
+                        min = candidate;
                     }
                 }
-                return FEELFnResult.ofResult( max );
+                return FEELFnResult.ofResult( min );
             } catch (ClassCastException e) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains items that are not comparable"));
             }

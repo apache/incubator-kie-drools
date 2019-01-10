@@ -28,11 +28,11 @@ import java.util.List;
 
 public class MedianFunctionTest {
 
-    private MedianFunction medianFunction;
+    private NNMedianFunction medianFunction;
 
     @Before
     public void setUp() {
-        medianFunction = MedianFunction.INSTANCE;
+        medianFunction = NNMedianFunction.INSTANCE;
     }
 
     @Test

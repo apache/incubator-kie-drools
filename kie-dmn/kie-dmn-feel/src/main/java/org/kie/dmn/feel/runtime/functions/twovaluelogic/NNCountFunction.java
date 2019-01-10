@@ -23,11 +23,13 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class CountFunction
+public class NNCountFunction
         extends BaseFEELFunction {
 
-    public CountFunction() {
-        super( "tvl count" );
+    public static final NNCountFunction INSTANCE = new NNCountFunction();
+
+    public NNCountFunction() {
+        super( "nn count" );
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) List list) {

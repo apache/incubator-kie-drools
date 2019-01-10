@@ -28,11 +28,11 @@ import java.util.List;
 
 public class MaxFunctionTest {
 
-    private MaxFunction maxFunction;
+    private NNMaxFunction maxFunction;
 
     @Before
     public void setUp() {
-        maxFunction = new MaxFunction();
+        maxFunction = new NNMaxFunction();
     }
 
     @Test

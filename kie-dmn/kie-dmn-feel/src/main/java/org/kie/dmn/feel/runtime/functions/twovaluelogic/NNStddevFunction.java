@@ -31,12 +31,12 @@ import java.util.Arrays;
 import java.util.List;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
-public class StddevFunction
+public class NNStddevFunction
         extends BaseFEELFunction {
-    public static final StddevFunction INSTANCE = new StddevFunction();
+    public static final NNStddevFunction INSTANCE = new NNStddevFunction();
 
-    StddevFunction() {
-        super("tvl stddev");
+    NNStddevFunction() {
+        super("nn stddev");
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List<?> list) {

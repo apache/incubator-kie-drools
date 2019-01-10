@@ -28,11 +28,11 @@ import java.util.List;
 
 public class MinFunctionTest {
 
-    private MinFunction minFunction;
+    private NNMinFunction minFunction;
 
     @Before
     public void setUp() {
-        minFunction = new MinFunction();
+        minFunction = new NNMinFunction();
     }
 
     @Test

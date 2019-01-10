@@ -27,11 +27,11 @@ import java.util.List;
 
 public class CountFunctionTest {
 
-    private CountFunction countFunction;
+    private NNCountFunction countFunction;
 
     @Before
     public void setUp() {
-        countFunction = new CountFunction();
+        countFunction = new NNCountFunction();
     }
 
     @Test

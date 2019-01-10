@@ -28,11 +28,13 @@ import java.util.List;
 /**
  * An implementation of the any() function that ignores nulls
  */
-public class AnyFunction
+public class NNAnyFunction
         extends BaseFEELFunction {
 
-    public AnyFunction() {
-        super( "tvl any" );
+    public static final NNAnyFunction INSTANCE = new NNAnyFunction();
+
+    public NNAnyFunction() {
+        super( "nn any" );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) List list) {

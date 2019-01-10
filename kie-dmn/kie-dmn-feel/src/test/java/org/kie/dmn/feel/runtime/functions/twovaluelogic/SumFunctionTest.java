@@ -27,11 +27,11 @@ import java.util.List;
 
 public class SumFunctionTest {
 
-    private SumFunction sumFunction;
+    private NNSumFunction sumFunction;
 
     @Before
     public void setUp() {
-        sumFunction = new SumFunction();
+        sumFunction = new NNSumFunction();
     }
 
     @Test

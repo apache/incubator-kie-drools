@@ -30,12 +30,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class MedianFunction
+public class NNMedianFunction
         extends BaseFEELFunction {
-    public static final MedianFunction INSTANCE = new MedianFunction();
 
-    MedianFunction() {
-        super("tvl median");
+    public static final NNMedianFunction INSTANCE = new NNMedianFunction();
+
+    NNMedianFunction() {
+        super("nn median");
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List<?> list) {

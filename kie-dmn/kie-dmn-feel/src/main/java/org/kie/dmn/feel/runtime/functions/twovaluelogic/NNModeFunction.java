@@ -30,12 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ModeFunction
+public class NNModeFunction
         extends BaseFEELFunction {
-    public static final ModeFunction INSTANCE = new ModeFunction();
+    public static final NNModeFunction INSTANCE = new NNModeFunction();
 
-    ModeFunction() {
-        super("tvl mode");
+    NNModeFunction() {
+        super("nn mode");
     }
 
     public FEELFnResult<List> invoke(@ParameterName("list") List<?> list) {

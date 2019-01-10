@@ -29,11 +29,11 @@ import java.util.List;
 
 public class StddevFunctionTest {
 
-    private StddevFunction stddevFunction;
+    private NNStddevFunction stddevFunction;
 
     @Before
     public void setUp() {
-        stddevFunction = StddevFunction.INSTANCE;
+        stddevFunction = NNStddevFunction.INSTANCE;
     }
 
     @Test

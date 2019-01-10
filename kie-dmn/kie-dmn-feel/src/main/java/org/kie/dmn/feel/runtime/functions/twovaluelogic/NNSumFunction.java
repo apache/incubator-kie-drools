@@ -27,11 +27,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-public class SumFunction
+public class NNSumFunction
         extends BaseFEELFunction {
 
-    public SumFunction() {
-        super( "tvl sum" );
+    public static final NNSumFunction INSTANCE = new NNSumFunction();
+
+    public NNSumFunction() {
+        super( "nn sum" );
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List list) {

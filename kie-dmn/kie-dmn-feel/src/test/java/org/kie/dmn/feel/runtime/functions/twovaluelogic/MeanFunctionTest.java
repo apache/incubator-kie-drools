@@ -28,11 +28,11 @@ import java.util.List;
 
 public class MeanFunctionTest {
 
-    private MeanFunction meanFunction;
+    private NNMeanFunction meanFunction;
 
     @Before
     public void setUp() {
-        meanFunction = new MeanFunction();
+        meanFunction = new NNMeanFunction();
     }
 
     @Test

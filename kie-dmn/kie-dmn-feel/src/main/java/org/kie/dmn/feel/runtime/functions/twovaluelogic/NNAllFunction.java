@@ -28,11 +28,13 @@ import java.util.List;
 /**
  * An implementation of the all() function that ignores nulls
  */
-public class AllFunction
+public class NNAllFunction
         extends BaseFEELFunction {
 
-    public AllFunction() {
-        super( "tvl all" );
+    public static final NNAllFunction INSTANCE = new NNAllFunction();
+
+    public NNAllFunction() {
+        super( "nn all" );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) List list) {

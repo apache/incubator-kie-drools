@@ -28,11 +28,11 @@ import java.util.List;
 
 public class ModeFunctionTest {
 
-    private ModeFunction modeFunction;
+    private NNModeFunction modeFunction;
 
     @Before
     public void setUp() {
-        modeFunction = ModeFunction.INSTANCE;
+        modeFunction = NNModeFunction.INSTANCE;
     }
 
     @Test
