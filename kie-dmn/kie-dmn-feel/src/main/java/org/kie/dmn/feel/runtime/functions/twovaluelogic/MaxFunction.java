@@ -29,7 +29,7 @@ public class MaxFunction
         extends BaseFEELFunction {
 
     public MaxFunction() {
-        super( "max" );
+        super( "tvl max" );
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("list") List list) {

@@ -30,7 +30,7 @@ public class MinFunction
         extends BaseFEELFunction {
 
     public MinFunction() {
-        super( "min" );
+        super( "tvl min" );
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("list") List list) {

@@ -32,7 +32,7 @@ public class AllFunction
         extends BaseFEELFunction {
 
     public AllFunction() {
-        super( "all" );
+        super( "tvl all" );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) List list) {

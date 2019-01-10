@@ -35,7 +35,7 @@ public class ModeFunction
     public static final ModeFunction INSTANCE = new ModeFunction();
 
     ModeFunction() {
-        super("mode");
+        super("tvl mode");
     }
 
     public FEELFnResult<List> invoke(@ParameterName("list") List<?> list) {

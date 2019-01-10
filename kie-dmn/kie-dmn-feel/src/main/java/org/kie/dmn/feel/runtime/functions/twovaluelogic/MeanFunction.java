@@ -32,7 +32,7 @@ public class MeanFunction
         extends BaseFEELFunction {
 
     public MeanFunction() {
-        super( "mean" );
+        super( "tvl mean" );
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) List list) {

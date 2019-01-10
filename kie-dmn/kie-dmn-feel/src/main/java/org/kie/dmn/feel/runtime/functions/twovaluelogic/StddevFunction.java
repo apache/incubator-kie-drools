@@ -36,7 +36,7 @@ public class StddevFunction
     public static final StddevFunction INSTANCE = new StddevFunction();
 
     StddevFunction() {
-        super("stddev");
+        super("tvl stddev");
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List<?> list) {

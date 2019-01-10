@@ -31,7 +31,7 @@ public class SumFunction
         extends BaseFEELFunction {
 
     public SumFunction() {
-        super( "sum" );
+        super( "tvl sum" );
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List list) {

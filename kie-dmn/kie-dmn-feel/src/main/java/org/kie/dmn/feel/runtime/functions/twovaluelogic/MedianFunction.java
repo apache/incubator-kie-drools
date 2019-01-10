@@ -35,7 +35,7 @@ public class MedianFunction
     public static final MedianFunction INSTANCE = new MedianFunction();
 
     MedianFunction() {
-        super("median");
+        super("tvl median");
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List<?> list) {
