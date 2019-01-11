@@ -30,6 +30,10 @@ public class AfterActivationFiredEventImpl  extends ActivationEventImpl implemen
         this.beforeMatchFiredEvent = beforeMatchFiredEvent;
     }
 
+    public BeforeMatchFiredEvent getBeforeMatchFiredEvent() {
+        return beforeMatchFiredEvent;
+    }
+
     @Override
     public String toString() {
         return "==>[AfterActivationFiredEvent: getActivation()=" + getMatch()
