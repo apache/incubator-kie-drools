@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.functions.extended;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.*;
 
 /**
  * additional functions not part of the spec version 1.1
@@ -47,7 +48,19 @@ public class KieExtendedDMNFunctions {
                                                                          ExpFunction.INSTANCE,
                                                                          EvenFunction.INSTANCE,
                                                                          OddFunction.INSTANCE,
-                                                                         MedianFunction.INSTANCE
+                                                                         MedianFunction.INSTANCE,
+
+                                                                         // CQL based, two value logic functions
+                                                                        NNAnyFunction.INSTANCE,
+                                                                        NNAllFunction.INSTANCE,
+                                                                        NNCountFunction.INSTANCE,
+                                                                        NNMaxFunction.INSTANCE,
+                                                                        NNMeanFunction.INSTANCE,
+                                                                        NNMedianFunction.INSTANCE,
+                                                                        NNMinFunction.INSTANCE,
+                                                                        NNModeFunction.INSTANCE,
+                                                                        NNStddevFunction.INSTANCE,
+                                                                        NNSumFunction.INSTANCE
     };
 
     public static FEELFunction[] getFunctions() {

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions
+    xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+    xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.kie.org/libs/twovaluelogic/1.0"
+    id="_two_value_logic_1_0"
+    namespace="http://www.kie.org/libs/twovaluelogic/1.0"
+    name="Two-Value Logic">
+
+    <semantic:itemDefinition name="tBooleanList" isCollection="true" label="tBooleanList">
+        <semantic:typeRef>boolean</semantic:typeRef>
+    </semantic:itemDefinition>
+
+    <semantic:businessKnowledgeModel id="_tvl_all" name="all">
+        <semantic:variable name="all" id="_tvl_all_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_all_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_all_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_all_4">
+                    <semantic:variable name="class" id="_tvl_all_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_all_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_all_7">
+                    <semantic:variable name="method signature" id="_tvl_all_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_all_9">
+                        <semantic:text>"all( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_any" name="any">
+        <semantic:variable name="any" id="_tvl_any_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_any_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_any_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_any_4">
+                    <semantic:variable name="class" id="_tvl_any_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_any_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_any_7">
+                    <semantic:variable name="method signature" id="_tvl_any_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_any_9">
+                        <semantic:text>"any( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_sum" name="sum">
+        <semantic:variable name="sum" id="_tvl_sum_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_sum_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_sum_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_sum_4">
+                    <semantic:variable name="class" id="_tvl_sum_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_sum_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_sum_7">
+                    <semantic:variable name="method signature" id="_tvl_sum_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_sum_9">
+                        <semantic:text>"sum( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_mean" name="mean">
+        <semantic:variable name="mean" id="_tvl_mean_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_mean_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_mean_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_mean_4">
+                    <semantic:variable name="class" id="_tvl_mean_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mean_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_mean_7">
+                    <semantic:variable name="method signature" id="_tvl_mean_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mean_9">
+                        <semantic:text>"mean( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_count" name="count">
+        <semantic:variable name="count" id="_tvl_count_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_count_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_count_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_count_4">
+                    <semantic:variable name="class" id="_tvl_count_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_count_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_count_7">
+                    <semantic:variable name="method signature" id="_tvl_count_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_count_9">
+                        <semantic:text>"count( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_max" name="max">
+        <semantic:variable name="max" id="_tvl_max_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_max_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_max_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_max_4">
+                    <semantic:variable name="class" id="_tvl_max_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_max_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_max_7">
+                    <semantic:variable name="method signature" id="_tvl_max_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_max_9">
+                        <semantic:text>"max( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_min" name="min">
+        <semantic:variable name="min" id="_tvl_min_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_min_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_min_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_min_4">
+                    <semantic:variable name="class" id="_tvl_min_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_min_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_min_7">
+                    <semantic:variable name="method signature" id="_tvl_min_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_min_9">
+                        <semantic:text>"min( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_median" name="median">
+        <semantic:variable name="median" id="_tvl_median_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_median_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_median_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_median_4">
+                    <semantic:variable name="class" id="_tvl_median_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_median_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_median_7">
+                    <semantic:variable name="method signature" id="_tvl_median_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_median_9">
+                        <semantic:text>"median( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_mode" name="mode">
+        <semantic:variable name="mode" id="_tvl_mode_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_mode_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_mode_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_mode_4">
+                    <semantic:variable name="class" id="_tvl_mode_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mode_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_mode_7">
+                    <semantic:variable name="method signature" id="_tvl_mode_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_mode_9">
+                        <semantic:text>"mode( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+    <semantic:businessKnowledgeModel id="_tvl_stddev" name="stddev">
+        <semantic:variable name="stddev" id="_tvl_stddev_1" typeRef="Any"/>
+        <semantic:encapsulatedLogic id="_tvl_stddev_2" kind="Java" typeRef="Any" >
+            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_stddev_3"/>
+            <semantic:context>
+                <semantic:contextEntry id="_tvl_stddev_4">
+                    <semantic:variable name="class" id="_tvl_stddev_5" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_stddev_6">
+                        <semantic:text>"org.kie.dmn.feel.runtime.functions.twovaluelogic.TwoValueLogicFunctions"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_tvl_stddev_7">
+                    <semantic:variable name="method signature" id="_tvl_stddev_8" typeRef="string"/>
+                    <semantic:literalExpression id="_tvl_stddev_9">
+                        <semantic:text>"stddev( java.util.List )"</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+
+</semantic:definitions>

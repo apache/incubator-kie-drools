@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                      xmlns:include1="http://www.trisotech.com/definitions/_9d4f5c03-3a50-415b-9f96-8006d756ba73"
+                      xmlns="http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967" id="_0062b41c-61d2-43db-a575-676ed3c6d967"
+                      namespace="http://www.trisotech.com/definitions/_0062b41c-61d2-43db-a575-676ed3c6d967"
+                      exporter="DMN Modeler" exporterVersion="6.1.17" name="Two-Value Logic Tests" triso:logoChoice="Default">
+
+    <semantic:import namespace="http://www.kie.org/libs/twovaluelogic/1.0" name="tvl"
+                     importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                     xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+                     drools:modelName="Two-Value Logic"/>
+                     
+    <semantic:decision id="_test_all_1" name="Test all">
+        <semantic:variable name="Test all" id="_test_all_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_all_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_all"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_all_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.all( [true, true, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    
+    <semantic:decision id="_test_any_1" name="Test any">
+        <semantic:variable name="Test any" id="_test_any_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_any_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_any"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_any_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.any( [false, null, true, false] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_sum_1" name="Test sum">
+        <semantic:variable name="Test sum" id="_test_sum_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_sum_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_sum"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_sum_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.sum( [1, null, 2, 3, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_mean_1" name="Test mean">
+        <semantic:variable name="Test mean" id="_test_mean_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_mean_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_mean"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_mean_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.mean( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_count_1" name="Test count">
+        <semantic:variable name="Test count" id="_test_count_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_count_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_count"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_count_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.count( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_max_1" name="Test max">
+        <semantic:variable name="Test max" id="_test_max_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_max_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_max"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_max_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.max( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_min_1" name="Test min">
+        <semantic:variable name="Test min" id="_test_min_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_min_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_min"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_min_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.min( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_median_1" name="Test median">
+        <semantic:variable name="Test median" id="_test_median_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_median_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_median"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_median_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.median( [10, null, 20, 30, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_mode_1" name="Test mode">
+        <semantic:variable name="Test mode" id="_test_mode_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_mode_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_mode"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_mode_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.mode( [10, null, 20, 30, 20, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+    <semantic:decision id="_test_stddev_1" name="Test stddev">
+        <semantic:variable name="Test stddev" id="_test_stddev_2" typeRef="Any"/>
+        <semantic:knowledgeRequirement id="_test_stddev_3">
+            <semantic:requiredKnowledge href="http://www.kie.org/libs/twovaluelogic/1.0#_tvl_stddev"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression id="_test_stddev_4" typeRef="Any" triso:expressionId="_957c8b4b-eae7-4399-beaf-2ee986a4953e">
+            <semantic:text>tvl.stddev( [10, null, 20, 30, 20, null] )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+
+</semantic:definitions>
