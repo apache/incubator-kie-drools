@@ -15,15 +15,21 @@
 
 package org.drools.example.api.multiplekbases;
 
-import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.time.impl.JDKTimerService;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.junit.Assert;
+import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
+
 import static java.util.Arrays.asList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -88,5 +94,53 @@ public class MultipleKbasesExampleTest {
         kSession.fireAllRules();
 
         return list;
+    }
+
+    @Test
+    public void testEditSessionModel() {
+        String name = "ksession6";
+        ClockTypeOption pseudoClock = ClockTypeOption.get("pseudo");
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.newKieClasspathContainer();
+
+        KieSessionModel kieSessionModel = kContainer.getKieSessionModel(name);
+        ClockTypeOption clockType = kieSessionModel.getClockType();
+
+        // clockType realtime
+        Assert.assertNotEquals(clockType, pseudoClock);
+
+        // change model to pseudo
+        kieSessionModel.setClockType(pseudoClock);
+        Assert.assertEquals(kieSessionModel.getClockType(), pseudoClock);
+
+        // new pseudo session
+        KieSession kSession = kContainer.newKieSession(name);
+        Assert.assertEquals(kSession.getSessionClock().getClass(), PseudoClockScheduler.class);
+    }
+
+    @Test
+    public void testEditSessionModelAfterFirstCreatedKieSession() {
+        String name = "ksession6";
+        ClockTypeOption pseudoClock = ClockTypeOption.get("pseudo");
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.newKieClasspathContainer();
+
+        KieSessionModel kieSessionModel = kContainer.getKieSessionModel(name);
+        ClockTypeOption clockType = kieSessionModel.getClockType();
+
+        // clockType realtime
+        Assert.assertEquals(clockType, ClockTypeOption.get("realtime"));
+        Assert.assertNotEquals(clockType, pseudoClock);
+
+        // session is realtime
+        KieSession kSession = kContainer.newKieSession(name);
+        Assert.assertEquals(kSession.getSessionClock().getClass(), JDKTimerService.class);
+
+        // change model to pseudo
+        kieSessionModel.setClockType(pseudoClock);
+
+        // new session still realtime
+        KieSession kSessionPseudo = kContainer.newKieSession(name);
+        Assert.assertEquals(kSessionPseudo.getSessionClock().getClass(), PseudoClockScheduler.class);
     }
 }

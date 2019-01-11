@@ -660,12 +660,11 @@ public class KieContainerImpl
     }
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
-        return sessionConfsCache.computeIfAbsent(kSessionModel.getName(), k -> {
-            KieSessionConfiguration ksConf = new SessionConfigurationImpl( null, kProject.getClassLoader() );
-            ksConf.setOption( kSessionModel.getClockType() );
-            ksConf.setOption( kSessionModel.getBeliefSystem() );
-            return ksConf;
-        });
+        KieSessionConfiguration ksConf = sessionConfsCache.computeIfAbsent(kSessionModel.getName(),
+                k -> new SessionConfigurationImpl( null, kProject.getClassLoader() ) );
+        ksConf.setOption( kSessionModel.getClockType() );
+        ksConf.setOption( kSessionModel.getBeliefSystem() );
+        return ksConf;
     }
 
     public void dispose() {
