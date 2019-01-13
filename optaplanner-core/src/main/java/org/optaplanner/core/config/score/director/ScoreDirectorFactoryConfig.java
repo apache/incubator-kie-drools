@@ -18,9 +18,12 @@ package org.optaplanner.core.config.score.director;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
@@ -39,6 +42,7 @@ import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
@@ -72,6 +76,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
+import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +94,10 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected Class<? extends EasyScoreCalculator> easyScoreCalculatorClass = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> easyScoreCalculatorCustomProperties = null;
+
+    protected Class<? extends ConstraintProvider> constraintProviderClass = null;
+    @XStreamConverter(KeyAsElementMapConverter.class)
+    protected Map<String, String> constraintProviderCustomProperties = null;
 
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
     @XStreamConverter(KeyAsElementMapConverter.class)
@@ -193,6 +202,22 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public void setEasyScoreCalculatorCustomProperties(Map<String, String> easyScoreCalculatorCustomProperties) {
         this.easyScoreCalculatorCustomProperties = easyScoreCalculatorCustomProperties;
+    }
+
+    public Class<? extends ConstraintProvider> getConstraintProviderClass() {
+        return constraintProviderClass;
+    }
+
+    public void setConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
+        this.constraintProviderClass = constraintProviderClass;
+    }
+
+    public Map<String, String> getConstraintProviderCustomProperties() {
+        return constraintProviderCustomProperties;
+    }
+
+    public void setConstraintProviderCustomProperties(Map<String, String> constraintProviderCustomProperties) {
+        this.constraintProviderCustomProperties = constraintProviderCustomProperties;
     }
 
     public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
@@ -406,38 +431,40 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             SolverConfigContext configContext, EnvironmentMode environmentMode,
             SolutionDescriptor<Solution_> solutionDescriptor) {
         AbstractScoreDirectorFactory<Solution_> easyScoreDirectorFactory = buildEasyScoreDirectorFactory(solutionDescriptor);
+        AbstractScoreDirectorFactory<Solution_> constraintStreamScoreDirectorFactory = buildConstraintStreamScoreDirectorFactory(solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory(solutionDescriptor);
         AbstractScoreDirectorFactory<Solution_> droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(configContext, solutionDescriptor);
+        if (Stream.of(easyScoreDirectorFactory, constraintStreamScoreDirectorFactory,
+                incrementalScoreDirectorFactory, droolsScoreDirectorFactory)
+                .filter(Objects::nonNull).count() > 1) {
+            List<String> scoreDirectorFactoryPropertyList = new ArrayList<>(4);
+            if (easyScoreDirectorFactory != null) {
+                scoreDirectorFactoryPropertyList.add("an easyScoreCalculatorClass");
+            }
+            if (constraintStreamScoreDirectorFactory != null) {
+                scoreDirectorFactoryPropertyList.add("a constraintProviderClass");
+            }
+            if (incrementalScoreDirectorFactory != null) {
+                scoreDirectorFactoryPropertyList.add("an incrementalScoreCalculatorClass");
+            }
+            if (droolsScoreDirectorFactory != null) {
+                scoreDirectorFactoryPropertyList.add("a droolsScoreDirectorFactory");
+            }
+            throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
+                    + String.join(" and ", scoreDirectorFactoryPropertyList) + " together.");
+        }
         AbstractScoreDirectorFactory<Solution_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
-            if (incrementalScoreDirectorFactory != null) {
-                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
-                        + "both an easyScoreDirectorFactory and an incrementalScoreDirectorFactory.");
-            }
-            if (droolsScoreDirectorFactory != null) {
-                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
-                        + "both an easyScoreDirectorFactory and an droolsScoreDirectorFactory.");
-            }
-            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
-                throw new IllegalArgumentException("The <generateDroolsTestOnError> option can only be set to true "
-                        + "when used together with droolsScoreDirectorFactory, not with easyScoreDirectorFactory.");
-            }
             scoreDirectorFactory = easyScoreDirectorFactory;
+        } else if (constraintStreamScoreDirectorFactory != null) {
+            scoreDirectorFactory = constraintStreamScoreDirectorFactory;
         } else if (incrementalScoreDirectorFactory != null) {
-            if (droolsScoreDirectorFactory != null) {
-                throw new IllegalArgumentException("The scoreDirectorFactory cannot have "
-                        + "both an incrementalScoreDirectorFactory and an droolsScoreDirectorFactory.");
-            }
-            if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
-                throw new IllegalArgumentException("The <generateDroolsTestOnError> option can only be set to true "
-                        + "when used together with droolsScoreDirectorFactory, not with incrementalScoreDirectorFactory.");
-            }
             scoreDirectorFactory = incrementalScoreDirectorFactory;
         } else if (droolsScoreDirectorFactory != null) {
             scoreDirectorFactory = droolsScoreDirectorFactory;
         } else {
             throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
-                    + "easyScoreDirectorFactory, an incrementalScoreDirectorFactory or a droolsScoreDirectorFactory.");
+                    + "easyScoreCalculatorClass, a constraintProviderClass, an incrementalScoreCalculatorClass or a droolsScoreDirectorFactory.");
         }
         if (assertionScoreDirectorFactory != null) {
             if (assertionScoreDirectorFactory.getAssertionScoreDirectorFactory() != null) {
@@ -469,7 +496,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return scoreDirectorFactory;
     }
 
-    protected <Solution_> AbstractScoreDirectorFactory<Solution_> buildEasyScoreDirectorFactory(
+    protected <Solution_> EasyScoreDirectorFactory<Solution_> buildEasyScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (easyScoreCalculatorClass != null) {
             if (!EasyScoreCalculator.class.isAssignableFrom(easyScoreCalculatorClass)) {
@@ -492,7 +519,30 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         }
     }
 
-    protected <Solution_> AbstractScoreDirectorFactory<Solution_> buildIncrementalScoreDirectorFactory(
+    protected <Solution_> ConstraintStreamScoreDirectorFactory<Solution_> buildConstraintStreamScoreDirectorFactory(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
+        if (constraintProviderClass != null) {
+            if (!ConstraintProvider.class.isAssignableFrom(constraintProviderClass)) {
+                throw new IllegalArgumentException(
+                        "The constraintProviderClass (" + constraintProviderClass
+                        + ") does not implement " + ConstraintProvider.class.getSimpleName() + ".");
+            }
+            ConstraintProvider constraintProvider = ConfigUtils.newInstance(this,
+                    "constraintProviderClass", this.constraintProviderClass);
+            ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
+                    constraintProviderCustomProperties, "constraintProviderCustomProperties");
+            return new ConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
+        } else {
+            if (constraintProviderCustomProperties != null) {
+                throw new IllegalStateException("If there is no constraintProviderClass (" + constraintProviderClass
+                        + "), then there can be no constraintProviderCustomProperties ("
+                        + constraintProviderCustomProperties + ") either.");
+            }
+            return null;
+        }
+    }
+
+    protected <Solution_> IncrementalScoreDirectorFactory<Solution_> buildIncrementalScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (incrementalScoreCalculatorClass != null) {
             if (!IncrementalScoreCalculator.class.isAssignableFrom(incrementalScoreCalculatorClass)) {
@@ -512,7 +562,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         }
     }
 
-    protected <Solution_> AbstractScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(
+    protected <Solution_> DroolsScoreDirectorFactory<Solution_> buildDroolsScoreDirectorFactory(
             SolverConfigContext configContext, SolutionDescriptor<Solution_> solutionDescriptor) {
         KieContainer kieContainer = configContext.getKieContainer();
         if (kieContainer != null || ksessionName != null) {
@@ -627,7 +677,13 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 throw new IllegalArgumentException(
                         "If kieBaseConfigurationProperties (" + kieBaseConfigurationProperties
                         + ") is not null, the scoreDrlList (" + scoreDrlList
-                        + ") and the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
+                        + ") or the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
+            }
+            if (generateDroolsTestOnError != null) {
+                throw new IllegalArgumentException(
+                        "If generateDroolsTestOnError (" + generateDroolsTestOnError
+                                + ") is not null, the scoreDrlList (" + scoreDrlList
+                                + ") or the scoreDrlFileList (" + scoreDrlFileList + ") must not be empty.");
             }
             return null;
         }
@@ -646,6 +702,10 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 easyScoreCalculatorClass, inheritedConfig.getEasyScoreCalculatorClass());
         easyScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(
                 easyScoreCalculatorCustomProperties, inheritedConfig.getEasyScoreCalculatorCustomProperties());
+        constraintProviderClass = ConfigUtils.inheritOverwritableProperty(
+                constraintProviderClass, inheritedConfig.getConstraintProviderClass());
+        constraintProviderCustomProperties = ConfigUtils.inheritMergeableMapProperty(
+                constraintProviderCustomProperties, inheritedConfig.getConstraintProviderCustomProperties());
         incrementalScoreCalculatorClass = ConfigUtils.inheritOverwritableProperty(
                 incrementalScoreCalculatorClass, inheritedConfig.getIncrementalScoreCalculatorClass());
         incrementalScoreCalculatorCustomProperties = ConfigUtils.inheritMergeableMapProperty(

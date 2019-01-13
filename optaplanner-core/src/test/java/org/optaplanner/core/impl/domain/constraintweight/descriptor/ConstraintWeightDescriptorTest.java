@@ -54,8 +54,8 @@ public class ConstraintWeightDescriptorTest {
         solution.setConstraintConfiguration(constraintConfiguration);
 
         assertSame(constraintConfiguration, solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution));
-        assertEquals(SimpleScore.ZERO, firstWeightDescriptor.createExtractionFunction().apply(solution));
-        assertEquals(SimpleScore.of(7), secondWeightDescriptor.createExtractionFunction().apply(solution));
+        assertEquals(SimpleScore.ZERO, firstWeightDescriptor.createExtractor().apply(solution));
+        assertEquals(SimpleScore.of(7), secondWeightDescriptor.createExtractor().apply(solution));
     }
 
     @Test
@@ -91,9 +91,9 @@ public class ConstraintWeightDescriptorTest {
         solution.setConstraintConfiguration(constraintConfiguration);
 
         assertSame(constraintConfiguration, solutionDescriptor.getConstraintConfigurationMemberAccessor().executeGetter(solution));
-        assertEquals(SimpleScore.ZERO, firstWeightDescriptor.createExtractionFunction().apply(solution));
-        assertEquals(SimpleScore.of(7), secondWeightDescriptor.createExtractionFunction().apply(solution));
-        assertEquals(SimpleScore.of(9), thirdWeightDescriptor.createExtractionFunction().apply(solution));
+        assertEquals(SimpleScore.ZERO, firstWeightDescriptor.createExtractor().apply(solution));
+        assertEquals(SimpleScore.of(7), secondWeightDescriptor.createExtractor().apply(solution));
+        assertEquals(SimpleScore.of(9), thirdWeightDescriptor.createExtractor().apply(solution));
     }
 
 

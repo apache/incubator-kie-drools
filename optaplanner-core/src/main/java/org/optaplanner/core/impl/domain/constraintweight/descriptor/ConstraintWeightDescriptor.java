@@ -74,12 +74,12 @@ public class ConstraintWeightDescriptor<Solution_> {
         return memberAccessor;
     }
 
-    public Function<Solution_, Score> createExtractionFunction() {
+    public Function<Solution_, Score<?>> createExtractor() {
         MemberAccessor constraintConfigurationMemberAccessor = constraintConfigurationDescriptor.getSolutionDescriptor()
                 .getConstraintConfigurationMemberAccessor();
         return (Solution_ solution) -> {
             Object constraintConfiguration = constraintConfigurationMemberAccessor.executeGetter(solution);
-            return (Score) memberAccessor.executeGetter(constraintConfiguration);
+            return (Score<?>) memberAccessor.executeGetter(constraintConfiguration);
         };
     }
 

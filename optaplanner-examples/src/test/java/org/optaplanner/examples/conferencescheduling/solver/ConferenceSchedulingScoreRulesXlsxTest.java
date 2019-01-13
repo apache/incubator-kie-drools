@@ -176,7 +176,7 @@ public class ConferenceSchedulingScoreRulesXlsxTest {
             int weightMultiplier = (int) weightMultiplierDouble;
 
             ConferenceSolution solution = solutionDescriptor.getSolutionCloner().cloneSolution(initialSolution);
-            HardMediumSoftScore constraintScore = (HardMediumSoftScore) constraintWeightDescriptor.createExtractionFunction().apply(solution);
+            HardMediumSoftScore constraintScore = (HardMediumSoftScore) constraintWeightDescriptor.createExtractor().apply(solution);
             if (constraintScore.equals(HardMediumSoftScore.ZERO)) {
                 throw new IllegalStateException(currentPosition() + ": The constraintScore (" + constraintScore
                         + ") of the @" + ConstraintWeight.class.getSimpleName()

@@ -9,6 +9,7 @@
   <scoreDirectorFactory>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensMapBasedEasyScoreCalculator</easyScoreCalculatorClass>-->
+    <!--<constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
