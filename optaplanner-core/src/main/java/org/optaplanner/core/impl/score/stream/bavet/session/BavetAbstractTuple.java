@@ -22,27 +22,28 @@ public abstract class BavetAbstractTuple {
 
     public abstract void refresh();
 
-    public boolean isActive() {
-        return state != BavetTupleState.DYING && state != BavetTupleState.DEAD;
+    public boolean isDirty() {
+        return state.isDirty();
     }
 
-    public void kill() {
-        state = BavetTupleState.DYING;
+    public boolean isActive() {
+        return state.isActive();
     }
 
     public void refreshed() {
         switch (state) {
-            case NEW:
-                state = BavetTupleState.UPDATED;
+            case CREATING:
+                state = BavetTupleState.OK;
                 break;
-            case UPDATED:
-                state = BavetTupleState.UPDATED;
+            case UPDATING:
+                state = BavetTupleState.OK;
                 break;
             case DYING:
                 state = BavetTupleState.DEAD;
                 break;
             case DEAD:
-                throw new IllegalStateException("The tuple (" + this + ") was already dead.");
+                throw new IllegalStateException("The tuple (" + this
+                        + ") is already in the dead state (" + state + ").");
         }
     }
 
@@ -58,6 +59,10 @@ public abstract class BavetAbstractTuple {
 
     public BavetTupleState getState() {
         return state;
+    }
+
+    public void setState(BavetTupleState state) {
+        this.state = state;
     }
 
 }

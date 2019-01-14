@@ -18,7 +18,18 @@ package org.optaplanner.core.impl.score.stream.bavet.session;
 
 public enum BavetTupleState {
     NEW,
-    UPDATED,
+    CREATING,
+    UPDATING,
+    OK,
     DYING,
     DEAD;
+
+    public boolean isDirty() {
+        return this == CREATING || this == UPDATING || this == DYING;
+    }
+
+    public boolean isActive() {
+        return this != DYING && this != DEAD;
+    }
+
 }

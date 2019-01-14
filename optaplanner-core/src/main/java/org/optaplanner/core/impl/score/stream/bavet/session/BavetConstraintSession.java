@@ -79,7 +79,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
             if (old != null) {
                 throw new IllegalStateException("The fact (" + fact + ") was already inserted, so it cannot insert again.");
             }
-            addDirty(tuple);
+            transitionTuple(tuple, BavetTupleState.CREATING);
         }
     }
 
@@ -89,7 +89,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot update.");
         }
-        addDirty(tuple);
+        transitionTuple(tuple, BavetTupleState.UPDATING);
     }
 
     @Override
@@ -98,8 +98,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot retract.");
         }
-        tuple.kill();
-        addDirty(tuple);
+        transitionTuple(tuple, BavetTupleState.DYING);
     }
 
     @Override
@@ -115,7 +114,17 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         return SimpleScore.ofUninitialized(initScore, score);
     }
 
-    public void addDirty(BavetAbstractTuple tuple) {
+    public void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState) {
+        if (tuple.isDirty()) {
+            if (tuple.getState() != newState) {
+                throw new IllegalStateException("The tuple (" + tuple
+                        + ") already has a dirty state (" + tuple.getState()
+                        + ") so it cannot transition to newState (" + newState + ").");
+            }
+            // Don't add it to the queue twice
+            return;
+        }
+        tuple.setState(newState);
         nodeOrderedQueueList.get(tuple.getNodeOrder()).add(tuple);
     }
 
@@ -127,6 +136,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     public String toString() {
         return "Bavet score (" + score + ")";
     }
+
     // ************************************************************************
     // Getters/setters
     // ************************************************************************

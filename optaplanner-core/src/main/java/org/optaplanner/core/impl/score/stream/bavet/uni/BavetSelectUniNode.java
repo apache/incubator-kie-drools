@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
 
 public final class BavetSelectUniNode<A> extends BavetAbstractUniNode<A> {
 
@@ -45,13 +46,12 @@ public final class BavetSelectUniNode<A> extends BavetAbstractUniNode<A> {
         BavetAbstractUniTuple<A> downstreamTuple = tuple.getDownstreamTuple();
         if (downstreamTuple != null) {
             // TODO the entire Select node isn't really doing anything, so the destruction/construction is just an update op
-            downstreamTuple.kill();
-            session.addDirty(downstreamTuple);
+            session.transitionTuple(downstreamTuple, BavetTupleState.DYING);
         }
         if (tuple.isActive()) {
             BavetAbstractUniTuple<A> nextTuple = nextNode.createTuple(tuple);
             tuple.setDownstreamTuple(nextTuple);
-            session.addDirty(nextTuple);
+            session.transitionTuple(nextTuple, BavetTupleState.CREATING);
         }
         tuple.refreshed();
     }

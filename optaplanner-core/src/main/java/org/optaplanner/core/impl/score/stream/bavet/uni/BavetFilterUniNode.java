@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
 
 public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
@@ -41,14 +42,13 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
         A a = tuple.getFactA();
         BavetAbstractUniTuple<A> downstreamTuple = tuple.getDownstreamTuple();
         if (downstreamTuple != null) {
-            downstreamTuple.kill();
-            session.addDirty(downstreamTuple);
+            session.transitionTuple(downstreamTuple, BavetTupleState.DYING);
         }
         if (tuple.isActive()) {
             if (predicate.test(a)) {
                 BavetAbstractUniTuple<A> nextTuple = nextNode.createTuple(tuple);
                 tuple.setDownstreamTuple(nextTuple);
-                session.addDirty(nextTuple);
+                session.transitionTuple(nextTuple, BavetTupleState.CREATING);
             }
         }
         tuple.refreshed();
