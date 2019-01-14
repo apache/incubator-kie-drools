@@ -30,10 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TransactionalCommandService implements CommandExecutor {
-	
-	private static final Logger logger = LoggerFactory.getLogger(TransactionalCommandService.class);
-	
-	private EntityManagerFactory emf;	
+
+    private static final Logger logger = LoggerFactory.getLogger(TransactionalCommandService.class);
+
+    protected EntityManagerFactory emf;
     private Context context;
     private TransactionManager txm;
     
