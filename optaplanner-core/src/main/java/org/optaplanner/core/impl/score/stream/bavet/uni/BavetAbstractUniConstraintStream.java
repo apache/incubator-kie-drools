@@ -22,17 +22,22 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiConstraintStream;
+import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
 
-public abstract class BavetAbstractUniConstraintStream<Solution_, A> implements UniConstraintStream<A> {
+public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
+        implements UniConstraintStream<A> {
 
-    protected final BavetConstraint<Solution_> bavetConstraint;
     protected final List<BavetAbstractUniConstraintStream<Solution_, A>> nextStreamList = new ArrayList<>(2);
 
     public BavetAbstractUniConstraintStream(BavetConstraint<Solution_> bavetConstraint) {
-        this.bavetConstraint = bavetConstraint;
+        super(bavetConstraint);
     }
 
     // ************************************************************************
@@ -41,9 +46,31 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> implements 
 
     @Override
     public BavetAbstractUniConstraintStream<Solution_, A> filter(Predicate<A> predicate) {
-        BavetFilterUniConstraintStream<Solution_, A> stream = new BavetFilterUniConstraintStream<>(bavetConstraint, predicate);
+        BavetFilterUniConstraintStream<Solution_, A> stream = new BavetFilterUniConstraintStream<>(constraint, predicate);
         nextStreamList.add(stream);
         return stream;
+    }
+
+    @Override
+    public <B, Property_> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B, Property_> joiner) {
+        if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
+            throw new IllegalStateException("The streams (" + this + ", " + otherStream
+                    + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
+        }
+        BavetAbstractUniConstraintStream<Solution_, B> other = (BavetAbstractUniConstraintStream<Solution_, B>) otherStream;
+        if (constraint != other.constraint) {
+            throw new IllegalStateException("The streams (" + this + ", " + other
+                    + ") are build from different constraints (" + constraint + ", " + other.constraint
+                    + ").");
+        }
+        BavetJoinBiConstraintStream<Solution_, A, B, Property_> biStream = new BavetJoinBiConstraintStream<>(constraint);
+        BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B, Property_> leftBridge = new BavetJoinLeftBridgeUniConstraintStream<>(
+                constraint, biStream, joiner.getLeftMapping());
+        nextStreamList.add(leftBridge);
+        BavetJoinRightBridgeUniConstraintStream<Solution_, A, B, Property_> rightBridge = new BavetJoinRightBridgeUniConstraintStream<>(
+                constraint, biStream, joiner.getRightMapping());
+        other.nextStreamList.add(rightBridge);
+        return biStream;
     }
 
     @Override
@@ -59,7 +86,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> implements 
     }
 
     private void addIntScoring(ToIntFunction<A> matchWeigher) {
-        BavetIntScoringUniConstraintStream<Solution_, A> stream = new BavetIntScoringUniConstraintStream<>(bavetConstraint, matchWeigher);
+        BavetIntScoringUniConstraintStream<Solution_, A> stream = new BavetIntScoringUniConstraintStream<>(constraint, matchWeigher);
         nextStreamList.add(stream);
     }
 
@@ -67,7 +94,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> implements 
     // Node creation methods
     // ************************************************************************
 
-    public BavetAbstractUniNode<A> createNodeChain(BavetNodeBuildPolicy buildPolicy, Score<?> constraintWeight, int nodeOrder) {
+    public BavetAbstractUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder) {
         buildPolicy.updateNodeOrderMaximum(nodeOrder);
         if (nextStreamList.isEmpty()) {
             return createNode(buildPolicy, constraintWeight, nodeOrder, null);
@@ -80,7 +108,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> implements 
         throw new UnsupportedOperationException("Node sharing is currently not supported.");
     }
 
-    protected abstract BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy buildPolicy,
+    protected abstract BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> nextNode);
 
 }

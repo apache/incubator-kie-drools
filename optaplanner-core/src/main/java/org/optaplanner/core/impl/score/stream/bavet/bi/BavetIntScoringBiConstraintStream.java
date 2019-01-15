@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.uni;
+package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.function.ToIntFunction;
+import java.util.function.ToIntBiFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
 
-public final class BavetIntScoringUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
+public final class BavetIntScoringBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final ToIntFunction<A> matchWeigher;
+    private final ToIntBiFunction<A, B> matchWeigher;
 
-    public BavetIntScoringUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, ToIntFunction<A> matchWeigher) {
+    public BavetIntScoringBiConstraintStream(BavetConstraint<Solution_> bavetConstraint, ToIntBiFunction<A, B> matchWeigher) {
         super(bavetConstraint);
         this.matchWeigher = matchWeigher;
         if (matchWeigher == null) {
@@ -40,13 +40,13 @@ public final class BavetIntScoringUniConstraintStream<Solution_, A> extends Bave
     // ************************************************************************
 
     @Override
-    protected BavetIntScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> nextNode) {
+    protected BavetIntScoringBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> nextNode) {
         if (nextNode != null) {
             throw new IllegalStateException("Impossible state: the stream (" + this + ") has one or more nextStreams ("
                     + nextStreamList + ") but it's an endpoint.");
         }
-        return new BavetIntScoringUniNode<>(buildPolicy.getSession(), nodeOrder,
+        return new BavetIntScoringBiNode<>(buildPolicy.getSession(), nodeOrder,
                 constraint.getConstraintPackage(), constraint.getConstraintName(),
                 ((SimpleScore) constraintWeight).getScore(), matchWeigher);
     }

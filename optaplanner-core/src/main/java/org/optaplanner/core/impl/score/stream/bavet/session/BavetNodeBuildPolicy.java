@@ -16,10 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.session;
 
-public class BavetNodeBuildPolicy {
+import java.util.HashMap;
+import java.util.Map;
+
+public class BavetNodeBuildPolicy<Solution_> {
 
     private BavetConstraintSession session;
     private int nodeOrderMaximum = 0;
+    private Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractNode> streamToNodeMap = new HashMap<>();
 
     public BavetNodeBuildPolicy(BavetConstraintSession session) {
         this.session = session;
@@ -37,6 +41,10 @@ public class BavetNodeBuildPolicy {
         if (nodeOrderMaximum < nodeOrder) {
             nodeOrderMaximum = nodeOrder;
         }
+    }
+
+    public Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractNode> getStreamToNodeMap() {
+        return streamToNodeMap;
     }
 
 }

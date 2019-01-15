@@ -58,7 +58,7 @@ public final class BavetConstraint<Solution_> implements Constraint {
         return stream;
     }
 
-    public void createNodes(BavetNodeBuildPolicy buildPolicy, Map<Class<?>,
+    public void createNodes(BavetNodeBuildPolicy<Solution_> buildPolicy, Map<Class<?>,
             List<BavetSelectUniNode<Object>>> declaredClassToNodeListMap, Score<?> constraintWeight) {
         for (BavetSelectUniConstraintStream<Solution_, Object> stream : streamList) {
             int nodeOrder = 0;

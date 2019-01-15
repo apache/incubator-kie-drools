@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.uni;
+package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
 
-public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
+public final class BavetJoinBiConstraintStream<Solution_, A, B, Property_> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
-    private final Predicate<A> predicate;
-
-    public BavetFilterUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, Predicate<A> predicate) {
+    public BavetJoinBiConstraintStream(BavetConstraint<Solution_> bavetConstraint) {
         super(bavetConstraint);
-        this.predicate = predicate;
-        if (predicate == null) {
-            throw new IllegalArgumentException("The predicate (null) cannot be null.");
-        }
     }
 
     // ************************************************************************
@@ -39,13 +33,19 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     // ************************************************************************
 
     @Override
-    protected BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> nextNode) {
+    public BavetJoinBiNode<A, B, Property_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder) {
+        return (BavetJoinBiNode<A, B, Property_>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
+    }
+
+    @Override
+    protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> nextNode) {
         if (nextNode == null) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
-        return new BavetFilterUniNode<>(buildPolicy.getSession(), nodeOrder, predicate, nextNode);
+        return new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder, nextNode);
     }
 
 }

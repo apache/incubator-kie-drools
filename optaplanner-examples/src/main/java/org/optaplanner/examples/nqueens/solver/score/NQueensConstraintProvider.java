@@ -20,16 +20,50 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.examples.nqueens.domain.Queen;
 
 public class NQueensConstraintProvider implements ConstraintProvider {
 
     @Override
     public void defineConstraints(ConstraintFactory constraintFactory) {
-        Constraint pocConstraint = constraintFactory
-                .newConstraintWithWeight("pocConstraint", SimpleScore.of(1));
-        pocConstraint.select(Queen.class)
-                .filter(queen -> queen.getRow() != null && queen.getRowIndex() == queen.getColumnIndex())
+        // TODO rename to "horizontal conflict", ...
+        multipleQueensHorizontal(constraintFactory);
+        multipleQueensAscendingDiagonal(constraintFactory);
+        multipleQueensDescendingDiagonal(constraintFactory);
+    }
+
+    protected void multipleQueensHorizontal(ConstraintFactory constraintFactory) {
+        Constraint constraint = constraintFactory
+                .newConstraintWithWeight("multipleQueensHorizontal", SimpleScore.of(1));
+        UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
+                .filter(queen -> queen.getRow() != null);
+        UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
+                .filter(queen -> queen.getRow() != null);
+        aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getRowIndex))
+                .penalize();
+    }
+
+    protected void multipleQueensAscendingDiagonal(ConstraintFactory constraintFactory) {
+        Constraint constraint = constraintFactory
+                .newConstraintWithWeight("multipleQueensAscendingDiagonal", SimpleScore.of(1));
+        UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
+                .filter(queen -> queen.getRow() != null);
+        UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
+                .filter(queen -> queen.getRow() != null);
+        aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getAscendingDiagonalIndex))
+                .penalize();
+    }
+
+    protected void multipleQueensDescendingDiagonal(ConstraintFactory constraintFactory) {
+        Constraint constraint = constraintFactory
+                .newConstraintWithWeight("multipleQueensDescendingDiagonal", SimpleScore.of(1));
+        UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
+                .filter(queen -> queen.getRow() != null);
+        UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
+                .filter(queen -> queen.getRow() != null);
+        aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getDescendingDiagonalIndex))
                 .penalize();
     }
 

@@ -33,12 +33,12 @@ public final class BavetSelectUniConstraintStream<Solution_, A> extends BavetAbs
     }
 
     @Override
-    public BavetSelectUniNode<A> createNodeChain(BavetNodeBuildPolicy buildPolicy, Score<?> constraintWeight, int nodeOrder) {
+    public BavetSelectUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder) {
         return (BavetSelectUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
     }
 
     @Override
-    protected BavetSelectUniNode<A> createNode(BavetNodeBuildPolicy buildPolicy, Score<?> constraintWeight,
+    protected BavetSelectUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
             int nodeOrder, BavetAbstractUniNode<A> nextNode) {
         return new BavetSelectUniNode<>(buildPolicy.getSession(), nodeOrder, selectClass, nextNode);
     }

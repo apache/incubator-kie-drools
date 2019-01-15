@@ -16,22 +16,50 @@
 
 package org.optaplanner.core.api.score.stream.uni;
 
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintStream;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 
 /**
- *
- * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
+ * A {@link ConstraintStream} that matches one fact.
+ * @param <A> the type of the matched fact (either a problem fact or a {@link PlanningEntity planning entity})
+ * @see ConstraintStream
  */
-public interface UniConstraintStream<A> {
+public interface UniConstraintStream<A> extends ConstraintStream {
 
+    /**
+     * Exhaustively test each fact against the {@link Predicate}
+     * and match if {@link Predicate#test(Object)} returns true.
+     * @param predicate never null
+     * @return never null
+     */
     UniConstraintStream<A> filter(Predicate<A> predicate);
 
     /**
-     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight}.
+     * Create a new {@link BiConstraintStream} for every combination of A and B for which the {@link BiJoiner}
+     * is true (for the property it extracts from both facts).
+     * <p>
+     * Important: This is faster and more scalable than a join
+     * followed by a {@link BiConstraintStream#filter(BiPredicate)},
+     * because it applies hashing and/or indexing on the Property,
+     * so it doesn't create nor checks every combination of A and B.
+     * @param other never null
+     * @param joiner never null
+     * @param <B> the type of the second matched fact
+     * @param <Property_> a property that is both retrievable from this stream and the other stream
+     * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
+     */
+    <B, Property_> BiConstraintStream<A, B> join(UniConstraintStream<B> other, BiJoiner<A, B, Property_> joiner);
+
+
+    /**
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} for each match.
      */
     void penalize();
 
@@ -42,7 +70,7 @@ public interface UniConstraintStream<A> {
 //    void penalize(Function<A, Long> matchWeighter);
 
     /**
-     * Positively impact the {@link Score}: add the {@link ConstraintWeight}.
+     * Positively impact the {@link Score}: add the {@link ConstraintWeight} for each match.
      */
     void reward();
 

@@ -44,7 +44,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
 
     public BavetConstraintSession(Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
         declaredClassToNodeListMap = new HashMap<>(50);
-        BavetNodeBuildPolicy buildPolicy = new BavetNodeBuildPolicy(this);
+        BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {
             constraint.createNodes(buildPolicy, declaredClassToNodeListMap, constraintWeight);
         });
