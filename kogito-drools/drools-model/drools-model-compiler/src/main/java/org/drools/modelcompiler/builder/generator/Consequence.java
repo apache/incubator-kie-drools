@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.drools.javaparser.ParseProblemException;
 import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.body.VariableDeclarator;
+import org.drools.javaparser.ast.drlx.expr.CommaSeparatedMethodCallExpr;
+import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
@@ -252,15 +255,21 @@ public class Consequence {
                 declAsExpr = new EnclosedExpr( declAsExpr );
             }
             String originalBlock = consequence.substring(blockStart + 1, blockEnd).trim();
-            BlockStmt modifyBlock = JavaParser.parseBlock("{" + originalBlock + ";}");
-            List<MethodCallExpr> originalMethodCalls = modifyBlock.findAll(MethodCallExpr.class);
-            for (MethodCallExpr mc : originalMethodCalls) {
-                Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
-                modifyBlock.replace(mc, mcWithScope);
-            }
-            for (Statement n : modifyBlock.getStatements()) {
-                if (!(n instanceof EmptyStmt)) {
-                    sb.append(n);
+            if(!"".equals(originalBlock)) {
+                DrlxExpression modifyBlock = DrlxParseUtil.parseExpression(originalBlock);
+                Expression expr = modifyBlock.getExpr();
+                List<Expression> originalMethodCalls;
+                if (expr instanceof CommaSeparatedMethodCallExpr) {
+                    originalMethodCalls = ((CommaSeparatedMethodCallExpr) expr).getExpressions();
+                } else {
+                    originalMethodCalls = Collections.singletonList(expr);
+                }
+                for (Expression e : originalMethodCalls) {
+                    MethodCallExpr mc = (MethodCallExpr) e;
+                    Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
+                    modifyBlock.replace(mc, mcWithScope);
+                    sb.append(mc.toString());
+                    sb.append(";\n");
                 }
             }
 

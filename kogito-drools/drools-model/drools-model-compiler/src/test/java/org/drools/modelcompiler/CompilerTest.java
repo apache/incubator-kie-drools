@@ -1420,4 +1420,25 @@ public class CompilerTest extends BaseModelTest {
         kieSession.insert(new TestFact("test"));
         assertEquals(1, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testCommaInModify() {
+        // DROOLS-3505
+        final String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"java\"\n" +
+
+                "rule R1 when\n" +
+                "   $p : Person( name == \"John\" )\n" +
+                "then\n" +
+                "   modify($p) { setAge(1), setLikes(\"bread\"); }\n" +
+                "end\n";
+        KieSession kieSession = getKieSession(drl);
+        Person john = new Person("John", 24);
+        kieSession.insert(john);
+        assertEquals(1, kieSession.fireAllRules());
+
+        assertEquals(john.getAge(), 1);
+        assertEquals(john.getLikes(), "bread");
+    }
 }
