@@ -46,7 +46,7 @@ public class RuleContext {
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
     private DRLIdGenerator idGenerator;
-    private final RuleDescr descr;
+    private RuleDescr descr;
     private final boolean generatePatternDSL;
 
     private List<DeclarationSpec> allDeclarations = new ArrayList<>();
@@ -82,18 +82,16 @@ public class RuleContext {
 
     public BaseDescr parentDesc = null;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, RuleDescr ruleDescr, TypeResolver typeResolver, boolean generatePatternDSL) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, boolean generatePatternDSL) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
-        this.descr = ruleDescr;
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
         this.generatePatternDSL = generatePatternDSL;
-        findUnitClass();
     }
 
-    private void findUnitClass() {
+    private void findUnitDescr() {
         if (descr == null) {
             return;
         }
@@ -302,6 +300,13 @@ public class RuleContext {
     public RuleDescr getRuleDescr() {
         return descr;
     }
+
+    public void setDescr(RuleDescr descr) {
+        this.descr = descr;
+        findUnitDescr();
+    }
+
+    // setter per rule descr
 
     public String getRuleName() {
         return descr.getName();
