@@ -307,8 +307,6 @@ public class RuleContext {
         findUnitDescr();
     }
 
-    // setter per rule descr
-
     public String getRuleName() {
         return descr.getName();
     }
