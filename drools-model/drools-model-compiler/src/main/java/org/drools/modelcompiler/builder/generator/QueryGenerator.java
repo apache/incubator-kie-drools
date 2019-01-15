@@ -23,7 +23,6 @@ import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -33,8 +32,8 @@ import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
 
-    public static void processQueryDef( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, QueryDescr queryDescr, boolean isPattern ) {
-        RuleContext context = new RuleContext(kbuilder, packageModel, queryDescr, typeResolver, isPattern);
+    public static void processQueryDef(PackageModel packageModel, QueryDescr queryDescr, RuleContext context) {
+        context.setDescr(queryDescr);
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
         context.setQueryName(Optional.of(queryDefVariableName));
@@ -82,8 +81,8 @@ public class QueryGenerator {
         String queryDefVariableName = toQueryDef(queryDescr.getName());
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
         context.addGlobalDeclarations(packageModel.getGlobals());
+        context.setDialectFromAttributes(queryDescr.getAttributes().values());
 
-        ModelGenerator.setDialectFromRuleDescr(context, queryDescr);
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
 

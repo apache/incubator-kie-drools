@@ -63,14 +63,12 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
-import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
@@ -138,35 +136,40 @@ public class ModelGenerator {
         new WindowReferenceGenerator(packageModel, typeResolver).addWindowReferences(kbuilder, packageDescr.getWindowDeclarations());
         packageModel.addAllFunctions(packageDescr.getFunctions().stream().map(FunctionGenerator::toFunction).collect(toList()));
 
+
         for(RuleDescr descr : packageDescr.getRules()) {
+            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
+            context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
-                QueryGenerator.processQueryDef( kbuilder, typeResolver, packageModel, (QueryDescr) descr, isPattern);
+                QueryGenerator.processQueryDef(packageModel, (QueryDescr) descr, context);
             }
         }
 
         for (RuleDescr descr : packageDescr.getRules()) {
+            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
+            context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
-                processRule(kbuilder, typeResolver, packageModel, packageDescr, descr, isPattern);
+                processRule(kbuilder, packageModel, packageDescr, descr, context);
             }
         }
     }
 
 
-    private static void processRule(KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, boolean isPattern) {
-        RuleContext context = new RuleContext(kbuilder, packageModel, ruleDescr,  typeResolver, isPattern);
+    private static void processRule(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, PackageDescr packageDescr, RuleDescr ruleDescr, RuleContext context) {
+        context.setDescr(ruleDescr);
         context.addGlobalDeclarations(packageModel.getGlobals());
 
         for(Entry<String, Object> kv : ruleDescr.getNamedConsequences().entrySet()) {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        setDialectFromRuleDescr(context, ruleDescr);
+        context.setDialectFromAttributes(ruleDescr.getAttributes().values());
 
         RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
+        createUnitData(context, ruleUnitDescr, ruleVariablesBlock );
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
@@ -300,17 +303,6 @@ public class ModelGenerator {
             attributeCall.addArgument( supplyCall );
         } else {
             context.addCompilationError( new ParseExpressionErrorResult(salienceExpr) );
-        }
-    }
-
-    public static void setDialectFromRuleDescr(RuleContext context, RuleDescr ruleDescr) {
-        for (Entry<String, AttributeDescr> as : ruleDescr.getAttributes().entrySet()) {
-            if (as.getKey().equals("dialect")) {
-                if (as.getValue().getValue().equals("mvel")) {
-                    context.setRuleDialect(RuleDialect.MVEL);
-                }
-                return;
-            }
         }
     }
 
