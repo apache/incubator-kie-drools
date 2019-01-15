@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
@@ -451,6 +452,17 @@ public class RuleContext {
                 definedVars.remove(v);
                 allDeclarations.add( scopedDeclarations.remove( id + v ) );
             } );
+        }
+    }
+
+    public void setDialectFromAttributes(Collection<AttributeDescr> attributes) {
+        for (AttributeDescr a : attributes) {
+            if (a.getName().equals("dialect")) {
+                if (a.getValue().equals("mvel")) {
+                    setRuleDialect(RuleDialect.MVEL);
+                }
+                return;
+            }
         }
     }
 }

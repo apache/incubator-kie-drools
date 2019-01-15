@@ -19,7 +19,6 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,14 +63,12 @@ import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
-import org.drools.modelcompiler.builder.generator.RuleContext.RuleDialect;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
@@ -142,7 +139,7 @@ public class ModelGenerator {
 
         for(RuleDescr descr : packageDescr.getRules()) {
             RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
-            setDialectFromAttributes(context, packageDescr.getAttributes());
+            context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQueryDef(packageModel, (QueryDescr) descr, context);
             }
@@ -150,7 +147,7 @@ public class ModelGenerator {
 
         for (RuleDescr descr : packageDescr.getRules()) {
             RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
-            setDialectFromAttributes(context, packageDescr.getAttributes());
+            context.setDialectFromAttributes(packageDescr.getAttributes());
             if (descr instanceof QueryDescr) {
                 QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
@@ -168,7 +165,7 @@ public class ModelGenerator {
             context.addNamedConsequence(kv.getKey(), kv.getValue().toString());
         }
 
-        setDialectFromAttributes(context, ruleDescr.getAttributes().values());
+        context.setDialectFromAttributes(ruleDescr.getAttributes().values());
 
         RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         BlockStmt ruleVariablesBlock = new BlockStmt();
@@ -306,17 +303,6 @@ public class ModelGenerator {
             attributeCall.addArgument( supplyCall );
         } else {
             context.addCompilationError( new ParseExpressionErrorResult(salienceExpr) );
-        }
-    }
-
-    public static void setDialectFromAttributes(RuleContext context, Collection<AttributeDescr> attributes) {
-        for (AttributeDescr a : attributes) {
-            if (a.getName().equals("dialect")) {
-                if (a.getValue().equals("mvel")) {
-                    context.setRuleDialect(RuleDialect.MVEL);
-                }
-                return;
-            }
         }
     }
 
