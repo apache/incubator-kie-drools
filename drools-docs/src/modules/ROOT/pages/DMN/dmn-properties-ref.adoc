@@ -4,7 +4,7 @@
 {PRODUCT} provides the following DMN properties that you can configure when you execute your DMN models on {KIE_SERVER} or on your client application:
 
 org.kie.dmn.strictConformance::
-When enabled, this property disables by default any extensions or profiles provided beyond the DMN standard, such as some helper functions or enhanced features of DMN 1.2 backported into DMN 1.1. You can use this property to configure the {ENGINE} to support only pure DMN features, such as when running the https://dmn-tck.github.io/tck/[DMN Technology Compatibility Kit] (TCK).
+When enabled, this property disables by default any extensions or profiles provided beyond the DMN standard, such as some helper functions or enhanced features of DMN 1.2 backported into DMN 1.1. You can use this property to configure the {DECISION_ENGINE} to support only pure DMN features, such as when running the https://dmn-tck.github.io/tck/[DMN Technology Compatibility Kit] (TCK).
 +
 --
 Default value: `false`
@@ -40,7 +40,7 @@ Default value: `true`
 --
 
 org.kie.dmn.profiles.$PROFILE_NAME::
-When valorized with a Java fully qualified name, this property loads a DMN profile onto the {ENGINE} at start time. You can use this property to implement a predefined DMN profile with supported features different from or beyond the DMN standard. For example, if you are creating DMN models using the Signavio DMN modeller, use this property to implement features from the Signavio DMN profile into your DMN decision service.
+When valorized with a Java fully qualified name, this property loads a DMN profile onto the {DECISION_ENGINE} at start time. You can use this property to implement a predefined DMN profile with supported features different from or beyond the DMN standard. For example, if you are creating DMN models using the Signavio DMN modeller, use this property to implement features from the Signavio DMN profile into your DMN decision service.
 +
 --
 ----
@@ -50,7 +50,7 @@ When valorized with a Java fully qualified name, this property loads a DMN profi
 --
 
 org.kie.dmn.compiler.execmodel::
-When enabled, this property enables DMN decision table logic to be compiled into executable rule models during run time. You can use this property to evaluate DMN decision table logic more efficiently. This property is helpful when the executable model compilation was not originally performed during project compile time. Enabling this property may result in added compile time during the first evaluation by the {ENGINE}, but subsequent compilations are more efficient.
+When enabled, this property enables DMN decision table logic to be compiled into executable rule models during run time. You can use this property to evaluate DMN decision table logic more efficiently. This property is helpful when the executable model compilation was not originally performed during project compile time. Enabling this property may result in added compile time during the first evaluation by the {DECISION_ENGINE}, but subsequent compilations are more efficient.
 +
 --
 Default value: `false`

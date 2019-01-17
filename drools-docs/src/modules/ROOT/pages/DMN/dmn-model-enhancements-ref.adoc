@@ -9,8 +9,8 @@
   ** `days and time duration` = `duration` or `dayTimeDuration`
   ** `years and months duration` = `duration` or `yearMonthDuration`
 +
-Note that, for the "duration" types, the user can simply use `duration` and the engine will infer the proper duration, either `days and time duration` or `years and months duration`.
+Note that, for the "duration" types, the user can simply use `duration` and the {DECISION_ENGINE} will infer the proper duration, either `days and time duration` or `years and months duration`.
 
 * __Lists support heterogeneous element types__: Currently this implementation supports lists with heterogeneous element types. This is an experimental extension and does limit the functionality of some functions and filters. This decision will be re-evaluated in the future.
 
-* __TypeRef link between Decision Tables and Item Definitions__: On decision tables/input clause, if no values list is defined, the engine automatically checks the type reference and applies the allowed values check if it is defined.
+* __TypeRef link between Decision Tables and Item Definitions__: On decision tables/input clause, if no values list is defined, the {DECISION_ENGINE} automatically checks the type reference and applies the allowed values check if it is defined.
