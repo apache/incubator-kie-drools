@@ -12,7 +12,7 @@ You have a Java application that contains {PRODUCT} business assets.
 +
 --
 * `drools-canonical-model`: Enables an executable canonical representation of a rule set model that is independent from {PRODUCT}
-* `drools-model-compiler`: Compiles the executable model into {PRODUCT} internal data structures so that it can be executed by the {ENGINE}
+* `drools-model-compiler`: Compiles the executable model into {PRODUCT} internal data structures so that it can be executed by the {DECISION_ENGINE}
 
 [source,xml,subs="attributes+"]
 ----
