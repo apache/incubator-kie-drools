@@ -98,6 +98,13 @@ public class ExpressionTyperTest {
     }
 
     @Test
+    public void testBigDecimalLiteral() {
+        final TypedExpression expected = typedResult("13.111B", BigDecimal.class);
+        final TypedExpression actual = toTypedExpression("13.111B", null);
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void testBooleanComparison() {
         final TypedExpression expected = typedResult("_this.getAge() == 18", int.class);
         final TypedExpression actual = toTypedExpression("age == 18", Person.class);
