@@ -187,4 +187,27 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(customer);
         assertEquals(0, ksession.fireAllRules());
     }
+
+    @Test
+    public void testBigDecimalEquals() {
+        // DROOLS-3527
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                        "import " + Customer.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "$customer: Customer( rate == 12.111B )\n" +
+                        "then\n" +
+                        "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer customer = new Customer();
+        customer.setRate(new BigDecimal("12.111"));
+
+        ksession.insert(customer);
+
+        assertEquals(1, ksession.fireAllRules());
+
+    }
 }
