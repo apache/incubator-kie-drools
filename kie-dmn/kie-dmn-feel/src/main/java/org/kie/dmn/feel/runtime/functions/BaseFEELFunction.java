@@ -222,7 +222,7 @@ public abstract class BaseFEELFunction
             CandidateMethod cm = new CandidateMethod( actualParams );
 
             Class<?>[] parameterTypes = m.getParameterTypes();
-            if( !isNamedParams ) {
+            if (!isNamedParams && actualParams.length > 0) {
                 // if named parameters, then it has been adjusted already in the calculateActualParams method,
                 // otherwise adjust here
                 adjustForVariableParameters( cm, parameterTypes );
@@ -273,6 +273,9 @@ public abstract class BaseFEELFunction
         return Collections.emptyList();
     }
 
+    /**
+     * Adjust CandidateMethod considering var args signature. 
+     */
     private void adjustForVariableParameters(CandidateMethod cm, Class<?>[] parameterTypes) {
         if ( parameterTypes.length > 0 && parameterTypes[parameterTypes.length - 1].isArray() ) {
             // then it is a variable parameters function call
