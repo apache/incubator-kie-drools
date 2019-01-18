@@ -16,16 +16,16 @@
 
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 public class StddevFunctionTest {
 
@@ -42,28 +42,12 @@ public class StddevFunctionTest {
     }
 
     @Test
-    public void invokeNumberBigDecimal() {
-        FunctionTestUtil.assertResult(stddevFunction.invoke(BigDecimal.TEN), BigDecimal.ZERO);
-    }
-
-    @Test
-    public void invokeNumberInteger() {
-        FunctionTestUtil.assertResult(stddevFunction.invoke(10), BigDecimal.ZERO);
-    }
-
-    @Test
-    public void invokeNumberDoubleWithoutDecimalPart() {
-        FunctionTestUtil.assertResult(stddevFunction.invoke(10d), BigDecimal.ZERO);
-    }
-
-    @Test
-    public void invokeNumberDoubleWithDecimalPart() {
-        FunctionTestUtil.assertResult(stddevFunction.invoke(10.1d), BigDecimal.ZERO);
-    }
-
-    @Test
-    public void invokeNumberFloat() {
-        FunctionTestUtil.assertResult(stddevFunction.invoke(10.1f), BigDecimal.ZERO);
+    public void invokeSingleNumber() {
+        FunctionTestUtil.assertResultError(stddevFunction.invoke(BigDecimal.TEN), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(stddevFunction.invoke(10), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(stddevFunction.invoke(10d), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(stddevFunction.invoke(10.1d), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(stddevFunction.invoke(10.1f), InvalidParametersEvent.class);
     }
 
     @Test
