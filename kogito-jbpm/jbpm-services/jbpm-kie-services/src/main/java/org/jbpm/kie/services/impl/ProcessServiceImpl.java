@@ -190,21 +190,29 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	disposeRuntimeEngine(manager, engine);
         }
 	}
-	
-	@Override
-    public void abortProcessInstances(List<Long> processInstanceIds) {
-	    for (long processInstanceId : processInstanceIds) {
-            abortProcessInstance(processInstanceId);
-        }
-	}
 
-	@Override
-	public void abortProcessInstances(String deploymentId, List<Long> processInstanceIds) {
-		for (long processInstanceId : processInstanceIds) {
-			abortProcessInstance(deploymentId, processInstanceId);
-		}
-	}
-	
+    @Override
+    public void abortProcessInstances(List<Long> processInstanceIds) {
+        processInstanceIds.forEach(processInstanceId -> {
+            try {
+                abortProcessInstance(processInstanceId);
+            } catch (ProcessInstanceNotFoundException ex) {
+                logger.warn("Process instance with id " + processInstanceId + " was not found", ex);
+            }
+        });
+    }
+
+    @Override
+    public void abortProcessInstances(String deploymentId, List<Long> processInstanceIds) {
+        processInstanceIds.forEach(processInstanceId -> {
+            try {
+                abortProcessInstance(processInstanceId);
+            } catch (ProcessInstanceNotFoundException ex) {
+                logger.warn("Process instance with id " + processInstanceId + " was not found", ex);
+            }
+        });
+    }
+
 	@Override
     public void signalProcessInstance(Long processInstanceId, String signalName, Object event) {
         ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);

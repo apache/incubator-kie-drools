@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
@@ -81,6 +82,10 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         processes.add("repo/processes/general/callactivity.bpmn");
         processes.add("repo/processes/general/boundarysignal.bpmn2");
         processes.add("repo/processes/general/boundarysignalwithexpression.bpmn2");
+        processes.add("repo/processes/parentProcess/parentWithIndependentSubProcessOne.bpmn");
+        processes.add("repo/processes/parentProcess/parentWithIndependentSubProcess.bpmn");
+        processes.add("repo/processes/parentProcess/parentWithNotIndepententSubProcess.bpmn");
+        processes.add("repo/processes/parentProcess/subprocess.bpmn");
 
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -266,6 +271,90 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
     	assertNull(pi);
     	pi2 = processService.getProcessInstance(processInstanceId2);
     	assertNull(pi2);
+    }
+
+    @Test
+    public void testAbortedParentProcessAndChildProcessInProcessInstanceListWithNotIndenpendentSubProcess() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        assertNotNull(processService);
+
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+        assertTrue(isDeployed);
+
+        assertNotNull(processService);
+        long parentProcessInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "testone.parentWithNotIndepententSubProcess");
+        assertNotNull(parentProcessInstanceId);
+
+        ProcessInstance pi = processService.getProcessInstance(parentProcessInstanceId);
+        assertNotNull(pi);
+
+        testResultForAbortedParentProcessAndChildProcessInProcessInstanceList(parentProcessInstanceId);
+    }
+
+    private void testResultForAbortedParentProcessAndChildProcessInProcessInstanceList(Long parentProcessInstanceId){
+        Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstancesByParent(parentProcessInstanceId, Arrays.asList(ProcessInstance.STATE_ACTIVE), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(2, instances.size());
+
+        List<Long> processInstanceList = instances.stream().map(p -> p.getId()).collect(Collectors.toList());
+        processInstanceList.add(0, parentProcessInstanceId);
+
+        processService.abortProcessInstances(processInstanceList);
+        ProcessInstance parent = processService.getProcessInstance(parentProcessInstanceId);
+        assertNull(parent);
+        instances = runtimeDataService.getProcessInstancesByParent(parentProcessInstanceId, Arrays.asList(ProcessInstance.STATE_ABORTED), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(2, instances.size());
+    }
+
+    @Test
+    public void testAbortedParentProcessAndChildProcessInProcessInstanceListWithIndenpendentSubProcessOne() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        assertNotNull(processService);
+
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+        assertTrue(isDeployed);
+
+        assertNotNull(processService);
+        long parentProcessInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "testone.parentWithIndependentSubProcessOne");
+        assertNotNull(parentProcessInstanceId);
+
+        ProcessInstance pi = processService.getProcessInstance(parentProcessInstanceId);
+        assertNotNull(pi);
+
+        testResultForAbortedParentProcessAndChildProcessInProcessInstanceList(parentProcessInstanceId);
+    }
+
+    @Test
+    public void testAbortedParentProcessAndChildProcessInProcessInstanceListWithIndenpendentSubProcess() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        assertNotNull(processService);
+
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+        assertTrue(isDeployed);
+
+        assertNotNull(processService);
+        long parentProcessInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "testone.parentWithIndependentSubProcess");
+        assertNotNull(parentProcessInstanceId);
+
+        ProcessInstance pi = processService.getProcessInstance(parentProcessInstanceId);
+        assertNull(pi);
+
+        testResultForAbortedParentProcessAndChildProcessInProcessInstanceList(parentProcessInstanceId);
     }
 
     @Test
