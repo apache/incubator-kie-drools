@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.listener.process.NodeTriggeredCountDownProcessEventListener;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.ExecutorTestUtil;
+import org.kie.api.executor.STATUS;
 import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.junit.After;
 import org.junit.Before;
@@ -1276,10 +1278,10 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
     private boolean waitForAllJobsToComplete() throws Exception {
         int attempts = 10;
         do {
-            List<RequestInfo> running = executorService.getRunningRequests(new QueryContext());
+            List<RequestInfo> runningOrQueued = executorService.getRequestsByStatus(Arrays.asList(STATUS.RUNNING, STATUS.QUEUED), new QueryContext());
             attempts--;
             
-            if (running.isEmpty()) {
+            if (runningOrQueued.isEmpty()) {
                 return true;
             }
             

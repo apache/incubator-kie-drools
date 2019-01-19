@@ -16,7 +16,6 @@
 
 package org.jbpm.executor.impl.wih;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -49,6 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -69,7 +69,7 @@ import org.kie.test.util.db.PoolingDataSourceWrapper;
 @RunWith(Parameterized.class)
 public class ErrorHandlingTest extends AbstractExecutorBaseTest {
 
-  
+
     private PoolingDataSourceWrapper pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager;
@@ -173,10 +173,10 @@ public class ErrorHandlingTest extends AbstractExecutorBaseTest {
     private boolean waitForAllJobsToComplete() throws Exception {
         int attempts = 10;
         do {
-            List<RequestInfo> running = executorService.getRunningRequests(new QueryContext());
+            List<RequestInfo> runningOrQueued = executorService.getRequestsByStatus(Arrays.asList(STATUS.RUNNING, STATUS.QUEUED), new QueryContext());
             attempts--;
             
-            if (running.isEmpty()) {
+            if (runningOrQueued.isEmpty()) {
                 return true;
             }
             
