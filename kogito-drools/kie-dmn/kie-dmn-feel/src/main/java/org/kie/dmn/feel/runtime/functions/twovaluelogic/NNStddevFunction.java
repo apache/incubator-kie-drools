@@ -16,6 +16,12 @@
 
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
@@ -23,12 +29,6 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.runtime.functions.extended.SqrtFunction;
 import org.kie.dmn.feel.util.EvalHelper;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
 public class NNStddevFunction
@@ -82,7 +82,8 @@ public class NNStddevFunction
             return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, "list",
                     "the value can not be converted to a number" ) );
         }
-        return FEELFnResult.ofResult( BigDecimal.ZERO );
+        return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list",
+                                                               "sample standard deviation of a single sample is undefined"));
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {
