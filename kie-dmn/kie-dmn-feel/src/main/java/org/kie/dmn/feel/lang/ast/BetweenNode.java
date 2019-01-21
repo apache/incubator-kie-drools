@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.time.Period;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -69,9 +71,24 @@ public class BetweenNode
         if ( end == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end")) ); problem = true; }
         if (problem) return null;
 
-        Comparable val = (Comparable) value.evaluate( ctx );
-        Comparable s = (Comparable) start.evaluate( ctx );
-        Comparable e = (Comparable) end.evaluate( ctx );
+        Object o_val = value.evaluate(ctx);
+        Object o_s = start.evaluate(ctx);
+        Object o_e = end.evaluate(ctx);
+
+        if (o_val instanceof Period && o_s instanceof Period && o_e instanceof Period) {
+            // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
+            Period val = (Period) o_val;
+            Period s = (Period) o_s;
+            Period e = (Period) o_e;
+            Integer iVal = val.getYears() * 12 + val.getMonths();
+            Integer iL = s.getYears() * 12 + s.getMonths();
+            Integer iR = e.getYears() * 12 + e.getMonths();
+            return iVal.compareTo(iL) >= 0 && iVal.compareTo(iR) <= 0;
+        }
+
+        Comparable val = (Comparable) o_val;
+        Comparable s = (Comparable) o_s;
+        Comparable e = (Comparable) o_e;
         
         if ( val == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "value")) ); problem = true; }
         if ( s == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "start")) ); problem = true; }

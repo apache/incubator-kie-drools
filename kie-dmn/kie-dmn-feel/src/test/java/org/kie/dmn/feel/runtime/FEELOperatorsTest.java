@@ -43,6 +43,8 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "\"foo\" between \"bar\" and \"zap\"", Boolean.TRUE , null},
                 { "\"foo\" between null and \"zap\"", null , FEELEvent.Severity.ERROR},
                 { "date(\"2016-08-02\") between date(\"2016-01-01\") and date(\"2016-12-31\")", Boolean.TRUE , null},
+                { "duration(\"P3Y\") between duration(\"P2Y\") and duration(\"P4Y\")", Boolean.TRUE , null},
+                { "duration(\"P1Y\") between duration(\"P2Y\") and duration(\"P4Y\")", Boolean.FALSE , null},
 
                 // in operator
                 { "10 in ( 3, 5*2, 20 )", Boolean.TRUE , null},
