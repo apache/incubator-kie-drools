@@ -258,8 +258,20 @@ public abstract class BaseFEELFunction
             }
             if ( found ) {
                 cm.setApply( m );
-                if ( candidate == null || cm.getScore() > candidate.getScore() ) {
+                if (candidate == null) {
                     candidate = cm;
+                } else {
+                    if (cm.getScore() > candidate.getScore()) {
+                        candidate = cm;
+                    } else if (cm.getScore() == candidate.getScore() 
+                            && candidate.getApply().getParameterTypes().length == 1
+                            && cm.getApply().getParameterTypes().length == 1
+                            && candidate.getApply().getParameterTypes()[0].equals(Object.class)
+                            && !cm.getApply().getParameterTypes()[0].equals(Object.class)) {
+                        candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
+                    } else {
+                        // do nothing.
+                    }
                 }
             }
         }

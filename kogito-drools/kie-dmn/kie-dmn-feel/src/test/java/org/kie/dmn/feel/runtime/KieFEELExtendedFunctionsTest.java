@@ -40,7 +40,9 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "sqrt( 9 )", BigDecimal.valueOf( 3.0 ), null },
                 { "sqrt( 10 )", new BigDecimal("3.162277660168379331998893544432719"), null },
                 { "stddev( 10 )", null, FEELEvent.Severity.ERROR },
-                { "nn sum( 10, null, 20, 40, null )", new BigDecimal("70", MathContext.DECIMAL128), null }
+                { "nn sum( 10, null, 20, 40, null )", new BigDecimal("70", MathContext.DECIMAL128), null },
+                { "stddev( 1, 2, 3 )", BigDecimal.valueOf( 1.0 ) , null},
+                { "stddev( [1, 2, 3] )", BigDecimal.valueOf( 1.0 ) , null},
         };
         return addAdditionalParameters(cases, true);
     }
