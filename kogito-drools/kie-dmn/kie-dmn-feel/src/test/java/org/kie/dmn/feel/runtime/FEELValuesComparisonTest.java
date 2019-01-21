@@ -54,6 +54,10 @@ public class FEELValuesComparisonTest extends BaseFEELTest {
                 { "false != false", Boolean.FALSE , null},
                 { "false != true", Boolean.TRUE , null},
                 { "true != false", Boolean.TRUE , null},
+                
+                // other comparisons
+                { "duration(\"P1Y\") < duration(\"P2Y\")", Boolean.TRUE , null},
+                { "duration(\"P1Y\") > duration(\"P2Y\")", Boolean.FALSE , null},
 
                 // other types of equalities
                 { "[ 1..3 ] = [ 1..3 ]", Boolean.TRUE , null},
