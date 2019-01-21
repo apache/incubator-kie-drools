@@ -74,6 +74,12 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
         assertEquals( testResource, dummyResource );
     }
 
+    @Test
+    public void testDummyResourceWithWrongEncodedFileName() {
+        final Resource dummyResource = new KieBuilderSetImpl.DummyResource("Dummy 100%");
+        assertEquals(dummyResource.getSourcePath(), "Dummy 100%");
+    }
+
     private KieBuilderImpl kieBuilder( final KieServices ks,
                                        final KieFileSystem kfs ) {
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
