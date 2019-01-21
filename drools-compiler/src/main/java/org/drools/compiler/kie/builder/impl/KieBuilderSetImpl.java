@@ -42,7 +42,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 
 public class KieBuilderSetImpl implements KieBuilderSet {
@@ -200,7 +199,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
     public static class DummyResource extends BaseResource {
         public DummyResource(String resourceName) {
-            setSourcePath( decode( resourceName ) );
+            setSourcePath(decode(resourceName));
         }
 
         @Override
@@ -248,10 +247,10 @@ public class KieBuilderSetImpl implements KieBuilderSet {
             throw new UnsupportedOperationException();
         }
 
-        private String decode( final String resourceName ) {
+        private String decode(final String resourceName) {
             try {
-                return URLDecoder.decode( resourceName, "UTF-8" );
-            } catch ( UnsupportedEncodingException e ) {
+                return URLDecoder.decode(resourceName, "UTF-8");
+            } catch (UnsupportedEncodingException | IllegalArgumentException e) {
                 return resourceName;
             }
         }
