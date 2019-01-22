@@ -19,6 +19,7 @@ package org.jbpm.services.api.model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public interface ProcessDefinition extends Serializable, DeployedAsset {
 
@@ -51,4 +52,8 @@ public interface ProcessDefinition extends Serializable, DeployedAsset {
     Collection<String> getReferencedRules();
     
     boolean isActive();
+
+    Set<NodeDesc> getNodes();
+
+    Set<TimerDesc> getTimers();
 }

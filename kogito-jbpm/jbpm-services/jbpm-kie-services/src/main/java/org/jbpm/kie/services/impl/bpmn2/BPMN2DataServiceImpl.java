@@ -29,8 +29,8 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentEvent;
-import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.DeploymentEventListener;
+import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
@@ -153,25 +153,27 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
 
 	}
 
-	private ProcessAssetDesc fillProcessDefinition(ProcessDescriptor helper, KieContainer kieContainer ) {
+    private ProcessAssetDesc fillProcessDefinition(ProcessDescriptor helper, KieContainer kieContainer) {
 
         ProcessAssetDesc definition = helper.getProcess();
 
-	    definition.setAssociatedEntities(helper.getTaskAssignments());
-	    definition.setProcessVariables(helper.getInputs());
-	    definition.setServiceTasks(helper.getServiceTasks());
+        definition.setAssociatedEntities(helper.getTaskAssignments());
+        definition.setProcessVariables(helper.getInputs());
+        definition.setServiceTasks(helper.getServiceTasks());
 
-	    definition.setSignals(helper.getSignals() );
-	    definition.setGlobals(helper.getGlobals() );
-	    definition.setReferencedRules(helper.getReferencedRules() );
+        definition.setSignals(helper.getSignals());
+        definition.setGlobals(helper.getGlobals());
+        definition.setReferencedRules(helper.getReferencedRules());
+        definition.setTimers(helper.getTimers());
+        definition.setNodes(helper.getNodes());
 
-        if( kieContainer != null && helper.hasUnresolvedReusableSubProcessNames() ) {
+        if (kieContainer != null && helper.hasUnresolvedReusableSubProcessNames()) {
             helper.resolveReusableSubProcessNames(kieContainer.getKieBase().getProcesses());
-         }
-         definition.setReusableSubProcesses(helper.getReusableSubProcesses());
+        }
+        definition.setReusableSubProcesses(helper.getReusableSubProcesses());
 
-         return definition;
-	}
+        return definition;
+    }
 
 
 	@Override

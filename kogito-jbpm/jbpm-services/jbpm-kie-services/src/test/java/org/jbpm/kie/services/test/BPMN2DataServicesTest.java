@@ -15,15 +15,8 @@
  */
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +30,7 @@ import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.TimerDesc;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.junit.After;
 import org.junit.Before;
@@ -44,6 +38,13 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
@@ -64,6 +65,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         processes.add("repo/processes/general/BPMN2-UserTask.bpmn2");
         processes.add("repo/processes/itemrefissue/itemrefissue.bpmn");
         processes.add("repo/processes/general/ObjectVariableProcess.bpmn2");
+        processes.add("repo/processes/general/timer-process.bpmn2");
 
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -94,8 +96,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
     }
 
     @Test
-    public void testHumanTaskProcess() throws IOException {
-
+    public void testHumanTaskProcess() {
         assertNotNull(deploymentService);
 
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
@@ -114,6 +115,9 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals(procDef.getPackageName(), "defaultPackage");
         assertEquals(procDef.getType(), "RuleFlow");
         assertEquals(procDef.getVersion(), "3");
+        assertFalse(procDef.getNodes().isEmpty());
+        assertEquals(8, procDef.getNodes().size());
+        assertTrue(procDef.getTimers().isEmpty());
         
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
         assertEquals("String", processData.get("approval_document"));
@@ -174,7 +178,39 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
     }
 
     @Test
-    public void testHiringProcessData() throws IOException {
+    public void testTimerProcess() {
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+
+        String processId = "timerprocess";
+
+        ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
+        assertNotNull(procDef);
+
+        assertEquals("timerprocess", procDef.getId());
+        assertEquals("IntermediateCatchEvent Process", procDef.getName());
+        assertEquals("PROCESS", procDef.getKnowledgeType());
+        assertEquals("org.drools.bpmn2", procDef.getPackageName());
+        assertEquals("RuleFlow", procDef.getType());
+        assertEquals("", procDef.getVersion());
+        assertFalse(procDef.getNodes().isEmpty());
+        assertEquals(4, procDef.getNodes().size());
+        assertFalse(procDef.getTimers().isEmpty());
+        assertEquals(1, procDef.getTimers().size());
+
+        TimerDesc timer = procDef.getTimers().iterator().next();
+        assertEquals(0, timer.getId().longValue());
+        assertEquals(2l, timer.getNodeId().longValue());
+        assertEquals("timer", timer.getNodeName());
+        assertEquals("_3", timer.getUniqueId());
+    }
+
+    @Test
+    public void testHiringProcessData() {
 
         assertNotNull(deploymentService);
 
@@ -214,8 +250,6 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
 
         Map<String, String> allServiceTasks = bpmn2Service.getServiceTasks(deploymentUnit.getIdentifier(), processId);
         assertEquals(2, allServiceTasks.keySet().size());
-
-
     }
 
     @Test
@@ -248,14 +282,13 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
 
         String processId = "itemrefissue";
 
-
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
         assertNotNull(processData);
 
     }
 
     @Test
-    public void testHumanTaskProcessNoIO() throws IOException {
+    public void testHumanTaskProcessNoIO() {
 
         assertNotNull(deploymentService);
 
@@ -288,7 +321,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
     }
 
     @Test
-    public void testHumanTaskProcessBeforeAndAfterUndeploy() throws IOException {
+    public void testHumanTaskProcessBeforeAndAfterUndeploy() {
 
         assertNotNull(deploymentService);
 
@@ -308,6 +341,9 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals(procDef.getPackageName(), "defaultPackage");
         assertEquals(procDef.getType(), "RuleFlow");
         assertEquals(procDef.getVersion(), "3");
+        assertFalse(procDef.getNodes().isEmpty());
+        assertEquals(8, procDef.getNodes().size());
+        assertTrue(procDef.getTimers().isEmpty());
 
         // now let's undeploy the unit
         deploymentService.undeploy(deploymentUnit);
@@ -321,7 +357,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
     }
 
     @Test
-    public void testObjectVariable() throws IOException {
+    public void testObjectVariable() {
         assertNotNull(deploymentService);
 
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
@@ -340,6 +376,9 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals(procDef.getPackageName(), "defaultPackage");
         assertEquals(procDef.getType(), "RuleFlow");
         assertEquals(procDef.getVersion(), "1");
+        assertFalse(procDef.getNodes().isEmpty());
+        assertEquals(3, procDef.getNodes().size());
+        assertTrue(procDef.getTimers().isEmpty());
 
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
 
@@ -349,7 +388,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
     }
 
     @Test(expected=DeploymentNotFoundException.class)
-    public void testGetProcessDefinitionUndeployedDeploymentUnit() throws IOException {
+    public void testGetProcessDefinitionUndeployedDeploymentUnit() {
 
         assertNotNull(deploymentService);
 
@@ -364,7 +403,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
     }
 
     @Test(expected=DeploymentNotFoundException.class)
-    public void testGetProcessDefinitionInvalidDeploymenId() throws IOException {
+    public void testGetProcessDefinitionInvalidDeploymenId() {
 
         assertNotNull(deploymentService);
 
@@ -378,7 +417,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
     }
 
     @Test(expected=ProcessDefinitionNotFoundException.class)
-    public void testGetProcessDefinitionInvalidProcessId() throws IOException {
+    public void testGetProcessDefinitionInvalidProcessId() {
 
         assertNotNull(deploymentService);
 
@@ -389,6 +428,5 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), "org.jbpm.invalidId");
-
     }
 }

@@ -326,12 +326,13 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         assertNotNull(timer.getProcessInstanceId());
         assertNotNull(timer.getSessionId());
         assertNotNull(timer.getTimerId());
+        assertNotNull(timer.getId());
         assertNotNull(timer.getTimerName());
         // thread sleep to test the different in the time timer spent after upgrade
         // not to wait for any job to be done
         Thread.sleep(1000);
         
-        processAdminService.updateTimer(processInstanceId, timer.getTimerId(), 3, 0, 0);
+        processAdminService.updateTimer(processInstanceId, timer.getId(), 3, 0, 0);
         
         CountDownListenerFactory.getExisting("processAdminService").waitTillCompleted();
         long fireTime = System.currentTimeMillis();        
@@ -369,13 +370,14 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         assertNotNull(timer.getNextFireTime());
         assertNotNull(timer.getProcessInstanceId());
         assertNotNull(timer.getSessionId());
+        assertNotNull(timer.getId());
         assertNotNull(timer.getTimerId());
         assertNotNull(timer.getTimerName());
         // thread sleep to test the different in the time timer spent after upgrade
         // not to wait for any job to be done
         Thread.sleep(1000);
         
-        processAdminService.updateTimerRelative(processInstanceId, timer.getTimerId(), 3, 0, 0);
+        processAdminService.updateTimerRelative(processInstanceId, timer.getId(), 3, 0, 0);
         
         CountDownListenerFactory.getExisting("processAdminService").waitTillCompleted();
         long fireTime = System.currentTimeMillis();

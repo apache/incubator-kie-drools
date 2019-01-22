@@ -22,100 +22,119 @@ import org.jbpm.services.api.admin.TimerInstance;
 
 public class TimerInstanceImpl implements TimerInstance {
 
-	private static final long serialVersionUID = 8843363575668976484L;
+    private static final long serialVersionUID = 8843363575668976484L;
 
-	private String timerName;
-	private long timerId;
-	private Date activationTime;
-	private Date lastFireTime;
-	private Date nextFireTime;
-	
-	private long delay;
-	private long period;
-	private int repeatLimit;
-	
-	private long processInstanceId;
-	private long sessionId;
-	
-	public String getTimerName() {
-		return timerName;
-	}
-	
-	public void setTimerName(String timerName) {
-		this.timerName = timerName;
-	}
-	
-	public long getTimerId() {
-		return timerId;
-	}
-	
-	public void setTimerId(long timerId) {
-		this.timerId = timerId;
-	}
-	
-	public Date getActivationTime() {
-		return activationTime;
-	}
-	
-	public void setActivationTime(Date activationTime) {
-		this.activationTime = activationTime;
-	}
-	
-	public Date getLastFireTime() {
-		return lastFireTime;
-	}
-	
-	public void setLastFireTime(Date lastFireTime) {
-		this.lastFireTime = lastFireTime;
-	}
-	
-	public Date getNextFireTime() {
-		return nextFireTime;
-	}
-	
-	public void setNextFireTime(Date nextFireTime) {
-		this.nextFireTime = nextFireTime;
-	}
-	
-	public long getDelay() {
-		return delay;
-	}
-	
-	public void setDelay(long delay) {
-		this.delay = delay;
-	}
-	
-	public long getPeriod() {
-		return period;
-	}
-	
-	public void setPeriod(long period) {
-		this.period = period;
-	}
-	
-	public int getRepeatLimit() {
-		return repeatLimit;
-	}
-	
-	public void setRepeatLimit(int repeatLimit) {
-		this.repeatLimit = repeatLimit;
-	}
+    private String timerName;
+    private long id;
+    private long timerId;
+    private Date activationTime;
+    private Date lastFireTime;
+    private Date nextFireTime;
 
-	public long getProcessInstanceId() {
-		return processInstanceId;
-	}
+    private long delay;
+    private long period;
+    private int repeatLimit;
 
-	public void setProcessInstanceId(long processInstanceId) {
-		this.processInstanceId = processInstanceId;
-	}
+    private long processInstanceId;
+    private long sessionId;
 
-	public long getSessionId() {
-		return sessionId;
-	}
+    public String getTimerName() {
+        return timerName;
+    }
 
-	public void setSessionId(long sessionId) {
-		this.sessionId = sessionId;
-	}
+    public void setTimerName(String timerName) {
+        this.timerName = timerName;
+    }
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Override
+    public long getTimerId() {
+        return timerId;
+    }
+
+    public void setTimerId(long timerId) {
+        this.timerId = timerId;
+    }
+
+    @Override
+    public Date getActivationTime() {
+        return activationTime;
+    }
+
+    public void setActivationTime(Date activationTime) {
+        this.activationTime = activationTime;
+    }
+
+    @Override
+    public Date getLastFireTime() {
+        return lastFireTime;
+    }
+
+    public void setLastFireTime(Date lastFireTime) {
+        this.lastFireTime = lastFireTime;
+    }
+
+    @Override
+    public Date getNextFireTime() {
+        return nextFireTime;
+    }
+
+    public void setNextFireTime(Date nextFireTime) {
+        this.nextFireTime = nextFireTime;
+    }
+
+    @Override
+    public long getDelay() {
+        return delay;
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
+
+    @Override
+    public long getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(long period) {
+        this.period = period;
+    }
+
+    @Override
+    public int getRepeatLimit() {
+        return repeatLimit;
+    }
+
+    public void setRepeatLimit(int repeatLimit) {
+        this.repeatLimit = repeatLimit;
+    }
+
+    @Override
+    public long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    @Override
+    public long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(long sessionId) {
+        this.sessionId = sessionId;
+    }
 
     @Override
     public int hashCode() {
@@ -136,53 +155,79 @@ public class TimerInstanceImpl implements TimerInstance {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         TimerInstanceImpl other = (TimerInstanceImpl) obj;
         if (activationTime == null) {
-            if (other.activationTime != null)
+            if (other.activationTime != null) {
                 return false;
-        } else if (!activationTime.equals(other.activationTime))
+            }
+        } else if (!activationTime.equals(other.activationTime)) {
             return false;
-        if (delay != other.delay)
+        }
+        if (delay != other.delay) {
             return false;
+        }
         if (lastFireTime == null) {
-            if (other.lastFireTime != null)
+            if (other.lastFireTime != null) {
                 return false;
-        } else if (!lastFireTime.equals(other.lastFireTime))
+            }
+        } else if (!lastFireTime.equals(other.lastFireTime)) {
             return false;
+        }
         if (nextFireTime == null) {
-            if (other.nextFireTime != null)
+            if (other.nextFireTime != null) {
                 return false;
-        } else if (!nextFireTime.equals(other.nextFireTime))
+            }
+        } else if (!nextFireTime.equals(other.nextFireTime)) {
             return false;
-        if (period != other.period)
+        }
+        if (period != other.period) {
             return false;
-        if (processInstanceId != other.processInstanceId)
+        }
+        if (processInstanceId != other.processInstanceId) {
             return false;
-        if (repeatLimit != other.repeatLimit)
+        }
+        if (repeatLimit != other.repeatLimit) {
             return false;
-        if (sessionId != other.sessionId)
+        }
+        if (sessionId != other.sessionId) {
             return false;
-        if (timerId != other.timerId)
+        }
+        if (timerId != other.timerId) {
             return false;
+        }
         if (timerName == null) {
-            if (other.timerName != null)
+            if (other.timerName != null) {
                 return false;
-        } else if (!timerName.equals(other.timerName))
+            }
+        } else if (!timerName.equals(other.timerName)) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "TimerInstanceImpl [timerName=" + timerName + ", timerId=" + timerId + ", activationTime=" + activationTime + 
-                ", lastFireTime=" + lastFireTime + ", nextFireTime=" + nextFireTime + ", delay=" + delay + 
-                ", period=" + period + ", repeatLimit=" + repeatLimit + ", processInstanceId=" + processInstanceId + 
-                ", sessionId=" + sessionId + "]";
-    }	
+        return "TimerInstanceImpl{" +
+                "timerName='" + timerName + '\'' +
+                ", id=" + id +
+                ", timerId=" + timerId +
+                ", activationTime=" + activationTime +
+                ", lastFireTime=" + lastFireTime +
+                ", nextFireTime=" + nextFireTime +
+                ", delay=" + delay +
+                ", period=" + period +
+                ", repeatLimit=" + repeatLimit +
+                ", processInstanceId=" + processInstanceId +
+                ", sessionId=" + sessionId +
+                '}';
+    }
 }

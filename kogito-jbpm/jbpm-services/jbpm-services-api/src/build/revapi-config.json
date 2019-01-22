@@ -27,7 +27,34 @@
          "methodName": "getErrorsByDeploymentId",
          "elementKind": "method",
          "justification": "Added support for filtering errors by deployment id"
-         }
+         },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method long org.jbpm.services.api.admin.TimerInstance::getId()",
+          "package": "org.jbpm.services.api.admin",
+          "classSimpleName": "TimerInstance",
+          "methodName": "getId",
+          "elementKind": "method",
+          "justification": "JBPM-7632 - Enhance process definition data including timers and nodes"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Set<org.jbpm.services.api.model.NodeDesc> org.jbpm.services.api.model.ProcessDefinition::getNodes()",
+          "package": "org.jbpm.services.api.model",
+          "classSimpleName": "ProcessDefinition",
+          "methodName": "getNodes",
+          "elementKind": "method",
+          "justification": "JBPM-7632 - Enhance process definition data including timers and nodes"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Set<org.jbpm.services.api.model.TimerDesc> org.jbpm.services.api.model.ProcessDefinition::getTimers()",
+          "package": "org.jbpm.services.api.model",
+          "classSimpleName": "ProcessDefinition",
+          "methodName": "getTimers",
+          "elementKind": "method",
+          "justification": "JBPM-7632 - Enhance process definition data including timers and nodes"
+        }
       ]
     }
   }

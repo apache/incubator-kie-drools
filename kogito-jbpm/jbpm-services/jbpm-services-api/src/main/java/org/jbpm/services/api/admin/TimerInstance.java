@@ -31,47 +31,52 @@ public interface TimerInstance extends Serializable {
     String getTimerName();
 
     /**
+     * Returns id of the timer
+     */
+    long getId();
+
+    /**
      * Returns unique id of the timer
      */
-	long getTimerId();	
-	
-	/**
+    long getTimerId();
+
+    /**
      * Returns date when the timer was activated/created
      */
-	Date getActivationTime();
-	
-	/**
+    Date getActivationTime();
+
+    /**
      * Returns date when the timer was fired last time, can be null
      */
-	Date getLastFireTime();
-	
-	/**
+    Date getLastFireTime();
+
+    /**
      * Returns next date when the timer is expected to fire
      */
-	Date getNextFireTime();
-	
-	/**
+    Date getNextFireTime();
+
+    /**
      * Returns delay that comes from definition
      */
-	long getDelay();
-	
-	/**
+    long getDelay();
+
+    /**
      * Returns period that comes from definition - only for repeatable timers
      */
-	long getPeriod();
-	
-	/**
+    long getPeriod();
+
+    /**
      * Returns repeat limit that comes from definition - only for repeatable timers
      */
-	int getRepeatLimit();
+    int getRepeatLimit();
 
-	/**
+    /**
      * Returns process instance id that timer belongs to
      */
-	long getProcessInstanceId();
+    long getProcessInstanceId();
 
-	/**
+    /**
      * Returns session id that was used to create the timer
      */
-	long getSessionId();	
+    long getSessionId();
 }

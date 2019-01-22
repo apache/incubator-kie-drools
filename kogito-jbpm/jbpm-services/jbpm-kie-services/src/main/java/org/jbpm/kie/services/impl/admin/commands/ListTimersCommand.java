@@ -78,23 +78,24 @@ public class ListTimersCommand implements ExecutableCommand<List<TimerInstance>>
 
         return ((InternalProcessRuntime) ((StatefulKnowledgeSessionImpl) internal).getProcessRuntime()).getTimerManager();
     }
-    
+
     private TimerInstanceImpl buildTimer(org.jbpm.process.instance.timer.TimerInstance timerInstance) {
         TimerInstanceImpl timer = new TimerInstanceImpl();
-    	
-    	if (timerInstance != null) {
-	    	timer.setActivationTime(timerInstance.getActivated());
-	    	timer.setLastFireTime(timerInstance.getLastTriggered());
-	    	timer.setNextFireTime(new Date(timerInstance.getActivated().getTime() + timerInstance.getDelay()));
-	    	timer.setDelay(timerInstance.getDelay());
-	    	timer.setPeriod(timerInstance.getPeriod());
-	    	timer.setRepeatLimit(timerInstance.getRepeatLimit());
-	    	timer.setTimerId(timerInstance.getId());
-	    	timer.setProcessInstanceId(timerInstance.getProcessInstanceId());
-	    	timer.setSessionId(timerInstance.getSessionId());
-    	}
-    	
-    	return timer;
+
+        if (timerInstance != null) {
+            timer.setActivationTime(timerInstance.getActivated());
+            timer.setLastFireTime(timerInstance.getLastTriggered());
+            timer.setNextFireTime(new Date(timerInstance.getActivated().getTime() + timerInstance.getDelay()));
+            timer.setDelay(timerInstance.getDelay());
+            timer.setPeriod(timerInstance.getPeriod());
+            timer.setRepeatLimit(timerInstance.getRepeatLimit());
+            timer.setId(timerInstance.getId());
+            timer.setTimerId(timerInstance.getTimerId());
+            timer.setProcessInstanceId(timerInstance.getProcessInstanceId());
+            timer.setSessionId(timerInstance.getSessionId());
+        }
+
+        return timer;
     }
     
     protected void processNodeInstance(TimerManager tm, NodeInstanceContainer container, List<TimerInstance> timers) {

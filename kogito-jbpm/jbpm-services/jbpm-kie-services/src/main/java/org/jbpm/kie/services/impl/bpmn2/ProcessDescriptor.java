@@ -29,6 +29,8 @@ import java.util.Set;
 
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.instance.StartProcessHelper;
+import org.jbpm.services.api.model.NodeDesc;
+import org.jbpm.services.api.model.TimerDesc;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.kie.api.definition.process.Process;
 import org.slf4j.Logger;
@@ -45,6 +47,8 @@ public class ProcessDescriptor implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ProcessDescriptor.class);
 
     private ProcessAssetDesc process;
+    private Set<NodeDesc> nodes = new HashSet<>();
+    private Set<TimerDesc> timers = new HashSet<>();
     private Map<String, UserTaskDefinition> tasks = new HashMap<String, UserTaskDefinition>();
     private Map<String, Map<String, String>> taskInputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, Map<String, String>> taskOutputMappings = new HashMap<String, Map<String, String>>();
@@ -181,6 +185,14 @@ public class ProcessDescriptor implements Serializable {
         this.globals = globals;
      }
 
+    public Set<NodeDesc> getNodes() {
+        return nodes;
+    }
+
+    public Set<TimerDesc> getTimers() {
+        return timers;
+    }
+
     public void clear(){
         process = null;
         tasks.clear();
@@ -194,6 +206,8 @@ public class ProcessDescriptor implements Serializable {
         globalItemDefinitions.clear();
         referencedClasses.clear();
         referencedRules.clear();
+        nodes.clear();
+        timers.clear();
     }
     
     public ProcessDescriptor clone() {
@@ -215,6 +229,8 @@ public class ProcessDescriptor implements Serializable {
         cloned.unqualifiedClasses = new HashSet<String>(this.unqualifiedClasses);
         cloned.signals = new HashSet<String>(this.signals);
         cloned.globals = new HashSet<String>(this.globals);
+        cloned.nodes = new HashSet<>(this.nodes);
+        cloned.timers = new HashSet<>(this.timers);
 
         cloned.unresolvedReusableSubProcessNames = new ArrayDeque<String>(this.unresolvedReusableSubProcessNames);
         

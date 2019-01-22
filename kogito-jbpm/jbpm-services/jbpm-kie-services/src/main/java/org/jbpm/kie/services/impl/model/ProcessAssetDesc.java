@@ -19,10 +19,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.jbpm.services.api.model.NodeDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.TimerDesc;
 
 /**
  *
@@ -51,6 +55,8 @@ public class ProcessAssetDesc implements ProcessDefinition {
     private Map<String, String> serviceTasks = new HashMap<String, String>();
     private Map<String, String> processVariables = new HashMap<String, String>();
     private Collection<String> reusableSubProcesses = new ArrayList<String>();
+    private Set<NodeDesc> nodes = new HashSet<>();
+    private Set<TimerDesc> timers = new HashSet<>();
     private boolean dynamic = true;
     
     private boolean active = true;
@@ -273,11 +279,51 @@ public class ProcessAssetDesc implements ProcessDefinition {
         return dynamic;
     }
 
+    public void setNodes(Set<NodeDesc> nodes) {
+        this.nodes = nodes;
+    }
+
+    @Override
+    public Set<NodeDesc> getNodes() {
+        return nodes;
+    }
+
+    public void setTimers(Set<TimerDesc> timers) {
+        this.timers = timers;
+    }
+
+    @Override
+    public Set<TimerDesc> getTimers() {
+        return timers;
+    }
 
     @Override
     public String toString() {
-        return "ProcessDesc{id=" + id + ", name=" + name + ", version=" + version + ", packageName=" + packageName
-        		+ ", type=" + type + ", knowledgeType=" + knowledgeType + ", namespace=" + namespace + "active=" + active + "}";
+        return "ProcessAssetDesc{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", version='" + version + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", type='" + type + '\'' +
+                ", knowledgeType='" + knowledgeType + '\'' +
+                ", namespace='" + namespace + '\'' +
+                ", originalPath='" + originalPath + '\'' +
+                ", deploymentId='" + deploymentId + '\'' +
+                ", encodedProcessSource='" + encodedProcessSource + '\'' +
+                ", forms=" + forms +
+                ", roles=" + roles +
+                ", signals=" + signals +
+                ", globals=" + globals +
+                ", rules=" + rules +
+                ", associatedEntities=" + associatedEntities +
+                ", serviceTasks=" + serviceTasks +
+                ", processVariables=" + processVariables +
+                ", reusableSubProcesses=" + reusableSubProcesses +
+                ", nodes=" + nodes +
+                ", timers=" + timers +
+                ", dynamic=" + dynamic +
+                ", active=" + active +
+                '}';
     }
 
     @Override
