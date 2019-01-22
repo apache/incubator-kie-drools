@@ -30,6 +30,7 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                 // function definition and invocation
                 {"{ hello : function() \"Hello World!\"}.hello()", "Hello World!", null},
                 {"{ hello : function(n) \"Hello \"+n+\"!\"}.hello(\"John\")", "Hello John!", null},
+                {"{ hello : function( n : string ) \"Hello \"+n+\"!\"}.hello(\"John\")", "Hello John!", null},
                 {"{ hello world : function() \"Hello World!\", message : hello world() }.message", "Hello World!", null},
                 {"{ functioncontext: { innercontext: {hello world : function() \"Hello World!\"}}, " +
                         " message : functioncontext.innercontext.hello world() }.message", "Hello World!", null },

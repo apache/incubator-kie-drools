@@ -332,6 +332,11 @@ public class ASTBuilderVisitor
     }
 
     @Override
+    public BaseNode visitFormalParameter(FEEL_1_1Parser.FormalParameterContext ctx) {
+        return visit(ctx.nameDefinition());
+    }
+
+    @Override
     public BaseNode visitFunctionDefinition(FEEL_1_1Parser.FunctionDefinitionContext ctx) {
         ListNode parameters = null;
         if ( ctx.formalParameters() != null ) {
