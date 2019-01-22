@@ -40,7 +40,7 @@ public final class BavetFilterUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     @Override
     public String toString() {
-        return "Filter(" + getFactA() + ") to " + childTupleList.size() + " children";
+        return "Filter(" + getFactA() + ") with " + childTupleList.size() + " children";
     }
 
     // ************************************************************************

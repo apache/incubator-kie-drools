@@ -42,7 +42,7 @@ public final class BavetJoinLeftBridgeUniTuple<A, B, Property_> extends BavetAbs
 
     @Override
     public String toString() {
-        return "JoinLeftBridge(" + getFactA() + ") to " + childTupleSet.size() + " children";
+        return "JoinLeftBridge(" + getFactA() + ") with " + childTupleSet.size() + " children";
     }
 
     // ************************************************************************

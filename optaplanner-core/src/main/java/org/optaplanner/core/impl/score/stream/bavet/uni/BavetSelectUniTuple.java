@@ -39,7 +39,7 @@ public final class BavetSelectUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     @Override
     public String toString() {
-        return "Select(" + getFactA() + ") to " + childTupleList.size()  + " children";
+        return "Select(" + getFactA() + ") with " + childTupleList.size()  + " children";
     }
 
     // ************************************************************************

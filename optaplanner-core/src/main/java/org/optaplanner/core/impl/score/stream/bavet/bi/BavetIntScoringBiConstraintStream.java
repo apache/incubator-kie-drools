@@ -54,7 +54,7 @@ public final class BavetIntScoringBiConstraintStream<Solution_, A, B> extends Ba
 
     @Override
     public String toString() {
-        return "IntScore() to " + childStreamList.size()  + " children";
+        return "IntScore() with " + childStreamList.size()  + " children";
     }
 
     // ************************************************************************

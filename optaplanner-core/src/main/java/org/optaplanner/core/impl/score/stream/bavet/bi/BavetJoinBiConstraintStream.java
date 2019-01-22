@@ -50,7 +50,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B, Property_> exten
 
     @Override
     public String toString() {
-        return "Join() to " + childStreamList.size()  + " children";
+        return "Join() with " + childStreamList.size()  + " children";
     }
 
     // ************************************************************************

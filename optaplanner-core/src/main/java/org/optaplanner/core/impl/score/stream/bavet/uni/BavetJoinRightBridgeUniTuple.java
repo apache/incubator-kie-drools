@@ -42,7 +42,7 @@ public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAb
 
     @Override
     public String toString() {
-        return "JoinRightBridge(" + getFactA() + ") to " + childTupleSet.size() + " children";
+        return "JoinRightBridge(" + getFactA() + ") with " + childTupleSet.size() + " children";
     }
 
     // ************************************************************************

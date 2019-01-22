@@ -50,7 +50,7 @@ public final class BavetIntScoringUniConstraintStream<Solution_, A> extends Bave
 
     @Override
     public String toString() {
-        return "IntScore() to " + childStreamList.size()  + " children";
+        return "IntScore() with " + childStreamList.size()  + " children";
     }
 
     // ************************************************************************

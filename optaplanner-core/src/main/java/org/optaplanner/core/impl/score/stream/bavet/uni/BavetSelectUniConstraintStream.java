@@ -56,7 +56,7 @@ public final class BavetSelectUniConstraintStream<Solution_, A> extends BavetAbs
 
     @Override
     public String toString() {
-        return "Select(" + selectClass.getSimpleName() + ") to " + childStreamList.size()  + " children";
+        return "Select(" + selectClass.getSimpleName() + ") with " + childStreamList.size()  + " children";
     }
 
     // ************************************************************************

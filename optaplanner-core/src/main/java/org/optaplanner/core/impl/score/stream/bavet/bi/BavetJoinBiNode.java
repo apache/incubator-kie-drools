@@ -70,7 +70,7 @@ public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<
 
     @Override
     public String toString() {
-        return "Join() to " + childNodeList.size()  + " children";
+        return "Join() with " + childNodeList.size()  + " children";
     }
 
     // ************************************************************************

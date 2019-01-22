@@ -61,7 +61,7 @@ public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
     @Override
     public String toString() {
-        return "Filter() to " + childNodeList.size()  + " children";
+        return "Filter() with " + childNodeList.size()  + " children";
     }
 
     // ************************************************************************
