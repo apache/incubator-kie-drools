@@ -52,7 +52,12 @@ public final class BavetJoinRightBridgeUniNode<A, B, Property_> extends BavetAbs
         B b = tuple.getFactA();
         Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = tuple.getChildTupleSet();
         for (BavetJoinBiTuple<A, B, Property_> childTuple : childTupleSet) {
-            childTuple.getATuple().getChildTupleSet().remove(childTuple);
+            boolean removed = childTuple.getATuple().getChildTupleSet().remove(childTuple);
+            if (!removed) {
+                throw new IllegalStateException("Impossible state: the fact (" + b
+                        + ")'s childTuple cannot be removed from the other fact (" + childTuple.getFactA()
+                        + ")'s join bridge.");
+            }
             // TODO clean up index
             session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
