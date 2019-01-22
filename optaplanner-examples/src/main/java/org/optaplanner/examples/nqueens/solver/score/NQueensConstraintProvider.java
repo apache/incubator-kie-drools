@@ -30,8 +30,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     public void defineConstraints(ConstraintFactory constraintFactory) {
         // TODO rename to "horizontal conflict", ...
         multipleQueensHorizontal(constraintFactory);
-//        multipleQueensAscendingDiagonal(constraintFactory);
-//        multipleQueensDescendingDiagonal(constraintFactory);
+        multipleQueensAscendingDiagonal(constraintFactory);
+        multipleQueensDescendingDiagonal(constraintFactory);
     }
 
     protected void multipleQueensHorizontal(ConstraintFactory constraintFactory) {
@@ -42,6 +42,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getRowIndex))
+                .filter((a, b) -> a.getId() < b.getId())
                 .penalize();
     }
 
@@ -53,6 +54,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getAscendingDiagonalIndex))
+                .filter((a, b) -> a.getId() < b.getId())
                 .penalize();
     }
 
@@ -64,6 +66,7 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getDescendingDiagonalIndex))
+                .filter((a, b) -> a.getId() < b.getId())
                 .penalize();
     }
 

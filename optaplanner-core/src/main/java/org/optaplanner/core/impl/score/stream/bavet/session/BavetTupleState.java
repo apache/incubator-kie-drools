@@ -22,14 +22,15 @@ public enum BavetTupleState {
     UPDATING,
     OK,
     DYING,
-    DEAD;
+    DEAD,
+    ABORTING;
 
     public boolean isDirty() {
-        return this == CREATING || this == UPDATING || this == DYING;
+        return this == CREATING || this == UPDATING || this == DYING || this == ABORTING;
     }
 
     public boolean isActive() {
-        return this != DYING && this != DEAD;
+        return this != DYING && this != DEAD && this != ABORTING;
     }
 
 }

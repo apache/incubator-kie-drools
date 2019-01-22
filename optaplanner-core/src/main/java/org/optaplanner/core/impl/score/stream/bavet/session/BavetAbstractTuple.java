@@ -39,6 +39,7 @@ public abstract class BavetAbstractTuple {
                 state = BavetTupleState.OK;
                 break;
             case DYING:
+            case ABORTING:
                 state = BavetTupleState.DEAD;
                 break;
             case DEAD:

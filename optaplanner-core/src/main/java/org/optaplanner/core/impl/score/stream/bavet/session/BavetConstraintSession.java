@@ -116,7 +116,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
 
     public void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState) {
         if (tuple.isDirty()) {
-            if (tuple.getState() != newState) {
+            if (tuple.getState() != newState && newState != BavetTupleState.ABORTING) {
                 throw new IllegalStateException("The tuple (" + tuple
                         + ") already has a dirty state (" + tuple.getState()
                         + ") so it cannot transition to newState (" + newState + ").");
