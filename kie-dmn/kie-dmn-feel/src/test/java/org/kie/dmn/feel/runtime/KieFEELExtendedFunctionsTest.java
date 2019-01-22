@@ -36,6 +36,7 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "today()", LocalDate.class, null },
                 { "modulo( 4, 3 )", new BigDecimal( "1" ), null },
                 { "split( \"foo,bar,baz\", \",\" )", Arrays.asList( "foo", "bar", "baz" ), null },
+                { "split( delimiter: \",\", string: \"foo,bar,baz\" )", Arrays.asList( "foo", "bar", "baz" ), null },
                 { "split( \"foo;bar|baz\", \"[;|]\" )", Arrays.asList( "foo", "bar", "baz" ), null },
                 { "sqrt( 9 )", BigDecimal.valueOf( 3.0 ), null },
                 { "sqrt( 10 )", new BigDecimal("3.162277660168379331998893544432719"), null },
