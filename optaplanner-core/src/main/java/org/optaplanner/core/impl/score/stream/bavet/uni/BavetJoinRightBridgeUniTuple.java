@@ -26,6 +26,7 @@ public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAb
     private final BavetJoinRightBridgeUniNode<A, B, Property_> node;
     private final BavetAbstractUniTuple<B> parentTuple;
 
+    private Property_ indexedProperty;
     private Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = new LinkedHashSet<>(); // TODO capacity
 
     public BavetJoinRightBridgeUniTuple(BavetJoinRightBridgeUniNode<A, B, Property_> node,
@@ -58,6 +59,14 @@ public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAb
         // Naming paradox:
         // If we rename getFactA() to getFact(), it is still there for joining a BiStream with a UniStream
         return parentTuple.getFactA();
+    }
+
+    public Property_ getIndexedProperty() {
+        return indexedProperty;
+    }
+
+    public void setIndexedProperty(Property_ indexedProperty) {
+        this.indexedProperty = indexedProperty;
     }
 
     public Set<BavetJoinBiTuple<A, B, Property_>> getChildTupleSet() {

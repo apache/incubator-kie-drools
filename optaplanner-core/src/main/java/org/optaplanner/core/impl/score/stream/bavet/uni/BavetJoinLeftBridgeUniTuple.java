@@ -26,6 +26,7 @@ public final class BavetJoinLeftBridgeUniTuple<A, B, Property_> extends BavetAbs
     private final BavetJoinLeftBridgeUniNode<A, B, Property_> node;
     private final BavetAbstractUniTuple<A> parentTuple;
 
+    private Property_ indexedProperty;
     private Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = new LinkedHashSet<>(); // TODO capacity
 
     public BavetJoinLeftBridgeUniTuple(BavetJoinLeftBridgeUniNode<A, B, Property_> node,
@@ -56,6 +57,14 @@ public final class BavetJoinLeftBridgeUniTuple<A, B, Property_> extends BavetAbs
     @Override
     public A getFactA() {
         return parentTuple.getFactA();
+    }
+
+    public Property_ getIndexedProperty() {
+        return indexedProperty;
+    }
+
+    public void setIndexedProperty(Property_ indexedProperty) {
+        this.indexedProperty = indexedProperty;
     }
 
     public Set<BavetJoinBiTuple<A, B, Property_>> getChildTupleSet() {

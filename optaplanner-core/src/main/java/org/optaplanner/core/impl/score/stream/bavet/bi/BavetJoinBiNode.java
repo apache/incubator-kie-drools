@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
@@ -84,11 +85,11 @@ public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<
         this.rightParentNode = rightParentNode;
     }
 
-    public List<BavetJoinLeftBridgeUniTuple<A, B, Property_>> getATupleListByProperty(Property_ property) {
+    public Set<BavetJoinLeftBridgeUniTuple<A, B, Property_>> getATupleListByProperty(Property_ property) {
         return leftParentNode.getTupleListByProperty(property);
     }
 
-    public List<BavetJoinRightBridgeUniTuple<A, B, Property_>> getBTupleListByProperty(Property_ property) {
+    public Set<BavetJoinRightBridgeUniTuple<A, B, Property_>> getBTupleListByProperty(Property_ property) {
         return rightParentNode.getTupleListByProperty(property);
     }
 
