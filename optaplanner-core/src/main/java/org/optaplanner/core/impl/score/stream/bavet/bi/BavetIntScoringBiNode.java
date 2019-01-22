@@ -17,12 +17,8 @@
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.function.ToIntBiFunction;
-import java.util.function.ToIntFunction;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetIntScoringUniTuple;
 
 public final class BavetIntScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
@@ -42,8 +38,8 @@ public final class BavetIntScoringBiNode<A, B> extends BavetAbstractBiNode<A, B>
     }
 
     @Override
-    public BavetIntScoringBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> previousTuple) {
-        return new BavetIntScoringBiTuple<>(this, previousTuple);
+    public BavetIntScoringBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
+        return new BavetIntScoringBiTuple<>(this, parentTuple);
     }
 
     public void refresh(BavetIntScoringBiTuple<A, B> tuple) {
@@ -58,6 +54,11 @@ public final class BavetIntScoringBiNode<A, B> extends BavetAbstractBiNode<A, B>
         }
         session.addScoreDelta(scoreDelta);
         tuple.refreshed();
+    }
+
+    @Override
+    public String toString() {
+        return "IntScore(" + constraintWeight + ")";
     }
 
     // ************************************************************************

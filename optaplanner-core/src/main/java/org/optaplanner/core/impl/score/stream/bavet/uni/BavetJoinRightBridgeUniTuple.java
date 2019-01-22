@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
@@ -24,14 +24,14 @@ import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
 public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAbstractUniTuple<B> {
 
     private final BavetJoinRightBridgeUniNode<A, B, Property_> node;
-    private final BavetAbstractUniTuple<B> previousTuple;
+    private final BavetAbstractUniTuple<B> parentTuple;
 
-    private Set<BavetJoinBiTuple<A, B, Property_>> downstreamTupleSet;
+    private Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = new LinkedHashSet<>(); // TODO capacity
 
     public BavetJoinRightBridgeUniTuple(BavetJoinRightBridgeUniNode<A, B, Property_> node,
-            BavetAbstractUniTuple<B> previousTuple) {
+            BavetAbstractUniTuple<B> parentTuple) {
         this.node = node;
-        this.previousTuple = previousTuple;
+        this.parentTuple = parentTuple;
     }
 
     @Override
@@ -41,7 +41,7 @@ public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAb
 
     @Override
     public String toString() {
-        return "JoinRightBridge(" + getFactA() + ") to " + (downstreamTuple == null ? 0 : 1) + " downstream";
+        return "JoinRightBridge(" + getFactA() + ") to " + childTupleSet.size() + " children";
     }
 
     // ************************************************************************
@@ -57,11 +57,11 @@ public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAb
     public B getFactA() {
         // Naming paradox:
         // If we rename getFactA() to getFact(), it is still there for joining a BiStream with a UniStream
-        return previousTuple.getFactA();
+        return parentTuple.getFactA();
     }
 
-    public Set<BavetJoinBiTuple<A, B, Property_>> getDownstreamTupleSet() {
-        return downstreamTupleSet;
+    public Set<BavetJoinBiTuple<A, B, Property_>> getChildTupleSet() {
+        return childTupleSet;
     }
 
 }

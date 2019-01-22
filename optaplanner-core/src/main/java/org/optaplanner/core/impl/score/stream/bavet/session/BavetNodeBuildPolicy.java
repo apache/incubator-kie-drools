@@ -22,8 +22,10 @@ import java.util.Map;
 public class BavetNodeBuildPolicy<Solution_> {
 
     private BavetConstraintSession session;
+
     private int nodeOrderMaximum = 0;
     private Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractNode> streamToNodeMap = new HashMap<>();
+    private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>();
 
     public BavetNodeBuildPolicy(BavetConstraintSession session) {
         this.session = session;
@@ -45,6 +47,10 @@ public class BavetNodeBuildPolicy<Solution_> {
 
     public Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractNode> getStreamToNodeMap() {
         return streamToNodeMap;
+    }
+
+    public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
+        return (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
     }
 
 }

@@ -20,21 +20,11 @@ import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractTuple;
 
 public abstract class BavetAbstractBiTuple<A, B> extends BavetAbstractTuple {
 
-    protected BavetAbstractBiTuple<A, B> downstreamTuple = null;
-
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
     public abstract A getFactA();
     public abstract B getFactB();
-
-    public BavetAbstractBiTuple<A, B> getDownstreamTuple() {
-        return downstreamTuple;
-    }
-
-    public void setDownstreamTuple(BavetAbstractBiTuple<A, B> downstreamTuple) {
-        this.downstreamTuple = downstreamTuple;
-    }
 
 }

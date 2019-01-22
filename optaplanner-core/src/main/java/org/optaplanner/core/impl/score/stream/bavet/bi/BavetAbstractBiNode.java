@@ -18,8 +18,6 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractNode;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniTuple;
 
 public abstract class BavetAbstractBiNode<A, B> extends BavetAbstractNode {
 
@@ -27,7 +25,7 @@ public abstract class BavetAbstractBiNode<A, B> extends BavetAbstractNode {
         super(session, nodeOrder);
     }
 
-    public abstract BavetAbstractBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> previousTuple);
+    public abstract BavetAbstractBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple);
 
     // ************************************************************************
     // Getters/setters

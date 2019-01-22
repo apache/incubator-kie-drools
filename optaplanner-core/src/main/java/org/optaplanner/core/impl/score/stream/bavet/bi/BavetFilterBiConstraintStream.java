@@ -16,15 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFilterUniNode;
 
 public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
@@ -44,13 +41,21 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
 
     @Override
     protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight,
-            int nodeOrder, BavetAbstractBiNode<A, B> nextNode) {
-        if (nextNode == null) {
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractBiNode<A, B>> childNodeList) {
+        if (childNodeList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
-        return new BavetFilterBiNode<>(buildPolicy.getSession(), nodeOrder, predicate, nextNode);
+        return new BavetFilterBiNode<>(buildPolicy.getSession(), nodeOrder, predicate, childNodeList);
     }
+
+    @Override
+    public String toString() {
+        return "Filter() to " + childStreamList.size()  + " children";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
 }

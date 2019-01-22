@@ -19,13 +19,13 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 public final class BavetIntScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     private final BavetIntScoringUniNode<A> node;
-    private final BavetAbstractUniTuple<A> previousTuple;
+    private final BavetAbstractUniTuple<A> parentTuple;
 
     private int score = 0;
 
-    public BavetIntScoringUniTuple(BavetIntScoringUniNode<A> node, BavetAbstractUniTuple<A> previousTuple) {
+    public BavetIntScoringUniTuple(BavetIntScoringUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
-        this.previousTuple = previousTuple;
+        this.parentTuple = parentTuple;
     }
 
     @Override
@@ -49,7 +49,7 @@ public final class BavetIntScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     @Override
     public A getFactA() {
-        return previousTuple.getFactA();
+        return parentTuple.getFactA();
     }
 
     public int getScore() {

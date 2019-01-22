@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
@@ -39,9 +41,27 @@ public final class BavetSelectUniConstraintStream<Solution_, A> extends BavetAbs
 
     @Override
     protected BavetSelectUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
-            int nodeOrder, BavetAbstractUniNode<A> nextNode) {
-        return new BavetSelectUniNode<>(buildPolicy.getSession(), nodeOrder, selectClass, nextNode);
+            int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
+        if (childNodeList.isEmpty()) {
+            throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
+                    + "Maybe don't create it.");
+        }
+        BavetSelectUniNode<A> node = new BavetSelectUniNode<>(buildPolicy.getSession(), nodeOrder, selectClass, childNodeList);
+        BavetSelectUniNode<A> sharedNode = buildPolicy.retrieveSharedNode(node);
+        if (sharedNode != node) {
+            sharedNode.getChildNodeList().addAll(childNodeList); // TODO Doesn't allow sharing the filter after select
+        }
+        return sharedNode;
     }
+
+    @Override
+    public String toString() {
+        return "Select(" + selectClass.getSimpleName() + ") to " + childStreamList.size()  + " children";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
     public Class<A> getSelectClass() {
         return selectClass;

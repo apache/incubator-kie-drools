@@ -16,14 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class BavetSelectUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     private final BavetSelectUniNode<A> node;
     private final A factA;
 
-    public BavetSelectUniTuple(BavetSelectUniNode<A> node, A factA) {
+    protected List<BavetAbstractUniTuple<A>> childTupleList;
+
+    public BavetSelectUniTuple(BavetSelectUniNode<A> node, A factA, int childTupleListSize) {
         this.node = node;
         this.factA = factA;
+        childTupleList = new ArrayList<>();
     }
 
     @Override
@@ -33,7 +39,7 @@ public final class BavetSelectUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     @Override
     public String toString() {
-        return "Select(" + getFactA() + ") to " + (downstreamTuple == null ? 0 : 1) + " downstream";
+        return "Select(" + getFactA() + ") to " + childTupleList.size()  + " children";
     }
 
     // ************************************************************************
@@ -48,6 +54,10 @@ public final class BavetSelectUniTuple<A> extends BavetAbstractUniTuple<A> {
     @Override
     public A getFactA() {
         return factA;
+    }
+
+    public List<BavetAbstractUniTuple<A>> getChildTupleList() {
+        return childTupleList;
     }
 
 }

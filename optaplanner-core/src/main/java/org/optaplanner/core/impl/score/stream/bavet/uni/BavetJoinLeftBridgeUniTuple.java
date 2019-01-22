@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
@@ -24,14 +24,14 @@ import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
 public final class BavetJoinLeftBridgeUniTuple<A, B, Property_> extends BavetAbstractUniTuple<A> {
 
     private final BavetJoinLeftBridgeUniNode<A, B, Property_> node;
-    private final BavetAbstractUniTuple<A> previousTuple;
+    private final BavetAbstractUniTuple<A> parentTuple;
 
-    private Set<BavetJoinBiTuple<A, B, Property_>> downstreamTupleSet;
+    private Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = new LinkedHashSet<>(); // TODO capacity
 
     public BavetJoinLeftBridgeUniTuple(BavetJoinLeftBridgeUniNode<A, B, Property_> node,
-            BavetAbstractUniTuple<A> previousTuple) {
+            BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
-        this.previousTuple = previousTuple;
+        this.parentTuple = parentTuple;
     }
 
     @Override
@@ -41,7 +41,7 @@ public final class BavetJoinLeftBridgeUniTuple<A, B, Property_> extends BavetAbs
 
     @Override
     public String toString() {
-        return "JoinLeftBridge(" + getFactA() + ") to " + (downstreamTuple == null ? 0 : 1) + " downstream";
+        return "JoinLeftBridge(" + getFactA() + ") to " + childTupleSet.size() + " children";
     }
 
     // ************************************************************************
@@ -55,11 +55,11 @@ public final class BavetJoinLeftBridgeUniTuple<A, B, Property_> extends BavetAbs
 
     @Override
     public A getFactA() {
-        return previousTuple.getFactA();
+        return parentTuple.getFactA();
     }
 
-    public Set<BavetJoinBiTuple<A, B, Property_>> getDownstreamTupleSet() {
-        return downstreamTupleSet;
+    public Set<BavetJoinBiTuple<A, B, Property_>> getChildTupleSet() {
+        return childTupleSet;
     }
 
 }

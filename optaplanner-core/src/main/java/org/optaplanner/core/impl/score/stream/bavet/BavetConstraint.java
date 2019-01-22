@@ -59,13 +59,15 @@ public final class BavetConstraint<Solution_> implements Constraint {
     }
 
     public void createNodes(BavetNodeBuildPolicy<Solution_> buildPolicy, Map<Class<?>,
-            List<BavetSelectUniNode<Object>>> declaredClassToNodeListMap, Score<?> constraintWeight) {
+            BavetSelectUniNode<Object>> declaredClassToNodeMap, Score<?> constraintWeight) {
         for (BavetSelectUniConstraintStream<Solution_, Object> stream : streamList) {
             int nodeOrder = 0;
-            List<BavetSelectUniNode<Object>> nodeList = declaredClassToNodeListMap.computeIfAbsent(
-                    stream.getSelectClass(), k -> new ArrayList<>());
             BavetSelectUniNode<Object> node = stream.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
-            nodeList.add(node);
+            BavetSelectUniNode<Object> oldNode = declaredClassToNodeMap.putIfAbsent(stream.getSelectClass(), node);
+            if (oldNode != null && oldNode != node) {
+                throw new IllegalStateException("The oldNode (" + oldNode
+                        + ") differs from the new node (" + node + ").");
+            }
         }
     }
 

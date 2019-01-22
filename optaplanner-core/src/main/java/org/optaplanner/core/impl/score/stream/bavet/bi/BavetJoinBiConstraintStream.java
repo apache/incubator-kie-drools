@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.function.BiPredicate;
+import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
@@ -40,12 +40,21 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B, Property_> exten
 
     @Override
     protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> nextNode) {
-        if (nextNode == null) {
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractBiNode<A, B>> childNodeList) {
+        if (childNodeList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
-        return new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder, nextNode);
+        return new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder, childNodeList);
     }
+
+    @Override
+    public String toString() {
+        return "Join() to " + childStreamList.size()  + " children";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
 }

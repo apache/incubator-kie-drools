@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniTuple;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniTuple;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniNode;
@@ -30,17 +29,19 @@ public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<
 
     private BavetJoinLeftBridgeUniNode<A, B, Property_> leftParentNode;
     private BavetJoinRightBridgeUniNode<A, B, Property_> rightParentNode;
-    private final BavetAbstractBiNode<A, B> nextNode;
 
-    public BavetJoinBiNode(BavetConstraintSession session, int nodeOrder, BavetAbstractBiNode<A, B> nextNode) {
+    private final List<BavetAbstractBiNode<A, B>> childNodeList;
+
+    public BavetJoinBiNode(BavetConstraintSession session, int nodeOrder,
+            List<BavetAbstractBiNode<A, B>> childNodeList) {
         super(session, nodeOrder);
-        this.nextNode = nextNode;
+        this.childNodeList = childNodeList;
     }
 
     @Override
-    public BavetJoinBiTuple<A, B, Property_> createTuple(BavetAbstractBiTuple<A, B> previousTuple) {
+    public BavetJoinBiTuple<A, B, Property_> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
         throw new IllegalStateException("The join node (" + getClass().getSimpleName()
-                + ") can't have a previousTuple (" + previousTuple + ");");
+                + ") can't have a parentTuple (" + parentTuple + ");");
     }
 
     public BavetJoinBiTuple<A, B, Property_> createTuple(
@@ -51,16 +52,24 @@ public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<
     public void refresh(BavetJoinBiTuple<A, B, Property_> tuple) {
         A a = tuple.getFactA();
         B b = tuple.getFactB();
-        BavetAbstractBiTuple<A, B> downstreamTuple = tuple.getDownstreamTuple();
-        if (downstreamTuple != null) {
-            session.transitionTuple(downstreamTuple, BavetTupleState.DYING);
+        List<BavetAbstractBiTuple<A, B>> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractBiTuple<A, B> childTuple : childTupleList) {
+            session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
+        childTupleList.clear();
         if (tuple.isActive()) {
-            BavetAbstractBiTuple<A, B> nextTuple = nextNode.createTuple(tuple);
-            tuple.setDownstreamTuple(nextTuple);
-            session.transitionTuple(nextTuple, BavetTupleState.CREATING);
+            for (BavetAbstractBiNode<A, B> childNode : childNodeList) {
+                BavetAbstractBiTuple<A, B> childTuple = childNode.createTuple(tuple);
+                childTupleList.add(childTuple);
+                session.transitionTuple(childTuple, BavetTupleState.CREATING);
+            }
         }
         tuple.refreshed();
+    }
+
+    @Override
+    public String toString() {
+        return "Join() to " + childNodeList.size()  + " children";
     }
 
     // ************************************************************************

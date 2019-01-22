@@ -19,13 +19,13 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 public final class BavetIntScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
     private final BavetIntScoringBiNode<A, B> node;
-    private final BavetAbstractBiTuple<A, B> previousTuple;
+    private final BavetAbstractBiTuple<A, B> parentTuple;
 
     private int score = 0;
 
-    public BavetIntScoringBiTuple(BavetIntScoringBiNode<A, B> node, BavetAbstractBiTuple<A, B> previousTuple) {
+    public BavetIntScoringBiTuple(BavetIntScoringBiNode<A, B> node, BavetAbstractBiTuple<A, B> parentTuple) {
         this.node = node;
-        this.previousTuple = previousTuple;
+        this.parentTuple = parentTuple;
     }
 
     @Override
@@ -49,12 +49,12 @@ public final class BavetIntScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, 
 
     @Override
     public A getFactA() {
-        return previousTuple.getFactA();
+        return parentTuple.getFactA();
     }
 
     @Override
     public B getFactB() {
-        return previousTuple.getFactB();
+        return parentTuple.getFactB();
     }
 
     public int getScore() {

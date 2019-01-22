@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
 import java.util.function.ToIntFunction;
 
 import org.optaplanner.core.api.score.Score;
@@ -35,20 +36,25 @@ public final class BavetIntScoringUniConstraintStream<Solution_, A> extends Bave
         }
     }
 
-    // ************************************************************************
-    // Node creation methods
-    // ************************************************************************
-
     @Override
     protected BavetIntScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> nextNode) {
-        if (nextNode != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this + ") has one or more nextStreams ("
-                    + nextStreamList + ") but it's an endpoint.");
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
+        if (!childNodeList.isEmpty()) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's an endpoint.");
         }
         return new BavetIntScoringUniNode<>(buildPolicy.getSession(), nodeOrder,
                 constraint.getConstraintPackage(), constraint.getConstraintName(),
                 ((SimpleScore) constraintWeight).getScore(), matchWeigher);
     }
+
+    @Override
+    public String toString() {
+        return "IntScore() to " + childStreamList.size()  + " children";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
 }

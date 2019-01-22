@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
         implements UniConstraintStream<A> {
 
-    protected final List<BavetAbstractUniConstraintStream<Solution_, A>> nextStreamList = new ArrayList<>(2);
+    protected final List<BavetAbstractUniConstraintStream<Solution_, A>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractUniConstraintStream(BavetConstraint<Solution_> bavetConstraint) {
         super(bavetConstraint);
@@ -47,7 +47,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     @Override
     public BavetAbstractUniConstraintStream<Solution_, A> filter(Predicate<A> predicate) {
         BavetFilterUniConstraintStream<Solution_, A> stream = new BavetFilterUniConstraintStream<>(constraint, predicate);
-        nextStreamList.add(stream);
+        childStreamList.add(stream);
         return stream;
     }
 
@@ -66,10 +66,10 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         BavetJoinBiConstraintStream<Solution_, A, B, Property_> biStream = new BavetJoinBiConstraintStream<>(constraint);
         BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B, Property_> leftBridge = new BavetJoinLeftBridgeUniConstraintStream<>(
                 constraint, biStream, joiner.getLeftMapping());
-        nextStreamList.add(leftBridge);
+        childStreamList.add(leftBridge);
         BavetJoinRightBridgeUniConstraintStream<Solution_, A, B, Property_> rightBridge = new BavetJoinRightBridgeUniConstraintStream<>(
                 constraint, biStream, joiner.getRightMapping());
-        other.nextStreamList.add(rightBridge);
+        other.childStreamList.add(rightBridge);
         return biStream;
     }
 
@@ -87,7 +87,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     private void addIntScoring(ToIntFunction<A> matchWeigher) {
         BavetIntScoringUniConstraintStream<Solution_, A> stream = new BavetIntScoringUniConstraintStream<>(constraint, matchWeigher);
-        nextStreamList.add(stream);
+        childStreamList.add(stream);
     }
 
     // ************************************************************************
@@ -97,18 +97,16 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public BavetAbstractUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder) {
         buildPolicy.updateNodeOrderMaximum(nodeOrder);
-        if (nextStreamList.isEmpty()) {
-            return createNode(buildPolicy, constraintWeight, nodeOrder, null);
-        } else if (nextStreamList.size() == 1) {
-            BavetAbstractUniConstraintStream<Solution_, A> nextStream = nextStreamList.get(0);
-            BavetAbstractUniNode<A> nextNode = nextStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1);
-            return createNode(buildPolicy, constraintWeight, nodeOrder, nextNode);
+        List<BavetAbstractUniNode<A>> childNodeList = new ArrayList<>(childStreamList.size());
+        for (BavetAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
+            BavetAbstractUniNode<A> childNode = childStream.createNodeChain(
+                    buildPolicy, constraintWeight, nodeOrder + 1);
+            childNodeList.add(childNode);
         }
-        // TODO Implement or fail-faster during setup
-        throw new UnsupportedOperationException("Node sharing is currently not supported.");
+        return createNode(buildPolicy, constraintWeight, nodeOrder, childNodeList);
     }
 
     protected abstract BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> nextNode);
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList);
 
 }

@@ -30,8 +30,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     public void defineConstraints(ConstraintFactory constraintFactory) {
         // TODO rename to "horizontal conflict", ...
         multipleQueensHorizontal(constraintFactory);
-        multipleQueensAscendingDiagonal(constraintFactory);
-        multipleQueensDescendingDiagonal(constraintFactory);
+//        multipleQueensAscendingDiagonal(constraintFactory);
+//        multipleQueensDescendingDiagonal(constraintFactory);
     }
 
     protected void multipleQueensHorizontal(ConstraintFactory constraintFactory) {

@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniTuple;
 
 public final class BavetConstraintSession<Solution_> implements ConstraintSession<Solution_>  {
 
-    private final Map<Class<?>, List<BavetSelectUniNode<Object>>> declaredClassToNodeListMap; // TODO should the value be object instead of list?
+    private final Map<Class<?>, BavetSelectUniNode<Object>> declaredClassToNodeMap; // TODO should the value be object instead of list?
     private final Map<Class<?>, List<BavetSelectUniNode<Object>>> effectiveClassToNodeListMap;
 
     private final int nodeOrderSize;
@@ -43,12 +43,12 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     private int score = 0;
 
     public BavetConstraintSession(Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
-        declaredClassToNodeListMap = new HashMap<>(50);
+        declaredClassToNodeMap = new HashMap<>(50);
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {
-            constraint.createNodes(buildPolicy, declaredClassToNodeListMap, constraintWeight);
+            constraint.createNodes(buildPolicy, declaredClassToNodeMap, constraintWeight);
         });
-        effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeListMap.size());
+        effectiveClassToNodeListMap = new HashMap<>(declaredClassToNodeMap.size());
         this.nodeOrderSize = buildPolicy.getNodeOrderMaximum() + 1;
         nodeOrderedQueueList = new ArrayList<>(nodeOrderSize);
         for (int i = 0; i < nodeOrderSize; i++) {
@@ -60,9 +60,9 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     public List<BavetSelectUniNode<Object>> findSelectNodeList(Class<?> factClass) {
         return effectiveClassToNodeListMap.computeIfAbsent(factClass, key -> {
             List<BavetSelectUniNode<Object>> nodeList = new ArrayList<>();
-            declaredClassToNodeListMap.forEach((declaredClass, declaredNodeList) -> {
+            declaredClassToNodeMap.forEach((declaredClass, declaredNode) -> {
                 if (declaredClass.isAssignableFrom(factClass)) {
-                    nodeList.addAll(declaredNodeList);
+                    nodeList.add(declaredNode);
                 }
             });
             return nodeList;

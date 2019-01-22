@@ -16,14 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.util.Map;
+import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiNode;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractNode;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
 
 public final class BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B, Property_>
@@ -45,14 +44,14 @@ public final class BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B, Prope
 
     @Override
     protected BavetJoinLeftBridgeUniNode<A, B, Property_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> nextNode) {
-        if (nextNode != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this + ") has one or more nextStreams ("
-                    + nextStreamList + ") but it's a join bridge.");
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
+        if (!childNodeList.isEmpty()) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's a join bridge.");
         }
         BavetJoinBiNode<A, B, Property_> biNode = (BavetJoinBiNode<A, B, Property_>) buildPolicy.getStreamToNodeMap().get(biStream);
         if (biNode == null) {
-            biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1);
+            biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1); // TODO BUG needs max(left node order, right node order)
             buildPolicy.getStreamToNodeMap().put(biStream, biNode);
         }
         BavetJoinLeftBridgeUniNode<A, B, Property_> node = new BavetJoinLeftBridgeUniNode<>(buildPolicy.getSession(),
@@ -60,5 +59,14 @@ public final class BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B, Prope
         biNode.setLeftParentNode(node);
         return node;
     }
+
+    @Override
+    public String toString() {
+        return "JoinLeftBridge()";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
 }

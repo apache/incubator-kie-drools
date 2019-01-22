@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniTuple;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniTuple;
 
@@ -25,11 +28,14 @@ public final class BavetJoinBiTuple<A, B, Property_> extends BavetAbstractBiTupl
     private final BavetJoinLeftBridgeUniTuple<A, B, Property_> aTuple;
     private final BavetJoinRightBridgeUniTuple<A, B, Property_> bTuple;
 
+    protected List<BavetAbstractBiTuple<A, B>> childTupleList = null;
+
     public BavetJoinBiTuple(BavetJoinBiNode<A, B, Property_> node,
             BavetJoinLeftBridgeUniTuple<A, B, Property_> aTuple, BavetJoinRightBridgeUniTuple<A, B, Property_> bTuple) {
         this.node = node;
         this.aTuple = aTuple;
         this.bTuple = bTuple;
+        childTupleList = new ArrayList<>();
     }
 
     @Override
@@ -67,6 +73,10 @@ public final class BavetJoinBiTuple<A, B, Property_> extends BavetAbstractBiTupl
 
     public BavetJoinRightBridgeUniTuple<A, B, Property_> getBTuple() {
         return bTuple;
+    }
+
+    public List<BavetAbstractBiTuple<A, B>> getChildTupleList() {
+        return childTupleList;
     }
 
 }

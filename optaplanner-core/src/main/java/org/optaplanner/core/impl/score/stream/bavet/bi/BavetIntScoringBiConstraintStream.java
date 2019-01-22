@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.List;
 import java.util.function.ToIntBiFunction;
 
 import org.optaplanner.core.api.score.Score;
@@ -41,14 +42,23 @@ public final class BavetIntScoringBiConstraintStream<Solution_, A, B> extends Ba
 
     @Override
     protected BavetIntScoringBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> nextNode) {
-        if (nextNode != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this + ") has one or more nextStreams ("
-                    + nextStreamList + ") but it's an endpoint.");
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractBiNode<A, B>> childNodeList) {
+        if (!childNodeList.isEmpty()) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's an endpoint.");
         }
         return new BavetIntScoringBiNode<>(buildPolicy.getSession(), nodeOrder,
                 constraint.getConstraintPackage(), constraint.getConstraintName(),
                 ((SimpleScore) constraintWeight).getScore(), matchWeigher);
     }
+
+    @Override
+    public String toString() {
+        return "IntScore() to " + childStreamList.size()  + " children";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
 }

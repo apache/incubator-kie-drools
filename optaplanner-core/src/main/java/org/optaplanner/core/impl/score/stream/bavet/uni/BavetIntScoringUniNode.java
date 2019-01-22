@@ -38,8 +38,8 @@ public final class BavetIntScoringUniNode<A> extends BavetAbstractUniNode<A> {
     }
 
     @Override
-    public BavetIntScoringUniTuple<A> createTuple(BavetAbstractUniTuple<A> previousTuple) {
-        return new BavetIntScoringUniTuple<>(this, previousTuple);
+    public BavetIntScoringUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {
+        return new BavetIntScoringUniTuple<>(this, parentTuple);
     }
 
     public void refresh(BavetIntScoringUniTuple<A> tuple) {
@@ -53,6 +53,11 @@ public final class BavetIntScoringUniNode<A> extends BavetAbstractUniNode<A> {
         }
         session.addScoreDelta(scoreDelta);
         tuple.refreshed();
+    }
+
+    @Override
+    public String toString() {
+        return "IntScore(" + constraintWeight + ")";
     }
 
     // ************************************************************************

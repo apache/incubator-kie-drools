@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy
 public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends BavetAbstractConstraintStream<Solution_>
         implements BiConstraintStream<A, B> {
 
-    protected final List<BavetAbstractBiConstraintStream<Solution_, A, B>> nextStreamList = new ArrayList<>(2);
+    protected final List<BavetAbstractBiConstraintStream<Solution_, A, B>> childStreamList = new ArrayList<>(2);
 
     public BavetAbstractBiConstraintStream(BavetConstraint<Solution_> bavetConstraint) {
         super(bavetConstraint);
@@ -43,7 +43,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public BavetAbstractBiConstraintStream<Solution_, A, B> filter(BiPredicate<A, B> predicate) {
         BavetFilterBiConstraintStream<Solution_, A, B> stream = new BavetFilterBiConstraintStream<>(constraint, predicate);
-        nextStreamList.add(stream);
+        childStreamList.add(stream);
         return stream;
     }
 
@@ -61,7 +61,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     private void addIntScoring(ToIntBiFunction<A, B> matchWeigher) {
         BavetIntScoringBiConstraintStream<Solution_, A, B> stream = new BavetIntScoringBiConstraintStream<>(constraint, matchWeigher);
-        nextStreamList.add(stream);
+        childStreamList.add(stream);
     }
 
     // ************************************************************************
@@ -71,18 +71,16 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public BavetAbstractBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder) {
         buildPolicy.updateNodeOrderMaximum(nodeOrder);
-        if (nextStreamList.isEmpty()) {
-            return createNode(buildPolicy, constraintWeight, nodeOrder, null);
-        } else if (nextStreamList.size() == 1) {
-            BavetAbstractBiConstraintStream<Solution_, A, B> nextStream = nextStreamList.get(0);
-            BavetAbstractBiNode<A, B> nextNode = nextStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1);
-            return createNode(buildPolicy, constraintWeight, nodeOrder, nextNode);
+        List<BavetAbstractBiNode<A, B>> childNodeList = new ArrayList<>(childStreamList.size());
+        for (BavetAbstractBiConstraintStream<Solution_, A, B> childStream : childStreamList) {
+            BavetAbstractBiNode<A, B> childNode = childStream.createNodeChain(
+                    buildPolicy, constraintWeight, nodeOrder + 1);
+            childNodeList.add(childNode);
         }
-        // TODO Implement or fail-faster during setup
-        throw new UnsupportedOperationException("Node sharing is currently not supported.");
+        return createNode(buildPolicy, constraintWeight, nodeOrder, childNodeList);
     }
 
     protected abstract BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> nextNode);
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractBiNode<A, B>> childNodeList);
 
 }

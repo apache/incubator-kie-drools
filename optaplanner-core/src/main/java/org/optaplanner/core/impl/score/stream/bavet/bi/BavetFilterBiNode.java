@@ -16,47 +16,53 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFilterUniTuple;
 
 public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
     private final BiPredicate<A, B> predicate;
-    private final BavetAbstractBiNode<A, B> nextNode;
+
+    private final List<BavetAbstractBiNode<A, B>> childNodeList;
 
     public BavetFilterBiNode(BavetConstraintSession session, int nodeOrder,
-            BiPredicate<A, B> predicate, BavetAbstractBiNode<A, B> nextNode) {
+            BiPredicate<A, B> predicate, List<BavetAbstractBiNode<A, B>> childNodeList) {
         super(session, nodeOrder);
         this.predicate = predicate;
-        this.nextNode = nextNode;
+        this.childNodeList = childNodeList;
     }
 
     @Override
-    public BavetFilterBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> previousTuple) {
-        return new BavetFilterBiTuple<>(this, previousTuple);
+    public BavetFilterBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
+        return new BavetFilterBiTuple<>(this, parentTuple);
     }
 
     public void refresh(BavetFilterBiTuple<A, B> tuple) {
         A a = tuple.getFactA();
         B b = tuple.getFactB();
-        BavetAbstractBiTuple<A, B> downstreamTuple = tuple.getDownstreamTuple();
-        if (downstreamTuple != null) {
-            session.transitionTuple(downstreamTuple, BavetTupleState.DYING);
+        List<BavetAbstractBiTuple<A, B>> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractBiTuple<A, B> childTuple : childTupleList) {
+            session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
+        childTupleList.clear();
         if (tuple.isActive()) {
             if (predicate.test(a, b)) {
-                BavetAbstractBiTuple<A, B> nextTuple = nextNode.createTuple(tuple);
-                tuple.setDownstreamTuple(nextTuple);
-                session.transitionTuple(nextTuple, BavetTupleState.CREATING);
+                for (BavetAbstractBiNode<A, B> childNode : childNodeList) {
+                    BavetAbstractBiTuple<A, B> childTuple = childNode.createTuple(tuple);
+                    childTupleList.add(childTuple);
+                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                }
             }
         }
         tuple.refreshed();
+    }
+
+    @Override
+    public String toString() {
+        return "Filter() to " + childNodeList.size()  + " children";
     }
 
     // ************************************************************************

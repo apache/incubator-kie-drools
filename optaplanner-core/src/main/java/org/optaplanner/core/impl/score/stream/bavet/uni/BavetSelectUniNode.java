@@ -16,48 +16,79 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
+
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
 
 public final class BavetSelectUniNode<A> extends BavetAbstractUniNode<A> {
 
     private final Class<A> selectClass;
-    private final BavetAbstractUniNode<A> nextNode;
+
+    private final List<BavetAbstractUniNode<A>> childNodeList;
 
     public BavetSelectUniNode(BavetConstraintSession session, int nodeOrder,
-            Class<A> selectClass, BavetAbstractUniNode<A> nextNode) {
+            Class<A> selectClass, List<BavetAbstractUniNode<A>> childNodeList) {
         super(session, nodeOrder);
         this.selectClass = selectClass;
-        this.nextNode = nextNode;
+        this.childNodeList = childNodeList;
     }
 
     public BavetSelectUniTuple<A> createTuple(A a) {
-        return new BavetSelectUniTuple<>(this, a);
+        return new BavetSelectUniTuple<>(this, a, childNodeList.size());
     }
 
     @Override
-    public BavetAbstractUniTuple<A> createTuple(BavetAbstractUniTuple<A> previousTuple) {
+    public BavetAbstractUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {
         throw new IllegalStateException("The select node (" + getClass().getSimpleName()
-                + ") can't have a previousTuple (" + previousTuple + ");");
+                + ") can't have a parentTuple (" + parentTuple + ");");
     }
 
     public void refresh(BavetSelectUniTuple<A> tuple) {
-        A a = tuple.getFactA();
-        BavetAbstractUniTuple<A> downstreamTuple = tuple.getDownstreamTuple();
-        if (downstreamTuple != null) {
-            // TODO the entire Select node isn't really doing anything, so the destruction/construction is just an update op
-            session.transitionTuple(downstreamTuple, BavetTupleState.DYING);
+        List<BavetAbstractUniTuple<A>> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractUniTuple<A> childTuple : childTupleList) {
+            // TODO the entire Select node isn't really doing anything
+            // so the destruction/construction is just an update op unless it's CREATING or DYING
+            session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
         if (tuple.isActive()) {
-            BavetAbstractUniTuple<A> nextTuple = nextNode.createTuple(tuple);
-            tuple.setDownstreamTuple(nextTuple);
-            session.transitionTuple(nextTuple, BavetTupleState.CREATING);
+            for (BavetAbstractUniNode<A> childNode : childNodeList) {
+                BavetAbstractUniTuple<A> childTuple = childNode.createTuple(tuple);
+                childTupleList.add(childTuple);
+                session.transitionTuple(childTuple, BavetTupleState.CREATING);
+            }
         }
         tuple.refreshed();
+    }
+
+    @Override
+    public int hashCode() {
+        return selectClass.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetSelectUniNode) {
+            BavetSelectUniNode<?> other = (BavetSelectUniNode<?>) o;
+            return selectClass.equals(other.selectClass);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Select(" + selectClass.getSimpleName() + ") to " + childNodeList.size()  + " children";
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    public List<BavetAbstractUniNode<A>> getChildNodeList() {
+        return childNodeList;
+    }
 
 }

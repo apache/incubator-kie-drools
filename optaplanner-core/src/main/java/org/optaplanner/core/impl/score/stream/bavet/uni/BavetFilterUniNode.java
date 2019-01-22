@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
@@ -24,34 +25,43 @@ import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
 public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
     private final Predicate<A> predicate;
-    private final BavetAbstractUniNode<A> nextNode;
+
+    private final List<BavetAbstractUniNode<A>> childNodeList;
 
     public BavetFilterUniNode(BavetConstraintSession session, int nodeOrder,
-            Predicate<A> predicate, BavetAbstractUniNode<A> nextNode) {
+            Predicate<A> predicate, List<BavetAbstractUniNode<A>> childNodeList) {
         super(session, nodeOrder);
         this.predicate = predicate;
-        this.nextNode = nextNode;
+        this.childNodeList = childNodeList;
     }
 
     @Override
-    public BavetFilterUniTuple<A> createTuple(BavetAbstractUniTuple<A> previousTuple) {
-        return new BavetFilterUniTuple<>(this, previousTuple);
+    public BavetFilterUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {
+        return new BavetFilterUniTuple<>(this, parentTuple, childNodeList.size());
     }
 
     public void refresh(BavetFilterUniTuple<A> tuple) {
         A a = tuple.getFactA();
-        BavetAbstractUniTuple<A> downstreamTuple = tuple.getDownstreamTuple();
-        if (downstreamTuple != null) {
-            session.transitionTuple(downstreamTuple, BavetTupleState.DYING);
+        List<BavetAbstractUniTuple<A>> childTupleList = tuple.getChildTupleList();
+        for (BavetAbstractUniTuple<A> childTuple : childTupleList) {
+            session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
+        childTupleList.clear();
         if (tuple.isActive()) {
             if (predicate.test(a)) {
-                BavetAbstractUniTuple<A> nextTuple = nextNode.createTuple(tuple);
-                tuple.setDownstreamTuple(nextTuple);
-                session.transitionTuple(nextTuple, BavetTupleState.CREATING);
+                for (BavetAbstractUniNode<A> childNode : childNodeList) {
+                    BavetAbstractUniTuple<A> childTuple = childNode.createTuple(tuple);
+                    childTupleList.add(childTuple);
+                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                }
             }
         }
         tuple.refreshed();
+    }
+
+    @Override
+    public String toString() {
+        return "Filter() to " + childNodeList.size()  + " children";
     }
 
     // ************************************************************************

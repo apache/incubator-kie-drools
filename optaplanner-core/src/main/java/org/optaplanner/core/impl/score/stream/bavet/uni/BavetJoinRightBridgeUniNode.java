@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,19 +44,19 @@ public final class BavetJoinRightBridgeUniNode<A, B, Property_> extends BavetAbs
     }
 
     @Override
-    public BavetJoinRightBridgeUniTuple<A, B, Property_> createTuple(BavetAbstractUniTuple<B> previousTuple) {
-        return new BavetJoinRightBridgeUniTuple<>(this, previousTuple);
+    public BavetJoinRightBridgeUniTuple<A, B, Property_> createTuple(BavetAbstractUniTuple<B> parentTuple) {
+        return new BavetJoinRightBridgeUniTuple<>(this, parentTuple);
     }
 
     public void refresh(BavetJoinRightBridgeUniTuple<A, B, Property_> tuple) {
         B b = tuple.getFactA();
-        Set<BavetJoinBiTuple<A, B, Property_>> downstreamTupleSet = tuple.getDownstreamTupleSet();
-        for (Iterator<BavetJoinBiTuple<A, B, Property_>> it = downstreamTupleSet.iterator(); it.hasNext(); ) {
-            BavetJoinBiTuple<A, B, Property_> downstreamTuple =  it.next();
-            it.remove();
-            downstreamTuple.getATuple().getDownstreamTupleSet().remove(downstreamTuple);
-            session.transitionTuple(downstreamTuple, BavetTupleState.DYING);
+        Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = tuple.getChildTupleSet();
+        for (BavetJoinBiTuple<A, B, Property_> childTuple : childTupleSet) {
+            childTuple.getATuple().getChildTupleSet().remove(childTuple);
+            // TODO clean up index
+            session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
+        childTupleSet.clear();
         if (tuple.isActive()) {
             Property_ property = mapping.apply(b);
             boolean added = index.computeIfAbsent(property, k -> new ArrayList<>()).add(tuple);
@@ -68,12 +67,19 @@ public final class BavetJoinRightBridgeUniNode<A, B, Property_> extends BavetAbs
             List<BavetJoinLeftBridgeUniTuple<A, B, Property_>> aTupleList = biNode.getATupleListByProperty(property);
             if (aTupleList != null) {
                 for (BavetJoinLeftBridgeUniTuple<A, B, Property_> aTuple : aTupleList) {
-                    biNode.createTuple(aTuple, tuple);
+                    BavetJoinBiTuple<A, B, Property_> childTuple = biNode.createTuple(aTuple, tuple);
+                    aTuple.getChildTupleSet().add(childTuple);
+                    childTupleSet.add(childTuple);
+                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }
-
         }
         tuple.refreshed();
+    }
+
+    @Override
+    public String toString() {
+        return "JoinRightBridge()";
     }
 
     // ************************************************************************

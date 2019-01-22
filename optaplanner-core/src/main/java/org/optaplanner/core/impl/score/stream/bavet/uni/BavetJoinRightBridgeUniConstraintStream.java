@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
@@ -43,14 +44,14 @@ public final class BavetJoinRightBridgeUniConstraintStream<Solution_, A, B, Prop
 
     @Override
     protected BavetJoinRightBridgeUniNode<A, B, Property_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<B> nextNode) {
-        if (nextNode != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this + ") has one or more nextStreams ("
-                    + nextStreamList + ") but it's a join bridge.");
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<B>> childNodeList) {
+        if (!childNodeList.isEmpty()) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's a join bridge.");
         }
         BavetJoinBiNode<A, B, Property_> biNode = (BavetJoinBiNode<A, B, Property_>) buildPolicy.getStreamToNodeMap().get(biStream);
         if (biNode == null) {
-            biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1);
+            biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1); // TODO BUG needs max(left node order, right node order)
             buildPolicy.getStreamToNodeMap().put(biStream, biNode);
         }
         BavetJoinRightBridgeUniNode<A, B, Property_> node = new BavetJoinRightBridgeUniNode<>(buildPolicy.getSession(),
@@ -58,5 +59,14 @@ public final class BavetJoinRightBridgeUniConstraintStream<Solution_, A, B, Prop
         biNode.setRightParentNode(node);
         return node;
     }
+
+    @Override
+    public String toString() {
+        return "JoinRightBridge()";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
 }

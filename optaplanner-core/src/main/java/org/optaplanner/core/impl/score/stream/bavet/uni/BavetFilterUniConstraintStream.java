@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.Score;
@@ -34,18 +35,23 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
         }
     }
 
-    // ************************************************************************
-    // Node creation methods
-    // ************************************************************************
-
     @Override
     protected BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> nextNode) {
-        if (nextNode == null) {
+            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
+        if (childNodeList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
-        return new BavetFilterUniNode<>(buildPolicy.getSession(), nodeOrder, predicate, nextNode);
+        return new BavetFilterUniNode<>(buildPolicy.getSession(), nodeOrder, predicate, childNodeList);
     }
+
+    @Override
+    public String toString() {
+        return "Filter() to " + childStreamList.size()  + " children";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
 }

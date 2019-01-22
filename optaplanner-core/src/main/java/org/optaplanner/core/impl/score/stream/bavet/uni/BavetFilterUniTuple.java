@@ -16,14 +16,21 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class BavetFilterUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     private final BavetFilterUniNode<A> node;
-    private final BavetAbstractUniTuple<A> previousTuple;
+    private final BavetAbstractUniTuple<A> parentTuple;
 
-    public BavetFilterUniTuple(BavetFilterUniNode<A> node, BavetAbstractUniTuple<A> previousTuple) {
+    protected List<BavetAbstractUniTuple<A>> childTupleList;
+
+    public BavetFilterUniTuple(BavetFilterUniNode<A> node, BavetAbstractUniTuple<A> parentTuple,
+            int childTupleListSize) {
         this.node = node;
-        this.previousTuple = previousTuple;
+        this.parentTuple = parentTuple;
+        childTupleList = new ArrayList<>();
     }
 
     @Override
@@ -33,7 +40,7 @@ public final class BavetFilterUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     @Override
     public String toString() {
-        return "Filter(" + getFactA() + ") to " + (downstreamTuple == null ? 0 : 1) + " downstream";
+        return "Filter(" + getFactA() + ") to " + childTupleList.size() + " children";
     }
 
     // ************************************************************************
@@ -47,7 +54,11 @@ public final class BavetFilterUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     @Override
     public A getFactA() {
-        return previousTuple.getFactA();
+        return parentTuple.getFactA();
+    }
+
+    public List<BavetAbstractUniTuple<A>> getChildTupleList() {
+        return childTupleList;
     }
 
 }

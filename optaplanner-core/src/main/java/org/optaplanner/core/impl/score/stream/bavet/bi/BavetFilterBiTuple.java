@@ -16,17 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFilterUniNode;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
     private final BavetFilterBiNode<A, B> node;
-    private final BavetAbstractBiTuple<A, B> previousTuple;
+    private final BavetAbstractBiTuple<A, B> parentTuple;
 
-    public BavetFilterBiTuple(BavetFilterBiNode<A, B> node, BavetAbstractBiTuple<A, B> previousTuple) {
+    protected List<BavetAbstractBiTuple<A, B>> childTupleList = null;
+
+    public BavetFilterBiTuple(BavetFilterBiNode<A, B> node, BavetAbstractBiTuple<A, B> parentTuple) {
         this.node = node;
-        this.previousTuple = previousTuple;
+        this.parentTuple = parentTuple;
+        childTupleList = new ArrayList<>();
     }
 
     @Override
@@ -36,7 +39,7 @@ public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
     @Override
     public String toString() {
-        return "Filter(" + getFactA() + ", " + getFactB() + ") to " + (downstreamTuple == null ? 0 : 1) + " downstream";
+        return "Filter(" + getFactA() + ", " + getFactB() + ") to " + childTupleList.size()  + " children";
     }
 
     // ************************************************************************
@@ -50,12 +53,16 @@ public final class BavetFilterBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
     @Override
     public A getFactA() {
-        return previousTuple.getFactA();
+        return parentTuple.getFactA();
     }
 
     @Override
     public B getFactB() {
-        return previousTuple.getFactB();
+        return parentTuple.getFactB();
+    }
+
+    public List<BavetAbstractBiTuple<A, B>> getChildTupleList() {
+        return childTupleList;
     }
 
 }

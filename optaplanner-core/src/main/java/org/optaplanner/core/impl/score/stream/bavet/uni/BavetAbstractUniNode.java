@@ -25,7 +25,7 @@ public abstract class BavetAbstractUniNode<A> extends BavetAbstractNode {
         super(session, nodeOrder);
     }
 
-    public abstract BavetAbstractUniTuple<A> createTuple(BavetAbstractUniTuple<A> previousTuple);
+    public abstract BavetAbstractUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple);
 
     // ************************************************************************
     // Getters/setters
