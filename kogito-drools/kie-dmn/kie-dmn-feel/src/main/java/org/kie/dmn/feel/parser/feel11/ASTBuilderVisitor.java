@@ -285,7 +285,12 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitKeyString(FEEL_1_1Parser.KeyStringContext ctx) {
-        return ASTBuilderFactory.newNameDefNode( ctx, ctx.getText() );
+        return ASTBuilderFactory.newStringNode(ctx);
+    }
+
+    @Override
+    public BaseNode visitKeyName(FEEL_1_1Parser.KeyNameContext ctx) {
+        return visit(ctx.nameDefinition());
     }
 
     @Override
