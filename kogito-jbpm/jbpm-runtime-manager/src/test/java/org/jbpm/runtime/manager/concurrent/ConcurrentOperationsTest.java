@@ -80,7 +80,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
 
   
     
-    @Test(timeout=10000)
+    @Test(timeout=15000)
     public void testExecuteProcessWithAsyncHandler() throws Exception {
     	final NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Log", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
