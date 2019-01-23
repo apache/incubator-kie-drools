@@ -95,7 +95,7 @@ public class ElasticsearchEventEmitterProcessTest {
         cleanUp(context);
     }
 
-    @Test(timeout=5000)
+    @Test(timeout=10000)
     public void testIntegrationWithEventManager() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(new ClassPathResource("WorkItemsProcess.rf"), ResourceType.DRF);
