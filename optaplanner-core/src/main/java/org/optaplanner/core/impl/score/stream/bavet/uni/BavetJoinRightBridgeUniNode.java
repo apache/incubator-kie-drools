@@ -89,10 +89,12 @@ public final class BavetJoinRightBridgeUniNode<A, B, Property_> extends BavetAbs
             Set<BavetJoinLeftBridgeUniTuple<A, B, Property_>> aTupleList = biNode.getATupleListByProperty(property);
             if (aTupleList != null) {
                 for (BavetJoinLeftBridgeUniTuple<A, B, Property_> aTuple : aTupleList) {
-                    BavetJoinBiTuple<A, B, Property_> childTuple = biNode.createTuple(aTuple, tuple);
-                    aTuple.getChildTupleSet().add(childTuple);
-                    childTupleSet.add(childTuple);
-                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                    if (!aTuple.isDirty()) {
+                        BavetJoinBiTuple<A, B, Property_> childTuple = biNode.createTuple(aTuple, tuple);
+                        aTuple.getChildTupleSet().add(childTuple);
+                        childTupleSet.add(childTuple);
+                        session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                    }
                 }
             }
         }
