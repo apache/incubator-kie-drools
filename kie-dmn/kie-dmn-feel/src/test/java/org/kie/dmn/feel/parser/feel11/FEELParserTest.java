@@ -183,6 +183,7 @@ public class FEELParserTest {
         assertThat( stringLit, is( instanceOf( StringNode.class ) ) );
         assertThat( stringLit.getResultType(), is( BuiltInType.STRING ) );
         assertLocation( inputExpression, stringLit );
+        assertThat(stringLit.getText(), is(inputExpression));
     }
 
     @Test
@@ -669,17 +670,17 @@ public class FEELParserTest {
         assertThat( ctx.getEntries().size(), is( 3 ) );
 
         ContextEntryNode entry = ctx.getEntries().get( 0 );
-        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
-        NameDefNode name = (NameDefNode) entry.getName();
-        assertThat( name.getName(), is( notNullValue() ) );
-        assertThat( name.getName(), is("\"a string key\"") );
+        assertThat(entry.getName(), is(instanceOf(StringNode.class)));
+        StringNode nameNode = (StringNode) entry.getName();
+        assertThat(nameNode.getText(), is(notNullValue()));
+        assertThat(nameNode.getText(), is("\"a string key\"")); // Reference String literal test, BaseNode#getText() return the FEEL equivalent expression, in this case quoted.
         assertThat( entry.getValue(), is( instanceOf( NumberNode.class ) ) );
         assertThat( entry.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( entry.getValue().getText(), is("10") );
 
         entry = ctx.getEntries().get( 1 );
         assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
-        name = (NameDefNode) entry.getName();
+        NameDefNode name = (NameDefNode) entry.getName();
         assertThat( name.getParts(), is( notNullValue() ) );
         assertThat( name.getParts().size(), is( 5 ) );
         assertThat( entry.getName().getText(), is("a non-string key") );
