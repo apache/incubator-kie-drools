@@ -58,8 +58,10 @@ public class FEELContextsTest extends BaseFEELTest {
                 {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0\u00A0name+\"!\"}.salutation", "Hello Bob!", null },
                 {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null },
                 {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first  name+\"!\"}.salutation", "Hello Bob!", null },
-                {"{ first name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null }
-
+                {"{ first name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null },
+                {"{ \"first name\" : \"Bob\", salutation : \"Hello \"+first name+\"!\"}.salutation", "Hello Bob!", null},
+                {"{ \"first name\" : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null},
+                {"{ \"a\" : 1, b : 2, \"c\": a+b}.c", BigDecimal.valueOf( 3 ), null},
 
         };
         return addAdditionalParameters(cases, false);

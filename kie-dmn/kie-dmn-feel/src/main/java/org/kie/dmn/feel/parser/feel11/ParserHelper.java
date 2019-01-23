@@ -49,6 +49,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +99,15 @@ public class ParserHelper {
     }
 
     public void pushName(ParserRuleContext ctx) {
-        this.currentName.push( getOriginalText( ctx ) );
+        this.currentName.push(getName(ctx));
+    }
+
+    private String getName(ParserRuleContext ctx) {
+        String key = getOriginalText(ctx);
+        if (ctx instanceof FEEL_1_1Parser.KeyStringContext) {
+            key = EvalHelper.unescapeString(key);
+        }
+        return key;
     }
 
     public void popName() {
@@ -226,7 +235,7 @@ public class ParserHelper {
     }
     
     public void defineVariable(ParserRuleContext ctx) {
-        defineVariable( getOriginalText( ctx ) );
+        defineVariable(getName(ctx));
     }
 
     public void defineVariable(String variable) {
