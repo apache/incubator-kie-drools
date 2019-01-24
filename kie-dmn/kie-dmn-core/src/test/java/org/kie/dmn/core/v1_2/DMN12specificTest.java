@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.v1_2;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
 
@@ -92,5 +95,37 @@ public class DMN12specificTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getContext().get("filter01"), is(Arrays.asList("Adams", "Ford")));
+    }
+
+    @Test
+    public void testDMN12typeRefInformationItem() {
+        // DROOLS-3544
+        check_testDMN12typeRefInformationItem("typeRefInformationItem_original.dmn");
+    }
+
+    @Test
+    public void testDMN12typeRefInformationItem_modified() {
+        // DROOLS-3544
+        check_testDMN12typeRefInformationItem("typeRefInformationItem_modified.dmn");
+    }
+
+    private void check_testDMN12typeRefInformationItem(String filename) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(filename, this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_fe2fd9ea-5928-4a35-b218-036de5798776", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("invoke the a function"), is("Hello World"));
+        assertThat(result.get("the list of vowels"), is(Arrays.asList("a", "e", "i", "o", "u")));
+        assertThat(result.get("a Person"), is(mapOf(entry("name", "John"),
+                                                    entry("surname", "Doe"),
+                                                    entry("age", BigDecimal.valueOf(47)))));
     }
 }
