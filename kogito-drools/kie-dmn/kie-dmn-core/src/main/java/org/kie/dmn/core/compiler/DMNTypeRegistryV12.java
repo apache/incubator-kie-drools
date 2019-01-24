@@ -28,7 +28,7 @@ public class DMNTypeRegistryV12 implements DMNTypeRegistry {
 
     /** 
      * DMN v1.2 spec, chapter 7.3.2 ItemDefinition metamodel
-     * FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time, and date and time. Was missing from spec document: date, Any.
+     * FEEL built-in data types: number, string, boolean, days and time duration, years and months duration, time, and date and time. Was missing from spec document: date, Any, list, function, context.
      */
     public static final List<BuiltInType> ITEMDEF_TYPEREF_FEEL_BUILTIN = Collections.unmodifiableList(Arrays.asList(BuiltInType.NUMBER,
                                                                                                                     BuiltInType.STRING,
@@ -37,7 +37,10 @@ public class DMNTypeRegistryV12 implements DMNTypeRegistry {
                                                                                                                     BuiltInType.DATE,
                                                                                                                     BuiltInType.TIME,
                                                                                                                     BuiltInType.DATE_TIME,
-                                                                                                                    BuiltInType.UNKNOWN));
+                                                                                                                    BuiltInType.UNKNOWN,
+                                                                                                                    BuiltInType.LIST,
+                                                                                                                    BuiltInType.FUNCTION,
+                                                                                                                    BuiltInType.CONTEXT));
 
     public DMNTypeRegistryV12() {
         String feelNamespace = KieDMNModelInstrumentedBase.URI_FEEL;
