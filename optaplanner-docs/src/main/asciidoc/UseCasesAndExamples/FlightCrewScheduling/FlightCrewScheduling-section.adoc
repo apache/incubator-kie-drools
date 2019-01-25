@@ -16,7 +16,7 @@ For example, flight AB0001 requires 2 pilots and 3 flight attendants.
 * Transfer between two flights: between two flights, an employee must be able to transfer from the arrival airport to the departure airport.
 For example, Ann arrives in Brussels at 10:00 and departs in Amsterdam at 15:00.
 * Employee unavailability: the employee must be available on the day of the flight.
-For example, Ann is on PTO on 1-Feb.
+For example, Ann is on vacation on 1-Feb.
 
 Soft constraints:
 
