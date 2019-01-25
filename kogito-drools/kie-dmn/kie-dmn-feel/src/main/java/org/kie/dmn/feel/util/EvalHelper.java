@@ -25,7 +25,7 @@ import java.time.Duration;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
-import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Collection;
 import java.util.Iterator;
@@ -305,9 +305,6 @@ public class EvalHelper {
                 case "months":
                     result = ((Period) current).getMonths() % 12;
                     break;
-                case "days":
-                    result = ((Period) current).getDays() % 30;
-                    break;
                 default:
                     return PropertyValueResult.notDefined();
             }
@@ -328,39 +325,39 @@ public class EvalHelper {
                 default:
                     return PropertyValueResult.notDefined();
             }
-        } else if ( current instanceof Temporal ) {
+        } else if (current instanceof TemporalAccessor) {
             switch ( property ) {
                 case "year":
-                    result = ((Temporal) current).get(ChronoField.YEAR);
+                    result = ((TemporalAccessor) current).get(ChronoField.YEAR);
                     break;
                 case "month":
-                    result = ((Temporal) current).get(ChronoField.MONTH_OF_YEAR);
+                    result = ((TemporalAccessor) current).get(ChronoField.MONTH_OF_YEAR);
                     break;
                 case "day":
-                    result = ((Temporal) current).get(ChronoField.DAY_OF_MONTH);
+                    result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_MONTH);
                     break;
                 case "hour":
-                    result = ((Temporal) current).get(ChronoField.HOUR_OF_DAY);
+                    result = ((TemporalAccessor) current).get(ChronoField.HOUR_OF_DAY);
                     break;
                 case "minute":
-                    result = ((Temporal) current).get(ChronoField.MINUTE_OF_HOUR);
+                    result = ((TemporalAccessor) current).get(ChronoField.MINUTE_OF_HOUR);
                     break;
                 case "second":
-                    result = ((Temporal) current).get(ChronoField.SECOND_OF_MINUTE);
+                    result = ((TemporalAccessor) current).get(ChronoField.SECOND_OF_MINUTE);
                     break;
                 case "time offset":
-                    result = Duration.ofSeconds(((Temporal) current).get(ChronoField.OFFSET_SECONDS));
+                    result = Duration.ofSeconds(((TemporalAccessor) current).get(ChronoField.OFFSET_SECONDS));
                     break;
                 case "timezone":
-                    ZoneId zoneId = ((Temporal) current).query(TemporalQueries.zoneId());
+                    ZoneId zoneId = ((TemporalAccessor) current).query(TemporalQueries.zoneId());
                     if (zoneId != null) {
-                        result = TimeZone.getTimeZone(zoneId).getDisplayName();
+                        result = TimeZone.getTimeZone(zoneId).getID();
                         break;
                     } else {
                         return PropertyValueResult.notDefined();
                     }
                 case "weekday":
-                    result = ((Temporal) current).get(ChronoField.DAY_OF_WEEK);
+                    result = ((TemporalAccessor) current).get(ChronoField.DAY_OF_WEEK);
                     break;
                 default:
                     return PropertyValueResult.notDefined();
