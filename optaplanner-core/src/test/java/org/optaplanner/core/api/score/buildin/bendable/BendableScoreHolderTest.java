@@ -128,4 +128,18 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableScore.of(new int[]{-210}, new int[]{-90, 310}), scoreHolder.extractScore(0));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void failFastHardLevel() {
+        BendableScoreHolder scoreHolder = new BendableScoreHolder(false, 2, 5);
+        RuleContext rule = mockRuleContext("rule");
+        scoreHolder.addHardConstraintMatch(rule, 3, -1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void failFastSoftLevel() {
+        BendableScoreHolder scoreHolder = new BendableScoreHolder(false, 5, 2);
+        RuleContext rule = mockRuleContext("rule");
+        scoreHolder.addSoftConstraintMatch(rule, 3, -1);
+    }
+
 }
