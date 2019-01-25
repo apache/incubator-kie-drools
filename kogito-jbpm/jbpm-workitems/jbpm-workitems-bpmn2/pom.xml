@@ -10,7 +10,11 @@
   </parent>
 
   <artifactId>jbpm-workitems-bpmn2</artifactId>
-  <name>jBPM :: WorkItems :: BPMN2</name>
+  <name>BPMN2</name>
+  <description>Execute business rule or service tasks</description>
+  <organization>
+    <name>jBPM dev team</name>
+  </organization>
 
   <properties>
     <java.module.name>org.jbpm.workitem.bpmn2</java.module.name>
@@ -124,6 +128,7 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-workitems-core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -153,5 +158,132 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <sourceDirectory>${project.build.directory}/generated-sources/java</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>*.png</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.build.directory}/maven-shared-archive-resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>*.part</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessors>
+            <annotationProcessor>org.jbpm.process.workitem.core.util.WidProcessor</annotationProcessor>
+          </annotationProcessors>
+          <compilerArgs>
+            <arg>-AwidName=${project.artifactId}</arg>
+            <arg>-AgenerateTemplates=true</arg>
+            <arg>-AgenerateWids=true</arg>
+            <arg>-AwidsResources=${project.artifactId}.wid:widtemplate.st</arg>
+            <arg>-AtemplateResources=kie-deployment-descriptor.xml:kie-ddtemplate.st,serviceinfo.json:serviceinfo.st,repoindex.html:repoindex.part,index.html:indextemplate.st,${project.artifactId}.bpmn2:defaultprocess.st</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <!-- root module has no assembly so ignore it -->
+          <ignoreMissingDescriptor>true</ignoreMissingDescriptor>
+          <descriptors>
+            <descriptor>${project.basedir}/assembly/assembly.xml</descriptor>
+          </descriptors>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>templating-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <id>filter-src</id>
+            <goals>
+              <goal>filter-sources</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+              <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>1.5</version>
+        <configuration>
+          <resourceBundles>
+            <resourceBundle>${project.groupId}:jbpm-workitems-template-resources:${project.version}</resourceBundle>
+          </resourceBundles>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-repository-resources</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <encoding>UTF-8</encoding>
+              <resources>
+                <resource>
+                  <directory>target/generated-sources/annotations</directory>
+                  <includes>
+                    <include>repoindex.html</include>
+                    <include>*.wid</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+              <outputDirectory>target/classes</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

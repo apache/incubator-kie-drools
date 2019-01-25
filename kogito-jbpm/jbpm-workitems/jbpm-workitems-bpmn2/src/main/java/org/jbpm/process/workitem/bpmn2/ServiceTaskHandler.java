@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jbpm.process.workitem.bpmn2;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +30,12 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
 import org.jbpm.process.workitem.core.AbstractLogOrThrowWorkItemHandler;
+import org.jbpm.process.workitem.core.util.Wid;
+import org.jbpm.process.workitem.core.util.WidMavenDepends;
+import org.jbpm.process.workitem.core.util.WidParameter;
+import org.jbpm.process.workitem.core.util.WidResult;
+import org.jbpm.process.workitem.core.util.service.WidAction;
+import org.jbpm.process.workitem.core.util.service.WidService;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -43,11 +48,36 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Wid(widfile = "ServiceTaskDefinitions.wid", name = "ServiceTask",
+        displayName = "ServiceTask",
+        defaultHandler = "mvel: new org.jbpm.process.workitem.bpmn2.ServiceTaskHandler()",
+        documentation = "${artifactId}/index.html",
+        category = "${artifactId}",
+        icon = "ServiceTask.png",
+        parameters = {
+                @WidParameter(name = "implementation"),
+                @WidParameter(name = "interfaceImplementationRef"),
+                @WidParameter(name = "operationImplementationRef"),
+                @WidParameter(name = "Parameter"),
+                @WidParameter(name = "mode")
+        },
+        results = {
+                @WidResult(name = "Result", runtimeType = "java.lang.Object")
+        },
+        mavenDepends = {
+                @WidMavenDepends(group = "${groupId}", artifact = "${artifactId}", version = "${version}")
+        },
+        serviceInfo = @WidService(category = "${name}", description = "${description}",
+                keywords = "service,task",
+                action = @WidAction(title = "Execute a service task")
+        ))
 public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implements Cacheable {
 
     public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceTaskHandler.class);
+
+    private static final String RESULTS = "Result";
 
     private ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
     private JaxWsDynamicClientFactory dcf;
@@ -111,10 +141,10 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
                         Map<String, Object> output = new HashMap<String, Object>();
 
                         if (result == null || result.length == 0) {
-                            output.put("Result",
+                            output.put(RESULTS,
                                        null);
                         } else {
-                            output.put("Result",
+                            output.put(RESULTS,
                                        result[0]);
                         }
 
@@ -141,10 +171,10 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
                                     Map<String, Object> output = new HashMap<String, Object>();
                                     if (callback.isDone()) {
                                         if (result == null) {
-                                            output.put("Result",
+                                            output.put(RESULTS,
                                                        null);
                                         } else {
-                                            output.put("Result",
+                                            output.put(RESULTS,
                                                        result[0]);
                                         }
                                     }
@@ -292,7 +322,7 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
             Object result = method.invoke(instance,
                                           params);
             Map<String, Object> results = new HashMap<String, Object>();
-            results.put("Result",
+            results.put(RESULTS,
                         result);
             manager.completeWorkItem(workItem.getId(),
                                      results);

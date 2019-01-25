@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,12 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
 import org.jbpm.process.workitem.core.AbstractLogOrThrowWorkItemHandler;
+import org.jbpm.process.workitem.core.util.Wid;
+import org.jbpm.process.workitem.core.util.WidMavenDepends;
+import org.jbpm.process.workitem.core.util.WidParameter;
+import org.jbpm.process.workitem.core.util.WidResult;
+import org.jbpm.process.workitem.core.util.service.WidAction;
+import org.jbpm.process.workitem.core.util.service.WidService;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -46,6 +52,32 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+@Wid(widfile = "WebServiceDefinitions.wid", name = "WebService",
+        displayName = "WebService",
+        defaultHandler = "mvel: new org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler()",
+        documentation = "${artifactId}/index.html",
+        category = "${artifactId}",
+        icon = "WebService.png",
+        parameters = {
+                @WidParameter(name = "Url"),
+                @WidParameter(name = "Namespace"),
+                @WidParameter(name = "Interface"),
+                @WidParameter(name = "Operation"),
+                @WidParameter(name = "Endpoint"),
+                @WidParameter(name = "Parameter"),
+                @WidParameter(name = "Mode")
+        },
+        results = {
+                @WidResult(name = "Result", runtimeType = "java.lang.Object")
+        },
+        mavenDepends = {
+                @WidMavenDepends(group = "${groupId}", artifact = "${artifactId}", version = "${version}")
+        },
+        serviceInfo = @WidService(category = "${name}", description = "${description}",
+                keywords = "webservice,call",
+                action = @WidAction(title = "Perform a WebService call")
+        ))
 public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler implements Cacheable {
 
     public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
@@ -64,6 +96,15 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         SYNC,
         ASYNC,
         ONEWAY;
+    }
+
+    /**
+     * Default constructor - no authentication nor ksession
+     */
+    public WebServiceWorkItemHandler() {
+        this.ksession = null;
+        this.username = null;
+        this.password = null;
     }
 
     /**

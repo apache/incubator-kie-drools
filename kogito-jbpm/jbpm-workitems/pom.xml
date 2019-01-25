@@ -10,10 +10,11 @@
   </parent>
 
   <artifactId>jbpm-workitems</artifactId>
-  <name>jBPM :: WorkItems</name>
+  <name>WorkItems</name>
   <packaging>pom</packaging>
 
   <modules>
+    <module>jbpm-workitems-template-resources</module>
     <module>jbpm-workitems-core</module>
     <module>jbpm-workitems-bpmn2</module>
     <module>jbpm-workitems-email</module>

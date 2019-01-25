@@ -145,6 +145,7 @@
                   <directory>target/generated-sources/annotations</directory>
                   <includes>
                     <include>repoindex.html</include>
+                    <include>*.wid</include>
                   </includes>
                   <filtering>true</filtering>
                 </resource>

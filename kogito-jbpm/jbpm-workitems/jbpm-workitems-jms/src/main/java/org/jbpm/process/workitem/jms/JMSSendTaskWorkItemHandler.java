@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jbpm.process.workitem.jms;
 
 import java.io.ByteArrayOutputStream;
@@ -31,12 +30,41 @@ import javax.naming.InitialContext;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.process.workitem.core.AbstractLogOrThrowWorkItemHandler;
+import org.jbpm.process.workitem.core.util.Wid;
+import org.jbpm.process.workitem.core.util.WidMavenDepends;
+import org.jbpm.process.workitem.core.util.WidParameter;
+import org.jbpm.process.workitem.core.util.WidResult;
+import org.jbpm.process.workitem.core.util.service.WidAction;
+import org.jbpm.process.workitem.core.util.service.WidAuth;
+import org.jbpm.process.workitem.core.util.service.WidService;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Wid(widfile = "JMSSendTaskDefinitions.wid", name = "JMSSendTask",
+        displayName = "JMSSendTask",
+        defaultHandler = "mvel: new org.jbpm.process.workitem.jms.JMSSendTaskWorkItemHandler()",
+        documentation = "${artifactId}/index.html",
+        category = "${artifactId}",
+        icon = "JMSSendTask.png",
+        parameters = {
+                @WidParameter(name = "Signal"),
+                @WidParameter(name = "SignalProcessInstanceId"),
+                @WidParameter(name = "SignalWorkItemId"),
+                @WidParameter(name = "SignalDeploymentId"),
+                @WidParameter(name = "Data")
+        },
+        mavenDepends = {
+                @WidMavenDepends(group = "${groupId}", artifact = "${artifactId}", version = "${version}")
+        },
+        serviceInfo = @WidService(category = "${name}", description = "${description}",
+                keywords = "jsm,send,task",
+                action = @WidAction(title = "Send JMS Message"),
+                authinfo = @WidAuth(required = true, params = {"connectionFactoryName", "destinationName"},
+                paramsdescription = {"Connection Factory JNDI Name", "Destination JNDI Name"})
+        ))
 public class JMSSendTaskWorkItemHandler extends AbstractLogOrThrowWorkItemHandler implements Cacheable {
 
     private static final Logger logger = LoggerFactory.getLogger(JMSSendTaskWorkItemHandler.class);

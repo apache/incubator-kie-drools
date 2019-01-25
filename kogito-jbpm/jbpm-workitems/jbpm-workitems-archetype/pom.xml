@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>jbpm-workitems-archetype</artifactId>
-  <name>jBPM :: WorkItems :: Archetype</name>
+  <name>Archetype</name>
   <packaging>maven-archetype</packaging>
 
   <build>

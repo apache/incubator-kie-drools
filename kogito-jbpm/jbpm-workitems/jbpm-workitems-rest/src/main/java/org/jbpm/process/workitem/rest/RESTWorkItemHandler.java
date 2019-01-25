@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jbpm.process.workitem.rest;
 
 import java.io.IOException;
@@ -72,6 +71,13 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.workitem.core.AbstractLogOrThrowWorkItemHandler;
+import org.jbpm.process.workitem.core.util.Wid;
+import org.jbpm.process.workitem.core.util.WidMavenDepends;
+import org.jbpm.process.workitem.core.util.WidParameter;
+import org.jbpm.process.workitem.core.util.WidResult;
+import org.jbpm.process.workitem.core.util.service.WidAction;
+import org.jbpm.process.workitem.core.util.service.WidAuth;
+import org.jbpm.process.workitem.core.util.service.WidService;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.runtime.Cacheable;
@@ -107,6 +113,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * <li>Headers - additional HTTP Headers in format: header1=val1;header2=val2</li>
  * </ul>
  */
+
+@Wid(widfile = "RestDefinitions.wid", name = "Rest",
+        displayName = "Rest",
+        defaultHandler = "mvel: new org.jbpm.process.workitem.rest.RESTWorkItemHandler()",
+        documentation = "${artifactId}/index.html",
+        category = "${artifactId}",
+        icon = "Rest.png",
+        parameters = {
+                @WidParameter(name = "Url"),
+                @WidParameter(name = "Method"),
+                @WidParameter(name = "HandleResponseErrors"),
+                @WidParameter(name = "ResultClass"),
+                @WidParameter(name = "AcceptHeader"),
+                @WidParameter(name = "AcceptCharset"),
+                @WidParameter(name = "Headers"),
+                @WidParameter(name = "AuthType"),
+                @WidParameter(name = "ConnectTimeout"),
+                @WidParameter(name = "ReadTimeout"),
+                @WidParameter(name = "Content"),
+                @WidParameter(name = "ContentData"),
+                @WidParameter(name = "Username"),
+                @WidParameter(name = "Password"),
+                @WidParameter(name = "AuthUrl"),
+                @WidParameter(name = "ContentType"),
+                @WidParameter(name = "ContentTypeCharset")
+        },
+        results = {
+                @WidResult(name = "Result", runtimeType = "java.lang.Object")
+        },
+        mavenDepends = {
+                @WidMavenDepends(group = "${groupId}", artifact = "${artifactId}", version = "${version}")
+        },
+        serviceInfo = @WidService(category = "${name}", description = "${description}",
+                keywords = "rest,call",
+                action = @WidAction(title = "Perform a Rest call"),
+                authinfo = @WidAuth(required = true, params = {"username", "password"},
+                paramsdescription = {"User Name", "Password"})
+        ))
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler implements Cacheable {
 
     private static final Logger logger = LoggerFactory.getLogger(RESTWorkItemHandler.class);

@@ -38,34 +38,35 @@ import org.jbpm.process.workitem.core.util.service.WidService;
  * DRL handling is based on same names for data input and output as that is then used as correlation.<br/>
  */
 
-@Wid(widfile = "BusinessRuleTaskDefinitions.wid", name = "BusinessRuleTask",
-        displayName = "BusinessRuleTask",
-        defaultHandler = "mvel: new org.jbpm.process.workitem.bpmn2.BusinessRuleTaskHandler()",
+@Wid(widfile = "DecisionTaskDefinitions.wid", name = "DecisionTask",
+        displayName = "Decision Task",
+        defaultHandler = "mvel: new org.jbpm.process.workitem.bpmn2.DecisionTaskHandler()",
         documentation = "${artifactId}/index.html",
         category = "${artifactId}",
-        icon = "BusinessRuleTask.png",
+        icon = "DecisionTask.png",
         parameters = {
-                @WidParameter(name = "KieSessionName", required = true),
-                @WidParameter(name = "KieSessionType")
+                @WidParameter(name = "Namespace", required = true),
+                @WidParameter(name = "Model", required = true),
+                @WidParameter(name = "Decision")
         },
         mavenDepends = {
                 @WidMavenDepends(group = "${groupId}", artifact = "${artifactId}", version = "${version}")
         },
         serviceInfo = @WidService(category = "${name}", description = "${description}",
-                keywords = "business,rule,task",
-                action = @WidAction(title = "Execute a business rule task"),
+                keywords = "decision,dmn,rule,task",
+                action = @WidAction(title = "Execute a DMN decision task"),
                 authinfo = @WidAuth(required = true, params = {"groupId", "artifactId", "version"},
                 paramsdescription = {"Group Id", "Artifact Id", "Version"})
         ))
-public class BusinessRuleTaskHandler extends AbstractRuleTaskHandler {
+public class DecisionTaskHandler extends AbstractRuleTaskHandler {
    
-    public BusinessRuleTaskHandler(String groupId,
+    public DecisionTaskHandler(String groupId,
                                    String artifactId,
                                    String version) {
         super(groupId, artifactId, version);
     }
 
-    public BusinessRuleTaskHandler(String groupId,
+    public DecisionTaskHandler(String groupId,
                                    String artifactId,
                                    String version,
                                    long scannerInterval) {
@@ -74,7 +75,7 @@ public class BusinessRuleTaskHandler extends AbstractRuleTaskHandler {
 
     @Override
     public String getRuleLanguage() {
-        return DRL_LANG;
+        return DMN_LANG;
     }
 
 }

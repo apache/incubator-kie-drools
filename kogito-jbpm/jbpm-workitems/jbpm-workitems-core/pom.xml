@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>jbpm-workitems-core</artifactId>
-  <name>jBPM :: WorkItems :: Core</name>
+  <name>Core</name>
 
   <properties>
     <java.module.name>org.jbpm.workitem.core</java.module.name>
