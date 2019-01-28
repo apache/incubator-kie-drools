@@ -40,6 +40,7 @@ import java.util.stream.Stream;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -523,8 +524,53 @@ public class EvalHelper {
             return isEqual( (Iterable)left, (Iterable) right );
         } else if( left instanceof Map && right instanceof Map ) {
             return isEqual( (Map)left, (Map) right );
+        } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
+            // Handle specific cases when both date / datetime
+            if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
+                return isEqualTime((TemporalAccessor) left, (TemporalAccessor) right);
+            } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
+                return isEqualDateTime((TemporalAccessor) left, (TemporalAccessor) right);
+            } // fallback; continue:
         }
         return compare( left, right, ctx, (l, r) -> l.compareTo( r ) == 0  );
+    }
+
+    /**
+     * DMNv1.2 Table 48: Specific semantics of equality
+     */
+    private static Boolean isEqualDateTime(TemporalAccessor left, TemporalAccessor right) {
+        boolean result = true;
+        Optional<Integer> lY = Optional.ofNullable(left.isSupported(ChronoField.YEAR) ? left.get(ChronoField.YEAR) : null);
+        Optional<Integer> rY = Optional.ofNullable(right.isSupported(ChronoField.YEAR) ? right.get(ChronoField.YEAR) : null);
+        result &= lY.equals(rY);
+        Optional<Integer> lM = Optional.ofNullable(left.isSupported(ChronoField.MONTH_OF_YEAR) ? left.get(ChronoField.MONTH_OF_YEAR) : null);
+        Optional<Integer> rM = Optional.ofNullable(right.isSupported(ChronoField.MONTH_OF_YEAR) ? right.get(ChronoField.MONTH_OF_YEAR) : null);
+        result &= lM.equals(rM);
+        Optional<Integer> lD = Optional.ofNullable(left.isSupported(ChronoField.DAY_OF_MONTH) ? left.get(ChronoField.DAY_OF_MONTH) : null);
+        Optional<Integer> rD = Optional.ofNullable(right.isSupported(ChronoField.DAY_OF_MONTH) ? right.get(ChronoField.DAY_OF_MONTH) : null);
+        result &= lD.equals(rD);
+        result &= isEqualTime(left, right);
+        return result;
+    }
+
+    /**
+     * DMNv1.2 Table 48: Specific semantics of equality
+     */
+    private static Boolean isEqualTime(TemporalAccessor left, TemporalAccessor right) {
+        boolean result = true;
+        Optional<Integer> lH = Optional.ofNullable(left.isSupported(ChronoField.HOUR_OF_DAY) ? left.get(ChronoField.HOUR_OF_DAY) : null);
+        Optional<Integer> rH = Optional.ofNullable(right.isSupported(ChronoField.HOUR_OF_DAY) ? right.get(ChronoField.HOUR_OF_DAY) : null);
+        result &= lH.equals(rH);
+        Optional<Integer> lM = Optional.ofNullable(left.isSupported(ChronoField.MINUTE_OF_HOUR) ? left.get(ChronoField.MINUTE_OF_HOUR) : null);
+        Optional<Integer> rM = Optional.ofNullable(right.isSupported(ChronoField.MINUTE_OF_HOUR) ? right.get(ChronoField.MINUTE_OF_HOUR) : null);
+        result &= lM.equals(rM);
+        Optional<Integer> lS = Optional.ofNullable(left.isSupported(ChronoField.SECOND_OF_MINUTE) ? left.get(ChronoField.SECOND_OF_MINUTE) : null);
+        Optional<Integer> rS = Optional.ofNullable(right.isSupported(ChronoField.SECOND_OF_MINUTE) ? right.get(ChronoField.SECOND_OF_MINUTE) : null);
+        result &= lS.equals(rS);
+        Optional<ZoneId> lTZ = Optional.ofNullable(left.query(TemporalQueries.zone()));
+        Optional<ZoneId> rTZ = Optional.ofNullable(right.query(TemporalQueries.zone()));
+        result &= lTZ.equals(rTZ);
+        return result;
     }
 
     private static Boolean isEqual(Range left, Range right) {

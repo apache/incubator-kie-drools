@@ -24,6 +24,10 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -136,6 +140,14 @@ public enum BuiltInType implements SimpleType {
             return LIST;
         } else if( o instanceof Map ) {
             return CONTEXT;
+        } else if (o instanceof TemporalAccessor) {
+            // last, determine if it's a FEEL time with TZ
+            TemporalAccessor ta = (TemporalAccessor) o;
+            if (!(ta instanceof Temporal) && ta.isSupported(ChronoField.HOUR_OF_DAY) 
+                    && ta.isSupported(ChronoField.MINUTE_OF_HOUR) && ta.isSupported(ChronoField.SECOND_OF_MINUTE) 
+                    && ta.query(TemporalQueries.zone()) != null) {
+                return TIME;
+            }
         }
         return UNKNOWN;
     }
