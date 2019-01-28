@@ -61,8 +61,9 @@ public class LookUpManager {
     /**
      * As defined by {@link ScoreDirector#lookUpWorkingObject(Object)}.
      * @param externalObject sometimes null
-     * @return null if externalObject is null or if there is no workingObject for externalObject
-     * @throws IllegalArgumentException if it cannot be looked up or if the externalObject's class is not supported
+     * @return null if externalObject is null
+     * @throws IllegalArgumentException if there is no workingObject for externalObject, if it cannot be looked up
+     * or if the externalObject's class is not supported
      * @throws IllegalStateException if it cannot be looked up
      * @param <E> the object type
      */
@@ -72,6 +73,22 @@ public class LookUpManager {
         }
         LookUpStrategy lookUpStrategy = lookUpStrategyResolver.determineLookUpStrategy(externalObject);
         return lookUpStrategy.lookUpWorkingObject(idToWorkingObjectMap, externalObject);
+    }
+
+    /**
+     * As defined by {@link ScoreDirector#lookUpWorkingObjectOrReturnNull(Object)}.
+     * @param externalObject sometimes null
+     * @return null if externalObject is null or if there is no workingObject for externalObject
+     * @throws IllegalArgumentException if it cannot be looked up or if the externalObject's class is not supported
+     * @throws IllegalStateException if it cannot be looked up
+     * @param <E> the object type
+     */
+    public <E> E lookUpWorkingObjectOrReturnNull(E externalObject) {
+        if (externalObject == null) {
+            return null;
+        }
+        LookUpStrategy lookUpStrategy = lookUpStrategyResolver.determineLookUpStrategy(externalObject);
+        return lookUpStrategy.lookUpWorkingObjectIfExists(idToWorkingObjectMap, externalObject);
     }
 
 }

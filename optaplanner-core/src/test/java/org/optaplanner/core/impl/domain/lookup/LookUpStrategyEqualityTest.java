@@ -48,7 +48,7 @@ public class LookUpStrategyEqualityTest {
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
         // The removed object cannot be looked up
-        assertNull(lookUpManager.lookUpWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class LookUpStrategyEqualityTest {
     @Test
     public void lookUpWithoutAdding() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
-        assertNull(lookUpManager.lookUpWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
     }
 
 }

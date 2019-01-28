@@ -168,12 +168,26 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * Matching is determined by the {@link LookUpStrategyType} on {@link PlanningSolution}.
      * Matching uses a {@link PlanningId} by default.
      * @param externalObject sometimes null
+     * @return null if externalObject is null
+     * @throws IllegalArgumentException if there is no workingObject for externalObject, if it cannot be looked up
+     * or if the externalObject's class is not supported
+     * @throws IllegalStateException if it cannot be looked up
+     * @param <E> the object type
+     */
+    <E> E lookUpWorkingObject(E externalObject);
+
+    /**
+     * As defined by {@link #lookUpWorkingObject(Object)},
+     * but doesn't fail fast if no workingObject was ever added for the externalObject.
+     * It's recommended to use {@link #lookUpWorkingObject(Object)} instead,
+     * especially in a {@link Move#rebase(ScoreDirector)} code.
+     * @param externalObject sometimes null
      * @return null if externalObject is null or if there is no workingObject for externalObject
      * @throws IllegalArgumentException if it cannot be looked up or if the externalObject's class is not supported
      * @throws IllegalStateException if it cannot be looked up
      * @param <E> the object type
      */
-    <E> E lookUpWorkingObject(E externalObject);
+    <E> E lookUpWorkingObjectOrReturnNull(E externalObject);
 
     /**
      * Needs to be called after use because some implementations need to clean up their resources.

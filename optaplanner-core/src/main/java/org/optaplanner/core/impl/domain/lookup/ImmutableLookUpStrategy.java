@@ -36,4 +36,10 @@ public class ImmutableLookUpStrategy implements LookUpStrategy {
         return externalObject;
     }
 
+    @Override
+    public <E> E lookUpWorkingObjectIfExists(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
+        // Because it is immutable, we can use the same one.
+        return externalObject;
+    }
+
 }

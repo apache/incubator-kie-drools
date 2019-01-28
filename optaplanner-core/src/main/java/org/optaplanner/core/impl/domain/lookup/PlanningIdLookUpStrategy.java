@@ -68,6 +68,12 @@ public class PlanningIdLookUpStrategy implements LookUpStrategy {
         return workingObject;
     }
 
+    @Override
+    public <E> E lookUpWorkingObjectIfExists(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
+        Object planningId = extractPlanningId(externalObject);
+        return (E) idToWorkingObjectMap.get(planningId);
+    }
+
     protected Object extractPlanningId(Object externalObject) {
         Object planningId = planningIdMemberAccessor.executeGetter(externalObject);
         if (planningId == null) {

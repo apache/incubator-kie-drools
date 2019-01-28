@@ -54,4 +54,9 @@ public class EqualsLookUpStrategy implements LookUpStrategy {
         return workingObject;
     }
 
+    @Override
+    public <E> E lookUpWorkingObjectIfExists(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
+        return (E) idToWorkingObjectMap.get(externalObject);
+    }
+
 }

@@ -36,9 +36,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchScoreComparator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotalScoreComparator;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.constraint.IndictmentScoreComparator;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
@@ -509,6 +507,15 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                     + ") is disabled in the constructor, this method should not be called.");
         }
         return lookUpManager.lookUpWorkingObject(externalObject);
+    }
+
+    @Override
+    public <E> E lookUpWorkingObjectOrReturnNull(E externalObject) {
+        if (!lookUpEnabled) {
+            throw new IllegalStateException("When lookUpEnabled (" + lookUpEnabled
+                    + ") is disabled in the constructor, this method should not be called.");
+        }
+        return lookUpManager.lookUpWorkingObjectOrReturnNull(externalObject);
     }
 
     // ************************************************************************

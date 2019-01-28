@@ -49,7 +49,7 @@ public class LookUpStrategyIdOrFailTest {
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
         // The removed object cannot be looked up
-        assertNull(lookUpManager.lookUpWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class LookUpStrategyIdOrFailTest {
     @Test
     public void lookUpWithoutAdding() {
         TestdataObjectId object = new TestdataObjectId(0);
-        assertNull(lookUpManager.lookUpWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
     }
 
     @Test
