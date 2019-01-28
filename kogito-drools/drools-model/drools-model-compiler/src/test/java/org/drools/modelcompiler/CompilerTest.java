@@ -1441,4 +1441,59 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(john.getAge(), 1);
         assertEquals(john.getLikes(), "bread");
     }
+
+    public static class Message {
+        public static final int HELLO = 0;
+        public static final int GOODBYE = 1;
+
+        private String message;
+
+        private int status;
+
+        public String getMessage() {
+            return this.message;
+        }
+
+        public void setMessage( String message ) {
+            this.message = message;
+        }
+
+        public int getStatus() {
+            return this.status;
+        }
+
+        public void setStatus( int status ) {
+            this.status = status;
+        }
+    }
+
+    @Test
+    public void testStaticFieldClashingWithClassName() {
+        // DROOLS-3560
+        final String drl =
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "rule \"Hello World\"\n" +
+                "    when\n" +
+                "        m : Message( status == Message.HELLO, myMessage : message ) \n" +
+                "    then\n" +
+                "        System.out.println( myMessage );\n" +
+                "        m.setMessage( \"Goodbye cruel world\" ); \n" +
+                "        m.setStatus( Message.GOODBYE ); \n" +
+                "        update( m );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"GoodBye\"\n" +
+                "    when\n" +
+                "        Message( status == Message.GOODBYE, myMessage : message ) \n" +
+                "    then\n" +
+                "        System.out.println( myMessage );\n" +
+                "end\n";
+
+        KieSession kieSession = getKieSession(drl);
+        Message message = new Message();
+        message.setMessage( "Hi" );
+        message.setStatus( Message.HELLO );
+        kieSession.insert(message);
+        assertEquals(2, kieSession.fireAllRules());
+    }
 }
