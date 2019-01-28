@@ -83,6 +83,14 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P1Y6M\" ) != null", Boolean.TRUE , null},
                 { "duration( \"P1Y6M\" ) > null", null , null},
                 { "duration( \"P1Y6M\" ) < null", null , null},
+                {"time(\"10:30:00@Europe/Rome\") = time(\"10:30:00@Europe/Rome\")", Boolean.TRUE, null},
+                {"time(\"10:30:00@Europe/Rome\") = time(\"10:30:00@Europe/Paris\")", Boolean.FALSE, null},
+                {"time(\"10:30:00\") = time(\"10:30:00@Europe/Paris\")", Boolean.FALSE, null},
+                {"time(\"10:30:00\") = time(\"10:30:00+00:00\")", Boolean.FALSE, null},
+                { "date and time(\"2018-12-08T00:00:00\") = date and time(\"2018-12-08T00:00:00\")", Boolean.TRUE , null},
+                { "date and time(\"2018-12-08T00:00:00@Europe/Rome\") = date and time(\"2018-12-08T00:00:00@Europe/Rome\")", Boolean.TRUE , null},
+                { "date and time(\"2018-12-08T00:00:00@Europe/Rome\") = date and time(\"2018-12-08T00:00:00@Europe/Paris\")", Boolean.FALSE , null},
+                { "date and time(\"2018-12-08T00:00:00\") = date and time(\"2018-12-08T00:00:00@Europe/Rome\")", Boolean.FALSE , null},
 
                 // Math operations with date, time, duration
                 { "duration( \"P2Y2M\" ) + duration( \"P1Y1M\" )", Period.parse("P3Y3M"), null },
@@ -136,6 +144,13 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P2DT20H14M\" ) / 2", Duration.parse( "P1DT10H7M" ) , null},
                 { "2 / duration( \"P2DT20H14M\" )", Duration.parse( "PT0S" ) , null},
                 { "duration( \"P2DT20H14M\" ) / duration( \"P2DT20H14M\" )", BigDecimal.valueOf(1) , null},
+                
+                {"time(\"10:30:00\") instance of time", Boolean.TRUE, null},
+                {"time(\"10:30:00\") instance of date", Boolean.FALSE, null},
+                {"time(\"10:30:00@Europe/Rome\") instance of time", Boolean.TRUE, null},
+                {"time(\"10:30:00@Europe/Rome\") instance of date", Boolean.FALSE, null},
+                {"time(\"10:30:00z\") instance of time", Boolean.TRUE, null},
+                {"time(\"10:30:00z\") instance of date", Boolean.FALSE, null},
 
                 { "date( 2016, 8, 2 ).year", BigDecimal.valueOf( 2016 ) , null},
                 { "date( 2016, 8, 2 ).month", BigDecimal.valueOf( 8 ) , null},
