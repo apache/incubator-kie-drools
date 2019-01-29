@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
-import org.mockito.Matchers;
 import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
@@ -49,7 +48,9 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * @see PlannerTestUtils
@@ -193,32 +194,32 @@ public class PlannerAssert extends Assert {
 
     public static void verifyPhaseLifecycle(PhaseLifecycleListener phaseLifecycleListener,
             int solvingCount, int phaseCount, int stepCount) {
-        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
-        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(Matchers.<AbstractPhaseScope>any());
-        verify(phaseLifecycleListener, times(stepCount)).stepStarted(Matchers.<AbstractStepScope>any());
-        verify(phaseLifecycleListener, times(stepCount)).stepEnded(Matchers.<AbstractStepScope>any());
-        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(Matchers.<AbstractPhaseScope>any());
-        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
+        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(any(DefaultSolverScope.class));
+        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(any(AbstractPhaseScope.class));
+        verify(phaseLifecycleListener, times(stepCount)).stepStarted(any(AbstractStepScope.class));
+        verify(phaseLifecycleListener, times(stepCount)).stepEnded(any(AbstractStepScope.class));
+        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(any(AbstractPhaseScope.class));
+        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(any(DefaultSolverScope.class));
     }
 
     public static void verifyPhaseLifecycle(ConstructionHeuristicPhaseLifecycleListener phaseLifecycleListener,
             int solvingCount, int phaseCount, int stepCount) {
-        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
-        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(Matchers.<ConstructionHeuristicPhaseScope>any());
-        verify(phaseLifecycleListener, times(stepCount)).stepStarted(Matchers.<ConstructionHeuristicStepScope>any());
-        verify(phaseLifecycleListener, times(stepCount)).stepEnded(Matchers.<ConstructionHeuristicStepScope>any());
-        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(Matchers.<ConstructionHeuristicPhaseScope>any());
-        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
+        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(any(DefaultSolverScope.class));
+        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(any(ConstructionHeuristicPhaseScope.class));
+        verify(phaseLifecycleListener, times(stepCount)).stepStarted(any(ConstructionHeuristicStepScope.class));
+        verify(phaseLifecycleListener, times(stepCount)).stepEnded(any(ConstructionHeuristicStepScope.class));
+        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(any(ConstructionHeuristicPhaseScope.class));
+        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(any(DefaultSolverScope.class));
     }
 
     public static void verifyPhaseLifecycle(LocalSearchPhaseLifecycleListener phaseLifecycleListener,
             int solvingCount, int phaseCount, int stepCount) {
-        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(Matchers.<DefaultSolverScope>any());
-        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(Matchers.<LocalSearchPhaseScope>any());
-        verify(phaseLifecycleListener, times(stepCount)).stepStarted(Matchers.<LocalSearchStepScope>any());
-        verify(phaseLifecycleListener, times(stepCount)).stepEnded(Matchers.<LocalSearchStepScope>any());
-        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(Matchers.<LocalSearchPhaseScope>any());
-        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
+        verify(phaseLifecycleListener, times(solvingCount)).solvingStarted(any(DefaultSolverScope.class));
+        verify(phaseLifecycleListener, times(phaseCount)).phaseStarted(any(LocalSearchPhaseScope.class));
+        verify(phaseLifecycleListener, times(stepCount)).stepStarted(any(LocalSearchStepScope.class));
+        verify(phaseLifecycleListener, times(stepCount)).stepEnded(any(LocalSearchStepScope.class));
+        verify(phaseLifecycleListener, times(phaseCount)).phaseEnded(any(LocalSearchPhaseScope.class));
+        verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(any(DefaultSolverScope.class));
     }
 
     @SafeVarargs
