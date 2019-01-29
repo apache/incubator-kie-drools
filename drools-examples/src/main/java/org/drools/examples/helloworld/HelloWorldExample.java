@@ -33,12 +33,13 @@ public class HelloWorldExample {
 
     public static final void main(final String[] args) {
         // From the kie services, a container is created from the classpath
-        KieContainer kc = KieServices.get().getKieClasspathContainer();
+        KieServices ks = KieServices.get();
+        KieContainer kc = ks.getKieClasspathContainer();
 
-        execute( kc );
+        execute( ks, kc );
     }
 
-    public static void execute( KieContainer kc ) {
+    public static void execute( KieServices ks, KieContainer kc ) {
         // From the container, a session is created based on
         // its definition and configuration in the META-INF/kmodule.xml file
         KieSession ksession = kc.newKieSession("HelloWorldKS");
@@ -53,11 +54,11 @@ public class HelloWorldExample {
         ksession.addEventListener( new DebugRuleRuntimeEventListener() );
 
         // Set up a file based audit logger
-        KieRuntimeLogger logger = KieServices.get().getLoggers().newFileLogger( ksession, "./target/helloworld" );
+        KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./helloworld" );
 
         // To set up a ThreadedFileLogger, so that the audit view reflects events whilst debugging,
         // uncomment the next line
-        // KieRuntimeLogger logger = ks.getLoggers().newThreadedFileLogger( ksession, "./target/helloworld", 1000 );
+        // KieRuntimeLogger logger = ks.getLoggers().newThreadedFileLogger( ksession, "./helloworld", 1000 );
 
         // The application can insert facts into the session
         final Message message = new Message();

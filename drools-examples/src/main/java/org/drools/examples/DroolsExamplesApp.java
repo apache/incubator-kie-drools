@@ -16,6 +16,10 @@
 
 package org.drools.examples;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+
+import javax.swing.*;
 import org.drools.examples.datadriventemplate.DataDrivenTemplateExample;
 import org.drools.examples.decisiontable.PricingRuleDTExample;
 import org.drools.examples.decisiontable.PricingRuleTemplateExample;
@@ -42,10 +46,6 @@ import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-
 public class DroolsExamplesApp extends JFrame {
 
     public static void main(String[] args) {
@@ -55,6 +55,8 @@ public class DroolsExamplesApp extends JFrame {
     }
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final KieServices ks = KieServices.get();
 
     private final KieContainer kieContainer;
 
@@ -67,7 +69,7 @@ public class DroolsExamplesApp extends JFrame {
     }
 
     private KieContainer createKieContainer() {
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        KieContainer kc = ks.getKieClasspathContainer();
         System.out.println(kc.verify().getMessages().toString());
         return kc;
     }
@@ -106,7 +108,7 @@ public class DroolsExamplesApp extends JFrame {
 
         contentPane.add(new JButton(new AbstractAction("HelloWorldExample") {
             public void actionPerformed(ActionEvent e) {
-                HelloWorldExample.execute( kieContainer );
+                HelloWorldExample.execute( ks, kieContainer );
             }
         }));
         contentPane.add(new JButton(new AbstractAction("FibonacciExample") {
