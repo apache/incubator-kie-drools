@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Properties;
 
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.DoubleType;
@@ -109,7 +109,7 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
     }
 
     @Override
-    public Score nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
+    public Score nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor session, Object owner)
             throws SQLException {
         if (resultSet == null) {
             return null;
@@ -144,7 +144,7 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement statement, Object value, int parameterIndex, SessionImplementor session)
+    public void nullSafeSet(PreparedStatement statement, Object value, int parameterIndex, SharedSessionContractImplementor session)
             throws SQLException {
         int levelsSize = scoreDefinition.getLevelsSize();
         if (value == null) {
@@ -191,7 +191,7 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
     }
 
     @Override
-    public Object replace(Object original, Object target, SessionImplementor session, Object owner) {
+    public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner) {
         return original; // Score is immutable
     }
 
@@ -223,12 +223,12 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
     }
 
     @Override
-    public Serializable disassemble(Object value, SessionImplementor session) {
+    public Serializable disassemble(Object value, SharedSessionContractImplementor session) {
         return (Serializable) value;
     }
 
     @Override
-    public Object assemble(Serializable cached, SessionImplementor session, Object owner) {
+    public Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) {
         return cached;
     }
 
