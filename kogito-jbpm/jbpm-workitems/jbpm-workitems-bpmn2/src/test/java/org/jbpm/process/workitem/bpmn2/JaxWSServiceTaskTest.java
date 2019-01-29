@@ -16,9 +16,15 @@
 
 package org.jbpm.process.workitem.bpmn2;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.xml.ws.Endpoint;
 
 import org.drools.compiler.compiler.ProcessBuilderFactory;
@@ -29,7 +35,6 @@ import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler;
-import org.jbpm.test.AbstractBaseTest;
 import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
@@ -46,9 +51,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
-public class JaxWSServiceTaskTest extends AbstractBaseTest {
+public class JaxWSServiceTaskTest {
 
     private static final Logger logger = LoggerFactory.getLogger(JaxWSServiceTaskTest.class);
 

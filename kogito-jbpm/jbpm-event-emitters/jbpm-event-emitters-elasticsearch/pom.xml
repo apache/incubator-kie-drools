@@ -137,11 +137,6 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>

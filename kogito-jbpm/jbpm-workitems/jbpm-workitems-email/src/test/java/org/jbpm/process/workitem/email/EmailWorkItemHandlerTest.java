@@ -16,9 +16,15 @@
 
 package org.jbpm.process.workitem.email;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
@@ -26,7 +32,6 @@ import javax.mail.internet.MimeMessage.RecipientType;
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
-import org.jbpm.test.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,9 +42,7 @@ import org.kie.internal.utils.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
-import static org.junit.Assert.*;
-
-public class EmailWorkItemHandlerTest extends AbstractBaseTest {
+public class EmailWorkItemHandlerTest {
     private Wiser wiser;
 
     private String emailHost;

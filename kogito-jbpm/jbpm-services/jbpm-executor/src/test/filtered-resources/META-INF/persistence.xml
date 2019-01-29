@@ -21,11 +21,10 @@
       <property name="hibernate.show_sql" value="false" />
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
-      <property name="hibernate.id.new_generator_mappings" value="false" />            
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
+      <property name="hibernate.id.new_generator_mappings" value="false" />                
       <!-- needed for JTA testing  -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
+      <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION"/>
     </properties>
   </persistence-unit>
 
@@ -90,7 +89,7 @@
       
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />            
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
+      <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION"/>
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
     </properties>

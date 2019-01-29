@@ -34,7 +34,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.test.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +50,7 @@ import org.subethamail.smtp.auth.UsernamePasswordValidator;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
-public class SendHtmlTest extends AbstractBaseTest {
+public class SendHtmlTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SendHtmlTest.class);
     private Wiser wiser;

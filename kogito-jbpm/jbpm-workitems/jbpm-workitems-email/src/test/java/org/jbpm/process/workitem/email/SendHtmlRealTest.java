@@ -19,7 +19,6 @@ package org.jbpm.process.workitem.email;
 import java.util.Random;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.test.AbstractBaseTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * Fill in the fromAddress, fromPassword and toAddress (and if neccessary, modify the user and smtpServerFrom fields) and run this
  * test. If no exceptions are thrown -- and you receive an e-mail, then you're good!
  */
-public class SendHtmlRealTest extends AbstractBaseTest {
+public class SendHtmlRealTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SendHtmlRealTest.class);
     private Random random = new Random();

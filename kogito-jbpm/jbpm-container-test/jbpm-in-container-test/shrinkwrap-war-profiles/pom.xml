@@ -57,8 +57,8 @@
           <exclusions>
             <!-- conflicts with Hibernate on WAS -->
             <exclusion>
-              <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.1-api</artifactId>
+              <groupId>javax.persistence</groupId>
+              <artifactId>javax.persistence-api</artifactId>
             </exclusion>
             <!-- conflicts with Weld and Hibernate on WAS -->
             <exclusion>
@@ -89,8 +89,8 @@
           <exclusions>
             <!-- conflicts with Hibernate on WAS -->
             <exclusion>
-              <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.1-api</artifactId>
+              <groupId>javax.persistence</groupId>
+              <artifactId>javax.persistence-api</artifactId>
             </exclusion>
             <!-- conflicts with Weld and Hibernate on WAS -->
             <exclusion>
@@ -131,8 +131,8 @@
           <exclusions>
             <!-- conflicts with Hibernate on EWS -->
             <exclusion>
-              <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.1-api</artifactId>
+              <groupId>javax.persistence</groupId>
+              <artifactId>javax.persistence-api</artifactId>
             </exclusion>
             <!-- conflicts with BTM/Hibernate on EWS -->
             <exclusion>
@@ -244,8 +244,8 @@
               <artifactId>jboss-transaction-api_1.1_spec</artifactId>
             </exclusion>
             <exclusion>
-              <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.1-api</artifactId>
+              <groupId>javax.persistence</groupId>
+              <artifactId>javax.persistence-api</artifactId>
             </exclusion>
             <exclusion>
               <groupId>xml-apis</groupId>
@@ -296,8 +296,8 @@
               <artifactId>jboss-transaction-api_1.1_spec</artifactId>
             </exclusion>
             <exclusion>
-              <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.1-api</artifactId>
+              <groupId>javax.persistence</groupId>
+              <artifactId>javax.persistence-api</artifactId>
             </exclusion>
             <exclusion>
               <groupId>org.javassist</groupId>

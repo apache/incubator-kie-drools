@@ -16,6 +16,8 @@
 
 package org.jbpm.process.workitem.bpmn2;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -23,7 +25,6 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.jbpm.test.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -34,9 +35,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 
-import static org.junit.Assert.*;
-
-public class ServiceTaskTest extends AbstractBaseTest {
+public class ServiceTaskTest {
 
     @Test
     public void testServiceTaskWithClassInKjar() throws Exception {

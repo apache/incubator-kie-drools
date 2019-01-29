@@ -113,7 +113,7 @@ public class LocalWithCustomCallbackTaskAuditTest extends HumanTaskServicesBaseT
         assertTrue(allGroupTasks.get(0).getStatusId().equals("Ready"));
 
         List<AuditTask> allGroupAuditTasksByUser = taskAuditService.getAllGroupAuditTasksByUser("salaboy",
-                new QueryFilter(0, 0));
+                new QueryFilter(0, 10));
         assertEquals(1, allGroupAuditTasksByUser.size());
         assertTrue(allGroupAuditTasksByUser.get(0).getStatus().equals("Ready"));
     }

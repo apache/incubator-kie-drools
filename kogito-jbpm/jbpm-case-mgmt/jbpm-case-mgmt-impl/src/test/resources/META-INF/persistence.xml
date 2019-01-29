@@ -7,7 +7,7 @@
                       http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
 
   <persistence-unit name="org.jbpm.domain" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/testDS1</jta-data-source>       
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
@@ -90,12 +90,12 @@
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
+      <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION"/>
     </properties>
   </persistence-unit>
 
   <persistence-unit name="org.jbpm.persistence.patient.example" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/testDS1</jta-data-source>
     <class>org.jbpm.casemgmt.impl.objects.Patient</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>

@@ -36,7 +36,7 @@ public class GetAuditEventsCommand extends TaskCommand<List<TaskEvent>> {
 	private static final long serialVersionUID = -7929370526623674312L;
         private QueryFilter filter;
 	public GetAuditEventsCommand() {
-            this.filter = new QueryFilter(0,0);
+            this.filter = new QueryFilter(0,10);
 	}
 	
 	public GetAuditEventsCommand(long taskId, QueryFilter filter) {

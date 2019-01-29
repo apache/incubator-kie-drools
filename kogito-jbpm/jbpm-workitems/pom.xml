@@ -88,11 +88,6 @@
 
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-test-util</artifactId>
       <scope>test</scope>
     </dependency>
