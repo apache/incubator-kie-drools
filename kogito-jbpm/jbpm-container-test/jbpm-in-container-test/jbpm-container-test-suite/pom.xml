@@ -142,7 +142,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.xml.ws</groupId>
-      <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+      <artifactId>jboss-jaxws-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -353,21 +353,11 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.activation</groupId>
-          <artifactId>javax.activation-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+    <!-- Webservices Metadata API needed for JDK11+ -->
     <dependency>
       <groupId>javax.jws</groupId>
       <artifactId>javax.jws-api</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

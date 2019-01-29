@@ -6,8 +6,8 @@
   <dependencies>
    <dependency>
      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-     <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
-     <version>1.0.0.Final</version>
+     <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+     <version>1.0.1.Final</version>
      <scope>provided</scope>
    </dependency>
   </dependencies>

@@ -99,7 +99,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.xml.ws</groupId>
-      <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+      <artifactId>jboss-jaxws-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -155,6 +155,11 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

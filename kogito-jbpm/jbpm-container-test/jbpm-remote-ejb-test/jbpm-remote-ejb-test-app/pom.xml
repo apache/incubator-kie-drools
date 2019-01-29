@@ -142,6 +142,13 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- JDK11 dependency -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
   <build>
