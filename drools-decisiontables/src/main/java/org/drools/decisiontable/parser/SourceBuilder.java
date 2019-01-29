@@ -22,7 +22,13 @@ public interface SourceBuilder {
     ActionType.Code getActionTypeCode();
     String getResult();
     void addTemplate(int row, int col, String content);
-    void addCellValue(int row, int col, String value);
+
+    default void addCellValue(int row, int col, String value) {
+        addCellValue( row, col, value, true );
+    }
+
+    void addCellValue(int row, int col, String value, boolean trim);
+
     void clearValues();
     boolean hasValues();
     int getColumn();

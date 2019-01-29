@@ -181,7 +181,8 @@ public class LhsBuilder implements SourceBuilder {
 
     public void addCellValue( int row,
                               int column,
-                              String value ) {
+                              String value,
+                              boolean trim) {
         this.hasValues = true;
         Integer key = new Integer( column );
         String content = this.constraints.get( key );
@@ -189,7 +190,7 @@ public class LhsBuilder implements SourceBuilder {
             throw new DecisionTableParseException( "No code snippet for CONDITION in cell " +
                                                            RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
         }
-        SnippetBuilder snip = new SnippetBuilder( content );
+        SnippetBuilder snip = new SnippetBuilder( content, trim );
         String result = snip.build( fixValue( column,
                                               value ) );
         this.values.add( result );

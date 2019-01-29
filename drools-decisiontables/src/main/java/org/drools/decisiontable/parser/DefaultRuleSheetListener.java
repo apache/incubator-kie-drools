@@ -110,22 +110,24 @@ implements RuleSheetListener {
 
     private final PropertiesSheetListener _propertiesListener     = new PropertiesSheetListener();
 
-    private boolean showPackage;
+    private final boolean showPackage;
+    private final boolean trimCell;
     private String worksheetName = null;
 
     /**
      * Constructor.
      */
     public DefaultRuleSheetListener() {
-        this( true );
+        this( true, true );
     }
 
     /**
      * Constructor.
      * @param showPackage if true, the rule set name is passed to the resulting package
      */
-    public DefaultRuleSheetListener(boolean showPackage) {
+    public DefaultRuleSheetListener(boolean showPackage, boolean trimCell) {
         this.showPackage = showPackage;
+        this.trimCell = trimCell;
     }
 
     public void setWorksheetName(String worksheetName) {
@@ -440,7 +442,7 @@ implements RuleSheetListener {
             final int column,
             final String value,
             final int mergedColStart) {
-        String trimVal = value.trim();
+        String trimVal = trimCell ? value.trim() : value;
         String testVal = trimVal.toLowerCase();
         if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
             finishRuleTable();
@@ -616,7 +618,7 @@ implements RuleSheetListener {
                         RuleSheetParserUtil.rc2name( row, column ) +
                         " has an empty column header." );
             }
-            actionType.addCellValue( row, column, value, _currentEscapeQuotesFlag );
+            actionType.addCellValue( row, column, value, _currentEscapeQuotesFlag, trimCell );
             break;
         case SALIENCE:
             // Only if rule set is not sequential!

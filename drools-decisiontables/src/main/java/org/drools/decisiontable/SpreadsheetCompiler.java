@@ -16,6 +16,13 @@
 
 package org.drools.decisiontable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
@@ -29,13 +36,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  *
  * This class handles the input XLS and CSV and extracts the rule DRL, ready for
@@ -44,6 +44,16 @@ import java.util.Map;
 public class SpreadsheetCompiler {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(SpreadsheetCompiler.class);
+
+    private final boolean trimCell;
+
+    public SpreadsheetCompiler() {
+        this(false);
+    }
+
+    public SpreadsheetCompiler(boolean trimCell) {
+        this.trimCell = trimCell;
+    }
 
     /**
      * Generates DRL from the input stream containing the spreadsheet.
@@ -60,7 +70,7 @@ public class SpreadsheetCompiler {
                           final InputType type) {
         return compile( xlsStream,
                         type,
-                        new DefaultRuleSheetListener( showPackage ) );
+                        new DefaultRuleSheetListener( showPackage, trimCell ) );
     }
 
     /**
@@ -75,14 +85,14 @@ public class SpreadsheetCompiler {
                           final InputType type) {
         return compile( xlsStream,
                         type,
-                        new DefaultRuleSheetListener() );
+                        new DefaultRuleSheetListener(true, trimCell) );
     }
 
     public String compile(final Resource resource,
                           final InputType type) {
         return compile( resource,
                         type,
-                        new DefaultRuleSheetListener() );
+                        new DefaultRuleSheetListener(true, trimCell) );
     }
 
     /**
