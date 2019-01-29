@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchPhaseSco
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -58,6 +59,8 @@ public class DefaultExhaustiveSearchPhaseTest {
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
         TestdataSolution workingSolution = new TestdataSolution();
         when(phaseScope.getWorkingSolution()).thenReturn(workingSolution);
+        InnerScoreDirector<TestdataSolution> scoreDirector = mock(InnerScoreDirector.class);
+        when(phaseScope.getScoreDirector()).thenReturn(scoreDirector);
 
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         when(phaseScope.getSolutionDescriptor()).thenReturn(solutionDescriptor);
@@ -102,14 +105,14 @@ public class DefaultExhaustiveSearchPhaseTest {
         verify(node1.getMove(), times(0)).doMove(any(ScoreDirector.class));
         verify(node1.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
         verify(node2A.getMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node2A.getUndoMove(), times(1)).doMove(any(ScoreDirector.class));
+        verify(node2A.getUndoMove(), times(1)).doMove(scoreDirector);
         verify(node3A.getMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node3A.getUndoMove(), times(1)).doMove(any(ScoreDirector.class));
-        verify(node2B.getMove(), times(1)).doMove(any(ScoreDirector.class));
+        verify(node3A.getUndoMove(), times(1)).doMove(scoreDirector);
+        verify(node2B.getMove(), times(1)).doMove(scoreDirector);
         verify(node2B.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node3B.getMove(), times(1)).doMove(any(ScoreDirector.class));
+        verify(node3B.getMove(), times(1)).doMove(scoreDirector);
         verify(node3B.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
-        verify(node4B.getMove(), times(1)).doMove(any(ScoreDirector.class));
+        verify(node4B.getMove(), times(1)).doMove(scoreDirector);
         verify(node4B.getUndoMove(), times(0)).doMove(any(ScoreDirector.class));
         // TODO FIXME
         // verify(workingSolution).setScore(newScore);
