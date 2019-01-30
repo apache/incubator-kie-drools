@@ -83,7 +83,7 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     @ConstraintWeight(CONSECUTIVE_TALKS_PAUSE)
     private HardMediumSoftScore consecutiveTalksPause = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(CROWD_CONTROL)
-    private HardMediumSoftScore crowdControl = HardMediumSoftScore.ofHard(1);
+    private HardMediumSoftScore crowdControl = HardMediumSoftScore.ofHard(0);
 
     @ConstraintWeight(SPEAKER_REQUIRED_TIMESLOT_TAGS)
     private HardMediumSoftScore speakerRequiredTimeslotTags = HardMediumSoftScore.ofHard(1);
@@ -116,7 +116,7 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     @ConstraintWeight(AUDIENCE_TYPE_DIVERSITY)
     private HardMediumSoftScore audienceTypeDiversity = HardMediumSoftScore.ofSoft(1);
     @ConstraintWeight(AUDIENCE_TYPE_THEME_TRACK_CONFLICT)
-    private HardMediumSoftScore audienceTypeThemeTrackConflict = HardMediumSoftScore.ofSoft(0);
+    private HardMediumSoftScore audienceTypeThemeTrackConflict = HardMediumSoftScore.ofSoft(1);
     @ConstraintWeight(AUDIENCE_LEVEL_DIVERSITY)
     private HardMediumSoftScore audienceLevelDiversity = HardMediumSoftScore.ofSoft(1);
     @ConstraintWeight(CONTENT_AUDIENCE_LEVEL_FLOW_VIOLATION)
