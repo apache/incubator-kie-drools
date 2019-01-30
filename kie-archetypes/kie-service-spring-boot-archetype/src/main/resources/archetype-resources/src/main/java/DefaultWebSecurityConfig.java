@@ -19,12 +19,12 @@ public class DefaultWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-        .cors().and()
-        .csrf().disable()
-        .authorizeRequests()
-        .antMatchers("/rest/*").authenticated()
-        .and()
-        .httpBasic();
+                .cors().and()
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/rest/*").authenticated().and()
+                .httpBasic().and()
+                .headers().frameOptions().disable();
     }
 
     @Autowired
