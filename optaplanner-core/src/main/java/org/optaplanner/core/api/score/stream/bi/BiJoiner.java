@@ -31,9 +31,7 @@ public final class BiJoiner<A, B, Property_> {
 
     // TODO add not equals, less then, less or equal then, greater than, ...
 
-    // ************************************************************************
-    // Node creation methods
-    // ************************************************************************
+    // TODO extra interface
 
     private final Function<A, Property_> leftMapping;
     private final Function<B, Property_> rightMapping;

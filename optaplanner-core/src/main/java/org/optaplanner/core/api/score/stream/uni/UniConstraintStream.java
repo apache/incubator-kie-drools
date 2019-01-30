@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.stream.uni;
 
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
@@ -57,6 +58,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     <B, Property_> BiConstraintStream<A, B> join(UniConstraintStream<B> other, BiJoiner<A, B, Property_> joiner);
 
+    <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            Function<A, GroupKey_> groupKeyMapping,
+            UniCollector<A, ResultContainer_, Result_> collector);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} for each match.

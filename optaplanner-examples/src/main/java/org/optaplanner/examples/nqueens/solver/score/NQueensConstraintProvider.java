@@ -35,11 +35,11 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     }
 
     protected void multipleQueensHorizontal(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory
+        Constraint c = constraintFactory
                 .newConstraintWithWeight("multipleQueensHorizontal", SimpleScore.of(1));
-        UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
+        UniConstraintStream<Queen> aQueenStream = c.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
-        UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
+        UniConstraintStream<Queen> bQueenStream = c.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getRowIndex))
                 .filter((a, b) -> a.getId() < b.getId())

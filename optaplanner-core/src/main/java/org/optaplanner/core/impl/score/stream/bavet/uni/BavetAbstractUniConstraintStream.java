@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
@@ -25,8 +26,10 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.uni.UniCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
@@ -52,7 +55,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public <B, Property_> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B, Property_> joiner) {
+    public <B, Property_> BiConstraintStream<A, B> join(
+                UniConstraintStream<B> otherStream, BiJoiner<A, B, Property_> joiner) {
         if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
             throw new IllegalStateException("The streams (" + this + ", " + otherStream
                     + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
@@ -70,6 +74,17 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         BavetJoinRightBridgeUniConstraintStream<Solution_, A, B, Property_> rightBridge = new BavetJoinRightBridgeUniConstraintStream<>(
                 constraint, biStream, joiner.getRightMapping());
         other.childStreamList.add(rightBridge);
+        return biStream;
+    }
+
+    @Override
+    public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
+            Function<A, GroupKey_> groupKeyMapping, UniCollector<A, ResultContainer_, Result_> collector) {
+        BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream
+                = new BavetGroupedBiConstraintStream<>(constraint, collector.finisher());
+        BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge
+                = new BavetGroupByBridgeUniConstraintStream<>(constraint, biStream, groupKeyMapping, collector);
+        childStreamList.add(bridge);
         return biStream;
     }
 
