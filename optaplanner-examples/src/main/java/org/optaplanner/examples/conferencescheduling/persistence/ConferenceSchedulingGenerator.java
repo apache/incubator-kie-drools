@@ -399,18 +399,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Set<String> preferredRoomTagSet = new LinkedHashSet<>();
             Set<String> prohibitedRoomTagSet = new LinkedHashSet<>();
             Set<String> undesiredRoomTagSet = new LinkedHashSet<>();
-            for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
-                Double segmentRandom = random.nextDouble();
-                if (segmentRandom < roomTagProbability.getValue() / 25.0) {
-                    requiredRoomTagSet.add(roomTagProbability.getKey());
-                } else if (segmentRandom < roomTagProbability.getValue() / 20.0) {
-                    prohibitedRoomTagSet.add(roomTagProbability.getKey());
-                } else if (segmentRandom < roomTagProbability.getValue() / 15.0) {
-                    preferredRoomTagSet.add(roomTagProbability.getKey());
-                } else if (segmentRandom < roomTagProbability.getValue() / 10.0) {
-                    undesiredRoomTagSet.add(roomTagProbability.getKey());
-                }
-            }
+            setRoomTags(requiredRoomTagSet, preferredRoomTagSet, prohibitedRoomTagSet, undesiredRoomTagSet);
             speaker.setRequiredRoomTagSet(requiredRoomTagSet);
             speaker.setPreferredRoomTagSet(preferredRoomTagSet);
             speaker.setProhibitedRoomTagSet(prohibitedRoomTagSet);
@@ -465,16 +454,11 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     break;
                 }
             }
+            Set<String> requiredRoomTagSet = new LinkedHashSet<>();
             Set<String> preferredRoomTagSet = new LinkedHashSet<>();
+            Set<String> prohibitedRoomTagSet = new LinkedHashSet<>();
             Set<String> undesiredRoomTagSet = new LinkedHashSet<>();
-            for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
-                Double r = random.nextDouble();
-                if (r < roomTagProbability.getValue() / 20) {
-                    undesiredRoomTagSet.add(roomTagProbability.getKey());
-                } else if (r < roomTagProbability.getValue()) {
-                    preferredRoomTagSet.add(roomTagProbability.getKey());
-                }
-            }
+            setRoomTags(requiredRoomTagSet, preferredRoomTagSet, prohibitedRoomTagSet, undesiredRoomTagSet);
             Set<String> mutuallyExclusiveTagSet = new LinkedHashSet<>();
             if (random.nextDouble() < 0.025) {
                 mutuallyExclusiveTagSet.add(mutuallyExclusiveTagList.get(random.nextInt(mutuallyExclusiveTagList.size())));
@@ -490,9 +474,9 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setPreferredTimeslotTagSet(new LinkedHashSet<>());
             talk.setProhibitedTimeslotTagSet(new LinkedHashSet<>());
             talk.setUndesiredTimeslotTagSet(new LinkedHashSet<>());
-            talk.setRequiredRoomTagSet(new LinkedHashSet<>());
+            talk.setRequiredRoomTagSet(requiredRoomTagSet);
             talk.setPreferredRoomTagSet(preferredRoomTagSet);
-            talk.setProhibitedRoomTagSet(new LinkedHashSet<>());
+            talk.setProhibitedRoomTagSet(prohibitedRoomTagSet);
             talk.setUndesiredRoomTagSet(undesiredRoomTagSet);
             talk.setMutuallyExclusiveTalksTagSet(mutuallyExclusiveTagSet);
             talk.setPrerequisiteTalkSet(prerequisiteTalkCodeSet);
@@ -525,5 +509,20 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         publishedTalk.setPublishedRoom(publishedTalk.getRoom());
 
         solution.setTalkList(talkList);
+    }
+
+    private void setRoomTags(Set<String> requiredRoomTagSet, Set<String> preferredRoomTagSet, Set<String> prohibitedRoomTagSet, Set<String> undesiredRoomTagSet) {
+        for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
+            Double segmentRandom = random.nextDouble();
+            if (segmentRandom < roomTagProbability.getValue() / 25.0) {
+                requiredRoomTagSet.add(roomTagProbability.getKey());
+            } else if (segmentRandom < roomTagProbability.getValue() / 20.0) {
+                prohibitedRoomTagSet.add(roomTagProbability.getKey());
+            } else if (segmentRandom < roomTagProbability.getValue() / 15.0) {
+                preferredRoomTagSet.add(roomTagProbability.getKey());
+            } else if (segmentRandom < roomTagProbability.getValue() / 10.0) {
+                undesiredRoomTagSet.add(roomTagProbability.getKey());
+            }
+        }
     }
 }
