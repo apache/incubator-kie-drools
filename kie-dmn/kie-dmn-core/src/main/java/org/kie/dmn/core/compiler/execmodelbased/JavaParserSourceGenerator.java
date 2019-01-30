@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
-import java.util.EnumSet;
 import java.util.List;
 
 import org.drools.javaparser.JavaParser;
@@ -41,7 +40,7 @@ public class JavaParserSourceGenerator {
     private ClassOrInterfaceDeclaration firstClass;
     private CompilationUnit compilationUnit;
 
-    public static EnumSet<Modifier> PUBLIC_STATIC_FINAL = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+    public static NodeList<Modifier> PUBLIC_STATIC_FINAL = NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier());
 
     public JavaParserSourceGenerator(String className, String namespace, String packageName) {
         this.compilationUnit = JavaParser.parse("public class " + className + namespace + "{ }");
