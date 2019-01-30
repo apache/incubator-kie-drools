@@ -66,7 +66,7 @@ public class PseudoClockScheduler
 
     public PseudoClockScheduler(InternalWorkingMemory session) {
         this.timer = new AtomicLong(0);
-        this.queue = new PriorityBlockingQueue<Callable<Void>>();
+        this.queue = new PriorityBlockingQueue<>();
         this.session = session;
     }
 
@@ -134,22 +134,19 @@ public class PseudoClockScheduler
 
     public void internalSchedule(TimerJobInstance timerJobInstance) {
         jobFactoryManager.addTimerJobInstance(timerJobInstance);
-        synchronized(queue) {
-            queue.add( ( Callable<Void> ) timerJobInstance );
+        synchronized (this) {
+            queue.add((Callable<Void>) timerJobInstance);
         }
     }
 
     /**
      * @inheritDoc
-     *
      * @see org.drools.core.time.TimerService#removeJob(JobHandle)
      */
-    public boolean removeJob(JobHandle jobHandle) {
-        jobHandle.setCancel( true );
-        jobFactoryManager.removeTimerJobInstance( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
-        synchronized( queue ) {
-            return this.queue.remove( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
-        }
+    public synchronized boolean removeJob(JobHandle jobHandle) {
+        jobHandle.setCancel(true);
+        jobFactoryManager.removeTimerJobInstance(((DefaultJobHandle) jobHandle).getTimerJobInstance());
+        return this.queue.remove(((DefaultJobHandle) jobHandle).getTimerJobInstance());
     }
 
     /**
@@ -179,7 +176,7 @@ public class PseudoClockScheduler
     }
 
     @Override
-    public void reset() {
+    public synchronized void reset() {
         idCounter.set(0);
         timer.set(0);
         queue.clear();
@@ -197,15 +194,13 @@ public class PseudoClockScheduler
         long fireTime;
         while ( item != null && ((item.getTrigger().hasNextFireTime() != null && ( ( fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime ) ) )  ) {
             // remove the head
-            synchronized( queue ) {
-                queue.remove(item);
-            }
-
+            queue.remove(item);
             if ( item.getJobHandle().isCancel() ) {
                 // do not call it, do not reschedule it
+                item = (TimerJobInstance) queue.peek();
                 continue;
             }
-            
+
             try {
                 // set the clock back to the trigger's fire time
                 this.timer.getAndSet( fireTime );
@@ -215,19 +210,15 @@ public class PseudoClockScheduler
                 logger.error( "Exception running callbacks: ", e );
             }
             // get next head
-            synchronized( queue ) {
-                item = (TimerJobInstance) queue.peek();
-            }
+            item = (TimerJobInstance) queue.peek();
         }
         this.timer.set( endTime );
-        return this.timer.get(); 
+        return this.timer.get();
     }
 
-    public long getTimeToNextJob() {
-        synchronized( queue ) {
-            TimerJobInstance item = (TimerJobInstance) queue.peek();
-            return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
-        }
+    public synchronized long getTimeToNextJob() {
+        TimerJobInstance item = (TimerJobInstance) queue.peek();
+        return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer.get() : -1;
     }
 
     public Collection<TimerJobInstance> getTimerJobInstances(long id) {
