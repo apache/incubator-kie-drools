@@ -68,7 +68,7 @@ public class RhsBuilder implements SourceBuilder {
         return !("".equals(variable));
     }
 
-    public void addCellValue(int row, int column, String value, boolean trim) {
+    public void addCellValue(int row, int column, String value) {
         hasValues = true;
         String template = (String) this.templates.get(new Integer(column));
         if (template == null) {

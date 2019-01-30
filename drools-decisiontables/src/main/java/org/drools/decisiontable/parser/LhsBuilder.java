@@ -179,10 +179,11 @@ public class LhsBuilder implements SourceBuilder {
         this.values.clear();
     }
 
-    public void addCellValue( int row,
-                              int column,
-                              String value,
-                              boolean trim) {
+    public void addCellValue( int row, int column, String value) {
+        addCellValue( row, column, value, true );
+    }
+
+    public void addCellValue( int row, int column, String value, boolean trim) {
         this.hasValues = true;
         Integer key = new Integer( column );
         String content = this.constraints.get( key );

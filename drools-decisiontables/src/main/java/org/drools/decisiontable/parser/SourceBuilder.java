@@ -23,11 +23,11 @@ public interface SourceBuilder {
     String getResult();
     void addTemplate(int row, int col, String content);
 
-    default void addCellValue(int row, int col, String value) {
-        addCellValue( row, col, value, true );
-    }
+    void addCellValue(int row, int col, String value);
 
-    void addCellValue(int row, int col, String value, boolean trim);
+    default void addCellValue(int row, int col, String value, boolean trim) {
+        addCellValue( row, col, value );
+    }
 
     void clearValues();
     boolean hasValues();
