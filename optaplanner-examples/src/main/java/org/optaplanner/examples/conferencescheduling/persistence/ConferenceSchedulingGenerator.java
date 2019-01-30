@@ -391,7 +391,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                 unavailableTimeslotSet = new LinkedHashSet<>(timeslotList.size());
             }
             speaker.setUnavailableTimeslotSet(unavailableTimeslotSet);
-            speaker.setRequiredTimeslotTagSet(new LinkedHashSet<>()); // choosing random required/prohibited tags might result in an infeasible solution
+            speaker.setRequiredTimeslotTagSet(new LinkedHashSet<>()); // TODO: choose random required/prohibited tags that don't result in an infeasible solution
             speaker.setPreferredTimeslotTagSet(preferredTimeslotTagSet);
             speaker.setProhibitedTimeslotTagSet(new LinkedHashSet<>());
             speaker.setUndesiredTimeslotTagSet(undesiredTimeslotTagSet);
@@ -399,7 +399,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             Set<String> preferredRoomTagSet = new LinkedHashSet<>();
             Set<String> prohibitedRoomTagSet = new LinkedHashSet<>();
             Set<String> undesiredRoomTagSet = new LinkedHashSet<>();
-            setRoomTags(requiredRoomTagSet, preferredRoomTagSet, prohibitedRoomTagSet, undesiredRoomTagSet);
+            initializeRoomTagSets(requiredRoomTagSet, preferredRoomTagSet, prohibitedRoomTagSet, undesiredRoomTagSet);
             speaker.setRequiredRoomTagSet(requiredRoomTagSet);
             speaker.setPreferredRoomTagSet(preferredRoomTagSet);
             speaker.setProhibitedRoomTagSet(prohibitedRoomTagSet);
@@ -454,19 +454,6 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
                     break;
                 }
             }
-            Set<String> requiredRoomTagSet = new LinkedHashSet<>();
-            Set<String> preferredRoomTagSet = new LinkedHashSet<>();
-            Set<String> prohibitedRoomTagSet = new LinkedHashSet<>();
-            Set<String> undesiredRoomTagSet = new LinkedHashSet<>();
-            setRoomTags(requiredRoomTagSet, preferredRoomTagSet, prohibitedRoomTagSet, undesiredRoomTagSet);
-            Set<String> mutuallyExclusiveTagSet = new LinkedHashSet<>();
-            if (random.nextDouble() < 0.025) {
-                mutuallyExclusiveTagSet.add(mutuallyExclusiveTagList.get(random.nextInt(mutuallyExclusiveTagList.size())));
-            }
-            Set<Talk> prerequisiteTalkCodeSet = new LinkedHashSet<>();
-            if (random.nextDouble() < 0.025) {
-                prerequisiteTalkCodeSet.add(talkList.get(random.nextInt(talkList.size())));
-            }
             talk.setContentTagSet(contentTagSet);
             talk.setSectorTagSet(sectorTagSet);
             talk.setLanguage("en");
@@ -474,21 +461,40 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             talk.setPreferredTimeslotTagSet(new LinkedHashSet<>());
             talk.setProhibitedTimeslotTagSet(new LinkedHashSet<>());
             talk.setUndesiredTimeslotTagSet(new LinkedHashSet<>());
+
+            Set<String> requiredRoomTagSet = new LinkedHashSet<>();
+            Set<String> preferredRoomTagSet = new LinkedHashSet<>();
+            Set<String> prohibitedRoomTagSet = new LinkedHashSet<>();
+            Set<String> undesiredRoomTagSet = new LinkedHashSet<>();
+            initializeRoomTagSets(requiredRoomTagSet, preferredRoomTagSet, prohibitedRoomTagSet, undesiredRoomTagSet);
             talk.setRequiredRoomTagSet(requiredRoomTagSet);
             talk.setPreferredRoomTagSet(preferredRoomTagSet);
             talk.setProhibitedRoomTagSet(prohibitedRoomTagSet);
             talk.setUndesiredRoomTagSet(undesiredRoomTagSet);
+
+            Set<String> mutuallyExclusiveTagSet = new LinkedHashSet<>();
+            if (random.nextDouble() < 0.025) {
+                mutuallyExclusiveTagSet.add(mutuallyExclusiveTagList.get(random.nextInt(mutuallyExclusiveTagList.size())));
+            }
             talk.setMutuallyExclusiveTalksTagSet(mutuallyExclusiveTagSet);
+
+            Set<Talk> prerequisiteTalkCodeSet = new LinkedHashSet<>();
+            if (random.nextDouble() < 0.025) {
+                prerequisiteTalkCodeSet.add(talkList.get(random.nextInt(talkList.size())));
+            }
             talk.setPrerequisiteTalkSet(prerequisiteTalkCodeSet);
+
             talk.setFavoriteCount(random.nextInt(1000));
-            if (random.nextDouble() < 0.02) { // Need an even number of talks with crowd control > 1 for a feasible solution
+            if (random.nextDouble() < 0.02) {
                 talk.setCrowdControlRisk(1);
+                // Need an even number of talks with crowd control > 1 for a feasible solution
                 Talk pairedTalk = talkList.get(random.nextInt(talkList.size()));
                 while (pairedTalk.getCrowdControlRisk() != 0 || !pairedTalk.getTalkType().equals(talk.getTalkType())) {
                     pairedTalk = talkList.get(random.nextInt(talkList.size()));
                 }
                 pairedTalk.setCrowdControlRisk(1);
             }
+            talk.setCrowdControlRisk(0); // Disabled for now: the unsolved schedules must have a feasible solution
             logger.trace("Created talk with code ({}), title ({}) and speakers ({}).",
                     talk.getCode(), talk.getTitle(), speakerList);
             talkList.add(talk);
@@ -511,7 +517,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         solution.setTalkList(talkList);
     }
 
-    private void setRoomTags(Set<String> requiredRoomTagSet, Set<String> preferredRoomTagSet, Set<String> prohibitedRoomTagSet, Set<String> undesiredRoomTagSet) {
+    private void initializeRoomTagSets(Set<String> requiredRoomTagSet, Set<String> preferredRoomTagSet, Set<String> prohibitedRoomTagSet, Set<String> undesiredRoomTagSet) {
         for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
             Double segmentRandom = random.nextDouble();
             if (segmentRandom < roomTagProbability.getValue() / 25.0) {

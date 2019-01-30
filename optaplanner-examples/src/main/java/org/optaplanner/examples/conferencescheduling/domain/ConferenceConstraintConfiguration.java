@@ -83,7 +83,7 @@ public class ConferenceConstraintConfiguration extends AbstractPersistable {
     @ConstraintWeight(CONSECUTIVE_TALKS_PAUSE)
     private HardMediumSoftScore consecutiveTalksPause = HardMediumSoftScore.ofHard(1);
     @ConstraintWeight(CROWD_CONTROL)
-    private HardMediumSoftScore crowdControl = HardMediumSoftScore.ofHard(0);
+    private HardMediumSoftScore crowdControl = HardMediumSoftScore.ofHard(1);
 
     @ConstraintWeight(SPEAKER_REQUIRED_TIMESLOT_TAGS)
     private HardMediumSoftScore speakerRequiredTimeslotTags = HardMediumSoftScore.ofHard(1);
