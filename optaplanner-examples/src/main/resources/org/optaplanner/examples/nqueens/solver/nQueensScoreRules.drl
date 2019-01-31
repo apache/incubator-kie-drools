@@ -27,7 +27,7 @@ global SimpleScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
-rule "multipleQueensHorizontal"
+rule "Horizontal conflict"
     when
         Queen($id : id, row != null, $i : rowIndex)
         Queen(id > $id, rowIndex == $i)
@@ -35,9 +35,9 @@ rule "multipleQueensHorizontal"
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
-// multipleQueensVertical is built-in
+// Vertical conflict is impossible due the model
 
-rule "multipleQueensAscendingDiagonal"
+rule "Ascending diagonal conflict"
     when
         Queen($id : id, row != null, $i : ascendingDiagonalIndex)
         Queen(id > $id, ascendingDiagonalIndex == $i)
@@ -45,7 +45,7 @@ rule "multipleQueensAscendingDiagonal"
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
-rule "multipleQueensDescendingDiagonal"
+rule "Descending diagonal conflict"
     when
         Queen($id : id, row != null, $i : descendingDiagonalIndex)
         Queen(id > $id, descendingDiagonalIndex == $i)

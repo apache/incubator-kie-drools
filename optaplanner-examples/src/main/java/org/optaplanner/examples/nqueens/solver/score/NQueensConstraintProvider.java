@@ -28,15 +28,14 @@ public class NQueensConstraintProvider implements ConstraintProvider {
 
     @Override
     public void defineConstraints(ConstraintFactory constraintFactory) {
-        // TODO rename to "horizontal conflict", ...
-        multipleQueensHorizontal(constraintFactory);
-        multipleQueensAscendingDiagonal(constraintFactory);
-        multipleQueensDescendingDiagonal(constraintFactory);
+        horizontalConflict(constraintFactory);
+        ascendingDiagonalConflict(constraintFactory);
+        descendingDiagonalConflict(constraintFactory);
     }
 
-    protected void multipleQueensHorizontal(ConstraintFactory constraintFactory) {
+    protected void horizontalConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight(
-                "multipleQueensHorizontal", SimpleScore.of(1));
+                "Horizontal conflict", SimpleScore.of(1));
         UniConstraintStream<Queen> aQueenStream = c.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         UniConstraintStream<Queen> bQueenStream = c.select(Queen.class)
@@ -46,9 +45,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
                 .penalize();
     }
 
-    protected void multipleQueensAscendingDiagonal(ConstraintFactory constraintFactory) {
+    protected void ascendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint constraint = constraintFactory.newConstraintWithWeight(
-                "multipleQueensAscendingDiagonal", SimpleScore.of(1));
+                "Ascending diagonal conflict", SimpleScore.of(1));
         UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
@@ -58,9 +57,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
                 .penalize();
     }
 
-    protected void multipleQueensDescendingDiagonal(ConstraintFactory constraintFactory) {
+    protected void descendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint constraint = constraintFactory.newConstraintWithWeight(
-                "multipleQueensDescendingDiagonal", SimpleScore.of(1));
+                "Descending diagonal conflict", SimpleScore.of(1));
         UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)

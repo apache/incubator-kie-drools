@@ -154,7 +154,7 @@ Here is an example of a score constraint implemented as a score rule in a DRL fi
 
 [source,options="nowrap"]
 ----
-rule "multipleQueensHorizontal"
+rule "Horizontal conflict"
     when
         Queen($id : id, row != null, $i : rowIndex)
         Queen(id > $id, rowIndex == $i)
@@ -168,7 +168,7 @@ The `(id > $id)` condition is needed to assure that for two queens A and B, it c
 
 image::DroolsScoreCalculation/unsolvedNQueens04.png[align="center"]
 
-In this solution the multipleQueensHorizontal score rule will fire for six queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution will have a score of ``-6``.
+In this solution the `Horizontal conflict` score rule will fire for six queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution will have a score of ``-6``.
 An optimal solution of four queens has a score of ``0``.
 
 [NOTE]
@@ -205,7 +205,7 @@ package org.optaplanner.examples.nqueens.solver;
 ...
 global SimpleScoreHolder scoreHolder;
 
-rule "multipleQueensHorizontal"
+rule "Horizontal conflict"
     when
         Queen($id : id, row != null, $i : rowIndex)
         Queen(id > $id, rowIndex == $i)
@@ -213,9 +213,9 @@ rule "multipleQueensHorizontal"
         scoreHolder.penalize(kcontext);
 end
 
-// multipleQueensVertical is obsolete because it is always 0
+// Vertical conflict is impossible due the model
 
-rule "multipleQueensAscendingDiagonal"
+rule "Ascending diagonal conflict"
     when
         Queen($id : id, row != null, $i : ascendingDiagonalIndex)
         Queen(id > $id, ascendingDiagonalIndex == $i)
@@ -223,7 +223,7 @@ rule "multipleQueensAscendingDiagonal"
         scoreHolder.penalize(kcontext);
 end
 
-rule "multipleQueensDescendingDiagonal"
+rule "Descending diagonal conflict"
     when
         Queen($id : id, row != null, $i : descendingDiagonalIndex)
         Queen(id > $id, descendingDiagonalIndex == $i)
