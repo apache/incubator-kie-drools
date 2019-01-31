@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-workbench-models</artifactId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
 
   <!-- TODO Remove and replace by optaplanner-core-gwt once the workbench supports net.ltgt.gwt.maven:gwt-maven-plugin -->
