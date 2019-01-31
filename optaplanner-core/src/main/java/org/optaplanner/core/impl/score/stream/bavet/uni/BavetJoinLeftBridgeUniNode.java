@@ -57,11 +57,7 @@ public final class BavetJoinLeftBridgeUniNode<A, B, Property_> extends BavetAbst
                         + ")'s childTuple cannot be removed from the other fact (" + childTuple.getFactB()
                         + ")'s join bridge.");
             }
-            if (childTuple.getState() == BavetTupleState.CREATING) {
-                session.transitionTuple(childTuple, BavetTupleState.ABORTING);
-            } else {
-                session.transitionTuple(childTuple, BavetTupleState.DYING);
-            }
+            session.transitionTuple(childTuple, BavetTupleState.DYING);
         }
         childTupleSet.clear();
         if (tuple.getState() != BavetTupleState.CREATING) {

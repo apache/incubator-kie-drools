@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.ToIntBiFunction;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
@@ -46,6 +47,10 @@ public final class BavetIntScoringBiConstraintStream<Solution_, A, B> extends Ba
         if (!childNodeList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childNodeList (" + childNodeList + ") but it's an endpoint.");
+        }
+        // TODO HACK until we support all score types
+        if (constraintWeight instanceof HardSoftScore) {
+            constraintWeight = SimpleScore.valueOf(((HardSoftScore) constraintWeight).getHardScore());
         }
         return new BavetIntScoringBiNode<>(buildPolicy.getSession(), nodeOrder,
                 constraint.getConstraintPackage(), constraint.getConstraintName(),

@@ -80,7 +80,10 @@ public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Res
             if (parentCount == 1) {
                 session.transitionTuple(childTuple, BavetTupleState.CREATING);
             } else {
-                session.transitionTuple(childTuple, BavetTupleState.UPDATING);
+                // It might have just been created by an earlier tuple in the same nodeOrder
+                if (childTuple.getState() != BavetTupleState.CREATING) {
+                    session.transitionTuple(childTuple, BavetTupleState.UPDATING);
+                }
             }
         }
         tuple.refreshed();

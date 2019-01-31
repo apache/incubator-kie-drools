@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniNode;
@@ -111,15 +111,23 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
                 tuple = queue.poll();
             }
         }
-        return SimpleScore.ofUninitialized(initScore, score);
+        // TODO HACK
+        return HardSoftScore.ofUninitialized(initScore, score, 0);
+//        return SimpleScore.ofUninitialized(initScore, score);
     }
 
     public void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState) {
         if (tuple.isDirty()) {
-            if (tuple.getState() != newState && newState != BavetTupleState.ABORTING) {
-                throw new IllegalStateException("The tuple (" + tuple
-                        + ") already has a dirty state (" + tuple.getState()
-                        + ") so it cannot transition to newState (" + newState + ").");
+            if (tuple.getState() != newState) {
+                if ((tuple.getState() == BavetTupleState.CREATING && newState == BavetTupleState.DYING)) {
+                    tuple.setState(BavetTupleState.ABORTING);
+                } else if ((tuple.getState() == BavetTupleState.UPDATING && newState == BavetTupleState.DYING)) {
+                    tuple.setState(BavetTupleState.DYING);
+                } else {
+                    throw new IllegalStateException("The tuple (" + tuple
+                            + ") already has a dirty state (" + tuple.getState()
+                            + ") so it cannot transition to newState (" + newState + ").");
+                }
             }
             // Don't add it to the queue twice
             return;

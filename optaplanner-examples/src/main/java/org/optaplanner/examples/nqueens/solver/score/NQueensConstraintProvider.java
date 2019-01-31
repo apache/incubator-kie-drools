@@ -35,8 +35,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     }
 
     protected void multipleQueensHorizontal(ConstraintFactory constraintFactory) {
-        Constraint c = constraintFactory
-                .newConstraintWithWeight("multipleQueensHorizontal", SimpleScore.of(1));
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "multipleQueensHorizontal", SimpleScore.of(1));
         UniConstraintStream<Queen> aQueenStream = c.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         UniConstraintStream<Queen> bQueenStream = c.select(Queen.class)
@@ -47,8 +47,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     }
 
     protected void multipleQueensAscendingDiagonal(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory
-                .newConstraintWithWeight("multipleQueensAscendingDiagonal", SimpleScore.of(1));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                "multipleQueensAscendingDiagonal", SimpleScore.of(1));
         UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
@@ -59,8 +59,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     }
 
     protected void multipleQueensDescendingDiagonal(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory
-                .newConstraintWithWeight("multipleQueensDescendingDiagonal", SimpleScore.of(1));
+        Constraint constraint = constraintFactory.newConstraintWithWeight(
+                "multipleQueensDescendingDiagonal", SimpleScore.of(1));
         UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
