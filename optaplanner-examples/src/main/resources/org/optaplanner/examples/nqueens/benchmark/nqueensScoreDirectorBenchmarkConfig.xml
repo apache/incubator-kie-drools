@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nqueens/scoreDirector</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
@@ -16,7 +17,9 @@
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
+        <terminationCompositionStyle>OR</terminationCompositionStyle>
         <bestScoreLimit>0</bestScoreLimit>
+        <secondsSpentLimit>60</secondsSpentLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -28,14 +31,12 @@
         <acceptor>
           <entityTabuSize>5</entityTabuSize>
         </acceptor>
-        <forager>
-        </forager>
       </localSearch>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>TS with Easy Java</name>
+    <name>Easy java (basic)</name>
     <solver>
       <scoreDirectorFactory>
         <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
@@ -43,7 +44,15 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>TS with Basic Incremental Java</name>
+    <name>Easy java (advanced)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensMapBasedEasyScoreCalculator</easyScoreCalculatorClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Incremental java (basic)</name>
     <solver>
       <scoreDirectorFactory>
         <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>
@@ -51,7 +60,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>TS with Advanced Incremental Java</name>
+    <name>Incremental java (advanced)</name>
     <solver>
       <scoreDirectorFactory>
         <incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>
@@ -59,7 +68,15 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>TS with Drools</name>
+    <name>ConstraintStreams (Bavet)</name>
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.nqueens.solver.score.NQueensConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>DRL (Drools)</name>
     <solver>
       <scoreDirectorFactory>
         <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
