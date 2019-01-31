@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 import java.util.List;
 import java.util.function.Function;
 
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> extends BavetAbstractBiNode<GroupKey_, Result_> {
 

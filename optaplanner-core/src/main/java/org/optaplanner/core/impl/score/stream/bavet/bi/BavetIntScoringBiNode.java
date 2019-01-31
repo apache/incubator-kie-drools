@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.function.ToIntBiFunction;
 
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 public final class BavetIntScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 

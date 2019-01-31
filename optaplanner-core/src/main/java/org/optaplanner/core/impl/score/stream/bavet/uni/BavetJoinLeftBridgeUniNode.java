@@ -24,8 +24,8 @@ import java.util.function.Function;
 
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetJoinLeftBridgeUniNode<A, B, Property_> extends BavetAbstractUniNode<A> {
 

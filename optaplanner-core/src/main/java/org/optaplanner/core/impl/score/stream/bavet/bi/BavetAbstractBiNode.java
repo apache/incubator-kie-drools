@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractNode;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 public abstract class BavetAbstractBiNode<A, B> extends BavetAbstractNode {
 

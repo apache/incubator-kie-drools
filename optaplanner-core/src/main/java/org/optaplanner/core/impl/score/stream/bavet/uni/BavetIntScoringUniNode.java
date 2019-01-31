@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.function.ToIntFunction;
 
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 public final class BavetIntScoringUniNode<A> extends BavetAbstractUniNode<A> {
 

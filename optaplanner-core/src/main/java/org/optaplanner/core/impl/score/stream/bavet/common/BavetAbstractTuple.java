@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.session;
+package org.optaplanner.core.impl.score.stream.bavet.common;
 
 public abstract class BavetAbstractTuple {
 

@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.session;
+package org.optaplanner.core.impl.score.stream.bavet.common;
 
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+public enum BavetTupleState {
+    NEW,
+    CREATING,
+    UPDATING,
+    OK,
+    DYING,
+    DEAD,
+    ABORTING;
 
-public class BavetAbstractConstraintStream<Solution_> {
-
-    protected final BavetConstraint<Solution_> constraint;
-
-    public BavetAbstractConstraintStream(BavetConstraint<Solution_> constraint) {
-        this.constraint = constraint;
+    public boolean isDirty() {
+        return this == CREATING || this == UPDATING || this == DYING || this == ABORTING;
     }
+
+    public boolean isActive() {
+        return this != DYING && this != DEAD && this != ABORTING;
+    }
+
 }

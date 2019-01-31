@@ -23,8 +23,8 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.stream.uni.UniCollector;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiTuple;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniNode<A> {
 

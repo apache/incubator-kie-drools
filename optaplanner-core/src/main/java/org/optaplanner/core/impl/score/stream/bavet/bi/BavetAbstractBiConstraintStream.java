@@ -24,8 +24,8 @@ import java.util.function.ToIntBiFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
 public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends BavetAbstractConstraintStream<Solution_>
         implements BiConstraintStream<A, B> {

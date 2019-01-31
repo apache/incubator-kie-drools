@@ -31,8 +31,8 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
         implements UniConstraintStream<A> {

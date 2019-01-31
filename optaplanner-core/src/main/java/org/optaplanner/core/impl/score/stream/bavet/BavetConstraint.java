@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniNode;

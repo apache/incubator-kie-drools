@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.session;
+package org.optaplanner.core.impl.score.stream.bavet.common;
+
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 public class BavetAbstractNode {
 

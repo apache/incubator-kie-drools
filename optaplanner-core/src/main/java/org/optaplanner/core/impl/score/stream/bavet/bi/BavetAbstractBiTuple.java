@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetAbstractTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 
 public abstract class BavetAbstractBiTuple<A, B> extends BavetAbstractTuple {
 

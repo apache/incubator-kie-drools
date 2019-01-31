@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
 public final class BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_>
         extends BavetAbstractBiConstraintStream<Solution_, GroupKey_, Result_> {

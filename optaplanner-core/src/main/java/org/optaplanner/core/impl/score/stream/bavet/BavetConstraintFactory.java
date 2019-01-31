@@ -32,7 +32,6 @@ import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWe
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
 
 public final class BavetConstraintFactory<Solution_> implements InnerConstraintFactory<Solution_> {
 

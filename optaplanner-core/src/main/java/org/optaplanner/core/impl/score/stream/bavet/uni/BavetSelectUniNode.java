@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.List;
 
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.session.BavetTupleState;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetSelectUniNode<A> extends BavetAbstractUniNode<A> {
 
