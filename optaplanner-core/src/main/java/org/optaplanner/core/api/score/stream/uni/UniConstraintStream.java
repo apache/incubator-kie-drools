@@ -69,9 +69,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
 //    /**
 //     * Negatively impact the {@link Score}: subtract  the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeighter never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
 //     */
-//    void penalize(Function<A, Long> matchWeighter);
+//    void penalize(Function<A, Long> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} for each match.
@@ -80,8 +80,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
 //    /**
 //     * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeighter never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
 //     */
-//    void reward(Function<A, Long> matchWeighter);
+//    void reward(Function<A, Long> matchWeigher);
 
 }

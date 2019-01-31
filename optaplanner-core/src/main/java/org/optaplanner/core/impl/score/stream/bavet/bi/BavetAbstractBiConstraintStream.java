@@ -54,6 +54,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     @Override
+    public void penalize(ToIntBiFunction<A, B> matchWeigher) {
+        addIntScoring((A a, B b) -> - matchWeigher.applyAsInt(a, b));
+    }
+
+    @Override
     public void reward() {
         ToIntBiFunction<A, B> matchWeigher = (A a, B b) -> 1;
         addIntScoring(matchWeigher);

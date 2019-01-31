@@ -18,9 +18,8 @@ package org.optaplanner.core.api.score.stream.bi;
 
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.ToIntBiFunction;
 
-import org.drools.core.beliefsystem.defeasible.Join;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.Score;
@@ -51,6 +50,12 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} for each match.
      */
     void penalize();
+
+    /**
+     * Negatively impact the {@link Score}: subtract  the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void penalize(ToIntBiFunction<A, B> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} for each match.
