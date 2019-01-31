@@ -36,8 +36,6 @@ image::dmn/dmn-input-data-node.png[]
 |Decision service
 a|Top-level decision containing a set of reusable decisions published as a service for invocation. A decision service can be invoked from an external application or a BPMN business process.
 
-NOTE: Decision service nodes are currently not supported in the {PRODUCT} {PRODUCT_VERSION} DMN designer. This support will be provided in a future release.
-
 a|
 image::dmn/dmn-decision-service-node.png[]
 
@@ -96,8 +94,6 @@ a|
 image::dmn/dmn-bkm-to-bkm.png[]
 
 .2+a|Decision service
-
-_(Currently not supported in the {PRODUCT} {PRODUCT_VERSION} DMN designer. Support will be provided in a future release.)_
 
 |Decision
 .2+|Knowledge requirement

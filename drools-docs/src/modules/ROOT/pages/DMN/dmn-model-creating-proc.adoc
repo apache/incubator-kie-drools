@@ -41,8 +41,6 @@ The following DRD components are available:
 * *Input data*: Use this node for information used in a decision node or a business knowledge model. Input data usually includes business-level concepts or objects relevant to the business, such as loan applicant data used in a lending strategy.
 * *Text annotation*: Use this node for explanatory notes associated with an input data node, decision node, business knowledge model, or knowledge source.
 
-NOTE: Decision service nodes are currently not supported in the {PRODUCT} {PRODUCT_VERSION} DMN designer. This support will be provided in a future release.
-
 --
 . In the DMN designer canvas, double-click the new DRD node to enter an informative node name.
 . If the node is a decision or business knowledge model, select the node to display the node options and click the *Edit* icon to open the DMN boxed expression designer to define the decision logic for the node:
