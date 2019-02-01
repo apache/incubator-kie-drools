@@ -138,7 +138,7 @@ public class POJOGenerator {
     }
 
     private static ClassOrInterfaceDeclaration toClassDeclaration(ModelBuilderImpl builder, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
-        EnumSet<Modifier> classModifiers = EnumSet.of(Modifier.PUBLIC);
+        NodeList<Modifier> classModifiers = NodeList.nodeList(Modifier.publicModifier());
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
         generatedClass.addImplementedType( GeneratedFact.class.getName() );
@@ -153,7 +153,8 @@ public class POJOGenerator {
         for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
             if (ann.getName().equals( "serialVersionUID" )) {
                 LongLiteralExpr valueExpr = new LongLiteralExpr(ann.getValue( "value" ).toString());
-                generatedClass.addFieldWithInitializer( PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL );
+                generatedClass.addFieldWithInitializer( PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.privateModifier().getKeyword()
+                        , Modifier.staticModifier().getKeyword(), Modifier.finalModifier().getKeyword() );
             } else {
                 processAnnotation( builder, typeResolver, generatedClass, ann, softAnnotations );
             }
@@ -164,7 +165,7 @@ public class POJOGenerator {
             generatedClass.setJavadocComment(generatedClassJavadoc);
         }
         
-        generatedClass.addConstructor(Modifier.PUBLIC); // No-args ctor
+        generatedClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor
 
         List<Statement> equalsFieldStatement = new ArrayList<>();
         List<Statement> hashCodeFieldStatement = new ArrayList<>();
@@ -180,7 +181,7 @@ public class POJOGenerator {
             NodeList<Statement> ctorFieldStatement = null;
 
             if (createFullArgsConstructor) {
-                fullArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+                fullArgumentsCtor = generatedClass.addConstructor( Modifier.publicModifier().getKeyword() );
                 ctorFieldStatement = NodeList.nodeList();
 
                 MethodCallExpr superCall = new MethodCallExpr( null, "super" );
@@ -205,8 +206,8 @@ public class POJOGenerator {
                 }
 
                 FieldDeclaration field = typeFieldDescr.getInitExpr() == null ?
-                        generatedClass.addField( returnType, fieldName, Modifier.PRIVATE ) :
-                        generatedClass.addFieldWithInitializer( returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.PRIVATE );
+                        generatedClass.addField( returnType, fieldName, Modifier.privateModifier().getKeyword() ) :
+                        generatedClass.addFieldWithInitializer( returnType, fieldName, parseExpression(typeFieldDescr.getInitExpr()), Modifier.privateModifier().getKeyword() );
                 field.createSetter();
                 MethodDeclaration getter = field.createGetter();
 
@@ -243,7 +244,7 @@ public class POJOGenerator {
             }
 
             if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.length) {
-                ConstructorDeclaration keyArgumentsCtor = generatedClass.addConstructor( Modifier.PUBLIC );
+                ConstructorDeclaration keyArgumentsCtor = generatedClass.addConstructor( Modifier.publicModifier().getKeyword() );
                 NodeList<Statement> ctorKeyFieldStatement = NodeList.nodeList();
                 MethodCallExpr keySuperCall = new MethodCallExpr( null, "super" );
                 ctorKeyFieldStatement.add( new ExpressionStmt(keySuperCall) );
@@ -363,7 +364,7 @@ public class POJOGenerator {
         equalsStatements.add(parseStatement("return true;"));
 
         final Type returnType = JavaParser.parseType(boolean.class.getSimpleName());
-        final MethodDeclaration equals = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), returnType, EQUALS);
+        final MethodDeclaration equals = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier()), returnType, EQUALS);
         equals.addParameter(Object.class, "o");
         equals.addAnnotation("Override");
         equals.setBody(new BlockStmt(equalsStatements));
@@ -419,7 +420,7 @@ public class POJOGenerator {
         hashCodeStatements.add(parseStatement("return result;"));
 
         final Type returnType = JavaParser.parseType(int.class.getSimpleName());
-        final MethodDeclaration equals = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), returnType, HASH_CODE);
+        final MethodDeclaration equals = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier()), returnType, HASH_CODE);
         equals.addAnnotation("Override");
         equals.setBody(new BlockStmt(hashCodeStatements));
         return equals;
@@ -467,7 +468,7 @@ public class POJOGenerator {
         final Statement toStringStatement = parseStatement(header + body + close);
 
         final Type returnType = JavaParser.parseType(String.class.getSimpleName());
-        final MethodDeclaration equals = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), returnType, TO_STRING);
+        final MethodDeclaration equals = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier()), returnType, TO_STRING);
         equals.addAnnotation("Override");
         equals.setBody(new BlockStmt(NodeList.nodeList(toStringStatement)));
         return equals;

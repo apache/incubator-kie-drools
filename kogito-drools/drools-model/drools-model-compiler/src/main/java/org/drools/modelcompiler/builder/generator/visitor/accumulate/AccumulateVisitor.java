@@ -510,7 +510,7 @@ public abstract class AccumulateVisitor {
                 for (VariableDeclarator vd : vdExpr.getVariables()) {
                     final String variableName = vd.getNameAsString();
                     contextFieldNames.add(variableName);
-                    templateContextClass.addField(vd.getType(), variableName, Modifier.PUBLIC);
+                    templateContextClass.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
                     createInitializer(variableName, vd.getInitializer()).ifPresent(statement -> {
                         initMethodBody.addStatement(statement);
                         statement.findAll(NameExpr.class).stream().map( n -> n.toString()).filter( context2::hasDeclaration ).forEach( externalDeclrs::add );
@@ -538,7 +538,7 @@ public abstract class AccumulateVisitor {
                                     .map(t -> DrlxParseUtil.classToReferenceType(t.getRawClass()))
                                     .orElseThrow(() -> new RuntimeException("Unknown type: " + initCreationExpression));
 
-                            templateContextClass.addField(type, variableName, Modifier.PUBLIC);
+                            templateContextClass.addField(type, variableName, Modifier.publicModifier().getKeyword());
                             final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initCreationExpression));
                             initializer.ifPresent(initMethodBody::addStatement);
                             accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), type.asString())));

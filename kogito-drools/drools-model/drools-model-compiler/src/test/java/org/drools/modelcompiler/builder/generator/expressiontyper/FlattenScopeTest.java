@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
@@ -39,8 +40,10 @@ public class FlattenScopeTest {
     @Test
     public void flattenMethodCall() {
         List<Node> actual = flattenScope(expr("name.startsWith(\"M\")"));
-        List<Node> expected = asList(new NameExpr("name"), new MethodCallExpr(new NameExpr("name"), "startsWith",
-                                                                              nodeList(new StringLiteralExpr("M"))));
+        MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr("name"), "startsWith",
+                                                           nodeList(new StringLiteralExpr("M")));
+        methodCallExpr.setTypeArguments(NodeList.nodeList());
+        List<Node> expected = asList(new NameExpr("name"), methodCallExpr);
         compareArrays(actual, expected);
     }
 
@@ -50,6 +53,7 @@ public class FlattenScopeTest {
 
         NameExpr name = new NameExpr("$p");
         final MethodCallExpr mc = new MethodCallExpr(name, "getChildrenA", nodeList());
+        mc.setTypeArguments(NodeList.nodeList());
         List<Node> expected = asList(name, mc, new ArrayAccessExpr(mc, new IntegerLiteralExpr(0)));
         compareArrays(actual, expected);
     }

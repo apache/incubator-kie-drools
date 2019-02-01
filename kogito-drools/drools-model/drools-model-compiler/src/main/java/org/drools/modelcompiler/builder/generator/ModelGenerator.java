@@ -173,7 +173,7 @@ public class ModelGenerator {
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
-        MethodDeclaration ruleMethod = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), toClassOrInterfaceType( Rule.class ), ruleMethodName);
+        MethodDeclaration ruleMethod = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier()), toClassOrInterfaceType( Rule.class ), ruleMethodName);
 
         ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
 
@@ -394,7 +394,7 @@ public class ModelGenerator {
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar), Modifier.FINAL);
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar), Modifier.finalModifier());
 
         MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
 
@@ -432,7 +432,7 @@ public class ModelGenerator {
 
         ClassOrInterfaceType varType = toClassOrInterfaceType(Variable.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(decl.getBindingId()), Modifier.FINAL);
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(decl.getBindingId()), Modifier.finalModifier());
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
 

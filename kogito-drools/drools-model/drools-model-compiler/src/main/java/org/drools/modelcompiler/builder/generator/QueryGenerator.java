@@ -8,6 +8,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
@@ -86,7 +87,7 @@ public class QueryGenerator {
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
 
-        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
+        MethodDeclaration queryMethod = new MethodDeclaration(NodeList.nodeList(Modifier.privateModifier()), queryType, "query_" + toId(queryDescr.getName()));
 
         BlockStmt queryBody = new BlockStmt();
         ModelGenerator.createVariables(kbuilder, queryBody, packageModel, context);

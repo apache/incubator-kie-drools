@@ -1,11 +1,11 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.stmt.BlockStmt;
@@ -27,7 +27,7 @@ public class FunctionGenerator {
             parameters.add(new Parameter(parseType(type), name));
         }
 
-        EnumSet<Modifier> modifiers = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC);
+        NodeList<Modifier> modifiers = NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier());
         MethodDeclaration methodDeclaration = new MethodDeclaration(modifiers, desc.getName(), parseType(desc.getReturnType()), nodeList(parameters));
 
         BlockStmt block = DrlxParseUtil.parseBlock("try {} catch (Exception e) { throw new RuntimeException(e); }");
