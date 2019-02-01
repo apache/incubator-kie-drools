@@ -88,6 +88,7 @@ import org.kie.dmn.model.v1_2.dmndi.DMNEdge;
 import org.kie.dmn.model.v1_2.dmndi.DMNLabel;
 import org.kie.dmn.model.v1_2.dmndi.DMNShape;
 import org.kie.dmn.model.v1_2.dmndi.DMNStyle;
+import org.kie.dmn.model.v1_2.dmndi.DiagramElement;
 import org.kie.dmn.model.v1_2.dmndi.Dimension;
 import org.kie.dmn.model.v1_2.dmndi.Point;
 import org.slf4j.Logger;
@@ -317,6 +318,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new DMNDecisionServiceDividerLineConverter(xStream));
         xStream.alias("waypoint", Point.class);
         xStream.registerConverter(new PointConverter(xStream));
+        xStream.alias("extension", DiagramElement.Extension.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
