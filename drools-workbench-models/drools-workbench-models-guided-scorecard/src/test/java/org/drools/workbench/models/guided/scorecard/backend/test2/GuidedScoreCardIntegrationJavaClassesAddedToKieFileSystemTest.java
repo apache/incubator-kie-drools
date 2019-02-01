@@ -55,7 +55,6 @@ import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
 public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
 
     @Test
-    @Ignore
     public void testEmptyScoreCardCompilation() {
         String xml1 = Helper.createEmptyGuidedScoreCardXML();
         Resource resource = ResourceFactory.newByteArrayResource(xml1.getBytes());
@@ -180,7 +179,6 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
     }
 
     @Test
-    @Ignore
     public void testIncrementalCompilation() {
         String xml1_1 = Helper.createEmptyGuidedScoreCardXML();
         String xml1_2 = Helper.createGuidedScoreCardXML(false);

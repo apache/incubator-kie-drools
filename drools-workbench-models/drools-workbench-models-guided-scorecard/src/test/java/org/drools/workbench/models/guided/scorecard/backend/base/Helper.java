@@ -71,6 +71,13 @@ public class Helper {
     public static ScoreCardModel createEmptyGuidedScoreCard() {
         final ScoreCardModel model = new ScoreCardModel();
         model.setName( "test" );
+        model.setPackageName("org.drools.workbench.models.guided.scorecard.backend.test2");
+        model.setBaselineScore(0.0);
+        model.setInitialScore(0.0);
+        model.setFactName( "Applicant" );
+        model.setFieldName( "calculatedScore" );
+        model.setUseReasonCodes( false );
+        model.setReasonCodeField( "" );
         return model;
     }
 

@@ -32,7 +32,6 @@ import static org.junit.Assert.*;
 public class GuidedScoreCardIntegrationJavaClassesOnClassPathTest {
 
     @Test
-    @Ignore
     public void testEmptyScoreCardCompilation() throws Exception {
         String xml1 = Helper.createEmptyGuidedScoreCardXML();
 
@@ -75,7 +74,6 @@ public class GuidedScoreCardIntegrationJavaClassesOnClassPathTest {
     }
 
     @Test
-    @Ignore
     public void testIncrementalCompilation() throws Exception {
         String xml1_1 = Helper.createEmptyGuidedScoreCardXML();
         String xml1_2 = Helper.createGuidedScoreCardXML(false);
