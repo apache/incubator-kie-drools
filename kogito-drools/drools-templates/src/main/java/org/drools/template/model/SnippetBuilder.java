@@ -53,14 +53,21 @@ public class SnippetBuilder {
 
     private final Pattern delimiter;
 
+    private final boolean trim;
+
     /**
      * @param snippetTemplate The snippet including the "place holder" for a parameter. If
      * no "place holder" is present,
      */
-    public SnippetBuilder( final String snippetTemplate ) {
+    public SnippetBuilder( String snippetTemplate ) {
+        this(snippetTemplate, true);
+    }
+
+    public SnippetBuilder( String snippetTemplate, boolean trim ) {
         if ( snippetTemplate == null ) {
             throw new RuntimeException( "Script template is null - check for missing script definition." );
         }
+        this.trim = trim;
         this._template = snippetTemplate;
         this.type = getType( _template );
         this.delimiter = Pattern.compile( "(.*?[^\\\\])(,|\\z)" );
@@ -125,7 +132,7 @@ public class SnippetBuilder {
             final String replace = PARAM_PREFIX + ( paramNumber + 1 );
             result = replace( result,
                               replace,
-                              cellVals[ paramNumber ].trim(),
+                              trim ? cellVals[ paramNumber ].trim() : cellVals[ paramNumber ],
                               256 );
 
         }

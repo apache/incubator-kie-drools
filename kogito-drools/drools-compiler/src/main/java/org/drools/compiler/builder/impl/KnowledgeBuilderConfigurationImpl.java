@@ -65,6 +65,7 @@ import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
+import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +127,9 @@ public class KnowledgeBuilderConfigurationImpl
     private boolean                           processStringEscapes    = true;
 
     private boolean                           classLoaderCache        = true;
-    
+
+    private boolean                           trimCellsInDTable       = true;
+
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
 
@@ -207,6 +210,10 @@ public class KnowledgeBuilderConfigurationImpl
                     this.chainedProperties.getProperty(ClassLoaderCacheOption.PROPERTY_NAME,
                                                        "true"));
 
+        setProperty( TrimCellsInDTableOption.PROPERTY_NAME,
+                    this.chainedProperties.getProperty(TrimCellsInDTableOption.PROPERTY_NAME,
+                                                       "true"));
+
         setProperty(PropertySpecificOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(PropertySpecificOption.PROPERTY_NAME,
                                                        DEFAULT_PROP_SPEC_OPT.toString()));
@@ -281,6 +288,8 @@ public class KnowledgeBuilderConfigurationImpl
             setProcessStringEscapes(Boolean.parseBoolean(value));
         } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
             setClassLoaderCacheEnabled(Boolean.parseBoolean(value));
+        } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
+            setTrimCellsInDTable(Boolean.parseBoolean(value));
         } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
             String key = name.substring(name.lastIndexOf('.') + 1);
             this.severityMap.put(key, KBuilderSeverityOption.get(key, value).getSeverity());
@@ -330,6 +339,8 @@ public class KnowledgeBuilderConfigurationImpl
             return String.valueOf(isProcessStringEscapes());
         } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
             return String.valueOf(isClassLoaderCacheEnabled());
+        } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
+            return String.valueOf(isTrimCellsInDTable());
         } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
             String key = name.substring(name.lastIndexOf('.') + 1);
             ResultSeverity severity = this.severityMap.get(key);
@@ -644,7 +655,15 @@ public class KnowledgeBuilderConfigurationImpl
     public void setClassLoaderCacheEnabled(boolean classLoaderCacheEnabled) {
         this.classLoaderCache = classLoaderCacheEnabled;
     }
-    
+
+    public boolean isTrimCellsInDTable() {
+        return trimCellsInDTable;
+    }
+
+    public void setTrimCellsInDTable( boolean trimCellsInDTable ) {
+        this.trimCellsInDTable = trimCellsInDTable;
+    }
+
     public int getParallelRulesBuildThreshold() {
     	return parallelRulesBuildThreshold.getParallelRulesBuildThreshold();
     }
@@ -705,6 +724,8 @@ public class KnowledgeBuilderConfigurationImpl
             return (T) DefaultPackageNameOption.get(this.defaultPackageName);
         } else if (ClassLoaderCacheOption.class.equals(option)) {
             return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
+        } else if (TrimCellsInDTableOption.class.equals(option)) {
+            return (T) (this.trimCellsInDTable ? TrimCellsInDTableOption.ENABLED : TrimCellsInDTableOption.DISABLED);
         } else if (PropertySpecificOption.class.equals(option)) {
             return (T) propertySpecificOption;
         } else if (LanguageLevelOption.class.equals(option)) {
@@ -758,6 +779,8 @@ public class KnowledgeBuilderConfigurationImpl
             setDefaultPackageName(((DefaultPackageNameOption) option).getPackageName());
         } else if (option instanceof ClassLoaderCacheOption) {
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
+        } else if (option instanceof TrimCellsInDTableOption) {
+            setTrimCellsInDTable(((TrimCellsInDTableOption) option).isTrimCellsInDTable());
         } else if (option instanceof KBuilderSeverityOption) {
             this.severityMap.put(((KBuilderSeverityOption) option).getName(), ((KBuilderSeverityOption) option).getSeverity());
         } else if (option instanceof PropertySpecificOption) {

@@ -16,20 +16,20 @@
 
 package org.drools.decisiontable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.acme.insurance.launcher.PricingRuleLauncher;
 import org.junit.Test;
 import org.kie.api.KieServices;
-import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.DecisionTableInputType;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -139,5 +139,23 @@ public class SpreadsheetIntegrationExampleTest {
         ksession.fireAllRules();
 
         assertTrue( p.getCanBuyAlcohol() );
+    }
+
+    @Test
+    public void testHeadingWhitespace() throws Exception {
+        System.setProperty( "drools.trimCellsInDTable", "false" );
+        try {
+            Resource dt = ResourceFactory.newClassPathResource( "/data/HeadingWhitespace.xls", getClass() );
+            KieSession ksession = getKieSession( dt );
+
+            Person p = new Person( " me" );
+            ksession.insert( p );
+
+            ksession.fireAllRules();
+
+            assertTrue( p.getCanBuyAlcohol() );
+        } finally {
+            System.clearProperty( "drools.trimCellsInDTable" );
+        }
     }
 }
