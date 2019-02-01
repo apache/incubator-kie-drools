@@ -185,6 +185,13 @@ public class ActionType {
         this.sourceBuilder.addTemplate( row, column, content );
     }
 
+    public void addCellValue( int row,
+                              int column,
+                              String content,
+                              boolean _escapeQuotesFlag ) {
+        addCellValue( row, column, content, _escapeQuotesFlag, false );
+    }
+
     /**
      * Values are added to populate the template.
      * The source builder contained needs to be "cleared" when the resultant snippet is extracted.
@@ -192,7 +199,8 @@ public class ActionType {
     public void addCellValue( int row,
                               int column,
                               String content,
-                              boolean _escapeQuotesFlag ) {
+                              boolean _escapeQuotesFlag,
+                              boolean trimCell ) {
         if ( _escapeQuotesFlag ) {
             //Michael Neale:
             // For single standard quotes we escape them - eg they may mean "inches" 
@@ -202,7 +210,7 @@ public class ActionType {
                 content = content.replace( "\"", "\\\"" );
             }
         }
-        this.sourceBuilder.addCellValue( row, column, content );
+        this.sourceBuilder.addCellValue( row, column, content, trimCell );
     }
 
 }

@@ -16,11 +16,6 @@
 
 package org.drools.decisiontable.parser.csv;
 
-import org.drools.core.util.IoUtils;
-import org.drools.decisiontable.parser.DecisionTableParser;
-import org.drools.template.parser.DataListener;
-import org.drools.template.parser.DecisionTableParseException;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +25,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.core.util.IoUtils;
+import org.drools.decisiontable.parser.DecisionTableParser;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Csv implementation. This implementation removes empty "cells" at the end of
@@ -146,5 +146,4 @@ public class CsvParser implements DecisionTableParser {
         }
         return startMergeCol;
     }
-
 }
