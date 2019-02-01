@@ -185,6 +185,13 @@ public class ActionType {
         this.sourceBuilder.addTemplate( row, column, content );
     }
 
+    public void addCellValue( int row,
+                              int column,
+                              String content,
+                              boolean _escapeQuotesFlag ) {
+        addCellValue( row, column, content, _escapeQuotesFlag, false );
+    }
+
     /**
      * Values are added to populate the template.
      * The source builder contained needs to be "cleared" when the resultant snippet is extracted.
