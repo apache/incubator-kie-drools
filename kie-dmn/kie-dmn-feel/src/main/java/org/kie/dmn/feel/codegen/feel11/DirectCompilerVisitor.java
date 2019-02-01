@@ -89,6 +89,9 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
+import static org.drools.javaparser.ast.Modifier.finalModifier;
+import static org.drools.javaparser.ast.Modifier.publicModifier;
+import static org.drools.javaparser.ast.Modifier.staticModifier;
 import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
 @Deprecated
@@ -190,9 +193,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), constantName);
         vd.setInitializer(result);
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
+        fd.setModifier(publicModifier().getKeyword(), true);
+        fd.setModifier(staticModifier().getKeyword(), true);
+        fd.setModifier(Modifier.finalModifier().getKeyword(), true);
         fd.addVariable(vd);
         return DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.NUMBER, fd);
     }
@@ -661,7 +664,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private FieldDeclaration fieldDeclarationOf(String prefix, String originalText, Expression initializer) {
         String constantName = prefix + "_" + CodegenStringUtil.escapeIdentifier(originalText);
         return new FieldDeclaration(
-                EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL),
+                NodeList.nodeList(publicModifier(), staticModifier(), finalModifier()),
                 new VariableDeclarator(
                         JavaParser.parseClassOrInterfaceType(Range.class.getCanonicalName()),
                         constantName,
@@ -777,9 +780,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
+        fd.setModifier(Modifier.publicModifier().getKeyword(), true);
+        fd.setModifier(Modifier.staticModifier().getKeyword(), true);
+        fd.setModifier(Modifier.finalModifier().getKeyword(), true);
         fd.addVariable(vd);
 
         fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
@@ -809,9 +812,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
+        fd.setModifier(Modifier.publicModifier().getKeyword(), true);
+        fd.setModifier(Modifier.staticModifier().getKeyword(), true);
+        fd.setModifier(Modifier.finalModifier().getKeyword(), true);
         fd.addVariable(vd);
 
         fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
@@ -843,9 +846,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
+        fd.setModifier(Modifier.publicModifier().getKeyword(), true);
+        fd.setModifier(Modifier.staticModifier().getKeyword(), true);
+        fd.setModifier(Modifier.finalModifier().getKeyword(), true);
         fd.addVariable(vd);
 
         fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
@@ -876,9 +879,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
+        fd.setModifier(Modifier.publicModifier().getKeyword(), true);
+        fd.setModifier(Modifier.staticModifier().getKeyword(), true);
+        fd.setModifier(Modifier.finalModifier().getKeyword(), true);
         fd.addVariable(vd);
 
         fd.setJavadocComment(" FEEL unary test: " + originalText + " ");
@@ -900,9 +903,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
+        fd.setModifier(Modifier.publicModifier().getKeyword(), true);
+        fd.setModifier(Modifier.staticModifier().getKeyword(), true);
+        fd.setModifier(Modifier.finalModifier().getKeyword(), true);
         fd.addVariable(vd);
 
         fd.setJavadocComment(" FEEL unary test: - ");

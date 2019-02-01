@@ -70,6 +70,9 @@ import org.slf4j.LoggerFactory;
 import static java.util.stream.Collectors.joining;
 
 import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.javaparser.ast.Modifier.*;
+import static org.drools.javaparser.ast.Modifier.publicModifier;
+import static org.drools.javaparser.ast.Modifier.staticModifier;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
@@ -418,7 +421,7 @@ public class PackageModel {
 
 
         for(Map.Entry<String, MethodCallExpr> windowReference : windowReferences.entrySet()) {
-            FieldDeclaration f = rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+            FieldDeclaration f = rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey(), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
             f.getVariables().get(0).setInitializer(windowReference.getValue());
         }
 
@@ -427,12 +430,12 @@ public class PackageModel {
         }
 
         for(Map.Entry<String, QueryGenerator.QueryDefWithType> queryDef: queryDefWithType.entrySet()) {
-            FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+            FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
             field.getVariables().get(0).setInitializer(queryDef.getValue().getMethodCallExpr());
         }
 
         for(Map.Entry<String, MethodDeclaration> methodName: queryMethods.entrySet()) {
-            FieldDeclaration field = rulesClass.addField(methodName.getValue().getType(), methodName.getKey(), Modifier.FINAL);
+            FieldDeclaration field = rulesClass.addField(methodName.getValue().getType(), methodName.getKey(), finalModifier().getKeyword());
             field.getVariables().get(0).setInitializer(new MethodCallExpr(null, methodName.getKey()));
         }
 
@@ -551,7 +554,7 @@ public class PackageModel {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
         ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
         VariableDeclarator rulesVar = new VariableDeclarator( rulesType, "rulesList", rulesInit );
-        rulesClass.addMember( new FieldDeclaration( EnumSet.of( Modifier.PUBLIC, Modifier.STATIC), rulesVar ) );
+        rulesClass.addMember( new FieldDeclaration( NodeList.nodeList( publicModifier(), staticModifier()), rulesVar ) );
         return rulesInit;
     }
 
@@ -592,7 +595,7 @@ public class PackageModel {
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));
 
-        FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+        FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
 
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }

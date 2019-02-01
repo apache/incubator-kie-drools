@@ -484,9 +484,9 @@ public class CompiledFEELSupport {
         VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
+        fd.setModifier(Modifier.publicModifier().getKeyword(), true);
+        fd.setModifier(Modifier.staticModifier().getKeyword(), true);
+        fd.setModifier(Modifier.finalModifier().getKeyword(), true);
         fd.addVariable(vd);
 
         fd.setJavadocComment(" FEEL unary test: - ");
