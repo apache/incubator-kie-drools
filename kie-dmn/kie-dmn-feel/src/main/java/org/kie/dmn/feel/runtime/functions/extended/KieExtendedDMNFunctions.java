@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.interval.AfterFunction;
 import org.kie.dmn.feel.runtime.functions.interval.BeforeFunction;
+import org.kie.dmn.feel.runtime.functions.interval.CoincidesFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.*;
 
 /**
@@ -66,7 +67,8 @@ public class KieExtendedDMNFunctions {
 
                                                                         // Interval based logic
                                                                         AfterFunction.INSTANCE,
-                                                                        BeforeFunction.INSTANCE
+                                                                        BeforeFunction.INSTANCE,
+                                                                        CoincidesFunction.INSTANCE
     };
 
     public static FEELFunction[] getFunctions() {
