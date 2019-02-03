@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.functions.extended;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.interval.AfterFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.*;
 
 /**
@@ -60,7 +61,10 @@ public class KieExtendedDMNFunctions {
                                                                         NNMinFunction.INSTANCE,
                                                                         NNModeFunction.INSTANCE,
                                                                         NNStddevFunction.INSTANCE,
-                                                                        NNSumFunction.INSTANCE
+                                                                        NNSumFunction.INSTANCE,
+
+                                                                        // Interval based logic
+                                                                        AfterFunction.INSTANCE
     };
 
     public static FEELFunction[] getFunctions() {

@@ -44,6 +44,11 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "nn sum( 10, null, 20, 40, null )", new BigDecimal("70", MathContext.DECIMAL128), null },
                 { "stddev( 1, 2, 3 )", BigDecimal.valueOf( 1.0 ) , null},
                 { "stddev( [1, 2, 3] )", BigDecimal.valueOf( 1.0 ) , null},
+                { "after( 1, 2 )", Boolean.FALSE, null },
+                { "after( date(\"2018-08-15\"), date(\"2018-07-25\") )", Boolean.TRUE, null },
+                { "after( date(\"2018-08-15\"), [date(\"2018-07-25\")..date(\"2018-08-10\")] )", Boolean.TRUE, null },
+                { "after( [date(\"2018-08-15\")..date(\"2018-08-31\")], date(\"2018-07-25\") )", Boolean.TRUE, null },
+                { "after( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-07-25\")..date(\"2018-07-31\")] )", Boolean.TRUE, null }
         };
         return addAdditionalParameters(cases, true);
     }
