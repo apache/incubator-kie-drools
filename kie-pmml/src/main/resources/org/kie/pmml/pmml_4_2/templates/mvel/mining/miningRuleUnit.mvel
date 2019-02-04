@@ -87,18 +87,4 @@ public class @{className} implements RuleUnit {
       return miningModelPojo;
    }
    
-   @Override
-   public void onStart() {
-      System.out.println("Starting - "+getUnitName(this));
-   }
-   
-   @Override
-   public void onEnd() {
-      System.out.println("Ending - "+getUnitName(this));
-   }
-   
-   @Override
-   public void onYield(RuleUnit other) {
-      System.out.println(getUnitName(this)+" yielding to "+getUnitName(other));
-   }
 }

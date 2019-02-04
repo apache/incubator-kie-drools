@@ -18,6 +18,7 @@ package org.drools.workbench.models.guided.scorecard.backend.test1;
 import java.util.List;
 
 import org.drools.workbench.models.guided.scorecard.backend.base.Helper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;

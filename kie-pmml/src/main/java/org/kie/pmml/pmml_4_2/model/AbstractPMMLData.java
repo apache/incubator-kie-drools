@@ -19,10 +19,14 @@ import java.io.Serializable;
 
 import org.kie.pmml.pmml_4_2.PMMLDataType;
 
-public abstract class AbstractPMMLData implements PMMLDataType, Serializable {
+public  class AbstractPMMLData implements PMMLDataType, Serializable {
     private static final long serialVersionUID = 19630331;
     private String modelName;
     private String correlationId;
+    
+    public AbstractPMMLData() {
+    	// Necessary for JAXB
+    }
 
     protected AbstractPMMLData( String correlationId ) {
         this.correlationId = correlationId;

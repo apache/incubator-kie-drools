@@ -34,6 +34,7 @@ public interface PMML4Model {
     public PMML4Model getParentModel();
     public void setParentModel(PMML4Model parentModel);
     public Map<String,PMML4Model> getChildModels();
+    public Map<String,String> getOutputTargetPojos() throws PMML4Exception;
     public List<MiningField> getRawMiningFields();
     public List<OutputField> getRawOutputFields();
     public List<PMMLMiningField> getMiningFields();
@@ -42,7 +43,8 @@ public interface PMML4Model {
     public PMMLOutputField findOutputField(String fieldName);
     public Map.Entry<String, String> getMappedMiningPojo();
     public Map.Entry<String, String> getMappedOutputPojo();
-    public Map.Entry<String, String> getMappedRuleUnit();
+
+    public Map.Entry<String, String> getMappedRuleUnit() throws PMML4Exception;
     public String getMiningPojoClassName();
     public String getOutputPojoClassName();
     public String getRuleUnitClassName();

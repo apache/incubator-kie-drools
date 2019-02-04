@@ -15,6 +15,7 @@
 
 package org.drools.workbench.models.guided.scorecard.backend.test2;
 
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,6 +30,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.workbench.models.guided.scorecard.backend.base.Helper;
 import org.drools.workbench.models.guided.scorecard.backend.test1.ApplicantAttribute;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -242,7 +244,7 @@ public class GuidedScoreCardIntegrationJavaClassesAddedToKieFileSystemTest {
                 packageNames.add(knownPkgName + "." + javaModelId);
             }
         }
-        String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId;
+        String basePkgName = DEFAULT_ROOT_PACKAGE + "." + javaModelId;
         packageNames.add(basePkgName);
         return packageNames;
     }

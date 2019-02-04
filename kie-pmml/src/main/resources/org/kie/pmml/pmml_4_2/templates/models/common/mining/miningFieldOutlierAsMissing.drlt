@@ -47,23 +47,6 @@ then
 end
 
 
-rule "miningFieldOutlierAsMissing_@{model}_@{name}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience 999
-when
- $x : @{name}( $m : missing == false, $v : valid == true,
-               context == @{format("string",model)}
-               @if{ low != null } , value < @{low} @end{}
-               @if{ low != null && upp != null } || @else{} , @end{}
-               @if{ upp != null } value > @{upp} @end{}
-                )
-then
-    delete( $x );
-        $x.setValue( null );
-        $x.setMissing( true );
-        $x.setValid( false );
-    insert( $x );
-end
 @end{}
 
 
