@@ -36,6 +36,7 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.dmndi.DMNShape;
 import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_2.dmndi.DiagramElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -60,7 +61,7 @@ public class UnmarshalMarshalTest {
     private static final StreamSource DMN12_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/DMN12.xsd").getFile());
     private static final DMNMarshaller MARSHALLER = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller();
     protected static final Logger logger = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
-    
+
     @Test
     public void testV12_ch11example() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "ch11example.dmn");
@@ -83,6 +84,11 @@ public class UnmarshalMarshalTest {
     }
 
     @Test
+    public void testV12_DMNDIDiagramElementExtension() throws Exception {
+        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DMNDIDiagramElementExtension.dmn");
+    }
+
+    @Test
     public void test_hardcoded_java_max_call() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "hardcoded-java-max-call.dmn");
     }
@@ -102,17 +108,17 @@ public class UnmarshalMarshalTest {
     }
 
     public void testRoundTrip(String subdir, String xmlfile, DMNMarshaller marshaller, Source schemaSource) throws Exception {
-        
+
         File baseOutputDir = new File("target/test-xmlunit/");
         File testClassesBaseDir = new File("target/test-classes/");
-        
-    
+
+
         File inputXMLFile = new File(testClassesBaseDir, subdir + xmlfile);
-        
+
         FileInputStream fis = new FileInputStream( inputXMLFile );
-                
+
         Definitions unmarshal = marshaller.unmarshal( new InputStreamReader( fis ) );
-        
+
         Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
         v.setSchemaSource(schemaSource);
         ValidationResult validateInputResult = v.validateInstance(new StreamSource( inputXMLFile ));
@@ -134,13 +140,13 @@ public class UnmarshalMarshalTest {
                 );
         sourceFos.flush();
         sourceFos.close();
-                
+
         System.out.println( marshaller.marshal(unmarshal) );
         File outputXMLFile = new File(baseOutputDir, subdir + "b." + xmlfile);
         try (FileWriter targetFos = new FileWriter( outputXMLFile )) {
             marshaller.marshal(unmarshal, targetFos);
         }
-        
+
         // Should also validate output XML:
         ValidationResult validateOutputResult = v.validateInstance(new StreamSource( outputXMLFile ));
         if (!validateOutputResult.isValid()) {
@@ -149,7 +155,7 @@ public class UnmarshalMarshalTest {
             }
         }
         assertTrue(validateOutputResult.isValid());
-        
+
         System.out.println("\n---\nDefault XMLUnit comparison:");
         Source control = Input.fromFile( inputXMLFile ).build();
         Source test = Input.fromFile( outputXMLFile ).build();
@@ -178,10 +184,10 @@ DMNDIv1.2:
          */
         Set<QName> attrWhichCanDefault = new HashSet<QName>();
         attrWhichCanDefault.addAll(Arrays.asList(new QName[]{
-                new QName("expressionLanguage"), 
-                new QName("typeLanguage"), 
-                new QName("isCollection"), 
-                new QName("hitPolicy"), 
+                new QName("expressionLanguage"),
+                new QName("typeLanguage"),
+                new QName("isCollection"),
+                new QName("hitPolicy"),
                 new QName("preferredOrientation"),
                 new QName("kind"),
                 new QName("textFormat"),
@@ -202,10 +208,10 @@ DMNDIv1.2:
                                     return ComparisonResult.SIMILAR;
                                 }
                             }
-                            // DMNDI/DMNDiagram#documentation is actually deserialized escaped with newlines as &#10; by the XML JDK infra. 
+                            // DMNDI/DMNDiagram#documentation is actually deserialized escaped with newlines as &#10; by the XML JDK infra.
                             if (outcome == ComparisonResult.DIFFERENT && comparison.getType() == ComparisonType.ATTR_VALUE) {
                                 if (comparison.getControlDetails().getTarget().getNodeName().equals( comparison.getTestDetails().getTarget().getNodeName() )
-                                        && comparison.getControlDetails().getTarget().getNodeType() == Node.ATTRIBUTE_NODE 
+                                        && comparison.getControlDetails().getTarget().getNodeType() == Node.ATTRIBUTE_NODE
                                         && comparison.getControlDetails().getTarget().getLocalName().equals("documentation")) {
                                     return ComparisonResult.SIMILAR;
                                 }
