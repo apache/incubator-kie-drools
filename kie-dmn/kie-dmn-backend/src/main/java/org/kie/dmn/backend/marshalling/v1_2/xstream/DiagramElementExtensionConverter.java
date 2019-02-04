@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class DiagramElementExtensionConverter extends DMNModelInstrumentedBaseCo
 
     public DiagramElementExtensionConverter(XStream xStream, List<DMNExtensionRegister> extensionRegisters) {
         super(xStream);
-        if ( !extensionRegisters.isEmpty() ) {
+        if (!extensionRegisters.isEmpty()) {
             this.extensionRegisters.addAll(extensionRegisters);
         }
     }
@@ -54,8 +54,8 @@ public class DiagramElementExtensionConverter extends DMNModelInstrumentedBaseCo
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         DMNModelInstrumentedBase obj = createModelObject();
-        assignAttributes( reader, obj );
-        if(extensionRegisters.size() == 0) {
+        assignAttributes(reader, obj);
+        if (extensionRegisters.size() == 0) {
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
@@ -89,18 +89,18 @@ public class DiagramElementExtensionConverter extends DMNModelInstrumentedBaseCo
         super.writeAttributes(writer, parent);
         // no attributes.
     }
-    
+
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
-        
-        if(extensionRegisters.size() == 0) {
+
+        if (extensionRegisters.size() == 0) {
             return;
         }
 
         org.kie.dmn.model.api.dmndi.DiagramElement.Extension ee = (org.kie.dmn.model.api.dmndi.DiagramElement.Extension) parent;
-        if ( ee.getAny() != null ) {
-            for ( Object a : ee.getAny() ) {
+        if (ee.getAny() != null) {
+            for (Object a : ee.getAny()) {
                 writeItem(a, context, writer);
             }
         }

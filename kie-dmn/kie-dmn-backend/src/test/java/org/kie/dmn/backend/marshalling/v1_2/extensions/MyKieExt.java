@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,16 @@ public class MyKieExt {
 
     @XStreamAsAttribute
     private String a1;
-    
+
     @XStreamAlias("mydroolsext")
     private MyDroolsExt content;
 
     public MyDroolsExt getContent() {
         return content;
     }
-    
+
     public void setContent(MyDroolsExt content) {
         this.content = content;
     }
-    
+
 }
