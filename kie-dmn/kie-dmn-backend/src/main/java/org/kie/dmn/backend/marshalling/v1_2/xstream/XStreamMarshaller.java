@@ -355,6 +355,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new DMNListConverter( xStream ) );
         xStream.registerConverter(new ElementCollectionConverter( xStream ) );
         xStream.registerConverter(new ExtensionElementsConverter( xStream, extensionRegisters ) );
+        xStream.registerConverter(new DiagramElementExtensionConverter(xStream, extensionRegisters));
         
         xStream.ignoreUnknownElements();
 
