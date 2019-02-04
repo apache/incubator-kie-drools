@@ -69,6 +69,7 @@ public class KieExtendedDMNFunctions {
                                                                         CoincidesFunction.INSTANCE,
                                                                         StartsFunction.INSTANCE,
                                                                         FinishesFunction.INSTANCE,
+                                                                        FinishedByFunction.INSTANCE,
 
     };
 
