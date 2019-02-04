@@ -23,13 +23,13 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-public class FinishedByFunction
+public class DuringFunction
         extends BaseFEELFunction {
 
-    public static final FinishedByFunction INSTANCE = new FinishedByFunction();
+    public static final DuringFunction INSTANCE = new DuringFunction();
 
-    public FinishedByFunction() {
-        super( "finished by" );
+    public DuringFunction() {
+        super( "during" );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "value1" ) Comparable value1, @ParameterName( "value2" ) Comparable value2) {
@@ -49,7 +49,13 @@ public class FinishedByFunction
         if ( range == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
-        return FEELFnResult.ofResult( false );
+        try {
+            boolean result = value.compareTo( range.getLowEndPoint() ) > 0 && value.compareTo( range.getHighEndPoint() ) < 0;
+            return FEELFnResult.ofResult( result );
+        } catch( Exception e ) {
+            // values are not comparable
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be compared to range"));
+        }
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "range" ) Range range, @ParameterName( "value" ) Comparable value) {
@@ -59,13 +65,7 @@ public class FinishedByFunction
         if ( range == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
-        try {
-            boolean result = ( range.getHighBoundary() == Range.RangeBoundary.CLOSED && value.compareTo( range.getHighEndPoint() ) == 0 );
-            return FEELFnResult.ofResult( result );
-        } catch( Exception e ) {
-            // values are not comparable
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be compared to range"));
-        }
+        return FEELFnResult.ofResult( false );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "range1" ) Range range1, @ParameterName( "range2" ) Range range2) {
@@ -77,8 +77,8 @@ public class FinishedByFunction
         }
         try {
             boolean result =
-                    range1.getHighBoundary() == Range.RangeBoundary.CLOSED && range2.getHighBoundary() == Range.RangeBoundary.CLOSED &&
-                    range1.getHighEndPoint().compareTo( range2.getHighEndPoint() ) == 0 && range2.getLowEndPoint().compareTo( range1.getLowEndPoint() ) > 0 ;
+                    range1.getLowEndPoint().compareTo( range2.getLowEndPoint() ) > 0 &&
+                    range1.getHighEndPoint().compareTo( range2.getHighEndPoint() ) < 0;
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
             // values are not comparable

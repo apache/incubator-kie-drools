@@ -23,13 +23,13 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-public class FinishedByFunction
+public class StartedByFunction
         extends BaseFEELFunction {
 
-    public static final FinishedByFunction INSTANCE = new FinishedByFunction();
+    public static final StartedByFunction INSTANCE = new StartedByFunction();
 
-    public FinishedByFunction() {
-        super( "finished by" );
+    public StartedByFunction() {
+        super( "started by" );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "value1" ) Comparable value1, @ParameterName( "value2" ) Comparable value2) {
@@ -60,7 +60,7 @@ public class FinishedByFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
         }
         try {
-            boolean result = ( range.getHighBoundary() == Range.RangeBoundary.CLOSED && value.compareTo( range.getHighEndPoint() ) == 0 );
+            boolean result = ( range.getLowBoundary() == Range.RangeBoundary.CLOSED && value.compareTo( range.getLowEndPoint() ) == 0 );
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
             // values are not comparable
@@ -77,8 +77,8 @@ public class FinishedByFunction
         }
         try {
             boolean result =
-                    range1.getHighBoundary() == Range.RangeBoundary.CLOSED && range2.getHighBoundary() == Range.RangeBoundary.CLOSED &&
-                    range1.getHighEndPoint().compareTo( range2.getHighEndPoint() ) == 0 && range2.getLowEndPoint().compareTo( range1.getLowEndPoint() ) > 0 ;
+                    range1.getLowBoundary() == Range.RangeBoundary.CLOSED && range2.getLowBoundary() == Range.RangeBoundary.CLOSED &&
+                    range1.getLowEndPoint().compareTo( range2.getLowEndPoint() ) == 0 && range2.getHighEndPoint().compareTo( range1.getHighEndPoint() ) < 0 ;
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
             // values are not comparable

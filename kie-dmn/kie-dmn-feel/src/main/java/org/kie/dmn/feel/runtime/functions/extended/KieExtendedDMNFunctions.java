@@ -68,8 +68,10 @@ public class KieExtendedDMNFunctions {
                                                                         BeforeFunction.INSTANCE,
                                                                         CoincidesFunction.INSTANCE,
                                                                         StartsFunction.INSTANCE,
+                                                                        StartedByFunction.INSTANCE,
                                                                         FinishesFunction.INSTANCE,
                                                                         FinishedByFunction.INSTANCE,
+                                                                        DuringFunction.INSTANCE,
 
     };
 
