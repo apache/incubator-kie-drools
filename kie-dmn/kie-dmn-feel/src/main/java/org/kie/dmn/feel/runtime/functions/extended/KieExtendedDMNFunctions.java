@@ -72,6 +72,7 @@ public class KieExtendedDMNFunctions {
                                                                         FinishesFunction.INSTANCE,
                                                                         FinishedByFunction.INSTANCE,
                                                                         DuringFunction.INSTANCE,
+                                                                        IncludesFunction.INSTANCE,
 
     };
 
