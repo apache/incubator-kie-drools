@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling" 
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" 
+                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" 
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" 
+                      xmlns:trisofeed="http://trisotech.com/feed" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                      xmlns:include1="http://www.trisotech.com/definitions/_e021d837-afc9-48f8-a5bf-b8237f264ec7" 
+                      xmlns="http://www.trisotech.com/dmn/definitions/_f698a378-7ae4-460f-9ca7-5f90b165376e" 
+                      xmlns:drools="http://drools.org"
+                      xmlns:kie="https://github.com/kiegroup/drools"
+                      id="_f698a378-7ae4-460f-9ca7-5f90b165376e" namespace="http://www.trisotech.com/dmn/definitions/_f698a378-7ae4-460f-9ca7-5f90b165376e"          exporter="DMN Modeler" exporterVersion="6.1.6.1" name="Drawing 1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decision id="_85d841f6-66d7-43e7-a0f0-3a79fd2661be" name="hardcoded decision">
+        <semantic:variable name="hardcoded decision" id="_aa7b38d6-ac2b-4b56-bc7f-308a1fa8156b" typeRef="string"/>
+        <semantic:literalExpression id="_9038faa7-97e6-4d6e-93eb-d151db5dc78e" typeRef="string">
+            <semantic:text>"Hello, World!"</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_61a0797c-d3d0-489d-8ece-59d30b13738e" name="Page 1">
+            <di:extension>
+              <kie:mykieext a1="value_a1">
+                <drools:mydroolsext b1="value_b1">Hello Extensions</drools:mydroolsext>
+              </kie:mykieext> 
+            </di:extension>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_3207a849-1fcc-4f8e-a136-7e889511438f" dmnElementRef="_85d841f6-66d7-43e7-a0f0-3a79fd2661be">
+                <dc:Bounds x="502" y="314" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_f698a378-7ae4-460f-9ca7-5f90b165376e_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="505" y="338"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_f698a378-7ae4-460f-9ca7-5f90b165376e_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

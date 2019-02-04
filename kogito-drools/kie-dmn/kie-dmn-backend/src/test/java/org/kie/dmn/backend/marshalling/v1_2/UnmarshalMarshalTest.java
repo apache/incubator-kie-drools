@@ -32,11 +32,12 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1_2.extensions.MyTestRegister;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.dmndi.DMNShape;
 import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_2.dmndi.DiagramElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -86,6 +87,12 @@ public class UnmarshalMarshalTest {
     @Test
     public void testV12_DMNDIDiagramElementExtension() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DMNDIDiagramElementExtension.dmn");
+    }
+
+    @Test
+    public void testV12_DMNDIDiagramElementExtension_withContent() throws Exception {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new MyTestRegister()));
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_2/", "DMNDIDiagramElementExtension_withContent.dmn", marshaller, DMN12_SCHEMA_SOURCE);
     }
 
     @Test
