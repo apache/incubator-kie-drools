@@ -18,7 +18,9 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -32,12 +34,17 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.util.bitmask.BitMask;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.StringUtils.splitStatements;
 
 public class MVELConsequenceBuilder
     implements
@@ -133,7 +140,7 @@ public class MVELConsequenceBuilder
                     (String) ruleDescr.getNamedConsequences().get( consequenceName );
 
             text = processMacros( text );
-            
+
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
             
             AnalysisResult analysis = dialect.analyzeBlock( context,
@@ -150,7 +157,9 @@ public class MVELConsequenceBuilder
                 // something bad happened, issue already logged in errors
                 return;
             }
-            
+
+            text = rewriteUpdates( context, analysis, text );
+
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
             
             final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclrClasses().size()];
@@ -198,6 +207,64 @@ public class MVELConsequenceBuilder
                     null,
                     "Unable to build expression for 'consequence': " + e.getMessage() + " '" + context.getRuleDescr().getConsequence() + "'"));
         }
+    }
+
+    private static String rewriteUpdates( RuleBuildContext context, AnalysisResult analysis, String text ) {
+        return rewriteUpdates( analysis.getBoundIdentifiers()::resolveType,
+                c -> {
+                    TypeDeclaration typeDeclaration = context.getKnowledgeBuilder().getTypeDeclaration(c);
+                    if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
+                        typeDeclaration.setTypeClass(c);
+                        return typeDeclaration.getAccessibleProperties();
+                    }
+                    return Collections.emptyList();
+                },
+                text );
+    }
+
+    public static String rewriteUpdates( Function<String, Class<?>> classResolver, Function<Class<?>, List<String>> propsResolver, String text ) {
+        int start = 0;
+        while (true) {
+            int updatePos = text.indexOf( "drools.update(", start );
+            if (updatePos < 0) {
+                break;
+            }
+            start = updatePos + "drools.update(".length();
+            int end = text.indexOf( ')', start );
+            String identifier = text.substring( start, end ).trim();
+            Class<?> updatedType = classResolver.apply( identifier );
+            if (updatedType == null) {
+                continue;
+            }
+
+            List<String> settableProperties = propsResolver.apply(updatedType);
+            if (settableProperties.isEmpty()) {
+                continue;
+            }
+            BitMask modificationMask = getEmptyPropertyReactiveMask(settableProperties.size());
+
+            for (String expr : splitStatements(text)) {
+                if (expr.startsWith( identifier + "." )) {
+                    int fieldEnd = identifier.length()+1;
+                    while (Character.isJavaIdentifierPart( expr.charAt( fieldEnd ) )) fieldEnd++;
+                    String propertyName = expr.substring( identifier.length()+1, fieldEnd );
+                    if (propertyName.startsWith("set") && propertyName.length() > 3) {
+                        propertyName = Character.toLowerCase(propertyName.charAt(3)) + propertyName.substring(4);
+                    }
+
+                    int index = settableProperties.indexOf(propertyName);
+                    if (index >= 0) {
+                        modificationMask = setPropertyOnMask(modificationMask, index);
+                    }
+                }
+            }
+
+            String updateArgs = ", " + modificationMask.getInstancingStatement() + ", " + updatedType.getCanonicalName() + ".class";
+            text = text.substring( 0, end ) + updateArgs + text.substring( end );
+            start = end + updateArgs.length();
+        }
+
+        return text;
     }
 
     public static String processMacros(String consequence) {
