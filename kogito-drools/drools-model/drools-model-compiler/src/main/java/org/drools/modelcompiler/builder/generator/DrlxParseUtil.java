@@ -136,7 +136,7 @@ public class DrlxParseUtil {
         Method accessor = getAccessor( clazz, name );
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
-            return new TypedExpression( body, accessor.getReturnType() );
+            return new TypedExpression( body, accessor.getGenericReturnType() );
         }
         if (clazz.isArray() && name.equals( "length" )) {
             FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( "_this" ), name );
