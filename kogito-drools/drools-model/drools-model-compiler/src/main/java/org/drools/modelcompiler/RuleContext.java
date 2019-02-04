@@ -140,4 +140,18 @@ public class RuleContext {
         patterns.forEach( (var, pattern) -> decls.put( var.getName(), pattern.getDeclaration() ) );
         return decls;
     }
+
+    public Class<?> getDeclarationClass(String name) {
+        for (Map.Entry<Variable, Declaration> entry : innerDeclaration.entrySet()) {
+            if (entry.getKey().getName().equals( name )) {
+                return entry.getValue().getDeclarationClass();
+            }
+        }
+        for (Map.Entry<Variable, Pattern> entry : patterns.entrySet()) {
+            if (entry.getKey().getName().equals( name )) {
+                return entry.getValue().getDeclaration().getDeclarationClass();
+            }
+        }
+        return null;
+    }
 }
