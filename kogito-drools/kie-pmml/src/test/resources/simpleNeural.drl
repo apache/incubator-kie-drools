@@ -16,7 +16,7 @@
 package org.kie.pmml.pmml_4_2.test;
 
 import org.kie.pmml.pmml_4_2.ModelMarker;
-import org.kie.pmml.pmml_4_2.PMML4AbstractField;
+import org.kie.api.pmml.PMML4AbstractField;
 
 
  declare ColdRisk

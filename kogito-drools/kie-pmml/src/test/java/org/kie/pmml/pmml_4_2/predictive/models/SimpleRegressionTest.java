@@ -118,7 +118,6 @@ public class SimpleRegressionTest extends DroolsAbstractPMMLTest {
         Class<? extends RuleUnit> unitClass = getStartingRuleUnit("RuleUnitIndicator",(InternalKnowledgeBase)kbase,possiblePackages);
         assertNotNull(unitClass);
         
-        int x = executor.run(unitClass);
         
         data.insert(request);
         resultData.insert(resultHolder);

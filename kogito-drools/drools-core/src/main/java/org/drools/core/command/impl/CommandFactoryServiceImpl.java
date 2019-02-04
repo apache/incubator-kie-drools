@@ -30,6 +30,7 @@ import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.GetSessionTimeCommand;
 import org.drools.core.command.runtime.KBuilderSetPropertyCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
+import org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.RegisterWorkItemHandlerCommand;
@@ -58,6 +59,8 @@ import org.drools.core.command.runtime.rule.QueryCommand;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.command.Setter;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
@@ -359,5 +362,9 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     @Override
     public Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit, String outIdentifier) {
         return new AdvanceSessionTimeCommand( outIdentifier, amount, unit );
+    }
+    
+    public Command newApplyPmmlModel(PMMLRequestData request) {
+    	return new ApplyPmmlModelCommand(request);
     }
 }

@@ -30,28 +30,8 @@
 
 @declare{'rootDataFieldRule'}
 
-declare PMML4AbstractField
-end
 
-declare DataField extends PMML4AbstractField
- @@role(event)
-   valid : boolean   = false      @position(2)
-   missing : boolean  = false     @position(3) @key
-   context : String @key          @position(1)
-   name    : String
-//   cyclic = (false) : boolean
-//   continuous = (false) : boolean
-//   categorical = (false) : boolean
-//   ordinal = (false) : boolean
-end
 
-declare OutputField extends DataField
-@@role(event)
-
-    warning  : String = "No Warning"
-    target   : boolean  = false
-
-end
 @end{}
 
 

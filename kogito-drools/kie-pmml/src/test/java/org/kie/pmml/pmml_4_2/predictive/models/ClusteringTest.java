@@ -27,6 +27,7 @@ import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 @Ignore
@@ -35,7 +36,6 @@ public class ClusteringTest extends DroolsAbstractPMMLTest {
 
     private static final boolean VERBOSE = true;
     private static final String source1 = "org/kie/pmml/pmml_4_2/test_clustering.xml";
-    private static final String packageName = "org.kie.pmml.pmml_4_2";
 
 
     @After
@@ -57,7 +57,7 @@ public class ClusteringTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();
         
-        FactType mu = kSession.getKieBase().getFactType( packageName, "DistanceMembership" );
+        FactType mu = kSession.getKieBase().getFactType( DEFAULT_ROOT_PACKAGE, "DistanceMembership" );
         Collection mus = kSession.getObjects( new ClassObjectFilter( mu.getFactClass()) );
         assertTrue( mus.size() > 0 );
         for ( Object x : mus ) {

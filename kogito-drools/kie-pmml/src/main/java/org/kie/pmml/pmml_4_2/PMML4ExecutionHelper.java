@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.pmml_4_2;
 
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -355,7 +357,7 @@ public class PMML4ExecutionHelper {
                 packageNames.add(knownPkgName + "." + javaModelId);
             }
         }
-        packageNames.add(PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId);
+        packageNames.add(DEFAULT_ROOT_PACKAGE + "." + javaModelId);
         return packageNames;
     }
 

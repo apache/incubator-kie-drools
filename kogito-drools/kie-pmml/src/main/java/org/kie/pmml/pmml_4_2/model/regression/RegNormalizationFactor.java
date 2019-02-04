@@ -104,5 +104,11 @@ public class RegNormalizationFactor {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "RegNormalizationFactor [context=" + context + ", target=" + target + ", den=" + den + "]";
+	}
+
+	
 	
 }

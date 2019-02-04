@@ -32,10 +32,6 @@ import org.kie.api.runtime.rule.FactHandle;
 @code{ int salienceValue; }
 @code{ String nextSegmentId; }
 
-declare @{miningModel.targetField}
-   value: Number
-   weight: Double
-end
 
 rule "Start Mining - @{miningModel.modelId}"
 salience 1000

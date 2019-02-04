@@ -16,6 +16,8 @@
 
 package org.kie.pmml.pmml_4_2;
 
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -459,7 +461,7 @@ public abstract class DroolsAbstractPMMLTest {
                 packageNames.add(knownPkgName + "." + javaModelId);
             }
         }
-        String basePkgName = PMML4UnitImpl.DEFAULT_ROOT_PACKAGE + "." + javaModelId;
+        String basePkgName = DEFAULT_ROOT_PACKAGE + "." + javaModelId;
         packageNames.add(basePkgName);
         return packageNames;
     }

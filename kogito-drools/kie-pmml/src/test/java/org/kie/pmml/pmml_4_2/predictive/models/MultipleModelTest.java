@@ -33,6 +33,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.ModelMarker;
 
+import static org.drools.core.command.runtime.pmml.PmmlConstants.DEFAULT_ROOT_PACKAGE;
 import static org.junit.Assert.assertEquals;
 @Ignore
 public class MultipleModelTest extends DroolsAbstractPMMLTest {
@@ -44,7 +45,7 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
     private static final String source3 = "org/kie/pmml/pmml_4_2/mock_breastcancer.xml";
     private static final String source4 = "org/kie/pmml/pmml_4_2/test_svm.xml";
 
-    private static final String packageName = "org.kie.pmml.pmml_4_2";
+    private static final String DEFAULT_ROOT_PACKAGE = "org.kie.pmml.pmml_4_2";
 
     @Test
     public void testCompositeBuilding() throws Exception {
@@ -63,7 +64,7 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();
 
         assertEquals( 2, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
-        assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
+        assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( DEFAULT_ROOT_PACKAGE, "Synapse" ).getFactClass() ) ).size() );
 
         kSession.dispose();
 
@@ -95,7 +96,7 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();
 
         assertEquals( 2, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
-        assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
+        assertEquals( 11, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( DEFAULT_ROOT_PACKAGE, "Synapse" ).getFactClass() ) ).size() );
 
         kSession.dispose();
 
@@ -174,7 +175,7 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
 //
 //        assertEquals( 3, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
 //        assertEquals( 3, kSession.getObjects( new ClassObjectFilter( Questionnaire.class ) ).size() );
-//        assertEquals( 23, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
+//        assertEquals( 23, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( DEFAULT_ROOT_PACKAGE, "Synapse" ).getFactClass() ) ).size() );
 //
 //
 //        kSession.dispose();
@@ -233,8 +234,8 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
 //
 //        assertEquals( 2, kSession.getObjects( new ClassObjectFilter( ModelMarker.class ) ).size() );
 //        assertEquals( 1, kSession.getObjects( new ClassObjectFilter( Questionnaire.class ) ).size() );
-//        assertEquals( 9, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "Synapse" ).getFactClass() ) ).size() );
-//        assertEquals( 4, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( packageName, "SupportVector" ).getFactClass() ) ).size() );
+//        assertEquals( 9, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( DEFAULT_ROOT_PACKAGE, "Synapse" ).getFactClass() ) ).size() );
+//        assertEquals( 4, kSession.getObjects( new ClassObjectFilter( kSession.getKieBase().getFactType( DEFAULT_ROOT_PACKAGE, "SupportVector" ).getFactClass() ) ).size() );
 //
 //        kSession.dispose();
 //        kagent.dispose();

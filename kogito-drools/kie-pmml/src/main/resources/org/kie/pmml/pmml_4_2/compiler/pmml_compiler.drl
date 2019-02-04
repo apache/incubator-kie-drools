@@ -182,12 +182,6 @@ then
         map.put( "type", utils.mapDatatype( $fld.dataType ) );
         map.put( "modelType", null );
         map.put( "tgtType", null );
-        //map.put("cyclic",("1".equals($fld.isCyclic)));
-        //map.put("categorical","categorical".equalsIgnoreCase($fld.optype.v alue));
-        //map.put("continuous","continuous".equalsIgnoreCase($fld.optype.v alue));
-        //map.put("ordinal","ordinal".equalsIgnoreCase($fld.optype.v alue));
-    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
-//    utils.applyTemplate("updateIOField.drlt", utils, registry, map, theory);
 
 end
 
@@ -364,7 +358,6 @@ when
     $fld : DerivedField( $n : name, $t :  dataType )
     not    FieldMarker( name == $n )
 then
-//    String opt = $fld.optype.v alue;
     HashMap map = utils.container;
         map.put( "context", utils.context );
         map.put( "fullName", $fld.displayName );
@@ -373,12 +366,7 @@ then
         map.put( "super", null );
         map.put( "modelType", null );
         map.put( "tgtType", null );
-//        map.put("cyclic",false);
-//        map.put("categorical","categorical".equalsIgnoreCase(opt));
-//        map.put("continuous","continuous".equalsIgnoreCase(opt));
-//        map.put("ordinal","ordinal".equalsIgnoreCase(opt));
-    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
-//    utils.applyTemplate("updateIOField.drlt", utils, registry, map, theory);
+    utils.applyTemplate("updateIOField.drlt", utils, registry, map, theory);
 end
 
 
@@ -757,7 +745,6 @@ when
            MapValues( this == $map, $fcpairs : fieldColumnPairs )
     $sup : MapSupportBean( ref == $map, $keys : types.keySet )
     $fcp : FieldColumnPair( column not memberOf $keys ) from $fcpairs
-//    DataField( name == $fcp.field, $type : dataType )
 then
     modify ( $sup ) {
         types.put( $fcp.column, $type.value );
@@ -934,7 +921,6 @@ when
         result( bag )
     )
 then
-    //System.err.println("Got fun args " + $args );
 
     String expr = utils.mapFunction( $f2, $args );
     String bit = expr;
@@ -943,7 +929,6 @@ then
         $deps.add(  utils.mapFunctionAsQuery( $f2, $args ) );
     }
 
-    //System.out.println("Built bit for fun " + $f2 + " with expr " + expr + ", result for " + $bag + " using parentes " + $funx );
 
     insertLogical( new FunctionResult( bit, $a, $bag, false, $deps, $expr.indexOf( $a2  ) ) );
 
@@ -974,7 +959,6 @@ when
         $exprFieldList : collectList( $x )
     )
 then
-//    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>  Built final bit " + $exprFieldList + " >> " + $args + " will need >>>> " + $deps );
 
     HashMap map = utils.container;
         map.put( "context", utils.context );
@@ -1203,14 +1187,6 @@ then
     insertLogical( paramField );
 end
 
-//
-//
-//rule "Sc0"
-//when
-//    $fs : FieldScope()
-//then
-//    System.out.println( $fs );
-//end
 
 
 
@@ -1688,7 +1664,6 @@ when
            TypeOfField( name == $tgt, $tgtType : dataType != null )
     $tf  : TypeOfField( name == $name )
     $mod : OutputParentModel( field == $of, $mt : modelType )
-//    eval(! utils.isModelBeanDefined( utils.compactUpperCase( $name ) ) )
 then
     utils.addModelBeanDefinition( $name );
     HashMap map = utils.container;
@@ -1699,7 +1674,6 @@ then
         map.put( "modelType", $mt );
         map.put( "tgtType", $tgtType );
         map.put( "type", utils.mapDatatype( utils.mapFeatureType( $tf.dataType, $feat ) ) );
-    utils.applyTemplate( "ioTypeDeclare.drlt", utils, registry, map, theory );
     utils.applyTemplate( "updateIOField.drlt", utils, registry, map, theory );
 end
 

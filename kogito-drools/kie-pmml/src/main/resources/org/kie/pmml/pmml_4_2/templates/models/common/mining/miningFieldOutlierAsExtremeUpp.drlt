@@ -43,20 +43,6 @@ then
 end
 
 
-rule "miningFieldOutlierAsExtremeUpp_@{model}_@{name}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-salience 999
-when
- $x : @{name}( $m : missing == false, $v : valid == true,
-               context == @{format("string",model)},
-               value > @{upp} )
-then
-    delete( $x );
-        $x.setValue( @{upp} );
-        $x.setMissing( false );
-        $x.setValid( true );
-    insert( $x );
-end
 @end{}
 
 
