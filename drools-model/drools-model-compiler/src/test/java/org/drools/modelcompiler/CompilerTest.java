@@ -1323,6 +1323,36 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 1, ksession.fireAllRules() );
     }
 
+
+    @Test
+    public void testMapWithBinding() {
+        // DROOLS-3558
+        final String drl1 = "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        $p : Person()\n" +
+                "        $a : Address( number == $p.items[1] )\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Person john = new Person("John");
+        HashMap<Integer, Integer> items = new HashMap<Integer, Integer>();
+        items.put(1, 20);
+        john.setItems(items);
+
+        items.values().iterator().next();
+        ksession.insert(john);
+
+        final Address address = new Address("Tasman", 20, "Nelson");
+        ksession.insert(address);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
     @Test
     public void testMapAccessPropertyWithCast() {
         final String drl1 =

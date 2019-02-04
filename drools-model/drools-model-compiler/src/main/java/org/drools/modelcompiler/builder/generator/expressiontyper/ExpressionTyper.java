@@ -624,7 +624,7 @@ public class ExpressionTyper {
         if (rawClass.isArray()) {
             ArrayAccessExpr result = new ArrayAccessExpr( nameExpr.expressionCursor, indexExpr.getExpression() );
             return of(new TypedExpressionCursor( result, rawClass.getComponentType() ));
-        } else if (List.class.isAssignableFrom( rawClass )) {
+        } else if (List.class.isAssignableFrom( rawClass ) || Map.class.isAssignableFrom( rawClass )) {
             MethodCallExpr result = new MethodCallExpr( nameExpr.expressionCursor, "get" );
             result.addArgument( indexExpr.getExpression() );
             java.lang.reflect.Type resultType = arrayType instanceof ParameterizedType ? (( ParameterizedType ) arrayType).getActualTypeArguments()[0] : Object.class;
