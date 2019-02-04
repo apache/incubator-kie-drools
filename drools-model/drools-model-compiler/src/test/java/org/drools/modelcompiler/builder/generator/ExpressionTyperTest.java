@@ -137,15 +137,33 @@ public class ExpressionTyperTest {
         final TypedExpression expected2 = typedResult("_this.getItems().get(((Integer)1))", Object.class);
         final TypedExpression actual2 = toTypedExpression("items[(Integer)1]", Person.class);
         assertEquals(expected2, actual2);
+    }
 
+    @Test
+    public void mapAccessExpr() {
         final TypedExpression expected3 = typedResult("_this.get(\"type\")", Object.class);
         final TypedExpression actual3 = toTypedExpression("this[\"type\"]", Map.class);
         assertEquals(expected3, actual3);
     }
 
     @Test
+    public void mapAccessExpr2() {
+        final TypedExpression expected3 = typedResult("$p.getItems().get(\"type\")", Integer.class, "$p.items[\"type\"]");
+        final TypedExpression actual3 = toTypedExpression("$p.items[\"type\"]", Object.class, new DeclarationSpec("$p", Person.class));
+        assertEquals(expected3, actual3);
+    }
+
+    @Test
+    public void mapAccessExpr3() {
+        final TypedExpression expected = typedResult("$p.getItems().get(1)", Integer.class, "$p.items[1]");
+        final TypedExpression actual = toTypedExpression("$p.items[1]", Object.class,
+                                                         new DeclarationSpec("$p", Person.class));
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void arrayAccessExprDeclaration() {
-        final TypedExpression expected = typedResult("$data.getValues().get(0)", Object.class, "$data.values[0]");
+        final TypedExpression expected = typedResult("$data.getValues().get(0)", Integer.class, "$data.values[0]");
         final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
                                                          new DeclarationSpec("$data", Data.class));
         assertEquals(expected, actual);
