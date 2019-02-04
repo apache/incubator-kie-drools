@@ -58,6 +58,68 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
+    public void testPropertyReactivityWithUpdate() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    $p.setAge( $p.getAge()+1 );\n" +
+                "    update($p);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+    }
+
+    @Test
+    public void testPropertyReactivityMvel() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R dialect\"mvel\" when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { age = $p.age+1 };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+    }
+
+    @Test
+    public void testPropertyReactivityMvelWithUpdate() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R dialect\"mvel\" when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    $p.age = $p.age+1;\n" +
+                "    update($p);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+    }
+
+    @Test
     public void testWatch() {
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
