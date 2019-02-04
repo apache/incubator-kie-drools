@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -178,6 +179,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
             }
         }
 
+        if (roomList.isEmpty()) {
+            LOGGER.warn("There are no rooms. Log into the CFP webapp, open the tab configuration and add the rooms before importing it here.");
+        }
         roomList.sort(Comparator.comparing(Room::getName));
         solution.setRoomList(roomList);
     }
@@ -230,22 +234,23 @@ public class ConferenceSchedulingCfpDevoxxImporter {
 
         String talksUrl = conferenceBaseUrl + "/talks";
         LOGGER.debug("Sending a request to: {}", talksUrl);
-        JsonArray talkArray = readJson(talksUrl, JsonReader::readObject).getJsonObject("talks").getJsonArray("accepted");
+        for (JsonValue talksValue : readJson(talksUrl, JsonReader::readObject).getJsonObject("talks").values()) {
+            JsonArray talkArray = (JsonArray) talksValue;
+            for (int i = 0; i < talkArray.size(); i++) {
+                JsonObject talkObject = talkArray.getJsonObject(i);
 
-        for (int i = 0; i < talkArray.size(); i++) {
-            JsonObject talkObject = talkArray.getJsonObject(i);
+                String code = talkObject.getString("id");
+                String title = talkObject.getString("title");
+                String talkTypeId = talkObject.getJsonObject("talkType").getString("id");
+                Set<String> themeTrackSet = extractThemeTrackSet(talkObject, code, title);
+                String language = talkObject.getString("lang");
+                int audienceLevel = Integer.parseInt(talkObject.getString("audienceLevel").replaceAll("[^0-9]", ""));
+                List<Speaker> speakerList = extractSpeakerList(talkObject, code, title);
+                Set<String> contentTagSet = extractContentTagSet(talkObject);
 
-            String code = talkObject.getString("id");
-            String title = talkObject.getString("title");
-            String talkTypeId = talkObject.getJsonObject("talkType").getString("id");
-            Set<String> themeTrackSet = extractThemeTrackSet(talkObject, code, title);
-            String language = talkObject.getString("lang");
-            int audienceLevel = Integer.parseInt(talkObject.getString("audienceLevel").replaceAll("[^0-9]", ""));
-            List<Speaker> speakerList = extractSpeakerList(talkObject, code, title);
-            Set<String> contentTagSet = extractContentTagSet(talkObject);
-
-            if (!Arrays.asList(IGNORED_TALK_TYPES).contains(talkTypeId)) {
-                createTalk(code, title, talkTypeId, themeTrackSet, language, speakerList, audienceLevel, contentTagSet);
+                if (!Arrays.asList(IGNORED_TALK_TYPES).contains(talkTypeId)) {
+                    createTalk(code, title, talkTypeId, themeTrackSet, language, speakerList, audienceLevel, contentTagSet);
+                }
             }
         }
     }
@@ -422,6 +427,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
             }
         }
 
+        if (timeslotList.isEmpty()) {
+            LOGGER.warn("There are no timeslots. Log into the CFP webapp, open the tab configuration and add the timeslots before importing it here.");
+        }
         for (Room room : solution.getRoomList()) {
             room.setUnavailableTimeslotSet(timeslotList.stream()
                     .filter(timeslot -> !timeslotToAvailableRoomsMap.get(timeslot).contains(room))
