@@ -130,7 +130,7 @@ public abstract class DiagramElement extends KieDMNModelInstrumentedBase impleme
 
 
 
-    public static class Extension implements org.kie.dmn.model.api.dmndi.DiagramElement.Extension {
+    public static class Extension extends KieDMNModelInstrumentedBase implements org.kie.dmn.model.api.dmndi.DiagramElement.Extension {
 
         protected List<Object> any;
 
