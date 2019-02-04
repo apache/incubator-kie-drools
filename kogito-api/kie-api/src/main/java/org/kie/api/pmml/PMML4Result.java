@@ -47,8 +47,11 @@ public class PMML4Result {
     private int segmentIndex;
     @XmlAttribute(name="resultCode", required=true)
     private String resultCode;
+    @XmlAttribute(name="resultObjectName")
+    private String resultObjectName;
     @XmlElementWrapper(name="resultVariables")
     private Map<String, Object> resultVariables;
+
     
     public PMML4Result() {
         resultVariables = new HashMap<>();
@@ -89,6 +92,15 @@ public class PMML4Result {
 
     public void setSegmentIndex(int segmentIndex) {
         this.segmentIndex = segmentIndex;
+    }
+
+    
+    public String getResultObjectName() {
+        return resultObjectName;
+    }
+
+    public void setResultObjectName(String resultObjectName) {
+        this.resultObjectName = resultObjectName;
     }
 
     public Map<String, Object> getResultVariables() {
