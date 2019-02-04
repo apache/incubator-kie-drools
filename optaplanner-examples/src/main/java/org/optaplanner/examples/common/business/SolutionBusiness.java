@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
@@ -212,6 +213,10 @@ public class SolutionBusiness<Solution_> {
         return solutionFileName;
     }
 
+    public void setSolutionFileName(String solutionFileName) {
+        this.solutionFileName = solutionFileName;
+    }
+
     public Score getScore() {
         return guiScoreDirector.calculateScore();
     }
@@ -384,5 +389,4 @@ public class SolutionBusiness<Solution_> {
         SwapMove<Solution_> move = createSwapMove(leftEntity, rightEntity);
         doMove(move);
     }
-
 }

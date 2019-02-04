@@ -76,7 +76,7 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
         private final JDialog dialog;
 
         public ConferenceCFPImportWorker(SolutionBusiness<ConferenceSolution> solutionBusiness,
-                SolutionPanel<ConferenceSolution> solutionPanel, String conferenceBaseUrl) {
+                                         SolutionPanel<ConferenceSolution> solutionPanel, String conferenceBaseUrl) {
             this.solutionBusiness = solutionBusiness;
             this.solutionPanel = solutionPanel;
             this.conferenceBaseUrl = conferenceBaseUrl;
@@ -127,13 +127,13 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
             } catch (ExecutionException e) {
                 JOptionPane.showMessageDialog(solutionPanel,
                         "CFP import failed.\nThe next dialog will explain the cause.\n\n"
-                        + "Fix it in ConferenceSchedulingCfpDevoxxImporter.java in the optaplanner repository.");
+                                + "Fix it in ConferenceSchedulingCfpDevoxxImporter.java in the optaplanner repository.");
                 throw new IllegalStateException("Importing failed.", e.getCause());
             }
             solutionBusiness.setSolution(cfpProblem);
+            solutionBusiness.setSolutionFileName(solutionBusiness.getSolution().getConferenceName());
             JOptionPane.showMessageDialog(solutionPanel, "CFP data imported successfully.");
+            solutionPanel.getSolverAndPersistenceFrame().setSolutionLoaded(null);
         }
-
     }
-
 }

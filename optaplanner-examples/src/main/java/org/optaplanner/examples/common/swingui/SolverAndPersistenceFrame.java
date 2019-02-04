@@ -677,7 +677,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     }
 
-    private void setSolutionLoaded(Object eventSource) {
+    public void setSolutionLoaded(Object eventSource) {
         if (eventSource != quickOpenUnsolvedJList) {
             quickOpenUnsolvedJList.clearSelection();
         }
