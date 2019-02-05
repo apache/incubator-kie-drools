@@ -36,8 +36,8 @@ public class FinishedByFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( finishedByFunction.invoke((Comparable) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( finishedByFunction.invoke((Comparable) "a", (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError( finishedByFunction.invoke((Range) null, (Comparable) "b" ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError( finishedByFunction.invoke((Range) new RangeImpl(), (Comparable) null ), InvalidParametersEvent.class );
     }
 
     @Test
@@ -45,32 +45,6 @@ public class FinishedByFunctionTest {
         FunctionTestUtil.assertResultError( finishedByFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED ) ), InvalidParametersEvent.class );
-    }
-
-    @Test
-    public void invokeParamSingles() {
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( "a", "b" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( "a", "a" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( "b", "a" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( BigDecimal.valueOf(2), BigDecimal.valueOf(1) ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( BigDecimal.valueOf(1), BigDecimal.valueOf(2) ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( BigDecimal.valueOf(1), BigDecimal.valueOf(1) ), Boolean.FALSE );
-    }
-
-    @Test
-    public void invokeParamSingleAndRange() {
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( "f",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( "a",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( "f",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( finishedByFunction.invoke( "g",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
     }
 
     @Test

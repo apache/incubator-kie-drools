@@ -56,42 +56,6 @@ public class CoincidesFunctionTest {
     }
 
     @Test
-    public void invokeParamSingleAndRange() {
-        FunctionTestUtil.assertResult( coincidesFunction.invoke( "a",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( coincidesFunction.invoke( "f",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( coincidesFunction.invoke( "f",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( coincidesFunction.invoke( "g",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-    }
-
-    @Test
-    public void invokeParamRangeAndSingle() {
-        FunctionTestUtil.assertResult( coincidesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "f" ),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( coincidesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "a"),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( coincidesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.OPEN, "a", "f", Range.RangeBoundary.CLOSED ),
-                "a" ),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( coincidesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "b", "f", Range.RangeBoundary.CLOSED ),
-                "a" ),
-                Boolean.FALSE );
-    }
-
-    @Test
     public void invokeParamRangeAndRange() {
         FunctionTestUtil.assertResult( coincidesFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),

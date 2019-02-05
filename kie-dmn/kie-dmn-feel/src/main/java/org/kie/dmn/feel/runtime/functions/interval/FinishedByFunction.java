@@ -32,26 +32,6 @@ public class FinishedByFunction
         super( "finished by" );
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "value1" ) Comparable value1, @ParameterName( "value2" ) Comparable value2) {
-        if ( value1 == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value1", "cannot be null"));
-        }
-        if ( value2 == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value2", "cannot be null"));
-        }
-        return FEELFnResult.ofResult( false );
-    }
-
-    public FEELFnResult<Boolean> invoke(@ParameterName( "value" ) Comparable value, @ParameterName( "range" ) Range range) {
-        if ( value == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be null"));
-        }
-        if ( range == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range", "cannot be null"));
-        }
-        return FEELFnResult.ofResult( false );
-    }
-
     public FEELFnResult<Boolean> invoke(@ParameterName( "range" ) Range range, @ParameterName( "value" ) Comparable value) {
         if ( value == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "value", "cannot be null"));

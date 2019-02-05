@@ -36,8 +36,8 @@ public class StartsFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( startsFunction.invoke((Comparable) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( startsFunction.invoke((Comparable) "a", (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError( startsFunction.invoke((Comparable) null, (Range) new RangeImpl() ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError( startsFunction.invoke((Comparable) "a", (Range) null ), InvalidParametersEvent.class );
     }
 
     @Test
@@ -45,16 +45,6 @@ public class StartsFunctionTest {
         FunctionTestUtil.assertResultError( startsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED ) ), InvalidParametersEvent.class );
-    }
-
-    @Test
-    public void invokeParamSingles() {
-        FunctionTestUtil.assertResult( startsFunction.invoke( "a", "b" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke( "a", "a" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke( "b", "a" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke( BigDecimal.valueOf(2), BigDecimal.valueOf(1) ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke( BigDecimal.valueOf(1), BigDecimal.valueOf(2) ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke( BigDecimal.valueOf(1), BigDecimal.valueOf(1) ), Boolean.FALSE );
     }
 
     @Test
@@ -70,26 +60,6 @@ public class StartsFunctionTest {
                 Boolean.FALSE );
         FunctionTestUtil.assertResult( startsFunction.invoke( "a",
                 new RangeImpl( Range.RangeBoundary.CLOSED, "b", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-    }
-
-    @Test
-    public void invokeParamRangeAndSingle() {
-        FunctionTestUtil.assertResult( startsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "f" ),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "a"),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN ),
-                "f" ),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( startsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "g" ),
                 Boolean.FALSE );
     }
 

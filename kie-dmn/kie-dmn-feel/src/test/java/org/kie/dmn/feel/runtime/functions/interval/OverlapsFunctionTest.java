@@ -36,8 +36,8 @@ public class OverlapsFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Comparable) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Comparable) "a", (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Range) null, (Range) new RangeImpl() ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Range) new RangeImpl(), (Range) null ), InvalidParametersEvent.class );
     }
 
     @Test
@@ -45,52 +45,6 @@ public class OverlapsFunctionTest {
         FunctionTestUtil.assertResultError( overlapsFunction.invoke(
                 new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
                 new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED ) ), InvalidParametersEvent.class );
-    }
-
-    @Test
-    public void invokeParamSingles() {
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( "a", "b" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( "a", "a" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( "b", "a" ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( BigDecimal.valueOf(2), BigDecimal.valueOf(1) ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( BigDecimal.valueOf(1), BigDecimal.valueOf(2) ), Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( BigDecimal.valueOf(1), BigDecimal.valueOf(1) ), Boolean.FALSE );
-    }
-
-    @Test
-    public void invokeParamSingleAndRange() {
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( "c",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( "f",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( "a",
-                new RangeImpl( Range.RangeBoundary.OPEN, "a", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke( "a",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "b", "f", Range.RangeBoundary.CLOSED )),
-                Boolean.FALSE );
-    }
-
-    @Test
-    public void invokeParamRangeAndSingle() {
-        FunctionTestUtil.assertResult( overlapsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "c" ),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "a"),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN ),
-                "f" ),
-                Boolean.FALSE );
-        FunctionTestUtil.assertResult( overlapsFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                "g" ),
-                Boolean.FALSE );
     }
 
     @Test
