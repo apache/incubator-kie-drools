@@ -157,13 +157,13 @@ public class KieBuilderImpl
             releaseId = pomModel.getReleaseId();
 
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
-            KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
-            for ( AFReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
-                KieModule depModule = repository.getKieModule( adapt( dep ), pomModel );
-                if ( depModule != null ) {
-                    addKieDependency( depModule );
-                }
-            }
+//            KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
+//            for ( AFReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
+//                KieModule depModule = repository.getKieModule( adapt( dep ), pomModel );
+//                if ( depModule != null ) {
+//                    addKieDependency( depModule );
+//                }
+//            }
         } else {
             // if the pomModel is null it means that the provided pom.xml is invalid so use the default releaseId
             releaseId = KieServices.Factory.get().getRepository().getDefaultReleaseId();
