@@ -1037,6 +1037,9 @@ public class AddRemoveRule {
                 PhreakRuleTerminalNode.doLeftDelete( pmem.getActualAgenda( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
         } else {
+            if (lt.getContextObject() instanceof AccumulateContext) {
+                iterateLeftTuple( (( AccumulateContext ) lt.getContextObject()).getResultLeftTuple(), wm );
+            }
             for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
                 for (LeftTuple peer = child; peer != null; peer = peer.getPeer()) {
                     if (peer.getPeer() == null) {
