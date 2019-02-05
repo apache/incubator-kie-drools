@@ -569,12 +569,6 @@
         foreign key (Deadline_Escalation_Id) 
         references Deadline (id);
 
-    alter table EventTypes 
-        add index IDX_EventTypes_Id (InstanceId), 
-        add constraint FK_nrecj4617iwxlc65ij6m7lsl1 
-        foreign key (InstanceId) 
-        references ProcessInstanceInfo (InstanceId);
-
     alter table I18NText 
         add index IDX_I18NText_SubjId (Task_Subjects_Id), 
         add constraint FK_k16jpgrh67ti9uedf6konsu1p 
@@ -786,12 +780,12 @@
     create index IDX_Task_workItemId on Task(workItemId);
     
     create index IDX_EventTypes_element ON EventTypes(element);
+    create index IDX_EventTypes_compound ON EventTypes(InstanceId, element);
 
     create index IDX_CMI_Context ON ContextMappingInfo(CONTEXT_ID);    
     create index IDX_CMI_KSession ON ContextMappingInfo(KSESSION_ID);    
     create index IDX_CMI_Owner ON ContextMappingInfo(OWNER_ID);
     
-    create index IDX_RequestInfo_status ON RequestInfo(status);
     create index IDX_RequestInfo_timestamp ON RequestInfo(timestamp);
     create index IDX_RequestInfo_owner ON RequestInfo(owner);
     
