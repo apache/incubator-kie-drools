@@ -54,15 +54,19 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
             String[] cfpArray = {"cfp-devoxx"};
             JComboBox<String> cfpConferenceBox = new JComboBox<>(cfpArray);
             JTextField cfpRestUrlTextField = new JTextField("https://dvbe18.confinabox.com/api/conferences/DVBE18");
+            JTextField timeslotsEndpointTextField = new JTextField("/slots");
             Object[] dialogue = {
                     "Choose conference:", cfpConferenceBox,
-                    "Enter CFP REST Url:", cfpRestUrlTextField
+                    "Enter CFP REST Url:", cfpRestUrlTextField,
+                    "Enter timeslots endpoint:", timeslotsEndpointTextField
             };
 
             int option = JOptionPane.showConfirmDialog(solutionPanel, dialogue, "Import", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
                 String conferenceBaseUrl = cfpRestUrlTextField.getText();
-                new ConferenceCFPImportWorker(solutionBusiness, solutionPanel, conferenceBaseUrl).executeAndShowDialog();
+                String timeslotsEndpoint = timeslotsEndpointTextField.getText();
+                new ConferenceCFPImportWorker(solutionBusiness, solutionPanel, conferenceBaseUrl, timeslotsEndpoint)
+                        .executeAndShowDialog();
             }
         };
     }
@@ -71,15 +75,17 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
 
         private final SolutionBusiness<ConferenceSolution> solutionBusiness;
         private final SolutionPanel<ConferenceSolution> solutionPanel;
-        private final String conferenceBaseUrl;
+        private String conferenceBaseUrl;
+        private String timeslotsEndpoint;
 
         private final JDialog dialog;
 
-        public ConferenceCFPImportWorker(SolutionBusiness<ConferenceSolution> solutionBusiness,
-                                         SolutionPanel<ConferenceSolution> solutionPanel, String conferenceBaseUrl) {
+        public ConferenceCFPImportWorker(SolutionBusiness<ConferenceSolution> solutionBusiness, SolutionPanel<ConferenceSolution> solutionPanel,
+                                         String conferenceBaseUrl, String timeslotsEndpoint) {
             this.solutionBusiness = solutionBusiness;
             this.solutionPanel = solutionPanel;
             this.conferenceBaseUrl = conferenceBaseUrl;
+            this.timeslotsEndpoint = timeslotsEndpoint;
             dialog = new JDialog(solutionPanel.getSolverAndPersistenceFrame(), true);
             JPanel contentPane = new JPanel(new BorderLayout(10, 10));
             contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -109,7 +115,7 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
 
         @Override
         protected ConferenceSolution doInBackground() {
-            return new ConferenceSchedulingCfpDevoxxImporter(conferenceBaseUrl).importSolution();
+            return new ConferenceSchedulingCfpDevoxxImporter(conferenceBaseUrl, timeslotsEndpoint).importSolution();
         }
 
         @Override
