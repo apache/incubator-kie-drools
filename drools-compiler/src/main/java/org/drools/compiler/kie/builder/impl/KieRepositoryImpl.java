@@ -207,23 +207,27 @@ public class KieRepositoryImpl
         public void setKieContainer(KieContainer kieContainer) { }
 
         public KieModule loadArtifact(ReleaseId releaseId) {
-            log.error( "Cannot load artifact " + releaseId + ". You need kie-ci on the classpath to perform this operation" );
+            logArtifactNotFetched(releaseId);
             return null;
         }
 
         public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML) {
-            log.error( "Cannot load artifact " + releaseId + ". You need kie-ci on the classpath to perform this operation" );
+            logArtifactNotFetched(releaseId);
             return null;
         }
 
         public KieModule loadArtifact(ReleaseId releaseId, PomModel pomModel) {
-            log.error( "Cannot load artifact " + releaseId + ". You need kie-ci on the classpath to perform this operation" );
+            logArtifactNotFetched(releaseId);
             return null;
         }
 
         public String getArtifactVersion(ReleaseId releaseId) {
-            log.error( "Cannot load artifact " + releaseId + ". You need kie-ci on the classpath to perform this operation" );
+            logArtifactNotFetched(releaseId);
             return null;
+        }
+
+        private void logArtifactNotFetched(ReleaseId releaseId) {
+            log.info("Artifact not fetched from maven: " + releaseId + ". To enable the KieScanner you need kie-ci on the classpath");
         }
 
         public ReleaseId getScannerReleaseId() {
