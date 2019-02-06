@@ -9113,7 +9113,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, fired);
     }
 
-
     @Test
     public void testMvelJitDivision() {
         // DROOLS-2928
@@ -9133,5 +9132,40 @@ public class Misc2Test extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
         assertEquals(1, fired);
+    }
+
+    @Test
+    public void testFromAndModify() {
+        // DROOLS-3606
+        String str = "import " + Person.class.getName() + ";\n"+
+                "rule R1\n" +
+                "    salience 1\n" +
+                "    when\n" +
+                "        $p : Person()\n" +
+                "        Person( age > 10 ) from $p \n" +
+                "    then\n" +
+                "        modify ($p) {\n" +
+                "          setAge(5);\n" +
+                "        }\n" +
+                "        System.out.println( \"R1, \" + $p);\n" +
+                "end\n" +
+                "rule R2\n" +
+                "    salience 0\n" +
+                "    when\n" +
+                "        $p : Person()\n" +
+                "        Person( age > 10 ) from $p \n" +
+                "    then\n" +
+                "        System.out.println( \"R2, \" + $p);\n" +
+                "end";
+
+        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieSession ksession = kbase.newKieSession();
+
+        Person john = new Person("john", 20);
+        ksession.insert(john);
+
+        int fired = ksession.fireAllRules();
+
+        assertEquals( 1, fired );
     }
 }
