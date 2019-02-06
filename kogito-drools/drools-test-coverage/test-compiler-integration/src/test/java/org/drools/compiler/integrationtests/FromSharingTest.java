@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -184,5 +185,36 @@ public class FromSharingTest {
         public String toString() {
             return "[Person name='" + this.name + " age='" + this.age + "']";
         }
+    }
+
+    @Test
+    public void testFromSharingWithPropReactvityOnItsConstraint() {
+        // DROOLS-3606
+        final String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule \"R1\"\n" +
+                "    when\n" +
+                "        $p : Person()\n" +
+                "        Person( age > 10 ) from $p \n" +
+                "    then\n" +
+                "        modify ($p) {\n" +
+                "          setAge(5);\n" +
+                "        }\n" +
+                "        System.out.println( \"R1, \" + $p);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"R2\"\n" +
+                "    when\n" +
+                "        $p : Person()\n" +
+                "        Person( age > 10 ) from $p \n" +
+                "    then\n" +
+                "        System.out.println( \"R2, \" + $p);\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-sharing-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kieBase.newKieSession();
+
+        ksession.insert(new Person ("John", 20));
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }
