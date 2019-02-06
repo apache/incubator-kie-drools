@@ -1771,7 +1771,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals(1, ((List) session.getGlobal("list")).size());
 
         session.fireAllRules();
-        assertEquals(2, ((List) session.getGlobal("list")).size());
+        // due to property reactivity the rule shouldn't fire again
+        assertEquals(1, ((List) session.getGlobal("list")).size());
 
         state.setState("finished");
 

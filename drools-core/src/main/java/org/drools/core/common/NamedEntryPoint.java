@@ -728,7 +728,7 @@ public class NamedEntryPoint
         if ( handle == null ) {
             throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
-        update( handle, object );
+        update( handle, object, event.getPropertyName() );
     }
 
     public void dispose() {
