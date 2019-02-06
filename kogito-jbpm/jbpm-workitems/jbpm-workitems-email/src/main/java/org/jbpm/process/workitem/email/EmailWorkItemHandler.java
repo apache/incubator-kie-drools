@@ -142,6 +142,7 @@ public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         Message message = new Message();
         message.setFrom((String) workItem.getParameter("From"));
         message.setReplyTo( (String) workItem.getParameter("Reply-To"));
+        message.setDisplayName((String) workItem.getParameter("DisplayName"));
 
         // Set recipients
         Recipients recipients = new Recipients();

@@ -121,6 +121,7 @@ public class SendHtml {
         String subject = message.getSubject();
         String from = message.getFrom();
         String replyTo = message.getReplyTo();
+        String displayName = message.getDisplayName();
 
         String mailer = "sendhtml";
 
@@ -136,7 +137,11 @@ public class SendHtml {
         Message msg = null;
         try {
             msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(from));
+            if(null != displayName) {
+                msg.setFrom(new InternetAddress(from, displayName));
+            } else {
+                msg.setFrom(new InternetAddress(from));
+            }
             msg.setReplyTo(new InternetAddress[]{new InternetAddress(replyTo)});
 
             for (Recipient recipient : message.getRecipients().getRecipients()) {
