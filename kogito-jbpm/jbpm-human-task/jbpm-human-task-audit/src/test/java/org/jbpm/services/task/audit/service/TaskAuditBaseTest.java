@@ -116,7 +116,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
 
-        List<TaskEvent> allTaskEvents = taskService.execute(new GetAuditEventsCommand(taskId, new QueryFilter(0, 10)));
+        List<TaskEvent> allTaskEvents = taskService.execute(new GetAuditEventsCommand(taskId, new QueryFilter(0, 0)));
         assertEquals(6, allTaskEvents.size());
 
         // test DeleteAuditEventsCommand
@@ -159,7 +159,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         bamTaskList = taskService.execute(new GetBAMTaskSummariesCommand());
         assertEquals("BAM Task Summary list size after delete (task id: " + taskId + ") : ", 0, bamTaskList.size());
 
-        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 10));
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 0));
         assertEquals(2, allHistoryAuditTasks.size());
 
         // test last modification date was generated
@@ -184,7 +184,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         List<TaskSummary> allActiveTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         assertEquals(1, allActiveTasks.size());
         assertTrue(allActiveTasks.get(0).getStatusId().equals("Reserved"));
-        QueryFilter queryFilter = new QueryFilter(0, 10);
+        QueryFilter queryFilter = new QueryFilter(0, 0);
         Map<String, Object> params = new HashMap<String, Object>();
         List<String> statuses = new ArrayList<String>();
         statuses.add(Status.Reserved.toString());
@@ -220,7 +220,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         assertTrue(allGroupTasks.get(0).getStatusId().equals("Ready"));
 
         List<AuditTask> allGroupAuditTasksByUser = taskAuditService.getAllGroupAuditTasksByUser("salaboy",
-                new QueryFilter(0, 10));
+                new QueryFilter(0, 0));
         assertEquals(1, allGroupAuditTasksByUser.size());
         assertTrue(allGroupAuditTasksByUser.get(0).getStatus().equals("Ready"));
     }
@@ -237,7 +237,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(1, allAdminTasks.size());
 
         List<AuditTask> allAdminAuditTasksByUser = taskAuditService.getAllAdminAuditTasksByUser("salaboy",
-                new QueryFilter(0, 10));
+                new QueryFilter(0, 0));
         assertEquals(1, allAdminAuditTasksByUser.size());
     }
 
@@ -267,7 +267,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
         taskService.exit(taskId, "Administrator");
 
-        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 10));
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 0));
         assertEquals(1, allHistoryAuditTasks.size());
 
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
@@ -289,7 +289,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
         taskService.exit(taskId, "Administrator");
 
-        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 10));
+        List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 0));
         assertEquals(1, allHistoryAuditTasks.size());
 
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
@@ -1439,6 +1439,35 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(1, allGroupAuditTasks.size());
         AuditTaskImpl auditTask = (AuditTaskImpl)allGroupAuditTasks.get(0);
         assertNotNull(auditTask.getLastModificationDate());
+    }
+
+    @Test
+    public void testPagination() {
+        for (int i = 0; i < 10; i++) {
+            Task task = new TaskFluent().setName("My Task " + (i + 1))
+                    .addPotentialGroup("Knights Templer")
+                    .setAdminUser("Administrator")
+                    .getTask();
+            taskService.addTask(task, new HashMap<>());
+        }
+
+        List<AuditTask> auditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, -1));
+
+        Assertions.assertThat(auditTasks).hasSize(10);
+
+        auditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 0));
+
+        Assertions.assertThat(auditTasks).hasSize(10);
+
+        auditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 3));
+
+        Assertions.assertThat(auditTasks).hasSize(3);
+
+        auditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(2, 5));
+
+        Assertions.assertThat(auditTasks).hasSize(5);
+        // There is no ordering out of the box, so at least check for duplicates
+        Assertions.assertThat(auditTasks).extracting(AuditTask::getName).doesNotHaveDuplicates();
     }
 
     protected Map<String, String> collectVariableNameAndValue(List<TaskVariable> variables) {

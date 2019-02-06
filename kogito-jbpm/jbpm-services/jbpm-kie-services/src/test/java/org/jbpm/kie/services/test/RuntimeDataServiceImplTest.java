@@ -1657,4 +1657,39 @@ public class RuntimeDataServiceImplTest extends AbstractKieServicesBaseTest {
 	    // should throw TaskNotFoundException
 	    runtimeDataService.getTaskEvents(-9999l, new QueryFilter());
 	}
+
+	@Test
+	public void testGetProcessInstancesPaging() {
+		Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
+		assertNotNull(instances);
+		assertEquals(0, instances.size());
+
+		List<Long> pids = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			pids.add(processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument"));
+		}
+
+		instances = runtimeDataService.getProcessInstances(new QueryContext(0, -1));
+		assertEquals(10, instances.size());
+
+		instances = runtimeDataService.getProcessInstances(new QueryContext(0, 0));
+		assertEquals(10, instances.size());
+
+		instances = runtimeDataService.getProcessInstances(new QueryContext(0, 3));
+		assertEquals(3, instances.size());
+
+		instances = runtimeDataService.getProcessInstances(new QueryContext(2, 5, "log.processInstanceId", true));
+		assertEquals(5, instances.size());
+
+		List<ProcessInstanceDesc> instancesList = new ArrayList<>(instances);
+		for (int i = 0; i < instancesList.size(); i++) {
+			ProcessInstanceDesc piDesc = instancesList.get(i);
+			assertEquals(piDesc.getId(), pids.get(i + 2));
+		}
+
+		Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstances(new QueryContext(0, 20));
+		for (ProcessInstanceDesc pi : activeProcesses) {
+			processService.abortProcessInstance(pi.getId());
+		}
+	}
 }

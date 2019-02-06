@@ -179,7 +179,7 @@ public class JpaPersistenceContext implements Context {
 					continue;
 				}
 				else if (MAX_RESULTS.equals(name)) {
-					if (((Integer) params.get(name)) > -1) {
+					if (((Integer) params.get(name)) > 0) {
 						query.setMaxResults((Integer) params.get(name));
 					}
 					continue;
