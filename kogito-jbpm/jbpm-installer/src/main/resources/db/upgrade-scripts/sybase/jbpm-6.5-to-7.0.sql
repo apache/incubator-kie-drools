@@ -1,15 +1,20 @@
-alter table RequestInfo add priority int;
-ALTER TABLE ProcessInstanceLog ADD processType int;
+alter table RequestInfo add priority int
+go
+ALTER TABLE ProcessInstanceLog ADD processType int
+go
 
-update ProcessInstanceLog set processType = 1;
-update RequestInfo set priority = 5;
+update ProcessInstanceLog set processType = 1
+go
+update RequestInfo set priority = 5
+go
 
 create table CaseIdInfo (
     id bigint identity not null,
     caseIdPrefix varchar(255) null,
     currentValue bigint null,
     primary key (id)
-) lock datarows;
+) lock datarows
+go
 
 create table CaseRoleAssignmentLog (
     id bigint identity not null,
@@ -19,20 +24,27 @@ create table CaseRoleAssignmentLog (
     roleName varchar(255) null,
     type int not null,
     primary key (id)
-) lock datarows;
+) lock datarows
+go
 
 alter table CaseIdInfo 
-    add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);
+    add constraint UK_CaseIdInfo_1 unique (caseIdPrefix)
+go
     
-ALTER TABLE NodeInstanceLog ADD COLUMN referenceId bigint null;
-ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255) null;      
+ALTER TABLE NodeInstanceLog ADD referenceId bigint null
+go
+ALTER TABLE NodeInstanceLog ADD nodeContainerId varchar(255) null
+go      
 
-ALTER TABLE RequestInfo ADD COLUMN processInstanceId bigint null;
+ALTER TABLE RequestInfo ADD processInstanceId bigint null
+go
 
-ALTER TABLE AuditTaskImpl ADD COLUMN lastModificationDate datetime;
-update AuditTaskImpl ati set lastModificationDate = (
+ALTER TABLE AuditTaskImpl ADD lastModificationDate datetime
+go
+update AuditTaskImpl set lastModificationDate = (
     select max(logTime) from TaskEvent where taskId=ati.taskId group by taskId
-);
+) from AuditTaskImpl ati
+go
 
 create table CaseFileDataLog (
     id bigint identity not null,
@@ -44,7 +56,8 @@ create table CaseFileDataLog (
     lastModified datetime null,
     lastModifiedBy varchar(255) null,
     primary key (id)
-) lock datarows;
+) lock datarows
+go
 
 create table ExecutionErrorInfo (
     id bigint identity not null,
@@ -64,7 +77,10 @@ create table ExecutionErrorInfo (
     PROCESS_INST_ID bigint null,
     ERROR_TYPE varchar(255) null,
     primary key (id)
-) lock datarows;
+) lock datarows
+go
 
-create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
-create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
+create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID)
+go
+create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK)
+go

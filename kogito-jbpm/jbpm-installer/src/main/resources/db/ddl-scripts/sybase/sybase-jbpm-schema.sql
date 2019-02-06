@@ -802,110 +802,207 @@
     go
 
     create index IDX_Attachment_Id ON Attachment(attachedBy_id)
+	go
     create index IDX_Attachment_DataId ON Attachment(TaskData_Attachments_Id)
+	go
     create index IDX_BoolExpr_Id ON BooleanExpression(Escalation_Constraints_Id)
+	go
     create index IDX_CorrPropInfo_Id ON CorrelationPropertyInfo(correlationKey_keyId)
+	go
     create index IDX_Deadline_StartId ON Deadline(Deadlines_StartDeadLine_Id)
+	go
     create index IDX_Deadline_EndId ON Deadline(Deadlines_EndDeadLine_Id)
+	go
     create index IDX_Delegation_EntityId ON Delegation_delegates(entity_id)
+	go
     create index IDX_Delegation_TaskId ON Delegation_delegates(task_id)
+	go
     create index IDX_ErrorInfo_Id ON ErrorInfo(REQUEST_ID)
+	go
     create index IDX_Escalation_Id ON Escalation(Deadline_Escalation_Id)
+	go
     create index IDX_EventTypes_Id ON EventTypes(InstanceId)
+	go
     create index IDX_I18NText_SubjId ON I18NText(Task_Subjects_Id)
+	go
     create index IDX_I18NText_NameId ON I18NText(Task_Names_Id)
+	go
     create index IDX_I18NText_DescrId ON I18NText(Task_Descriptions_Id)
+	go
     create index IDX_I18NText_ReassignId ON I18NText(Reassignment_Documentation_Id)
+	go
     create index IDX_I18NText_NotSubjId ON I18NText(Notification_Subjects_Id)
+	go
     create index IDX_I18NText_NotNamId ON I18NText(Notification_Names_Id)
+	go
     create index IDX_I18NText_NotDocId ON I18NText(Notification_Documentation_Id)
+	go
     create index IDX_I18NText_NotDescrId ON I18NText(Notification_Descriptions_Id)
+	go
     create index IDX_I18NText_DeadDocId ON I18NText(Deadline_Documentation_Id)
+	go
     create index IDX_Not_EscId ON Notification(Escalation_Notifications_Id)
+	go
     create index IDX_NotBAs_Entity ON Notification_BAs(entity_id)
+	go
     create index IDX_NotBAs_Task ON Notification_BAs(task_id)
+	go
     create index IDX_NotRec_Entity ON Notification_Recipients(entity_id)
+	go
     create index IDX_NotRec_Task ON Notification_Recipients(task_id)
+	go
     create index IDX_NotEmail_Header ON Notification_email_header(emailHeaders_id)
+	go
     create index IDX_NotEmail_Not ON Notification_email_header(Notification_id)
+	go
     create index IDX_PAsBAs_Entity ON PeopleAssignments_BAs(entity_id)
+	go
     create index IDX_PAsBAs_Task ON PeopleAssignments_BAs(task_id)
+	go
     create index IDX_PAsExcl_Entity ON PeopleAssignments_ExclOwners(entity_id)
+	go
     create index IDX_PAsExcl_Task ON PeopleAssignments_ExclOwners(task_id)
+	go
     create index IDX_PAsPot_Entity ON PeopleAssignments_PotOwners(entity_id)
+	go
     create index IDX_PAsPot_Task ON PeopleAssignments_PotOwners(task_id)
+	go
     create index IDX_PAsRecip_Entity ON PeopleAssignments_Recipients(entity_id)
+	go
     create index IDX_PAsRecip_Task ON PeopleAssignments_Recipients(task_id)
+	go
     create index IDX_PAsStake_Entity ON PeopleAssignments_Stakeholders(entity_id)
+	go
     create index IDX_PAsStake_Task ON PeopleAssignments_Stakeholders(task_id)
+	go
     create index IDX_Reassign_Esc ON Reassignment(Escalation_Reassignments_Id)
+	go
     create index IDX_ReassignPO_Entity ON Reassignment_potentialOwners(entity_id)
+	go
     create index IDX_ReassignPO_Task ON Reassignment_potentialOwners(task_id)
+	go
     create index IDX_Task_Initiator ON Task(taskInitiator_id)
+	go
     create index IDX_Task_ActualOwner ON Task(actualOwner_id)
+	go
     create index IDX_Task_CreatedBy ON Task(createdBy_id)
+	go
     create index IDX_TaskComments_CreatedBy ON task_comment(addedBy_id)
+	go
     create index IDX_TaskComments_Id ON task_comment(TaskData_Comments_Id)
+	go
 
     create index IDX_Task_processInstanceId on Task(processInstanceId)
+	go
     create index IDX_Task_processId on Task(processId)
+	go
     create index IDX_Task_status on Task(status)
+	go
     create index IDX_Task_archived on Task(archived)
+	go
     create index IDX_Task_workItemId on Task(workItemId)
+	go
 
     create index IDX_EventTypes_element ON EventTypes(element)
+	go
 
     create index IDX_CMI_Context ON ContextMappingInfo(CONTEXT_ID)
+	go
     create index IDX_CMI_KSession ON ContextMappingInfo(KSESSION_ID)
+	go
     create index IDX_CMI_Owner ON ContextMappingInfo(OWNER_ID)
+	go
 
     create index IDX_RequestInfo_status ON RequestInfo(status)
+	go
     create index IDX_RequestInfo_timestamp ON RequestInfo(timestamp)
+	go
     create index IDX_RequestInfo_owner ON RequestInfo(owner)
+	go
 
     create index IDX_BAMTaskSumm_createdDate on BAMTaskSummary(createdDate)
+	go
     create index IDX_BAMTaskSumm_duration on BAMTaskSummary(duration)
+	go
     create index IDX_BAMTaskSumm_endDate on BAMTaskSummary(endDate)
+	go
     create index IDX_BAMTaskSumm_pInstId on BAMTaskSummary(processInstanceId)
+	go
     create index IDX_BAMTaskSumm_startDate on BAMTaskSummary(startDate)
+	go
     create index IDX_BAMTaskSumm_status on BAMTaskSummary(status)
+	go
     create index IDX_BAMTaskSumm_taskId on BAMTaskSummary(taskId)
+	go
     create index IDX_BAMTaskSumm_taskName on BAMTaskSummary(taskName)
+	go
     create index IDX_BAMTaskSumm_userId on BAMTaskSummary(userId)
+	go
 
     create index IDX_PInstLog_duration on ProcessInstanceLog(duration)
+	go
     create index IDX_PInstLog_end_date on ProcessInstanceLog(end_date)
+	go
     create index IDX_PInstLog_extId on ProcessInstanceLog(externalId)
+	go
     create index IDX_PInstLog_user_identity on ProcessInstanceLog(user_identity)
+	go
     create index IDX_PInstLog_outcome on ProcessInstanceLog(outcome)
+	go
     create index IDX_PInstLog_parentPInstId on ProcessInstanceLog(parentProcessInstanceId)
+	go
     create index IDX_PInstLog_pId on ProcessInstanceLog(processId)
+	go
     create index IDX_PInstLog_pInsteDescr on ProcessInstanceLog(processInstanceDescription)
+	go
     create index IDX_PInstLog_pInstId on ProcessInstanceLog(processInstanceId)
+	go
     create index IDX_PInstLog_pName on ProcessInstanceLog(processName)
+	go
     create index IDX_PInstLog_pVersion on ProcessInstanceLog(processVersion)
+	go
     create index IDX_PInstLog_start_date on ProcessInstanceLog(start_date)
+	go
     create index IDX_PInstLog_status on ProcessInstanceLog(status)
+	go
     create index IDX_PInstLog_correlation on ProcessInstanceLog(correlationKey)
+	go
 
-    create index IDX_VInstLog_pInstId on VariableInstanceLog(processInstanceId);
-    create index IDX_VInstLog_varId on VariableInstanceLog(variableId);
-    create index IDX_VInstLog_pId on VariableInstanceLog(processId);
+    create index IDX_VInstLog_pInstId on VariableInstanceLog(processInstanceId)
+	go
+    create index IDX_VInstLog_varId on VariableInstanceLog(variableId)
+	go
+    create index IDX_VInstLog_pId on VariableInstanceLog(processId)
+	go
 
-    create index IDX_NInstLog_pInstId on NodeInstanceLog(processInstanceId);
-    create index IDX_NInstLog_nodeType on NodeInstanceLog(nodeType);
-    create index IDX_NInstLog_pId on NodeInstanceLog(processId);
+    create index IDX_NInstLog_pInstId on NodeInstanceLog(processInstanceId)
+	go
+    create index IDX_NInstLog_nodeType on NodeInstanceLog(nodeType)
+	go
+    create index IDX_NInstLog_pId on NodeInstanceLog(processId)
+	go
 
-    create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID);
-    create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK);
+    create index IDX_ErrorInfo_pInstId on ExecutionErrorInfo(PROCESS_INST_ID)
+	go
+    create index IDX_ErrorInfo_errorAck on ExecutionErrorInfo(ERROR_ACK)
+	go
 
-    create index IDX_AuditTaskImpl_taskId on AuditTaskImpl(taskId);
-    create index IDX_AuditTaskImpl_pInstId on AuditTaskImpl(processInstanceId);
-    create index IDX_AuditTaskImpl_workItemId on AuditTaskImpl(workItemId);
-    create index IDX_AuditTaskImpl_name on AuditTaskImpl(name);
-    create index IDX_AuditTaskImpl_processId on AuditTaskImpl(processId);
-    create index IDX_AuditTaskImpl_status on AuditTaskImpl(status);
+    create index IDX_AuditTaskImpl_taskId on AuditTaskImpl(taskId)
+	go
+    create index IDX_AuditTaskImpl_pInstId on AuditTaskImpl(processInstanceId)
+	go
+    create index IDX_AuditTaskImpl_workItemId on AuditTaskImpl(workItemId)
+	go
+    create index IDX_AuditTaskImpl_name on AuditTaskImpl(name)
+	go
+    create index IDX_AuditTaskImpl_processId on AuditTaskImpl(processId)
+	go
+    create index IDX_AuditTaskImpl_status on AuditTaskImpl(status)
+	go
 
-    create index IDX_TaskVariableImpl_taskId on TaskVariableImpl(taskId);
-    create index IDX_TaskVariableImpl_pInstId on TaskVariableImpl(processInstanceId);
-    create index IDX_TaskVariableImpl_processId on TaskVariableImpl(processId);
+    create index IDX_TaskVariableImpl_taskId on TaskVariableImpl(taskId)
+	go
+    create index IDX_TaskVariableImpl_pInstId on TaskVariableImpl(processInstanceId)
+	go
+    create index IDX_TaskVariableImpl_processId on TaskVariableImpl(processId)
+	go
