@@ -181,13 +181,17 @@ public class InfixOpNode
             case OR:
                 return or( left, right, ctx );
             case LTE:
-                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) <= 0 );
+                return or(EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) < 0),
+                          EvalHelper.isEqual(left, right, ctx),
+                          ctx);
             case LT:
                 return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) < 0 );
             case GT:
                 return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) > 0 );
             case GTE:
-                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) >= 0 );
+                return or(EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) > 0),
+                          EvalHelper.isEqual(left, right, ctx),
+                          ctx);
             case EQ:
                 return EvalHelper.isEqual( left, right, ctx );
             case NE:
