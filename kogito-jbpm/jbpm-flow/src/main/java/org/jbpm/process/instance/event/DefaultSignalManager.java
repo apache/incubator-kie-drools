@@ -46,10 +46,6 @@ public class DefaultSignalManager implements SignalManager {
 		this.kruntime = kruntime;
 	}
 	
-	public InternalKnowledgeRuntime getKnowledgeRuntime() {
-		return kruntime;
-	}
-
 	public void addEventListener(String type, EventListener eventListener) {
 		List<EventListener> eventListeners = processEventListeners.get(type);
 		//this first "if" is not pretty, but allows to synchronize only when needed

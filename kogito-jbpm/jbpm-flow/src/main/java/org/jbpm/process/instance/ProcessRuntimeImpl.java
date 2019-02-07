@@ -48,6 +48,7 @@ import org.jbpm.process.instance.event.SignalManager;
 import org.jbpm.process.instance.event.SignalManagerFactory;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
+import org.jbpm.process.instance.timer.TimerManagerRuntimeAdaptor;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
@@ -89,7 +90,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		((CompositeClassLoader) getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
 		initProcessInstanceManager();
 		initSignalManager();
-		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
+		timerManager = new TimerManager(
+		        new TimerManagerRuntimeAdaptor(kruntime),
+                kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
         if (isActive()) {
             initProcessEventListeners();                   
@@ -119,7 +122,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
 		initProcessInstanceManager();
 		initSignalManager();
-		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
+		timerManager = new TimerManager(
+		        new TimerManagerRuntimeAdaptor(kruntime),
+                kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
         if (isActive()) {
             initProcessEventListeners();                   
