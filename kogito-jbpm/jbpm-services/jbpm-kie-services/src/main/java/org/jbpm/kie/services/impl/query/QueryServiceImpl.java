@@ -18,6 +18,7 @@ package org.jbpm.kie.services.impl.query;
 
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_EXTERNALID;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSINSTANCEID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_POTOWNER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +55,7 @@ import org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity;
 import org.jbpm.kie.services.impl.query.preprocessor.BusinessAdminTasksPreprocessor;
 import org.jbpm.kie.services.impl.query.preprocessor.DeploymentIdsPreprocessor;
 import org.jbpm.kie.services.impl.query.preprocessor.PotOwnerTasksPreprocessor;
+import org.jbpm.kie.services.impl.query.preprocessor.UserAndGroupsTasksPreprocessor;
 import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.jbpm.runtime.manager.impl.identity.UserDataServiceProvider;
 import org.jbpm.services.api.DeploymentEvent;
@@ -206,6 +208,8 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider, userGroupCallback, metadata));
                 } else if (queryDefinition.getTarget().equals(Target.FILTERED_PO_TASK)) {
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider, userGroupCallback, metadata));
+                } else if (queryDefinition.getTarget().equals(Target.USER_GROUPS_TASK)) {
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new UserAndGroupsTasksPreprocessor(identityProvider, userGroupCallback, COLUMN_POTOWNER, metadata));
                 }
                 
                 for (String columnId : metadata.getColumnIds()) {

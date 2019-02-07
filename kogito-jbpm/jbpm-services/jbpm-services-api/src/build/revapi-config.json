@@ -45,7 +45,31 @@
           "methodName": "getTimers",
           "elementKind": "method",
           "justification": "JBPM-7632 - Enhance process definition data including timers and nodes"
-        }
+        },
+        {
+  	  "code": "java.field.enumConstantOrderChanged",
+   	  "old": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
+   	  "new": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
+   	  "oldOrdinal": "8",
+   	  "newOrdinal": "9",
+   	  "package": "org.jbpm.services.api.query.model",
+   	  "classSimpleName": "Target",
+   	  "fieldName": "CUSTOM",
+   	  "elementKind": "enumConstant",
+   	  "justification": "JBPM-8155 -Adding new target for custom queries USER_GROUPS_TASK and moving CUSTOM"
+ 	},
+	{
+  	  "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.jbpm.services.api.query.model.QueryDefinition.Target.USER_GROUPS_TASK",
+  	  "new": "field org.jbpm.services.api.query.model.QueryDefinition.Target.USER_GROUPS_TASK",
+  	  "oldOrdinal": "9",
+  	  "newOrdinal": "8",
+  	  "package": "org.jbpm.services.api.query.model",
+  	  "classSimpleName": "Target",
+  	  "fieldName": "USER_GROUPS_TASK",
+  	  "elementKind": "enumConstant",
+  	  "justification": "JBPM-8155 -Adding new target for custom queries USER_GROUPS_TASK"
+	}
       ]
     }
   }

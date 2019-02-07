@@ -33,6 +33,7 @@ public interface QueryDefinition {
         FILTERED_PROCESS,
         FILTERED_BA_TASK,
         FILTERED_PO_TASK,
+        USER_GROUPS_TASK,
         CUSTOM;
     }
 
