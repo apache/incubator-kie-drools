@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
@@ -41,8 +42,7 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.jbpm.workflow.instance.impl.factory.CreateNewNodeFactory;
-import org.jbpm.workflow.instance.impl.factory.ReuseNodeFactory;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.ActionNodeInstance;
 import org.jbpm.workflow.instance.node.BoundaryEventNodeInstance;
 import org.jbpm.workflow.instance.node.CatchLinkNodeInstance;
@@ -67,89 +67,149 @@ import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstanceContainer;
 
 public class NodeInstanceFactoryRegistry {
-	
+
     private static final NodeInstanceFactoryRegistry INSTANCE = new NodeInstanceFactoryRegistry();
 
-    private Map<Class< ? extends Node>, NodeInstanceFactory> registry;
-    
+    private Map<Class<? extends Node>, NodeInstanceFactory> registry;
+
     public static NodeInstanceFactoryRegistry getInstance(Environment environment) {
         // allow custom NodeInstanceFactoryRegistry to be given as part of the environment - e.g simulation
         if (environment != null && environment.get("NodeInstanceFactoryRegistry") != null) {
             return (NodeInstanceFactoryRegistry) environment.get("NodeInstanceFactoryRegistry");
         }
-        
+
         return INSTANCE;
     }
 
     protected NodeInstanceFactoryRegistry() {
-        this.registry = new HashMap<Class< ? extends Node>, NodeInstanceFactory>();
-
-        // hard wired nodes:
-        register( RuleSetNode.class,
-                  new CreateNewNodeFactory( RuleSetNodeInstance.class ) );
-        register( Split.class,
-                  new CreateNewNodeFactory( SplitInstance.class ) );
-        register( Join.class,
-                  new ReuseNodeFactory( JoinInstance.class ) );
-        register( StartNode.class,
-                  new CreateNewNodeFactory( StartNodeInstance.class ) );
-        register( EndNode.class,
-                  new CreateNewNodeFactory( EndNodeInstance.class ) );
-        register( MilestoneNode.class,
-                  new CreateNewNodeFactory( MilestoneNodeInstance.class ) );
-        register( SubProcessNode.class,
-                  new CreateNewNodeFactory( SubProcessNodeInstance.class ) );
-        register( ActionNode.class,
-                  new CreateNewNodeFactory( ActionNodeInstance.class ) );
-        register( WorkItemNode.class,
-                  new CreateNewNodeFactory( WorkItemNodeInstance.class ) );
-        register( TimerNode.class,
-                  new CreateNewNodeFactory( TimerNodeInstance.class ) );
-        register( FaultNode.class,
-                  new CreateNewNodeFactory( FaultNodeInstance.class ) );
-        register(EventSubProcessNode.class, 
-                  new CreateNewNodeFactory(EventSubProcessNodeInstance.class));
-        register( CompositeNode.class,
-                  new CreateNewNodeFactory( CompositeNodeInstance.class ) );
-        register( CompositeContextNode.class,
-                  new CreateNewNodeFactory( CompositeContextNodeInstance.class ) );
-        register( HumanTaskNode.class,
-                  new CreateNewNodeFactory( HumanTaskNodeInstance.class ) );
-        register( ForEachNode.class,
-                  new CreateNewNodeFactory( ForEachNodeInstance.class ) );
-        register( EventNode.class,
-                  new CreateNewNodeFactory( EventNodeInstance.class ) );
-        register( StateNode.class,
-                  new CreateNewNodeFactory( StateNodeInstance.class ) );
-        register( DynamicNode.class,
-                  new CreateNewNodeFactory( DynamicNodeInstance.class ) );
-        register( BoundaryEventNode.class,
-                new CreateNewNodeFactory( BoundaryEventNodeInstance.class ) );       
-        register(CatchLinkNode.class, new CreateNewNodeFactory(
-				CatchLinkNodeInstance.class));
-		register(ThrowLinkNode.class, new CreateNewNodeFactory(
-				ThrowLinkNodeInstance.class));
-		
-		
+        this.registry = new HashMap<>();
     }
 
-    public void register(Class< ? extends Node> cls,
+    public void register(Class<? extends Node> cls,
                          NodeInstanceFactory factory) {
-        this.registry.put( cls,
-                           factory );
+        this.registry.put(cls, factory);
     }
 
     public NodeInstanceFactory getProcessNodeInstanceFactory(Node node) {
-    	Class<?> clazz = node.getClass();
+        Class<?> clazz = node.getClass();
         while (clazz != null) {
-        	NodeInstanceFactory result = this.registry.get( clazz );
-        	if (result != null) {
-        		return result;
-        	}
-        	clazz = clazz.getSuperclass();
+            NodeInstanceFactory result = this.get(clazz);
+            if (result != null) {
+                return result;
+            }
+            clazz = clazz.getSuperclass();
         }
         return null;
     }
+
+    private NodeInstanceFactory get(Class<?> clazz) {
+        // hard wired nodes:
+        if (RuleSetNode.class == clazz) {
+            return factory(RuleSetNodeInstance::new);
+        }
+        if (Split.class == clazz) {
+            return factory(SplitInstance::new);
+        }
+        if (Join.class == clazz) {
+            return factoryOnce(JoinInstance::new);
+        }
+        if (StartNode.class == clazz) {
+            return factory(StartNodeInstance::new);
+        }
+        if (EndNode.class == clazz) {
+            return factory(EndNodeInstance::new);
+        }
+        if (MilestoneNode.class == clazz) {
+            return factory(MilestoneNodeInstance::new);
+        }
+        if (SubProcessNode.class == clazz) {
+            return factory(SubProcessNodeInstance::new);
+        }
+        if (ActionNode.class == clazz) {
+            return factory(ActionNodeInstance::new);
+        }
+        if (WorkItemNode.class == clazz) {
+            return factory(WorkItemNodeInstance::new);
+        }
+        if (TimerNode.class == clazz) {
+            return factory(TimerNodeInstance::new);
+        }
+        if (FaultNode.class == clazz) {
+            return factory(FaultNodeInstance::new);
+        }
+        if (EventSubProcessNode.class == clazz) {
+            return factory(EventSubProcessNodeInstance::new);
+        }
+        if (CompositeNode.class == clazz) {
+            return factory(CompositeNodeInstance::new);
+        }
+        if (CompositeContextNode.class == clazz) {
+            return factory(CompositeContextNodeInstance::new);
+        }
+        if (HumanTaskNode.class == clazz) {
+            return factory(HumanTaskNodeInstance::new);
+        }
+        if (ForEachNode.class == clazz) {
+            return factory(ForEachNodeInstance::new);
+        }
+        if (EventNode.class == clazz) {
+            return factory(EventNodeInstance::new);
+        }
+        if (StateNode.class == clazz) {
+            return factory(StateNodeInstance::new);
+        }
+        if (DynamicNode.class == clazz) {
+            return factory(DynamicNodeInstance::new);
+        }
+        if (BoundaryEventNode.class == clazz) {
+            return factory(BoundaryEventNodeInstance::new);
+        }
+        if (CatchLinkNode.class == clazz) {
+            return factory(
+                    CatchLinkNodeInstance::new);
+        }
+        if (ThrowLinkNode.class == clazz) {
+            return factory(
+                    ThrowLinkNodeInstance::new);
+        }
+        return this.registry.get(clazz);
+    }
+
+    private NodeInstanceFactory factoryOnce(Supplier<NodeInstanceImpl> supplier) {
+        return (node, processInstance, nodeInstanceContainer) -> {
+            NodeInstance result = ((org.jbpm.workflow.instance.NodeInstanceContainer)
+                    nodeInstanceContainer).getFirstNodeInstance(node.getId());
+            if (result != null) {
+                return result;
+            } else {
+                return createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
+            }
+        };
+    }
+
+    private NodeInstanceFactory factory(Supplier<NodeInstanceImpl> supplier) {
+        return (node, processInstance, nodeInstanceContainer) ->
+                createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
+    }
+
+    private static NodeInstance createInstance(NodeInstanceImpl nodeInstance, Node node, WorkflowProcessInstance processInstance, NodeInstanceContainer nodeInstanceContainer) {
+        nodeInstance.setNodeId(node.getId());
+        nodeInstance.setNodeInstanceContainer(nodeInstanceContainer);
+        nodeInstance.setProcessInstance(processInstance);
+        String uniqueId = (String) node.getMetaData().get("UniqueId");
+        assert uniqueId != null : node.getClass().getSimpleName() + " [" + node.getName() + "] does not have a unique id.";
+        if (uniqueId == null) {
+            uniqueId = node.getId() + "";
+        }
+        nodeInstance.setMetaData("UniqueId", uniqueId);
+        int level = ((org.jbpm.workflow.instance.NodeInstanceContainer) nodeInstanceContainer).getLevelForNode(uniqueId);
+        nodeInstance.setLevel(level);
+        return nodeInstance;
+    }
+
+    ;
 }

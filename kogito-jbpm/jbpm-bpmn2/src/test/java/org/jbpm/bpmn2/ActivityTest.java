@@ -995,7 +995,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("Hello john!", processInstance.getVariable("s"));
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testServiceTaskWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1380,7 +1380,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @SuppressWarnings("unchecked")
-	@Test
+	@Test @Ignore("Transfomer has been disabled")
     public void testBusinessRuleTaskWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithTransformation.bpmn2",
                 "BPMN2-RuleTaskWithTransformation.drl");
@@ -1406,7 +1406,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testCallActivityWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityWithTransformation.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);

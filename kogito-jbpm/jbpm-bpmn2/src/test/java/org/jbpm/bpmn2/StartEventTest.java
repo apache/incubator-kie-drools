@@ -36,6 +36,7 @@ import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -525,7 +526,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         assertThat(listener.getCount("start.cycle")).isEqualTo(5);
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=10000) @Ignore("Transfomer has been disabled")
     public void testSignalStartWithTransformation() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-SignalStartWithTransformation.bpmn2");

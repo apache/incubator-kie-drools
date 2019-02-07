@@ -16,6 +16,7 @@
 
 package org.jbpm.process.core.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,18 +71,17 @@ import org.slf4j.LoggerFactory;
 public class DataTransformerRegistry {
 
 	private static final Logger logger = LoggerFactory.getLogger(DataTransformerRegistry.class);
-	private static final DataTransformerRegistry INSTANCE = new DataTransformerRegistry();
+    private static final DataTransformerRegistry INSTANCE =
+        // do not create ScriptEngineManager on SVM for now
+            new DataTransformerRegistry(Collections.emptyList());
 
     private Map<String, DataTransformer> registry;
-    
-    protected DataTransformerRegistry() {
+    protected DataTransformerRegistry(List<ScriptEngineFactory> factories) {
         this.registry = new ConcurrentHashMap<String, DataTransformer>();
         this.registry.put("http://www.mvel.org/2.0", new MVELDataTransformer());
-        ScriptEngineManager manager = new ScriptEngineManager();
-        List<ScriptEngineFactory> factories = manager.getEngineFactories();
         for (ScriptEngineFactory factory : factories) {
         	DataTransformer transformer = new JavaScriptingDataTransformer(factory);
-        	
+
         	for (String name : factory.getNames()) {
         		String key = "http://www.java.com/"+name;
         		registry.put(key, transformer);

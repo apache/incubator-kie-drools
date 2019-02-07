@@ -49,6 +49,7 @@ import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -1815,7 +1816,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testSignalIntermediateThrowEventWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-BoundarySignalEventOnTaskbpmn2.bpmn",
@@ -1838,7 +1839,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(var).isEqualTo("JOHN");
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testSignalBoundaryEventWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-BoundarySignalEventOnTaskWithTransformation.bpmn",
@@ -1861,7 +1862,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(var).isEqualTo("JOHN");
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testMessageIntermediateThrowWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateThrowEventMessageWithTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1887,7 +1888,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testIntermediateCatchEventSignalWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateCatchEventSignalWithTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1905,7 +1906,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(var).isEqualTo("SOMEVALUE");
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testIntermediateCatchEventMessageWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateCatchEventMessageWithTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1922,7 +1923,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(var).isEqualTo("SOMEVALUE");
     }
 
-    @Test
+    @Test @Ignore("Transfomer has been disabled")
     public void testEventSubprocessSignalWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-EventSubprocessSignalWithTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
