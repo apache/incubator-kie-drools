@@ -776,12 +776,6 @@
                       <groupId>org.jboss.logging</groupId>
                       <artifactId>jboss-logging</artifactId>
                     </dependency>
-
-                    <!-- TODO: A temporary workaround until tomcat 9.0.13 is released -->
-                    <dependency>
-                      <groupId>org.apache.tomcat</groupId>
-                      <artifactId>tomcat-dbcp</artifactId>
-                    </dependency>
                   </dependencies>
                 </container>
                 <configuration>
@@ -869,13 +863,6 @@
         <dependency>
           <groupId>org.jboss.logging</groupId>
           <artifactId>jboss-logging</artifactId>
-          <scope>test</scope>
-        </dependency>
-
-        <!-- TODO: A temporary workaround until tomcat 9.0.13 is released -->
-        <dependency>
-          <groupId>org.apache.tomcat</groupId>
-          <artifactId>tomcat-dbcp</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>
