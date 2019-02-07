@@ -288,7 +288,7 @@ public abstract class AbstractKieProject implements KieProject {
                                  KieBaseModel kieBaseModel,
                                  InternalKieModule kieModule) {
         for (String fileName : kieModule.getFileNames()) {
-            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName)) {
+            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getBytes( fileName ))) {
                 assets.add(new Asset( kieModule, fileName ));
             }
         }

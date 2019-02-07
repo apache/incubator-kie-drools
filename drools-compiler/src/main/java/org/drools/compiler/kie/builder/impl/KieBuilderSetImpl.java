@@ -193,7 +193,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                                  InternalKieModule kieModule,
                                  String resourceName ) {
         return !resourceName.endsWith(".properties") &&
-               filterFileInKBase(kieModule, kieBaseModel, resourceName) &&
+               filterFileInKBase(kieModule, kieBaseModel, resourceName, () -> kieModule.getBytes( resourceName )) &&
                kieModule.addResourceToCompiler(ckbuilder, kieBaseModel, resourceName);
     }
 

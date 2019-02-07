@@ -14,19 +14,17 @@
 */
 
 package org.drools.compiler.kie.builder.impl;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -64,10 +62,10 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.jci.CompilationProblem;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+import static org.drools.core.util.StringUtils.codeAwareIndexOf;
 
 public class KieBuilderImpl
         implements
@@ -288,8 +286,8 @@ public class KieBuilderImpl
 
     private void addKBaseFilesToTrg( KieBaseModel kieBase ) {
         for ( String fileName : srcMfs.getFileNames() ) {
-            fileName = fileName.replace( File.separatorChar, '/' );
-            if ( fileName.startsWith( RESOURCES_ROOT ) && isFileInKieBase( kieBase, fileName ) ) {
+            String normalizedName = fileName.replace( File.separatorChar, '/' );
+            if ( fileName.startsWith( RESOURCES_ROOT ) && isFileInKieBase( kieBase, normalizedName, () -> srcMfs.getBytes( normalizedName ) ) ) {
                 copySourceToTarget( fileName );
             }
         }
@@ -350,10 +348,8 @@ public class KieBuilderImpl
         return conf instanceof ResourceConfigurationImpl ? ( (ResourceConfigurationImpl) conf ).getResourceType() : null;
     }
 
-    public static boolean filterFileInKBase( InternalKieModule kieModule,
-                                             KieBaseModel kieBase,
-                                             String fileName ) {
-        return isFileInKieBase( kieBase, fileName ) &&
+    public static boolean filterFileInKBase( InternalKieModule kieModule, KieBaseModel kieBase, String fileName, Supplier<byte[]> file ) {
+        return isFileInKieBase( kieBase, fileName, file ) &&
                 ( isKieExtension( fileName ) || getResourceType( kieModule, fileName ) != null );
     }
 
@@ -361,8 +357,7 @@ public class KieBuilderImpl
         return !isJavaSourceFile( fileName ) && ResourceType.determineResourceType(fileName) != null;
     }
 
-    private static boolean isFileInKieBase( KieBaseModel kieBase,
-                                            String fileName ) {
+    private static boolean isFileInKieBase( KieBaseModel kieBase, String fileName, Supplier<byte[]> file ) {
         int lastSep = fileName.lastIndexOf( "/" );
         if ( lastSep + 1 < fileName.length() && fileName.charAt( lastSep + 1 ) == '.' ) {
             // skip dot files
@@ -371,13 +366,29 @@ public class KieBuilderImpl
         if ( kieBase.getPackages().isEmpty() ) {
             return true;
         } else {
-            String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
-            if ( pkgNameForFile.startsWith( RESOURCES_ROOT ) ) {
-                pkgNameForFile = pkgNameForFile.substring( RESOURCES_ROOT.length() );
-            }
-            pkgNameForFile = pkgNameForFile.replace( '/', '.' );
+            String pkgNameForFile = getPackageNameForFile( lastSep > 0 ? fileName.substring( 0, lastSep ) : "", fileName.endsWith( ".drl" ), file );
             return isPackageInKieBase( kieBase, pkgNameForFile );
         }
+    }
+
+    private static String getPackageNameForFile( String fileName, boolean isDrl, Supplier<byte[]> file ) {
+        if (isDrl) {
+            byte[] bytes = file.get();
+            String content = bytes != null ? new String(bytes) : "";
+            int pkgPos = codeAwareIndexOf( content, "package " );
+            if (pkgPos >= 0) {
+                pkgPos += "package ".length();
+                int semiPos = content.indexOf( ';', pkgPos );
+                int breakPos = content.indexOf( '\n', pkgPos );
+                int end = semiPos > 0 ? (breakPos > 0 ? Math.min( semiPos, breakPos ) : semiPos) : breakPos;
+                if (end > 0) {
+                    return content.substring( pkgPos, end ).trim();
+                }
+            }
+        }
+        String pkgNameForFile = fileName.startsWith( RESOURCES_ROOT ) ? fileName.substring( RESOURCES_ROOT.length() ) : fileName;
+        pkgNameForFile = pkgNameForFile.replace( '/', '.' );
+        return pkgNameForFile;
     }
 
     public static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
