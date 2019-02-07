@@ -231,13 +231,42 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
-                .write("src/main/resources/KBase1/org/pkg1/r1_1.drl", drlDef)
-                .write("src/main/resources/KBase1/org/pkg1/r1_2.drl", createDrl("org.pkg1", "R1"))
-                .write("src/main/resources/KBase1/org/pkg2/r2.drl", createDrl("org.pkg2", "R2"))
+                .write("src/main/resources/KBase1/r1_1.drl", drlDef)
+                .write("src/main/resources/KBase1/r1_2.drl", createDrl("org.pkg1", "R1"))
+                .write("src/main/resources/KBase1/r2.drl", createDrl("org.pkg2", "R2"))
                 .writeKModuleXML(createKieProjectWithPackages(ks, "org.pkg1").toXML());
         ks.newKieBuilder( kfs ).buildAll();
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
+        ksession.insert( new Message( "Hello World" ) );
+
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testHelloWorldUsingFolders() throws Exception {
+        String drlDef = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "rule R_def when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "hello-world", "1.0" );
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .generateAndWritePomXML( releaseId )
+                .write( "src/main/resources/KBase1/org/pkg1/r1_1.drl", drlDef )
+                .write( "src/main/resources/KBase1/org/pkg1/r1_2.drl", createDrl( "R1" ) )
+                .write( "src/main/resources/KBase1/org/pkg2/r2.drl", createDrl( "R2" ) )
+                .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1" )
+                        .setConfigurationProperty( "drools.groupDRLsInKieBasesByFolder", "true" )
+                        .toXML() );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.newKieContainer( releaseId ).newKieSession( "KSession1" );
         ksession.insert( new Message( "Hello World" ) );
 
         assertEquals( 2, ksession.fireAllRules() );
