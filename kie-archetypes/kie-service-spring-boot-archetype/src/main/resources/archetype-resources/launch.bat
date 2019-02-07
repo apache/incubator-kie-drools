@@ -42,11 +42,12 @@ goto :startapp
 		call oc expose svc/MYSERVICE_NAME_MARKER
 	) else (
 		echo "Launching the application locally..."
+		setlocal EnableDelayedExpansion
 		cd MYSERVICE_NAME_MARKER
 		cd target
 		for /f "delims=" %%x in ('dir /od /b *.jar') do set latestjar=%%x
 		cd ..
-		call java -jar target\%latestjar%
+		call java -jar target\!latestjar!
 	)
 
 
