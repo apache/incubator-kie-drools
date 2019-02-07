@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.core.process.instance.WorkItemManagerFactory;
-import org.drools.core.time.TimerService;
+import org.kie.services.time.TimerService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.reflective.ComponentsFactory;
@@ -406,7 +406,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
     public TimerService newTimerService() {
         String className = this.chainedProperties.getProperty( "drools.timerService",
-                                                               "org.drools.core.time.impl.JDKTimerService" );
+                                                               "org.kie.services.time.impl.JDKTimerService" );
         if ( className == null ) {
             return null;
         }

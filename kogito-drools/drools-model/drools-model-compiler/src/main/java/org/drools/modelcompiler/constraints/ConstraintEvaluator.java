@@ -8,9 +8,9 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Tuple;
-import org.drools.core.time.Interval;
 import org.drools.model.Index;
 import org.drools.model.SingleConstraint;
+import org.kie.services.time.Interval;
 
 public class ConstraintEvaluator {
 

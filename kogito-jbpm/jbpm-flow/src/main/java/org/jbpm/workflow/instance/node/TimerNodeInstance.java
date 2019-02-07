@@ -21,7 +21,7 @@ import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.timer.TimerInstance;
+import org.kie.services.time.manager.TimerInstance;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.runtime.process.EventListener;

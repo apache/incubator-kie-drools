@@ -19,9 +19,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.time.impl.DefaultTimerJobFactoryManager;
+import org.kie.services.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
-import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.kie.services.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
 
 public abstract class TimerJobFactoryType implements Serializable {

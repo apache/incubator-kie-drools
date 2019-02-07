@@ -18,6 +18,7 @@ package org.drools.core.time;
 
 import static org.junit.Assert.assertEquals;
 
+import org.kie.services.time.Interval;
 import org.junit.Test;
 
 /**

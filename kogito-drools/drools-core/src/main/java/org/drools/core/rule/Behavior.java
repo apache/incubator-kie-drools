@@ -23,7 +23,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
-import org.drools.core.time.JobHandle;
+import org.kie.services.time.JobHandle;
 
 /**
  * An interface for all behavior implementations

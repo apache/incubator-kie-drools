@@ -17,8 +17,8 @@
 package org.jbpm.process.instance;
 
 import org.drools.core.event.ProcessEventSupport;
-import org.jbpm.process.instance.event.SignalManager;
-import org.jbpm.process.instance.timer.TimerManager;
+import org.kie.services.signal.SignalManager;
+import org.kie.services.time.manager.TimerManager;
 
 public interface InternalProcessRuntime extends org.drools.core.runtime.process.InternalProcessRuntime {
 	

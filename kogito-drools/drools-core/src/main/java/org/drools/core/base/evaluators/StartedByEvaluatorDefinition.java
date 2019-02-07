@@ -33,7 +33,7 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.time.Interval;
+import org.kie.services.time.Interval;
 
 /**
  * <p>The implementation of the <code>startedby</code> evaluator definition.</p>

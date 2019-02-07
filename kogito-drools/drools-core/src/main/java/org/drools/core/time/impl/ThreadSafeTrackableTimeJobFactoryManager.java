@@ -18,8 +18,9 @@ package org.drools.core.time.impl;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.time.JobContext;
+import org.kie.services.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
+import org.kie.services.time.impl.TimerJobInstance;
 
 public class ThreadSafeTrackableTimeJobFactoryManager extends TrackableTimeJobFactoryManager {
     public ThreadSafeTrackableTimeJobFactoryManager() {

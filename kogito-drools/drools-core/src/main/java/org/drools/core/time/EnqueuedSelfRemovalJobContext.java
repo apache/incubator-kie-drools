@@ -20,10 +20,11 @@ import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.impl.TimerJobInstance;
+import org.kie.services.time.JobContext;
+import org.kie.services.time.impl.TimerJobInstance;
 
 public class EnqueuedSelfRemovalJobContext extends SelfRemovalJobContext {
-    public EnqueuedSelfRemovalJobContext( JobContext jobContext, Map<Long, TimerJobInstance> timerInstances ) {
+    public EnqueuedSelfRemovalJobContext(JobContext jobContext, Map<Long, TimerJobInstance> timerInstances ) {
         super( jobContext, timerInstances );
     }
 

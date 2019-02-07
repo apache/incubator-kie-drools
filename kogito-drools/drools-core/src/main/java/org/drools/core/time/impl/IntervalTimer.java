@@ -30,7 +30,9 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
-import org.drools.core.time.Trigger;
+import org.kie.services.time.Trigger;
+import org.kie.services.time.impl.DefaultJobHandle;
+import org.kie.services.time.impl.IntervalTrigger;
 import org.kie.api.runtime.Calendars;
 
 public class    IntervalTimer extends BaseTimer

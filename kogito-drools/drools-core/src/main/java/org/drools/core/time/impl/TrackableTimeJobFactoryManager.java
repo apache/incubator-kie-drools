@@ -20,13 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.time.EnqueuedSelfRemovalJobContext;
-import org.drools.core.time.InternalSchedulerService;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
+import org.kie.services.time.InternalSchedulerService;
+import org.kie.services.time.Job;
+import org.kie.services.time.JobContext;
+import org.kie.services.time.JobHandle;
 import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
-import org.drools.core.time.Trigger;
+import org.kie.services.time.Trigger;
+import org.kie.services.time.impl.DefaultTimerJobInstance;
+import org.kie.services.time.impl.TimerJobFactoryManager;
+import org.kie.services.time.impl.TimerJobInstance;
 
 public class TrackableTimeJobFactoryManager
     implements
@@ -49,11 +52,11 @@ public class TrackableTimeJobFactoryManager
                                                    InternalSchedulerService scheduler) {
         ctx.setJobHandle( handle );
 
-        return new DefaultTimerJobInstance( new SelfRemovalJob( job ),
-                                            createJobContext( ctx ),
-                                            trigger,
-                                            handle,
-                                            scheduler );
+        return new DefaultTimerJobInstance(new SelfRemovalJob(job ),
+                                           createJobContext( ctx ),
+                                           trigger,
+                                           handle,
+                                           scheduler );
     }
 
     protected SelfRemovalJobContext createJobContext( JobContext ctx ) {

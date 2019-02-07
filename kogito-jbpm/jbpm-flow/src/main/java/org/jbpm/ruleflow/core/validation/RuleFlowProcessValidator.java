@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.drools.core.time.impl.CronExpression;
+import org.kie.services.time.impl.CronExpression;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;

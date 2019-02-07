@@ -117,7 +117,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.drools.core.time.TimerService;
+import org.kie.services.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;

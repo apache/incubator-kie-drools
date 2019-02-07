@@ -25,6 +25,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
+import org.kie.services.time.impl.CronTrigger;
 import org.junit.Test;
 
 public class CronJobTest {
@@ -37,13 +38,13 @@ public class CronJobTest {
         timeService.advanceTime( 0,
                                  TimeUnit.MILLISECONDS );
 
-        CronTrigger trigger = new CronTrigger( 0,
-                                               null,
-                                               null,
-                                               -1,
-                                               "15 * * * * ?",
-                                               null,
-                                               null );
+        CronTrigger trigger = new CronTrigger(0,
+                                              null,
+                                              null,
+                                              -1,
+                                              "15 * * * * ?",
+                                              null,
+                                              null );
 
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world",
                                                              timeService );

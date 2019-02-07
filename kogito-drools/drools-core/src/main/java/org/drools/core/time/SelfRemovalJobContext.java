@@ -18,7 +18,9 @@ package org.drools.core.time;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.time.impl.TimerJobInstance;
+import org.kie.services.time.JobContext;
+import org.kie.services.time.JobHandle;
+import org.kie.services.time.impl.TimerJobInstance;
 
 public class SelfRemovalJobContext implements JobContext {
 
@@ -47,9 +49,8 @@ public class SelfRemovalJobContext implements JobContext {
         return jobContext.getJobHandle();
     }
 
-    @Override
     public InternalWorkingMemory getWorkingMemory() {
-        return jobContext.getWorkingMemory();
+        throw new UnsupportedOperationException("delegate.getWorkingMemory()");
     }
 
     public void remove() {

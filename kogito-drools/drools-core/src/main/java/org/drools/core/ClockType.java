@@ -16,7 +16,7 @@
 
 package org.drools.core;
 
-import org.drools.core.time.impl.JDKTimerService;
+import org.kie.services.time.impl.JDKTimerService;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.kie.api.time.SessionClock;
 

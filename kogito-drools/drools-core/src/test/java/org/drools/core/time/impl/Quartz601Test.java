@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 import java.text.ParseException;
 import java.util.Set;
 
+import org.kie.services.time.impl.CronExpression;
 import org.junit.Test;
 
 public class Quartz601Test {

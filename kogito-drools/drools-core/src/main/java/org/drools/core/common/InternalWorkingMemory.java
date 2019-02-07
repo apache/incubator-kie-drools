@@ -34,7 +34,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.time.TimerService;
+import org.kie.services.time.TimerService;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;

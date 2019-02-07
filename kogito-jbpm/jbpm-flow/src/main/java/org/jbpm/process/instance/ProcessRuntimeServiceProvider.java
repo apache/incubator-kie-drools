@@ -1,8 +1,7 @@
 package org.jbpm.process.instance;
 
-import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.time.TimerService;
-import org.jbpm.process.instance.event.SignalManager;
+import org.kie.services.time.TimerService;
+import org.kie.services.signal.SignalManager;
 
 public interface ProcessRuntimeServiceProvider {
 
@@ -10,5 +9,5 @@ public interface ProcessRuntimeServiceProvider {
 
     ProcessInstanceManager getProcessInstanceManager();
 
-    SignalManager getSignalManager(InternalKnowledgeRuntime kruntime);
+    SignalManager getSignalManager();
 }

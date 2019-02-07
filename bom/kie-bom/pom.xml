@@ -72,6 +72,24 @@
 
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>kie-services</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-services</artifactId>
+        <version>${version.org.kie}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-services</artifactId>
+        <version>${version.org.kie}</version>
+        <classifier>javadoc</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
         <version>${version.org.kie}</version>
       </dependency>

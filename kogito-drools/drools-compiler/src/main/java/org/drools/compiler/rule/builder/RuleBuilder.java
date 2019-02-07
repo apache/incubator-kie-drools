@@ -51,7 +51,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
-import org.drools.core.time.impl.CronExpression;
+import org.kie.services.time.impl.CronExpression;
 import org.drools.core.time.impl.CronTimer;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.IntervalTimer;

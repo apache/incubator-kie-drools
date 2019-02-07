@@ -16,8 +16,8 @@
 
 package org.drools.core.reteoo.builder;
 
-import static org.drools.core.time.Interval.MAX;
-import static org.drools.core.time.Interval.MIN;
+import static org.kie.services.time.Interval.MAX;
+import static org.kie.services.time.Interval.MIN;
 import static org.junit.Assert.assertEquals;
 
 import org.drools.core.base.ClassObjectType;
@@ -30,7 +30,7 @@ import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.test.model.StockTick;
-import org.drools.core.time.Interval;
+import org.kie.services.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.junit.Before;
 import org.junit.Test;

@@ -2,9 +2,9 @@ package org.jbpm.process.instance;
 
 import java.util.Map;
 
-import org.jbpm.process.instance.event.SignalManager;
-import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.process.instance.timer.TimerManagerRuntime;
+import org.kie.services.signal.SignalManager;
+import org.kie.services.time.manager.TimerManager;
+import org.kie.services.time.manager.TimerManagerRuntime;
 import org.kie.api.time.SessionClock;
 
 class LightTimerManagerRuntime implements TimerManagerRuntime {
@@ -48,6 +48,11 @@ class LightTimerManagerRuntime implements TimerManagerRuntime {
     @Override
     public void startProcess(String processId, Map<String, Object> paramaeters, String timer) {
         lightProcessRuntime.startProcess(processId, paramaeters, timer);
+    }
+
+    @Override
+    public long getIdentifier() {
+        return 0;
     }
 
     ;

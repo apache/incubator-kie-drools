@@ -27,7 +27,7 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Evaluator;
-import org.drools.core.time.Interval;
+import org.kie.services.time.Interval;
 
 /**
  * <p>The implementation of the 'after' evaluator definition.</p>

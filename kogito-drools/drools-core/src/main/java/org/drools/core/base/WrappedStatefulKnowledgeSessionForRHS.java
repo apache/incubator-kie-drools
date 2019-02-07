@@ -47,7 +47,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
-import org.drools.core.time.TimerService;
+import org.kie.services.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;

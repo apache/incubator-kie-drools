@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.drools.core.rule.Pattern;
+import org.kie.services.time.Interval;
 
 /**
  * A class to abstract the management of temporal

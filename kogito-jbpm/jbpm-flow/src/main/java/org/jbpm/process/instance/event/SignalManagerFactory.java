@@ -17,6 +17,7 @@
 package org.jbpm.process.instance.event;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.kie.services.signal.SignalManager;
 
 public interface SignalManagerFactory {
 	

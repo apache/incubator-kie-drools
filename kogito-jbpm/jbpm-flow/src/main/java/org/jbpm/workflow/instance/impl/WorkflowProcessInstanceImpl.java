@@ -44,7 +44,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
-import org.jbpm.process.instance.timer.TimerInstance;
+import org.kie.services.time.manager.TimerInstance;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;

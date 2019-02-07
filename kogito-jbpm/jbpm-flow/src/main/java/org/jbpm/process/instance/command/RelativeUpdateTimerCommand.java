@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jbpm.process.instance.timer.TimerInstance;
+import org.kie.services.time.manager.TimerInstance;
 
 @XmlRootElement(name = "relative-update-timer-command")
 @XmlAccessorType(XmlAccessType.NONE)

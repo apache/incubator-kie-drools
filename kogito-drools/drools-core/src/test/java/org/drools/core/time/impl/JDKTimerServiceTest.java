@@ -33,12 +33,12 @@ import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.TimerService;
+import org.kie.services.time.Job;
+import org.kie.services.time.JobContext;
+import org.kie.services.time.JobHandle;
+import org.kie.services.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
-import org.drools.core.time.Trigger;
+import org.kie.services.time.Trigger;
 import org.junit.Test;
 
 public class JDKTimerServiceTest {
@@ -139,7 +139,6 @@ public class JDKTimerServiceTest {
             return list;
         }
 
-        @Override
         public InternalWorkingMemory getWorkingMemory() {
             return (InternalWorkingMemory) Proxy.newProxyInstance( InternalWorkingMemory.class.getClassLoader(),
                                                                    new Class[]{InternalWorkingMemory.class},

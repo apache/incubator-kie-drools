@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.kie.services.time.impl.CronExpression;
 import org.junit.Ignore;
 import org.junit.Test;
 

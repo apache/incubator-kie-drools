@@ -28,7 +28,9 @@ import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
-import org.drools.core.time.Trigger;
+import org.kie.services.time.Trigger;
+import org.kie.services.time.impl.DefaultJobHandle;
+import org.kie.services.time.impl.PointInTimeTrigger;
 import org.drools.core.util.NumberUtils;
 import org.kie.api.runtime.Calendars;
 
@@ -103,9 +105,9 @@ public class DurationTimer extends BaseTimer
         long offset = timestamp + duration;
         if( NumberUtils.isAddOverflow( timestamp, duration, offset ) ) {
             // this should not happen, but possible in some odd simulation scenarios, so creating a trigger for immediate execution instead
-            return new PointInTimeTrigger( timestamp,
-                                           calendarNames,
-                                           calendars );
+            return new PointInTimeTrigger(timestamp,
+                                          calendarNames,
+                                          calendars );
         } else {
             return new PointInTimeTrigger( offset,
                                            calendarNames,

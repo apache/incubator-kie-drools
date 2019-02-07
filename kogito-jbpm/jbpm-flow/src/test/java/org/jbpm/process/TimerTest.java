@@ -24,15 +24,14 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
-import org.jbpm.process.instance.timer.TimerInstance;
-import org.jbpm.process.instance.timer.TimerManager;
+import org.kie.services.time.manager.TimerInstance;
+import org.kie.services.time.manager.TimerManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.LoggerFactory;
 
 public class TimerTest extends AbstractBaseTest  {

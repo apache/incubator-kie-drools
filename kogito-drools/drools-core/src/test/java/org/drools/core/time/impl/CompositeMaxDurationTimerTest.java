@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 
-import org.drools.core.time.Trigger;
+import org.kie.services.time.Trigger;
 import org.junit.Test;
 
 public class CompositeMaxDurationTimerTest {

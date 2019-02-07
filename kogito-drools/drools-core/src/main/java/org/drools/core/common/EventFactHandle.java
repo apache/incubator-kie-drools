@@ -19,8 +19,9 @@ package org.drools.core.common;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.TimerService;
+import org.kie.services.time.JobHandle;
+import org.kie.services.time.TimerService;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.LinkedList;
 
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
@@ -40,7 +41,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
 
     private AtomicInteger     notExpiredPartitions;
 
-    private final transient LinkedList<JobHandle> jobs = new LinkedList<JobHandle>();
+    private final transient LinkedList<JobHandleNode> jobs = new LinkedList<JobHandleNode>();
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -309,7 +310,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
 
     public void addJob(JobHandle job) {
         synchronized (jobs) {
-            jobs.add(job);
+            jobs.add(new JobHandleNode(job));
         }
     }
 
@@ -317,8 +318,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         synchronized (jobs) {
             // the job could have been already removed if the event has been just retracted
             // and then the unscheduleAllJobs method has been invoked concurrently
-            if (jobs.contains(job)) {
-                jobs.remove(job);
+            if (jobs.contains(new JobHandleNode(job))) {
+                jobs.remove(new JobHandleNode(job));
             }
         }
     }
@@ -328,10 +329,28 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
             synchronized (jobs) {
                 TimerService clock = workingMemory.getTimerService();
                 while ( !jobs.isEmpty() ) {
-                    JobHandle job = jobs.removeFirst();
-                    clock.removeJob(job);
+                    JobHandleNode job = jobs.removeFirst();
+                    clock.removeJob(job.jobHandle);
                 }
             }
+        }
+    }
+
+    private static class JobHandleNode extends AbstractBaseLinkedListNode<JobHandleNode> {
+        final JobHandle jobHandle;
+
+        JobHandleNode(JobHandle jobHandle) {
+            this.jobHandle = jobHandle;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof JobHandleNode && ((JobHandleNode) obj).jobHandle.equals(jobHandle);
+        }
+
+        @Override
+        public int hashCode() {
+            return jobHandle.hashCode();
         }
     }
 }

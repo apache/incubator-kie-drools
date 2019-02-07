@@ -28,10 +28,10 @@ import static org.mockito.Mockito.when;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.Trigger;
+import org.kie.services.time.Job;
+import org.kie.services.time.JobContext;
+import org.kie.services.time.JobHandle;
+import org.kie.services.time.Trigger;
 import org.junit.Test;
 
 public class PseudoClockSchedulerTest {

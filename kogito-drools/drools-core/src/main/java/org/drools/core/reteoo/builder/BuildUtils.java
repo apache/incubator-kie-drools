@@ -48,7 +48,7 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.time.Interval;
+import org.kie.services.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.TimeUtils;
 import org.kie.api.definition.rule.Rule;

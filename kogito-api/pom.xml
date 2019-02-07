@@ -41,6 +41,7 @@
   <modules>
     <module>kie-api</module>
     <module>kie-internal</module>
+    <module>kie-services</module>
   </modules>
 
   <dependencyManagement>

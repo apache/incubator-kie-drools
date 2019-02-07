@@ -15,7 +15,7 @@
 
 package org.drools.core.marshalling.impl;
 
-import org.drools.core.time.JobContext;
+import org.kie.services.time.JobContext;
 
 public interface TimersOutputMarshaller {
     

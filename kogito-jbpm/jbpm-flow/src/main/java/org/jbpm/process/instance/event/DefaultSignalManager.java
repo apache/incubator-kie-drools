@@ -24,14 +24,13 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.jbpm.process.instance.InternalProcessRuntime;
-import org.kie.api.runtime.KieSession;
+import org.kie.services.signal.SignalManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

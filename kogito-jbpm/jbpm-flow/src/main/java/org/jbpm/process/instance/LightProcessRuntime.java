@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
@@ -33,9 +32,9 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
-import org.drools.core.time.TimerService;
-import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
-import org.drools.core.time.impl.CronExpression;
+import org.kie.services.time.TimerService;
+import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
+import org.kie.services.time.impl.CronExpression;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
@@ -43,10 +42,10 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
-import org.jbpm.process.instance.event.SignalManager;
-import org.jbpm.process.instance.timer.TimerInstance;
-import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.process.instance.timer.TimerManagerRuntime;
+import org.kie.services.signal.SignalManager;
+import org.kie.services.time.manager.TimerInstance;
+import org.kie.services.time.manager.TimerManager;
+import org.kie.services.time.manager.TimerManagerRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
@@ -91,7 +90,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
 
         this.runtimeContext = runtimeContext;
         this.processInstanceManager = services.getProcessInstanceManager();
-        this.signalManager = services.getSignalManager(this.knowledgeRuntime);
+        this.signalManager = services.getSignalManager();
         this.timerManager = new TimerManager(timerManagerRuntime, timerService);
         this.processEventSupport = new ProcessEventSupport();
         if (isActive()) {

@@ -3,19 +3,19 @@ package org.jbpm.process.instance.timer;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.time.TimerService;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
-import org.jbpm.process.instance.event.SignalManager;
+import org.kie.services.time.manager.TimerManager;
+import org.kie.services.time.manager.TimerManagerRuntime;
+import org.kie.services.signal.SignalManager;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class TimerManagerRuntimeAdaptor implements TimerManagerRuntime {
     private final InternalKnowledgeRuntime kruntime;
-    private final InternalProcessRuntime processRuntime;
 
     public TimerManagerRuntimeAdaptor(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
-        this.processRuntime = (InternalProcessRuntime) kruntime.getProcessRuntime();
     }
 
     @Override
@@ -35,22 +35,32 @@ public class TimerManagerRuntimeAdaptor implements TimerManagerRuntime {
 
     @Override
     public SignalManager getSignalManager() {
-        return processRuntime.getSignalManager();
+        return getProcessRuntime().getSignalManager();
+    }
+
+    private InternalProcessRuntime getProcessRuntime() {
+        return (InternalProcessRuntime) kruntime.getProcessRuntime();
     }
 
     @Override
     public TimerManager getTimerManager() {
-        return processRuntime.getTimerManager();
+        return getProcessRuntime().getTimerManager();
     }
 
     @Override
     public boolean isActive() {
+        InternalProcessRuntime processRuntime = getProcessRuntime();
         return (processRuntime instanceof ProcessRuntimeImpl)
                 && ((ProcessRuntimeImpl) processRuntime).isActive();
     }
 
     @Override
     public void startProcess(String processId, Map<String, Object> parameters, String timer) {
-        ((ProcessRuntimeImpl) processRuntime).startProcess(processId, parameters, timer);
+        ((ProcessRuntimeImpl) getProcessRuntime()).startProcess(processId, parameters, timer);
+    }
+
+    @Override
+    public long getIdentifier() {
+        return ((StatefulKnowledgeSession)kruntime).getIdentifier();
     }
 }
