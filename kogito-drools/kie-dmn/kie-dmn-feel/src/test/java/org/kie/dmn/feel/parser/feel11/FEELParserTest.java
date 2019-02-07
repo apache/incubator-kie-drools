@@ -195,7 +195,7 @@ public class FEELParserTest {
         assertThat( nameRef.getResultType(), is( BuiltInType.STRING ) );
         assertLocation( inputExpression, nameRef );
     }
-    
+
     @Test
     public void testQualifiedName() {
         String inputExpression = "My Person.Full Name";
@@ -204,7 +204,7 @@ public class FEELParserTest {
 
         assertThat( qualRef, is( instanceOf( QualifiedNameNode.class ) ) );
         assertThat( qualRef.getResultType(), is( BuiltInType.STRING ) );
-        
+
         List<NameRefNode> parts = ((QualifiedNameNode) qualRef).getParts();
         // `My Person` ...
         assertThat( parts.get(0), is( instanceOf( NameRefNode.class ) ) );
@@ -212,7 +212,7 @@ public class FEELParserTest {
         // ... `.Full Name`
         assertThat( parts.get(1), is( instanceOf( NameRefNode.class ) ) );
         assertThat( parts.get(1).getResultType(), is( BuiltInType.STRING ) );
-        
+
         assertLocation( inputExpression, qualRef );
     }
 
@@ -567,6 +567,22 @@ public class FEELParserTest {
 
         assertThat( in.getExprs(), is( instanceOf( RangeNode.class ) ) );
         assertThat( in.getExprs().getText(), is( "[(10+5)..(a*b))" ) );
+    }
+
+    @Test
+    public void testInUnaryTestStrings() {
+        final String inputExpression = "name in [\"A\"..\"Z...\")";
+        final BaseNode inNode = parse( inputExpression );
+
+        assertThat( inNode, is( instanceOf( InNode.class ) ) );
+        assertThat( inNode.getResultType(), is( BuiltInType.BOOLEAN ) );
+        assertThat( inNode.getText(), is( inputExpression ) );
+
+        final InNode in = (InNode) inNode;
+        assertThat( in.getExprs(), is( instanceOf( RangeNode.class ) ) );
+        final RangeNode range = (RangeNode) in.getExprs();
+        assertThat( range.getStart().getText(), is( "\"A\"" ) );
+        assertThat( range.getEnd().getText(), is( "\"Z...\"" ) );
     }
 
     @Test
