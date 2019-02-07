@@ -57,7 +57,8 @@ public interface RuntimeEnvironmentBuilder {
         static {
             try {
                 INSTANCE = ( RuntimeEnvironmentBuilderFactory )
-                        Class.forName( "org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder").newInstance();
+                        Class.forName(System.getProperty("org.jbpm.runtime.env.builder.class",
+                                "org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder")).newInstance();
             } catch (Exception e) {
                 logger.error("Unable to instance RuntimeEnvironmentBuilderFactory due to " + e.getMessage());
             }
