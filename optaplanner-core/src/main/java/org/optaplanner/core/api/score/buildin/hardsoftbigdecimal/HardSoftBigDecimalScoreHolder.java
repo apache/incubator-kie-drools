@@ -36,8 +36,8 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftB
     /** Slower than {@link #matchExecutorByNumberMap} */
     protected final Map<Rule, BiConsumer<RuleContext, HardSoftBigDecimalScore>> matchExecutorByScoreMap = new LinkedHashMap<>();
 
-    protected BigDecimal hardScore = null;
-    protected BigDecimal softScore = null;
+    protected BigDecimal hardScore = BigDecimal.ZERO;
+    protected BigDecimal softScore = BigDecimal.ZERO;
 
     public HardSoftBigDecimalScoreHolder(boolean constraintMatchEnabled) {
         super(constraintMatchEnabled, HardSoftBigDecimalScore.ZERO);
@@ -163,7 +163,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftB
      * @param hardWeight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addHardConstraintMatch(RuleContext kcontext, BigDecimal hardWeight) {
-        hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
+        hardScore = hardScore.add(hardWeight);
         registerConstraintMatch(kcontext,
                 () -> hardScore = hardScore.subtract(hardWeight),
                 () -> HardSoftBigDecimalScore.of(hardWeight, BigDecimal.ZERO));
@@ -174,7 +174,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftB
      * @param softWeight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addSoftConstraintMatch(RuleContext kcontext, BigDecimal softWeight) {
-        softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
+        softScore = softScore.add(softWeight);
         registerConstraintMatch(kcontext,
                 () -> softScore = softScore.subtract(softWeight),
                 () -> HardSoftBigDecimalScore.of(BigDecimal.ZERO, softWeight));
@@ -186,8 +186,8 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftB
      * @param softWeight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addMultiConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, BigDecimal softWeight) {
-        hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
-        softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
+        hardScore = hardScore.add(hardWeight);
+        softScore = softScore.add(softWeight);
         registerConstraintMatch(kcontext,
                 () -> {
                     hardScore = hardScore.subtract(hardWeight);
@@ -198,9 +198,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder<HardSoftB
 
     @Override
     public HardSoftBigDecimalScore extractScore(int initScore) {
-        return HardSoftBigDecimalScore.ofUninitialized(initScore,
-                hardScore == null ? BigDecimal.ZERO : hardScore,
-                softScore == null ? BigDecimal.ZERO : softScore);
+        return HardSoftBigDecimalScore.ofUninitialized(initScore, hardScore, softScore);
     }
 
 }

@@ -77,7 +77,7 @@ public class BendableLongScoreHolder extends AbstractScoreHolder<BendableLongSco
             Long singleLevelWeight = null;
             for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
                 long levelWeight = constraintWeight.getHardOrSoftScore(i);
-                if (levelWeight != 0) {
+                if (levelWeight != 0L) {
                     if (singleLevel != null) {
                         singleLevel = null;
                         singleLevelWeight = null;

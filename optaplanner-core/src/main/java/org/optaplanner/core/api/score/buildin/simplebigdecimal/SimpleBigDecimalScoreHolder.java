@@ -34,7 +34,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
 
     protected final Map<Rule, BiConsumer<RuleContext, BigDecimal>> matchExecutorByNumberMap = new LinkedHashMap<>();
 
-    protected BigDecimal score = null;
+    protected BigDecimal score = BigDecimal.ZERO;
 
     public SimpleBigDecimalScoreHolder(boolean constraintMatchEnabled) {
         super(constraintMatchEnabled, SimpleBigDecimalScore.ZERO);
@@ -115,7 +115,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
      * @param weight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
-        score = (score == null) ? weight : score.add(weight);
+        score = score.add(weight);
         registerConstraintMatch(kcontext,
                 () -> score = score.subtract(weight),
                 () -> SimpleBigDecimalScore.of(weight));
@@ -123,8 +123,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder<SimpleBigDe
 
     @Override
     public SimpleBigDecimalScore extractScore(int initScore) {
-        return SimpleBigDecimalScore.ofUninitialized(initScore,
-                score == null ? BigDecimal.ZERO : score);
+        return SimpleBigDecimalScore.ofUninitialized(initScore, score);
     }
 
 }

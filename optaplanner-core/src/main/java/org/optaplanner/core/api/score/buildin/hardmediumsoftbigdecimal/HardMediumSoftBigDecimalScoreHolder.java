@@ -35,9 +35,9 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
     /** Slower than {@link #matchExecutorByNumberMap} */
     protected final Map<Rule, BiConsumer<RuleContext, HardMediumSoftBigDecimalScore>> matchExecutorByScoreMap = new LinkedHashMap<>();
 
-    protected BigDecimal hardScore;
-    protected BigDecimal mediumScore;
-    protected BigDecimal softScore;
+    protected BigDecimal hardScore = BigDecimal.ZERO;
+    protected BigDecimal mediumScore = BigDecimal.ZERO;
+    protected BigDecimal softScore = BigDecimal.ZERO;
 
     public HardMediumSoftBigDecimalScoreHolder(boolean constraintMatchEnabled) {
         super(constraintMatchEnabled, HardMediumSoftBigDecimalScore.ZERO);
@@ -179,7 +179,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
      * @param hardWeight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addHardConstraintMatch(RuleContext kcontext, BigDecimal hardWeight) {
-        hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
+        hardScore = hardScore.add(hardWeight);
         registerConstraintMatch(kcontext,
                 () -> hardScore = hardScore.subtract(hardWeight),
                 () -> HardMediumSoftBigDecimalScore.of(hardWeight, BigDecimal.ZERO, BigDecimal.ZERO));
@@ -194,7 +194,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
      * @param mediumWeight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addMediumConstraintMatch(RuleContext kcontext, BigDecimal mediumWeight) {
-        mediumScore = (mediumScore == null) ? mediumWeight : mediumScore.add(mediumWeight);
+        mediumScore = mediumScore.add(mediumWeight);
         registerConstraintMatch(kcontext,
                 () -> mediumScore = mediumScore.subtract(mediumWeight),
                 () -> HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, mediumWeight, BigDecimal.ZERO));
@@ -209,7 +209,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
      * @param softWeight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addSoftConstraintMatch(RuleContext kcontext, BigDecimal softWeight) {
-        softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
+        softScore = softScore.add(softWeight);
         registerConstraintMatch(kcontext,
                 () -> softScore = softScore.subtract(softWeight),
                 () -> HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO, softWeight));
@@ -222,9 +222,9 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
      * @param softWeight never null, higher is better, negative for a penalty, positive for a reward
      */
     public void addMultiConstraintMatch(RuleContext kcontext, BigDecimal hardWeight, BigDecimal mediumWeight, BigDecimal softWeight) {
-        hardScore = (hardScore == null) ? hardWeight : hardScore.add(hardWeight);
-        mediumScore = (mediumScore == null) ? mediumWeight : mediumScore.add(mediumWeight);
-        softScore = (softScore == null) ? softWeight : softScore.add(softWeight);
+        hardScore = hardScore.add(hardWeight);
+        mediumScore = mediumScore.add(mediumWeight);
+        softScore = softScore.add(softWeight);
         registerConstraintMatch(kcontext,
                 () -> {
                     hardScore = hardScore.subtract(hardWeight);
@@ -236,10 +236,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder<Har
 
     @Override
     public HardMediumSoftBigDecimalScore extractScore(int initScore) {
-        return HardMediumSoftBigDecimalScore.ofUninitialized(initScore,
-                hardScore == null ? BigDecimal.ZERO : hardScore,
-                mediumScore == null ? BigDecimal.ZERO : mediumScore,
-                softScore == null ? BigDecimal.ZERO : softScore);
+        return HardMediumSoftBigDecimalScore.ofUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
 }
