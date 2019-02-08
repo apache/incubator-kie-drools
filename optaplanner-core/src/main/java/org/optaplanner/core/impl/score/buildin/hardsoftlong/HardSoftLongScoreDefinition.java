@@ -69,6 +69,11 @@ public class HardSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinit
     }
 
     @Override
+    public HardSoftLongScoreInliner buildScoreInliner() {
+        return new HardSoftLongScoreInliner();
+    }
+
+    @Override
     public HardSoftLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftLongScoreHolder(constraintMatchEnabled);
     }

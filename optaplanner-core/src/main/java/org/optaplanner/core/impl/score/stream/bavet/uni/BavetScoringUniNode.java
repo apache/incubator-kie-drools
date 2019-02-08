@@ -16,48 +16,52 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.util.function.ToIntFunction;
+import java.util.function.Function;
 
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
-public final class BavetIntScoringUniNode<A> extends BavetAbstractUniNode<A> {
+public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> {
 
     private final String constraintPackage;
     private final String constraintName;
-    private final int constraintWeight;
-    private final ToIntFunction<A> matchWeigher;
+    private final Score<?> constraintWeight;
+    private final Function<A, UndoScoreImpacter> scoreImpacter;
 
-    public BavetIntScoringUniNode(BavetConstraintSession session, int nodeOrder,
-            String constraintPackage, String constraintName, int constraintWeight,
-            ToIntFunction<A> matchWeigher) {
+    public BavetScoringUniNode(BavetConstraintSession session, int nodeOrder,
+            String constraintPackage, String constraintName, Score<?> constraintWeight,
+            Function<A, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeOrder);
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
-        this.matchWeigher = matchWeigher;
+        this.scoreImpacter = scoreImpacter;
     }
 
     @Override
-    public BavetIntScoringUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {
-        return new BavetIntScoringUniTuple<>(this, parentTuple);
+    public BavetScoringUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {
+        return new BavetScoringUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetIntScoringUniTuple<A> tuple) {
+    public void refresh(BavetScoringUniTuple<A> tuple) {
         A a = tuple.getFactA();
-        int oldTupleScore = tuple.getScore();
-        int scoreDelta = - oldTupleScore;
-        if (tuple.isActive()) {
-            int newTupleScore = constraintWeight * matchWeigher.applyAsInt(a);
-            scoreDelta += newTupleScore;
-            tuple.setScore(newTupleScore);
+        UndoScoreImpacter oldUndoScoreImpacter = tuple.getUndoScoreImpacter();
+        if (oldUndoScoreImpacter != null) {
+            oldUndoScoreImpacter.undoScoreImpact();
         }
-        session.addScoreDelta(scoreDelta);
+        if (tuple.isActive()) {
+            UndoScoreImpacter undoScoreImpacter = scoreImpacter.apply(a);
+            tuple.setUndoScoreImpacter(undoScoreImpacter);
+        } else {
+            tuple.setUndoScoreImpacter(null);
+        }
         tuple.refreshed();
     }
 
     @Override
     public String toString() {
-        return "IntScore(" + constraintWeight + ")";
+        return "Scoring(" + constraintWeight + ")";
     }
 
     // ************************************************************************

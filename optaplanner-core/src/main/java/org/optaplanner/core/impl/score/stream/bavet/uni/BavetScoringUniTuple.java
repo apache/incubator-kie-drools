@@ -16,14 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-public final class BavetIntScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-    private final BavetIntScoringUniNode<A> node;
+public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
+
+    private final BavetScoringUniNode<A> node;
     private final BavetAbstractUniTuple<A> parentTuple;
 
-    private int score = 0;
+    private UndoScoreImpacter undoScoreImpacter = null;
 
-    public BavetIntScoringUniTuple(BavetIntScoringUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {
+    public BavetScoringUniTuple(BavetScoringUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
     }
@@ -35,7 +37,7 @@ public final class BavetIntScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
 
     @Override
     public String toString() {
-        return "IntScore(" + getFactA() + ")";
+        return "Scoring(" + getFactA() + ")";
     }
 
     // ************************************************************************
@@ -43,7 +45,7 @@ public final class BavetIntScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
     // ************************************************************************
 
     @Override
-    public BavetIntScoringUniNode<A> getNode() {
+    public BavetScoringUniNode<A> getNode() {
         return node;
     }
 
@@ -52,12 +54,12 @@ public final class BavetIntScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
         return parentTuple.getFactA();
     }
 
-    public int getScore() {
-        return score;
+    public UndoScoreImpacter getUndoScoreImpacter() {
+        return undoScoreImpacter;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setUndoScoreImpacter(UndoScoreImpacter undoScoreImpacter) {
+        this.undoScoreImpacter = undoScoreImpacter;
     }
 
 }

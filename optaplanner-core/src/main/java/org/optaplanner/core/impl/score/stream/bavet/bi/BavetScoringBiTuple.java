@@ -16,14 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-public final class BavetIntScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
+import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 
-    private final BavetIntScoringBiNode<A, B> node;
+public final class BavetScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
+
+    private final BavetScoringBiNode<A, B> node;
     private final BavetAbstractBiTuple<A, B> parentTuple;
 
-    private int score = 0;
+    private UndoScoreImpacter undoScoreImpacter = null;
 
-    public BavetIntScoringBiTuple(BavetIntScoringBiNode<A, B> node, BavetAbstractBiTuple<A, B> parentTuple) {
+    public BavetScoringBiTuple(BavetScoringBiNode<A, B> node, BavetAbstractBiTuple<A, B> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
     }
@@ -35,7 +37,7 @@ public final class BavetIntScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, 
 
     @Override
     public String toString() {
-        return "IntScore(" + getFactA() + ", " + getFactB() + ")";
+        return "Scoring(" + getFactA() + ")";
     }
 
     // ************************************************************************
@@ -43,7 +45,7 @@ public final class BavetIntScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, 
     // ************************************************************************
 
     @Override
-    public BavetIntScoringBiNode<A, B> getNode() {
+    public BavetScoringBiNode<A, B> getNode() {
         return node;
     }
 
@@ -57,12 +59,12 @@ public final class BavetIntScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, 
         return parentTuple.getFactB();
     }
 
-    public int getScore() {
-        return score;
+    public UndoScoreImpacter getUndoScoreImpacter() {
+        return undoScoreImpacter;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setUndoScoreImpacter(UndoScoreImpacter undoScoreImpacter) {
+        this.undoScoreImpacter = undoScoreImpacter;
     }
 
 }

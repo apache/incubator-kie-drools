@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.score.definition;
 
-import org.optaplanner.core.api.score.FeasibilityScore;
-import org.optaplanner.core.api.score.Score;
+package org.optaplanner.core.impl.score.inliner;
 
-public interface FeasibilityScoreDefinition<S extends FeasibilityScore<S>> extends ScoreDefinition<S> {
+@FunctionalInterface
+public interface UndoScoreImpacter {
 
-    /**
-     * Returns the number of levels of {@link Score#toLevelNumbers()}.
-     * that are used to determine {@link FeasibilityScore#isFeasible()}.
-     * @return at least 0, at most {@link #getLevelsSize()}
-     */
-    int getFeasibleLevelsSize();
+    void undoScoreImpact();
 
 }

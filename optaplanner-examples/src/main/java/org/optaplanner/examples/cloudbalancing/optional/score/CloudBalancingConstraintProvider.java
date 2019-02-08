@@ -38,7 +38,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                 .filter(process -> process.getComputer() != null)
                 .groupBy(CloudProcess::getComputer, UniCollector.summingInt(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
-                .penalize((computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
+                .penalizeInt((computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
     }
 
     protected void requiredMemoryTotal(ConstraintFactory constraintFactory) {
@@ -47,7 +47,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                 .filter(process -> process.getComputer() != null)
                 .groupBy(CloudProcess::getComputer, UniCollector.summingInt(CloudProcess::getRequiredMemory))
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
-                .penalize((computer, requiredMemory) -> requiredMemory - computer.getMemory());
+                .penalizeInt((computer, requiredMemory) -> requiredMemory - computer.getMemory());
     }
 
     protected void requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
@@ -56,7 +56,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                 .filter(process -> process.getComputer() != null)
                 .groupBy(CloudProcess::getComputer, UniCollector.summingInt(CloudProcess::getRequiredNetworkBandwidth))
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
-                .penalize((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
+                .penalizeInt((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
     }
 
 }

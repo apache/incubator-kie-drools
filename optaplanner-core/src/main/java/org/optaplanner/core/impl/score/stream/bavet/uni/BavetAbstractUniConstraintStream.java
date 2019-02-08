@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -88,20 +90,53 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return biStream;
     }
 
+    // ************************************************************************
+    // Penalize/reward
+    // ************************************************************************
+
     @Override
     public void penalize() {
-        ToIntFunction<A> matchWeigher = (A a) -> -1;
-        addIntScoring(matchWeigher);
+        // TODO FIXME depends on Score type
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, (A a) -> 1));
+    }
+
+    @Override
+    public void penalizeInt(ToIntFunction<A> matchWeigher) {
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
+    }
+
+    @Override
+    public void penalizeLong(ToLongFunction<A> matchWeigher) {
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
+    }
+
+    @Override
+    public void penalizeBigDecimal(Function<A, BigDecimal> matchWeigher) {
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
     }
 
     @Override
     public void reward() {
-        ToIntFunction<A> matchWeigher = (A a) -> 1;
-        addIntScoring(matchWeigher);
+        // TODO FIXME depends on Score type
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, (A a) -> 1));
     }
 
-    private void addIntScoring(ToIntFunction<A> matchWeigher) {
-        BavetIntScoringUniConstraintStream<Solution_, A> stream = new BavetIntScoringUniConstraintStream<>(constraint, matchWeigher);
+    @Override
+    public void rewardInt(ToIntFunction<A> matchWeigher) {
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
+    }
+
+    @Override
+    public void rewardLong(ToLongFunction<A> matchWeigher) {
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
+    }
+
+    @Override
+    public void rewardBigDecimal(Function<A, BigDecimal> matchWeigher) {
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
+    }
+
+    private void addScoringUniConstraintStream(BavetScoringUniConstraintStream<Solution_, A> stream) {
         childStreamList.add(stream);
     }
 

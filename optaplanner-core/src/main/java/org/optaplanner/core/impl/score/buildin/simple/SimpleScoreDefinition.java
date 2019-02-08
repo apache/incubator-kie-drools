@@ -64,6 +64,11 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     }
 
     @Override
+    public SimpleScoreInliner buildScoreInliner() {
+        return new SimpleScoreInliner();
+    }
+
+    @Override
     public SimpleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleScoreHolder(constraintMatchEnabled);
     }

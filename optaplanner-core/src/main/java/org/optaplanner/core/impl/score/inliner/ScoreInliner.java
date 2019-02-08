@@ -1,0 +1,40 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.core.impl.score.inliner;
+
+import org.optaplanner.core.api.score.Score;
+
+public abstract class ScoreInliner<Score_ extends Score<Score_>> {
+
+    public abstract Score_ extractScore(int initScore);
+
+    public IntWeightedScoreImpacter buildIntWeightedScoreImpacter(Score_ constraintWeight) {
+        throw new UnsupportedOperationException("The score inliner (" +  this
+                + ") does not support an int matchWeigher.");
+    }
+
+    public LongWeightedScoreImpacter buildLongWeightedScoreImpacter(Score_ constraintWeight) {
+        throw new UnsupportedOperationException("The score inliner (" +  this
+                + ") does not support a long matchWeigher.");
+    }
+
+    public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(Score_ constraintWeight) {
+        throw new UnsupportedOperationException("The score inliner (" +  this
+                + ") does not support a BigDecimal matchWeigher.");
+    }
+
+}

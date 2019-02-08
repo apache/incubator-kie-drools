@@ -105,7 +105,8 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
                 constraintToWeightMap.put(constraint, constraintWeight);
             }
         }
-        return new BavetConstraintSession<>(constraintToWeightMap);
+        return new BavetConstraintSession<>(constraintToWeightMap,
+                solutionDescriptor.getScoreDefinition().buildScoreInliner());
     }
 
     // ************************************************************************

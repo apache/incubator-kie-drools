@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -42,9 +42,11 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     private final List<Queue<BavetAbstractTuple>> nodeOrderedQueueList;
     private final Map<Object, BavetSelectUniTuple<Object>> selectTupleMap;
 
-    private int score = 0;
+    private ScoreInliner scoreInliner;
 
-    public BavetConstraintSession(Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
+    public BavetConstraintSession(Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap,
+            ScoreInliner scoreInliner) {
+        this.scoreInliner = scoreInliner;
         declaredClassToNodeMap = new HashMap<>(50);
         BavetNodeBuildPolicy<Solution_> buildPolicy = new BavetNodeBuildPolicy<>(this);
         constraintToWeightMap.forEach((constraint, constraintWeight) -> {
@@ -113,9 +115,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
                 tuple = queue.poll();
             }
         }
-        // TODO HACK
-        return HardSoftScore.ofUninitialized(initScore, score, 0);
-//        return SimpleScore.ofUninitialized(initScore, score);
+        return scoreInliner.extractScore(initScore);
     }
 
     public void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState) {
@@ -138,17 +138,12 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         nodeOrderedQueueList.get(tuple.getNodeOrder()).add(tuple);
     }
 
-    public void addScoreDelta(int scoreDelta) {
-        score += scoreDelta;
-    }
-
-    @Override
-    public String toString() {
-        return "Bavet score (" + score + ")";
-    }
-
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    public ScoreInliner getScoreInliner() {
+        return scoreInliner;
+    }
 
 }

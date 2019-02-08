@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
+import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
@@ -62,6 +63,13 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
         }
         return SimpleDoubleScore.ofUninitialized(initScore, (Double) levelNumbers[0]);
     }
+
+    @Override
+    public ScoreInliner<SimpleDoubleScore> buildScoreInliner() {
+        throw new IllegalStateException("ConstraintStreams don't support a " + SimpleDoubleScore.class.getSimpleName()
+                + ") because it is error prone.");
+    }
+
 
     @Override
     public SimpleDoubleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

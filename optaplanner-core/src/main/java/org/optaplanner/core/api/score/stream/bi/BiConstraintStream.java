@@ -16,9 +16,12 @@
 
 package org.optaplanner.core.api.score.stream.bi;
 
+import java.math.BigDecimal;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
+import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -46,20 +49,54 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     BiConstraintStream<A, B> filter(BiPredicate<A, B> predicate);
 
+    // ************************************************************************
+    // Penalize/reward
+    // ************************************************************************
+
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} for each match.
      */
     void penalize();
 
     /**
-     * Negatively impact the {@link Score}: subtract  the {@link ConstraintWeight} multiplied by the match weight.
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      */
-    void penalize(ToIntBiFunction<A, B> matchWeigher);
+    void penalizeInt(ToIntBiFunction<A, B> matchWeigher);
+
+    /**
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void penalizeLong(ToLongBiFunction<A, B> matchWeigher);
+
+    /**
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void penalizeBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} for each match.
      */
     void reward();
+
+    /**
+     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void rewardInt(ToIntBiFunction<A, B> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void rewardLong(ToLongBiFunction<A, B> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void rewardBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
 
 }

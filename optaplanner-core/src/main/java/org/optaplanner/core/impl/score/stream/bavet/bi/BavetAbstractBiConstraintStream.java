@@ -16,10 +16,13 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
+import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -47,25 +50,53 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         return stream;
     }
 
+    // ************************************************************************
+    // Penalize/reward
+    // ************************************************************************
+
     @Override
     public void penalize() {
-        ToIntBiFunction<A, B> matchWeigher = (A a, B b) -> -1;
-        addIntScoring(matchWeigher);
+        // TODO FIXME depends on Score type
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, false, (A a, B b) -> 1));
     }
 
     @Override
-    public void penalize(ToIntBiFunction<A, B> matchWeigher) {
-        addIntScoring((A a, B b) -> - matchWeigher.applyAsInt(a, b));
+    public void penalizeInt(ToIntBiFunction<A, B> matchWeigher) {
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, false, matchWeigher));
+    }
+
+    @Override
+    public void penalizeLong(ToLongBiFunction<A, B> matchWeigher) {
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, false, matchWeigher));
+    }
+
+    @Override
+    public void penalizeBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, false, matchWeigher));
     }
 
     @Override
     public void reward() {
-        ToIntBiFunction<A, B> matchWeigher = (A a, B b) -> 1;
-        addIntScoring(matchWeigher);
+        // TODO FIXME depends on Score type
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, true, (A a, B b) -> 1));
     }
 
-    private void addIntScoring(ToIntBiFunction<A, B> matchWeigher) {
-        BavetIntScoringBiConstraintStream<Solution_, A, B> stream = new BavetIntScoringBiConstraintStream<>(constraint, matchWeigher);
+    @Override
+    public void rewardInt(ToIntBiFunction<A, B> matchWeigher) {
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, true, matchWeigher));
+    }
+
+    @Override
+    public void rewardLong(ToLongBiFunction<A, B> matchWeigher) {
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, true, matchWeigher));
+    }
+
+    @Override
+    public void rewardBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, true, matchWeigher));
+    }
+
+    private void addScoringBiConstraintStream(BavetScoringBiConstraintStream<Solution_, A, B> stream) {
         childStreamList.add(stream);
     }
 

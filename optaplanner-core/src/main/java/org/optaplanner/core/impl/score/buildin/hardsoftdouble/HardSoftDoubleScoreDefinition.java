@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
+import org.optaplanner.core.impl.score.inliner.ScoreInliner;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftDoubleScore> {
@@ -66,6 +67,12 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
         return HardSoftDoubleScore.ofUninitialized(initScore, (Double) levelNumbers[0], (Double) levelNumbers[1]);
+    }
+
+    @Override
+    public ScoreInliner<HardSoftDoubleScore> buildScoreInliner() {
+        throw new IllegalStateException("ConstraintStreams don't support a " + HardSoftDoubleScore.class.getSimpleName()
+                + ") because it is error prone.");
     }
 
     @Override

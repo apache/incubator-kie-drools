@@ -98,6 +98,11 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     }
 
     @Override
+    public BendableLongScoreInliner buildScoreInliner() {
+        return new BendableLongScoreInliner(hardLevelsSize, softLevelsSize);
+    }
+
+    @Override
     public BendableLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new BendableLongScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
