@@ -20,8 +20,9 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.uni.UniCollector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+
+import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
 
 public class CloudBalancingConstraintProvider implements ConstraintProvider {
 
@@ -30,13 +31,14 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         requiredCpuPowerTotal(constraintFactory);
         requiredMemoryTotal(constraintFactory);
         requiredNetworkBandwidthTotal(constraintFactory);
+        computerCost(constraintFactory);
     }
 
     protected void requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight("requiredCpuPowerTotal", HardSoftScore.ofHard(1));
         c.select(CloudProcess.class)
                 .filter(process -> process.getComputer() != null)
-                .groupBy(CloudProcess::getComputer, UniCollector.summingInt(CloudProcess::getRequiredCpuPower))
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
                 .penalizeInt((computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
     }
@@ -45,7 +47,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight("requiredMemoryTotal", HardSoftScore.ofHard(1));
         c.select(CloudProcess.class)
                 .filter(process -> process.getComputer() != null)
-                .groupBy(CloudProcess::getComputer, UniCollector.summingInt(CloudProcess::getRequiredMemory))
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredMemory))
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
                 .penalizeInt((computer, requiredMemory) -> requiredMemory - computer.getMemory());
     }
@@ -54,9 +56,18 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight("requiredNetworkBandwidthTotal", HardSoftScore.ofHard(1));
         c.select(CloudProcess.class)
                 .filter(process -> process.getComputer() != null)
-                .groupBy(CloudProcess::getComputer, UniCollector.summingInt(CloudProcess::getRequiredNetworkBandwidth))
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredNetworkBandwidth))
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
                 .penalizeInt((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
+    }
+
+    protected void computerCost(ConstraintFactory constraintFactory) {
+        Constraint c = constraintFactory.newConstraintWithWeight("computerCost", HardSoftScore.ofSoft(1));
+        c.select(CloudProcess.class)
+                .filter(process -> process.getComputer() != null)
+                // TODO Simplify by using exists()
+                .groupBy(CloudProcess::getComputer, count())
+                .penalizeInt((computer, count) -> computer.getCost());
     }
 
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.uni.UniCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiNode;
@@ -31,11 +31,11 @@ public final class BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_
 
     private final BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream;
     private final Function<A, GroupKey_> groupKeyMapping;
-    private final UniCollector<A, ResultContainer_, Result_> collector;
+    private final UniConstraintCollector<A, ResultContainer_, Result_> collector;
 
     public BavetGroupByBridgeUniConstraintStream(BavetConstraint<Solution_> bavetConstraint,
             BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream,
-            Function<A, GroupKey_> groupKeyMapping, UniCollector<A, ResultContainer_, Result_> collector) {
+            Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         super(bavetConstraint);
         this.biStream = biStream;
         this.groupKeyMapping = groupKeyMapping;

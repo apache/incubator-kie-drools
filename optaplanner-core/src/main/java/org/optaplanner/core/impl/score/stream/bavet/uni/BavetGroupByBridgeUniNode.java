@@ -20,22 +20,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.uni.UniCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiTuple;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniNode<A> {
 
     private final Function<A, GroupKey_> groupKeyMapping;
-    private final UniCollector<A, ResultContainer_, Result_> collector;
+    private final UniConstraintCollector<A, ResultContainer_, Result_> collector;
     private final BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode;
 
     private final Map<GroupKey_, BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_>> tupleMap;
 
     public BavetGroupByBridgeUniNode(BavetConstraintSession session, int nodeOrder,
-            Function<A, GroupKey_> groupKeyMapping, UniCollector<A, ResultContainer_, Result_> collector,
+            Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector,
             BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode) {
         super(session, nodeOrder);
         this.groupKeyMapping = groupKeyMapping;

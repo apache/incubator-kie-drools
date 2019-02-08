@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.api.score.stream.uni.UniCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiConstraintStream;
@@ -81,7 +81,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
-            Function<A, GroupKey_> groupKeyMapping, UniCollector<A, ResultContainer_, Result_> collector) {
+            Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultContainer_, Result_> biStream
                 = new BavetGroupedBiConstraintStream<>(constraint, collector.finisher());
         BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge

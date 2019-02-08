@@ -19,20 +19,8 @@ package org.optaplanner.core.api.score.stream.uni;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.ToIntFunction;
 
-public final class UniCollector<A, ResultContainer_, Result_> {
-
-    public static <T> UniCollector<T, ?, Integer> summingInt(ToIntFunction<? super T> groupValueMapping) {
-        return new UniCollector<>(
-                () -> new int[1],
-                (resultContainer1, t) -> {
-                    int value = groupValueMapping.applyAsInt(t);
-                    resultContainer1[0] += value;
-                    return (() -> resultContainer1[0] -= value);
-                },
-                resultContainer -> resultContainer[0]);
-    }
+public final class UniConstraintCollector<A, ResultContainer_, Result_> {
 
     // TODO add sum(long), count(), ...
 
@@ -42,7 +30,7 @@ public final class UniCollector<A, ResultContainer_, Result_> {
     private final BiFunction<ResultContainer_, A, Runnable> accumulator;
     private final Function<ResultContainer_, Result_> finisher;
 
-    protected UniCollector(Supplier<ResultContainer_> supplier,
+    public UniConstraintCollector(Supplier<ResultContainer_> supplier,
             BiFunction<ResultContainer_, A, Runnable> accumulator,
             Function<ResultContainer_, Result_> finisher) {
         this.supplier = supplier;
