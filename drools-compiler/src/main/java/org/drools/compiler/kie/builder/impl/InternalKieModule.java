@@ -126,7 +126,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default boolean isFileInKBase(KieBaseModel kieBase, String fileName) {
-        return filterFileInKBase(this, kieBase, fileName);
+        return filterFileInKBase(this, kieBase, fileName, () -> getBytes( fileName ), false);
     }
 
     default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {

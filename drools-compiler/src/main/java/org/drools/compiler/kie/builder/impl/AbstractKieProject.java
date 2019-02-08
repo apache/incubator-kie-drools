@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
@@ -214,6 +215,8 @@ public abstract class AbstractKieProject implements KieProject {
             return null;
         }
 
+        boolean useFolders = (( KnowledgeBuilderImpl ) kbuilder).getBuilderConfiguration().isGroupDRLsInKieBasesByFolder();
+
         Set<Asset> assets = new HashSet<>();
 
         boolean allIncludesAreValid = true;
@@ -230,7 +233,7 @@ public abstract class AbstractKieProject implements KieProject {
                 continue;
             }
             if (compileIncludedKieBases()) {
-                addFiles( assets, getKieBaseModel( include ), includeModule );
+                addFiles( assets, getKieBaseModel( include ), includeModule, useFolders );
             }
         }
 
@@ -238,7 +241,7 @@ public abstract class AbstractKieProject implements KieProject {
             return null;
         }
 
-        addFiles( assets, kBaseModel, kModule );
+        addFiles( assets, kBaseModel, kModule, useFolders );
 
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
@@ -284,11 +287,11 @@ public abstract class AbstractKieProject implements KieProject {
         return KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, kModule ) );
     }
 
-    private static void addFiles(Set<Asset> assets,
-                                 KieBaseModel kieBaseModel,
-                                 InternalKieModule kieModule) {
+    private void addFiles(Set<Asset> assets, KieBaseModel kieBaseModel,
+                          InternalKieModule kieModule, boolean useFolders) {
         for (String fileName : kieModule.getFileNames()) {
-            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName)) {
+            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") &&
+                    filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getBytes( fileName ), useFolders)) {
                 assets.add(new Asset( kieModule, fileName ));
             }
         }

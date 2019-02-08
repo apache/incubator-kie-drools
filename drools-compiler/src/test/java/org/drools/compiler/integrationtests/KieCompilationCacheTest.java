@@ -87,7 +87,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
-        String drl1 = "package org.drools.compiler.integrationtests\n" +
+        String drl1 = "package org.pkg1\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R11 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
@@ -98,7 +98,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.drools.compiler.integrationtests\n" +
+        String drl2 = "package org.pkg2\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R21 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
@@ -159,7 +159,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
 
     @Test
     public void testCacheWigAccumulate() throws Exception {
-        String drl1 = "package org.drools.compiler.integrationtests\n" +
+        String drl1 = "package org.pkg1\n" +
                 "rule R11 when\n" +
                 "   Number() from accumulate(String(), \n" +
                 "              init(int x = 0;)," +
