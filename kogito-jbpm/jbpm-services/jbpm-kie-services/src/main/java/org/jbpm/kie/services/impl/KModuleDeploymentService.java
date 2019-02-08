@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.persistence.EntityManagerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -222,12 +223,12 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     }
 
     @Override
-	public void undeploy(DeploymentUnit unit) {
+	public void undeploy(DeploymentUnit unit, Function<DeploymentUnit, Boolean> beforeUndeploy) {
     	if (!(unit instanceof KModuleDeploymentUnit)) {
             throw new IllegalArgumentException("Invalid deployment unit provided - " + unit.getClass().getName());
         }
         KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
-		super.undeploy(unit);
+		super.undeploy(unit, beforeUndeploy);
 
         formManagerService.unRegisterForms( unit.getIdentifier() );
 

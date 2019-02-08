@@ -26,10 +26,12 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.kie.services.impl.utils.PreUndeployOperations;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
+import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,7 +97,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
             for (DeploymentUnit unit : units) {
-                deploymentService.undeploy(unit);
+                deploymentService.undeploy(unit, deploymentUnit-> true);
             }
             units.clear();
         }
@@ -119,8 +121,8 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         assertNotNull(deployed.getDeploymentUnit());
         assertNotNull(deployed.getRuntimeManager());
         assertNull(deployed.getDeployedAssetLocation("customtask"));
-        assertEquals(GROUP_ID+":"+ARTIFACT_ID+":"+VERSION+":"+"KBase-test"+":"+"ksession-test",
-                deployed.getDeploymentUnit().getIdentifier());
+        assertEquals(GROUP_ID + ":" + ARTIFACT_ID + ":" + VERSION + ":" + "KBase-test" + ":" + "ksession-test",
+                     deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
         Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
@@ -150,8 +152,9 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
 
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
+        manager.disposeRuntimeEngine(engine);
 
+        checkFormsDeployment(deploymentUnit.getIdentifier());
     }
 
     @Test
@@ -169,8 +172,8 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         assertNotNull(deployed.getDeploymentUnit());
         assertNotNull(deployed.getRuntimeManager());
         assertNull(deployed.getDeployedAssetLocation("customtask"));
-        assertEquals(GROUP_ID+":"+ARTIFACT_ID+":"+VERSION,
-                deployed.getDeploymentUnit().getIdentifier());
+        assertEquals(GROUP_ID + ":" + ARTIFACT_ID + ":" + VERSION,
+                     deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
         Collection<ProcessDefinition> processes = runtimeDataService.getProcesses(new QueryContext());
@@ -200,11 +203,12 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
 
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
+        manager.disposeRuntimeEngine(engine);
 
+        checkFormsDeployment(deploymentUnit.getIdentifier());
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testDuplicatedDeployment() {
 
         assertNotNull(deploymentService);
@@ -254,7 +258,107 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
 
         engine.getKieSession().abortProcessInstance(processInstance.getId());
 
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
+        manager.disposeRuntimeEngine(engine);
+
+        checkFormsDeployment(deploymentUnit.getIdentifier());
+    }
+
+    @Test
+    public void testUnDeploymentWithActiveProcessesSkippingCheck() {
+
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        ProcessInstance processInstance = engine.getKieSession().startProcess("org.jbpm.writedocument", params);
+
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+
+        deploymentService.undeploy(deploymentUnit, PreUndeployOperations.doNothing());
+
+        ProcessInstanceDesc instance = runtimeDataService.getProcessInstanceById(processInstance.getId());
+
+        assertEquals(ProcessInstance.STATE_ACTIVE, instance.getState().intValue());
+
+        manager.disposeRuntimeEngine(engine);
+    }
+
+    @Test
+    public void testUnDeploymentWithActiveProcessesAbortingInstances() {
+
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        ProcessInstance processInstance = engine.getKieSession().startProcess("org.jbpm.writedocument", params);
+
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+
+        deploymentService.undeploy(deploymentUnit, PreUndeployOperations.abortUnitActiveProcessInstances(runtimeDataService, deploymentService));
+
+        ProcessInstanceDesc instance = runtimeDataService.getProcessInstanceById(processInstance.getId());
+
+        assertEquals(ProcessInstance.STATE_ABORTED, instance.getState().intValue());
+
+        manager.disposeRuntimeEngine(engine);
+    }
+
+    @Test
+    public void testUnSuccesfullUnDeployment() {
+
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+
+        try {
+            // undeploy should fail due to the false returned by the predicate
+            deploymentService.undeploy(deploymentUnit, unit -> false);
+            fail("Should fail due to active process instance");
+        } catch (IllegalStateException e) {
+        }
+
+        manager.disposeRuntimeEngine(engine);
+        checkFormsDeployment(deploymentUnit.getIdentifier());
     }
 
     @Test
@@ -282,7 +386,9 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
 
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
 
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
+        manager.disposeRuntimeEngine(engine);
+
+        checkFormsDeployment(deploymentUnit.getIdentifier());
 
     }
 
@@ -299,260 +405,9 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         processes.add("repo/processes/general/import.bpmn");
 
         DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
-		customDescriptor.getBuilder()
-		.runtimeStrategy(RuntimeStrategy.PER_REQUEST)
-		.addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"));
-
-        Map<String, String> resources = new HashMap<String, String>();
-		resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
-
-        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
-        File pom = new File("target/kmodule", "pom.xml");
-        pom.getParentFile().mkdir();
-        try {
-            FileOutputStream fs = new FileOutputStream(pom);
-            fs.write(getPom(releaseId).getBytes());
-            fs.close();
-        } catch (Exception e) {
-
-        }
-        KieMavenRepository repository = getKieMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
-
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
-        assertNotNull(deployedGeneral);
-        assertNotNull(deployedGeneral.getDeploymentUnit());
-        assertNotNull(deployedGeneral.getRuntimeManager());
-
-        DeploymentDescriptor descriptor = ((InternalRuntimeManager)deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
-        assertNotNull(descriptor);
-		assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-		assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-		assertEquals(AuditMode.JPA, descriptor.getAuditMode());
-		assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-		assertEquals(RuntimeStrategy.PER_REQUEST, descriptor.getRuntimeStrategy());
-		assertEquals(0, descriptor.getMarshallingStrategies().size());
-		assertEquals(0, descriptor.getConfiguration().size());
-		assertEquals(0, descriptor.getEnvironmentEntries().size());
-		assertEquals(0, descriptor.getEventListeners().size());
-		assertEquals(0, descriptor.getGlobals().size());
-		assertEquals(0, descriptor.getTaskEventListeners().size());
-		assertEquals(1, descriptor.getWorkItemHandlers().size());
-		assertEquals(0, descriptor.getRequiredRoles().size());
-
-        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
-        assertNotNull(manager);
-
-        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
-        assertNotNull(engine);
-
-        Map<String, Object> params = new HashMap<String, Object>();
-
-        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
-
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-
-        manager.disposeRuntimeEngine(engine);
-
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
-    }
-
-    @Test(expected=SecurityException.class)
-    public void testDeploymentOfProcessWithDescriptorWitSecurityManager() {
-
-        assertNotNull(deploymentService);
-
-        KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "kjar-with-dd", VERSION);
-        List<String> processes = new ArrayList<String>();
-        processes.add("repo/processes/general/customtask.bpmn");
-        processes.add("repo/processes/general/humanTask.bpmn");
-        processes.add("repo/processes/general/import.bpmn");
-
-        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
-		customDescriptor.getBuilder()
-		.runtimeStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE)
-		.addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"))
-		.addRequiredRole("experts");
-
-        Map<String, String> resources = new HashMap<String, String>();
-		resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
-
-        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
-        File pom = new File("target/kmodule", "pom.xml");
-        pom.getParentFile().mkdir();
-        try {
-            FileOutputStream fs = new FileOutputStream(pom);
-            fs.write(getPom(releaseId).getBytes());
-            fs.close();
-        } catch (Exception e) {
-
-        }
-        KieMavenRepository repository = getKieMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
-
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
-        assertNotNull(deployedGeneral);
-        assertNotNull(deployedGeneral.getDeploymentUnit());
-        assertNotNull(deployedGeneral.getRuntimeManager());
-
-        DeploymentDescriptor descriptor = ((InternalRuntimeManager)deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
-        assertNotNull(descriptor);
-		assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-		assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-		assertEquals(AuditMode.JPA, descriptor.getAuditMode());
-		assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-		assertEquals(RuntimeStrategy.PER_PROCESS_INSTANCE, descriptor.getRuntimeStrategy());
-		assertEquals(0, descriptor.getMarshallingStrategies().size());
-		assertEquals(0, descriptor.getConfiguration().size());
-		assertEquals(0, descriptor.getEnvironmentEntries().size());
-		assertEquals(0, descriptor.getEventListeners().size());
-		assertEquals(0, descriptor.getGlobals().size());
-		assertEquals(0, descriptor.getTaskEventListeners().size());
-		assertEquals(1, descriptor.getWorkItemHandlers().size());
-		assertEquals(1, descriptor.getRequiredRoles().size());
-
-        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
-        assertNotNull(manager);
-
-        manager.getRuntimeEngine(EmptyContext.get());
-
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
-    }
-
-
-    @Test
-    public void testDeploymentOfProcessWithDescriptorKieConteinerInjection() {
-
-        assertNotNull(deploymentService);
-
-        KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "kjar-with-dd", VERSION);
-        List<String> processes = new ArrayList<String>();
-        processes.add("repo/processes/general/customtask.bpmn");
-        processes.add("repo/processes/general/humanTask.bpmn");
-        processes.add("repo/processes/general/import.bpmn");
-
-        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
-		customDescriptor.getBuilder()
-		.runtimeStrategy(RuntimeStrategy.PER_REQUEST)
-		.addWorkItemHandler(new NamedObjectModel("mvel", "Log", "new org.jbpm.kie.services.test.objects.KieConteinerSystemOutWorkItemHandler(kieContainer)"));
-
-        Map<String, String> resources = new HashMap<String, String>();
-		resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
-
-        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
-        File pom = new File("target/kmodule", "pom.xml");
-        pom.getParentFile().mkdir();
-        try {
-            FileOutputStream fs = new FileOutputStream(pom);
-            fs.write(getPom(releaseId).getBytes());
-            fs.close();
-        } catch (Exception e) {
-
-        }
-        KieMavenRepository repository = getKieMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
-
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
-        assertNotNull(deployedGeneral);
-        assertNotNull(deployedGeneral.getDeploymentUnit());
-        assertNotNull(deployedGeneral.getRuntimeManager());
-
-        DeploymentDescriptor descriptor = ((InternalRuntimeManager)deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
-        assertNotNull(descriptor);
-		assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
-		assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
-		assertEquals(AuditMode.JPA, descriptor.getAuditMode());
-		assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
-		assertEquals(RuntimeStrategy.PER_REQUEST, descriptor.getRuntimeStrategy());
-		assertEquals(0, descriptor.getMarshallingStrategies().size());
-		assertEquals(0, descriptor.getConfiguration().size());
-		assertEquals(0, descriptor.getEnvironmentEntries().size());
-		assertEquals(0, descriptor.getEventListeners().size());
-		assertEquals(0, descriptor.getGlobals().size());
-		assertEquals(0, descriptor.getTaskEventListeners().size());
-		assertEquals(1, descriptor.getWorkItemHandlers().size());
-		assertEquals(0, descriptor.getRequiredRoles().size());
-
-        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
-        assertNotNull(manager);
-
-        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
-        assertNotNull(engine);
-
-        Map<String, Object> params = new HashMap<String, Object>();
-
-        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
-
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        manager.disposeRuntimeEngine(engine);
-
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
-    }
-
-    @Test
-    public void testDeploymentOfProcessesKieConteinerInjection() {
-
-        assertNotNull(deploymentService);
-
-        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION, "KBase-test", "ksession-test-2");
-
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-
-        assertNotNull(deploymentUnit.getDeploymentDescriptor());
-
-        DeployedUnit deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
-        assertNotNull(deployed);
-        assertNotNull(deployed.getDeploymentUnit());
-        assertNotNull(deployed.getRuntimeManager());
-        assertNull(deployed.getDeployedAssetLocation("customtask"));
-        assertEquals(GROUP_ID+":"+ARTIFACT_ID+":"+VERSION+":"+"KBase-test"+":"+"ksession-test-2",
-                deployed.getDeploymentUnit().getIdentifier());
-
-
-        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
-        assertNotNull(manager);
-
-        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
-        assertNotNull(engine);
-
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("id", "test");
-        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
-
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        manager.disposeRuntimeEngine(engine);
-
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
-    }
-
-    @Test
-    public void testDeploymentAvoidEmptyDescriptorOverride() {
-
-        assertNotNull(deploymentService);
-
-        KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "kjar-with-dd", VERSION);
-        List<String> processes = new ArrayList<String>();
-        processes.add("repo/processes/general/customtask.bpmn");
-        processes.add("repo/processes/general/humanTask.bpmn");
-        processes.add("repo/processes/general/import.bpmn");
-
-        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
         customDescriptor.getBuilder()
-        .runtimeStrategy(RuntimeStrategy.PER_REQUEST)
-        .addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"));
+                .runtimeStrategy(RuntimeStrategy.PER_REQUEST)
+                .addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"));
 
         Map<String, String> resources = new HashMap<String, String>();
         resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
@@ -570,11 +425,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
-        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
-
-        // let's simulate change of deployment descriptor on deploy time
-        deploymentUnit.setDeploymentDescriptor(new DeploymentDescriptorImpl()); // set empty one...
-
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
@@ -582,7 +433,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         assertNotNull(deployedGeneral.getDeploymentUnit());
         assertNotNull(deployedGeneral.getRuntimeManager());
 
-        DeploymentDescriptor descriptor = ((InternalRuntimeManager)deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
+        DeploymentDescriptor descriptor = ((InternalRuntimeManager) deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
         assertNotNull(descriptor);
         assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
         assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
@@ -612,18 +463,275 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
 
         manager.disposeRuntimeEngine(engine);
 
-        checkFormsDeployment( deploymentUnit.getIdentifier() );
+        checkFormsDeployment(deploymentUnit.getIdentifier());
     }
 
-    protected void checkFormsDeployment( String deploymentId ) {
-        Map<String, String> deployedForms = formManagerService.getAllFormsByDeployment( deploymentId );
+    @Test(expected = SecurityException.class)
+    public void testDeploymentOfProcessWithDescriptorWitSecurityManager() {
 
-        assertNotNull( deployedForms );
-        assertEquals( 3, deployedForms.size() );
+        assertNotNull(deploymentService);
 
-        assertNotNull( deployedForms.get( "DefaultProcess.frm" ) );
-        assertNotNull( deployedForms.get( "DefaultProcess.form" ) );
-        assertNotNull( deployedForms.get( "DefaultProcess.ftl" ) );
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "kjar-with-dd", VERSION);
+        List<String> processes = new ArrayList<String>();
+        processes.add("repo/processes/general/customtask.bpmn");
+        processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/import.bpmn");
+
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        customDescriptor.getBuilder()
+                .runtimeStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE)
+                .addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"))
+                .addRequiredRole("experts");
+
+        Map<String, String> resources = new HashMap<String, String>();
+        resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom);
+            fs.write(getPom(releaseId).getBytes());
+            fs.close();
+        } catch (Exception e) {
+
+        }
+        KieMavenRepository repository = getKieMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        DeploymentDescriptor descriptor = ((InternalRuntimeManager) deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
+        assertNotNull(descriptor);
+        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
+        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
+        assertEquals(AuditMode.JPA, descriptor.getAuditMode());
+        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
+        assertEquals(RuntimeStrategy.PER_PROCESS_INSTANCE, descriptor.getRuntimeStrategy());
+        assertEquals(0, descriptor.getMarshallingStrategies().size());
+        assertEquals(0, descriptor.getConfiguration().size());
+        assertEquals(0, descriptor.getEnvironmentEntries().size());
+        assertEquals(0, descriptor.getEventListeners().size());
+        assertEquals(0, descriptor.getGlobals().size());
+        assertEquals(0, descriptor.getTaskEventListeners().size());
+        assertEquals(1, descriptor.getWorkItemHandlers().size());
+        assertEquals(1, descriptor.getRequiredRoles().size());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+
+        assertNotNull(engine);
+
+        manager.disposeRuntimeEngine(engine);
+
+        checkFormsDeployment(deploymentUnit.getIdentifier());
     }
 
+    @Test
+    public void testDeploymentOfProcessWithDescriptorKieConteinerInjection() {
+
+        assertNotNull(deploymentService);
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "kjar-with-dd", VERSION);
+        List<String> processes = new ArrayList<String>();
+        processes.add("repo/processes/general/customtask.bpmn");
+        processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/import.bpmn");
+
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        customDescriptor.getBuilder()
+                .runtimeStrategy(RuntimeStrategy.PER_REQUEST)
+                .addWorkItemHandler(new NamedObjectModel("mvel", "Log", "new org.jbpm.kie.services.test.objects.KieConteinerSystemOutWorkItemHandler(kieContainer)"));
+
+        Map<String, String> resources = new HashMap<String, String>();
+        resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom);
+            fs.write(getPom(releaseId).getBytes());
+            fs.close();
+        } catch (Exception e) {
+
+        }
+        KieMavenRepository repository = getKieMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        DeploymentDescriptor descriptor = ((InternalRuntimeManager) deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
+        assertNotNull(descriptor);
+        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
+        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
+        assertEquals(AuditMode.JPA, descriptor.getAuditMode());
+        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
+        assertEquals(RuntimeStrategy.PER_REQUEST, descriptor.getRuntimeStrategy());
+        assertEquals(0, descriptor.getMarshallingStrategies().size());
+        assertEquals(0, descriptor.getConfiguration().size());
+        assertEquals(0, descriptor.getEnvironmentEntries().size());
+        assertEquals(0, descriptor.getEventListeners().size());
+        assertEquals(0, descriptor.getGlobals().size());
+        assertEquals(0, descriptor.getTaskEventListeners().size());
+        assertEquals(1, descriptor.getWorkItemHandlers().size());
+        assertEquals(0, descriptor.getRequiredRoles().size());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
+
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+
+        manager.disposeRuntimeEngine(engine);
+
+        checkFormsDeployment(deploymentUnit.getIdentifier());
+    }
+
+    @Test
+    public void testDeploymentOfProcessesKieConteinerInjection() {
+
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION, "KBase-test", "ksession-test-2");
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+
+        assertNotNull(deploymentUnit.getDeploymentDescriptor());
+
+        DeployedUnit deployed = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployed);
+        assertNotNull(deployed.getDeploymentUnit());
+        assertNotNull(deployed.getRuntimeManager());
+        assertNull(deployed.getDeployedAssetLocation("customtask"));
+        assertEquals(GROUP_ID + ":" + ARTIFACT_ID + ":" + VERSION + ":" + "KBase-test" + ":" + "ksession-test-2",
+                     deployed.getDeploymentUnit().getIdentifier());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("id", "test");
+        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
+
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        manager.disposeRuntimeEngine(engine);
+
+        checkFormsDeployment(deploymentUnit.getIdentifier());
+    }
+
+    @Test
+    public void testDeploymentAvoidEmptyDescriptorOverride() {
+
+        assertNotNull(deploymentService);
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "kjar-with-dd", VERSION);
+        List<String> processes = new ArrayList<String>();
+        processes.add("repo/processes/general/customtask.bpmn");
+        processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/import.bpmn");
+
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        customDescriptor.getBuilder()
+                .runtimeStrategy(RuntimeStrategy.PER_REQUEST)
+                .addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"));
+
+        Map<String, String> resources = new HashMap<String, String>();
+        resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom);
+            fs.write(getPom(releaseId).getBytes());
+            fs.close();
+        } catch (Exception e) {
+
+        }
+        KieMavenRepository repository = getKieMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
+
+        // let's simulate change of deployment descriptor on deploy time
+        deploymentUnit.setDeploymentDescriptor(new DeploymentDescriptorImpl()); // set empty one...
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        DeploymentDescriptor descriptor = ((InternalRuntimeManager) deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
+        assertNotNull(descriptor);
+        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
+        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
+        assertEquals(AuditMode.JPA, descriptor.getAuditMode());
+        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
+        assertEquals(RuntimeStrategy.PER_REQUEST, descriptor.getRuntimeStrategy());
+        assertEquals(0, descriptor.getMarshallingStrategies().size());
+        assertEquals(0, descriptor.getConfiguration().size());
+        assertEquals(0, descriptor.getEnvironmentEntries().size());
+        assertEquals(0, descriptor.getEventListeners().size());
+        assertEquals(0, descriptor.getGlobals().size());
+        assertEquals(0, descriptor.getTaskEventListeners().size());
+        assertEquals(1, descriptor.getWorkItemHandlers().size());
+        assertEquals(0, descriptor.getRequiredRoles().size());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
+
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+
+        manager.disposeRuntimeEngine(engine);
+
+        checkFormsDeployment(deploymentUnit.getIdentifier());
+    }
+
+    protected void checkFormsDeployment(String deploymentId) {
+        Map<String, String> deployedForms = formManagerService.getAllFormsByDeployment(deploymentId);
+
+        assertNotNull(deployedForms);
+        assertEquals(3, deployedForms.size());
+
+        assertNotNull(deployedForms.get("DefaultProcess.frm"));
+        assertNotNull(deployedForms.get("DefaultProcess.form"));
+        assertNotNull(deployedForms.get("DefaultProcess.ftl"));
+    }
 }

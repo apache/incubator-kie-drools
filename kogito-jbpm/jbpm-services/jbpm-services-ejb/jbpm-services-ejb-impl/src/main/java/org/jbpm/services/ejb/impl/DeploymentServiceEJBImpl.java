@@ -16,6 +16,8 @@
 
 package org.jbpm.services.ejb.impl;
 
+import java.util.function.Function;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
@@ -172,7 +174,15 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 			super.undeploy(deployed.getDeploymentUnit());
 		}
 	}
-	
+
+	@Override
+	public void undeploy(String deploymentId, Function<DeploymentUnit, Boolean> beforeUndeploy) {
+		DeployedUnit deployed = getDeployedUnit(deploymentId);
+		if (deployed != null) {
+			super.undeploy(deployed.getDeploymentUnit(), beforeUndeploy);
+		}
+	}
+
 	protected void addAsyncHandler(KModuleDeploymentUnit unit) {
 		// add async only when the executor component is not disabled
 		if (isExecutorAvailable) {
