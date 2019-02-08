@@ -1153,6 +1153,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                             }
                         })
                 ).get();
+               pool.shutdown();
             } catch (InterruptedException | ExecutionException e) { 
                 throw new RuntimeException("Rules compilation failed or interrupted", e);
             }
