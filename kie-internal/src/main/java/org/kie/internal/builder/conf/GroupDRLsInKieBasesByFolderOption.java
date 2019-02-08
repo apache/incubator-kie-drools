@@ -20,13 +20,16 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 
 /**
- * An option to disable trimming of spaces for values in decision tables
+ * By default all the Drools artifacts under the resources folder, at any level, are included into the KieBase.
+ * The package attribute of the kmodule.xml allows to limit the artifacts that will be compiled in this KieBase
+ * to only the ones belonging to the list of packages. However older versions of Drools actually checked the folder
+ * name instead of the package one. This option allows to re-eanble that old folder-based behaviour.
  *
- * drools.trimCellsInDTable = &lt;true|false&gt;
+ * drools.groupDRLsInKieBasesByFolder = &lt;true|false&gt;
  *
- * DEFAULT = true
+ * DEFAULT = false
  */
-public enum TrimCellsInDTableOption implements SingleValueKnowledgeBuilderOption, SingleValueKieBaseOption {
+public enum GroupDRLsInKieBasesByFolderOption implements SingleValueKnowledgeBuilderOption, SingleValueKieBaseOption {
 
     ENABLED(true),
     DISABLED(false);
@@ -34,11 +37,11 @@ public enum TrimCellsInDTableOption implements SingleValueKnowledgeBuilderOption
     /**
      * The property name for the enabling/disabling trim of cells values
      */
-    public static final String PROPERTY_NAME = "drools.trimCellsInDTable";
+    public static final String PROPERTY_NAME = "drools.groupDRLsInKieBasesByFolder";
 
     private boolean value;
 
-    TrimCellsInDTableOption( final boolean value ) {
+    GroupDRLsInKieBasesByFolderOption( final boolean value ) {
         this.value = value;
     }
 
@@ -47,7 +50,7 @@ public enum TrimCellsInDTableOption implements SingleValueKnowledgeBuilderOption
         return PROPERTY_NAME;
     }
 
-    public boolean isTrimCellsInDTable() {
+    public boolean isGroupDRLsInKieBasesByFolder() {
         return this.value;
     }
 }
