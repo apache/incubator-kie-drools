@@ -127,7 +127,7 @@ public class AbstractKnowledgeTest {
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
-                .addPackage( namespace + ".KBase1" )
+                .addPackage( namespace + ".test1" )
                 .setDefault( true );
             
 
@@ -147,7 +147,7 @@ public class AbstractKnowledgeTest {
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel( namespace + ".KBase2")
                                           .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
-                                          .addPackage( namespace + ".KBase2")
+                                          .addPackage( namespace + ".test2")
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         kieBaseModel2.newKieSessionModel(namespace + ".KSession3")
@@ -179,8 +179,8 @@ public class AbstractKnowledgeTest {
         String kbase2R1 = getRule( namespace + ".test2", "rule1", version );
         String kbase2R2 = getRule( namespace + ".test2", "rule2", version );
                 
-        String fldKB1 = "src/main/resources/" + kieBaseModel1.getName().replace( '.', '/' );
-        String fldKB2 = "src/main/resources/" + kieBaseModel2.getName().replace( '.', '/' );
+        String fldKB1 = "src/main/resources/" + (namespace + ".test1").replace( '.', '/' );
+        String fldKB2 = "src/main/resources/" + (namespace + ".test2").replace( '.', '/' );
         
         kfs.write( fldKB1 + "/rule1.drl", kBase1R1.getBytes() );
         kfs.write( fldKB1 + "/rule2.drl", kBase1R2.getBytes() );

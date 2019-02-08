@@ -57,6 +57,7 @@ import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.DefaultPackageNameOption;
 import org.kie.internal.builder.conf.DumpDirOption;
 import org.kie.internal.builder.conf.EvaluatorOption;
+import org.kie.internal.builder.conf.GroupDRLsInKieBasesByFolderOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -125,10 +126,9 @@ public class KnowledgeBuilderConfigurationImpl
     private File                              dumpDirectory;
 
     private boolean                           processStringEscapes    = true;
-
     private boolean                           classLoaderCache        = true;
-
     private boolean                           trimCellsInDTable       = true;
+    private boolean                           groupDRLsInKieBasesByFolder       = false;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
@@ -214,6 +214,10 @@ public class KnowledgeBuilderConfigurationImpl
                     this.chainedProperties.getProperty(TrimCellsInDTableOption.PROPERTY_NAME,
                                                        "true"));
 
+        setProperty( GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME,
+                    this.chainedProperties.getProperty(GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME,
+                                                       "false"));
+
         setProperty(PropertySpecificOption.PROPERTY_NAME,
                     this.chainedProperties.getProperty(PropertySpecificOption.PROPERTY_NAME,
                                                        DEFAULT_PROP_SPEC_OPT.toString()));
@@ -290,6 +294,8 @@ public class KnowledgeBuilderConfigurationImpl
             setClassLoaderCacheEnabled(Boolean.parseBoolean(value));
         } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
             setTrimCellsInDTable(Boolean.parseBoolean(value));
+        } else if (name.equals(GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME)) {
+            setGroupDRLsInKieBasesByFolder(Boolean.parseBoolean(value));
         } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
             String key = name.substring(name.lastIndexOf('.') + 1);
             this.severityMap.put(key, KBuilderSeverityOption.get(key, value).getSeverity());
@@ -341,6 +347,8 @@ public class KnowledgeBuilderConfigurationImpl
             return String.valueOf(isClassLoaderCacheEnabled());
         } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
             return String.valueOf(isTrimCellsInDTable());
+        } else if (name.equals(GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME)) {
+            return String.valueOf(isGroupDRLsInKieBasesByFolder());
         } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
             String key = name.substring(name.lastIndexOf('.') + 1);
             ResultSeverity severity = this.severityMap.get(key);
@@ -664,6 +672,14 @@ public class KnowledgeBuilderConfigurationImpl
         this.trimCellsInDTable = trimCellsInDTable;
     }
 
+    public boolean isGroupDRLsInKieBasesByFolder() {
+        return groupDRLsInKieBasesByFolder;
+    }
+
+    public void setGroupDRLsInKieBasesByFolder( boolean groupDRLsInKieBasesByFolder ) {
+        this.groupDRLsInKieBasesByFolder = groupDRLsInKieBasesByFolder;
+    }
+
     public int getParallelRulesBuildThreshold() {
     	return parallelRulesBuildThreshold.getParallelRulesBuildThreshold();
     }
@@ -726,6 +742,8 @@ public class KnowledgeBuilderConfigurationImpl
             return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if (TrimCellsInDTableOption.class.equals(option)) {
             return (T) (this.trimCellsInDTable ? TrimCellsInDTableOption.ENABLED : TrimCellsInDTableOption.DISABLED);
+        } else if (GroupDRLsInKieBasesByFolderOption.class.equals(option)) {
+            return (T) (this.groupDRLsInKieBasesByFolder ? GroupDRLsInKieBasesByFolderOption.ENABLED : GroupDRLsInKieBasesByFolderOption.DISABLED);
         } else if (PropertySpecificOption.class.equals(option)) {
             return (T) propertySpecificOption;
         } else if (LanguageLevelOption.class.equals(option)) {
@@ -781,6 +799,8 @@ public class KnowledgeBuilderConfigurationImpl
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
         } else if (option instanceof TrimCellsInDTableOption) {
             setTrimCellsInDTable(((TrimCellsInDTableOption) option).isTrimCellsInDTable());
+        } else if (option instanceof GroupDRLsInKieBasesByFolderOption) {
+            setGroupDRLsInKieBasesByFolder(((GroupDRLsInKieBasesByFolderOption) option).isGroupDRLsInKieBasesByFolder());
         } else if (option instanceof KBuilderSeverityOption) {
             this.severityMap.put(((KBuilderSeverityOption) option).getName(), ((KBuilderSeverityOption) option).getSeverity());
         } else if (option instanceof PropertySpecificOption) {

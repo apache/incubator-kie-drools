@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.Collection;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -25,8 +27,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
-
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
@@ -65,7 +65,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                  "</kbase>\n"+
                                  "</kmodule>";
 
-        String drl1 = "package org.jboss.ddoyle.drools.rules1\n" +
+        String drl1 = "package rules\n" +
                       "\n" +
                       "rule \"Rule in KieBase 1\"\n" +
                       "when\n" +
@@ -81,7 +81,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                  "</kbase>\n"+
                                  "</kmodule>";
 
-        String drl2 = "package org.jboss.ddoyle.drools.rules2\n" +
+        String drl2 = "package rules2\n" +
                       "\n" +
                       "rule \"Rule in KieBase 2\"\n" +
                       "when\n" +
@@ -152,7 +152,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                  "</kbase>\n"+
                                  "</kmodule>";
 
-        String drl1 = "package org.jboss.ddoyle.drools.rules1\n" +
+        String drl1 = "package rules\n" +
                       "\n" +
                       "rule \"Rule in KieBase 1\"\n" +
                       "when\n" +
@@ -168,7 +168,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                  "</kbase>\n"+
                                  "</kmodule>";
 
-        String drl2 = "package org.jboss.ddoyle.drools.rules2\n" +
+        String drl2 = "package rules\n" +
                       "\n" +
                       "rule \"Rule in KieBase 2\"\n" +
                       "when\n" +
