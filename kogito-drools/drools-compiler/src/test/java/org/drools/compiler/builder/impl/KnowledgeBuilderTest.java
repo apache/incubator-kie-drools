@@ -16,12 +16,9 @@
 
 package org.drools.compiler.builder.impl;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +27,6 @@ import java.util.Map;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Primitives;
 import org.drools.compiler.StockTick;
-import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JaninoJavaCompiler;
-import org.drools.compiler.commons.jci.compilers.JavaCompiler;
-import org.drools.compiler.commons.jci.compilers.NativeJavaCompiler;
-import org.drools.compiler.compiler.Dialect;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.DuplicateRule;
@@ -59,7 +50,6 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.beliefsystem.ModedAssertion;
@@ -105,6 +95,12 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class KnowledgeBuilderTest extends DroolsTestCase {
     
@@ -967,67 +963,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
     }
 
     @Test
-    public void testCompilerConfiguration() throws Exception {
-        // test default is eclipse jdt core
-        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
-        PackageDescr pkgDescr = new PackageDescr( "org.drools.compiler.test" );
-        builder.addPackage( pkgDescr );
-        DialectCompiletimeRegistry reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-
-        final Field dialectField = builder.getClass().getDeclaredField( "defaultDialect" );
-        dialectField.setAccessible( true );
-        String dialectName = (String) dialectField.get( builder );
-
-        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-        Dialect dialect = reg.getDialect( dialectName );
-
-        final Field compilerField = dialect.getClass().getDeclaredField( "compiler" );
-        compilerField.setAccessible( true );
-        JavaCompiler compiler = (JavaCompiler) compilerField.get( dialect );
-
-        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
-        switch( javaConf.getCompiler() ) {
-            case NATIVE : assertSame( NativeJavaCompiler.class, compiler.getClass() );
-                break;
-            case ECLIPSE: assertSame( EclipseJavaCompiler.class, compiler.getClass() );
-                break;
-            case JANINO: assertSame( JaninoJavaCompiler.class, compiler.getClass() );
-                break;
-            default:
-                fail( "Unrecognized java compiler");
-        }
-
-        // test JANINO with property settings
-        conf = new KnowledgeBuilderConfigurationImpl();
-        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
-        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.JANINO );
-        builder = new KnowledgeBuilderImpl( conf );
-        builder.addPackage( pkgDescr );
-
-        dialectName = (String) dialectField.get( builder );
-        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-        dialect = reg.getDialect( dialectName );
-        compiler = (JavaCompiler) compilerField.get( dialect );
-        assertSame( JaninoJavaCompiler.class,
-                    compiler.getClass() );
-
-        // test eclipse jdt core with property settings and default source level
-        conf = new KnowledgeBuilderConfigurationImpl();
-        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
-        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.ECLIPSE );
-        builder = new KnowledgeBuilderImpl( conf );
-        builder.addPackage( pkgDescr );
-
-        dialectName = (String) dialectField.get( builder );
-        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
-        dialect = reg.getDialect( dialectName );
-        compiler = (JavaCompiler) compilerField.get( dialect );
-        assertSame( EclipseJavaCompiler.class,
-                    compiler.getClass() );
-    }
-
-    @Test
     public void testTypeDeclaration() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "org.drools.compiler" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
@@ -1254,19 +1189,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       rule.getName() );
 
         return rule;
-    }
-
-    @Test
-    public void testJaninoWithStaticImports() throws Exception {
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
-        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.JANINO );
-
-        KnowledgeBuilderImpl bldr = new KnowledgeBuilderImpl( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n import java.util.List" ) );
-        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
-
-        assertFalse( bldr.hasErrors() );
     }
 
     @Test

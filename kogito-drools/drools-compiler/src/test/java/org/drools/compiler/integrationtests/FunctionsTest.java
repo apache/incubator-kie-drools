@@ -15,9 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +25,9 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class FunctionsTest extends CommonTestMethodBase {
 
@@ -94,27 +94,6 @@ public class FunctionsTest extends CommonTestMethodBase {
         KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         kbconf.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
         KieBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
-        KieSession ksession = createKnowledgeSession(kbase);
-
-        final List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal( "results",
-                            list );
-
-        ksession.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-
-        assertEquals( 12,
-                      list.get( 0 ).intValue() );
-    }
-
-    @Test
-    public void testFunctionCallingFunctionWithJanino() throws Exception {
-        KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbconf.setProperty( "drools.dialect.java.compiler", "JANINO" );
-        KieBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
-
         KieSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();

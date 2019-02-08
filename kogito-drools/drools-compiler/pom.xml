@@ -59,11 +59,6 @@
       <artifactId>ecj</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.janino</groupId>
-      <artifactId>janino</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
     </dependency>

@@ -16,12 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.InputStreamReader;
 
 import org.drools.compiler.CommonTestMethodBase;
@@ -37,6 +31,12 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ParserTest extends CommonTestMethodBase {
 
@@ -72,9 +72,6 @@ public class ParserTest extends CommonTestMethodBase {
                 break;
             case ECLIPSE:
                 assertTrue(errors[2].getMessage().contains("add"));
-                break;
-            case JANINO:
-                assertTrue(errors[2].getMessage().contains("Unexpected"));
                 break;
             default:
                 fail("Unknown compiler used");
