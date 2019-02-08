@@ -16,13 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static java.util.stream.Collectors.toList;
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
-import static org.drools.model.impl.ModelComponent.areEqualInModel;
-import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_RESOURCE_CLASS;
-import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
-import static org.kie.api.io.ResourceType.determineResourceType;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,6 +79,14 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
+
+import static java.util.stream.Collectors.toList;
+
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
+import static org.drools.model.impl.ModelComponent.areEqualInModel;
+import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_RESOURCE_CLASS;
+import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
+import static org.kie.api.io.ResourceType.determineResourceType;
 
 public class CanonicalKieModule implements InternalKieModule {
 

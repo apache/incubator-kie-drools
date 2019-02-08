@@ -1,9 +1,5 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
-import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
-import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -12,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.lang.model.type.PrimitiveType;
-
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.CharLiteralExpr;
 import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
 import org.drools.javaparser.ast.expr.LongLiteralExpr;
@@ -24,9 +20,13 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.type.PrimitiveType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
-import org.w3c.dom.NodeList;
+
+import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
+import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
 
 public class CoercedExpression {
 

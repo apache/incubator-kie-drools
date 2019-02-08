@@ -1,20 +1,5 @@
 package org.drools.modelcompiler.builder.generator.expressiontyper;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExpr;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
-import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
-import static org.drools.reflective.util.ClassUtils.getter2property;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -23,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.lang.model.type.ReferenceType;
-
 import org.drools.core.addon.TypeResolver;
+import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
@@ -40,6 +25,7 @@ import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.InstanceOfExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
@@ -52,6 +38,8 @@ import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
+import org.drools.javaparser.ast.type.ReferenceType;
+import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -68,7 +56,23 @@ import org.drools.modelcompiler.builder.generator.operatorspec.TemporalOperatorS
 import org.drools.modelcompiler.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.NodeList;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
+import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprToMethodCallExpr;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.replaceAllHalfBinaryChildren;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
+import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class ExpressionTyper {
 
@@ -620,7 +624,7 @@ public class ExpressionTyper {
         if (rawClass.isArray()) {
             ArrayAccessExpr result = new ArrayAccessExpr( nameExpr.expressionCursor, indexExpr.getExpression() );
             return of(new TypedExpressionCursor( result, rawClass.getComponentType() ));
-        } else if (List.class.isAssignableFrom( rawClass )) {
+        } else if (List.class.isAssignableFrom( rawClass ) || Map.class.isAssignableFrom( rawClass )) {
             MethodCallExpr result = new MethodCallExpr( nameExpr.expressionCursor, "get" );
             result.addArgument( indexExpr.getExpression() );
             java.lang.reflect.Type resultType = arrayType instanceof ParameterizedType ? (( ParameterizedType ) arrayType).getActualTypeArguments()[0] : Object.class;
@@ -690,21 +694,22 @@ public class ExpressionTyper {
         }
 
         Class<?> classCursor = toRawClass(typeCursor);
-        Method firstAccessor = DrlxParseUtil.getAccessor(!isInLineCast ? classCursor : patternType, firstName);
-        if (firstAccessor != null) {
-            // Hack to review - if a property is upper case it's probably not a react on property
-            if(!"".equals(firstName) && Character.isLowerCase(firstName.charAt(0))) {
-                context.addReactOnProperties(firstName);
-            }
+        if (Character.isLowerCase(firstName.charAt(0))) {
+            Method firstAccessor = DrlxParseUtil.getAccessor( !isInLineCast ? classCursor : patternType, firstName );
+            if ( firstAccessor != null ) {
+                if ( !"".equals( firstName ) ) {
+                    context.addReactOnProperties( firstName );
+                }
 
-            java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
-            NameExpr thisAccessor = new NameExpr("_this");
-            NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
-            return of(new TypedExpressionCursor(new MethodCallExpr(scope, firstAccessor.getName()), typeOfFirstAccessor));
+                java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
+                NameExpr thisAccessor = new NameExpr( "_this" );
+                NameExpr scope = backReference.map( d -> new NameExpr( d.getBindingId() ) ).orElse( thisAccessor );
+                return of( new TypedExpressionCursor( new MethodCallExpr( scope, firstAccessor.getName() ), typeOfFirstAccessor ) );
+            }
         }
 
         Field field = DrlxParseUtil.getField( classCursor, firstName );
-        if (field != null) {
+        if ( field != null ) {
             NameExpr scope = new NameExpr( Modifier.isStatic( field.getModifiers() ) ? classCursor.getCanonicalName() : "_this" );
             return of( new TypedExpressionCursor( new FieldAccessExpr( scope, field.getName() ), field.getType() ) );
         }

@@ -1,17 +1,5 @@
 package org.drools.modelcompiler.builder.generator.visitor.accumulate;
 
-import static java.util.stream.Collectors.toList;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,18 +12,24 @@ import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.rule.Pattern;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.CompilationUnit;
+import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.ast.body.MethodDeclaration;
+import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
@@ -45,6 +39,8 @@ import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.stmt.ReturnStmt;
+import org.drools.javaparser.ast.stmt.Statement;
+import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
@@ -63,10 +59,20 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.StringUtil;
-import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.kie.api.runtime.rule.AccumulateFunction;
-import org.w3c.dom.NodeList;
+
+import static java.util.stream.Collectors.toList;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 
 public abstract class AccumulateVisitor {
 
@@ -504,7 +510,7 @@ public abstract class AccumulateVisitor {
                 for (VariableDeclarator vd : vdExpr.getVariables()) {
                     final String variableName = vd.getNameAsString();
                     contextFieldNames.add(variableName);
-                    templateContextClass.addField(vd.getType(), variableName, Modifier.PUBLIC);
+                    templateContextClass.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
                     createInitializer(variableName, vd.getInitializer()).ifPresent(statement -> {
                         initMethodBody.addStatement(statement);
                         statement.findAll(NameExpr.class).stream().map( n -> n.toString()).filter( context2::hasDeclaration ).forEach( externalDeclrs::add );
@@ -532,7 +538,7 @@ public abstract class AccumulateVisitor {
                                     .map(t -> DrlxParseUtil.classToReferenceType(t.getRawClass()))
                                     .orElseThrow(() -> new RuntimeException("Unknown type: " + initCreationExpression));
 
-                            templateContextClass.addField(type, variableName, Modifier.PUBLIC);
+                            templateContextClass.addField(type, variableName, Modifier.publicModifier().getKeyword());
                             final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initCreationExpression));
                             initializer.ifPresent(initMethodBody::addStatement);
                             accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), type.asString())));

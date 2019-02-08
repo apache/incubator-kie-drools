@@ -1,11 +1,11 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
-
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 
 public class OrVisitor {
 

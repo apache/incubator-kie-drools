@@ -16,11 +16,11 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import static org.drools.model.impl.NamesGenerator.generateName;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static org.drools.model.impl.NamesGenerator.generateName;
 
 public class DRLIdGenerator {
     private Map<PatternTypeDRLConstraint, String> generatedExprIds = new HashMap<>();

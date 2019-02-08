@@ -16,8 +16,6 @@
 
 package org.drools.modelcompiler.constraints;
 
-import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
-
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,6 +28,8 @@ import org.drools.model.constraints.FixedTemporalConstraint;
 import org.drools.model.constraints.TemporalConstraint;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.temporal.TemporalPredicate;
+
+import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
 
 public class TemporalConstraintEvaluator extends ConstraintEvaluator {
 

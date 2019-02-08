@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,16 +11,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.compiler.rule.builder.dialect.mvel;
-
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -34,84 +34,91 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.util.bitmask.BitMask;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.StringUtils.splitStatements;
+
 public class MVELConsequenceBuilder
-    implements
-    ConsequenceBuilder {
+        implements
+        ConsequenceBuilder {
 
     public static final Map<String, Macro> macros = new HashMap<String,Macro>( 10 );
     static {
         macros.put( "insert",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.insert";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.insert";
+                    }
+                } );
 
         macros.put( "insertLogical",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.insertLogical";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.insertLogical";
+                    }
+                } );
 
         macros.put( "bolster",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.bolster";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.bolster";
+                    }
+                } );
 
         macros.put( "modify",
-                    new Macro() {
-                        public String doMacro() {
-                            return "@Modify with";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "@Modify with";
+                    }
+                } );
 
         macros.put( "update",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.update";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.update";
+                    }
+                } );
 
         macros.put( "retract",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.retract";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.retract";
+                    }
+                } );
         macros.put( "entryPoints",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.entryPoints";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.entryPoints";
+                    }
+                } );
         macros.put( "exitPoints",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.exitPoints";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.exitPoints";
+                    }
+                } );
 
         macros.put( "don",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.don";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.don";
+                    }
+                } );
 
         macros.put( "shed",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.shed";
-                        }
-                    } );
+                new Macro() {
+                    public String doMacro() {
+                        return "drools.shed";
+                    }
+                } );
     }
 
     public MVELConsequenceBuilder() {
@@ -125,34 +132,36 @@ public class MVELConsequenceBuilder
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-            
+
             final RuleDescr ruleDescr = context.getRuleDescr();
-            
+
             String text = ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals(consequenceName) ) ?
                     (String) ruleDescr.getConsequence() :
                     (String) ruleDescr.getNamedConsequences().get( consequenceName );
 
             text = processMacros( text );
-            
+
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
-            
+
             AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                            text,
-                                                            new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses(decls),
-                                                                                  context,
-                                                                                  Collections.EMPTY_MAP,
-                                                                                  KnowledgeHelper.class),
-                                                            null,
-                                                            "drools",
-                                                            KnowledgeHelper.class );
-            
+                    text,
+                    new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses(decls),
+                            context,
+                            Collections.EMPTY_MAP,
+                            KnowledgeHelper.class),
+                    null,
+                    "drools",
+                    KnowledgeHelper.class );
+
             if ( analysis == null ) {
                 // something bad happened, issue already logged in errors
                 return;
             }
-            
+
+            text = rewriteUpdates( context, analysis, text );
+
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-            
+
             final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclrClasses().size()];
             String[] declrStr = new String[declarations.length];
             int j = 0;
@@ -166,30 +175,30 @@ public class MVELConsequenceBuilder
             }
             context.getRule().setRequiredDeclarationsForConsequence(consequenceName, declrStr);
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
-                                                                       analysis,
-                                                                       declarations,
-                                                                       null,
-                                                                       null,
-                                                                       context,
-                                                                       "drools",
-                                                                       KnowledgeHelper.class,
-                                                                       false,
-                                                                       MVELCompilationUnit.Scope.CONSEQUENCE );
+                    analysis,
+                    declarations,
+                    null,
+                    null,
+                    context,
+                    "drools",
+                    KnowledgeHelper.class,
+                    false,
+                    MVELCompilationUnit.Scope.CONSEQUENCE );
 
             MVELConsequence expr = new MVELConsequence( unit,
-                                                        dialect.getId(),
-                                                        consequenceName );
-            
+                    dialect.getId(),
+                    consequenceName );
+
             if ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) {
                 context.getRule().setConsequence( expr );
             } else {
                 context.getRule().addNamedConsequence(consequenceName, expr);
             }
-            
+
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( context.getRule(),
-                                 expr );
-            
+                    expr );
+
             expr.compile( data, context.getRule() );
         } catch ( final Exception e ) {
             copyErrorLocation(e, context.getRuleDescr());
@@ -198,6 +207,64 @@ public class MVELConsequenceBuilder
                     null,
                     "Unable to build expression for 'consequence': " + e.getMessage() + " '" + context.getRuleDescr().getConsequence() + "'"));
         }
+    }
+
+    private static String rewriteUpdates( RuleBuildContext context, AnalysisResult analysis, String text ) {
+        return rewriteUpdates( analysis.getBoundIdentifiers()::resolveType,
+                c -> {
+                    TypeDeclaration typeDeclaration = context.getKnowledgeBuilder().getTypeDeclaration(c);
+                    if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
+                        typeDeclaration.setTypeClass(c);
+                        return typeDeclaration.getAccessibleProperties();
+                    }
+                    return Collections.emptyList();
+                },
+                text );
+    }
+
+    public static String rewriteUpdates( Function<String, Class<?>> classResolver, Function<Class<?>, List<String>> propsResolver, String text ) {
+        int start = 0;
+        while (true) {
+            int updatePos = text.indexOf( "drools.update(", start );
+            if (updatePos < 0) {
+                break;
+            }
+            start = updatePos + "drools.update(".length();
+            int end = text.indexOf( ')', start );
+            String identifier = text.substring( start, end ).trim();
+            Class<?> updatedType = classResolver.apply( identifier );
+            if (updatedType == null) {
+                continue;
+            }
+
+            List<String> settableProperties = propsResolver.apply(updatedType);
+            if (settableProperties.isEmpty()) {
+                continue;
+            }
+            BitMask modificationMask = getEmptyPropertyReactiveMask(settableProperties.size());
+
+            for (String expr : splitStatements(text)) {
+                if (expr.startsWith( identifier + "." )) {
+                    int fieldEnd = identifier.length()+1;
+                    while (Character.isJavaIdentifierPart( expr.charAt( fieldEnd ) )) fieldEnd++;
+                    String propertyName = expr.substring( identifier.length()+1, fieldEnd );
+                    if (propertyName.startsWith("set") && propertyName.length() > 3) {
+                        propertyName = Character.toLowerCase(propertyName.charAt(3)) + propertyName.substring(4);
+                    }
+
+                    int index = settableProperties.indexOf(propertyName);
+                    if (index >= 0) {
+                        modificationMask = setPropertyOnMask(modificationMask, index);
+                    }
+                }
+            }
+
+            String updateArgs = ", " + modificationMask.getInstancingStatement() + ", " + updatedType.getCanonicalName() + ".class";
+            text = text.substring( 0, end ) + updateArgs + text.substring( end );
+            start = end + updateArgs.length();
+        }
+
+        return text;
     }
 
     public static String processMacros(String consequence) {
@@ -248,11 +315,11 @@ public class MVELConsequenceBuilder
                                 break;
                             } else if( cs[i] == '\n' || cs[i] == '\r' ) {
                                 lastNonWhite = checkAndAddSemiColon( result,
-                                                                     inString,
-                                                                     brace,
-                                                                     sqre,
-                                                                     crly,
-                                                                     lastNonWhite );
+                                        inString,
+                                        brace,
+                                        sqre,
+                                        crly,
+                                        lastNonWhite );
                             }
                         }
                         result.append( cs, start, i-start );
@@ -265,14 +332,14 @@ public class MVELConsequenceBuilder
                 case '#' :
                     // line comment
                     lastNonWhite = checkAndAddSemiColon( result,
-                                                         inString,
-                                                         brace,
-                                                         sqre,
-                                                         crly,
-                                                         lastNonWhite );
+                            inString,
+                            brace,
+                            sqre,
+                            crly,
+                            lastNonWhite );
                     i = processLineComment( cs,
-                                            i,
-                                            result);
+                            i,
+                            result);
                     continue;
                 case '(' :
                     brace++;
@@ -299,7 +366,7 @@ public class MVELConsequenceBuilder
             if ( c == '\n' || c == '\r' ) {
                 // line break
                 if ( brace == 0 && sqre == 0 && crly == 0 &&
-                     lastNonWhite != '.' && lookAhead(cs, i+1) != '.' ) {
+                        lastNonWhite != '.' && lookAhead(cs, i+1) != '.' ) {
                     if ( lastNonWhite != ';' ) {
                         result.append( ';' );
                         lastNonWhite = ';';

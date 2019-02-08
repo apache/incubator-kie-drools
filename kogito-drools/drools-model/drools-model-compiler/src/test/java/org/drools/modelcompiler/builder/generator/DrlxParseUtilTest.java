@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.function.Function;
 
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
 import org.drools.javaparser.ast.expr.CharLiteralExpr;
@@ -20,14 +22,13 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeRe
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
+
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseExpression;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DrlxParseUtilTest {
 

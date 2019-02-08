@@ -1323,6 +1323,36 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 1, ksession.fireAllRules() );
     }
 
+
+    @Test
+    public void testMapWithBinding() {
+        // DROOLS-3558
+        final String drl1 = "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Address.class.getCanonicalName() + ";\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        $p : Person()\n" +
+                "        $a : Address( number == $p.items[1] )\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Person john = new Person("John");
+        HashMap<Integer, Integer> items = new HashMap<Integer, Integer>();
+        items.put(1, 20);
+        john.setItems(items);
+
+        items.values().iterator().next();
+        ksession.insert(john);
+
+        final Address address = new Address("Tasman", 20, "Nelson");
+        ksession.insert(address);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
     @Test
     public void testMapAccessPropertyWithCast() {
         final String drl1 =
@@ -1419,5 +1449,81 @@ public class CompilerTest extends BaseModelTest {
         KieSession kieSession = getKieSession(drl);
         kieSession.insert(new TestFact("test"));
         assertEquals(1, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testCommaInModify() {
+        // DROOLS-3505
+        final String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"java\"\n" +
+
+                "rule R1 when\n" +
+                "   $p : Person( name == \"John\" )\n" +
+                "then\n" +
+                "   modify($p) { setAge(1), setLikes(\"bread\"); }\n" +
+                "end\n";
+        KieSession kieSession = getKieSession(drl);
+        Person john = new Person("John", 24);
+        kieSession.insert(john);
+        assertEquals(1, kieSession.fireAllRules());
+
+        assertEquals(john.getAge(), 1);
+        assertEquals(john.getLikes(), "bread");
+    }
+
+    public static class Message {
+        public static final int HELLO = 0;
+        public static final int GOODBYE = 1;
+
+        private String message;
+
+        private int status;
+
+        public String getMessage() {
+            return this.message;
+        }
+
+        public void setMessage( String message ) {
+            this.message = message;
+        }
+
+        public int getStatus() {
+            return this.status;
+        }
+
+        public void setStatus( int status ) {
+            this.status = status;
+        }
+    }
+
+    @Test
+    public void testStaticFieldClashingWithClassName() {
+        // DROOLS-3560
+        final String drl =
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "rule \"Hello World\"\n" +
+                "    when\n" +
+                "        m : Message( status == Message.HELLO, myMessage : message ) \n" +
+                "    then\n" +
+                "        System.out.println( myMessage );\n" +
+                "        m.setMessage( \"Goodbye cruel world\" ); \n" +
+                "        m.setStatus( Message.GOODBYE ); \n" +
+                "        update( m );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"GoodBye\"\n" +
+                "    when\n" +
+                "        Message( status == Message.GOODBYE, myMessage : message ) \n" +
+                "    then\n" +
+                "        System.out.println( myMessage );\n" +
+                "end\n";
+
+        KieSession kieSession = getKieSession(drl);
+        Message message = new Message();
+        message.setMessage( "Hi" );
+        message.setStatus( Message.HELLO );
+        kieSession.insert(message);
+        assertEquals(2, kieSession.fireAllRules());
     }
 }

@@ -16,10 +16,10 @@
 
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
-import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
-
 import org.drools.core.spi.Evaluator;
 import org.drools.model.functions.Operator;
+
+import static org.drools.core.common.InternalFactHandle.dummyFactHandleOf;
 
 public class CustomOperatorWrapper implements Operator.SingleValue<Object, Object> {
 

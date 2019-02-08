@@ -1,16 +1,16 @@
 package org.drools.modelcompiler.builder;
 
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
-import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
+
+import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
 public class ModelWriter {
 

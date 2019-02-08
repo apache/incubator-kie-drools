@@ -16,11 +16,13 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
-
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.drools.javaparser.ast.expr.Expression;
+
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class TypedExpression {
 

@@ -324,4 +324,29 @@ public class MvelDialectTest extends BaseModelTest {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void testMultiDrlWithSamePackageMvel() throws Exception {
+        // DROOLS-3508
+        String drl1 = "package org.pkg\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n"; // MVEL dialect defined at package level.
+
+        String drl2 = "package org.pkg\n" +
+                "rule R1\n" +
+                "no-loop\n" +
+                "when\n" +
+                "   $p : Person( name == \"John\" )\n" +
+                "then\n" +
+                "   $p.age = 1;\n" +
+                "   update($p);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(drl1, drl2);
+
+        Person john = new Person("John", 24);
+        ksession.insert(john);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(1, john.getAge());
+    }
 }

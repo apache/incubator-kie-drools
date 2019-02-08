@@ -3,8 +3,10 @@ package org.drools.modelcompiler.builder.generator.expressiontyper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.javaparser.ast.Node;
 import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 

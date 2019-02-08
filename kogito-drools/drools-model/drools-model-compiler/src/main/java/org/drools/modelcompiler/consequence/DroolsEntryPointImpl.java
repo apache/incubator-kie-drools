@@ -16,8 +16,6 @@
 
 package org.drools.modelcompiler.consequence;
 
-import static org.drools.modelcompiler.consequence.LambdaConsequence.adaptBitMask;
-
 import java.util.Map;
 
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -25,6 +23,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.model.BitMask;
 import org.drools.model.DroolsEntryPoint;
 import org.kie.api.runtime.rule.EntryPoint;
+
+import static org.drools.modelcompiler.consequence.LambdaConsequence.adaptBitMask;
 
 public class DroolsEntryPointImpl implements DroolsEntryPoint {
 

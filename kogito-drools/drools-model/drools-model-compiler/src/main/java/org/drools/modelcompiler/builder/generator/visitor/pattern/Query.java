@@ -1,13 +1,10 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_INVOCATION_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
-import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
-
 import java.util.List;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -15,6 +12,10 @@ import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
+
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_INVOCATION_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
+import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
 
 class Query implements DSLNode {
 

@@ -16,8 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import static org.drools.reflective.util.ClassUtils.isJboss;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -34,14 +32,16 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
-import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
 

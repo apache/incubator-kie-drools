@@ -16,9 +16,6 @@
 
 package org.drools.modelcompiler.util;
 
-import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
-import static org.drools.reflective.util.ClassUtils.getter2property;
-
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -36,6 +33,9 @@ import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
+
+import static org.drools.core.rule.TypeDeclaration.createTypeDeclarationForBean;
+import static org.drools.core.util.ClassUtils.getter2property;
 
 public class TypeDeclarationUtil {
 

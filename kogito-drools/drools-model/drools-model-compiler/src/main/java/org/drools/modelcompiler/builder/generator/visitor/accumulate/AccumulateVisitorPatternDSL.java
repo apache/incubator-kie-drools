@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.body.Parameter;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
@@ -12,6 +15,8 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.fromVar;
 
 public class AccumulateVisitorPatternDSL extends AccumulateVisitor {
 

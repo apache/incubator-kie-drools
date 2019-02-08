@@ -1,11 +1,5 @@
 package org.drools.modelcompiler.builder.generator;
 
-import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
-import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
-import static org.drools.modelcompiler.util.ClassUtil.findMethod;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -28,18 +22,18 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import javax.lang.model.type.PrimitiveType;
-
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.drlx.DrlxParser;
+import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ParseProblemException;
+import org.drools.javaparser.ast.Node;
+import org.drools.javaparser.ast.body.Parameter;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
 import org.drools.javaparser.ast.expr.ArrayAccessExpr;
@@ -48,12 +42,14 @@ import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
 import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.CharLiteralExpr;
 import org.drools.javaparser.ast.expr.ConditionalExpr;
 import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -74,9 +70,19 @@ import org.drools.javaparser.ast.nodeTypes.NodeWithTraversableScope;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.javaparser.ast.type.PrimitiveType;
+import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.ClassUtil;
+
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
+
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
+import static org.drools.modelcompiler.util.ClassUtil.findMethod;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseUtil {
 
@@ -130,7 +136,7 @@ public class DrlxParseUtil {
         Method accessor = getAccessor( clazz, name );
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
-            return new TypedExpression( body, accessor.getReturnType() );
+            return new TypedExpression( body, accessor.getGenericReturnType() );
         }
         if (clazz.isArray() && name.equals( "length" )) {
             FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( "_this" ), name );
@@ -149,7 +155,7 @@ public class DrlxParseUtil {
         return null;
     }
 
-    public static java.lang.reflect.Type returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, java.lang.reflect.Type clazz, Collection<String> usedDeclarations) {
+    public static java.lang.reflect.Type returnTypeOfMethodCallExpr( RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, java.lang.reflect.Type clazz, Collection<String> usedDeclarations) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
                 .map((Expression e) -> getExpressionType(context, typeResolver, e, usedDeclarations))
                 .toArray(Class[]::new);

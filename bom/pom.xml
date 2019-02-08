@@ -44,6 +44,7 @@
     <version.org.antlr>3.5.2</version.org.antlr>
     <version.org.slf4j>1.7.25</version.org.slf4j>
     <version.org.mvel>2.4.3.Final</version.org.mvel>
+    <version.drlx-parser>7.18.0-SNAPSHOT</version.drlx-parser>
     <version.com.thoughtworks.xstream>1.4.10</version.com.thoughtworks.xstream>
     <version.com.google.protobuf>3.6.1</version.com.google.protobuf>
     <version.org.eclipse.jdt.core.compiler>4.6.1</version.org.eclipse.jdt.core.compiler>
@@ -101,6 +102,12 @@
         <groupId>org.mvel</groupId>
         <artifactId>mvel2</artifactId>
         <version>${version.org.mvel}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drlx-parser</artifactId>
+        <version>${version.drlx-parser}</version>
       </dependency>
 
       <dependency>

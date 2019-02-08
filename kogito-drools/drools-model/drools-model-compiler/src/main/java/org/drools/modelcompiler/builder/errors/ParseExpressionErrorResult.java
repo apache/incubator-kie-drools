@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder.errors;
 
 import org.drools.compiler.compiler.DroolsError;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.printer.PrintUtil;
 import org.kie.internal.builder.ResultSeverity;
 

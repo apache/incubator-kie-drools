@@ -16,12 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import static java.util.stream.Collectors.joining;
-import static org.drools.core.util.StringUtils.generateUUID;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,21 +34,27 @@ import java.util.stream.Collectors;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.CompilationUnit;
+import org.drools.javaparser.ast.Modifier;
 import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.BodyDeclaration;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.InitializerDeclaration;
+import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.comments.JavadocComment;
 import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.SimpleName;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.javaparser.ast.type.Type;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Rule;
@@ -63,12 +63,19 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
-import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.joining;
+
+import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.javaparser.ast.Modifier.*;
+import static org.drools.javaparser.ast.Modifier.publicModifier;
+import static org.drools.javaparser.ast.Modifier.staticModifier;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 
 public class PackageModel {
 
@@ -414,7 +421,7 @@ public class PackageModel {
 
 
         for(Map.Entry<String, MethodCallExpr> windowReference : windowReferences.entrySet()) {
-            FieldDeclaration f = rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+            FieldDeclaration f = rulesClass.addField(WINDOW_REFERENCE_TYPE, windowReference.getKey(), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
             f.getVariables().get(0).setInitializer(windowReference.getValue());
         }
 
@@ -423,12 +430,12 @@ public class PackageModel {
         }
 
         for(Map.Entry<String, QueryGenerator.QueryDefWithType> queryDef: queryDefWithType.entrySet()) {
-            FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+            FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
             field.getVariables().get(0).setInitializer(queryDef.getValue().getMethodCallExpr());
         }
 
         for(Map.Entry<String, MethodDeclaration> methodName: queryMethods.entrySet()) {
-            FieldDeclaration field = rulesClass.addField(methodName.getValue().getType(), methodName.getKey(), Modifier.FINAL);
+            FieldDeclaration field = rulesClass.addField(methodName.getValue().getType(), methodName.getKey(), finalModifier().getKeyword());
             field.getVariables().get(0).setInitializer(new MethodCallExpr(null, methodName.getKey()));
         }
 
@@ -547,7 +554,7 @@ public class PackageModel {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "Arrays.asList" );
         ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("List"), new NodeList<Type>(new ClassOrInterfaceType(null, "Rule")));
         VariableDeclarator rulesVar = new VariableDeclarator( rulesType, "rulesList", rulesInit );
-        rulesClass.addMember( new FieldDeclaration( EnumSet.of( Modifier.PUBLIC, Modifier.STATIC), rulesVar ) );
+        rulesClass.addMember( new FieldDeclaration( NodeList.nodeList( publicModifier(), staticModifier()), rulesVar ) );
         return rulesInit;
     }
 
@@ -588,7 +595,7 @@ public class PackageModel {
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));
 
-        FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+        FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
 
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }

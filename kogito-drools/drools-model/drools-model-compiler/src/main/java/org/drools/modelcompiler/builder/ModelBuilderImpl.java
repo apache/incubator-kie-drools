@@ -16,11 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
-import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
-import static org.drools.modelcompiler.builder.generator.POJOGenerator.generatePOJO;
-import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +35,11 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
+import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
+import static org.drools.modelcompiler.builder.generator.POJOGenerator.generatePOJO;
+import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerType;
 
 public class ModelBuilderImpl extends KnowledgeBuilderImpl {
 

@@ -1,11 +1,13 @@
 package org.drools.modelcompiler.builder.generator.expressiontyper;
 
-import static org.drools.core.util.StringUtils.lcFirst;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.drools.javaparser.ast.expr.Expression;
+
+import static org.drools.core.util.StringUtils.lcFirst;
 
 public class ExpressionTyperContext {
 

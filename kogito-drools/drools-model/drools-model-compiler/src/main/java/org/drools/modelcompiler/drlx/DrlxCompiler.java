@@ -16,10 +16,6 @@
 
 package org.drools.modelcompiler.drlx;
 
-import static org.drools.drlx.DrlxUtils.hasRules;
-import static org.drools.javaparser.printer.PrintUtil.toDrl;
-import static org.drools.javaparser.printer.PrintUtil.toJava;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -29,10 +25,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.CompilationUnit;
 import org.drools.javaparser.ast.PackageDeclaration;
 import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -41,6 +37,10 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
+
+import static org.drools.javaparser.printer.PrintUtil.toDrl;
+import static org.drools.javaparser.printer.PrintUtil.toJava;
+import static org.drools.drlx.DrlxUtils.hasRules;
 
 public class DrlxCompiler {
 

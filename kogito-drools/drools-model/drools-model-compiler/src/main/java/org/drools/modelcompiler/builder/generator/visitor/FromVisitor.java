@@ -1,11 +1,5 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
-import static java.util.Optional.of;
-import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,8 +8,10 @@ import java.util.Optional;
 
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
+import org.drools.javaparser.JavaParser;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LambdaExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
@@ -34,7 +30,13 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-import org.w3c.dom.NodeList;
+
+import static java.util.Optional.of;
+
+import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 
 public class FromVisitor {
 

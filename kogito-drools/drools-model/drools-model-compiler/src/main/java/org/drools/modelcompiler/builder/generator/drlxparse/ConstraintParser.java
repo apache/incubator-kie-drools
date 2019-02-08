@@ -1,14 +1,5 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
-import static org.drools.core.util.StringUtils.lcFirst;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -18,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.core.util.DateUtils;
+import org.drools.javaparser.ast.NodeList;
+import org.drools.javaparser.ast.body.MethodDeclaration;
 import org.drools.javaparser.ast.drlx.OOPathExpr;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
@@ -28,6 +21,7 @@ import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.javaparser.ast.expr.BinaryExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
+import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -49,8 +43,15 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
-import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
-import org.w3c.dom.NodeList;
+
+import static org.drools.core.util.StringUtils.lcFirst;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class ConstraintParser {
 

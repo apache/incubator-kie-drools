@@ -1,7 +1,5 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
-import static java.util.stream.Collectors.toSet;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +14,8 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
+
+import static java.util.stream.Collectors.toSet;
 
 class PatternAccumulateConstraint implements DSLNode {
 

@@ -16,9 +16,10 @@
 
 package org.drools.modelcompiler.util;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import org.drools.javaparser.ast.type.PrimitiveType;
+import org.drools.javaparser.ast.type.Type;
 
-import javax.lang.model.type.PrimitiveType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class JavaParserUtil {
 

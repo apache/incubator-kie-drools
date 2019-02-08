@@ -16,12 +16,6 @@
 
 package org.drools.modelcompiler.builder;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
-import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -45,6 +39,13 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.jci.CompilationProblem;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+
+import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
+import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
+import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
@@ -129,37 +130,37 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "package org.drools.project.model;\n" +
-                "\n" +
-                "import " + Model.class.getCanonicalName()  + ";\n" +
-                "import " + CanonicalKieModuleModel.class.getCanonicalName()  + ";\n" +
-                "import " + ReleaseId.class.getCanonicalName()  + ";\n" +
-                "import " + ReleaseIdImpl.class.getCanonicalName()  + ";\n" +
-                "\n" +
-                "public class ProjectModel implements CanonicalKieModuleModel {\n" +
-                "\n" +
-                "    public String getVersion() {\n" +
-                "        return \"" );
+                        "\n" +
+                        "import " + Model.class.getCanonicalName()  + ";\n" +
+                        "import " + CanonicalKieModuleModel.class.getCanonicalName()  + ";\n" +
+                        "import " + ReleaseId.class.getCanonicalName()  + ";\n" +
+                        "import " + ReleaseIdImpl.class.getCanonicalName()  + ";\n" +
+                        "\n" +
+                        "public class ProjectModel implements CanonicalKieModuleModel {\n" +
+                        "\n" +
+                        "    public String getVersion() {\n" +
+                        "        return \"" );
         sb.append( Drools.getFullVersion() );
         sb.append(
                 "\";\n" +
-                "    }\n" +
-                "\n" +
-                "    public java.util.List<Model> getModels() {\n" +
-                "        return java.util.Arrays.asList(" );
+                        "    }\n" +
+                        "\n" +
+                        "    public java.util.List<Model> getModels() {\n" +
+                        "        return java.util.Arrays.asList(" );
         sb.append( modelSources.isEmpty() ? "" : modelSources.stream().collect( joining("(), new ", "new ", "()") ) );
         sb.append(
                 ");\n" +
-                "    }\n" +
-                "\n" +
-                "    public ReleaseId getReleaseId() {\n" +
-                "        return new ReleaseIdImpl(\"" );
+                        "    }\n" +
+                        "\n" +
+                        "    public ReleaseId getReleaseId() {\n" +
+                        "        return new ReleaseIdImpl(\"" );
         sb.append( releaseId.getGroupId() ).append( "\", \"" );
         sb.append( releaseId.getArtifactId() ).append( "\", \"" );
         sb.append( releaseId.getVersion() ).append( "\"" );
         sb.append(
                 ");\n" +
-                "    }\n" +
-                "}" );
+                        "    }\n" +
+                        "}" );
         return sb.toString();
     }
 }

@@ -1,9 +1,5 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
-
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -19,7 +15,12 @@ import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
+import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
+
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
 
 class FlowDSLPattern extends PatternDSL {
 

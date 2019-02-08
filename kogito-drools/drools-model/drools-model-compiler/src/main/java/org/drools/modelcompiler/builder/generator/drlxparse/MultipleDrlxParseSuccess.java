@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator.drlxparse;
 import java.util.stream.Stream;
 
 import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.Expression;
 
 public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
