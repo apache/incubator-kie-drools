@@ -22,8 +22,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
@@ -486,13 +490,24 @@ public class EvalHelper {
             Integer l = lp.getYears() * 12 + lp.getMonths();
             Integer r = rp.getYears() * 12 + rp.getMonths();
             return op.test( l, r );
-        } else if ( (left instanceof String && right instanceof String) ||
-                    (left instanceof Number && right instanceof Number) ||
-                    (left instanceof Boolean && right instanceof Boolean) ||
-                    (left instanceof Comparable && left.getClass().isAssignableFrom( right.getClass() )) ) {
+        } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
+            // Handle specific cases when both date / datetime
+            TemporalAccessor l = (TemporalAccessor) left;
+            TemporalAccessor r = (TemporalAccessor) right;
+            if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
+                return op.test(valuet(l), valuet(r));
+            } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
+                return op.test(valuedt(l, r.query(TemporalQueries.zone())), valuedt(r, l.query(TemporalQueries.zone())));
+            } // fallback; continue:
+        }
+        // last fallback:
+        if ((left instanceof String && right instanceof String) ||
+            (left instanceof Number && right instanceof Number) ||
+            (left instanceof Boolean && right instanceof Boolean) ||
+            (left instanceof Comparable && left.getClass().isAssignableFrom(right.getClass()))) {
             Comparable l = (Comparable) left;
             Comparable r = (Comparable) right;
-            return op.test( l, r );
+            return op.test(l, r);
         }
         return null;
     }
@@ -533,6 +548,34 @@ public class EvalHelper {
             } // fallback; continue:
         }
         return compare( left, right, ctx, (l, r) -> l.compareTo( r ) == 0  );
+    }
+
+    /**
+     * DMNv1.2 10.3.2.3.6 date-time, valuedt(date and time), for use in this {@link EvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
+     */
+    private static long valuedt(TemporalAccessor datetime, ZoneId otherTimezoneOffset) {
+        ZoneId alternativeTZ = Optional.ofNullable(otherTimezoneOffset).orElse(ZoneOffset.UTC);
+        if (datetime instanceof LocalDateTime) {
+            return ((LocalDateTime) datetime).atZone(alternativeTZ).toEpochSecond();
+        } else if (datetime instanceof ZonedDateTime) {
+            return ((ZonedDateTime) datetime).toEpochSecond();
+        } else if (datetime instanceof OffsetDateTime) {
+            return ((OffsetDateTime) datetime).toEpochSecond();
+        } else {
+            throw new RuntimeException("valuedt() for " + datetime + " but is not a FEEL date and time " + datetime.getClass());
+        }
+    }
+
+    /**
+     * DMNv1.2 10.3.2.3.4 time, valuet(time), for use in this {@link EvalHelper#compare(Object, Object, EvaluationContext, BiPredicate)}
+     */
+    private static long valuet(TemporalAccessor time) {
+        long result = 0;
+        result += time.get(ChronoField.HOUR_OF_DAY) * (60 * 60);
+        result += time.get(ChronoField.MINUTE_OF_HOUR) * (60);
+        result += time.get(ChronoField.SECOND_OF_MINUTE);
+        result += Optional.ofNullable(time.query(TemporalQueries.offset())).map(ZoneOffset::getTotalSeconds).orElse(0);
+        return result;
     }
 
     /**

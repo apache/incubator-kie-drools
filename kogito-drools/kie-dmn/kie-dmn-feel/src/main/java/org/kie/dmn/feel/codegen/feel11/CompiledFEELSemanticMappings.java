@@ -255,11 +255,11 @@ public class CompiledFEELSemanticMappings {
      * FEEL spec Table 38
      * Delegates to {@link InfixOpNode} except evaluationcontext
      */
-    public static Object and(Object left, Object right) {
-        return InfixOpNode.and(left, right, null);
+    public static Boolean and(Object left, Object right) {
+        return (Boolean) InfixOpNode.and(left, right, null);
     }
 
-    public static Object and(boolean left, Object right) {
+    public static Boolean and(boolean left, Object right) {
         if (left == true) {
             return EvalHelper.getBooleanOrNull(right);
         } else {
@@ -267,7 +267,7 @@ public class CompiledFEELSemanticMappings {
         }
     }
 
-    public static Object and(boolean left, boolean right) {
+    public static Boolean and(boolean left, boolean right) {
         return left && right;
     }
 
@@ -275,11 +275,11 @@ public class CompiledFEELSemanticMappings {
      * FEEL spec Table 38
      * Delegates to {@link InfixOpNode} except evaluationcontext
      */
-    public static Object or(Object left, Object right) {
-        return InfixOpNode.or(left, right, null);
+    public static Boolean or(Object left, Object right) {
+        return (Boolean) InfixOpNode.or(left, right, null);
     }
 
-    public static Object or(Object left, boolean right) {
+    public static Boolean or(Object left, boolean right) {
         if (right == true) {
             return true;
         } else {
@@ -287,7 +287,7 @@ public class CompiledFEELSemanticMappings {
         }
     }
 
-    public static Object or(boolean left, boolean right) {
+    public static Boolean or(boolean left, boolean right) {
         return left || right;
     }
 
@@ -337,7 +337,8 @@ public class CompiledFEELSemanticMappings {
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
     public static Boolean lte(Object left, Object right) {
-        return EvalHelper.compare(left, right, null, (l, r) -> l.compareTo(r) <= 0);
+        return or(lt(left, right),
+                  eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
@@ -353,7 +354,8 @@ public class CompiledFEELSemanticMappings {
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
     public static Boolean gte(Object left, Object right) {
-        return EvalHelper.compare(left, right, null, (l, r) -> l.compareTo(r) >= 0);
+        return or(gt(left, right),
+                  eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
@@ -405,7 +407,7 @@ public class CompiledFEELSemanticMappings {
             return null;
         }
 
-        return gte(value, start) && lte(value, end);
+        return and(gte(value, start), lte(value, end)); // do not use Java && to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
