@@ -183,7 +183,7 @@ public class InfixOpNode
             case LTE:
                 return or(EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) < 0),
                           EvalHelper.isEqual(left, right, ctx),
-                          ctx);
+                          ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
             case LT:
                 return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) < 0 );
             case GT:
@@ -191,7 +191,7 @@ public class InfixOpNode
             case GTE:
                 return or(EvalHelper.compare(left, right, ctx, (l, r) -> l.compareTo(r) > 0),
                           EvalHelper.isEqual(left, right, ctx),
-                          ctx);
+                          ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
             case EQ:
                 return EvalHelper.isEqual( left, right, ctx );
             case NE:

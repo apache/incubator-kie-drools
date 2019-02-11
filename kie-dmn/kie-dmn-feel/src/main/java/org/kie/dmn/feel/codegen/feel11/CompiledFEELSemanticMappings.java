@@ -338,7 +338,7 @@ public class CompiledFEELSemanticMappings {
      */
     public static Boolean lte(Object left, Object right) {
         return or(lt(left, right),
-                  eq(left, right));
+                  eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
@@ -355,7 +355,7 @@ public class CompiledFEELSemanticMappings {
      */
     public static Boolean gte(Object left, Object right) {
         return or(gt(left, right),
-                  eq(left, right));
+                  eq(left, right)); // do not use Java || to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
@@ -407,7 +407,7 @@ public class CompiledFEELSemanticMappings {
             return null;
         }
 
-        return and(gte(value, start), lte(value, end));
+        return and(gte(value, start), lte(value, end)); // do not use Java && to avoid potential NPE due to FEEL 3vl.
     }
 
     /**
