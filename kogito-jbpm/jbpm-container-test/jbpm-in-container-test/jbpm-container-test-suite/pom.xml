@@ -78,6 +78,12 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>idep-hibernate-entitymanager</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.activation</groupId>
+          <artifactId>javax.activation-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -357,6 +363,13 @@
     <dependency>
       <groupId>javax.jws</groupId>
       <artifactId>javax.jws-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Needed for JDK 11 -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
       <scope>test</scope>
     </dependency>
 
