@@ -439,6 +439,9 @@ public class DMNValidatorImpl implements DMNValidator {
         if( flags.contains( VALIDATE_COMPILATION ) ) {
             results.addAll( validateCompilation( dmnModel ) );
         }
+        if (flags.contains(DMNValidator.Validation.VALIDATE_DT)) {
+            results.addAll(validateDT(dmnModel));
+        }
     }
 
     private List<DMNMessage> validateSchema(File xmlFile) {
@@ -515,6 +518,20 @@ public class DMNValidatorImpl implements DMNValidator {
             DMNCompiler compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile( dmnModel );
             if( model != null ) {
+                return model.getMessages();
+            } else {
+                throw new IllegalStateException("Compiled model is null!");
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private List<DMNMessage> validateDT(Definitions dmnModel) {
+        if (dmnModel != null) {
+            DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
+            DMNModel model = compiler.compile(dmnModel);
+            DMNDTValidator.validate(model);
+            if (model != null) {
                 return model.getMessages();
             } else {
                 throw new IllegalStateException("Compiled model is null!");

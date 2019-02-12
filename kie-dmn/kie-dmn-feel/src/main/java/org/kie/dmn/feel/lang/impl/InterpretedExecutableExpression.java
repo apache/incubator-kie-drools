@@ -20,4 +20,9 @@ public class InterpretedExecutableExpression implements CompiledFEELExpression {
     public Object apply(EvaluationContext evaluationContext) {
         return expr.apply(evaluationContext);
     }
+
+    public CompiledExpressionImpl getExpr() {
+        return expr;
+    }
+
 }

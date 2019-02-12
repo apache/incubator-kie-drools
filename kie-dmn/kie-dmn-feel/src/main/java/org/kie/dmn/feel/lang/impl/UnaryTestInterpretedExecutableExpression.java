@@ -24,4 +24,9 @@ public class UnaryTestInterpretedExecutableExpression implements CompiledFEELExp
     public List<UnaryTest> apply(EvaluationContext evaluationContext) {
         return (List<UnaryTest>) expr.apply(evaluationContext);
     }
+
+    public CompiledExpressionImpl getExpr() {
+        return expr;
+    }
+
 }
