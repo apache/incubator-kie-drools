@@ -30,6 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.Ignore;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieScanner;
@@ -42,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertFalse;
 
+@Ignore("DROOLS-3628 Ignoring, because it can be useful when run locally, however due to unpredictable GC behaviour, unstable in automation.")
 @Category(TurtleTestCategory.class)
 public class KieScannerMemoryTest {
 
