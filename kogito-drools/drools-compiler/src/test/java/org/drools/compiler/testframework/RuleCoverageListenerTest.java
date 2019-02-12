@@ -54,7 +54,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 0,
                       ls.getPercentCovered() );
 
-        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule1"), null));
+        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule1"), null, null));
         assertEquals( 2,
                       ls.rules.size() );
         assertTrue( ls.rules.contains( "rule2" ) );
@@ -63,7 +63,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 33,
                       ls.getPercentCovered() );
 
-        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule2"), null));
+        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule2"), null, null));
         assertEquals( 1,
                       ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );
@@ -73,7 +73,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 66,
                       ls.getPercentCovered() );
 
-        ls.afterMatchFired( new AfterActivationFiredEventImpl( new MockActivation( "rule3" ), null ));
+        ls.afterMatchFired( new AfterActivationFiredEventImpl( new MockActivation( "rule3" ), null , null));
         assertEquals( 0,
                       ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );
