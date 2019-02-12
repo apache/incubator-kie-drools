@@ -49,6 +49,7 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
@@ -475,8 +476,9 @@ public class DMNRuntimeImpl
                 return false;
             }
         }
+        BeforeEvaluateDecisionEvent beforeEvaluateDecisionEvent = null;
         try {
-            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision( eventManager, decision, result );
+            beforeEvaluateDecisionEvent = DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision(eventManager, decision, result);
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById(decisionId);
             if (dr == null) { // an imported Decision now evaluated, requires the creation of the decision result:
@@ -636,7 +638,7 @@ public class DMNRuntimeImpl
             }
             return true;
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision( eventManager, decision, result );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision( eventManager, decision, result, beforeEvaluateDecisionEvent);
         }
     }
 

@@ -25,6 +25,7 @@ public class BeforeEvaluateDecisionEventImpl
 
     private DecisionNode  decision;
     private DMNResult     result;
+    private long          timestamp;
 
     public BeforeEvaluateDecisionEventImpl(DecisionNode decision, DMNResult result) {
         this.decision = decision;
@@ -39,6 +40,14 @@ public class BeforeEvaluateDecisionEventImpl
     @Override
     public DMNResult getResult() {
         return this.result;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
