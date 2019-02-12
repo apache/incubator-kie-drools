@@ -312,33 +312,44 @@ public class Consequence {
             }
         }
 
+        Set<String> initializedBitmaskFields = new HashSet<>();
         for (MethodCallExpr updateExpr : updateExprs) {
             Expression argExpr = updateExpr.getArgument(0);
             if (argExpr instanceof NameExpr) {
                 String updatedVar = ((NameExpr) argExpr).getNameAsString();
                 Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar );
 
-                MethodCallExpr bitMaskCreation;
-                if (modifiedProps != null) {
-                    String declarationVar = newDeclarations.containsKey( updatedVar ) ? newDeclarations.get( updatedVar ) : updatedVar;
-                    Class<?> updatedClass = context.getDeclarationById(declarationVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
-
-                    bitMaskCreation = new MethodCallExpr( new NameExpr( BitMask.class.getCanonicalName() ), "getPatternMask" );
-                    bitMaskCreation.addArgument( new ClassExpr( toClassOrInterfaceType( updatedClass ) ) );
-                    modifiedProps.forEach( s -> bitMaskCreation.addArgument( new StringLiteralExpr( s ) ) );
-                } else {
-                    bitMaskCreation = new MethodCallExpr( new NameExpr( AllSetButLastBitMask.class.getCanonicalName() ), "get" );
+                if (!initializedBitmaskFields.contains(updatedVar)) {
+                    MethodCallExpr bitMaskCreation = createBitMaskInitialization(newDeclarations, updatedVar, modifiedProps);
+                    ruleBlock.addStatement(createBitMaskField(updatedVar, bitMaskCreation));
                 }
 
-                VariableDeclarationExpr bitMaskVar = new VariableDeclarationExpr(toClassOrInterfaceType(BitMask.class), "mask_" + updatedVar, Modifier.finalModifier());
-                AssignExpr bitMaskAssign = new AssignExpr(bitMaskVar, bitMaskCreation, AssignExpr.Operator.ASSIGN);
-                ruleBlock.addStatement(bitMaskAssign);
-
                 updateExpr.addArgument("mask_" + updatedVar);
+                initializedBitmaskFields.add(updatedVar);
             }
         }
 
         return requireDrools.get();
+    }
+
+    private MethodCallExpr createBitMaskInitialization(Map<String, String> newDeclarations, String updatedVar, Set<String> modifiedProps) {
+        MethodCallExpr bitMaskCreation;
+        if (modifiedProps != null) {
+            String declarationVar = newDeclarations.containsKey(updatedVar) ? newDeclarations.get(updatedVar) : updatedVar;
+            Class<?> updatedClass = context.getDeclarationById(declarationVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
+
+            bitMaskCreation = new MethodCallExpr(new NameExpr(BitMask.class.getCanonicalName()), "getPatternMask");
+            bitMaskCreation.addArgument(new ClassExpr(toClassOrInterfaceType(updatedClass)));
+            modifiedProps.forEach(s -> bitMaskCreation.addArgument(new StringLiteralExpr(s)));
+        } else {
+            bitMaskCreation = new MethodCallExpr(new NameExpr(AllSetButLastBitMask.class.getCanonicalName()), "get");
+        }
+        return bitMaskCreation;
+    }
+
+    private AssignExpr createBitMaskField(String updatedVar, MethodCallExpr bitMaskCreation) {
+        VariableDeclarationExpr bitMaskVar = new VariableDeclarationExpr(toClassOrInterfaceType(BitMask.class), "mask_" + updatedVar, Modifier.finalModifier());
+        return new AssignExpr(bitMaskVar, bitMaskCreation, AssignExpr.Operator.ASSIGN);
     }
 
     private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
