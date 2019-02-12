@@ -1526,4 +1526,35 @@ public class CompilerTest extends BaseModelTest {
         kieSession.insert(message);
         assertEquals(2, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testDoubleModify() {
+        // DROOLS-3560
+        final String drl =
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "rule \"Hello World\"\n" +
+                "    when\n" +
+                "        m : Message( status == Message.HELLO, myMessage : message ) \n" +
+                "    then\n" +
+                "        System.out.println( myMessage );\n" +
+                "        m.setMessage( \"Goodbye cruel world\" );" +
+                "        update(m); \n" +
+                "        m.setStatus( Message.GOODBYE ); \n" +
+                "        update( m );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"GoodBye\"\n" +
+                "    when\n" +
+                "        Message( status == Message.GOODBYE, myMessage : message ) \n" +
+                "    then\n" +
+                "        System.out.println( myMessage );\n" +
+                "end\n";
+
+        KieSession kieSession = getKieSession(drl);
+        Message message = new Message();
+        message.setMessage( "Hi" );
+        message.setStatus( Message.HELLO );
+        kieSession.insert(message);
+        assertEquals(2, kieSession.fireAllRules());
+    }
 }
