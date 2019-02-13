@@ -228,7 +228,7 @@ public class ExpressionTyper {
                 });
                 return typedExpression;
             } else {
-                final Optional<TypedExpression> nameExpr = drlNameExpr(DrlNameExpr.fromNameExpr((NameExpr) drlxExpr.asArrayAccessExpr().getName()), typeCursor);
+                final Optional<TypedExpression> nameExpr = drlNameExpr((DrlNameExpr) drlxExpr.asArrayAccessExpr().getName(), typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
                 return nameExpr.flatMap( te -> te.isArray() ?
                         createArrayAccessExpression(indexExpr , te.getExpression()) :
@@ -800,7 +800,7 @@ public class ExpressionTyper {
         if(expression instanceof BinaryExpr) {
             BinaryExpr be = (BinaryExpr)expression;
             return findLeftLeafOfNameExpr(be.getLeft());
-        } else if(expression instanceof NameExpr) {
+        } else if(expression instanceof DrlNameExpr) {
             return (Expression) expression;
         } else if(expression instanceof ThisExpr) {
             return (Expression) expression;
