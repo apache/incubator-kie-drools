@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
@@ -39,7 +40,7 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.printer.PrintUtil;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -434,8 +435,8 @@ public class ExpressionTyper {
         if (firstNode instanceof ThisExpr || (firstNode instanceof NameExpr && firstNode.toString().equals(bindingId))) {
             result = of(thisExpr(drlxExpr, childNodes, isInLineCast, originalTypeCursor));
 
-        } else if (firstNode instanceof NameExpr) {
-            result = nameExpr(drlxExpr, (NameExpr) firstNode, isInLineCast, originalTypeCursor);
+        } else if (firstNode instanceof DrlNameExpr) {
+            result = nameExpr(drlxExpr, (DrlNameExpr) firstNode, isInLineCast, originalTypeCursor);
 
         } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
             result = of(fieldAccessExpr((FieldAccessExpr) firstNode, originalTypeCursor));
@@ -662,7 +663,7 @@ public class ExpressionTyper {
         return teCursor;
     }
 
-    private Optional<TypedExpressionCursor> nameExpr(Expression drlxExpr, NameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
+    private Optional<TypedExpressionCursor> nameExpr(Expression drlxExpr, DrlNameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
         String firstName = firstNode.getName().getIdentifier();
         Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
         if (declarationById.isPresent()) {
@@ -683,7 +684,7 @@ public class ExpressionTyper {
         // In OOPath a declaration is based on a position rather than a name.
         // Only an OOPath chunk can have a backreference expression
         Optional<DeclarationSpec> backReference = empty();
-        if(firstNode.getBackReferencesCount() > 0) {
+        if( firstNode.getBackReferencesCount() > 0) {
             List<DeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
             DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
             typeCursor = backReferenceDeclaration.getDeclarationClass();
