@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.StringUtils;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
@@ -266,7 +267,7 @@ public class Consequence {
                     MethodCallExpr mc = (MethodCallExpr) e;
                     Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
                     modifyBlock.replace(mc, mcWithScope);
-                    sb.append(mc.toString());
+                    sb.append(PrintUtil.printConstraint(mc));
                     sb.append(";\n");
                 }
             }

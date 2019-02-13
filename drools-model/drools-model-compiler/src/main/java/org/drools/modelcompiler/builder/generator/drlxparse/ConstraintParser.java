@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.DateUtils;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -363,7 +364,7 @@ public class ConstraintParser {
         if (expr instanceof FieldAccessExpr ) {
             return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
         }
-        return expr.toString();
+        return PrintUtil.printConstraint(expr);
     }
 
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {

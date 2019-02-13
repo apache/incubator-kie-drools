@@ -289,13 +289,13 @@ public class ExpressionTyper {
         if (decl.isPresent()) {
             // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(drlxExpr, decl.get().getDeclarationClass()));
+            return of(new TypedExpression(drlxExpr.safeToNameExpr(), decl.get().getDeclarationClass()));
         }
 
         if (ruleContext.getQueryParameters().stream().anyMatch(qp -> qp.getName().equals(name))) {
             // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(drlxExpr));
+            return of(new TypedExpression(drlxExpr.safeToNameExpr()));
 
         } else if(packageModel.getGlobals().containsKey(name)){
             Expression plusThis = new NameExpr(name);
