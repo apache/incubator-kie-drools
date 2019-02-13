@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.drools.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.Expression;
 
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 

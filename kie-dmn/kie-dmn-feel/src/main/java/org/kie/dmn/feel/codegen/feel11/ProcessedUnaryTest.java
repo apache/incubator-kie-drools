@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.drools.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.CompilationUnit;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;

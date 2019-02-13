@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.body.MethodDeclaration;
-import org.drools.javaparser.ast.body.Parameter;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.stmt.TryStmt;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.TryStmt;
 
-import static org.drools.javaparser.JavaParser.parseType;
-import static org.drools.javaparser.ast.NodeList.nodeList;
+import static com.github.javaparser.JavaParser.parseType;
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class FunctionGenerator {
 

@@ -10,7 +10,7 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PatternExtractor;
-import org.drools.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.Expression;
 
 public class DeclarationSpec {
     private final String bindingId;
@@ -73,7 +73,7 @@ public class DeclarationSpec {
         return variableName;
     }
 
-    public org.drools.javaparser.ast.type.Type getType() {
+    public com.github.javaparser.ast.type.Type getType() {
         return DrlxParseUtil.classToReferenceType(getDeclarationClass());
     }
 

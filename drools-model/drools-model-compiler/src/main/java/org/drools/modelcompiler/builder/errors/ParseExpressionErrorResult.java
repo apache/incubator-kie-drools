@@ -17,8 +17,8 @@
 package org.drools.modelcompiler.builder.errors;
 
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.printer.PrintUtil;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.printer.PrintUtil;
 import org.kie.internal.builder.ResultSeverity;
 
 public class ParseExpressionErrorResult extends DroolsError {

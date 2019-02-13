@@ -25,10 +25,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.PackageDeclaration;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -38,8 +38,8 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 
-import static org.drools.javaparser.printer.PrintUtil.toDrl;
-import static org.drools.javaparser.printer.PrintUtil.toJava;
+import static com.github.javaparser.printer.PrintUtil.toDrl;
+import static com.github.javaparser.printer.PrintUtil.toJava;
 import static org.drools.drlx.DrlxUtils.hasRules;
 
 public class DrlxCompiler {

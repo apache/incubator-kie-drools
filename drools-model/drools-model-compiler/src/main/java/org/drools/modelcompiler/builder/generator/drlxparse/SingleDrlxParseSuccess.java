@@ -25,19 +25,19 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.drools.core.util.index.IndexUtil;
-import org.drools.javaparser.ast.expr.BinaryExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
-import org.drools.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.AND;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
-import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.OR;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 

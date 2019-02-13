@@ -9,7 +9,7 @@ import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.XpathAnalysis;
-import org.drools.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
