@@ -40,6 +40,7 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -172,8 +173,8 @@ public class ExpressionTyper {
             toTypedExpressionRec(castExpr.getExpression());
             return of(new TypedExpression(castExpr, getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
 
-        } else if (drlxExpr instanceof NameExpr) {
-            return nameExpr(drlxExpr, typeCursor);
+        } else if (drlxExpr instanceof DrlNameExpr) {
+            return drlNameExpr((DrlNameExpr) drlxExpr, typeCursor);
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if (drlxExpr instanceof PointFreeExpr) {
@@ -227,7 +228,7 @@ public class ExpressionTyper {
                 });
                 return typedExpression;
             } else {
-                final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
+                final Optional<TypedExpression> nameExpr = drlNameExpr(DrlNameExpr.fromNameExpr((NameExpr) drlxExpr.asArrayAccessExpr().getName()), typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
                 return nameExpr.flatMap( te -> te.isArray() ?
                         createArrayAccessExpression(indexExpr , te.getExpression()) :
@@ -274,8 +275,8 @@ public class ExpressionTyper {
         return of(typedExpression);
     }
 
-    private Optional<TypedExpression> nameExpr(Expression drlxExpr, Class<?> typeCursor) {
-        String name = drlxExpr.toString();
+    private Optional<TypedExpression> drlNameExpr(DrlNameExpr drlxExpr, Class<?> typeCursor) {
+        String name = PrintUtil.printConstraint(drlxExpr);
 
         TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
         if (expression != null) {
@@ -423,7 +424,7 @@ public class ExpressionTyper {
             }
         }
 
-        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, drlxExpr.toString())), context);
+        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, PrintUtil.printConstraint(drlxExpr))), context);
     }
 
     public static Optional<TypedExpression> tryParseAsConstantField(FieldAccessExpr fieldAccessExpr, TypeResolver typeResolver) {
@@ -455,7 +456,7 @@ public class ExpressionTyper {
             result = of(thisExpr(drlxExpr, childNodes, isInLineCast, originalTypeCursor));
 
         } else if (firstNode instanceof DrlNameExpr) {
-            result = nameExpr(drlxExpr, (DrlNameExpr) firstNode, isInLineCast, originalTypeCursor);
+            result = drlNameExpr(drlxExpr, (DrlNameExpr) firstNode, isInLineCast, originalTypeCursor);
 
         } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
             result = of(fieldAccessExpr((FieldAccessExpr) firstNode, originalTypeCursor));
@@ -687,7 +688,7 @@ public class ExpressionTyper {
         return teCursor;
     }
 
-    private Optional<TypedExpressionCursor> nameExpr(Expression drlxExpr, DrlNameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
+    private Optional<TypedExpressionCursor> drlNameExpr(Expression drlxExpr, DrlNameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
         String firstName = firstNode.getName().getIdentifier();
         Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
         if (declarationById.isPresent()) {
