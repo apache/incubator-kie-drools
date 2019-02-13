@@ -45,6 +45,7 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.StringUtils.lcFirst;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
@@ -188,10 +189,12 @@ public class ConstraintParser {
         NodeList<Expression> arguments = methodCallExpr.getArguments();
         List<String> usedDeclarations = new ArrayList<>();
         for (Expression arg : arguments) {
-            if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
-                usedDeclarations.add(arg.toString());
+            String argString = printConstraint(arg);
+            if (arg instanceof NameExpr && !argString.equals("_this")) {
+                usedDeclarations.add(argString);
             } else if (arg instanceof CastExpr ) {
-                usedDeclarations.add((((CastExpr)arg).getExpression().toString()));
+                String s = printConstraint(((CastExpr) arg).getExpression());
+                usedDeclarations.add(s);
             } else if (arg instanceof MethodCallExpr) {
                 TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
                 usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
@@ -212,7 +215,7 @@ public class ConstraintParser {
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
                     .addReactOnProperty( lcFirst(nameExpr.getNameAsString()) );
         } else if (context.hasDeclaration( expression )) {
-            return new SingleDrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr( drlxExpr.toString() ), context.getDeclarationById( expression ).get().getDeclarationClass() );
+            return new SingleDrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr(printConstraint(drlxExpr)), context.getDeclarationById(expression ).get().getDeclarationClass() );
         } else {
             return new SingleDrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType() )
                     .addReactOnProperty( nameExpr.getNameAsString() );
@@ -364,7 +367,7 @@ public class ConstraintParser {
         if (expr instanceof FieldAccessExpr ) {
             return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
         }
-        return PrintUtil.printConstraint(expr);
+        return printConstraint(expr);
     }
 
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {

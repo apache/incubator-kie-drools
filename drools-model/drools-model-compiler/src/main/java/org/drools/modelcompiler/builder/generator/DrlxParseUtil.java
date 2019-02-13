@@ -22,9 +22,12 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.github.javaparser.ast.NodeList;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.constraint.parser.DrlxParser;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -763,5 +766,27 @@ public class DrlxParseUtil {
         } catch (NoSuchFieldException e) {
             return null;
         }
+    }
+
+    public static MethodCallExpr sanitizeDrlNameExpr(MethodCallExpr me) {
+        NodeList<Expression> arguments = NodeList.nodeList();
+        for(Expression e : me.getArguments()) {
+            arguments.add(sanitizeExpr(e, me));
+        }
+        me.getScope().map((Expression e) -> sanitizeExpr(e, me)).ifPresent(me::setScope);
+
+        me.setArguments(arguments);
+        return me;
+    }
+
+    private static Expression sanitizeExpr(Expression e, Expression parent) {
+        Expression sanitized;
+        if(e instanceof DrlNameExpr) {
+            sanitized = new NameExpr(PrintUtil.printConstraint(e));
+            sanitized.setParentNode(parent);
+        } else {
+            sanitized = e;
+        }
+        return sanitized;
     }
 }

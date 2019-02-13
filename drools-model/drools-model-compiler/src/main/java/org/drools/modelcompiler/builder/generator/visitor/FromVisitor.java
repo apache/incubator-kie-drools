@@ -33,9 +33,11 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 
 import static java.util.Optional.of;
 
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.sanitizeDrlNameExpr;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 
 public class FromVisitor {
@@ -71,7 +73,8 @@ public class FromVisitor {
         }
 
         if (parsedExpression instanceof MethodCallExpr ) {
-            return fromMethodExpr(expression, (MethodCallExpr) parsedExpression);
+            MethodCallExpr sanitized = sanitizeDrlNameExpr((MethodCallExpr) parsedExpression);
+            return fromMethodExpr(expression, sanitized);
         }
 
         if (parsedExpression instanceof ObjectCreationExpr ) {

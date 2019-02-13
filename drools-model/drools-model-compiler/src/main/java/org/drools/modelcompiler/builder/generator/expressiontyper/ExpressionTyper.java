@@ -452,7 +452,7 @@ public class ExpressionTyper {
 
     private Optional<TypedExpressionCursor> processFirstNode(Expression drlxExpr, List<Node> childNodes, Node firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
         final Optional<TypedExpressionCursor> result;
-        if (firstNode instanceof ThisExpr || (firstNode instanceof NameExpr && firstNode.toString().equals(bindingId))) {
+        if (firstNode instanceof ThisExpr || (firstNode instanceof DrlNameExpr && printConstraint(firstNode).equals(bindingId))) {
             result = of(thisExpr(drlxExpr, childNodes, isInLineCast, originalTypeCursor));
 
         } else if (firstNode instanceof DrlNameExpr) {
