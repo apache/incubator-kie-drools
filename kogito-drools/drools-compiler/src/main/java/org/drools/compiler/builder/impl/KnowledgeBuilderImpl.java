@@ -1132,13 +1132,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         }
     }
 
+    private static class ForkJoinPoolHolder {
+        private static ForkJoinPool COMPILER_POOL = new ForkJoinPool(); // avoid common pool
+    }
+
     private void compileRulesLevel(PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules) {
         boolean parallelRulesBuild = this.kBase == null && parallelRulesBuildThreshold != -1 && rules.size() > parallelRulesBuildThreshold;
         if (parallelRulesBuild) {
             Map<String, RuleBuildContext> ruleCxts = new ConcurrentHashMap<>();
-            ForkJoinPool pool = new ForkJoinPool(); // avoid common pool
             try {
-                pool.submit(() -> 
+                ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
                 rules.stream().parallel()
                         .filter(ruleDescr -> filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()))
                         .forEach(ruleDescr -> {
@@ -1153,7 +1156,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                             }
                         })
                 ).get();
-            } catch (InterruptedException | ExecutionException e) { 
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException("Rules compilation failed or interrupted", e);
             }
             for (RuleDescr ruleDescr : rules) {
