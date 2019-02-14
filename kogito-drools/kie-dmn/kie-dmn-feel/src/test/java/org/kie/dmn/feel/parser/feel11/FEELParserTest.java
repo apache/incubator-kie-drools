@@ -1309,6 +1309,13 @@ public class FEELParserTest {
     }
 
     @Test
+    public void testVariableNameWithInvalidCharacterAt() {
+        String var = "?_873./-'@+*valid";
+        assertThat(FEELParser.isVariableNameValid(var), is(false));
+        assertThat(FEELParser.checkVariableName(var).get(0).getMessage(), is(Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "character", "@")));
+    }
+
+    @Test
     public void testVariableNameInvalidStartCharacter() {
         String var = "5variable can't start with a number";
         assertThat( FEELParser.isVariableNameValid( var ), is( false ) );
