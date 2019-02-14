@@ -173,7 +173,8 @@ public class ExpressionTyper {
 
         } else if (drlxExpr instanceof DrlNameExpr || drlxExpr instanceof NameExpr) {
             return nameExpr(printConstraint(drlxExpr), typeCursor);
-        } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr) {
+        } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr
+                || drlxExpr instanceof NullSafeFieldAccessExpr || drlxExpr instanceof  NullSafeMethodCallExpr) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if (drlxExpr instanceof PointFreeExpr) {
 
@@ -326,7 +327,15 @@ public class ExpressionTyper {
     private TypedExpressionResult toTypedExpressionFromMethodCallOrField(Expression drlxExpr) {
         if (patternType == null && drlxExpr instanceof FieldAccessExpr) {
             // try to see if it's a constant
-            final Optional<TypedExpression> typedExpression = tryParseAsConstantField((FieldAccessExpr) drlxExpr, ruleContext.getTypeResolver());
+            final Optional<TypedExpression> typedExpression = tryParseAsConstantField(ruleContext.getTypeResolver(), ((FieldAccessExpr) drlxExpr).getScope(), ((FieldAccessExpr) drlxExpr).getNameAsString());
+            if(typedExpression.isPresent()) {
+                return new TypedExpressionResult(typedExpression, context);
+            }
+        }
+
+        if (patternType == null && drlxExpr instanceof NullSafeFieldAccessExpr) {
+            // try to see if it's a constant
+            final Optional<TypedExpression> typedExpression = tryParseAsConstantField(ruleContext.getTypeResolver(), ((NullSafeFieldAccessExpr) drlxExpr).getScope(), ((NullSafeFieldAccessExpr) drlxExpr).getNameAsString());
             if(typedExpression.isPresent()) {
                 return new TypedExpressionResult(typedExpression, context);
             }
@@ -356,13 +365,12 @@ public class ExpressionTyper {
         final Optional<TypedExpressionCursor> teCursor = processFirstNode(drlxExpr, childrenNodes, firstNode, isInLineCast, originalTypeCursor);
 
         if (firstNode instanceof MethodCallExpr) {
-            MethodCallExpr firstMethod = ( MethodCallExpr ) firstNode;
-            if (firstMethod.getArguments().isEmpty()) {
-                String firstProp = getter2property(firstMethod.getNameAsString());
-                if (firstProp != null) {
-                    context.addReactOnProperties( firstProp );
-                }
-            }
+            MethodCallExpr me = (MethodCallExpr) firstNode;
+            addReactOnProperty(me.getNameAsString(), me.getArguments());
+        }
+        if (firstNode instanceof NullSafeMethodCallExpr) {
+            NullSafeMethodCallExpr me = (NullSafeMethodCallExpr) firstNode;
+            addReactOnProperty(me.getNameAsString(), me.getArguments());
         }
 
         Expression previous;
@@ -424,14 +432,23 @@ public class ExpressionTyper {
         return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, printConstraint(drlxExpr))), context);
     }
 
-    public static Optional<TypedExpression> tryParseAsConstantField(FieldAccessExpr fieldAccessExpr, TypeResolver typeResolver) {
+    private void addReactOnProperty(String methodName, NodeList<Expression> methodArguments) {
+        if (methodArguments.isEmpty()) {
+            String firstProp = getter2property(methodName);
+            if (firstProp != null) {
+                context.addReactOnProperties( firstProp );
+            }
+        }
+    }
+
+    public static Optional<TypedExpression> tryParseAsConstantField(TypeResolver typeResolver, Expression scope, String name) {
         Class<?> clazz;
         try {
-            clazz = DrlxParseUtil.getClassFromContext(typeResolver, fieldAccessExpr.getScope().toString());
+            clazz = DrlxParseUtil.getClassFromContext(typeResolver, scope.toString());
         } catch(RuntimeException e) {
             return empty();
         }
-        String field = fieldAccessExpr.getNameAsString();
+        String field = name;
 
         final Object staticValue;
         try {
@@ -441,7 +458,7 @@ public class ExpressionTyper {
         }
 
         if(staticValue != null) {
-            return of(new TypedExpression(fieldAccessExpr, clazz));
+            return of(new TypedExpression(new FieldAccessExpr(scope, name), clazz));
         } else {
             return empty();
         }
@@ -456,7 +473,10 @@ public class ExpressionTyper {
             result = drlNameExpr(drlxExpr, (DrlNameExpr) firstNode, isInLineCast, originalTypeCursor);
 
         } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
-            result = of(fieldAccessExpr((FieldAccessExpr) firstNode, originalTypeCursor));
+            result = of(fieldAccessExpr(originalTypeCursor, ((FieldAccessExpr) firstNode).getName()));
+
+        } else if (firstNode instanceof NullSafeFieldAccessExpr && ((NullSafeFieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
+            result = of(fieldAccessExpr(originalTypeCursor, ((NullSafeFieldAccessExpr) firstNode).getName()));
 
         } else if (firstNode instanceof MethodCallExpr) {
             Optional<DeclarationSpec> scopeDecl = ((MethodCallExpr) firstNode).getScope()
@@ -670,10 +690,10 @@ public class ExpressionTyper {
         return new TypedExpressionCursor(arrayCreationExpr, type);
     }
 
-    private TypedExpressionCursor fieldAccessExpr(FieldAccessExpr firstNode, java.lang.reflect.Type originalTypeCursor) {
+    private TypedExpressionCursor fieldAccessExpr(java.lang.reflect.Type originalTypeCursor, SimpleName firstNodeName) {
         TypedExpressionCursor teCursor;
         final java.lang.reflect.Type tc4 = originalTypeCursor;
-        String firstName = firstNode.getName().getIdentifier();
+        String firstName = firstNodeName.getIdentifier();
         Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName);
         if (firstAccessor != null) {
             context.addReactOnProperties(firstName);

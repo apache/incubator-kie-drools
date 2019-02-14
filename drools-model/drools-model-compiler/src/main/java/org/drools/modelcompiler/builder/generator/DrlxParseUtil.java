@@ -71,6 +71,7 @@ import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
@@ -240,7 +241,7 @@ public class DrlxParseUtil {
             return Object.class;
         }
 
-        throw new RuntimeException("Unknown expression type: " + expr);
+        throw new RuntimeException("Unknown expression type: " + PrintUtil.printConstraint(expr));
     }
 
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
@@ -473,7 +474,7 @@ public class DrlxParseUtil {
         Expression previousScope = null;
 
         for (ParsedMethod e : callStackLeftToRight) {
-            if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr) {
+            if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
                 if (e.fieldToResolve.equals( bindingId )) {
                     continue;
                 }

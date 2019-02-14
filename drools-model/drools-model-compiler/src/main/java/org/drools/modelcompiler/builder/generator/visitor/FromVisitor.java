@@ -137,7 +137,7 @@ public class FromVisitor {
 
         final Expression parsedExpression = drlxExpression.getExpr();
         Optional<TypedExpression> staticField = parsedExpression instanceof FieldAccessExpr ?
-                ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, context.getTypeResolver()) :
+                ExpressionTyper.tryParseAsConstantField(context.getTypeResolver(), ((FieldAccessExpr) parsedExpression).getScope(), ((FieldAccessExpr) parsedExpression).getNameAsString()) :
                 Optional.empty();
 
         if (staticField.isPresent()) {
