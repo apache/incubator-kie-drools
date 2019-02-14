@@ -207,7 +207,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
                 String pathName = entry.getName();
-                if(pathName.endsWith("bpmn") || pathName.endsWith("bpmn2")){
+                if(isProcessFile(pathName)){
                   processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), UTF8_CHARSET));
                 }
                 if (!indexClass(pathName)) {
@@ -258,4 +258,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
       return processes;
     }
 
+    static boolean isProcessFile(final String pathName) {
+        return pathName.endsWith("bpmn") || pathName.endsWith("bpmn2") || pathName.endsWith("bpmn-cm");
+    }
 }
