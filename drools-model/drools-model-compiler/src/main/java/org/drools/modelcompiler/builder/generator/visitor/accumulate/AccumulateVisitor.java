@@ -223,7 +223,7 @@ public abstract class AccumulateVisitor {
                     .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call"  + accumulateFunctionParameter))
                     .getExpression();
                 } else {
-                    parameterConverted = accumulateFunctionParameter;
+                    parameterConverted = DrlxParseUtil.sanitizeDrlNameExpr((MethodCallExpr) accumulateFunctionParameter);
                 }
 
                 final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);

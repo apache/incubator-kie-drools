@@ -352,7 +352,7 @@ public class ExpressionTyper {
 
         if (originalTypeCursor != null && originalTypeCursor.equals(Object.class)) {
             // try infer type  from the declarations
-            final Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstChild.toString());
+            final Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(printConstraint(firstChild));
             originalTypeCursor = declarationById.map(d -> (java.lang.reflect.Type)d.getDeclarationClass()).orElse(originalTypeCursor);
         }
 
