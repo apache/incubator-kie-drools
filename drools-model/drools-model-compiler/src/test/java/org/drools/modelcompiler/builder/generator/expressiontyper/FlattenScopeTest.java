@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator.expressiontyper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -71,6 +72,8 @@ public class FlattenScopeTest {
     }
 
     private void compareArrays(List<Node> actual, List<Node> expected) {
+        actual = actual.stream().map(DrlxParseUtil::transformDrlNameExprToNameExpr).collect(Collectors.toList());
+        expected = expected.stream().map(DrlxParseUtil::transformDrlNameExprToNameExpr).collect(Collectors.toList());
         assertArrayEquals(expected.toArray(), actual.toArray());
     }
 }

@@ -767,9 +767,14 @@ public class DrlxParseUtil {
         }
     }
 
-    public static void transformDrlNameExprToNameExpr(MethodDeclaration e) {
+    public static Node transformDrlNameExprToNameExpr(Node e) {
         e.findAll(DrlNameExpr.class)
                 .forEach(n -> n.replace(new NameExpr(n.getName())));
+        if(e instanceof DrlNameExpr) {
+            return new NameExpr(((DrlNameExpr) e).getName());
+        } else {
+            return e;
+        }
     }
 
     public static MethodCallExpr sanitizeDrlNameExpr(MethodCallExpr me) {
