@@ -20,6 +20,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -117,7 +118,7 @@ public class FromVisitor {
         List<String> bindingIds = new ArrayList<>();
 
         for (Expression argument : parsedExpression.getArguments()) {
-            final String argumentName = argument.toString();
+            final String argumentName = PrintUtil.printConstraint(argument);
             if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
                 bindingIds.add(argumentName);
                 fromCall.addArgument( context.getVarExpr(argumentName));
