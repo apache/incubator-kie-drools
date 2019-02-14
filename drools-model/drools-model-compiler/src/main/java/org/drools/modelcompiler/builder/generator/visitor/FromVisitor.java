@@ -6,11 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.compiler.lang.descr.FromDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.NodeList;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -20,6 +17,9 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -32,8 +32,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 
 import static java.util.Optional.of;
-
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;

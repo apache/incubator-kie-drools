@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -37,7 +36,6 @@ import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -472,7 +470,12 @@ public class PackageModel {
             addRulesList( rulesListInitializerBody, "rulesList" );
         }
 
-        int maxLength = ruleMethods.values().parallelStream().map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
+        ruleMethods.values().parallelStream().forEach(DrlxParseUtil::transformDrlNameExprToNameExpr);
+
+        int maxLength = ruleMethods
+                .values()
+                .parallelStream()
+                .map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
         int rulesPerClass = Math.max( 50000 / maxLength, 1 );
 
         // each method per Drlx parser result

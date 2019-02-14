@@ -22,28 +22,15 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import com.github.javaparser.ast.NodeList;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.constraint.parser.DrlxParser;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.constraint.parser.DrlConstraintParser;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
-import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -76,13 +63,25 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.constraint.parser.DrlxParser;
+import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.ast.expr.DrlxExpression;
+import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.StringUtils;
+import org.drools.core.util.index.IndexUtil;
+import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -766,6 +765,11 @@ public class DrlxParseUtil {
         } catch (NoSuchFieldException e) {
             return null;
         }
+    }
+
+    public static void transformDrlNameExprToNameExpr(MethodDeclaration e) {
+        e.findAll(DrlNameExpr.class)
+                .forEach(n -> n.replace(new NameExpr(n.getName())));
     }
 
     public static MethodCallExpr sanitizeDrlNameExpr(MethodCallExpr me) {
