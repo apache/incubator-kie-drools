@@ -10,13 +10,6 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
-import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.constraint.parser.ast.expr.InlineCastExpr;
-import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
-import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
@@ -40,7 +33,13 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
+import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
+import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
+import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -60,7 +59,6 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
@@ -173,8 +171,8 @@ public class ExpressionTyper {
             toTypedExpressionRec(castExpr.getExpression());
             return of(new TypedExpression(castExpr, getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
 
-        } else if (drlxExpr instanceof DrlNameExpr) {
-            return drlNameExpr((DrlNameExpr) drlxExpr, typeCursor);
+        } else if (drlxExpr instanceof DrlNameExpr || drlxExpr instanceof NameExpr) {
+            return nameExpr(printConstraint(drlxExpr), typeCursor);
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if (drlxExpr instanceof PointFreeExpr) {
@@ -228,7 +226,8 @@ public class ExpressionTyper {
                 });
                 return typedExpression;
             } else {
-                final Optional<TypedExpression> nameExpr = drlNameExpr((DrlNameExpr) drlxExpr.asArrayAccessExpr().getName(), typeCursor);
+                String name = printConstraint((DrlNameExpr) drlxExpr.asArrayAccessExpr().getName());
+                final Optional<TypedExpression> nameExpr = nameExpr(name, typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
                 return nameExpr.flatMap( te -> te.isArray() ?
                         createArrayAccessExpression(indexExpr , te.getExpression()) :
@@ -275,9 +274,7 @@ public class ExpressionTyper {
         return of(typedExpression);
     }
 
-    private Optional<TypedExpression> drlNameExpr(DrlNameExpr drlxExpr, Class<?> typeCursor) {
-        String name = PrintUtil.printConstraint(drlxExpr);
-
+    private Optional<TypedExpression> nameExpr(String name, Class<?> typeCursor) {
         TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
         if (expression != null) {
             context.addReactOnProperties(name);
@@ -289,13 +286,13 @@ public class ExpressionTyper {
         if (decl.isPresent()) {
             // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(drlxExpr.safeToNameExpr(), decl.get().getDeclarationClass()));
+            return of(new TypedExpression(new NameExpr(name), decl.get().getDeclarationClass()));
         }
 
         if (ruleContext.getQueryParameters().stream().anyMatch(qp -> qp.getName().equals(name))) {
             // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(drlxExpr.safeToNameExpr()));
+            return of(new TypedExpression(new NameExpr(name)));
 
         } else if(packageModel.getGlobals().containsKey(name)){
             Expression plusThis = new NameExpr(name);
@@ -424,7 +421,7 @@ public class ExpressionTyper {
             }
         }
 
-        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, PrintUtil.printConstraint(drlxExpr))), context);
+        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, printConstraint(drlxExpr))), context);
     }
 
     public static Optional<TypedExpression> tryParseAsConstantField(FieldAccessExpr fieldAccessExpr, TypeResolver typeResolver) {
