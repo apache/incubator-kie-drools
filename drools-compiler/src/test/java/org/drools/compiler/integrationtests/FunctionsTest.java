@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -150,6 +151,36 @@ public class FunctionsTest extends CommonTestMethodBase {
                       rulesFired );
     }
 
-    
+    @Test
+    public void testFunctionWithEquals() {
+        // DROOLS-3653
+        String str = "package com.sample\n" +
+                "import " + Person.class.getName() + ";\n" +
+                "function int myFunction(String expression, int value) {\n" +
+                "  if (expression.equals(\"param == 10\") && value == 10) {\n" +
+                "    return 1;\n" +
+                "  }\n" +
+                "  return 0;\n" +
+                "}\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        $p: Person(myFunction(\"param == 10\", age) == 1)\n" +
+                "    then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2\n" +
+                "    when\n" +
+                "        $p: Person(myFunction(\"param == 20\", age) == 1)\n" +
+                "    then\n" +
+                "end";
+
+        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieSession ksession = createKnowledgeSession(kbase);
+
+        ksession.insert(new Person("John", 10));
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1,
+                      rulesFired ); // only R1 should fire
+    }
 
 }
