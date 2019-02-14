@@ -689,7 +689,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                     + "  2) Check the Move.createUndoMove(...) method of the moveClass (" + move.getClass() + ")."
                     + " The move (" + move + ") might have a corrupted undoMove (" + undoMoveString + ").\n"
                     + "  3) Check your custom " + VariableListener.class.getSimpleName() + "s (if you have any)"
-                    + " for shadow variables that are used by score constraints that could cause "
+                    + " for shadow variables that are used by score constraints that could cause"
                     + " the scoreDifference (" + scoreDifference + ").");
         }
     }
