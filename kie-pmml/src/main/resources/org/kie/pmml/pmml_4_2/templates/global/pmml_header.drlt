@@ -56,7 +56,7 @@ then
    System.out.println("Rules execution available for @{unitClassName}");
 end
 
-rule 'Extract Parameter Info'
+rule 'Extract New Parameter Info'
 @@Generated
 salience 10
 no-loop
