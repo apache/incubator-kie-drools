@@ -41,7 +41,6 @@ public class DMNWeaverService implements KieWeaverService<DMNPackage> {
         ResourceTypePackageRegistry registry = ((InternalKnowledgePackage)kiePkg).getResourceTypePackages();
         DMNPackageImpl existing = registry.computeIfAbsent(ResourceType.DMN, rt -> new DMNPackageImpl(dmnpkg.getNamespace()));
 
-
         for ( Map.Entry<String, DMNModel> entry : dmnpkg.getAllModels().entrySet() ) {
             existing.addModel( entry.getKey(), entry.getValue() );
         }

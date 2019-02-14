@@ -50,9 +50,8 @@ public class DMNRuntimeFluentImpl extends BaseBatchFluent<DMNRuntimeFluent, Exec
     }
 
     @Override
-    public DMNRuntimeFluent setActiveModel(Resource resource) {
-        ctx.addCommand(new SetDMNActiveModelCommand(resource));
-        return this;
+    public DMNRuntimeFluent setActiveModel( Resource resource ) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

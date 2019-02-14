@@ -140,7 +140,8 @@ formalParameters
 
 // #58
 formalParameter
-    : nameDefinition
+    : nameDefinition COLON type
+    | nameDefinition
     ;
 
 // #59

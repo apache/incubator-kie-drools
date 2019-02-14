@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.Modifier;
+import org.drools.javaparser.ast.NodeList;
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.body.VariableDeclarator;
 import org.drools.javaparser.ast.expr.Expression;
@@ -53,7 +54,7 @@ public class Constants {
 
     public static FieldDeclaration of(Type type, String name, Expression initializer) {
         return new FieldDeclaration(
-                EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL),
+                NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier()),
                 new VariableDeclarator(type, name, initializer));
     }
 

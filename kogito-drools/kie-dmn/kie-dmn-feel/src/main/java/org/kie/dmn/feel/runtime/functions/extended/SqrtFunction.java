@@ -46,7 +46,7 @@ public class SqrtFunction
         return FEELFnResult.ofResult( sqrt( EvalHelper.getBigDecimalOrNull( number ) ) );
     }
 
-    static BigDecimal sqrt( BigDecimal arg ) { // can be modified later to short-circuit if precision is not needed
+    public static BigDecimal sqrt( BigDecimal arg ) { // can be modified later to short-circuit if precision is not needed
         return BigDecimalMath.sqrt(arg, MathContext.DECIMAL128);
     }
 }

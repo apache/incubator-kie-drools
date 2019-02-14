@@ -285,7 +285,12 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitKeyString(FEEL_1_1Parser.KeyStringContext ctx) {
-        return ASTBuilderFactory.newNameDefNode( ctx, ctx.getText() );
+        return ASTBuilderFactory.newStringNode(ctx);
+    }
+
+    @Override
+    public BaseNode visitKeyName(FEEL_1_1Parser.KeyNameContext ctx) {
+        return visit(ctx.nameDefinition());
     }
 
     @Override
@@ -329,6 +334,11 @@ public class ASTBuilderVisitor
             list.add( visit( fpc ) );
         }
         return ASTBuilderFactory.newListNode( ctx, list );
+    }
+
+    @Override
+    public BaseNode visitFormalParameter(FEEL_1_1Parser.FormalParameterContext ctx) {
+        return visit(ctx.nameDefinition());
     }
 
     @Override

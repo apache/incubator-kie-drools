@@ -107,7 +107,7 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
     public boolean removeResource(Resource resource) {
         return models.entrySet().removeIf( kv -> resource.equals( kv.getValue().getResource() ) );
     }
-    
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.namespace );

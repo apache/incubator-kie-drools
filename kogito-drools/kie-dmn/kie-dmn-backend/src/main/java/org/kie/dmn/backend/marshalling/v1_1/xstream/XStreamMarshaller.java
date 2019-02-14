@@ -91,7 +91,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
-import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.dmn.backend.marshalling.XStreamUtils.createTrustingXStream;
 
 public class XStreamMarshaller
         implements DMNMarshaller {

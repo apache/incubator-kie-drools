@@ -30,7 +30,7 @@ public class GetEntriesFunction extends BaseFEELFunction {
         super("get entries");
     }
 
-    public FEELFnResult<List<Object>> invoke(Object m) {
+    public FEELFnResult<List<Object>> invoke(@ParameterName("m") Object m) {
         if (m == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "m", "cannot be null"));
         } else if (!(m instanceof Map)) {

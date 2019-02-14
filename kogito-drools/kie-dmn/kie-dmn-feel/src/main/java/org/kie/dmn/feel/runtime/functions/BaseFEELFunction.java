@@ -222,7 +222,7 @@ public abstract class BaseFEELFunction
             CandidateMethod cm = new CandidateMethod( actualParams );
 
             Class<?>[] parameterTypes = m.getParameterTypes();
-            if( !isNamedParams ) {
+            if (!isNamedParams && actualParams.length > 0) {
                 // if named parameters, then it has been adjusted already in the calculateActualParams method,
                 // otherwise adjust here
                 adjustForVariableParameters( cm, parameterTypes );
@@ -258,8 +258,20 @@ public abstract class BaseFEELFunction
             }
             if ( found ) {
                 cm.setApply( m );
-                if ( candidate == null || cm.getScore() > candidate.getScore() ) {
+                if (candidate == null) {
                     candidate = cm;
+                } else {
+                    if (cm.getScore() > candidate.getScore()) {
+                        candidate = cm;
+                    } else if (cm.getScore() == candidate.getScore() 
+                            && candidate.getApply().getParameterTypes().length == 1
+                            && cm.getApply().getParameterTypes().length == 1
+                            && candidate.getApply().getParameterTypes()[0].equals(Object.class)
+                            && !cm.getApply().getParameterTypes()[0].equals(Object.class)) {
+                        candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
+                    } else {
+                        // do nothing.
+                    }
                 }
             }
         }
@@ -273,6 +285,9 @@ public abstract class BaseFEELFunction
         return Collections.emptyList();
     }
 
+    /**
+     * Adjust CandidateMethod considering var args signature. 
+     */
     private void adjustForVariableParameters(CandidateMethod cm, Class<?>[] parameterTypes) {
         if ( parameterTypes.length > 0 && parameterTypes[parameterTypes.length - 1].isArray() ) {
             // then it is a variable parameters function call

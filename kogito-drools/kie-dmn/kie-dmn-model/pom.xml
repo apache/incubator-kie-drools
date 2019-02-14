@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
 
   <name>KIE :: Decision Model Notation :: Model</name>
-
+  
   <properties>
     <java.module.name>org.kie.dmn.model</java.module.name>
   </properties>

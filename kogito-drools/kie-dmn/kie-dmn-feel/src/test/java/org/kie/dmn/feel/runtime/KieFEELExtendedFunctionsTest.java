@@ -17,12 +17,14 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
 
@@ -34,9 +36,39 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "today()", LocalDate.class, null },
                 { "modulo( 4, 3 )", new BigDecimal( "1" ), null },
                 { "split( \"foo,bar,baz\", \",\" )", Arrays.asList( "foo", "bar", "baz" ), null },
+                { "split( delimiter: \",\", string: \"foo,bar,baz\" )", Arrays.asList( "foo", "bar", "baz" ), null },
                 { "split( \"foo;bar|baz\", \"[;|]\" )", Arrays.asList( "foo", "bar", "baz" ), null },
                 { "sqrt( 9 )", BigDecimal.valueOf( 3.0 ), null },
                 { "sqrt( 10 )", new BigDecimal("3.162277660168379331998893544432719"), null },
+                { "stddev( 10 )", null, FEELEvent.Severity.ERROR },
+                { "nn sum( 10, null, 20, 40, null )", new BigDecimal("70", MathContext.DECIMAL128), null },
+                { "stddev( 1, 2, 3 )", BigDecimal.valueOf( 1.0 ) , null},
+                { "stddev( [1, 2, 3] )", BigDecimal.valueOf( 1.0 ) , null},
+                { "after( 1, 2 )", Boolean.FALSE, null },
+                { "after( date(\"2018-08-15\"), date(\"2018-07-25\") )", Boolean.TRUE, null },
+                { "after( date(\"2018-08-15\"), [date(\"2018-07-25\")..date(\"2018-08-10\")] )", Boolean.TRUE, null },
+                { "after( [date(\"2018-08-15\")..date(\"2018-08-31\")], date(\"2018-07-25\") )", Boolean.TRUE, null },
+                { "after( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-07-25\")..date(\"2018-07-31\")] )", Boolean.TRUE, null },
+                { "before( date(\"2018-08-15\"), date(\"2018-07-25\") )", Boolean.FALSE, null },
+                { "before( date(\"2018-08-15\"), [date(\"2018-07-25\")..date(\"2018-08-10\")] )", Boolean.FALSE, null },
+                { "before( [date(\"2018-08-15\")..date(\"2018-08-31\")], date(\"2018-07-25\") )", Boolean.FALSE, null },
+                { "before( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-07-25\")..date(\"2018-07-31\")] )", Boolean.FALSE, null },
+                { "coincides( date(\"2018-08-15\"), date(\"2018-08-15\") )", Boolean.TRUE, null },
+                { "coincides( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-08-15\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
+                { "starts( date(\"2018-07-25\"), [date(\"2018-07-25\")..date(\"2018-08-10\")] )", Boolean.TRUE, null },
+                { "starts( [date(\"2018-08-15\")..date(\"2018-08-20\")], [date(\"2018-08-15\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
+                { "started by( [date(\"2018-07-25\")..date(\"2018-08-31\")], date(\"2018-07-25\") )", Boolean.TRUE, null },
+                { "started by( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-08-15\")..date(\"2018-08-20\")] )", Boolean.TRUE, null },
+                { "finishes( date(\"2018-08-10\"), [date(\"2018-07-25\")..date(\"2018-08-10\")] )", Boolean.TRUE, null },
+                { "finishes( [date(\"2018-08-25\")..date(\"2018-08-31\")], [date(\"2018-08-15\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
+                { "finished by( [date(\"2018-08-15\")..date(\"2018-08-31\")], date(\"2018-08-31\") )", Boolean.TRUE, null },
+                { "finished by( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-08-25\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
+                { "during( date(\"2018-07-29\"), [date(\"2018-07-25\")..date(\"2018-08-10\")] )", Boolean.TRUE, null },
+                { "during( [date(\"2018-08-17\")..date(\"2018-08-20\")], [date(\"2018-08-15\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
+                { "includes( [date(\"2018-08-15\")..date(\"2018-08-31\")], date(\"2018-08-25\") )", Boolean.TRUE, null },
+                { "includes( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-08-20\")..date(\"2018-08-22\")] )", Boolean.TRUE, null },
+                { "overlaps( [date(\"2018-08-15\")..date(\"2018-08-28\")], [date(\"2018-08-20\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
+                { "overlapped by( [date(\"2018-08-20\")..date(\"2018-08-31\")], [date(\"2018-08-15\")..date(\"2018-08-22\")] )", Boolean.TRUE, null },
         };
         return addAdditionalParameters(cases, true);
     }

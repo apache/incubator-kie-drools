@@ -23,8 +23,8 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.utils.KieHelper;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 public class NewDMNRuntimeCommandTest {
 
@@ -33,12 +33,9 @@ public class NewDMNRuntimeCommandTest {
         RegistryContext registryContext = new ContextImpl();
         NewDMNRuntimeCommand newDMNRuntimeCommand = new NewDMNRuntimeCommand();
 
-        try {
-            newDMNRuntimeCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
-
-        }
+        assertThatThrownBy(() -> newDMNRuntimeCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("There is no existing KieContainer assigned to the Registry");
 
         registryContext.register(KieContainer.class, new KieHelper().getKieContainer());
 

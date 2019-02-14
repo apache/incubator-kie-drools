@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>kie-parent</artifactId>
+        <groupId>org.kie</groupId>
+        <version>8.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.kie</groupId>
+    <artifactId>droolsjbpm-integration-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Drools/JBPM integration BOM (Bill Of Materials)</name>
+    <description>
+        Import this BOM in your dependencyManagement if you want to depend on multiple Drools artifacts.
+    </description>
+
+    <!-- IMPORTANT: Do not declare any build things here! Declare them in kie-parent. -->
+    <build/>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-bom</artifactId>
+                <type>pom</type>
+                <version>${version.org.kie}</version>
+                <scope>import</scope>
+            </dependency>
+            <!--
+              IMPORTANT: Only declare modules of groupId org.drools.
+              Do not declare external dependencies.
+              Do not duplicate modules from another bom.
+            -->
+
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-maven-plugin</artifactId>
+                <version>${version.org.kie}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-maven-plugin</artifactId>
+                <version>${version.org.kie}</version>
+                <classifier>sources</classifier>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>

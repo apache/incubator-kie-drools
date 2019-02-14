@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_fe2fd9ea-5928-4a35-b218-036de5798776" id="_fe2fd9ea-5928-4a35-b218-036de5798776" namespace="http://www.trisotech.com/definitions/_fe2fd9ea-5928-4a35-b218-036de5798776"          exporter="DMN Modeler" exporterVersion="6.1.18" name="Drawing 1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decision id="_b4da359a-3e1a-43a9-9a35-d6704f95ff7e" name="a function">
+        <semantic:variable name="a function" id="_6b01cf35-c824-4f8c-93eb-acbdc2cc28f6" typeRef="function"/>
+        <semantic:literalExpression id="_fe047a38-a15c-4f65-983e-c38ff094b774" typeRef="function" triso:expressionId="_41c7c04f-e048-4183-8dde-22973c3c3271">
+            <semantic:text>function() "Hello World"</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_4cdf2b8c-ba38-406c-9145-ab3927edd6aa" name="invoke the a function">
+        <semantic:variable name="invoke the a function" id="_1e75e96a-6566-4cbc-bd7b-0c707eee0bec" typeRef="string"/>
+        <semantic:informationRequirement id="_0f6ab8a0-cd58-4c65-b492-679b36029dac">
+            <semantic:requiredDecision href="#_b4da359a-3e1a-43a9-9a35-d6704f95ff7e"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_119c9ba0-1421-4648-9e8e-64b165cc0cee" typeRef="string" triso:expressionId="_76171600-1887-4f46-a0d5-ecbe54d94e9e">
+            <semantic:text>a function()</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_9a718b92-e0eb-4f14-8122-8cfa995b8d5f" name="the list of vowels">
+        <semantic:variable name="the list of vowels" id="_c628e3e0-1ef4-43ab-8527-d0b2c28d94b2" typeRef="list"/>
+        <semantic:literalExpression id="_ffb6119d-9700-4e6f-bdab-6f5bb70b88e9" typeRef="list" triso:expressionId="_f2a91568-75cd-4df6-8093-adbfede7300c">
+            <semantic:text>["a", "e", "i", "o", "u"]</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:decision id="_fba70781-cdc1-4eef-9678-f2be70f8895a" name="a Person">
+        <semantic:variable name="a Person" id="_b811718a-1fb0-429d-85db-a2b2b95c2e8e" typeRef="context"/>
+        <semantic:context id="_e007a95d-1646-407f-9b9c-e864cac60339" typeRef="Any" triso:expressionId="_14793587-13c6-46c4-a397-ea1184c6009c">
+            <semantic:contextEntry id="_2447cb81-1ed5-42d2-8cb8-826307361dda">
+                <semantic:variable name="name" id="_ea84dc71-c79f-48e7-99dd-3996c306d536" typeRef="string"/>
+                <semantic:literalExpression id="_7908538f-bf25-408d-896a-c2897171e634">
+                    <semantic:text>"John"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_083d60d6-10cd-4aea-ae19-08c78d1e757f">
+                <semantic:variable name="surname" id="_2d66fb05-6fb2-4821-827b-474dd066b75e" typeRef="string"/>
+                <semantic:literalExpression id="_f9441572-9d7d-412f-a9fe-e9da930af1a9">
+                    <semantic:text>"Doe"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_088da6a3-2532-41c9-8762-7e71fd6433f4">
+                <semantic:variable name="age" id="_5c19d5e0-4f5b-4f69-bbff-28ae636a1ca5" typeRef="number"/>
+                <semantic:literalExpression id="_4c25a8ad-9746-457e-9439-88f31eedf701">
+                    <semantic:text>47</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_8517e807-027a-4524-b8be-df86a9ecf923" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_830c25d2-04f6-456b-bbab-f5354add9824" dmnElementRef="_b4da359a-3e1a-43a9-9a35-d6704f95ff7e">
+                <dc:Bounds x="303" y="221" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_fe2fd9ea-5928-4a35-b218-036de5798776_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12.000000000000004" width="146" x="305.5064935064935" y="244.50819672131146"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_334c56ac-7ec4-48f9-b468-e3039b50555f" dmnElementRef="_4cdf2b8c-ba38-406c-9145-ab3927edd6aa">
+                <dc:Bounds x="303" y="106" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_fe2fd9ea-5928-4a35-b218-036de5798776_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12.000000000000004" width="146" x="305.5064935064935" y="129.50819672131146"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_3435a96a-43f3-4f7d-b2e3-4966286c5029" dmnElementRef="_9a718b92-e0eb-4f14-8122-8cfa995b8d5f">
+                <dc:Bounds x="528.5" y="221" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_fe2fd9ea-5928-4a35-b218-036de5798776_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="531.5" y="245"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_2e4de196-f798-402b-a88f-29d16b736b19" dmnElementRef="_fba70781-cdc1-4eef-9678-f2be70f8895a">
+                <dc:Bounds x="746.5" y="221" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_fe2fd9ea-5928-4a35-b218-036de5798776_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="749.5" y="245"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_83e309c6-ce63-4cbd-97b8-dcdb0acb3ac1" dmnElementRef="_0f6ab8a0-cd58-4c65-b492-679b36029dac">
+                <di:waypoint x="379.5" y="221"/>
+                <di:waypoint x="379.5" y="166"/>
+                <dmndi:DMNLabel sharedStyle="LS_fe2fd9ea-5928-4a35-b218-036de5798776_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_fe2fd9ea-5928-4a35-b218-036de5798776_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

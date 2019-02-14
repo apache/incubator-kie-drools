@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -164,7 +165,8 @@ public class DMNRuntimeTypeCheckTest extends BaseInterpretedVsCompiledTest {
         assertThat(textPlusNumberDR.getResult(), is("The input number is: ciao"));
 
         final DMNDecisionResult hundredMinusNumber = dmnResult.getDecisionResultByName("hundred minus number");
-        assertThat(hundredMinusNumber.getEvaluationStatus(), is(DecisionEvaluationStatus.FAILED));
+        assertThat(hundredMinusNumber.getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(hundredMinusNumber.getResult(), nullValue());
     }
 
     private void assertPerformTypeCheck(final DMNRuntime runtime) {

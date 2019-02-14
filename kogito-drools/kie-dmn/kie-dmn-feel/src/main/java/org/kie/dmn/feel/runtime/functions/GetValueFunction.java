@@ -27,7 +27,7 @@ public class GetValueFunction extends BaseFEELFunction {
         super("get value");
     }
 
-    public FEELFnResult<Object> invoke(Object m, String key) {
+    public FEELFnResult<Object> invoke(@ParameterName("m") Object m, @ParameterName("key") String key) {
         if (m == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "m", "cannot be null"));
         } else if (!(m instanceof Map)) {

@@ -104,17 +104,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-validation</artifactId>
-      <version>${version.org.kie}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-validation</artifactId>
-      <version>${version.org.kie}</version>
-      <classifier>sources</classifier>
-    </dependency>
 
     </dependencies>
   </dependencyManagement>

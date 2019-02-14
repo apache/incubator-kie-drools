@@ -18,7 +18,7 @@
   <properties>
     <java.module.name>org.kie.dmn.api</java.module.name>
   </properties>
-
+  
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -38,5 +38,5 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-  
+
 </project>

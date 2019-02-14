@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -30,22 +31,29 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.internal.command.RegistryContext;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class SetDMNActiveModelCommandTest {
 
+    static KieServices ks;
+    static ReleaseId releaseId;
+    static Resource resource;
+    static KieContainer kieContainer;
+
     RegistryContext registryContext;
     DMNRuntime dmnRuntime;
-    Resource resource;
+
+    @BeforeClass
+    public static void staticInit() {
+        ks = KieServices.Factory.get();
+        releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");
+        resource = ks.getResources().newClassPathResource("org/kie/dmn/core/typecheck_in_DT.dmn", GetDMNModelCommandTest.class);
+        kieContainer = KieHelper.getKieContainer(releaseId, resource);
+    }
 
     @Before
     public void init() {
-        KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");
-        resource = ks.getResources().newClassPathResource("org/kie/dmn/core/typecheck_in_DT.dmn", this.getClass());
-        KieContainer kieContainer = KieHelper.getKieContainer(releaseId, resource);
-
         registryContext = new ContextImpl();
 
         dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
@@ -57,12 +65,10 @@ public class SetDMNActiveModelCommandTest {
         String modelName = "typecheck in DT";
         SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(namespace, modelName);
 
-        try {
-            setDMNActiveModelCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
+        assertThatThrownBy(() -> setDMNActiveModelCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("There is no DMNRuntime available");
 
-        }
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
         DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);
@@ -72,14 +78,12 @@ public class SetDMNActiveModelCommandTest {
 
     @Test
     public void executeWithResource() {
-        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(resource);
+        SetDMNActiveModelCommand setDMNActiveModelCommand = new SetDMNActiveModelCommand(resource.getSourcePath());
 
-        try {
-            setDMNActiveModelCommand.execute(registryContext);
-            fail();
-        } catch (IllegalStateException ignored) {
+        assertThatThrownBy(() -> setDMNActiveModelCommand.execute(registryContext))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("There is no DMNRuntime available");
 
-        }
         registryContext.register(DMNRuntime.class, dmnRuntime);
 
         DMNModel dmnModel = setDMNActiveModelCommand.execute(registryContext);

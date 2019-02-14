@@ -16,56 +16,25 @@
 
 package org.kie.dmn.core.fluent;
 
-import java.util.Objects;
-import java.util.Optional;
-
-import org.kie.api.command.ExecutableCommand;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.Context;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.command.RegistryContext;
 
-public class SetDMNActiveModelCommand implements ExecutableCommand<DMNModel> {
-
-    private String namespace;
-    private String modelName;
-    private Resource resource;
+public class SetDMNActiveModelCommand extends AbstractDMNModelCommand {
 
     public SetDMNActiveModelCommand(String namespace, String modelName) {
-        this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
-        this.modelName = Objects.requireNonNull(modelName, "modelName cannot be null");
+        super(namespace, modelName);
     }
 
-    public SetDMNActiveModelCommand(Resource resource) {
-        this.resource = Objects.requireNonNull(resource, "resource cannot be null");
+    public SetDMNActiveModelCommand(String resourcePath) {
+        super(resourcePath);
     }
 
     @Override
     public DMNModel execute(Context context) {
         RegistryContext registryContext = (RegistryContext) context;
-        DMNRuntime dmnRuntime = registryContext.lookup(DMNRuntime.class);
-        if (dmnRuntime == null) {
-            throw new IllegalStateException("There is no DMNRuntime available");
-        }
-
-        DMNModel activeModel = retrieveDMNModel(dmnRuntime);
+        DMNModel activeModel = getDMNModel(context);;
         registryContext.register(DMNModel.class, activeModel);
         return activeModel;
-    }
-
-    private DMNModel retrieveDMNModel(DMNRuntime dmnRuntime) {
-        if(namespace != null && modelName != null) {
-            return Optional
-                    .ofNullable(dmnRuntime.getModel(namespace, modelName))
-                    .orElseThrow(() -> new IllegalStateException("Cannot find a DMN model with namespace=" + namespace + " and modelName=" + modelName));
-        }
-        else if(resource != null) {
-            return dmnRuntime.getModels().stream()
-                    .filter(model -> resource.getSourcePath().equals(model.getResource().getSourcePath()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Cannot find a DMN model with resource=" + resource));
-        }
-        throw new IllegalStateException("This should not happen");
     }
 }

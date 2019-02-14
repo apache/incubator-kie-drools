@@ -7,14 +7,14 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>7.16.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-dmn-backend</artifactId>
   <packaging>jar</packaging>
 
   <name>KIE :: Decision Model Notation :: Backend</name>
-
+  
   <properties>
     <java.module.name>org.kie.dmn.backend</java.module.name>
   </properties>
@@ -44,7 +44,7 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
+    
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
@@ -55,7 +55,13 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
 
 </project>

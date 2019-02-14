@@ -88,12 +88,13 @@ import org.kie.dmn.model.v1_2.dmndi.DMNEdge;
 import org.kie.dmn.model.v1_2.dmndi.DMNLabel;
 import org.kie.dmn.model.v1_2.dmndi.DMNShape;
 import org.kie.dmn.model.v1_2.dmndi.DMNStyle;
+import org.kie.dmn.model.v1_2.dmndi.DiagramElement;
 import org.kie.dmn.model.v1_2.dmndi.Dimension;
 import org.kie.dmn.model.v1_2.dmndi.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.dmn.backend.marshalling.XStreamUtils.createTrustingXStream;
 
 public class XStreamMarshaller
         implements DMNMarshaller {
@@ -317,6 +318,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new DMNDecisionServiceDividerLineConverter(xStream));
         xStream.alias("waypoint", Point.class);
         xStream.registerConverter(new PointConverter(xStream));
+        xStream.alias("extension", DiagramElement.Extension.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
@@ -353,6 +355,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new DMNListConverter( xStream ) );
         xStream.registerConverter(new ElementCollectionConverter( xStream ) );
         xStream.registerConverter(new ExtensionElementsConverter( xStream, extensionRegisters ) );
+        xStream.registerConverter(new DiagramElementExtensionConverter(xStream, extensionRegisters));
         
         xStream.ignoreUnknownElements();
 

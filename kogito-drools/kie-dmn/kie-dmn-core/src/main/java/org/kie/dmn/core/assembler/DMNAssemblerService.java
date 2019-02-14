@@ -158,7 +158,7 @@ public class DMNAssemblerService implements KieAssemblerService {
             kpkgs.addCloningResource( DMN_COMPILER_CACHE_KEY, dmnCompiler );
 
             ResourceTypePackageRegistry rpkg = kpkgs.getResourceTypePackages();
-            
+
             DMNPackageImpl dmnpkg = rpkg.computeIfAbsent(ResourceType.DMN, rtp -> new DMNPackageImpl(namespace));
             if ( dmnpkg.getModel( model.getName() ) != null ) {
                 kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, resource, namespace, "Duplicate model name " + model.getName() + " in namespace " + namespace));
