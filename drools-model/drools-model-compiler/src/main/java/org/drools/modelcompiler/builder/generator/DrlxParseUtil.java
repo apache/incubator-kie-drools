@@ -451,6 +451,7 @@ public class DrlxParseUtil {
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
+        DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
         if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
             return expr;
         }
@@ -460,7 +461,7 @@ public class DrlxParseUtil {
             lambdaExpr.addParameter(new Parameter(new UnknownType(), "_this"));
         }
         usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
-        lambdaExpr.setBody( new ExpressionStmt(expr ) );
+        lambdaExpr.setBody( new ExpressionStmt(expr) );
         return lambdaExpr;
     }
 
