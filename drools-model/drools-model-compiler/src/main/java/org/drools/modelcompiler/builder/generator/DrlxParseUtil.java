@@ -364,10 +364,11 @@ public class DrlxParseUtil {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
             return exprWithScope.traverseScope().map((Expression scope) -> {
-                acc.addLast(expr.clone());
+                Expression sanitizedExpr = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
+                acc.addLast(sanitizedExpr.clone());
                 return findRootNodeViaScopeRec(scope, acc);
             }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
-        } else if (expr instanceof NameExpr) {
+        } else if (expr instanceof NameExpr || expr instanceof DrlNameExpr) {
             if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
                 ((NodeWithOptionalScope) acc.getLast()).setScope(null);
 
@@ -409,8 +410,8 @@ public class DrlxParseUtil {
         @Override
         public String toString() {
             return "RemoveRootNodeResult{" +
-                    "rootNode=" + rootNode +
-                    ", withoutRootNode=" + withoutRootNode +
+                    "rootNode=" + rootNode.map(PrintUtil::printConstraint) +
+                    ", withoutRootNode=" + PrintUtil.printConstraint(withoutRootNode) +
                     '}';
         }
 
@@ -423,8 +424,8 @@ public class DrlxParseUtil {
                 return false;
             }
             RemoveRootNodeResult that = (RemoveRootNodeResult) o;
-            return Objects.equals(rootNode, that.rootNode) &&
-                    Objects.equals(withoutRootNode, that.withoutRootNode);
+            return Objects.equals(rootNode.map(PrintUtil::printConstraint), that.rootNode.map(PrintUtil::printConstraint)) &&
+                    Objects.equals(PrintUtil.printConstraint(withoutRootNode), PrintUtil.printConstraint(that.withoutRootNode));
         }
 
         @Override
