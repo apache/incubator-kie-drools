@@ -191,7 +191,7 @@ public class ConstraintParser {
         List<String> usedDeclarations = new ArrayList<>();
         for (Expression arg : arguments) {
             String argString = printConstraint(arg);
-            if (arg instanceof NameExpr && !argString.equals("_this")) {
+            if (arg instanceof DrlNameExpr && !argString.equals("_this")) {
                 usedDeclarations.add(argString);
             } else if (arg instanceof CastExpr ) {
                 String s = printConstraint(((CastExpr) arg).getExpression());
