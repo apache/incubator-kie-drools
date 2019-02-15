@@ -162,7 +162,7 @@ public class FromVisitor {
         String bindingId = null;
 
         for (Expression argument : methodCallExpr.getArguments()) {
-            final String argumentName = argument.toString();
+            final String argumentName = PrintUtil.printConstraint(argument);
             if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
                 if (bindingId == null) {
                     bindingId = argumentName;
