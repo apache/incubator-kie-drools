@@ -147,6 +147,10 @@ public class PMML4Result {
         Object holder = getResultVariables().get(objName);
         if (holder != null) {
             if (objField != null && !objField.trim().isEmpty()) {
+                if (Map.class.isAssignableFrom(holder.getClass())) {
+                    value = ((Map) holder).get(objField);
+                    return value;
+                }
                 String defFldRetriever = getGetterMethodName(holder,objField,"get");
                 try {
                     Class[] paramTypes = null;
