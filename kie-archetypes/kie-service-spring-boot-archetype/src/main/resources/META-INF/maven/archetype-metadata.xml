@@ -55,6 +55,10 @@
     <requiredProperty key="remoteDebugEnabled">
       <defaultValue>false</defaultValue>
     </requiredProperty>
+    <!-- springboot version -->
+    <requiredProperty key="springbootVersion">
+      <defaultValue>2.1.1.RELEASE</defaultValue>
+    </requiredProperty>
   </requiredProperties>
 
   <fileSets>
