@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_7FB5C3E4-4DF8-42A6-A7FA-28315DECCDD0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_3DD2ADE1-7F32-4C47-B1C0-F7739A240371" name="structure-containtment" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_7FB5C3E4-4DF8-42A6-A7FA-28315DECCDD0">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_DB9997D0-9C7A-41CA-8CEC-D5304350C5A8" name="tEmployees" isCollection="true">
+    <dmn:typeRef>tEmployee</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_38753776-A459-45A3-B923-66B2EF2CB44B" name="tEmployee" isCollection="false">
+    <dmn:itemComponent id="_D965AB2D-DCBB-4431-8B7E-61591C13F2A7" name="age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:decision id="_27D99D02-AEB9-449B-89C3-C35710415C16" name="is there">
+    <dmn:variable id="_E72E4476-61AF-477B-BD72-A4611E29EB9A" name="is there" typeRef="boolean"/>
+    <dmn:informationRequirement id="_D468E94A-C140-4B08-A17F-1A7853076F0C">
+      <dmn:requiredInput href="#_2C699AA2-153A-40E4-A235-E86E9FE9BBE6"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_4650C095-0BF0-4B7F-90CA-13DC1FB23069">
+      <dmn:requiredDecision href="#_AF6D8CF7-D36C-4B0D-8C2E-99847E8F3947"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_3DF3102D-DD28-493C-8A86-354E84EC88F3">
+      <dmn:text>list contains(employees, an employee)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_AF6D8CF7-D36C-4B0D-8C2E-99847E8F3947" name="employees">
+    <dmn:variable id="_24ED7EE3-1399-4E62-8502-264BC5648E6B" name="employees" typeRef="tEmployees"/>
+    <dmn:relation id="_F8F3EF14-890C-4452-98E9-C2C58D7A83F6">
+      <dmn:column id="_26CAE48E-F4A1-42CD-95A4-3EA8DB0A6A55" name="age" typeRef="number"/>
+      <dmn:row id="_D5F62446-C035-46EE-8527-2673CAE8FF04">
+        <dmn:literalExpression id="_F84CDCDB-81B9-45BF-A1FE-8359279169DA">
+          <dmn:text>50</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+      <dmn:row id="_CC04F9E3-927B-4973-8533-C8F16C618830">
+        <dmn:literalExpression id="_F165CAC3-7C6D-46AC-892C-C71E386F522E">
+          <dmn:text>40</dmn:text>
+        </dmn:literalExpression>
+      </dmn:row>
+    </dmn:relation>
+  </dmn:decision>
+  <dmn:inputData id="_2C699AA2-153A-40E4-A235-E86E9FE9BBE6" name="an employee">
+    <dmn:variable id="_B1A6E56F-FB21-4295-9392-756A9CCFC767" name="an employee" typeRef="tEmployee"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_3DF3102D-DD28-493C-8A86-354E84EC88F3">
+            <kie:width>340.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_F8F3EF14-890C-4452-98E9-C2C58D7A83F6">
+            <kie:width>50.0</kie:width>
+            <kie:width>100.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_F84CDCDB-81B9-45BF-A1FE-8359279169DA"/>
+          <kie:ComponentWidths dmnElementRef="_F165CAC3-7C6D-46AC-892C-C71E386F522E"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_27D99D02-AEB9-449B-89C3-C35710415C16" dmnElementRef="_27D99D02-AEB9-449B-89C3-C35710415C16" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="220" y="328" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_AF6D8CF7-D36C-4B0D-8C2E-99847E8F3947" dmnElementRef="_AF6D8CF7-D36C-4B0D-8C2E-99847E8F3947" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="55" y="328" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_2C699AA2-153A-40E4-A235-E86E9FE9BBE6" dmnElementRef="_2C699AA2-153A-40E4-A235-E86E9FE9BBE6" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="219" y="454" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_D468E94A-C140-4B08-A17F-1A7853076F0C" dmnElementRef="_D468E94A-C140-4B08-A17F-1A7853076F0C">
+        <di:waypoint x="269" y="479"/>
+        <di:waypoint x="270" y="353"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_4650C095-0BF0-4B7F-90CA-13DC1FB23069" dmnElementRef="_4650C095-0BF0-4B7F-90CA-13DC1FB23069">
+        <di:waypoint x="105" y="353"/>
+        <di:waypoint x="270" y="353"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
