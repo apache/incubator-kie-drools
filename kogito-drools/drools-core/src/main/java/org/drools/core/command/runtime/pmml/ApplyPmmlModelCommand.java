@@ -16,6 +16,7 @@
 package org.drools.core.command.runtime.pmml;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ import org.kie.api.pmml.OutputFieldFactory;
 import org.kie.api.pmml.PMML4Output;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.pmml.ParameterInfo;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -176,7 +178,22 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
                     executor.newDataSource("childModelSegments");
                     executor.newDataSource("miningModelPojo");
                 }
-                
+                // Attempt to fix type issues when the unmarshaller
+                // doesn't set the parameter's
+                // value to an object of the correct type
+                Collection<ParameterInfo> parms = requestData.getRequestParams();
+                for (ParameterInfo pi : parms) {
+                    Class<?> clazz = pi.getType();
+                    if (!clazz.isAssignableFrom(pi.getValue().getClass())) {
+                        try {
+                            Object o = clazz.getDeclaredConstructor(pi.getValue().getClass()).newInstance(pi.getValue());
+                            pi.setValue(o);
+                        } catch (Throwable t) {
+                            resultHolder.setResultCode("ERROR-3");
+                            return resultHolder;
+                        }
+                    }
+                }
                 data.insert(requestData);
                 resultData.insert(resultHolder);
                 String startingRule = isMining() ? "Start Mining - "+requestData.getModelName():"RuleUnitIndicator";

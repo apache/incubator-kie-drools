@@ -19,9 +19,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.api.pmml.ParameterInfo;
 import org.kie.api.pmml.PMML4Data;
 import org.kie.api.pmml.PMML4DataType;
+import org.kie.api.pmml.ParameterInfo;
 
 public class PMML4DataFactory {
 	private static PMML4DataFactory INSTANCE = new PMML4DataFactory();
@@ -124,7 +124,7 @@ public class PMML4DataFactory {
 		if (pmmlDataClass != null) {
 			try {
 				data = pmmlDataClass.getDeclaredConstructor(String.class, String.class, String.class, String.class, clazz, Double.class, Boolean.class, Boolean.class)
-						.newInstance(correlationId, name,context,name,value,weight,valid,missing);
+                                    .newInstance(correlationId, name, context, name, value, weight, valid, missing);
 			} catch (Exception rx) {
 				String errMsg = "PMML4DataFactory::Unable create data object from ParameterInfo::Parameter: "+name;
 				throw new RuntimeException(errMsg,rx);
