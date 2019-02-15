@@ -79,6 +79,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.Drools.isJmxAvailable;
+import static org.drools.core.util.StringUtils.codeAwareIndexOf;
 import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
@@ -595,7 +596,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private String getLeftInExpression(IndexUtil.ConstraintType constraint) {
-        return expression.substring(0, expression.indexOf(constraint.getOperator())).trim();
+        return expression.substring(0, codeAwareIndexOf(expression, constraint.getOperator())).trim();
     }
 
     private boolean isAlphaHashable() {
