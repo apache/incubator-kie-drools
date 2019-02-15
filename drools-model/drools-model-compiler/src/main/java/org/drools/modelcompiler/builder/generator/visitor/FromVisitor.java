@@ -19,6 +19,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -67,7 +68,7 @@ public class FromVisitor {
     private Optional<Expression> createSingleFrom( String expression ) {
         final Expression parsedExpression = DrlxParseUtil.parseExpression(expression).getExpr();
 
-        if (parsedExpression instanceof FieldAccessExpr || parsedExpression instanceof NameExpr ) {
+        if (parsedExpression instanceof FieldAccessExpr || parsedExpression instanceof NameExpr || parsedExpression instanceof DrlNameExpr) {
             return fromFieldOrName(expression);
         }
 

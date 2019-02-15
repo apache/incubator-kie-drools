@@ -13,6 +13,8 @@ import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
@@ -270,18 +272,19 @@ public abstract class AccumulateVisitor {
                    }
                 );
 
-            } else if (accumulateFunctionParameter instanceof NameExpr ) {
+            } else if (accumulateFunctionParameter instanceof DrlNameExpr) {
                 final Class<?> declarationClass = context
-                        .getDeclarationById(accumulateFunctionParameter.toString())
+                        .getDeclarationById(PrintUtil.printConstraint(accumulateFunctionParameter))
                         .orElseThrow(RuntimeException::new)
                         .getDeclarationClass();
 
-                final String nameExpr = ((NameExpr) accumulateFunctionParameter).getName().asString();
+                final String nameExpr = ((DrlNameExpr) accumulateFunctionParameter).getName().asString();
                 final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, declarationClass);
                 if(!optAccumulateFunction.isPresent()) {
                     addNonExistingFunctionError(context, function);
                     return Optional.empty();
                 }
+
                 final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                 validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));

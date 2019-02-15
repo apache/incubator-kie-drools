@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.DateUtils;
 import com.github.javaparser.ast.NodeList;
@@ -133,8 +134,8 @@ public class ConstraintParser {
             return parseFieldAccessExpr( ( FieldAccessExpr ) drlxExpr, patternType, bindingId, exprId );
         }
 
-        if (drlxExpr instanceof NameExpr) {
-            return parseNameExpr( (NameExpr) drlxExpr, patternType, bindingId, drlxExpr, hasBind, expression, exprId );
+        if (drlxExpr instanceof DrlNameExpr) {
+            return parseNameExpr( (DrlNameExpr) drlxExpr, patternType, bindingId, drlxExpr, hasBind, expression, exprId );
         }
 
         if (drlxExpr instanceof OOPathExpr ) {
@@ -203,7 +204,7 @@ public class ConstraintParser {
         return new SingleDrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
     }
 
-    private DrlxParseResult parseNameExpr( NameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression, String exprId ) {
+    private DrlxParseResult parseNameExpr(DrlNameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression, String exprId) {
         TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, nameExpr, bindingId, patternType, context.getTypeResolver());
         if (converted == null) {
             return new DrlxParseFail();
