@@ -59,7 +59,7 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
     <properties>
       <property name="hibernate.dialect" value="${org.jbpm.persistence.dialect}" />
       <property name="hibernate.max_fetch_depth" value="3" />
-      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+      <property name="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.transaction.jta.platform" value="${container.tm}" />
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which 
