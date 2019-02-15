@@ -40,6 +40,7 @@ import org.drools.constraint.parser.ast.expr.InlineCastExpr;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
 import org.drools.constraint.parser.ast.expr.PointFreeExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -480,7 +481,7 @@ public class ExpressionTyper {
 
         } else if (firstNode instanceof MethodCallExpr) {
             Optional<DeclarationSpec> scopeDecl = ((MethodCallExpr) firstNode).getScope()
-                    .flatMap( scope -> ruleContext.getDeclarationById( scope.toString() ) );
+                    .flatMap( scope -> ruleContext.getDeclarationById(PrintUtil.printConstraint(scope) ) );
 
             Expression scope;
             java.lang.reflect.Type type;

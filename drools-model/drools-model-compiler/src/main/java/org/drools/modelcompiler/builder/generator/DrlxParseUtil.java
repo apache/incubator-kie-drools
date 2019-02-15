@@ -26,7 +26,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
@@ -188,11 +187,10 @@ public class DrlxParseUtil {
         }
 
         if (expr instanceof NameExpr) {
-            String name = (( NameExpr ) expr).getNameAsString();
-            if (usedDeclarations != null) {
-                usedDeclarations.add(name);
-            }
-            return context.getDeclarationById( name ).map( DeclarationSpec::getDeclarationClass ).get();
+            return expressionTypeNameExpr(context, usedDeclarations, ((NameExpr) expr).getNameAsString());
+        }
+        if (expr instanceof DrlNameExpr) {
+            return expressionTypeNameExpr(context, usedDeclarations, ((DrlNameExpr) expr).getNameAsString());
         }
 
         if (expr instanceof BinaryExpr) {
@@ -242,6 +240,14 @@ public class DrlxParseUtil {
         }
 
         throw new RuntimeException("Unknown expression type: " + PrintUtil.printConstraint(expr));
+    }
+
+    private static java.lang.reflect.Type expressionTypeNameExpr(RuleContext context, Collection<String> usedDeclarations, String nameAsString) {
+        String name = nameAsString;
+        if (usedDeclarations != null) {
+            usedDeclarations.add(name);
+        }
+        return context.getDeclarationById( name ).map(DeclarationSpec::getDeclarationClass ).get();
     }
 
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
