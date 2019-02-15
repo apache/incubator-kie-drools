@@ -75,6 +75,11 @@
               <groupId>org.jboss.spec.javax.annotation</groupId>
               <artifactId>jboss-annotations-api_1.2_spec</artifactId>
             </exclusion>
+            <!-- conflicts on WebLogic/WAS -->
+            <exclusion>
+              <groupId>org.jboss.spec.javax.transaction</groupId>
+              <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+            </exclusion>
           </exclusions>
         </dependency>
       </dependencies>
@@ -229,6 +234,20 @@
           <value>was9</value>
         </property>
       </activation>
+      <dependencyManagement>
+       <dependencies>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+          <version>${version.org.hibernate-4ee7}</version>
+         </dependency>
+         <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <version>${version.org.hibernate-4ee7}</version>
+         </dependency>
+        </dependencies>
+      </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.slf4j</groupId>
@@ -248,12 +267,19 @@
               <artifactId>javax.persistence-api</artifactId>
             </exclusion>
             <exclusion>
+              <groupId>org.hibernate.javax.persistence</groupId>
+              <artifactId>hibernate-jpa-2.1-api</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.geronimo.specs</groupId>
+              <artifactId>geronimo-jta_1.1_spec</artifactId>
+            </exclusion>
+            <exclusion>
               <groupId>xml-apis</groupId>
               <artifactId>xml-apis</artifactId>
             </exclusion>
           </exclusions>
         </dependency>
-
         <dependency>
           <groupId>xerces</groupId>
           <artifactId>xercesImpl</artifactId>
@@ -285,6 +311,20 @@
           <value>oracle-wls-12</value>
         </property>
       </activation>
+      <dependencyManagement>
+       <dependencies>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+          <version>${version.org.hibernate-4ee7}</version>
+         </dependency>
+         <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <version>${version.org.hibernate-4ee7}</version>
+         </dependency>
+        </dependencies>
+      </dependencyManagement>
       <dependencies>
         <!-- there is no Hibernate on WLS -->
         <dependency>
@@ -302,6 +342,14 @@
             <exclusion>
               <groupId>org.javassist</groupId>
               <artifactId>javassist</artifactId>
+            </exclusion>
+             <exclusion>
+              <groupId>org.hibernate.javax.persistence</groupId>
+              <artifactId>hibernate-jpa-2.1-api</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.apache.geronimo.specs</groupId>
+              <artifactId>geronimo-jta_1.1_spec</artifactId>
             </exclusion>
             <exclusion>
               <groupId>xml-apis</groupId>
