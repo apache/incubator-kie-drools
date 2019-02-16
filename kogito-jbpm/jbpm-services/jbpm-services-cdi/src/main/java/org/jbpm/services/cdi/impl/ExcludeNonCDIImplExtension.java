@@ -46,6 +46,7 @@ public class ExcludeNonCDIImplExtension implements Extension {
 		excluded.add("org.jbpm.kie.services.impl.query.QueryServiceImpl");
 		excluded.add("org.jbpm.kie.services.impl.admin.ProcessInstanceMigrationServiceImpl");
 		excluded.add("org.jbpm.kie.services.test.TestIdentityProvider");
+		excluded.add("org.jbpm.services.task.audit.jms.AsyncTaskLifeCycleEventProducer");
 	}
 
 
