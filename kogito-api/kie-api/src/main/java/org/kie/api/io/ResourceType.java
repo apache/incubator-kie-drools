@@ -118,7 +118,7 @@ public class ResourceType
     public static final ResourceType BPMN2 = addResourceTypeToRegistry("BPMN2",
                                                                        "jBPM BPMN2 Language",
                                                                        "src/main/resources",
-                                                                       "bpmn", "bpmn2");
+                                                                       "bpmn", "bpmn2", "bpmn-cm");
     
     /** jBPM CMMN Language */
     public static final ResourceType CMMN = addResourceTypeToRegistry("CMMN",
