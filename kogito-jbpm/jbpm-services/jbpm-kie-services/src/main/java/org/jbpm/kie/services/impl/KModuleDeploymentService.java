@@ -367,7 +367,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId, Map<String, ProcessDescriptor> processes) {
         boolean processClasses = (((KieContainerImpl) kieContainer).getKieProject() instanceof KieModuleKieProject);
 	    for (String fileName : files) {
-            if(fileName.matches(".+bpmn[2]?$")) {
+            if(isProcessFile(fileName)) {
                 ProcessAssetDesc process;
                 try {
                     String processString = new String(module.getBytes(fileName), "UTF-8");
@@ -606,6 +606,10 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             logger.error("Unable to find case id from case source due to {}", e.getMessage());
             return null;
         }
+    }
+
+    static boolean isProcessFile(final String fileName) {
+        return fileName.matches(".+bpmn(2|-cm)?$");
     }
 
 }
