@@ -125,6 +125,48 @@ public class BusinessRuleTaskTest {
                      processInstance.getState());
     }
 
+    @Test
+    public void testDecisionPassingNullToDMN() throws Exception {
+        //This test make sure that null variables are passed to the DMN execution context, otherwise DMN will throw an exception that an input requirement is missing
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createSession(kbase);
+
+        BusinessRuleTaskHandler handler = new BusinessRuleTaskHandler(GROUP_ID,
+                                                                      ARTIFACT_ID,
+                                                                      VERSION);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("Input",
+                   null);
+
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("passthru",
+                                                                                                  params);
+        Object output = processInstance.getVariable("Output");
+
+        assertEquals(null,
+                     output);
+    }
+
+    @Test
+    public void testDecisionPassingNonNullToDMN() throws Exception {
+        //This test make sure that null variables are passed to the DMN execution context, otherwise DMN will throw an exception that an input requirement is missing
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createSession(kbase);
+
+        BusinessRuleTaskHandler handler = new BusinessRuleTaskHandler(GROUP_ID,
+                                                                      ARTIFACT_ID,
+                                                                      VERSION);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("Input",
+                   "Hello World");
+
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("passthru",
+                                                                                                  params);
+        Object output = processInstance.getVariable("Output");
+
+        assertEquals("Hello World",
+                     output);
+    }
+
     private static KieBase readKnowledgeBase() throws Exception {
         ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
         ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
@@ -132,6 +174,10 @@ public class BusinessRuleTaskTest {
         kbuilder.add(ResourceFactory.newClassPathResource("businessRuleTaskProcess.bpmn2"),
                      ResourceType.BPMN2);
         kbuilder.add(ResourceFactory.newClassPathResource("businessRuleTaskDMN.bpmn2"),
+                     ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("string-passthru.dmn"),
+                     ResourceType.DMN);
+        kbuilder.add(ResourceFactory.newClassPathResource("calling-dmn-passthru.bpmn2"),
                      ResourceType.BPMN2);
         return kbuilder.newKieBase();
     }

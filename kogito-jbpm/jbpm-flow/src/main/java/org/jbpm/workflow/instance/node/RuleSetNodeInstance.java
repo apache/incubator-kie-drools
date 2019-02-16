@@ -336,7 +336,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
             	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
             	if (transformer != null) {
             		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(association));
-            		if (parameterValue != null) {
+            		if (parameterValue != null || ruleSetNode.isDMN()) {
             			replacements.put(association.getTarget(), parameterValue);
                     }
             	}
@@ -355,7 +355,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         logger.error("Continuing without setting parameter.");
                     }
                 }
-                if (parameterValue != null) {
+                if (parameterValue != null || ruleSetNode.isDMN()) {
                 	replacements.put(association.getTarget(), parameterValue);
                 }
             }
