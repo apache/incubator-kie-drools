@@ -18,7 +18,9 @@ package org.drools.testcoverage.common.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Person implements Serializable {
 
@@ -31,6 +33,7 @@ public class Person implements Serializable {
     private Address address;
     private List<Address> addresses = new ArrayList<>();
     private Pet pet;
+    private Map<String, Pet> pets = new HashMap<>();
     private boolean alive;
     private boolean happy;
     private Cheese cheese;
@@ -124,6 +127,22 @@ public class Person implements Serializable {
 
     public void setPet(final Pet pet) {
         this.pet = pet;
+    }
+
+    public Map<String, Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(final Map<String, Pet> pets) {
+        this.pets = pets;
+    }
+
+    public void clearPets() {
+        this.pets.clear();
+    }
+
+    public void addPet(final String key, final Pet pet) {
+        this.pets.put(key, pet);
     }
 
     public boolean isAlive() {

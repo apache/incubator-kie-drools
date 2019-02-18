@@ -1020,4 +1020,35 @@ public class FromTest {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void testEnum() {
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + Pet.class.getCanonicalName() + ";\n" +
+                "rule \"Enum rule\" \n" +
+                "when \n" +
+                "    $p : Person () \n" +
+                "    $pet : Pet (type == Pet.PetType.DOG) from $p.getPets().values() \n" +
+                "then \n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("from-test",
+                                                                         kieBaseTestConfiguration,
+                                                                         drl);
+        final KieSession ksession = kbase.newKieSession();
+        try {
+            final Person person = new Person("dog lady");
+            final Pet pet1 = new Pet(Pet.PetType.DOG, 3);
+            final Pet pet2 = new Pet(Pet.PetType.DOG, 5);
+            person.addPet("dog1", pet1);
+            person.addPet("dog2", pet2);
+
+            ksession.insert(person);
+            assertEquals(2, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
