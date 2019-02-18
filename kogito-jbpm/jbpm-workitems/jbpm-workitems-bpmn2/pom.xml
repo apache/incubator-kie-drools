@@ -42,6 +42,10 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.jboss.spec.javax.xml.ws</groupId>
+      <artifactId>jboss-jaxws-api_2.3_spec</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-databinding-jaxb</artifactId>
     </dependency>
@@ -95,11 +99,6 @@
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.ws</groupId>
-      <artifactId>jboss-jaxws-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
