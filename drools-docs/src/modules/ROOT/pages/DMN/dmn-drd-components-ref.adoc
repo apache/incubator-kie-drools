@@ -148,10 +148,17 @@ a|
 image::dmn/dmn-input-to-annotation.png[]
 |===
 
-The following example DRD illustrates some of these components in practice:
+The following example DRD illustrates some of these DMN components in practice:
 
 .Example DRD: Loan prequalification
 image::dmn/dmn-example-drd.png[]
+
+The following example DRD illustrates DMN components that are part of a reusable decision service:
+
+.Example DRD: Phone call handling as a decision service
+image::dmn/dmn-example-drd3.png[width=90%]
+
+In a DMN decision service node, the decision nodes in the bottom segment incorporate input data from outside of the decision service to arrive at a final decision in the top segment of the decision service node. The resulting top-level decisions from the decision service are then implemented in any subsequent decisions or business knowledge requirements of the DMN model. You can reuse DMN decision services in other DMN models to apply the same decision logic with different input data and different outgoing connections.
 
 ////
 .Advanced DRD example: Lending strategy

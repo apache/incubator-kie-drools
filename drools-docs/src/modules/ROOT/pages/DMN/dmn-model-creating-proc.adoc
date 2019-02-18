@@ -3,17 +3,6 @@
 
 You can use the DMN designer in {CENTRAL} to design DMN decision requirements diagrams (DRDs) and define decision logic for a complete and functional DMN decision model. {PRODUCT} provides design and runtime support for DMN 1.2 models at conformance level 3, and includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}.
 
-[IMPORTANT]
-====
-The DMN designer in {PRODUCT} {PRODUCT_VERSION} is a Technology Preview feature and is disabled by default in {CENTRAL}. Technology Preview features are not supported with Red Hat production service level agreements (SLAs), might not be functionally complete, and are not recommended for production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process.
-
-To enable the DMN designer preview in {CENTRAL}, in the upper-right corner of the window, click *Settings* -> *Roles*, select a role from the left panel, click *Editors* -> *DMN Designer* -> *Read*, and click *Save* to save the changes.
-
-ifdef::PAM,DM[]
-For more information about Red Hat Technology Preview support, see https://access.redhat.com/support/offerings/techpreview/[Technology Preview Features Support Scope].
-endif::[]
-====
-
 .Procedure
 . In {CENTRAL}, go to *Menu* -> *Design* -> *Projects* and click the project name.
 . Create or import a DMN file in your {CENTRAL} project.
@@ -21,7 +10,7 @@ endif::[]
 --
 To create a DMN file, click *Add Asset* -> *DMN*, enter an informative DMN model name, select the appropriate *Package*, and click *Ok*.
 
-To import an existing DMN file, click *Import*, enter the DMN model name, select the appropriate *Package*, select the DMN file to upload, and click *Ok*.
+To import an existing DMN file, click *Import Asset*, enter the DMN model name, select the appropriate *Package*, select the DMN file to upload, and click *Ok*.
 
 The new DMN file is now listed in the *DMN* panel of the *Project Explorer*, and the DMN decision requirements diagram (DRD) canvas appears.
 
@@ -40,6 +29,7 @@ The following DRD components are available:
 * *Knowledge source*: Use this node for external authorities, documents, committees, or policies that regulate a decision or business knowledge model. Knowledge sources are references to real-world factors rather than executable business rules.
 * *Input data*: Use this node for information used in a decision node or a business knowledge model. Input data usually includes business-level concepts or objects relevant to the business, such as loan applicant data used in a lending strategy.
 * *Text annotation*: Use this node for explanatory notes associated with an input data node, decision node, business knowledge model, or knowledge source.
+* *Decision service*: Use this node to enclose a set of reusable decisions implemented as a decision service for invocation. A decision service can be used in other DMN models and can be invoked from an external application or a BPMN business process.
 
 --
 . In the DMN designer canvas, double-click the new DRD node to enter an informative node name.
@@ -54,15 +44,15 @@ image::dmn/dmn-bkm-edit.png[]
 
 By default, all business knowledge models are defined as boxed function expressions containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type.
 
-For decision nodes, you double-click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
+For decision nodes, you click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
 
 image::dmn/dmn-decision-boxed-expression-options.png[]
 
-For business knowledge models, you right-click the value cell and select the type of expression you want to use, or click *Clear* and double-click the cleared cell to select a boxed expression of another type.
+For business knowledge models, you click the top-left function cell to select the function type, or right-click the function value cell, select *Clear*, and select a boxed expression of another type.
 
 image::dmn/dmn-bkm-define.png[]
 --
-. In the selected boxed expression designer for either a decision node (any expression type) or business knowledge model (function expression), double-click the applicable table cells to define the table name, variable data types, variable names and values, function parameters and bindings, or FEEL expressions to include in the decision logic.
+. In the selected boxed expression designer for either a decision node (any expression type) or business knowledge model (function expression), click the applicable table cells to define the table name, variable data types, variable names and values, function parameters and bindings, or FEEL expressions to include in the decision logic.
 +
 --
 You can right-click cells for additional actions where applicable, such as inserting or removing table rows and columns or clearing table contents.
@@ -107,7 +97,6 @@ image::dmn/dmn-input-connection-example2.png[]
 --
 . Continue adding and defining the remaining DRD components of your decision model. Periodically click *Save* in the DMN designer to save your work.
 . After you add and define all components of the DRD, click *Save* to save and validate the completed DRD.
-
 //and click the *Play* icon (image:dmn/dmn-play-icon.png[]) in the upper-right toolbar to verify the decision flow. [Disabled for now. Stetson, 26 Nov 2018]
 +
 --
@@ -115,4 +104,11 @@ The following is an example DRD for a loan prequalification decision model:
 
 .Completed DRD for loan prequalification
 image::dmn/dmn-example-drd.png[]
+
+The following is an example DRD for a phone call handling decision model using a reusable decision service:
+
+.Completed DRD for phone call handling with a decision service
+image::dmn/dmn-example-drd3.png[width=90%]
+
+In a DMN decision service node, the decision nodes in the bottom segment incorporate input data from outside of the decision service to arrive at a final decision in the top segment of the decision service node. The resulting top-level decisions from the decision service are then implemented in any subsequent decisions or business knowledge requirements of the DMN model. You can reuse DMN decision services in other DMN models to apply the same decision logic with different input data and different outgoing connections.
 --
