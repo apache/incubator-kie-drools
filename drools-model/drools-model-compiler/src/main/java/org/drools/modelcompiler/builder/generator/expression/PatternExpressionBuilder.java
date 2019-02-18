@@ -79,8 +79,10 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
 
-        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !(drlxParseResult.getLeft().getExpression() instanceof DrlNameExpr)) {
-            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getLeft().getExpression()) );
+        Expression leftExpression = drlxParseResult.getLeft().getExpression();
+        boolean isLeftNameExpr = leftExpression instanceof DrlNameExpr || leftExpression instanceof NameExpr;
+        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !isLeftNameExpr) {
+            exprDSL.addArgument( generateLambdaWithoutParameters(leftExpression) );
         }
 
         usedDeclarationsWithUnification.stream()
@@ -90,8 +92,12 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
-        } else if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !(drlxParseResult.getRight().getExpression() instanceof DrlNameExpr)) {
-            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getRight().getExpression()) );
+        } else {
+            Expression rightExpression = drlxParseResult.getRight().getExpression();
+            boolean isRightNameExpr = rightExpression instanceof DrlNameExpr || rightExpression instanceof NameExpr;
+            if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !isRightNameExpr) {
+                exprDSL.addArgument( generateLambdaWithoutParameters(rightExpression) );
+            }
         }
 
         exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
