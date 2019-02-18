@@ -34,9 +34,9 @@ public class SelfRemovalJob implements Job, Serializable {
     }
 
     public void execute(JobContext ctx) {
-        job.execute(  ((SelfRemovalJobContext)ctx).getJobContext() );
-        ((SelfRemovalJobContext)ctx).remove(); 
-        
+        SelfRemovalJobContext srCtx = (SelfRemovalJobContext) ctx;
+        job.execute( srCtx.getJobContext() );
+        srCtx.remove();
     }
 
 }

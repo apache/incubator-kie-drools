@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kie-services</artifactId>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
 
   <name>KIE :: Services</name>
   <description>The common Services for KIE (Drools, jBPM and OptaPlanner)</description>

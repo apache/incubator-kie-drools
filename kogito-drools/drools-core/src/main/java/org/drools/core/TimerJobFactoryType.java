@@ -34,7 +34,7 @@ public abstract class TimerJobFactoryType implements Serializable {
 
     public static final TimerJobFactoryType TRACKABLE = new TimerJobFactoryType("trackable") {
         public TimerJobFactoryManager createInstance() {
-            return new TrackableTimeJobFactoryManager();
+            return new ThreadSafeTrackableTimeJobFactoryManager();
         }
     };
 

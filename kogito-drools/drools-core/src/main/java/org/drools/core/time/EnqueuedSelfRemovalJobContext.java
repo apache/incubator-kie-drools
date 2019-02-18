@@ -19,16 +19,47 @@ package org.drools.core.time;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.phreak.PhreakTimerNode;
+import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.kie.services.time.JobContext;
+import org.kie.services.time.JobHandle;
 import org.kie.services.time.impl.TimerJobInstance;
 
-public class EnqueuedSelfRemovalJobContext extends SelfRemovalJobContext {
-    public EnqueuedSelfRemovalJobContext(JobContext jobContext, Map<Long, TimerJobInstance> timerInstances ) {
-        super( jobContext, timerInstances );
+public class EnqueuedSelfRemovalJobContext implements JobContext {
+    private static final long serialVersionUID = 614425985040796356L;
+
+    protected final JobContext jobContext;
+    protected final Map<Long, TimerJobInstance> timerInstances;
+
+    public EnqueuedSelfRemovalJobContext( JobContext jobContext,
+                                  Map<Long, TimerJobInstance> timerInstances ) {
+        this.jobContext = jobContext;
+        this.timerInstances = timerInstances;
+    }
+
+    public JobContext getJobContext() {
+        return jobContext;
     }
 
     @Override
+    public void setJobHandle(JobHandle jobHandle) {
+        jobContext.setJobHandle( jobHandle );
+    }
+
+    @Override
+    public JobHandle getJobHandle() {
+        return jobContext.getJobHandle();
+    }
+
+    public InternalWorkingMemory getWorkingMemory() {
+        if (jobContext instanceof TimerNodeJobContext) {
+            TimerNodeJobContext ctx = (TimerNodeJobContext) this.jobContext;
+            return ctx.getWorkingMemory();
+        }
+        throw new UnsupportedOperationException("delegate.getWorkingMemory()");
+    }
+
     public void remove() {
         getWorkingMemory().addPropagation( new PropagationEntry.AbstractPropagationEntry() {
             @Override
