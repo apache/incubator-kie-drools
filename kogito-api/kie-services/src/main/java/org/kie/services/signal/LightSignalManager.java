@@ -16,60 +16,45 @@
 
 package org.kie.services.signal;
 
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.kie.api.runtime.process.EventListener;
 
 public class LightSignalManager implements SignalManager {
 
 	private final SignalableResolver instanceResolver;
-	private Map<String, List<EventListener>> processEventListeners = new ConcurrentHashMap<String, List<EventListener>>();
+	private ConcurrentHashMap<String, ArrayList<EventListener>> listeners =
+			new ConcurrentHashMap<>();
 
 	public LightSignalManager(SignalableResolver instanceResolver) {
 		this.instanceResolver = instanceResolver;
 	}
 	
 	public void addEventListener(String type, EventListener eventListener) {
-		List<EventListener> eventListeners = processEventListeners.get(type);
-		//this first "if" is not pretty, but allows to synchronize only when needed
-		if (eventListeners == null) {
-			synchronized(processEventListeners){
-				eventListeners = processEventListeners.get(type);
-				if(eventListeners==null){
-					eventListeners = new CopyOnWriteArrayList<EventListener>();
-					processEventListeners.put(type, eventListeners);
-				}
+		listeners.compute(type, (k, v) -> {
+			if (v == null) {
+				v = new ArrayList<>();
 			}
-		}		
-		eventListeners.add(eventListener);
+			v.add(eventListener);
+			return v;
+		});
 	}
 	
 	public void removeEventListener(String type, EventListener eventListener) {
-		if (processEventListeners != null) {
-			List<EventListener> eventListeners = processEventListeners.get(type);
-			if (eventListeners != null) {
-				eventListeners.remove(eventListener);
-				if (eventListeners.isEmpty()) {
-					processEventListeners.remove(type);
-					eventListeners = null;
-				}
-			}
-		}
+		listeners.computeIfPresent(type, (k, v) -> {
+			v.remove(eventListener);
+			return v;
+		});
 	}
 	
 	public void signalEvent(String type, Object event) {
-		if (processEventListeners != null) {
-			List<EventListener> eventListeners = processEventListeners.get(type);
-			if (eventListeners != null) {
-				for (EventListener eventListener: eventListeners) {
-					eventListener.signalEvent(type, event);
-				}
-			}
-		}
+		listeners.values().stream()
+				.flatMap(Collection::stream)
+				.forEach(e -> e.signalEvent(type, event));
 	}
+
 	public void signalEvent(long processInstanceId, String type, Object event) {
 		instanceResolver.find(processInstanceId)
 				.ifPresent(signalable -> signalable.signalEvent(type, event));
