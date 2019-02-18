@@ -2953,7 +2953,7 @@ public class IncrementalCompilationTest {
         assertEquals(2, fired);
     }
 
-    @Test(timeout = 10000L)
+    @Test(timeout = 20000L)
     public void testMultipleIncrementalCompilationsWithFireUntilHalt() throws Exception {
         // DROOLS-1406
         final KieServices ks = KieServices.Factory.get();
