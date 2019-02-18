@@ -459,7 +459,8 @@ public class ExpressionTyper {
         }
 
         if(staticValue != null) {
-            return of(new TypedExpression(new FieldAccessExpr(scope, name), clazz));
+            final Expression sanitizedScope = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(scope);
+            return of(new TypedExpression(new FieldAccessExpr(sanitizedScope, name), clazz));
         } else {
             return empty();
         }
