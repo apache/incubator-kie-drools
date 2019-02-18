@@ -445,7 +445,7 @@ public class ExpressionTyper {
     public static Optional<TypedExpression> tryParseAsConstantField(TypeResolver typeResolver, Expression scope, String name) {
         Class<?> clazz;
         try {
-            clazz = DrlxParseUtil.getClassFromContext(typeResolver, scope.toString());
+            clazz = DrlxParseUtil.getClassFromContext(typeResolver, PrintUtil.printConstraint(scope));
         } catch(RuntimeException e) {
             return empty();
         }
