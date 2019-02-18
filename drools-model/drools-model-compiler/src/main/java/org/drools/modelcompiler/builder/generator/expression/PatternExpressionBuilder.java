@@ -79,10 +79,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         final List<String> usedDeclarationsWithUnification = new ArrayList<>();
         usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
 
-        Expression leftExpression = drlxParseResult.getLeft().getExpression();
-        boolean isLeftNameExpr = leftExpression instanceof DrlNameExpr || leftExpression instanceof NameExpr;
-        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !isLeftNameExpr) {
-            exprDSL.addArgument( generateLambdaWithoutParameters(leftExpression) );
+        if (drlxParseResult.isTemporal() && drlxParseResult.getLeft() != null && !isNameExpr(drlxParseResult.getLeft().getExpression())) {
+            exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getLeft().getExpression()) );
         }
 
         usedDeclarationsWithUnification.stream()
@@ -93,15 +91,17 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         if (drlxParseResult.getRightLiteral() != null) {
             exprDSL.addArgument( "" + drlxParseResult.getRightLiteral() );
         } else {
-            Expression rightExpression = drlxParseResult.getRight().getExpression();
-            boolean isRightNameExpr = rightExpression instanceof DrlNameExpr || rightExpression instanceof NameExpr;
-            if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !isRightNameExpr) {
-                exprDSL.addArgument( generateLambdaWithoutParameters(rightExpression) );
+            if (drlxParseResult.isTemporal() && drlxParseResult.getRight() != null && !isNameExpr(drlxParseResult.getRight().getExpression())) {
+                exprDSL.addArgument( generateLambdaWithoutParameters(drlxParseResult.getRight().getExpression()) );
             }
         }
 
         exprDSL.addArgument(buildConstraintExpression(drlxParseResult, drlxParseResult.getExpr()));
         return exprDSL;
+    }
+
+    private boolean isNameExpr(Expression leftExpression) {
+        return leftExpression instanceof DrlNameExpr || leftExpression instanceof NameExpr;
     }
 
     private Optional<MethodCallExpr> buildReactOn(SingleDrlxParseSuccess drlxParseResult) {
