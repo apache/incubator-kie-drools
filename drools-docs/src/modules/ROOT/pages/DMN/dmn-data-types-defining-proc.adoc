@@ -6,7 +6,7 @@ In DMN boxed expressions in {CENTRAL}, data types determine the structure of the
 Custom data types that you create for a boxed expression can be simple or structured:
 
 * *Simple* data types have only a name and a type assignment. Example: `Age (number)`.
-* *Structured* data types contain multiple fields associated with a parent data type. Example: A single type `Person` containing the fields `Name (string)`, `Age (number)`, `email (string)`.
+* *Structured* data types contain multiple fields associated with a parent data type. Example: A single type `Person` containing the fields `Name (string)`, `Age (number)`, `Email (string)`.
 
 .Prerequisites
 * You have created or imported a DMN file in {CENTRAL}.
@@ -14,16 +14,16 @@ Custom data types that you create for a boxed expression can be simple or struct
 .Procedure
 . In {CENTRAL}, go to *Menu* -> *Design* -> *Projects*, click the project name, and select the DMN file you want to modify.
 . In the DMN designer canvas, select a decision node or business knowledge model for which you want to define the data types and click the *Edit* icon to open the DMN boxed expression designer.
-. If the boxed expression is for a decision node that is not yet defined, double-click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
+. If the boxed expression is for a decision node that is not yet defined, click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
 +
 image::dmn/dmn-decision-boxed-expression-options.png[]
 
-. Double-click the cell for the table header, column header, or parameter field (depending on the boxed expression type) for which you want to define the data type and click *Manage* to create a custom data type.
+. Click the cell for the table header, column header, or parameter field (depending on the boxed expression type) for which you want to define the data type and click *Manage* to go to the *Data Types* page where you can create a custom data type.
 +
 --
 image::dmn/dmn-manage-data-types.png[]
 
-You can also manage custom data types by selecting the *Diagram properties* icon in the upper-right corner of the DMN designer:
+You can also set and manage custom output data types for a specified decision node or business knowledge model node by selecting the *Diagram properties* icon in the upper-right corner of the DMN designer:
 
 image::dmn/dmn-manage-data-types1a.png[]
 
@@ -31,14 +31,30 @@ The data type that you define for a specified cell in a boxed expression determi
 
 In this example, an output column *Credit Score Rating* for a DMN decision table defines a set of custom credit score ratings based on an applicant's credit score.
 --
-. In the *Manage Custom Data Types* window, click *Add* and create a *Credit_Score_Rating* data type as a `string` with the following constraints: `"Excellent","Good","Fair","Poor","Bad"`.
+. On the *Data Types* page, click *Add* and create a *Credit_Score_Rating* data type as a `string`.
 +
 --
-image::dmn/dmn-custom-data-type-example.png[]
+image::dmn/dmn-custom-data-type-add.png[]
 
-If the data type requires a list of items, enable the *Collection* setting.
+If the data type requires a list of items, enable the *List* setting.
 --
-. Click *Save* to save the data type, and in the decision table, double-click the *Credit Score Rating* column header, set the data type to this new custom data type, and define the rule values for that column with the rating constraints that you specified.
+. Click *Constraints*, select *Enumeration* from the drop-down options, and add the following constraints:
++
+--
+* `"Excellent"`
+* `"Good"`
+* `"Fair"`
+* `"Poor"`
+* `"Bad"`
+
+image::dmn/dmn-custom-data-type-constraints.png[]
+
+For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
+--
+
+. Click *Ok* to save the constraints and click *Save* to save the data type.
+
+. Return to the *Credit Score Rating* decision table, click the *Credit Score Rating* column header, set the data type to this new custom data type, and define the rule values for that column with the rating constraints that you specified.
 +
 --
 .Decision table for credit score rating
@@ -48,7 +64,7 @@ In the DMN decision model for this scenario, the *Credit Score Rating* decision 
 
 image::dmn/dmn-manage-data-types-blank.png[]
 --
-. Continuing with this example, double-click any column header to return to the *Manage Custom Data Types* window, click *Add*, and create a *Loan_Qualification* data type as a `Structure` with no constraints.
+. Continuing with this example, return to the *Data Types* window, click *Add*, and create a *Loan_Qualification* data type as a `Structure` with no constraints.
 . Next to the *Loan_Qualification* data type, select the settings icon (three vertical dots) and select *Insert nested field* to insert sub-fields within this parent data type.
 +
 --
@@ -56,14 +72,14 @@ image::dmn/dmn-manage-data-types-structured.png[]
 
 You can use these sub-fields in association with the parent structured data type in boxed expressions, such as nested column headers in decision tables or nested table parameters in context or function expressions.
 --
-. For this example, under the structured *Loan_Qualification* data type, add a *Qualification* field with constraints `"Qualified","Not Qualified"` and a *Reason* field with no constraints. Add also a simple *Back_End_Ratio* and a *Front_End_Ratio* data type, both with constraints `"Sufficient","Insufficient"`.
+. For this example, under the structured *Loan_Qualification* data type, add a *Qualification* field with `"Qualified"` and `"Not Qualified"` enumeration constraints, and a *Reason* field with no constraints. Add also a simple *Back_End_Ratio* and a *Front_End_Ratio* data type, both with `"Sufficient"` and `"Insufficient"` enumeration constraints.
 +
 --
 Click *Save* for each data type that you create.
 
 image::dmn/dmn-manage-data-types-structured2.png[]
 --
-. Return to the decision table and, for each column, double-click the column header cell, set the data type to the new corresponding custom data type, and define the rule values as needed for the column with the constraints that you specified, if applicable.
+. Return to the decision table and, for each column, click the column header cell, set the data type to the new corresponding custom data type, and define the rule values as needed for the column with the constraints that you specified, if applicable.
 +
 .Decision table for loan prequalification
 image::dmn/dmn-decision-table-example3.png[]
