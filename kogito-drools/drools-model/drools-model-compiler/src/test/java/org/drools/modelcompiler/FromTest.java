@@ -18,13 +18,18 @@ package org.drools.modelcompiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Pet;
+import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -231,4 +236,31 @@ public class FromTest extends BaseModelTest {
         assertEquals( 1, list.size() );
         assertEquals( new Person("Mario", 44), list.get(0) );
     }
+
+    @Test @Ignore
+    public void testFromMapValues() {
+        // DROOLS-3661
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + PetPerson.class.getCanonicalName() + "\n" +
+                "import " + Pet.class.getCanonicalName() + "\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : PetPerson ( )\n" +
+                "    $pet : Pet ( type == Pet.PetType.dog ) from $p.getPets().values()\n\n" +
+                "then\n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        PetPerson petPerson = new PetPerson( "me" );
+        Map<String, Pet> petMap = new HashMap<>();
+        petMap.put("Dog", new Pet( Pet.PetType.dog ));
+        petMap.put("Cat", new Pet( Pet.PetType.cat ));
+        petPerson.setPets( petMap );
+
+        ksession.insert( petPerson );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
 }
