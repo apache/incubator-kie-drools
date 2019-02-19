@@ -237,7 +237,7 @@ public class FromTest extends BaseModelTest {
         assertEquals( new Person("Mario", 44), list.get(0) );
     }
 
-    @Test @Ignore
+    @Test
     public void testFromMapValues() {
         // DROOLS-3661
         String str =
