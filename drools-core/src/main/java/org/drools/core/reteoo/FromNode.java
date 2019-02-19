@@ -34,6 +34,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
@@ -153,6 +154,11 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
     public BetaConstraints getBetaConstraints() {
         return betaConstraints;
+    }
+
+    @Override
+    protected Pattern getLeftInputPattern( BuildContext context ) {
+        return context.getLastBuiltPatterns()[0];
     }
 
     @Override
