@@ -22,49 +22,49 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
-public final class BavetSelectUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
+public final class BavetFromUniConstraintStream<Solution_, A> extends BavetAbstractUniConstraintStream<Solution_, A> {
 
-    private final Class<A> selectClass;
+    private final Class<A> fromClass;
 
-    public BavetSelectUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, Class<A> selectClass) {
+    public BavetFromUniConstraintStream(BavetConstraint<Solution_> bavetConstraint, Class<A> fromClass) {
         super(bavetConstraint);
-        this.selectClass = selectClass;
-        if (selectClass == null) {
-            throw new IllegalArgumentException("The selectClass (null) cannot be null.");
+        this.fromClass = fromClass;
+        if (fromClass == null) {
+            throw new IllegalArgumentException("The fromClass (null) cannot be null.");
         }
     }
 
     @Override
-    public BavetSelectUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder) {
-        return (BavetSelectUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
+    public BavetFromUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder) {
+        return (BavetFromUniNode<A>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
     }
 
     @Override
-    protected BavetSelectUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+    protected BavetFromUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
             int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
         if (childNodeList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
-        BavetSelectUniNode<A> node = new BavetSelectUniNode<>(buildPolicy.getSession(), nodeOrder, selectClass, childNodeList);
-        BavetSelectUniNode<A> sharedNode = buildPolicy.retrieveSharedNode(node);
+        BavetFromUniNode<A> node = new BavetFromUniNode<>(buildPolicy.getSession(), nodeOrder, fromClass, childNodeList);
+        BavetFromUniNode<A> sharedNode = buildPolicy.retrieveSharedNode(node);
         if (sharedNode != node) {
-            sharedNode.getChildNodeList().addAll(childNodeList); // TODO Doesn't allow sharing the filter after select
+            sharedNode.getChildNodeList().addAll(childNodeList); // TODO Doesn't allow sharing the filter after from
         }
         return sharedNode;
     }
 
     @Override
     public String toString() {
-        return "Select(" + selectClass.getSimpleName() + ") with " + childStreamList.size()  + " children";
+        return "From(" + fromClass.getSimpleName() + ") with " + childStreamList.size()  + " children";
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    public Class<A> getSelectClass() {
-        return selectClass;
+    public Class<A> getFromClass() {
+        return fromClass;
     }
 
 }

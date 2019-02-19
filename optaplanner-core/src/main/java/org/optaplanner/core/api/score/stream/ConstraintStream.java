@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -35,8 +36,8 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * An object that passes through constraint streams is called a fact.
  * It's either a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}.
  * <p>
- * A constraint stream is typically created from {@link Constraint#select(Class)}
- * or from {@link UniConstraintStream#join(UniConstraintStream, BiJoiner) another constraint stream}.
+ * A constraint stream is typically created with {@link Constraint#from(Class)}
+ * or {@link UniConstraintStream#join(UniConstraintStream, BiJoiner)} from another constraint stream}.
  * Constraint streams form a directed, non-cyclic graph, with multiple start nodes (which listen to fact changes)
  * and one end node per {@link Constraint} (which affect the {@link Score}).
  */

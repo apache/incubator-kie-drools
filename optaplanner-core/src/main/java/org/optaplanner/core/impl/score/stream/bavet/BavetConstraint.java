@@ -25,8 +25,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniConstraintStream;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniNode;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 
 public final class BavetConstraint<Solution_> implements Constraint {
 
@@ -35,7 +35,7 @@ public final class BavetConstraint<Solution_> implements Constraint {
     private final String constraintName;
     private final Function<Solution_, Score<?>> constraintWeightExtractor;
 
-    private List<BavetSelectUniConstraintStream<Solution_, Object>> streamList = new ArrayList<>();
+    private List<BavetFromUniConstraintStream<Solution_, Object>> streamList = new ArrayList<>();
 
     public BavetConstraint(BavetConstraintFactory<Solution_> factory, String constraintPackage, String constraintName,
             Function<Solution_, Score<?>> constraintWeightExtractor) {
@@ -52,18 +52,18 @@ public final class BavetConstraint<Solution_> implements Constraint {
     }
 
     @Override
-    public <A> BavetAbstractUniConstraintStream<Solution_, A> select(Class<A> selectClass) {
-        BavetSelectUniConstraintStream<Solution_, A> stream = new BavetSelectUniConstraintStream<>(this, selectClass);
-        streamList.add((BavetSelectUniConstraintStream<Solution_, Object>) stream);
+    public <A> BavetAbstractUniConstraintStream<Solution_, A> from(Class<A> fromClass) {
+        BavetFromUniConstraintStream<Solution_, A> stream = new BavetFromUniConstraintStream<>(this, fromClass);
+        streamList.add((BavetFromUniConstraintStream<Solution_, Object>) stream);
         return stream;
     }
 
     public void createNodes(BavetNodeBuildPolicy<Solution_> buildPolicy, Map<Class<?>,
-            BavetSelectUniNode<Object>> declaredClassToNodeMap, Score<?> constraintWeight) {
-        for (BavetSelectUniConstraintStream<Solution_, Object> stream : streamList) {
+            BavetFromUniNode<Object>> declaredClassToNodeMap, Score<?> constraintWeight) {
+        for (BavetFromUniConstraintStream<Solution_, Object> stream : streamList) {
             int nodeOrder = 0;
-            BavetSelectUniNode<Object> node = stream.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
-            BavetSelectUniNode<Object> oldNode = declaredClassToNodeMap.putIfAbsent(stream.getSelectClass(), node);
+            BavetFromUniNode<Object> node = stream.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
+            BavetFromUniNode<Object> oldNode = declaredClassToNodeMap.putIfAbsent(stream.getFromClass(), node);
             if (oldNode != null && oldNode != node) {
                 throw new IllegalStateException("The oldNode (" + oldNode
                         + ") differs from the new node (" + node + ").");

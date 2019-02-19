@@ -17,17 +17,18 @@
 package org.optaplanner.core.api.score.stream;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public interface Constraint {
 
     /**
-     *
-     *
-     * @param selectClass never null
+     * Start a {@link ConstraintStream} of all instances of the fromClass
+     * that are known as {@link ProblemFactCollectionProperty problem facts} or a {@link PlanningEntity planning entities}.
+     * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
      */
-    <A> UniConstraintStream<A> select(Class<A> selectClass);
+    <A> UniConstraintStream<A> from(Class<A> fromClass);
 
 }

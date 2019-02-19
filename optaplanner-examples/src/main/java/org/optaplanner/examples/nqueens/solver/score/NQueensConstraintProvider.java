@@ -36,9 +36,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected void horizontalConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Horizontal conflict", SimpleScore.of(1));
-        UniConstraintStream<Queen> aQueenStream = c.select(Queen.class)
+        UniConstraintStream<Queen> aQueenStream = c.from(Queen.class)
                 .filter(queen -> queen.getRow() != null);
-        UniConstraintStream<Queen> bQueenStream = c.select(Queen.class)
+        UniConstraintStream<Queen> bQueenStream = c.from(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getRowIndex))
                 .filter((a, b) -> a.getId() < b.getId())
@@ -48,9 +48,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected void ascendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint constraint = constraintFactory.newConstraintWithWeight(
                 "Ascending diagonal conflict", SimpleScore.of(1));
-        UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
+        UniConstraintStream<Queen> aQueenStream = constraint.from(Queen.class)
                 .filter(queen -> queen.getRow() != null);
-        UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
+        UniConstraintStream<Queen> bQueenStream = constraint.from(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getAscendingDiagonalIndex))
                 .filter((a, b) -> a.getId() < b.getId())
@@ -60,9 +60,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected void descendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint constraint = constraintFactory.newConstraintWithWeight(
                 "Descending diagonal conflict", SimpleScore.of(1));
-        UniConstraintStream<Queen> aQueenStream = constraint.select(Queen.class)
+        UniConstraintStream<Queen> aQueenStream = constraint.from(Queen.class)
                 .filter(queen -> queen.getRow() != null);
-        UniConstraintStream<Queen> bQueenStream = constraint.select(Queen.class)
+        UniConstraintStream<Queen> bQueenStream = constraint.from(Queen.class)
                 .filter(queen -> queen.getRow() != null);
         aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getDescendingDiagonalIndex))
                 .filter((a, b) -> a.getId() < b.getId())

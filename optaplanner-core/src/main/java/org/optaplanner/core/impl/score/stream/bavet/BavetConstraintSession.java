@@ -30,17 +30,17 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetSelectUniTuple;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniTuple;
 
 public final class BavetConstraintSession<Solution_> implements ConstraintSession<Solution_>  {
 
-    private final Map<Class<?>, BavetSelectUniNode<Object>> declaredClassToNodeMap; // TODO should the value be object instead of list?
-    private final Map<Class<?>, List<BavetSelectUniNode<Object>>> effectiveClassToNodeListMap;
+    private final Map<Class<?>, BavetFromUniNode<Object>> declaredClassToNodeMap; // TODO should the value be object instead of list?
+    private final Map<Class<?>, List<BavetFromUniNode<Object>>> effectiveClassToNodeListMap;
 
     private final int nodeOrderSize;
     private final List<Queue<BavetAbstractTuple>> nodeOrderedQueueList;
-    private final Map<Object, BavetSelectUniTuple<Object>> selectTupleMap;
+    private final Map<Object, BavetFromUniTuple<Object>> fromTupleMap;
 
     private ScoreInliner scoreInliner;
 
@@ -58,12 +58,12 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         for (int i = 0; i < nodeOrderSize; i++) {
             nodeOrderedQueueList.add(new ArrayDeque<>(1000));
         }
-        selectTupleMap = new IdentityHashMap<>(1000);
+        fromTupleMap = new IdentityHashMap<>(1000);
     }
 
-    public List<BavetSelectUniNode<Object>> findSelectNodeList(Class<?> factClass) {
+    public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {
         return effectiveClassToNodeListMap.computeIfAbsent(factClass, key -> {
-            List<BavetSelectUniNode<Object>> nodeList = new ArrayList<>();
+            List<BavetFromUniNode<Object>> nodeList = new ArrayList<>();
             declaredClassToNodeMap.forEach((declaredClass, declaredNode) -> {
                 if (declaredClass.isAssignableFrom(factClass)) {
                     nodeList.add(declaredNode);
@@ -76,10 +76,10 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     @Override
     public void insert(Object fact) {
         Class<?> factClass = fact.getClass();
-        List<BavetSelectUniNode<Object>> selectNodeList = findSelectNodeList(factClass);
-        for (BavetSelectUniNode<Object> node : selectNodeList) {
-            BavetSelectUniTuple<Object> tuple = node.createTuple(fact);
-            BavetSelectUniTuple<Object> old = selectTupleMap.put(fact, tuple);
+        List<BavetFromUniNode<Object>> fromNodeList = findFromNodeList(factClass);
+        for (BavetFromUniNode<Object> node : fromNodeList) {
+            BavetFromUniTuple<Object> tuple = node.createTuple(fact);
+            BavetFromUniTuple<Object> old = fromTupleMap.put(fact, tuple);
             if (old != null) {
                 throw new IllegalStateException("The fact (" + fact + ") was already inserted, so it cannot insert again.");
             }
@@ -89,7 +89,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
 
     @Override
     public void update(Object fact) {
-        BavetSelectUniTuple<Object> tuple = selectTupleMap.get(fact);
+        BavetFromUniTuple<Object> tuple = fromTupleMap.get(fact);
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot update.");
         }
@@ -98,7 +98,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
 
     @Override
     public void retract(Object fact) {
-        BavetSelectUniTuple<Object> tuple = selectTupleMap.remove(fact);
+        BavetFromUniTuple<Object> tuple = fromTupleMap.remove(fact);
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot retract.");
         }
