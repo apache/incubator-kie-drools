@@ -137,6 +137,14 @@ public class DrlxParseUtil {
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
             return new TypedExpression( body, accessor.getGenericReturnType() );
+        } else {
+            // try parse it as inner class
+            for(Class<?> declaredClass : clazz.getDeclaredClasses()) {
+                if(declaredClass.getCanonicalName().endsWith(name)) {
+                    FieldAccessExpr fieldAccessExpr = new FieldAccessExpr(scope, name);
+                    return new TypedExpression(fieldAccessExpr, declaredClass);
+                }
+            }
         }
         if (clazz.isArray() && name.equals( "length" )) {
             FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( "_this" ), name );
