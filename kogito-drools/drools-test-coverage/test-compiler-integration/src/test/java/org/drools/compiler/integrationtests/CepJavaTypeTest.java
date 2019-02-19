@@ -102,7 +102,7 @@ public class CepJavaTypeTest {
         public long getTs() { return ts; }
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void testEventWithShortExpiration() throws InterruptedException {
         // BZ-1265773
         final String drl = "import " + MyMessage.class.getCanonicalName() +"\n" +
@@ -115,17 +115,18 @@ public class CepJavaTypeTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-java-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
-            ksession.insert(new MyMessage("ATrigger" ) );
-            assertEquals( 1, ksession.fireAllRules() );
+            ksession.insert(new MyMessage("ATrigger"));
+            assertEquals(1, ksession.fireAllRules());
             TimeUtil.sleepMillis(2L);
-            assertEquals( 0, ksession.fireAllRules() );
-            TimeUtil.sleepMillis(30L);
-            // Expire action is put into propagation queue by timer job, so there
-            // can be a race condition where it puts it there right after previous fireAllRules
-            // flushes the queue. So there needs to be another flush -> another fireAllRules
-            // to flush the queue.
-            assertEquals( 0, ksession.fireAllRules() );
-            assertEquals( 0, ksession.getObjects().size() );
+            assertEquals(0, ksession.fireAllRules());
+            while (ksession.getObjects().size() != 0) {
+                TimeUtil.sleepMillis(30L);
+                // Expire action is put into propagation queue by timer job, so there
+                // can be a race condition where it puts it there right after previous fireAllRules
+                // flushes the queue. So there needs to be another flush -> another fireAllRules
+                // to flush the queue.
+                assertEquals(0, ksession.fireAllRules());
+            }
         } finally {
             ksession.dispose();
         }

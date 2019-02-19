@@ -4295,7 +4295,7 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void testEventWithShortExpiration() throws InterruptedException {
         // DROOLS-921
         final String drl = "declare String\n" +
@@ -4315,13 +4315,14 @@ public class CepEspTest extends AbstractCepEspTest {
             assertEquals(1, ksession.fireAllRules());
             TimeUtil.sleepMillis(2L);
             assertEquals(0, ksession.fireAllRules());
-            TimeUtil.sleepMillis(30L);
-            // Expire action is put into propagation queue by timer job, so there
-            // can be a race condition where it puts it there right after previous fireAllRules
-            // flushes the queue. So there needs to be another flush -> another fireAllRules
-            // to flush the queue.
-            assertEquals(0, ksession.fireAllRules());
-            assertEquals(0, ksession.getObjects().size());
+            while (ksession.getObjects().size() != 0) {
+                TimeUtil.sleepMillis(30L);
+                // Expire action is put into propagation queue by timer job, so there
+                // can be a race condition where it puts it there right after previous fireAllRules
+                // flushes the queue. So there needs to be another flush -> another fireAllRules
+                // to flush the queue.
+                assertEquals(0, ksession.fireAllRules());
+            }
         } finally {
             ksession.dispose();
         }
