@@ -3712,8 +3712,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule \"Rule1\" \n" +
                      "salience 1 \n" +
                      "when\n" +
-                     "  $booking: TradeBooking() @watch(*) \n" +
-                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking()\n" +
+                     "  $trade: TradeHeader() @watch(*) from $booking.getTrade()\n" +
                      "  not String()\n" +
                      "then\n" +
                      "  $trade.setAction(\"New\");\n" +
@@ -3724,8 +3724,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule \"Rule2\"\n" +
                      "lock-on-active true\n" +
                      "when\n" +
-                     "  $booking: TradeBooking( ) @watch(*) \n" +
-                     "  $trade: Object( ) from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking( )\n" +
+                     "  $trade: Object( ) @watch(*) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";
         KieBase kb = loadKnowledgeBaseFromString( drl );
@@ -3786,8 +3786,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "lock-on-active true\n" +
                      "salience 1 \n" +
                      "when\n" +
-                     "  $booking: TradeBooking() @watch(*) \n" +
-                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking()\n" +
+                     "  $trade: TradeHeader() @watch(*) from $booking.getTrade()\n" +
                      "then\n" +
                      "  $trade.setAction(\"New\");\n" +
                      "  modify($booking) {}\n" +
@@ -3795,8 +3795,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "\n" +
                      "rule \"Rule2\"\n" +
                      "when\n" +
-                     "  $booking: TradeBooking( ) @watch(*) \n" +
-                     "  $trade: Object( ) from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking( )\n" +
+                     "  $trade: Object( ) @watch(*) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";
         KieBase kb = loadKnowledgeBaseFromString( drl );
