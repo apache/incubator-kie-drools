@@ -356,7 +356,7 @@ Advanced configuration:
 
 [source,xml,options="nowrap"]
 ----
-    <subChainChangeMoveSelector>
+    <tailChainSwapMoveSelector>
       ... <!-- Normal selector properties -->
       <entitySelector>
         <entityClass>...Customer</entityClass>
@@ -366,7 +366,7 @@ Advanced configuration:
         ...
         <nearbySelection>...</nearbySelection>
       </valueSelector>
-    </subChainChangeMoveSelector>
+    </tailChainSwapMoveSelector>
 ----
 
 The `entitySelector` selects the start of the tail chain that is being moved.
