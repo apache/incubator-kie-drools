@@ -113,7 +113,7 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
     // Getters/setters
     // ************************************************************************
 
-    public SolutionDescriptor<?> getSolutionDescriptor() {
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }
 

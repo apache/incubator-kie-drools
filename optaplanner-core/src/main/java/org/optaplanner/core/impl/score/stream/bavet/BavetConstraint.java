@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
@@ -53,6 +55,17 @@ public final class BavetConstraint<Solution_> implements Constraint {
 
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> from(Class<A> fromClass) {
+        BavetAbstractUniConstraintStream<Solution_, A> stream = fromUnfiltered(fromClass);
+        EntityDescriptor<Solution_> entityDescriptor = factory.getSolutionDescriptor().findEntityDescriptor(fromClass);
+        if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
+            Predicate<A> predicate = (Predicate<A>) entityDescriptor::isInitialized;
+            stream = stream.filter(predicate);
+        }
+        return stream;
+    }
+
+    @Override
+    public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
         BavetFromUniConstraintStream<Solution_, A> stream = new BavetFromUniConstraintStream<>(this, fromClass);
         streamList.add((BavetFromUniConstraintStream<Solution_, Object>) stream);
         return stream;

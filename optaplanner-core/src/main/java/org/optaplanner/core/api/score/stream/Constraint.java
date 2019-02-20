@@ -16,19 +16,37 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.function.Predicate;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public interface Constraint {
 
     /**
      * Start a {@link ConstraintStream} of all instances of the fromClass
-     * that are known as {@link ProblemFactCollectionProperty problem facts} or a {@link PlanningEntity planning entities}.
+     * that are known as {@link ProblemFactCollectionProperty problem facts} or {@link PlanningEntity planning entities}.
+     * <p>
+     * If the fromClass is a {@link PlanningEntity}, then it will be automatically
+     * {@link UniConstraintStream#filter(Predicate) filtered} to only contain fully initialized entities,
+     * for which each genuine {@link PlanningVariable} (of the fromClass or a superclass thereof) is initialized
+     * (so not null unless {@link PlanningVariable#nullable()} is modified).
+     * This filtering will NOT automatically apply to genuine planning variables of subclass planning entities of fromClass.
      * @param fromClass never null
      * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
      * @return never null
      */
     <A> UniConstraintStream<A> from(Class<A> fromClass);
+
+    /**
+     * Like {@link #from(Class)},
+     * but without any filtering of initialized {@link PlanningEntity planning entities}.
+     * @param fromClass never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
+     * @return never null
+     */
+    <A> UniConstraintStream<A> fromUnfiltered(Class<A> fromClass);
 
 }

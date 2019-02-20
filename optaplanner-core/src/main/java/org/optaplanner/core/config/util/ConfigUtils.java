@@ -346,9 +346,9 @@ public class ConfigUtils {
 
     @SafeVarargs
     public static Class<? extends Annotation> extractAnnotationClass(Member member,
-            Class<? extends Annotation>... annotations) {
+            Class<? extends Annotation>... annotationClasses) {
         Class<? extends Annotation> annotationClass = null;
-        for (Class<? extends Annotation> detectedAnnotationClass : annotations) {
+        for (Class<? extends Annotation> detectedAnnotationClass : annotationClasses) {
             if (((AnnotatedElement) member).isAnnotationPresent(detectedAnnotationClass)) {
                 if (annotationClass != null) {
                     throw new IllegalStateException("The class (" + member.getDeclaringClass()
@@ -357,7 +357,7 @@ public class ConfigUtils {
                             + detectedAnnotationClass.getSimpleName() + " annotation.");
                 }
                 annotationClass = detectedAnnotationClass;
-                // Do not break early: check other annotations too
+                // Do not break early: check other annotationClasses too
             }
         }
         return annotationClass;

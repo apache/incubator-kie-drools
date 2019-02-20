@@ -21,7 +21,6 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.examples.nqueens.domain.Queen;
 
 public class NQueensConstraintProvider implements ConstraintProvider {
@@ -36,11 +35,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected void horizontalConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Horizontal conflict", SimpleScore.of(1));
-        UniConstraintStream<Queen> aQueenStream = c.from(Queen.class)
-                .filter(queen -> queen.getRow() != null);
-        UniConstraintStream<Queen> bQueenStream = c.from(Queen.class)
-                .filter(queen -> queen.getRow() != null);
-        aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getRowIndex))
+        c.from(Queen.class)
+                .join(c.from(Queen.class), BiJoiner.equals(Queen::getRowIndex))
                 .filter((a, b) -> a.getId() < b.getId())
                 .penalize();
     }
@@ -48,11 +44,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected void ascendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint constraint = constraintFactory.newConstraintWithWeight(
                 "Ascending diagonal conflict", SimpleScore.of(1));
-        UniConstraintStream<Queen> aQueenStream = constraint.from(Queen.class)
-                .filter(queen -> queen.getRow() != null);
-        UniConstraintStream<Queen> bQueenStream = constraint.from(Queen.class)
-                .filter(queen -> queen.getRow() != null);
-        aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getAscendingDiagonalIndex))
+        constraint.from(Queen.class)
+                .join(constraint.from(Queen.class), BiJoiner.equals(Queen::getAscendingDiagonalIndex))
                 .filter((a, b) -> a.getId() < b.getId())
                 .penalize();
     }
@@ -60,11 +53,8 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected void descendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint constraint = constraintFactory.newConstraintWithWeight(
                 "Descending diagonal conflict", SimpleScore.of(1));
-        UniConstraintStream<Queen> aQueenStream = constraint.from(Queen.class)
-                .filter(queen -> queen.getRow() != null);
-        UniConstraintStream<Queen> bQueenStream = constraint.from(Queen.class)
-                .filter(queen -> queen.getRow() != null);
-        aQueenStream.join(bQueenStream, BiJoiner.equals(Queen::getDescendingDiagonalIndex))
+        constraint.from(Queen.class)
+                .join(constraint.from(Queen.class), BiJoiner.equals(Queen::getDescendingDiagonalIndex))
                 .filter((a, b) -> a.getId() < b.getId())
                 .penalize();
     }
