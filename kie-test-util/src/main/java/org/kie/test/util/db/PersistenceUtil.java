@@ -27,11 +27,8 @@ import javax.persistence.Persistence;
 
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.assertNotNull;
 
 public class PersistenceUtil {
 
@@ -122,12 +119,21 @@ public class PersistenceUtil {
     }
 
     /**
+     * This method creates default pooling datasource
+     * @return a PoolingDataSource
+     */
+    public static PoolingDataSourceWrapper setupPoolingDataSource() {
+        return setupPoolingDataSource(getDatasourceProperties());
+    }
+
+    /**
      * This method uses the "jdbc/testDS1" datasource, which is the default.
      * @param dsProps The properties used to setup the data source.
      * @return a PoolingDataSource
      */
     public static PoolingDataSourceWrapper setupPoolingDataSource(Properties dsProps) {
-        return setupPoolingDataSource(dsProps, "jdbc/testDS1");
+        String datasourceName = dsProps.getProperty("datasourceName", "jdbc/testDS1");
+        return setupPoolingDataSource(dsProps, datasourceName);
     }
 
     /**
@@ -164,7 +170,9 @@ public class PersistenceUtil {
                     "className", "maxPoolSize", "allowLocalTransactions" };
             String[] defaultPropArr = { "", "", "", "jdbc:h2:tcp://localhost/JPADroolsFlow", "sa", "", "org.h2.Driver",
                     "org.h2.jdbcx.JdbcDataSource", "16", "true" };
-            Assert.assertTrue("Unequal number of keys for default properties", keyArr.length == defaultPropArr.length);
+            if (keyArr.length != defaultPropArr.length) {
+                throw new IllegalStateException("Unequal number of keys for default properties!");
+            }
             defaultProperties = new Properties();
             for (int i = 0; i < keyArr.length; ++i) {
                 defaultProperties.put(keyArr[i], defaultPropArr[i]);
@@ -188,18 +196,16 @@ public class PersistenceUtil {
         System.setProperty("h2.lobInDatabase", "true");
 
         InputStream propsInputStream = PersistenceUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
-        assertNotNull(propertiesNotFoundMessage, propsInputStream);
+        if (propsInputStream == null) {
+            throw new IllegalStateException(propertiesNotFoundMessage);
+        }
         Properties props = new Properties();
-        if (propsInputStream != null) {
-            try {
-                props.load(propsInputStream);
-            } catch (IOException ioe) {
-                propertiesNotFound = true;
-                logger.warn("Unable to find properties, using default H2 properties: " + ioe.getMessage());
-                ioe.printStackTrace();
-            }
-        } else {
+        try {
+            props.load(propsInputStream);
+        } catch (IOException ioe) {
             propertiesNotFound = true;
+            logger.warn("Unable to find properties, using default H2 properties: " + ioe.getMessage());
+            ioe.printStackTrace();
         }
 
         String password = props.getProperty("password");
