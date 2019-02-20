@@ -75,7 +75,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drlxparser-core</artifactId>
+      <artifactId>drools-constraint-parser</artifactId>
     </dependency>
 
     <dependency>

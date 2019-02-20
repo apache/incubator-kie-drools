@@ -48,7 +48,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drlxparser-core</artifactId>
+      <artifactId>drools-constraint-parser</artifactId>
     </dependency>
 
     <!-- BigMath dependency to obtain BigDecimal advanced math -->
