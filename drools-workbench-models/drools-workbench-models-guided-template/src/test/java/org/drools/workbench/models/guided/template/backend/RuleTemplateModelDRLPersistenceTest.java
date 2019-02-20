@@ -144,6 +144,48 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
+    public void testAppendAndInsert() {
+        final TemplateModel m = new TemplateModel();
+        m.name = "t1";
+
+        final FactPattern p = new FactPattern("Person");
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType(DataType.TYPE_STRING);
+        con.setFieldName("field1");
+        con.setOperator("==");
+        con.setValue("$f1");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        p.addConstraint(con);
+
+        m.addLhsItem(p);
+
+        m.addRow(new String[]{"foo1"});
+        m.addRow(new String[]{"foo2"});
+        m.addRow(1, new String[]{"foo3"});
+
+        final String expected = "rule \"t1_2\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 == \"foo2\" )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_1\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 == \"foo3\" )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_0\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 == \"foo1\" )" +
+                "then \n" +
+                "end";
+
+        checkMarshall(expected, m);
+    }
+
+    @Test
     public void testRHSInsert() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";
