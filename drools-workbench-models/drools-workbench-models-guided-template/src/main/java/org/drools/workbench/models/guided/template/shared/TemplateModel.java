@@ -47,8 +47,7 @@ public class TemplateModel
      * @param row
      * @return
      */
-    public String addRow(String rowId,
-                         String[] row) {
+    private String addRow(String rowId, String[] row) {
         Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
         if (row.length != vars.size() - 1) {
             throw new IllegalArgumentException("Invalid numbers of columns: " + row.length + " expected: "
