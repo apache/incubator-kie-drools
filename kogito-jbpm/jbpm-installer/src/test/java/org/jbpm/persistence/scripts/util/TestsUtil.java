@@ -47,7 +47,7 @@ public final class TestsUtil {
             final File[] foundFiles = folderWithScripts.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
-                    return name.toLowerCase().endsWith(".sql");
+                    return name.toLowerCase().endsWith(".sql") && !name.contains("drop");
                 }
             });
 
