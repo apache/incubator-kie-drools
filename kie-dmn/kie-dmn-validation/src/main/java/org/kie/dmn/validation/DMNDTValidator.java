@@ -1,245 +1,183 @@
 package org.kie.dmn.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
-import org.drools.verifier.api.Status;
-import org.drools.verifier.api.reporting.Issue;
-import org.drools.verifier.core.checks.AnalyzerConfigurationMock;
-import org.drools.verifier.core.configuration.AnalyzerConfiguration;
-import org.drools.verifier.core.configuration.CheckConfiguration;
-import org.drools.verifier.core.index.IndexImpl;
-import org.drools.verifier.core.index.keys.Values;
-import org.drools.verifier.core.index.model.Column;
-import org.drools.verifier.core.index.model.DataType;
-import org.drools.verifier.core.index.model.DataType.DataTypes;
-import org.drools.verifier.core.index.model.Field;
-import org.drools.verifier.core.index.model.FieldAction;
-import org.drools.verifier.core.index.model.FieldCondition;
-import org.drools.verifier.core.index.model.ObjectField;
-import org.drools.verifier.core.index.model.ObjectType;
-import org.drools.verifier.core.index.model.Pattern;
-import org.drools.verifier.core.index.model.Rule;
-import org.drools.verifier.core.main.Analyzer;
-import org.drools.verifier.core.main.Reporter;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.DecisionNode;
-import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
-import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
-import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
-import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
-import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.validation.dtanalysis.model.Bound;
+import org.kie.dmn.validation.dtanalysis.model.DDTAInputEntry;
+import org.kie.dmn.validation.dtanalysis.model.DDTARule;
+import org.kie.dmn.validation.dtanalysis.model.DDTATable;
+import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 public class DMNDTValidator {
 
-    private static final String OBJECT_TYPE_NAME = "mock.Type";
-    private static AnalyzerConfiguration analyzerConfiguration = new AnalyzerConfigurationMock(CheckConfiguration.newDefault());
-
-    private static org.kie.dmn.feel.FEEL FEEL = org.kie.dmn.feel.FEEL.newInstance();
+    public static org.kie.dmn.feel.FEEL FEEL = org.kie.dmn.feel.FEEL.newInstance();
 
     public static void validate(DMNModel model) {
-        for (DecisionNode dn : model.getDecisions()) {
-            Expression expression = dn.getDecision().getExpression();
-            if (expression instanceof DecisionTable) {
-                try {
-                    validateDT(model, dn, (DecisionTable) expression);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                    System.out.println(e);
-                    throw e;
+        try {
+            for (DecisionNode dn : model.getDecisions()) {
+                Expression expression = dn.getDecision().getExpression();
+                if (expression instanceof DecisionTable) {
+                    DecisionTable decisionTable = (DecisionTable) expression;
+                    droolsVerifierSystout(model, dn, decisionTable);
+                    findGaps(model, dn, decisionTable);
                 }
             }
+        } catch (Throwable t) {
+            // TODO this is used for current developments.
+            t.printStackTrace();
+            throw new RuntimeException(t);
         }
     }
 
-    private static void validateDT(DMNModel model, DecisionNode dn, DecisionTable dt) {
-        IndexImpl index1 = new IndexImpl();
-        ObjectType objectType = new ObjectType(OBJECT_TYPE_NAME, analyzerConfiguration);
-        int jHeadIdx = 0;
-        List<Column> columns = new ArrayList<>();
-        List<ObjectField> objectFields = new ArrayList<>();
-        for (InputClause ic : dt.getInput()) {
-            Column c = new Column(jHeadIdx + 1, analyzerConfiguration);
-            columns.add(c);
-            String typeRef = Optional.ofNullable(ic.getInputExpression().getTypeRef()).map(QName::getLocalPart).orElse("any");
-            ObjectField of = new ObjectField(OBJECT_TYPE_NAME, typeRef, typeRef, analyzerConfiguration);
-            objectFields.add(of);
-            objectType.getFields().add(of);
-            jHeadIdx++;
-        }
-        for (OutputClause oc : dt.getOutput()) {
-            Column c = new Column(jHeadIdx + 1, analyzerConfiguration);
-            columns.add(c);
-            String typeRef = Optional.ofNullable(oc.getTypeRef()).map(QName::getLocalPart).orElse("any");
-            ObjectField of = new ObjectField(OBJECT_TYPE_NAME, typeRef, typeRef, analyzerConfiguration);
-            objectFields.add(of);
-            objectType.getFields().add(of);
-            jHeadIdx++;
-        }
-
+    private static void findGaps(DMNModel model, DecisionNode dn, DecisionTable dt) {
+        DDTATable ddtaTable = new DDTATable();
         for (int jRowIdx = 0; jRowIdx < dt.getRule().size(); jRowIdx++) {
+
             DecisionRule r = dt.getRule().get(jRowIdx);
 
-            final Pattern pattern = new Pattern(OBJECT_TYPE_NAME, objectType, analyzerConfiguration);
-            final Rule row = new Rule(jRowIdx + 1, analyzerConfiguration);
-
+            DDTARule ddtaRule = new DDTARule();
             int jColIdx = 0;
-            List<Field> fields = new ArrayList<>();
             for (UnaryTests ie : r.getInputEntry()) {
-                ObjectField objectField = objectFields.get(jColIdx);
-                final Field field = new Field(objectField, objectField.getFactType(), objectField.getFieldType(), objectField.getName(), analyzerConfiguration);
-                fields.add(field);
-                pattern.getFields().add(field);
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) DMNDTValidator.FEEL.compileUnaryTests(ie.getText(), DMNDTValidator.FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getExpr().getExpression();
 
-                if (utln.getElements().size() > 1) {
-                    throw new UnsupportedOperationException("TODO: verify drools-verifier for multiple UT in the same cell.");
-                }
-                for (BaseNode n : utln.getElements()) {
-                    if (n instanceof DashNode) {
-                        continue;
-                    }
-                    UnaryTestNode ut = (UnaryTestNode) n;
-                    if (ut.getOperator() == UnaryOperator.EQ
-                            || ut.getOperator() == UnaryOperator.GT
-                            || ut.getOperator() == UnaryOperator.GTE
-                            || ut.getOperator() == UnaryOperator.LT
-                            || ut.getOperator() == UnaryOperator.LTE) {
-                        FieldCondition<?> condition1 = new FieldCondition<>(field,
-                                                                            columns.get(jColIdx),
-                                                                            validatorStringOperatorFromUTOperator(ut.getOperator()),
-                                                                            valuesFromNode(ut.getValue()),
-                                                                            analyzerConfiguration);
-                        field.getConditions().add(condition1);
-                        row.getConditions().add(condition1);
-                    } else if (ut.getValue() instanceof RangeNode) {
-                        RangeNode rangeNode = (RangeNode) ut.getValue();
-                        FieldCondition<?> condition1 = new FieldCondition<>(field,
-                                                                            columns.get(jColIdx),
-                                                                            rangeNode.getLowerBound() == IntervalBoundary.OPEN ? ">" : ">=",
-                                                                            valuesFromNode(rangeNode.getStart()),
-                                                                            analyzerConfiguration);
-                        field.getConditions().add(condition1);
-                        row.getConditions().add(condition1);
-                        FieldCondition<?> condition2 = new FieldCondition<>(field,
-                                                                            columns.get(jColIdx),
-                                                                            rangeNode.getUpperBound() == IntervalBoundary.OPEN ? "<" : "<=",
-                                                                            valuesFromNode(rangeNode.getEnd()),
-                                                                            analyzerConfiguration);
-                        field.getConditions().add(condition2);
-                        row.getConditions().add(condition2);
-                    } else {
-                        throw new UnsupportedOperationException("TODO");
-                    }
-                }
+                String typeRef = Optional.ofNullable(dt.getInput().get(jColIdx).getInputExpression().getTypeRef()).map(QName::getLocalPart).orElse("any");
+
+                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), typeRef, jRowIdx + 1, jColIdx + 1));
+                ddtaRule.getInputEntry().add(ddtaInputEntry);
                 jColIdx++;
             }
             for (LiteralExpression oe : r.getOutputEntry()) {
-                ObjectField objectField = objectFields.get(jColIdx);
-                final Field field = new Field(objectField, objectField.getFactType(), objectField.getFieldType(), objectField.getName(), analyzerConfiguration);
-                fields.add(field);
-                pattern.getFields().add(field);
-
-                ProcessedExpression compileUnaryTests = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
-                InterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
-                BaseNode baseNode = (BaseNode) interpreted.getExpr().getExpression();
-
-                final FieldAction action = new FieldAction(field, columns.get(jColIdx), dataTypeFromNode(baseNode), valuesFromNode(baseNode), analyzerConfiguration);
-                field.getActions().add(action);
-                row.getActions().add(action);
-                jColIdx++;
+                // do I need output?
             }
-
-            row.getPatterns().add(pattern);
-            index1.getRules().add(row);
+            ddtaTable.getRule().add(ddtaRule);
         }
-
-        final Analyzer analyzer = new Analyzer(new Reporter() {
-                                                   @Override
-                                                   public void sendReport(Set<Issue> issues) {
-                                                       for (Issue issue : issues) {
-                                                           System.out.println("issue.getRowNumbers   " + issue.getRowNumbers());
-                                                           System.out.println("issue.getCheckType    " + issue.getCheckType());
-                                                           System.out.println("issue.getDebugMessage " + issue.getDebugMessage());
-                                                       }
-                                                   }
-                                                   @Override
-                                                   public void sendStatus(Status status) {
-                                                       System.out.println("status.getWebWorkerUUID   " + status.getWebWorkerUUID());
-                                                       System.out.println("status.getStart           " + status.getStart());
-                                                       System.out.println("status.getEnd             " + status.getEnd());
-                                                       System.out.println("status.getTotalCheckCount " + status.getTotalCheckCount());
-                                                   }
-                                               },
-                                               index1,
-                                               analyzerConfiguration);
-
-        analyzer.start();
-        analyzer.analyze();
+        System.out.println(ddtaTable);
+        System.out.println("project on columns.");
+        for (int colIdx = 0; colIdx < ddtaTable.inputCols(); colIdx++) {
+            System.out.println("colIdx " + colIdx);
+            List<Interval> intervals = ddtaTable.projectOnColumnIdx(colIdx);
+            System.out.println(intervals);
+            List<Bound<?>> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
+            System.out.println(bounds);
+            Collections.sort(bounds);
+            System.out.println(bounds);
+        }
+        System.out.println("findGaps");
+        findGaps(ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
     }
 
-    private static String validatorStringOperatorFromUTOperator(UnaryOperator operator) {
-        switch (operator) {
-            case EQ:
-                return "==";
-            case GT:
-                return ">";
-            case GTE:
-                return ">=";
-            case LT:
-                return "<";
-            case LTE:
-                return "<=";
-            case IN:
-            case NE:
-            case NOT:
-            case TEST:
-            default:
-                return null;
+    private static void findGaps(DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
+        if (jColIdx < ddtaTable.inputCols()) {
+            List<Interval> activeIntervals = new ArrayList<>();
+            List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
+            if (!activeRules.isEmpty()) {
+                // TODO verify, I don't think this need to include activeRules from ALL the previous dimensions, but better prove it.
+                intervals = intervals.stream().filter(i -> activeRules.contains(i.getRule())).collect(Collectors.toList());
+            }
+            List<Bound<?>> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
+            Collections.sort(bounds);
+
+            Interval domainRange = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
+            // TODO: filter for only those bounds in the typeRef domain range.
+
+            // artificial low/high bounds:
+            bounds.add(domainRange.getUpperBound());
+            Bound<?> lastBound = domainRange.getLowerBound();
+            for (Bound<?> currentBound : bounds) {
+                if (activeIntervals.isEmpty() && !currentBound.equals(lastBound)) {
+                    Interval missingInterval = Interval.newFromBounds(lastBound, currentBound);
+                    currentIntervals[jColIdx] = missingInterval;
+
+                    // TODO: merge hyperRectangle
+
+                    for (int p = 0; p <= jColIdx; p++) {
+                        System.out.print(currentIntervals[p]);
+                    }
+                    System.out.println("");
+                }
+                if (!activeIntervals.isEmpty()) {
+                    Interval missingInterval = Interval.newFromBounds(lastBound, currentBound);
+                    currentIntervals[jColIdx] = missingInterval;
+                    findGaps(ddtaTable, jColIdx + 1, currentIntervals, activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList()));
+                }
+                if (currentBound.isLowerBound()) {
+                    activeIntervals.add(currentBound.getParent());
+                } else {
+                    activeIntervals.remove(currentBound.getParent());
+                }
+                lastBound = currentBound;
+            }
         }
     }
 
-    private static DataTypes dataTypeFromNode(BaseNode baseNode) {
-        if (baseNode instanceof NumberNode) {
-            return DataType.DataTypes.NUMERIC_BIGDECIMAL;
-        } else if (baseNode instanceof StringNode) {
-            return DataType.DataTypes.STRING;
-        } else {
-            throw new UnsupportedOperationException("TODO");
+    private static List<Interval> toIntervals(List<BaseNode> elements, String typeRef, long rule, long col) {
+        List<Interval> results = new ArrayList<>();
+        for (BaseNode n : elements) {
+            if (n instanceof DashNode) {
+                results.add(new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, rule, col));
+            }
+            UnaryTestNode ut = (UnaryTestNode) n;
+            if (ut.getOperator() == UnaryOperator.LTE) {
+                results.add(new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col));
+            } else if (ut.getValue() instanceof RangeNode) {
+                RangeNode rangeNode = (RangeNode) ut.getValue();
+                results.add(new Interval(RangeBoundary.CLOSED, valueFromNode(rangeNode.getStart()), valueFromNode(rangeNode.getEnd()), RangeBoundary.CLOSED, rule, col));
+            } else {
+                throw new UnsupportedOperationException("TODO");
+            }
         }
+        return results;
     }
 
-    private static Values<?> valuesFromNode(BaseNode start) {
+    private static Comparable<?> valueFromNode(BaseNode start) {
         if (start instanceof NumberNode) {
             NumberNode numberNode = (NumberNode) start;
-            return new Values<>(numberNode.getValue());
+            return numberNode.getValue(); 
         } else if (start instanceof StringNode) {
             StringNode stringNode = (StringNode) start;
-            return new Values<>(stringNode.getText());
+            return stringNode.getText();
         } else {
             throw new UnsupportedOperationException("TODO");
         }
     }
+
+    private static void droolsVerifierSystout(DMNModel model, DecisionNode dn, Expression expression) {
+        try {
+            DroolsVerifierDTValidator.validateDT(model, dn, (DecisionTable) expression);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.out.println(e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 }

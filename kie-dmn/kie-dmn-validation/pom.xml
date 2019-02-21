@@ -29,6 +29,13 @@
         <classifier>tests</classifier>
         <version>${project.version}</version>
       </dependency>
+      
+          <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-verifier-core</artifactId>
+      <classifier>tests</classifier>
+      <version>${version.org.kie}</version>
+    </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -81,8 +88,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier-core</artifactId>
-            <classifier>tests</classifier>
-              <version>${version.org.kie}</version>
+      <classifier>tests</classifier>
     </dependency>
 
     <dependency>

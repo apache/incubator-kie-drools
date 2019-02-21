@@ -34,4 +34,9 @@ public class VVTest extends AbstractValidatorTest {
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 0 ) );
     }
 
+    @Test
+    public void testGapsAndOverlaps1() {
+        List<DMNMessage> validate = validator.validate(getReader("vv/GapsAndOverlaps1.dmn"), VALIDATE_COMPILATION, VALIDATE_DT);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
+    }
 }
