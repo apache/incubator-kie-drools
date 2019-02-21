@@ -120,7 +120,7 @@ public class FromVisitor {
 
         for (Expression argument : parsedExpression.getArguments()) {
             final String argumentName = PrintUtil.printConstraint(argument);
-            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+            if (contextHasDeclaration(argumentName)) {
                 bindingIds.add(argumentName);
                 fromCall.addArgument( context.getVarExpr(argumentName));
             }
@@ -144,7 +144,7 @@ public class FromVisitor {
         if (staticField.isPresent()) {
             return of( createSupplier(parsedExpression) );
         }
-        if ( context.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
+        if (contextHasDeclaration(bindingId)) {
             return of( createFromCall(expression, bindingId, optContainsBinding.isPresent()) );
         }
         return of(createUnitDataCall(bindingId));
@@ -164,7 +164,7 @@ public class FromVisitor {
 
         for (Expression argument : methodCallExpr.getArguments()) {
             final String argumentName = PrintUtil.printConstraint(argument);
-            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
+            if (contextHasDeclaration(argumentName)) {
                 if (bindingId == null) {
                     bindingId = argumentName;
                 }
@@ -178,15 +178,19 @@ public class FromVisitor {
     }
 
     private Optional<Expression> fromExpressionViaScope(String expression, Expression methodCallExpr) {
-        return findViaScopeWithPredicate(methodCallExpr, e -> {
+        final Expression sanitizedMethodCallExpr = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(methodCallExpr);
+        return findViaScopeWithPredicate(sanitizedMethodCallExpr, e -> {
             if (e instanceof NameExpr) {
-                final String name = ((NameExpr) e).getName().toString();
-                return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
+                return contextHasDeclaration(((NameExpr) e).getName().toString());
             }
             return false;
         })
         .filter( Expression::isNameExpr )
         .map( e -> createFromCall(expression, e.asNameExpr().toString(), true) );
+    }
+
+    private boolean contextHasDeclaration(String name) {
+        return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
     }
 
     private Expression createFromCall( String expression, String bindingId, boolean hasBinding ) {
