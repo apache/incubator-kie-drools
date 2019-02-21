@@ -118,20 +118,42 @@ Choose the right representation type for your use case:
 
 There are also several designs for assigning a planning entity to a starting time (or date):
 
-* The starting time is fixed beforehand. It is not a planning variable (in such solver).
-** For example, in the <<bedAllocation,hospital bed planning>> example, the arrival day of each patient is fixed beforehand.
-** This is common in <<multiStagePlanning,multi stage planning>>, when the starting time has been decided already in an earlier planning stage.
-* The starting time is not fixed, it is a planning variable (genuine or shadow).
-** If all planning entities have the same duration, use the <<timeslotPattern,Timeslot pattern>>.
+* If the starting time is fixed beforehand, it is not a planning variable (in that solver).
+** For example, in the <<bedAllocation,hospital bed planning>> example,
+the arrival day of each patient is fixed beforehand.
+** This is common in <<multiStagePlanning,multi stage planning>>,
+when the starting time has been decided already in an earlier planning stage.
+
+* If the starting time is not fixed, it is a planning variable (genuine or shadow).
+
+** If all planning entities have the same duration,
+use the <<timeslotPattern,Timeslot pattern>>.
 *** For example in course scheduling, all lectures take one hour. Therefore, each timeslot is one hour.
-** If the duration differs and time is rounded to a specifc time granularity (for example 5 minutes) use the <<timeGrainPattern,TimeGrain pattern>>.
+*** Even if the planning entities have different durations, but the same duration per type, it's often appropriate.
+**** For example in conference scheduling, breakout talks take one hour and lab talks take 2 hours.
+But there's an enumeration of the timeslots and each timeslot only accepts one talk type.
+
+** If the duration differs and time is rounded to a specific time granularity (for example 5 minutes)
+use the <<timeGrainPattern,TimeGrain pattern>>.
 *** For example in meeting scheduling, all meetings start at 15 minute intervals. All meetings take 15, 30, 45, 60, 90 or 120 minutes.
-** If the duration differs and one task starts immediately after the previous task (assigned to the same executor) finishes, use the <<chainedThroughTimePattern,Chained Through Time pattern>>.
+
+** If the duration differs and one task starts immediately after the previous task (assigned to the same executor) finishes,
+use the <<chainedThroughTimePattern,Chained Through Time pattern>>.
 *** For example in time windowed vehicle routing, each vehicle departs immediately to the next customer when the delivery for the previous customer finishes.
+*** Even if the next task does not always start immediately, but the gap is deterministic, it applies.
+**** For example in vehicle routing, each driver departs immediately to the next customer,
+unless it's the first departure after noon, in which case there's first a 1 hour lunch.
+
+** If the employees need to decide the order of theirs tasks per day, week or SCRUM sprint themselves,
+use the <<timeBucketPattern,Time Bucket pattern>>.
+*** For example in elevator maintenance scheduling, a mechanic gets up to 40 hours worth of tasks per week,
+but there's no point in ordering them within 1 week because there's likely to be disruption from entrapments or other elevator outages.
 
 Choose the right pattern depending on the use case:
 
 image::DesignPatterns/assigningTimeToPlanningEntities.png[align="center"]
+
+image::DesignPatterns/assigningTimeToPlanningEntities2.png[align="center"]
 
 
 [[timeslotPattern]]
@@ -194,7 +216,23 @@ Between planning entities, there are three ways to create gaps:
 * No gaps: This is common when the anchor is a machine. For example, a build server always starts the next job when the previous finishes, without a break.
 * Only deterministic gaps: This is common for humans. For example, any task that crosses the 10:00 barrier gets an extra 15 minutes duration so the human can take a break.
 ** A deterministic gap can be subjected to complex business logic. For example in vehicle routing, a cross-continent truck driver needs to rest 15 minutes after two hours of driving (which may also occur during loading or unloading time at a customer location) and also needs to rest 10 hours after 14 hours of work.
-* Planning variable gaps: This is uncommon, because an extra planning variable (which impacts the <<searchSpaceSize,search space>>) reduces efficiency and scalability.
+* Planning variable gaps: This is uncommon, because that extra planning variable reduces efficiency and scalability,
+(besides impacting the <<searchSpaceSize,search space>> too).
+
+
+[[timeBucketPattern]]
+=== Time Bucket Pattern: Assign to a Capacitated Bucket per Time Period
+
+In this pattern, the time of each employee is divided into _buckets_.
+For example 1 bucket per week.
+Each bucket has a capacity, depending on the FTE (Full Time Equivalent), holidays and the approved vacation of the employee.
+For example, a bucket usually has 40 hours for a full time employee and 20 hours for a half time employee
+but only 8 hours on a specific week if the employee takes vacation the rest of that week.
+
+Each task is assigned to a bucket, which determines the employee and the course-grained time period for working on it.
+_The tasks within one bucket are not ordered_: it's up to the employee to decide the order.
+This gives the employee more autonomy, but makes it harder to do certain optimization,
+such as minimize travel time between task locations.
 
 
 [[multiStragePlanning]]
