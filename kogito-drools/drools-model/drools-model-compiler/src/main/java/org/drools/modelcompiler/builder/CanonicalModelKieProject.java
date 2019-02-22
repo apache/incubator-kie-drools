@@ -39,6 +39,8 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.jci.CompilationProblem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
@@ -49,6 +51,8 @@ import static org.drools.modelcompiler.CanonicalKieModule.createFromClassLoader;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
+
+    Logger logger = LoggerFactory.getLogger(CanonicalModelKieProject.class);
 
     public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
     public static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace( '.', '/' ) + ".class";
@@ -90,7 +94,9 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         if (!sourceFiles.isEmpty()) {
             String[] sources = sourceFiles.toArray( new String[sourceFiles.size()+1] );
 
-            srcMfs.write(PROJECT_MODEL_SOURCE, buildModelSourceClass( modelFiles ).getBytes());
+            String sourceClass = buildModelSourceClass(modelFiles);
+            logger.debug(sourceClass);
+            srcMfs.write(PROJECT_MODEL_SOURCE, sourceClass.getBytes());
             sources[sources.length-1] = PROJECT_MODEL_SOURCE;
 
             CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
