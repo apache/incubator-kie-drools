@@ -115,8 +115,4 @@ public final class Providers {
     public static Provider resourceProvider(String pathToResource) throws IOException {
         return resourceProvider(pathToResource, UTF8);
     }
-
-    public interface PreProcessor {
-        Provider process(Provider innerProvider);
-    }
 }

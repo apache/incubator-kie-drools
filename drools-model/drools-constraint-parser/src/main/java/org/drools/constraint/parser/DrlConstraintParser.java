@@ -132,10 +132,6 @@ public final class DrlConstraintParser {
         assertNotNull(start);
         assertNotNull(provider);
 
-//        for (PreProcessor preProcessor : configuration.getPreProcessors()) {
-//            provider = preProcessor.process(provider);
-//        }
-
         final GeneratedDrlConstraintParser parser = getParserForProvider(provider);
         try {
             N resultNode = start.parse(parser);

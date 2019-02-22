@@ -89,8 +89,9 @@ public class InlineCastExpr extends Expression implements NodeWithType<InlineCas
             return (InlineCastExpr) this;
         }
         notifyPropertyChange(ObservableProperty.EXPRESSION, this.expression, expression);
-        if (this.expression != null)
+        if (this.expression != null) {
             this.expression.setParentNode(null);
+        }
         this.expression = expression;
         setAsParentNodeOf(expression);
         return this;
@@ -103,8 +104,9 @@ public class InlineCastExpr extends Expression implements NodeWithType<InlineCas
             return (InlineCastExpr) this;
         }
         notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
-        if (this.type != null)
+        if (this.type != null) {
             this.type.setParentNode(null);
+        }
         this.type = type;
         setAsParentNodeOf(type);
         return this;
@@ -113,8 +115,9 @@ public class InlineCastExpr extends Expression implements NodeWithType<InlineCas
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         return super.remove(node);
     }
 
@@ -127,8 +130,9 @@ public class InlineCastExpr extends Expression implements NodeWithType<InlineCas
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         if (node == expression) {
             setExpression((Expression) replacementNode);
             return true;

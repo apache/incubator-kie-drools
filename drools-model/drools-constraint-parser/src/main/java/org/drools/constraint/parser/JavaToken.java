@@ -81,15 +81,19 @@ public class JavaToken extends com.github.javaparser.JavaToken {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         org.drools.constraint.parser.JavaToken javaToken = (org.drools.constraint.parser.JavaToken) o;
-        if (kind != javaToken.kind)
+        if (kind != javaToken.kind) {
             return false;
-        if (!text.equals(javaToken.text))
+        }
+        if (!text.equals(javaToken.text)) {
             return false;
+        }
         return true;
     }
 

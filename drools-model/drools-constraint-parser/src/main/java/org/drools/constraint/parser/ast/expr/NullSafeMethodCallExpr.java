@@ -144,8 +144,9 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
             return (NullSafeMethodCallExpr) this;
         }
         notifyPropertyChange(ObservableProperty.ARGUMENTS, this.arguments, arguments);
-        if (this.arguments != null)
+        if (this.arguments != null) {
             this.arguments.setParentNode(null);
+        }
         this.arguments = arguments;
         setAsParentNodeOf(arguments);
         return this;
@@ -158,8 +159,9 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
             return (NullSafeMethodCallExpr) this;
         }
         notifyPropertyChange(ObservableProperty.NAME, this.name, name);
-        if (this.name != null)
+        if (this.name != null) {
             this.name.setParentNode(null);
+        }
         this.name = name;
         setAsParentNodeOf(name);
         return this;
@@ -171,8 +173,9 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
             return (NullSafeMethodCallExpr) this;
         }
         notifyPropertyChange(ObservableProperty.SCOPE, this.scope, scope);
-        if (this.scope != null)
+        if (this.scope != null) {
             this.scope.setParentNode(null);
+        }
         this.scope = scope;
         setAsParentNodeOf(scope);
         return this;
@@ -195,8 +198,9 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
             return (NullSafeMethodCallExpr) this;
         }
         notifyPropertyChange(ObservableProperty.TYPE_ARGUMENTS, this.typeArguments, typeArguments);
-        if (this.typeArguments != null)
+        if (this.typeArguments != null) {
             this.typeArguments.setParentNode(null);
+        }
         this.typeArguments = typeArguments;
         setAsParentNodeOf(typeArguments);
         return this;
@@ -205,8 +209,9 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         for (int i = 0; i < arguments.size(); i++) {
             if (arguments.get(i) == node) {
                 arguments.remove(i);
@@ -244,8 +249,9 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         for (int i = 0; i < arguments.size(); i++) {
             if (arguments.get(i) == node) {
                 arguments.set(i, (Expression) replacementNode);

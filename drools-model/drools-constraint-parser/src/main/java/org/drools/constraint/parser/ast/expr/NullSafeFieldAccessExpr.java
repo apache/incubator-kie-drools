@@ -40,6 +40,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.observer.ObservableProperty;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.visitor.CloneVisitor;
+import com.github.javaparser.resolution.UnsolvedSymbolException;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
@@ -111,8 +112,9 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
             return (NullSafeFieldAccessExpr) this;
         }
         notifyPropertyChange(ObservableProperty.NAME, this.name, name);
-        if (this.name != null)
+        if (this.name != null) {
             this.name.setParentNode(null);
+        }
         this.name = name;
         setAsParentNodeOf(name);
         return this;
@@ -161,8 +163,9 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
             return (NullSafeFieldAccessExpr) this;
         }
         notifyPropertyChange(ObservableProperty.SCOPE, this.scope, scope);
-        if (this.scope != null)
+        if (this.scope != null) {
             this.scope.setParentNode(null);
+        }
         this.scope = scope;
         setAsParentNodeOf(scope);
         return this;
@@ -185,8 +188,9 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
             return (NullSafeFieldAccessExpr) this;
         }
         notifyPropertyChange(ObservableProperty.TYPE_ARGUMENTS, this.typeArguments, typeArguments);
-        if (this.typeArguments != null)
+        if (this.typeArguments != null) {
             this.typeArguments.setParentNode(null);
+        }
         this.typeArguments = typeArguments;
         setAsParentNodeOf(typeArguments);
         return this;
@@ -207,8 +211,9 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
     @Override
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public boolean remove(Node node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         if (typeArguments != null) {
             for (int i = 0; i < typeArguments.size(); i++) {
                 if (typeArguments.get(i) == node) {
@@ -223,8 +228,9 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
     @Override
     @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
     public boolean replace(Node node, Node replacementNode) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         if (node == name) {
             setName((SimpleName) replacementNode);
             return true;
