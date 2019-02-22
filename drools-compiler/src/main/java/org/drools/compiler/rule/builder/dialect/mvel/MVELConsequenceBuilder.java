@@ -337,9 +337,11 @@ public class MVELConsequenceBuilder
                                                          sqre,
                                                          crly,
                                                          lastNonWhite );
-                    i = processLineComment( cs,
-                                            i,
-                                            result);
+                    if (inString) {
+                        result.append( c );
+                    } else {
+                        i = processLineComment( cs, i, result );
+                    }
                     continue;
                 case '(' :
                     brace++;
