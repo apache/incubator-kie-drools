@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.javaparser.ast.Node;
-import org.drools.javaparser.ast.body.Parameter;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;

@@ -8,38 +8,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.javaparser.ast.Node;
-import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
-import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
-import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
-import org.drools.javaparser.ast.drlx.expr.NullSafeFieldAccessExpr;
-import org.drools.javaparser.ast.drlx.expr.NullSafeMethodCallExpr;
-import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
-import org.drools.javaparser.ast.expr.ArrayAccessExpr;
-import org.drools.javaparser.ast.expr.ArrayCreationExpr;
-import org.drools.javaparser.ast.expr.ArrayInitializerExpr;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
-import org.drools.javaparser.ast.expr.CastExpr;
-import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.InstanceOfExpr;
-import org.drools.javaparser.ast.expr.LiteralExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.NullLiteralExpr;
-import org.drools.javaparser.ast.expr.ObjectCreationExpr;
-import org.drools.javaparser.ast.expr.SimpleName;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.ThisExpr;
-import org.drools.javaparser.ast.expr.UnaryExpr;
-import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
-import org.drools.javaparser.ast.type.ReferenceType;
-import org.drools.javaparser.ast.type.Type;
-import org.drools.javaparser.printer.PrintUtil;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
+import com.github.javaparser.ast.expr.ArrayCreationExpr;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.InstanceOfExpr;
+import com.github.javaparser.ast.expr.LiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
+import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.Type;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
+import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
+import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
+import org.drools.constraint.parser.ast.expr.PointFreeExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -59,7 +60,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -103,7 +104,7 @@ public class ExpressionTyper {
 
     public TypedExpressionResult toTypedExpression(Expression drlxExpr) {
         if (logger.isDebugEnabled()) {
-            logger.debug( "Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", PrintUtil.toDrlx( drlxExpr ), patternType, context.getUsedDeclarations() );
+            logger.debug( "Typed expression Input: drlxExpr = {} , patternType = {} ,declarations = {}", printConstraint(drlxExpr), patternType, context.getUsedDeclarations() );
         }
         final Optional<TypedExpression> typedExpression = toTypedExpressionRec(drlxExpr);
         final TypedExpressionResult typedExpressionResult = new TypedExpressionResult(typedExpression, context);
@@ -123,9 +124,19 @@ public class ExpressionTyper {
 
         if (drlxExpr instanceof MethodCallExpr) {
             MethodCallExpr methodExpr = (MethodCallExpr) drlxExpr;
-            if (methodExpr.getNameAsString().equals( "eval" ) && !methodExpr.getScope().isPresent() && methodExpr.getArguments().size() == 1) {
-                drlxExpr = methodExpr.getArgument(0);
+            Expression expr = methodExpr;
+            if (isEval(methodExpr.getNameAsString(), methodExpr.getScope(), methodExpr.getArguments())) {
+                expr = methodExpr.getArgument(0);
             }
+            drlxExpr = expr;
+        }
+        if (drlxExpr instanceof NullSafeMethodCallExpr) {
+            NullSafeMethodCallExpr methodExpr = (NullSafeMethodCallExpr) drlxExpr;
+            Expression expr = methodExpr;
+            if (isEval(methodExpr.getNameAsString(), methodExpr.getScope(), methodExpr.getArguments())) {
+                expr = methodExpr.getArgument(0);
+            }
+            drlxExpr = expr;
         }
 
         if (drlxExpr instanceof UnaryExpr) {
@@ -161,9 +172,10 @@ public class ExpressionTyper {
             toTypedExpressionRec(castExpr.getExpression());
             return of(new TypedExpression(castExpr, getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
 
-        } else if (drlxExpr instanceof NameExpr) {
-            return nameExpr(drlxExpr, typeCursor);
-        } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr) {
+        } else if (drlxExpr instanceof DrlNameExpr || drlxExpr instanceof NameExpr) {
+            return nameExpr(printConstraint(drlxExpr), typeCursor);
+        } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr
+                || drlxExpr instanceof NullSafeFieldAccessExpr || drlxExpr instanceof  NullSafeMethodCallExpr) {
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         } else if (drlxExpr instanceof PointFreeExpr) {
 
@@ -216,7 +228,8 @@ public class ExpressionTyper {
                 });
                 return typedExpression;
             } else {
-                final Optional<TypedExpression> nameExpr = nameExpr(drlxExpr.asArrayAccessExpr().getName(), typeCursor);
+                String name = printConstraint((DrlNameExpr) drlxExpr.asArrayAccessExpr().getName());
+                final Optional<TypedExpression> nameExpr = nameExpr(name, typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() ).getTypedExpression().get().getExpression();
                 return nameExpr.flatMap( te -> te.isArray() ?
                         createArrayAccessExpression(indexExpr , te.getExpression()) :
@@ -246,6 +259,10 @@ public class ExpressionTyper {
         throw new UnsupportedOperationException();
     }
 
+    private boolean isEval(String nameAsString, Optional<Expression> scope, NodeList<Expression> arguments) {
+        return nameAsString.equals("eval") && !scope.isPresent() && arguments.size() == 1;
+    }
+
     private Optional<TypedExpression> createArrayAccessExpression(Expression index, Expression scope) {
         ArrayAccessExpr arrayAccessExpr = new ArrayAccessExpr(scope, index);
         TypedExpression typedExpression = new TypedExpression(arrayAccessExpr, Object.class);
@@ -259,9 +276,7 @@ public class ExpressionTyper {
         return of(typedExpression);
     }
 
-    private Optional<TypedExpression> nameExpr(Expression drlxExpr, Class<?> typeCursor) {
-        String name = drlxExpr.toString();
-
+    private Optional<TypedExpression> nameExpr(String name, Class<?> typeCursor) {
         TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
         if (expression != null) {
             context.addReactOnProperties(name);
@@ -273,13 +288,13 @@ public class ExpressionTyper {
         if (decl.isPresent()) {
             // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(drlxExpr, decl.get().getDeclarationClass()));
+            return of(new TypedExpression(new NameExpr(name), decl.get().getDeclarationClass()));
         }
 
         if (ruleContext.getQueryParameters().stream().anyMatch(qp -> qp.getName().equals(name))) {
             // then drlxExpr is a single NameExpr referring to a query parameter, e.g.: "$p1".
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(drlxExpr));
+            return of(new TypedExpression(new NameExpr(name)));
 
         } else if(packageModel.getGlobals().containsKey(name)){
             Expression plusThis = new NameExpr(name);
@@ -313,7 +328,15 @@ public class ExpressionTyper {
     private TypedExpressionResult toTypedExpressionFromMethodCallOrField(Expression drlxExpr) {
         if (patternType == null && drlxExpr instanceof FieldAccessExpr) {
             // try to see if it's a constant
-            final Optional<TypedExpression> typedExpression = tryParseAsConstantField((FieldAccessExpr) drlxExpr, ruleContext.getTypeResolver());
+            final Optional<TypedExpression> typedExpression = tryParseAsConstantField(ruleContext.getTypeResolver(), ((FieldAccessExpr) drlxExpr).getScope(), ((FieldAccessExpr) drlxExpr).getNameAsString());
+            if(typedExpression.isPresent()) {
+                return new TypedExpressionResult(typedExpression, context);
+            }
+        }
+
+        if (patternType == null && drlxExpr instanceof NullSafeFieldAccessExpr) {
+            // try to see if it's a constant
+            final Optional<TypedExpression> typedExpression = tryParseAsConstantField(ruleContext.getTypeResolver(), ((NullSafeFieldAccessExpr) drlxExpr).getScope(), ((NullSafeFieldAccessExpr) drlxExpr).getNameAsString());
             if(typedExpression.isPresent()) {
                 return new TypedExpressionResult(typedExpression, context);
             }
@@ -336,20 +359,19 @@ public class ExpressionTyper {
 
         if (originalTypeCursor != null && originalTypeCursor.equals(Object.class)) {
             // try infer type  from the declarations
-            final Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstChild.toString());
+            final Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(printConstraint(firstChild));
             originalTypeCursor = declarationById.map(d -> (java.lang.reflect.Type)d.getDeclarationClass()).orElse(originalTypeCursor);
         }
 
         final Optional<TypedExpressionCursor> teCursor = processFirstNode(drlxExpr, childrenNodes, firstNode, isInLineCast, originalTypeCursor);
 
         if (firstNode instanceof MethodCallExpr) {
-            MethodCallExpr firstMethod = ( MethodCallExpr ) firstNode;
-            if (firstMethod.getArguments().isEmpty()) {
-                String firstProp = getter2property(firstMethod.getNameAsString());
-                if (firstProp != null) {
-                    context.addReactOnProperties( firstProp );
-                }
-            }
+            MethodCallExpr me = (MethodCallExpr) firstNode;
+            addReactOnProperty(me.getNameAsString(), me.getArguments());
+        }
+        if (firstNode instanceof NullSafeMethodCallExpr) {
+            NullSafeMethodCallExpr me = (NullSafeMethodCallExpr) firstNode;
+            addReactOnProperty(me.getNameAsString(), me.getArguments());
         }
 
         Expression previous;
@@ -381,6 +403,11 @@ public class ExpressionTyper {
                 typeCursor = typedExpr.typeCursor;
                 previous = typedExpr.expressionCursor;
 
+            } else if (part instanceof NullSafeMethodCallExpr) {
+                TypedExpressionCursor typedExpr = nullSafeMethodCallExpr((NullSafeMethodCallExpr) part, typeCursor, previous);
+                typeCursor = typedExpr.typeCursor;
+                previous = typedExpr.expressionCursor;
+
             } else if (part instanceof InlineCastExpr && ((InlineCastExpr) part).getExpression() instanceof FieldAccessExpr) {
                 InlineCastExpr inlineCastExprPart = (InlineCastExpr) part;
                 final FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) inlineCastExprPart.getExpression();
@@ -403,17 +430,26 @@ public class ExpressionTyper {
             }
         }
 
-        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, drlxExpr.toString())), context);
+        return new TypedExpressionResult(of(new TypedExpression(previous, typeCursor, printConstraint(drlxExpr))), context);
     }
 
-    public static Optional<TypedExpression> tryParseAsConstantField(FieldAccessExpr fieldAccessExpr, TypeResolver typeResolver) {
+    private void addReactOnProperty(String methodName, NodeList<Expression> methodArguments) {
+        if (methodArguments.isEmpty()) {
+            String firstProp = getter2property(methodName);
+            if (firstProp != null) {
+                context.addReactOnProperties( firstProp );
+            }
+        }
+    }
+
+    public static Optional<TypedExpression> tryParseAsConstantField(TypeResolver typeResolver, Expression scope, String name) {
         Class<?> clazz;
         try {
-            clazz = DrlxParseUtil.getClassFromContext(typeResolver, fieldAccessExpr.getScope().toString());
+            clazz = DrlxParseUtil.getClassFromContext(typeResolver, PrintUtil.printConstraint(scope));
         } catch(RuntimeException e) {
             return empty();
         }
-        String field = fieldAccessExpr.getNameAsString();
+        String field = name;
 
         final Object staticValue;
         try {
@@ -423,7 +459,8 @@ public class ExpressionTyper {
         }
 
         if(staticValue != null) {
-            return of(new TypedExpression(fieldAccessExpr, clazz));
+            final Expression sanitizedScope = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(scope);
+            return of(new TypedExpression(new FieldAccessExpr(sanitizedScope, name), clazz));
         } else {
             return empty();
         }
@@ -431,18 +468,21 @@ public class ExpressionTyper {
 
     private Optional<TypedExpressionCursor> processFirstNode(Expression drlxExpr, List<Node> childNodes, Node firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
         final Optional<TypedExpressionCursor> result;
-        if (firstNode instanceof ThisExpr || (firstNode instanceof NameExpr && firstNode.toString().equals(bindingId))) {
+        if (firstNode instanceof ThisExpr || (firstNode instanceof DrlNameExpr && printConstraint(firstNode).equals(bindingId))) {
             result = of(thisExpr(drlxExpr, childNodes, isInLineCast, originalTypeCursor));
 
-        } else if (firstNode instanceof NameExpr) {
-            result = nameExpr(drlxExpr, (NameExpr) firstNode, isInLineCast, originalTypeCursor);
+        } else if (firstNode instanceof DrlNameExpr) {
+            result = drlNameExpr(drlxExpr, (DrlNameExpr) firstNode, isInLineCast, originalTypeCursor);
 
         } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
-            result = of(fieldAccessExpr((FieldAccessExpr) firstNode, originalTypeCursor));
+            result = of(fieldAccessExpr(originalTypeCursor, ((FieldAccessExpr) firstNode).getName()));
+
+        } else if (firstNode instanceof NullSafeFieldAccessExpr && ((NullSafeFieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
+            result = of(fieldAccessExpr(originalTypeCursor, ((NullSafeFieldAccessExpr) firstNode).getName()));
 
         } else if (firstNode instanceof MethodCallExpr) {
             Optional<DeclarationSpec> scopeDecl = ((MethodCallExpr) firstNode).getScope()
-                    .flatMap( scope -> ruleContext.getDeclarationById( scope.toString() ) );
+                    .flatMap( scope -> ruleContext.getDeclarationById(PrintUtil.printConstraint(scope) ) );
 
             Expression scope;
             java.lang.reflect.Type type;
@@ -564,27 +604,32 @@ public class ExpressionTyper {
     }
 
     private TypedExpressionCursor methodCallExpr(MethodCallExpr methodCallExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
-        if (methodCallExpr instanceof NullSafeMethodCallExpr) {
-            methodCallExpr = new MethodCallExpr( scope, methodCallExpr.getName(), methodCallExpr.getArguments() );
-        } else {
-            methodCallExpr.setScope( scope );
-        }
+        methodCallExpr.setScope( scope );
+        return parseMethodCallExpr(methodCallExpr, originalTypeCursor);
+    }
 
+    private TypedExpressionCursor nullSafeMethodCallExpr(NullSafeMethodCallExpr nullSafeMethodCallExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
+        MethodCallExpr methodCallExpr = new MethodCallExpr( scope, nullSafeMethodCallExpr.getName(), nullSafeMethodCallExpr.getArguments() );
+
+        return parseMethodCallExpr(methodCallExpr, originalTypeCursor);
+    }
+
+    private TypedExpressionCursor parseMethodCallExpr(MethodCallExpr methodCallExpr, java.lang.reflect.Type originalTypeCursor) {
         Class<?> rawClassCursor = toRawClass(originalTypeCursor);
         String methodName = methodCallExpr.getNameAsString();
-        Method m = rawClassCursor != null ? ClassUtil.findMethod( rawClassCursor, methodName, parseNodeArguments( methodCallExpr ) ) : null;
+        Method m = rawClassCursor != null ? ClassUtil.findMethod(rawClassCursor, methodName, parseNodeArguments(methodCallExpr)) : null;
         if (m == null) {
-            Optional<Class<?>> functionType = ruleContext.getFunctionType( methodName );
+            Optional<Class<?>> functionType = ruleContext.getFunctionType(methodName);
             if (functionType.isPresent()) {
-                methodCallExpr.setScope( null );
+                methodCallExpr.setScope(null);
                 return new TypedExpressionCursor(methodCallExpr, functionType.get());
             }
-            ruleContext.addCompilationError( new InvalidExpressionErrorResult( "Method " + methodName + " on " + originalTypeCursor + " is missing" ) );
+            ruleContext.addCompilationError(new InvalidExpressionErrorResult("Method " + methodName + " on " + originalTypeCursor + " is missing"));
             return new TypedExpressionCursor(methodCallExpr, Object.class);
         }
 
-        if (methodName.equals( "get" ) && List.class.isAssignableFrom( rawClassCursor ) && originalTypeCursor instanceof ParameterizedType ) {
-            return new TypedExpressionCursor(methodCallExpr, (( ParameterizedType ) originalTypeCursor).getActualTypeArguments()[0] );
+        if (methodName.equals("get") && List.class.isAssignableFrom(rawClassCursor) && originalTypeCursor instanceof ParameterizedType) {
+            return new TypedExpressionCursor(methodCallExpr, ((ParameterizedType) originalTypeCursor).getActualTypeArguments()[0]);
         }
 
         return new TypedExpressionCursor(methodCallExpr, m.getGenericReturnType());
@@ -647,10 +692,10 @@ public class ExpressionTyper {
         return new TypedExpressionCursor(arrayCreationExpr, type);
     }
 
-    private TypedExpressionCursor fieldAccessExpr(FieldAccessExpr firstNode, java.lang.reflect.Type originalTypeCursor) {
+    private TypedExpressionCursor fieldAccessExpr(java.lang.reflect.Type originalTypeCursor, SimpleName firstNodeName) {
         TypedExpressionCursor teCursor;
         final java.lang.reflect.Type tc4 = originalTypeCursor;
-        String firstName = firstNode.getName().getIdentifier();
+        String firstName = firstNodeName.getIdentifier();
         Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName);
         if (firstAccessor != null) {
             context.addReactOnProperties(firstName);
@@ -662,7 +707,7 @@ public class ExpressionTyper {
         return teCursor;
     }
 
-    private Optional<TypedExpressionCursor> nameExpr(Expression drlxExpr, NameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
+    private Optional<TypedExpressionCursor> drlNameExpr(Expression drlxExpr, DrlNameExpr firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
         String firstName = firstNode.getName().getIdentifier();
         Optional<DeclarationSpec> declarationById = ruleContext.getDeclarationById(firstName);
         if (declarationById.isPresent()) {
@@ -683,7 +728,7 @@ public class ExpressionTyper {
         // In OOPath a declaration is based on a position rather than a name.
         // Only an OOPath chunk can have a backreference expression
         Optional<DeclarationSpec> backReference = empty();
-        if(firstNode.getBackReferencesCount() > 0) {
+        if( firstNode.getBackReferencesCount() > 0) {
             List<DeclarationSpec> ooPathDeclarations = ruleContext.getOOPathDeclarations();
             DeclarationSpec backReferenceDeclaration = ooPathDeclarations.get(ooPathDeclarations.size() - 1 - firstNode.getBackReferencesCount());
             typeCursor = backReferenceDeclaration.getDeclarationClass();
@@ -774,7 +819,7 @@ public class ExpressionTyper {
         if(expression instanceof BinaryExpr) {
             BinaryExpr be = (BinaryExpr)expression;
             return findLeftLeafOfNameExpr(be.getLeft());
-        } else if(expression instanceof NameExpr) {
+        } else if(expression instanceof DrlNameExpr) {
             return (Expression) expression;
         } else if(expression instanceof ThisExpr) {
             return (Expression) expression;

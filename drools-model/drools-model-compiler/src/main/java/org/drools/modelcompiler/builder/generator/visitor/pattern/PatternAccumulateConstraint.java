@@ -9,7 +9,9 @@ import java.util.Set;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -38,7 +40,7 @@ class PatternAccumulateConstraint implements DSLNode {
         Map<String, List<BaseDescr>> constraintsByVar = new HashMap<>();
         for (BaseDescr constraint : constraintDescrs) {
             Set<String> exprIds = DrlxParseUtil.parseExpression( constraint.getText() ).getExpr()
-                    .findAll( NameExpr.class ).stream().map( NameExpr::toString ).collect( toSet() );
+                    .findAll( DrlNameExpr.class ).stream().map(PrintUtil::printConstraint).collect(toSet() );
             for (AccumulateDescr.AccumulateFunctionCallDescr accFunc : source.getFunctions()) {
                 if ( exprIds.contains( accFunc.getBind() ) ) {
                     constraintsByVar.computeIfAbsent( accFunc.getBind(), s -> new ArrayList<>() ).add(constraint);

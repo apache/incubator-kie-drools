@@ -20,7 +20,8 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.drools.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.Expression;
+import org.drools.constraint.parser.printer.PrintUtil;
 
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
@@ -150,7 +151,7 @@ public class TypedExpression {
             return false;
         }
         TypedExpression that = (TypedExpression) o;
-        return Objects.equals(expression.toString(), that.expression.toString()) &&
+        return Objects.equals(PrintUtil.printConstraint(expression), PrintUtil.printConstraint(that.expression)) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(fieldName, that.fieldName) &&
                 Objects.equals(unificationVariable, that.unificationVariable) &&

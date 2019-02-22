@@ -3,7 +3,7 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.List;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.drools.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.CompilationUnit;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;

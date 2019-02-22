@@ -41,9 +41,14 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-compiler</artifactId>
     </dependency>
+
     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drlx-parser</artifactId>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-constraint-parser</artifactId>
     </dependency>
 
     <!-- BigMath dependency to obtain BigDecimal advanced math -->

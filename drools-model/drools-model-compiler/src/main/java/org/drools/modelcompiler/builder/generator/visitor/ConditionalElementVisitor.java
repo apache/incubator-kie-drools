@@ -2,7 +2,7 @@ package org.drools.modelcompiler.builder.generator.visitor;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 public class ConditionalElementVisitor {

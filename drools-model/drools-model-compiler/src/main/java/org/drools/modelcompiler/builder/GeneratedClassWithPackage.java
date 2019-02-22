@@ -2,7 +2,7 @@ package org.drools.modelcompiler.builder;
 
 import java.util.Collection;
 
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 public class GeneratedClassWithPackage {
     private final ClassOrInterfaceDeclaration generatedClass;

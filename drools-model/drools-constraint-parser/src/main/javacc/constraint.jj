@@ -1,0 +1,2198 @@
+/*
+ * Copyright (C) 2007-2010 Júlio Vilmar Gesser.
+ * Copyright (C) 2011, 2013-2016 The JavaParser Team.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * This file is part of JavaParser.
+ *
+ * JavaParser can be used either under the terms of
+ * a) the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ * b) the terms of the Apache License
+ *
+ * You should have received a copy of both licenses in LICENCE.LGPL and
+ * LICENCE.APACHE. Please refer to those files for details.
+ *
+ * JavaParser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Modified by Red Hat, Inc.
+ */
+
+options {
+  COMMON_TOKEN_ACTION=true;
+  JDK_VERSION = "1.8";
+  TOKEN_EXTENDS ="TokenBase";
+  JAVA_TEMPLATE_TYPE = "modern";
+  // DEBUG_PARSER=true;
+}
+
+PARSER_BEGIN(GeneratedDrlConstraintParser)
+/*
+ * Copyright (C) 2007-2010 Júlio Vilmar Gesser.
+ * Copyright (C) 2011, 2013-2016 The JavaParser Team.
+ *
+ * This file is part of JavaParser.
+ *
+ * JavaParser can be used either under the terms of
+ * a) the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * b) the terms of the Apache License
+ *
+ * You should have received a copy of both licenses in LICENCE.LGPL and
+ * LICENCE.APACHE. Please refer to those files for details.
+ *
+ * JavaParser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ */
+package org.drools.constraint.parser;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import com.github.javaparser.ast.*;
+import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.*;
+import com.github.javaparser.ast.modules.*;
+import com.github.javaparser.ast.expr.*;
+import org.drools.constraint.parser.ast.expr.*;
+import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.ast.type.*;
+import com.github.javaparser.utils.*;
+
+import com.github.javaparser.Problem;
+import com.github.javaparser.TokenRange;
+import com.github.javaparser.TokenRange;
+import org.drools.constraint.parser.Token;
+import com.github.javaparser.JavaToken;
+
+import static com.github.javaparser.JavaToken.INVALID;
+import static com.github.javaparser.ast.Node.Parsedness.UNPARSABLE;
+import static com.github.javaparser.utils.Utils.*;
+import static com.github.javaparser.ast.NodeList.*;
+import static org.drools.constraint.parser.GeneratedDrlConstraintParser.*;
+import static com.github.javaparser.Range.*;
+import static com.github.javaparser.Position.*;
+import static com.github.javaparser.ast.type.ArrayType.*;
+import static org.drools.constraint.parser.GeneratedDrlConstraintParserTokenManagerBase.*;
+
+@Generated("JavaCC")
+public final class GeneratedDrlConstraintParser extends GeneratedDrlConstraintParserBase {
+    /* Returns the JavaParser specific token type of the last matched token */
+    JavaToken token() {
+        if(token.toString() == null) {
+            return null;
+        }
+        return new org.drools.constraint.parser.JavaToken(token.javaToken.getKind(), token.javaToken.getText());
+    }
+
+    /* Changes the amount by which the horizontal position is increased when a tab character is encountered.
+        One by default.*/
+    void setTabSize(int size) {
+        jj_input_stream.setTabSize(size);
+    }
+
+    @Override
+    GeneratedDrlConstraintParserTokenManager getTokenSource() {
+        return token_source;
+    }
+
+    private Collection<String> pointFreeOperators = new ArrayList<String>();
+    public void setPointFreeOperators(Collection<String> pointFreeOperators) {
+        this.pointFreeOperators = pointFreeOperators;
+    }
+
+    public boolean isPointFreeOperator(String operator) {
+        return this.pointFreeOperators.contains(operator);
+    }
+
+}
+
+PARSER_END(GeneratedDrlConstraintParser)
+
+/* WHITE SPACE */
+
+SPECIAL_TOKEN :
+{
+  <SPACE: [" ", "\t", "\f", "\u0085", "\u00A0", "\u1680", "\u180e", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005",
+      "\u2006", "\u2007", "\u2008", "\u2009", "\u200a", "\u200b", "\u200c", "\u200d", "\u2028", "\u2029", "\u202f", "\u205f", "\u2060", "\u3000", "\ufeff"]>
+| <WINDOWS_EOL : "\r\n">
+| <UNIX_EOL: "\n">
+| <OLD_MAC_EOL: "\r">
+}
+
+TOKEN_MGR_DECLS :
+{
+    private List<JavaToken> tokens = new ArrayList<JavaToken>();
+    private CommentsCollection commentsCollection = new CommentsCollection();
+    private JavaToken homeToken;
+    private Stack<Token> tokenWorkStack = new Stack<Token>();
+    private boolean storeTokens;
+
+    void reset() {
+        tokens = new ArrayList<JavaToken>();
+        commentsCollection = new CommentsCollection();
+        homeToken = null;
+    }
+
+    List<JavaToken> getTokens() {
+        if(storeTokens) {
+            return tokens;
+        }
+        return null;
+    }
+
+    CommentsCollection getCommentsCollection() {
+        return commentsCollection;
+    }
+
+    /* Get the very first token in the file */
+    JavaToken getHomeToken() {
+        return homeToken;
+    }
+
+    /* Makes the parser keep a list of tokens */
+    public void setStoreTokens(boolean storeTokens) {
+        this.storeTokens = storeTokens;
+    }
+
+    private void CommonTokenAction(Token token) {
+        // Use an intermediary stack to avoid recursion, see issue 1003
+        do {
+            tokenWorkStack.push(token);
+            token = token.specialToken;
+        } while (token != null);
+
+        // The stack is now filled with tokens in left-to-right order. Process them.
+        while(!tokenWorkStack.empty()) {
+            token = tokenWorkStack.pop();
+            int tokenKind = token.kind;
+            String tokenText = token.image;
+            token.javaToken = new org.drools.constraint.parser.JavaToken(tokenKind, tokenText);
+
+            if(storeTokens) {
+                tokens.add(token.javaToken);
+            }
+
+            if (homeToken == null) {
+                homeToken = token.javaToken;
+            }
+
+            if(TokenTypes.isComment(token.kind)) {
+                Comment comment = createCommentFromToken(token);
+                commentsCollection.addComment(comment);
+            }
+        }
+    }
+}
+
+/* COMMENTS */
+
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+}
+
+MORE :
+{
+  <ENTER_JAVADOC_COMMENT: "/**" ~["/"]> { input_stream.backup(1); } : IN_JAVADOC_COMMENT
+|
+  <ENTER_MULTILINE_COMMENT: "/*"> : IN_MULTI_LINE_COMMENT
+}
+
+<IN_JAVADOC_COMMENT>
+SPECIAL_TOKEN :
+{
+  <JAVADOC_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_JAVADOC_COMMENT, IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  <COMMENT_CONTENT: ~[] >
+}
+
+/* RESERVED WORDS AND LITERALS */
+
+TOKEN :
+{
+  < ABSTRACT: "abstract" >
+| < ASSERT: "assert" >
+| < BOOLEAN: "boolean" >
+| < BREAK: "break" >
+| < BYTE: "byte" >
+| < CASE: "case" >
+| < CATCH: "catch" >
+| < CHAR: "char" >
+| < CLASS: "class" >
+| < CONST: "const" >
+| < CONTINUE: "continue" >
+| < _DEFAULT: "default" >
+| < DO: "do" >
+| < DOUBLE: "double" >
+| < ELSE: "else" >
+| < EXTENDS: "extends" >
+| < FALSE: "false" >
+| < FINAL: "final" >
+| < FINALLY: "finally" >
+| < FLOAT: "float" >
+| < FOR: "for" >
+| < GOTO: "goto" >
+| < IF: "if" >
+| < IMPLEMENTS: "implements" >
+| < IMPORT: "import" >
+| < INSTANCEOF: "instanceof" >
+| < INT: "int" >
+| < INTERFACE: "interface" >
+| < LONG: "long" >
+| < NATIVE: "native" >
+| < NEW: "new" >
+| < NULL: "null" >
+| < PACKAGE: "package">
+| < PRIVATE: "private" >
+| < PROTECTED: "protected" >
+| < PUBLIC: "public" >
+| < RETURN: "return" >
+| < SHORT: "short" >
+| < STATIC: "static" >
+| < STRICTFP: "strictfp" >
+| < SUPER: "super" >
+| < SWITCH: "switch" >
+| < SYNCHRONIZED: "synchronized" >
+| < THIS: "this" >
+| < THROW: "throw" >
+| < THROWS: "throws" >
+| < TRANSIENT: "transient" >
+| < TRUE: "true" >
+| < TRY: "try" >
+| < VOID: "void" >
+| < VOLATILE: "volatile" >
+| < WHILE: "while" >
+| < REQUIRES: "requires" >
+| < TO: "to" >
+| < WITH: "with" >
+| < OPEN: "open" >
+| < OPENS: "opens" >
+| < USES: "uses" >
+| < MODULE: "module" >
+| < EXPORTS: "exports" >
+| < PROVIDES: "provides" >
+| < TRANSITIVE: "transitive" >
+| < RULE: "rule" >
+| < NOT: "not" >
+| < MVEL_STARTS_WITH: "str[startsWith]" >
+| < MVEL_ENDS_WITH: "str[endsWith]" >
+| < MVEL_LENGTH: "str[length]" >
+}
+
+/* LITERALS */
+
+TOKEN :
+{
+  < LONG_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])
+      | <HEX_LITERAL> (["l","L"])
+      | <OCTAL_LITERAL> (["l","L"])
+      | <BINARY_LITERAL> (["l","L"])
+  >
+|
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL>
+      | <HEX_LITERAL>
+      | <OCTAL_LITERAL>
+      | <BINARY_LITERAL>
+  >
+|
+  < BIG_INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["I"])
+  >
+|
+  < BIG_DECIMAL_LITERAL:
+        <DECIMAL_FLOATING_POINT_LITERAL> (["B"])
+      | <DECIMAL_LITERAL> (["B"])
+  >
+|
+  < #DECIMAL_LITERAL: ["0"-"9"]((["0"-"9","_"])*["0"-"9"])? >
+|
+  < #HEX_LITERAL: "0" ["x","X"] <HEX_DIGITS> >
+|
+  < #OCTAL_LITERAL: "0" ["0"-"7"]((["0"-"7","_"])*["0"-"7"])? >
+|
+  < #BINARY_LITERAL: "0" ["b","B"] ["0","1"]((["0","1","_"])*["0","1"])? >
+|
+  < FLOATING_POINT_LITERAL:
+        <DECIMAL_FLOATING_POINT_LITERAL>
+      | <HEXADECIMAL_FLOATING_POINT_LITERAL>
+  >
+|
+  < #DECIMAL_FLOATING_POINT_LITERAL:
+        <DECIMAL_LITERAL> "." (<DECIMAL_LITERAL>)? (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> <DECIMAL_EXPONENT> (["f","F","d","D"])?
+      | <DECIMAL_LITERAL> (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (<DECIMAL_LITERAL>)+ >
+|
+  < #HEXADECIMAL_FLOATING_POINT_LITERAL:
+        <HEX_LITERAL> (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+      | "0" ["x","X"] (<HEX_DIGITS>)? "." <HEX_DIGITS> <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  >
+|
+  < #HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? <DECIMAL_LITERAL> >
+|
+  < #HEX_DIGITS: ["0"-"9","a"-"f","A"-"F"]((["0"-"9","a"-"f","A"-"F","_"])*["0"-"9","a"-"f","A"-"F"])? >
+|
+  < #UNICODE_ESCAPE:
+    "\\u"
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"]
+    ["0"-"9","A"-"F","a"-"f"] >
+|
+  < CHARACTER_LITERAL:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+        | <UNICODE_ESCAPE>
+      )
+      "'"
+  >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+        | ("\\u"
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+          )
+      )*
+      "\""
+  >
+}
+
+/* IDENTIFIERS */
+
+TOKEN :
+{
+  < IDENTIFIER: <LETTER> (<PART_LETTER>)* >
+|
+  < #LETTER: [
+         "\u0024",  "\u0041"-"\u005a",  "\u005f",  "\u0061"-"\u007a",  "\u00a2"-"\u00a5",  "\u00aa",  "\u00b5",
+         "\u00ba",  "\u00c0"-"\u00d6",  "\u00d8"-"\u00f6",  "\u00f8"-"\u02c1",  "\u02c6"-"\u02d1",  "\u02e0"-"\u02e4",
+         "\u02ec",  "\u02ee",  "\u0370"-"\u0374",  "\u0376"-"\u0377",  "\u037a"-"\u037d",  "\u037f",  "\u0386",
+         "\u0388"-"\u038a",  "\u038c",  "\u038e"-"\u03a1",  "\u03a3"-"\u03f5",  "\u03f7"-"\u0481",  "\u048a"-"\u052f",
+         "\u0531"-"\u0556",  "\u0559",  "\u0561"-"\u0587",  "\u058f",  "\u05d0"-"\u05ea",  "\u05f0"-"\u05f2",
+         "\u060b",  "\u0620"-"\u064a",  "\u066e"-"\u066f",  "\u0671"-"\u06d3",  "\u06d5",  "\u06e5"-"\u06e6",
+         "\u06ee"-"\u06ef",  "\u06fa"-"\u06fc",  "\u06ff",  "\u0710",  "\u0712"-"\u072f",  "\u074d"-"\u07a5",
+         "\u07b1",  "\u07ca"-"\u07ea",  "\u07f4"-"\u07f5",  "\u07fa",  "\u0800"-"\u0815",  "\u081a",  "\u0824",
+         "\u0828",  "\u0840"-"\u0858",  "\u0860"-"\u086a",  "\u08a0"-"\u08b4",  "\u08b6"-"\u08bd",  "\u0904"-"\u0939",
+         "\u093d",  "\u0950",  "\u0958"-"\u0961",  "\u0971"-"\u0980",  "\u0985"-"\u098c",  "\u098f"-"\u0990",
+         "\u0993"-"\u09a8",  "\u09aa"-"\u09b0",  "\u09b2",  "\u09b6"-"\u09b9",  "\u09bd",  "\u09ce",  "\u09dc"-"\u09dd",
+         "\u09df"-"\u09e1",  "\u09f0"-"\u09f3",  "\u09fb"-"\u09fc",  "\u0a05"-"\u0a0a",  "\u0a0f"-"\u0a10",
+         "\u0a13"-"\u0a28",  "\u0a2a"-"\u0a30",  "\u0a32"-"\u0a33",  "\u0a35"-"\u0a36",  "\u0a38"-"\u0a39",
+         "\u0a59"-"\u0a5c",  "\u0a5e",  "\u0a72"-"\u0a74",  "\u0a85"-"\u0a8d",  "\u0a8f"-"\u0a91",  "\u0a93"-"\u0aa8",
+         "\u0aaa"-"\u0ab0",  "\u0ab2"-"\u0ab3",  "\u0ab5"-"\u0ab9",  "\u0abd",  "\u0ad0",  "\u0ae0"-"\u0ae1",
+         "\u0af1",  "\u0af9",  "\u0b05"-"\u0b0c",  "\u0b0f"-"\u0b10",  "\u0b13"-"\u0b28",  "\u0b2a"-"\u0b30",
+         "\u0b32"-"\u0b33",  "\u0b35"-"\u0b39",  "\u0b3d",  "\u0b5c"-"\u0b5d",  "\u0b5f"-"\u0b61",  "\u0b71",
+         "\u0b83",  "\u0b85"-"\u0b8a",  "\u0b8e"-"\u0b90",  "\u0b92"-"\u0b95",  "\u0b99"-"\u0b9a",  "\u0b9c",
+         "\u0b9e"-"\u0b9f",  "\u0ba3"-"\u0ba4",  "\u0ba8"-"\u0baa",  "\u0bae"-"\u0bb9",  "\u0bd0",  "\u0bf9",
+         "\u0c05"-"\u0c0c",  "\u0c0e"-"\u0c10",  "\u0c12"-"\u0c28",  "\u0c2a"-"\u0c39",  "\u0c3d",  "\u0c58"-"\u0c5a",
+         "\u0c60"-"\u0c61",  "\u0c80",  "\u0c85"-"\u0c8c",  "\u0c8e"-"\u0c90",  "\u0c92"-"\u0ca8",  "\u0caa"-"\u0cb3",
+         "\u0cb5"-"\u0cb9",  "\u0cbd",  "\u0cde",  "\u0ce0"-"\u0ce1",  "\u0cf1"-"\u0cf2",  "\u0d05"-"\u0d0c",
+         "\u0d0e"-"\u0d10",  "\u0d12"-"\u0d3a",  "\u0d3d",  "\u0d4e",  "\u0d54"-"\u0d56",  "\u0d5f"-"\u0d61",
+         "\u0d7a"-"\u0d7f",  "\u0d85"-"\u0d96",  "\u0d9a"-"\u0db1",  "\u0db3"-"\u0dbb",  "\u0dbd",  "\u0dc0"-"\u0dc6",
+         "\u0e01"-"\u0e30",  "\u0e32"-"\u0e33",  "\u0e3f"-"\u0e46",  "\u0e81"-"\u0e82",  "\u0e84",  "\u0e87"-"\u0e88",
+         "\u0e8a",  "\u0e8d",  "\u0e94"-"\u0e97",  "\u0e99"-"\u0e9f",  "\u0ea1"-"\u0ea3",  "\u0ea5",  "\u0ea7",
+         "\u0eaa"-"\u0eab",  "\u0ead"-"\u0eb0",  "\u0eb2"-"\u0eb3",  "\u0ebd",  "\u0ec0"-"\u0ec4",  "\u0ec6",
+         "\u0edc"-"\u0edf",  "\u0f00",  "\u0f40"-"\u0f47",  "\u0f49"-"\u0f6c",  "\u0f88"-"\u0f8c",  "\u1000"-"\u102a",
+         "\u103f",  "\u1050"-"\u1055",  "\u105a"-"\u105d",  "\u1061",  "\u1065"-"\u1066",  "\u106e"-"\u1070",
+         "\u1075"-"\u1081",  "\u108e",  "\u10a0"-"\u10c5",  "\u10c7",  "\u10cd",  "\u10d0"-"\u10fa",  "\u10fc"-"\u1248",
+         "\u124a"-"\u124d",  "\u1250"-"\u1256",  "\u1258",  "\u125a"-"\u125d",  "\u1260"-"\u1288",  "\u128a"-"\u128d",
+         "\u1290"-"\u12b0",  "\u12b2"-"\u12b5",  "\u12b8"-"\u12be",  "\u12c0",  "\u12c2"-"\u12c5",  "\u12c8"-"\u12d6",
+         "\u12d8"-"\u1310",  "\u1312"-"\u1315",  "\u1318"-"\u135a",  "\u1380"-"\u138f",  "\u13a0"-"\u13f5",
+         "\u13f8"-"\u13fd",  "\u1401"-"\u166c",  "\u166f"-"\u167f",  "\u1681"-"\u169a",  "\u16a0"-"\u16ea",
+         "\u16ee"-"\u16f8",  "\u1700"-"\u170c",  "\u170e"-"\u1711",  "\u1720"-"\u1731",  "\u1740"-"\u1751",
+         "\u1760"-"\u176c",  "\u176e"-"\u1770",  "\u1780"-"\u17b3",  "\u17d7",  "\u17db"-"\u17dc",  "\u1820"-"\u1877",
+         "\u1880"-"\u1884",  "\u1887"-"\u18a8",  "\u18aa",  "\u18b0"-"\u18f5",  "\u1900"-"\u191e",  "\u1950"-"\u196d",
+         "\u1970"-"\u1974",  "\u1980"-"\u19ab",  "\u19b0"-"\u19c9",  "\u1a00"-"\u1a16",  "\u1a20"-"\u1a54",
+         "\u1aa7",  "\u1b05"-"\u1b33",  "\u1b45"-"\u1b4b",  "\u1b83"-"\u1ba0",  "\u1bae"-"\u1baf",  "\u1bba"-"\u1be5",
+         "\u1c00"-"\u1c23",  "\u1c4d"-"\u1c4f",  "\u1c5a"-"\u1c7d",  "\u1c80"-"\u1c88",  "\u1ce9"-"\u1cec",
+         "\u1cee"-"\u1cf1",  "\u1cf5"-"\u1cf6",  "\u1d00"-"\u1dbf",  "\u1e00"-"\u1f15",  "\u1f18"-"\u1f1d",
+         "\u1f20"-"\u1f45",  "\u1f48"-"\u1f4d",  "\u1f50"-"\u1f57",  "\u1f59",  "\u1f5b",  "\u1f5d",  "\u1f5f"-"\u1f7d",
+         "\u1f80"-"\u1fb4",  "\u1fb6"-"\u1fbc",  "\u1fbe",  "\u1fc2"-"\u1fc4",  "\u1fc6"-"\u1fcc",  "\u1fd0"-"\u1fd3",
+         "\u1fd6"-"\u1fdb",  "\u1fe0"-"\u1fec",  "\u1ff2"-"\u1ff4",  "\u1ff6"-"\u1ffc",  "\u203f"-"\u2040",
+         "\u2054",  "\u2071",  "\u207f",  "\u2090"-"\u209c",  "\u20a0"-"\u20bf",  "\u2102",  "\u2107",  "\u210a"-"\u2113",
+         "\u2115",  "\u2119"-"\u211d",  "\u2124",  "\u2126",  "\u2128",  "\u212a"-"\u212d",  "\u212f"-"\u2139",
+         "\u213c"-"\u213f",  "\u2145"-"\u2149",  "\u214e",  "\u2160"-"\u2188",  "\u2c00"-"\u2c2e",  "\u2c30"-"\u2c5e",
+         "\u2c60"-"\u2ce4",  "\u2ceb"-"\u2cee",  "\u2cf2"-"\u2cf3",  "\u2d00"-"\u2d25",  "\u2d27",  "\u2d2d",
+         "\u2d30"-"\u2d67",  "\u2d6f",  "\u2d80"-"\u2d96",  "\u2da0"-"\u2da6",  "\u2da8"-"\u2dae",  "\u2db0"-"\u2db6",
+         "\u2db8"-"\u2dbe",  "\u2dc0"-"\u2dc6",  "\u2dc8"-"\u2dce",  "\u2dd0"-"\u2dd6",  "\u2dd8"-"\u2dde",
+         "\u2e2f",  "\u3005"-"\u3007",  "\u3021"-"\u3029",  "\u3031"-"\u3035",  "\u3038"-"\u303c",  "\u3041"-"\u3096",
+         "\u309d"-"\u309f",  "\u30a1"-"\u30fa",  "\u30fc"-"\u30ff",  "\u3105"-"\u312e",  "\u3131"-"\u318e",
+         "\u31a0"-"\u31ba",  "\u31f0"-"\u31ff",  "\u3400"-"\u4db5",  "\u4e00"-"\u9fea",  "\ua000"-"\ua48c",
+         "\ua4d0"-"\ua4fd",  "\ua500"-"\ua60c",  "\ua610"-"\ua61f",  "\ua62a"-"\ua62b",  "\ua640"-"\ua66e",
+         "\ua67f"-"\ua69d",  "\ua6a0"-"\ua6ef",  "\ua717"-"\ua71f",  "\ua722"-"\ua788",  "\ua78b"-"\ua7ae",
+         "\ua7b0"-"\ua7b7",  "\ua7f7"-"\ua801",  "\ua803"-"\ua805",  "\ua807"-"\ua80a",  "\ua80c"-"\ua822",
+         "\ua838",  "\ua840"-"\ua873",  "\ua882"-"\ua8b3",  "\ua8f2"-"\ua8f7",  "\ua8fb",  "\ua8fd",  "\ua90a"-"\ua925",
+         "\ua930"-"\ua946",  "\ua960"-"\ua97c",  "\ua984"-"\ua9b2",  "\ua9cf",  "\ua9e0"-"\ua9e4",  "\ua9e6"-"\ua9ef",
+         "\ua9fa"-"\ua9fe",  "\uaa00"-"\uaa28",  "\uaa40"-"\uaa42",  "\uaa44"-"\uaa4b",  "\uaa60"-"\uaa76",
+         "\uaa7a",  "\uaa7e"-"\uaaaf",  "\uaab1",  "\uaab5"-"\uaab6",  "\uaab9"-"\uaabd",  "\uaac0",  "\uaac2",
+         "\uaadb"-"\uaadd",  "\uaae0"-"\uaaea",  "\uaaf2"-"\uaaf4",  "\uab01"-"\uab06",  "\uab09"-"\uab0e",
+         "\uab11"-"\uab16",  "\uab20"-"\uab26",  "\uab28"-"\uab2e",  "\uab30"-"\uab5a",  "\uab5c"-"\uab65",
+         "\uab70"-"\uabe2",  "\uac00"-"\ud7a3",  "\ud7b0"-"\ud7c6",  "\ud7cb"-"\ud7fb",  "\ud800"-"\udfff",
+         "\uf900"-"\ufa6d",  "\ufa70"-"\ufad9",  "\ufb00"-"\ufb06",  "\ufb13"-"\ufb17",  "\ufb1d",  "\ufb1f"-"\ufb28",
+         "\ufb2a"-"\ufb36",  "\ufb38"-"\ufb3c",  "\ufb3e",  "\ufb40"-"\ufb41",  "\ufb43"-"\ufb44",  "\ufb46"-"\ufbb1",
+         "\ufbd3"-"\ufd3d",  "\ufd50"-"\ufd8f",  "\ufd92"-"\ufdc7",  "\ufdf0"-"\ufdfc",  "\ufe33"-"\ufe34",
+         "\ufe4d"-"\ufe4f",  "\ufe69",  "\ufe70"-"\ufe74",  "\ufe76"-"\ufefc",  "\uff04",  "\uff21"-"\uff3a",
+         "\uff3f",  "\uff41"-"\uff5a",  "\uff66"-"\uffbe",  "\uffc2"-"\uffc7",  "\uffca"-"\uffcf",  "\uffd2"-"\uffd7",
+         "\uffda"-"\uffdc",  "\uffe0"-"\uffe1",  "\uffe5"-"\uffe6"  ]
+        | <UNICODE_ESCAPE>
+  >
+|
+  < #PART_LETTER: [
+         "\u0000"-"\u0008",  "\u000e"-"\u001b",  "\u0024",  "\u0030"-"\u0039",  "\u0041"-"\u005a",  "\u005f",
+         "\u0061"-"\u007a",  "\u007f"-"\u009f",  "\u00a2"-"\u00a5",  "\u00aa",  "\u00ad",  "\u00b5",  "\u00ba",
+         "\u00c0"-"\u00d6",  "\u00d8"-"\u00f6",  "\u00f8"-"\u02c1",  "\u02c6"-"\u02d1",  "\u02e0"-"\u02e4",
+         "\u02ec",  "\u02ee",  "\u0300"-"\u0374",  "\u0376"-"\u0377",  "\u037a"-"\u037d",  "\u037f",  "\u0386",
+         "\u0388"-"\u038a",  "\u038c",  "\u038e"-"\u03a1",  "\u03a3"-"\u03f5",  "\u03f7"-"\u0481",  "\u0483"-"\u0487",
+         "\u048a"-"\u052f",  "\u0531"-"\u0556",  "\u0559",  "\u0561"-"\u0587",  "\u058f",  "\u0591"-"\u05bd",
+         "\u05bf",  "\u05c1"-"\u05c2",  "\u05c4"-"\u05c5",  "\u05c7",  "\u05d0"-"\u05ea",  "\u05f0"-"\u05f2",
+         "\u0600"-"\u0605",  "\u060b",  "\u0610"-"\u061a",  "\u061c",  "\u0620"-"\u0669",  "\u066e"-"\u06d3",
+         "\u06d5"-"\u06dd",  "\u06df"-"\u06e8",  "\u06ea"-"\u06fc",  "\u06ff",  "\u070f"-"\u074a",  "\u074d"-"\u07b1",
+         "\u07c0"-"\u07f5",  "\u07fa",  "\u0800"-"\u082d",  "\u0840"-"\u085b",  "\u0860"-"\u086a",  "\u08a0"-"\u08b4",
+         "\u08b6"-"\u08bd",  "\u08d4"-"\u0963",  "\u0966"-"\u096f",  "\u0971"-"\u0983",  "\u0985"-"\u098c",
+         "\u098f"-"\u0990",  "\u0993"-"\u09a8",  "\u09aa"-"\u09b0",  "\u09b2",  "\u09b6"-"\u09b9",  "\u09bc"-"\u09c4",
+         "\u09c7"-"\u09c8",  "\u09cb"-"\u09ce",  "\u09d7",  "\u09dc"-"\u09dd",  "\u09df"-"\u09e3",  "\u09e6"-"\u09f3",
+         "\u09fb"-"\u09fc",  "\u0a01"-"\u0a03",  "\u0a05"-"\u0a0a",  "\u0a0f"-"\u0a10",  "\u0a13"-"\u0a28",
+         "\u0a2a"-"\u0a30",  "\u0a32"-"\u0a33",  "\u0a35"-"\u0a36",  "\u0a38"-"\u0a39",  "\u0a3c",  "\u0a3e"-"\u0a42",
+         "\u0a47"-"\u0a48",  "\u0a4b"-"\u0a4d",  "\u0a51",  "\u0a59"-"\u0a5c",  "\u0a5e",  "\u0a66"-"\u0a75",
+         "\u0a81"-"\u0a83",  "\u0a85"-"\u0a8d",  "\u0a8f"-"\u0a91",  "\u0a93"-"\u0aa8",  "\u0aaa"-"\u0ab0",
+         "\u0ab2"-"\u0ab3",  "\u0ab5"-"\u0ab9",  "\u0abc"-"\u0ac5",  "\u0ac7"-"\u0ac9",  "\u0acb"-"\u0acd",
+         "\u0ad0",  "\u0ae0"-"\u0ae3",  "\u0ae6"-"\u0aef",  "\u0af1",  "\u0af9"-"\u0aff",  "\u0b01"-"\u0b03",
+         "\u0b05"-"\u0b0c",  "\u0b0f"-"\u0b10",  "\u0b13"-"\u0b28",  "\u0b2a"-"\u0b30",  "\u0b32"-"\u0b33",
+         "\u0b35"-"\u0b39",  "\u0b3c"-"\u0b44",  "\u0b47"-"\u0b48",  "\u0b4b"-"\u0b4d",  "\u0b56"-"\u0b57",
+         "\u0b5c"-"\u0b5d",  "\u0b5f"-"\u0b63",  "\u0b66"-"\u0b6f",  "\u0b71",  "\u0b82"-"\u0b83",  "\u0b85"-"\u0b8a",
+         "\u0b8e"-"\u0b90",  "\u0b92"-"\u0b95",  "\u0b99"-"\u0b9a",  "\u0b9c",  "\u0b9e"-"\u0b9f",  "\u0ba3"-"\u0ba4",
+         "\u0ba8"-"\u0baa",  "\u0bae"-"\u0bb9",  "\u0bbe"-"\u0bc2",  "\u0bc6"-"\u0bc8",  "\u0bca"-"\u0bcd",
+         "\u0bd0",  "\u0bd7",  "\u0be6"-"\u0bef",  "\u0bf9",  "\u0c00"-"\u0c03",  "\u0c05"-"\u0c0c",  "\u0c0e"-"\u0c10",
+         "\u0c12"-"\u0c28",  "\u0c2a"-"\u0c39",  "\u0c3d"-"\u0c44",  "\u0c46"-"\u0c48",  "\u0c4a"-"\u0c4d",
+         "\u0c55"-"\u0c56",  "\u0c58"-"\u0c5a",  "\u0c60"-"\u0c63",  "\u0c66"-"\u0c6f",  "\u0c80"-"\u0c83",
+         "\u0c85"-"\u0c8c",  "\u0c8e"-"\u0c90",  "\u0c92"-"\u0ca8",  "\u0caa"-"\u0cb3",  "\u0cb5"-"\u0cb9",
+         "\u0cbc"-"\u0cc4",  "\u0cc6"-"\u0cc8",  "\u0cca"-"\u0ccd",  "\u0cd5"-"\u0cd6",  "\u0cde",  "\u0ce0"-"\u0ce3",
+         "\u0ce6"-"\u0cef",  "\u0cf1"-"\u0cf2",  "\u0d00"-"\u0d03",  "\u0d05"-"\u0d0c",  "\u0d0e"-"\u0d10",
+         "\u0d12"-"\u0d44",  "\u0d46"-"\u0d48",  "\u0d4a"-"\u0d4e",  "\u0d54"-"\u0d57",  "\u0d5f"-"\u0d63",
+         "\u0d66"-"\u0d6f",  "\u0d7a"-"\u0d7f",  "\u0d82"-"\u0d83",  "\u0d85"-"\u0d96",  "\u0d9a"-"\u0db1",
+         "\u0db3"-"\u0dbb",  "\u0dbd",  "\u0dc0"-"\u0dc6",  "\u0dca",  "\u0dcf"-"\u0dd4",  "\u0dd6",  "\u0dd8"-"\u0ddf",
+         "\u0de6"-"\u0def",  "\u0df2"-"\u0df3",  "\u0e01"-"\u0e3a",  "\u0e3f"-"\u0e4e",  "\u0e50"-"\u0e59",
+         "\u0e81"-"\u0e82",  "\u0e84",  "\u0e87"-"\u0e88",  "\u0e8a",  "\u0e8d",  "\u0e94"-"\u0e97",  "\u0e99"-"\u0e9f",
+         "\u0ea1"-"\u0ea3",  "\u0ea5",  "\u0ea7",  "\u0eaa"-"\u0eab",  "\u0ead"-"\u0eb9",  "\u0ebb"-"\u0ebd",
+         "\u0ec0"-"\u0ec4",  "\u0ec6",  "\u0ec8"-"\u0ecd",  "\u0ed0"-"\u0ed9",  "\u0edc"-"\u0edf",  "\u0f00",
+         "\u0f18"-"\u0f19",  "\u0f20"-"\u0f29",  "\u0f35",  "\u0f37",  "\u0f39",  "\u0f3e"-"\u0f47",  "\u0f49"-"\u0f6c",
+         "\u0f71"-"\u0f84",  "\u0f86"-"\u0f97",  "\u0f99"-"\u0fbc",  "\u0fc6",  "\u1000"-"\u1049",  "\u1050"-"\u109d",
+         "\u10a0"-"\u10c5",  "\u10c7",  "\u10cd",  "\u10d0"-"\u10fa",  "\u10fc"-"\u1248",  "\u124a"-"\u124d",
+         "\u1250"-"\u1256",  "\u1258",  "\u125a"-"\u125d",  "\u1260"-"\u1288",  "\u128a"-"\u128d",  "\u1290"-"\u12b0",
+         "\u12b2"-"\u12b5",  "\u12b8"-"\u12be",  "\u12c0",  "\u12c2"-"\u12c5",  "\u12c8"-"\u12d6",  "\u12d8"-"\u1310",
+         "\u1312"-"\u1315",  "\u1318"-"\u135a",  "\u135d"-"\u135f",  "\u1380"-"\u138f",  "\u13a0"-"\u13f5",
+         "\u13f8"-"\u13fd",  "\u1401"-"\u166c",  "\u166f"-"\u167f",  "\u1681"-"\u169a",  "\u16a0"-"\u16ea",
+         "\u16ee"-"\u16f8",  "\u1700"-"\u170c",  "\u170e"-"\u1714",  "\u1720"-"\u1734",  "\u1740"-"\u1753",
+         "\u1760"-"\u176c",  "\u176e"-"\u1770",  "\u1772"-"\u1773",  "\u1780"-"\u17d3",  "\u17d7",  "\u17db"-"\u17dd",
+         "\u17e0"-"\u17e9",  "\u180b"-"\u180e",  "\u1810"-"\u1819",  "\u1820"-"\u1877",  "\u1880"-"\u18aa",
+         "\u18b0"-"\u18f5",  "\u1900"-"\u191e",  "\u1920"-"\u192b",  "\u1930"-"\u193b",  "\u1946"-"\u196d",
+         "\u1970"-"\u1974",  "\u1980"-"\u19ab",  "\u19b0"-"\u19c9",  "\u19d0"-"\u19d9",  "\u1a00"-"\u1a1b",
+         "\u1a20"-"\u1a5e",  "\u1a60"-"\u1a7c",  "\u1a7f"-"\u1a89",  "\u1a90"-"\u1a99",  "\u1aa7",  "\u1ab0"-"\u1abd",
+         "\u1b00"-"\u1b4b",  "\u1b50"-"\u1b59",  "\u1b6b"-"\u1b73",  "\u1b80"-"\u1bf3",  "\u1c00"-"\u1c37",
+         "\u1c40"-"\u1c49",  "\u1c4d"-"\u1c7d",  "\u1c80"-"\u1c88",  "\u1cd0"-"\u1cd2",  "\u1cd4"-"\u1cf9",
+         "\u1d00"-"\u1df9",  "\u1dfb"-"\u1f15",  "\u1f18"-"\u1f1d",  "\u1f20"-"\u1f45",  "\u1f48"-"\u1f4d",
+         "\u1f50"-"\u1f57",  "\u1f59",  "\u1f5b",  "\u1f5d",  "\u1f5f"-"\u1f7d",  "\u1f80"-"\u1fb4",  "\u1fb6"-"\u1fbc",
+         "\u1fbe",  "\u1fc2"-"\u1fc4",  "\u1fc6"-"\u1fcc",  "\u1fd0"-"\u1fd3",  "\u1fd6"-"\u1fdb",  "\u1fe0"-"\u1fec",
+         "\u1ff2"-"\u1ff4",  "\u1ff6"-"\u1ffc",  "\u200b"-"\u200f",  "\u202a"-"\u202e",  "\u203f"-"\u2040",
+         "\u2054",  "\u2060"-"\u2064",  "\u2066"-"\u206f",  "\u2071",  "\u207f",  "\u2090"-"\u209c",  "\u20a0"-"\u20bf",
+         "\u20d0"-"\u20dc",  "\u20e1",  "\u20e5"-"\u20f0",  "\u2102",  "\u2107",  "\u210a"-"\u2113",  "\u2115",
+         "\u2119"-"\u211d",  "\u2124",  "\u2126",  "\u2128",  "\u212a"-"\u212d",  "\u212f"-"\u2139",  "\u213c"-"\u213f",
+         "\u2145"-"\u2149",  "\u214e",  "\u2160"-"\u2188",  "\u2c00"-"\u2c2e",  "\u2c30"-"\u2c5e",  "\u2c60"-"\u2ce4",
+         "\u2ceb"-"\u2cf3",  "\u2d00"-"\u2d25",  "\u2d27",  "\u2d2d",  "\u2d30"-"\u2d67",  "\u2d6f",  "\u2d7f"-"\u2d96",
+         "\u2da0"-"\u2da6",  "\u2da8"-"\u2dae",  "\u2db0"-"\u2db6",  "\u2db8"-"\u2dbe",  "\u2dc0"-"\u2dc6",
+         "\u2dc8"-"\u2dce",  "\u2dd0"-"\u2dd6",  "\u2dd8"-"\u2dde",  "\u2de0"-"\u2dff",  "\u2e2f",  "\u3005"-"\u3007",
+         "\u3021"-"\u302f",  "\u3031"-"\u3035",  "\u3038"-"\u303c",  "\u3041"-"\u3096",  "\u3099"-"\u309a",
+         "\u309d"-"\u309f",  "\u30a1"-"\u30fa",  "\u30fc"-"\u30ff",  "\u3105"-"\u312e",  "\u3131"-"\u318e",
+         "\u31a0"-"\u31ba",  "\u31f0"-"\u31ff",  "\u3400"-"\u4db5",  "\u4e00"-"\u9fea",  "\ua000"-"\ua48c",
+         "\ua4d0"-"\ua4fd",  "\ua500"-"\ua60c",  "\ua610"-"\ua62b",  "\ua640"-"\ua66f",  "\ua674"-"\ua67d",
+         "\ua67f"-"\ua6f1",  "\ua717"-"\ua71f",  "\ua722"-"\ua788",  "\ua78b"-"\ua7ae",  "\ua7b0"-"\ua7b7",
+         "\ua7f7"-"\ua827",  "\ua838",  "\ua840"-"\ua873",  "\ua880"-"\ua8c5",  "\ua8d0"-"\ua8d9",  "\ua8e0"-"\ua8f7",
+         "\ua8fb",  "\ua8fd",  "\ua900"-"\ua92d",  "\ua930"-"\ua953",  "\ua960"-"\ua97c",  "\ua980"-"\ua9c0",
+         "\ua9cf"-"\ua9d9",  "\ua9e0"-"\ua9fe",  "\uaa00"-"\uaa36",  "\uaa40"-"\uaa4d",  "\uaa50"-"\uaa59",
+         "\uaa60"-"\uaa76",  "\uaa7a"-"\uaac2",  "\uaadb"-"\uaadd",  "\uaae0"-"\uaaef",  "\uaaf2"-"\uaaf6",
+         "\uab01"-"\uab06",  "\uab09"-"\uab0e",  "\uab11"-"\uab16",  "\uab20"-"\uab26",  "\uab28"-"\uab2e",
+         "\uab30"-"\uab5a",  "\uab5c"-"\uab65",  "\uab70"-"\uabea",  "\uabec"-"\uabed",  "\uabf0"-"\uabf9",
+         "\uac00"-"\ud7a3",  "\ud7b0"-"\ud7c6",  "\ud7cb"-"\ud7fb",  "\ud800"-"\udfff",  "\uf900"-"\ufa6d",
+         "\ufa70"-"\ufad9",  "\ufb00"-"\ufb06",  "\ufb13"-"\ufb17",  "\ufb1d"-"\ufb28",  "\ufb2a"-"\ufb36",
+         "\ufb38"-"\ufb3c",  "\ufb3e",  "\ufb40"-"\ufb41",  "\ufb43"-"\ufb44",  "\ufb46"-"\ufbb1",  "\ufbd3"-"\ufd3d",
+         "\ufd50"-"\ufd8f",  "\ufd92"-"\ufdc7",  "\ufdf0"-"\ufdfc",  "\ufe00"-"\ufe0f",  "\ufe20"-"\ufe2f",
+         "\ufe33"-"\ufe34",  "\ufe4d"-"\ufe4f",  "\ufe69",  "\ufe70"-"\ufe74",  "\ufe76"-"\ufefc",  "\ufeff",
+         "\uff04",  "\uff10"-"\uff19",  "\uff21"-"\uff3a",  "\uff3f",  "\uff41"-"\uff5a",  "\uff66"-"\uffbe",
+         "\uffc2"-"\uffc7",  "\uffca"-"\uffcf",  "\uffd2"-"\uffd7",  "\uffda"-"\uffdc",  "\uffe0"-"\uffe1",
+         "\uffe5"-"\uffe6",  "\ufff9"-"\ufffb" ]
+        | <UNICODE_ESCAPE>
+  >
+}
+
+/* SEPARATORS */
+
+TOKEN :
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+| < AT: "@" >
+}
+
+/* OPERATORS */
+
+TOKEN :
+{
+  < ASSIGN: "=" >
+| < LT: "<" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < EQ: "==" >
+| < LE: "<=" >
+| < GE: ">=" >
+| < NE: "!=" >
+| < SC_OR: "||" >
+| < SC_AND: "&&" >
+| < INCR: "++" >
+| < DECR: "--" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < XOR: "^" >
+| < REM: "%" >
+| < LSHIFT: "<<" >
+| < PLUSASSIGN: "+=" >
+| < MINUSASSIGN: "-=" >
+| < STARASSIGN: "*=" >
+| < SLASHASSIGN: "/=" >
+| < ANDASSIGN: "&=" >
+| < ORASSIGN: "|=" >
+| < XORASSIGN: "^=" >
+| < REMASSIGN: "%=" >
+| < LSHIFTASSIGN: "<<=" >
+| < RSIGNEDSHIFTASSIGN: ">>=" >
+| < RUNSIGNEDSHIFTASSIGN: ">>>=" >
+| < ELLIPSIS: "..." >
+| < ARROW: "->" >
+| < DOUBLECOLON: "::" >
+}
+
+/* >'s need special attention due to generics syntax. */
+TOKEN :
+{
+  < RUNSIGNEDSHIFT: ">>>" >
+  {
+     matchedToken.kind = GT;
+     matchedToken.realKind = RUNSIGNEDSHIFT;
+     input_stream.backup(2);
+  }
+| < RSIGNEDSHIFT: ">>" >
+  {
+     matchedToken.kind = GT;
+     matchedToken.realKind = RSIGNEDSHIFT;
+     input_stream.backup(1);
+  }
+| < GT: ">" >
+}
+
+TOKEN: { <CTRL_Z: "\u001A" /** ctrl+z char **/> }
+
+Expression VariableInitializer():
+{
+	Expression ret;
+}
+{
+  (
+	  ret = ArrayInitializer()
+	|
+	  ret = Expression()
+  )
+  { return ret;}
+}
+
+ArrayInitializerExpr ArrayInitializer():
+{
+	NodeList<Expression> values = emptyList();
+	Expression val;
+	JavaToken begin;
+}
+{
+  "{" {begin=token();} [ val = VariableInitializer() { values = add(values, val); } ( LOOKAHEAD(2) "," val = VariableInitializer() { values = add(values, val); } )* ] [ "," ] "}"
+  { return new ArrayInitializerExpr(range(begin, token()), values); }
+}
+
+ReferenceType AnnotatedReferenceType():
+{
+	NodeList<AnnotationExpr> annotations = emptyList();
+	ReferenceType type;
+}
+{
+    type = ReferenceType(annotations)
+    { return type; }
+}
+
+Type AnnotatedType():
+{
+	NodeList<AnnotationExpr> annotations = emptyList();
+	Type type;
+}
+{
+    type = Type(annotations)
+    { return type; }
+}
+
+ReceiverParameter ReceiverParameter():
+{
+	Type partialType;
+	Name id;
+	NodeList<AnnotationExpr> annotations = emptyList();
+}
+{
+    partialType = Type(emptyList())
+    id = ReceiverParameterId()
+    {
+        return new ReceiverParameter(range(partialType, token()), annotations, partialType, id);
+    }
+}
+
+Name ReceiverParameterId():
+{
+	Name ret = null;
+}
+{
+    [ LOOKAHEAD(Name()) ret = Name() "."] "this"
+    { return new Name(tokenRange(), ret, token.image); }
+}
+
+
+ExplicitConstructorInvocationStmt ExplicitConstructorInvocation():
+{
+	boolean isThis = false;
+	NodeList<Expression> args;
+	Expression expr = null;
+	RangedList<Type> typeArgs = new RangedList<Type>(null);
+	JavaToken begin = INVALID;
+}
+{
+  (
+	  LOOKAHEAD([ TypeArguments() ] <THIS> "(")
+	  [ typeArgs = TypeArguments() { begin=typeArgs.range.getBegin(); } ]
+	  <THIS> { begin = orIfInvalid(begin, token()); isThis = true; }
+	  args = Arguments() ";"
+	|
+	  [
+	    LOOKAHEAD( PrimaryExpressionWithoutSuperSuffix() "." )
+	  	expr = PrimaryExpressionWithoutSuperSuffix() "."
+	  	{ begin = orIfInvalid(begin, expr); }
+	  ]
+	  [ typeArgs = TypeArguments() { begin = orIfInvalid(begin, typeArgs.range.getBegin()); } ]
+	  <SUPER> {begin = orIfInvalid(begin, token());}
+	  args = Arguments() ";"
+  )
+  { return new ExplicitConstructorInvocationStmt(range(begin, token()),typeArgs.list, isThis, expr, args); }
+}
+
+/*
+ * Type, name and expression syntax follows.
+ */
+
+Type Type(NodeList<AnnotationExpr> annotations):
+{
+	Type ret;
+}
+{
+ (
+   LOOKAHEAD(2) ret = ReferenceType(annotations)
+ |
+   ret = PrimitiveType(annotations )
+ )
+ { return ret; }
+}
+
+ReferenceType ReferenceType(NodeList<AnnotationExpr> annotations):
+{
+	Type type;
+	ArrayBracketPair arrayBracketPair;
+	List<ArrayBracketPair> arrayBracketPairs = new ArrayList(0);
+}
+{
+  (
+   type = PrimitiveType(annotations) ( arrayBracketPair = ArrayBracketPair(Origin.TYPE) { arrayBracketPairs=add(arrayBracketPairs, arrayBracketPair); } )+
+  |
+   type = ClassOrInterfaceType(annotations)  ( arrayBracketPair = ArrayBracketPair(Origin.TYPE) { arrayBracketPairs=add(arrayBracketPairs, arrayBracketPair); } )*
+  )
+  { return (ReferenceType)wrapInArrayTypes(type, arrayBracketPairs); }
+}
+
+ArrayBracketPair ArrayBracketPair(Origin origin):
+{
+	NodeList<AnnotationExpr> annotations = emptyList();
+    JavaToken begin = INVALID;
+}
+{
+    "[" { begin = orIfInvalid(begin, token()); } "]"
+    { return new ArrayBracketPair(range(begin, token()), origin, annotations); }
+}
+
+IntersectionType IntersectionType(NodeList<AnnotationExpr> annotations):
+{
+	JavaToken begin = INVALID;
+	ReferenceType elementType;
+	NodeList<ReferenceType> elements = emptyList();
+}
+{
+    elementType = ReferenceType(annotations) { begin = orIfInvalid(begin, elementType); elements = add(elements, elementType); }
+    "&" (elementType = AnnotatedReferenceType() { elements = add(elements, elementType); } )+
+    { return new IntersectionType(range(begin, token()), elements); }
+}
+
+ClassOrInterfaceType AnnotatedClassOrInterfaceType():
+{
+	NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
+	ClassOrInterfaceType cit;
+}
+{
+    cit = ClassOrInterfaceType(annotations)
+    { return cit; }
+}
+
+ClassOrInterfaceType ClassOrInterfaceType(NodeList<AnnotationExpr> firstAnnotations):
+{
+	ClassOrInterfaceType ret;
+	SimpleName name;
+	RangedList<Type> typeArgs = new RangedList<Type>(null);
+	JavaToken begin;
+	NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
+}
+{
+  name = SimpleName() {begin=token();}
+  [ LOOKAHEAD(2) typeArgs = TypeArguments() ]
+  {
+      ret = new ClassOrInterfaceType(range(begin, token()), null, name, typeArgs.list, firstAnnotations);
+      typeArgs = new RangedList<Type>(null);
+  }
+  (
+	  LOOKAHEAD(2) "."  name = SimpleName()
+	  [ LOOKAHEAD(2) typeArgs = TypeArguments() ]
+	  {
+	    ret = new ClassOrInterfaceType(range(begin, token()), ret, name, typeArgs.list, annotations);
+        typeArgs = new RangedList<Type>(null);
+      }
+  )*
+  { return ret; }
+}
+
+RangedList<Type> TypeArguments():
+{
+	RangedList<Type> ret = new RangedList<Type>(new NodeList<Type>());
+	Type type;
+}
+{
+   (
+     "<" { ret.beginAt(token()); }
+     (type = TypeArgument() { ret.add(type); } ( "," type = TypeArgument() { ret.add(type); } )*)?
+     ">" { ret.endAt(token()); }
+   )
+   { return ret; }
+}
+
+Type TypeArgument():
+{
+	Type ret;
+	NodeList<AnnotationExpr> annotations = emptyList();
+}
+{
+ (
+   ret = Type(annotations)
+ |
+   ret = Wildcard(annotations)
+ )
+ { return ret; }
+}
+
+WildcardType Wildcard(NodeList<AnnotationExpr> firstAnnotations):
+{
+	ReferenceType ext = null;
+	ReferenceType sup = null;
+	JavaToken begin;
+	NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
+}
+{
+   "?" {begin=token();}
+   [
+		"extends" ext = ReferenceType(annotations)
+	|
+		"super" sup = ReferenceType(annotations)
+   ]
+   {
+     return new WildcardType(range(begin, token()), ext, sup, firstAnnotations);
+   }
+}
+
+PrimitiveType PrimitiveType(NodeList<AnnotationExpr> annotations):
+{
+	PrimitiveType ret;
+}
+{
+(
+  "boolean" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.BOOLEAN, annotations); }
+|
+  "char" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.CHAR, annotations); }
+|
+  "byte" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.BYTE, annotations); }
+|
+  "short" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.SHORT, annotations); }
+|
+  "int" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.INT, annotations); }
+|
+  "long" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.LONG, annotations); }
+|
+  "float" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.FLOAT, annotations); }
+|
+  "double" { ret = new PrimitiveType(tokenRange(), PrimitiveType.Primitive.DOUBLE, annotations); }
+)
+{ return ret; }
+}
+
+Type ResultType(NodeList<AnnotationExpr> annotations):
+{
+	Type ret;
+}
+{
+  (
+	  "void" { ret = new VoidType(tokenRange()); }
+	|
+	  ret = Type(annotations)
+  )
+  { return ret; }
+}
+
+Name Name():
+/*
+ * A lookahead is required below since "Name" can be followed
+ * by a ".*" when used in the context of an "ImportDeclaration".
+ */
+{
+	Name ret;
+}
+{
+  Identifier() { ret = new Name(tokenRange(), null, token.image); }
+  ( LOOKAHEAD(2) "." Identifier() { ret = new Name(range(ret, token()), ret, token.image); } )*
+  { return ret; }
+}
+
+SimpleName SimpleName():
+{
+    SimpleName ret;
+}
+{
+  Identifier() { ret = new SimpleName(tokenRange(), token.image); }
+  { return ret; }
+}
+
+
+String Identifier():
+{
+    String ret;
+}
+{
+    // Make sure the module info keywords don't interfere with normal Java parsing by matching them as normal identifiers.
+    (<RULE> | <MODULE> | <REQUIRES> | <TO> | <WITH> | <OPEN> | <OPENS> | <USES> | <EXPORTS> | <PROVIDES> | <TRANSITIVE> |
+    // Make sure older Java versions parse
+    <STRICTFP> |
+    // An actual plain old identifier
+    <IDENTIFIER>) { ret = token.image; setTokenKind(IDENTIFIER);}
+    { return ret; }
+}
+
+/*
+ * Expression syntax follows.
+ */
+
+Expression Expression():
+/*
+ * This expansion has been written this way instead of:
+ *   Assignment() | ConditionalExpression()
+ * for performance reasons.
+ * However, it is a weakening of the grammar for it allows the LHS of
+ * assignments to be any conditional expression whereas it can only be
+ * a primary expression. This is caught by a validation after parsing.
+ */
+{
+	Expression ret;
+	AssignExpr.Operator op;
+	Expression value;
+	Statement lambdaBody = null;
+	RangedList<Type> typeArgs = new RangedList<Type>(null);
+}
+{
+    ret = ConditionalExpression()
+    [
+        ( LOOKAHEAD(2)
+            op = AssignmentOperator() value = Expression() { ret = new AssignExpr(range(ret, token()), ret, value, op); }
+        |
+            "::"  [typeArgs = TypeArguments() ] (Identifier() | "new") { ret = new MethodReferenceExpr(range(ret, token()), ret, typeArgs.list, token.image); }
+        )
+    ]
+
+    { return ret; }
+}
+
+AssignExpr.Operator AssignmentOperator():
+{
+	AssignExpr.Operator ret;
+}
+{
+  (
+      "="    { ret = AssignExpr.Operator.ASSIGN; }
+    | "*="   { ret = AssignExpr.Operator.MULTIPLY; }
+    | "/="   { ret = AssignExpr.Operator.DIVIDE; }
+    | "%="   { ret = AssignExpr.Operator.REMAINDER; }
+    | "+="   { ret = AssignExpr.Operator.PLUS; }
+    | "-="   { ret = AssignExpr.Operator.MINUS; }
+    | "<<="  { ret = AssignExpr.Operator.LEFT_SHIFT; }
+    | ">>="  { ret = AssignExpr.Operator.SIGNED_RIGHT_SHIFT; }
+    | ">>>=" { ret = AssignExpr.Operator.UNSIGNED_RIGHT_SHIFT; }
+    | "&="   { ret = AssignExpr.Operator.BINARY_AND; }
+    | "^="   { ret = AssignExpr.Operator.XOR; }
+    | "|="   { ret = AssignExpr.Operator.BINARY_OR; }
+  )
+  { return ret; }
+}
+
+Expression ConditionalExpression():
+{
+	Expression ret;
+	Expression left;
+	Expression right;
+}
+{
+  ret = ConditionalOrExpression()
+  [ "?" left = Expression() ":" right = ConditionalExpression() { ret = new ConditionalExpr(range(ret, token()), ret, left, right); } ]
+  { return ret; }
+}
+
+Expression ConditionalOrExpression():
+{
+	Expression ret;
+	Expression right;
+}
+{
+  ret = ConditionalAndExpression() ( "||" right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
+  { return ret; }
+}
+
+Expression ConditionalAndExpression():
+{
+	Expression ret;
+	Expression right;
+}
+{
+  ret = InclusiveOrExpression() ( "&&" right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
+  { return ret; }
+}
+
+Expression InclusiveOrExpression():
+{
+	Expression ret;
+	Expression right;
+}
+{
+  ret = ExclusiveOrExpression() ( "|" right = ExclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.BINARY_OR); } )*
+  { return ret; }
+}
+
+Expression ExclusiveOrExpression():
+{
+	Expression ret;
+	Expression right;
+}
+{
+  ret = AndExpression() ( "^" right = AndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.XOR); } )*
+  { return ret; }
+}
+
+Expression AndExpression():
+{
+	Expression ret;
+	Expression right;
+}
+{
+  ret = EqualityExpression() ( "&" right = EqualityExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.BINARY_AND); } )*
+  { return ret; }
+}
+
+Expression EqualityExpression():
+{
+	Expression ret;
+	Expression right;
+	BinaryExpr.Operator op;
+}
+{
+  ret = InstanceOfExpression()
+  (
+    ( "==" { op = BinaryExpr.Operator.EQUALS; } |
+      "!=" { op = BinaryExpr.Operator.NOT_EQUALS; }
+    ) right = InstanceOfExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, op); }
+  )*
+  { return ret; }
+}
+
+Expression InstanceOfExpression():
+{
+	Expression ret;
+	ReferenceType type;
+	NodeList<AnnotationExpr> annotations;
+}
+{
+    ret = RelationalExpression() [ "instanceof" type = AnnotatedReferenceType() {
+        ret = new InstanceOfExpr(range(ret, token()), ret, type);
+    } ]
+    { return ret; }
+}
+
+Expression RelationalExpression():
+{
+	Expression ret;
+	Expression right;
+	BinaryExpr.Operator op;
+}
+{
+  ret = ShiftExpression()
+  (
+  	( "<"  { op = BinaryExpr.Operator.LESS; } |
+  	  ">"  { op = BinaryExpr.Operator.GREATER; } |
+  	  "<=" { op = BinaryExpr.Operator.LESS_EQUALS; } |
+  	  ">=" { op = BinaryExpr.Operator.GREATER_EQUALS; }
+  	) right = ShiftExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, op); }
+  )*
+  { return ret; }
+}
+
+Expression ShiftExpression():
+{
+	Expression ret;
+	Expression right;
+	BinaryExpr.Operator op;
+}
+{
+  ret = AdditiveExpression()
+  (
+  	( "<<"             { op = BinaryExpr.Operator.LEFT_SHIFT; } |
+  	  RSIGNEDSHIFT()   { op = BinaryExpr.Operator.SIGNED_RIGHT_SHIFT; } |
+  	  RUNSIGNEDSHIFT() { op = BinaryExpr.Operator.UNSIGNED_RIGHT_SHIFT; }
+  	) right = AdditiveExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, op); }
+  )*
+  { return ret; }
+}
+
+Expression AdditiveExpression():
+{
+	Expression ret;
+	Expression right;
+	BinaryExpr.Operator op;
+}
+{
+  ret = MultiplicativeExpression()
+  (
+  	( "+" { op = BinaryExpr.Operator.PLUS; } |
+  	  "-" { op = BinaryExpr.Operator.MINUS; }
+  	) right = MultiplicativeExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, op); }
+  )*
+  { return ret; }
+}
+
+Expression MultiplicativeExpression():
+{
+	Expression ret;
+	Expression right;
+	BinaryExpr.Operator op;
+}
+{
+  ret = UnaryExpression()
+  (
+  	( "*" { op = BinaryExpr.Operator.MULTIPLY; } |
+  	  "/" { op = BinaryExpr.Operator.DIVIDE; } |
+  	  "%" { op = BinaryExpr.Operator.REMAINDER; }
+  	) right = UnaryExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, op); }
+  )*
+  { return ret; }
+}
+
+Expression UnaryExpression():
+{
+	Expression ret;
+	UnaryExpr.Operator op;
+	JavaToken begin = INVALID;
+}
+{
+  (
+	  ret = PreIncrementExpression()
+	|
+	  ret = PreDecrementExpression()
+	|
+	  ( "+" { op = UnaryExpr.Operator.PLUS; begin=token();} |
+	    "-" { op = UnaryExpr.Operator.MINUS; begin=token();}
+	  ) ret = UnaryExpression()
+	  {
+        ret = new UnaryExpr(range(begin, token()), ret, op);
+	  }
+	|
+	  ret = HalfBinaryExpression()
+  )
+  { return ret; }
+}
+
+Expression PreIncrementExpression():
+{
+	Expression ret;
+	JavaToken begin = INVALID;
+}
+{
+  "++" {begin=token();} ret = UnaryExpression() { ret = new UnaryExpr(range(begin, token()), ret, UnaryExpr.Operator.PREFIX_INCREMENT); }
+  { return ret; }
+}
+
+Expression PreDecrementExpression():
+{
+	Expression ret;
+	JavaToken begin;
+}
+{
+  "--" {begin=token();} ret = UnaryExpression() { ret = new UnaryExpr(range(begin, token()), ret, UnaryExpr.Operator.PREFIX_DECREMENT); }
+  { return ret; }
+}
+
+// drlcontraintparser start
+Expression HalfBinaryExpression():
+{
+	Expression ret;
+	HalfBinaryExpr.Operator op;
+	JavaToken begin = INVALID;
+}
+{
+  (
+	  ( "==" { op = HalfBinaryExpr.Operator.EQUALS; begin=token();} |
+	    "!=" { op = HalfBinaryExpr.Operator.NOT_EQUALS; begin=token();} |
+	    "<" { op = HalfBinaryExpr.Operator.LESS; begin=token();} |
+	    ">" { op = HalfBinaryExpr.Operator.GREATER; begin=token();} |
+	    "<=" { op = HalfBinaryExpr.Operator.LESS_EQUALS; begin=token();} |
+	    ">=" { op = HalfBinaryExpr.Operator.GREATER_EQUALS; begin=token();}
+	  )
+	  (
+	    LOOKAHEAD(HalfBinaryExpression())
+	    ret = HalfBinaryExpression()
+	  |
+	    ret = Expression()
+	  )
+	  {
+        ret = new HalfBinaryExpr(range(begin, token()), ret, op);
+	  }
+	|
+	  ret = DrlxExpressionSwitch()
+  )
+  { return ret; }
+}
+
+Expression DrlxExpressionSwitch():
+{
+	Expression ret;
+}
+{
+  (
+  LOOKAHEAD(CommaSeparatedMethodCallExpr())
+    ret = CommaSeparatedMethodCallExpr()
+  |
+  LOOKAHEAD(PointFreeExprMvel())
+    ret = PointFreeExprMvel()
+  |
+  LOOKAHEAD(HalfPointFreeExprMvel())
+    ret = HalfPointFreeExprMvel()
+  |
+  LOOKAHEAD(PointFreeExpr())
+    ret = PointFreeExpr()
+  |
+  LOOKAHEAD( HalfPointFreeExpr(), { (isPointFreeOperator(getToken(1).image) || isPointFreeOperator(getToken(2).image) )})
+    ret = HalfPointFreeExpr()
+  |
+  ret = UnaryExpressionNotPlusMinus()
+  )
+
+  { return ret; }
+}
+
+
+// drlcontraintparser end
+
+Expression UnaryExpressionNotPlusMinus():
+{
+	Expression ret;
+	UnaryExpr.Operator op;
+	JavaToken begin = INVALID;
+}
+{
+	(
+		(
+			"~" { op = UnaryExpr.Operator.BITWISE_COMPLEMENT; begin=token(); } |
+			"!" { op = UnaryExpr.Operator.LOGICAL_COMPLEMENT;     begin=token(); }
+		) ret = UnaryExpression() { ret = new UnaryExpr(range(begin, token()), ret, op); }
+		| LOOKAHEAD( CastExpression() )
+			ret = CastExpression()
+		|
+			ret = PostfixExpression()
+	)
+	{ return ret; }
+}
+
+Expression PostfixExpression():
+{
+	Expression ret;
+	UnaryExpr.Operator op;
+}
+{
+  ret = PrimaryExpression()
+  [
+  	LOOKAHEAD(2)
+    ( "++" { op = UnaryExpr.Operator.POSTFIX_INCREMENT; } |
+      "--" { op = UnaryExpr.Operator.POSTFIX_DECREMENT; }
+    ) { ret = new UnaryExpr(range(ret, token()), ret, op); }
+  ]
+  { return ret; }
+}
+
+Expression CastExpression():
+{
+	Expression ret;
+	ReferenceType referenceType;
+	PrimitiveType primitiveType;
+	JavaToken begin = INVALID;
+	NodeList<AnnotationExpr> annotations = emptyList();
+	NodeList<ReferenceType> typesOfMultiCast = emptyList();
+}
+{
+  "(" {begin=token();}
+  (
+  	  LOOKAHEAD(2)
+  	  primitiveType = PrimitiveType(annotations) ")" ret = UnaryExpression() { ret = new CastExpr(range(begin, token()), primitiveType, ret); }
+  	|
+  	  referenceType = ReferenceType(annotations) { typesOfMultiCast = add(typesOfMultiCast, referenceType); }
+  	  ( "&" referenceType = AnnotatedReferenceType() {
+  	    typesOfMultiCast = add(typesOfMultiCast, referenceType);
+  	    }
+  	  )*
+  	  ")" ret = UnaryExpressionNotPlusMinus() {
+  	    if (typesOfMultiCast.size() > 1) {
+  	        ret = new CastExpr(range(begin, token()), new IntersectionType(range(typesOfMultiCast.get(0), typesOfMultiCast.get(typesOfMultiCast.size() -1)), typesOfMultiCast), ret);
+  	    } else {
+  	        ret = new CastExpr(range(begin, token()), referenceType, ret);
+  	    }
+  	  }
+ )
+  { return ret; }
+}
+
+
+
+Expression PrimaryExpression():
+{
+	Expression ret;
+}
+{
+  ret = PrimaryPrefix() ( LOOKAHEAD(2) ret = PrimarySuffix(ret) )*
+  { return ret; }
+}
+
+Expression PrimaryExpressionWithoutSuperSuffix():
+{
+	Expression ret;
+}
+{
+  ret = PrimaryPrefix() ( LOOKAHEAD( PrimarySuffixWithoutSuper(null) ) ret = PrimarySuffixWithoutSuper(ret) )*
+  { return ret; }
+}
+
+Expression PrimaryPrefix():
+{
+	Expression ret = null;
+	SimpleName name;
+	RangedList<Type> typeArgs = new RangedList<Type>(null);
+	NodeList<Expression> args = emptyList();
+	NodeList<Parameter> params = emptyList();
+	boolean hasArgs = false;
+	boolean isLambda = false;
+	Type type;
+	JavaToken begin;
+	Parameter p = null;
+	SimpleName id = null;
+	int numberOfBackReferences = 0;
+}
+{
+  (
+	  ret = Literal()
+	|
+	  <THIS> { ret = new ThisExpr(tokenRange(), null); }
+	|
+	  <SUPER> { ret = new SuperExpr(tokenRange(), null); }
+	  (
+	     "."
+	  [ typeArgs = TypeArguments() ]
+	  name = SimpleName()
+	  [ args = Arguments() {hasArgs=true;} ]
+	  	{
+			if (hasArgs) {
+	  			ret = new MethodCallExpr(range(ret, token()), ret, typeArgs.list, name, args);
+			} else {
+	  			ret = new FieldAccessExpr(range(ret, token()), ret, emptyList(), name);
+			}
+	  	}
+	 |
+		"::" [typeArgs = TypeArguments() ] (Identifier() | "new")
+		{
+		  ret = new MethodReferenceExpr(range(ret, token()), ret, typeArgs.list, token.image);
+		}
+	  )
+	|
+        "(" {begin=token();}
+        (
+            ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
+        | LOOKAHEAD(PointFreeExpr())
+            ret = Expression() ")" { ret = new EnclosedExpr(range(begin, token()), ret); }
+        |
+            // This could still be a lambda expression, but this is handled after matching -> elsewhere
+            ret = Expression() ")" { ret = new EnclosedExpr(range(begin, token()), ret); }
+        )
+    |
+	  ret = AllocationExpression(null)
+	|
+	  LOOKAHEAD( ResultType() "." "class" )
+	  type = ResultType(emptyList())  "." "class" { ret = new ClassExpr(range(type, token()), type); }
+
+	| LOOKAHEAD (AnnotatedType() "::" )
+	  type = AnnotatedType() "::" [typeArgs = TypeArguments() ] (Identifier() | "new")
+		{
+		  ret = new TypeExpr(range(type, type), type);
+		  ret = new MethodReferenceExpr(range(ret, token()), ret, typeArgs.list, token.image);
+		}
+
+	|
+	    (
+                      "../"
+                      { numberOfBackReferences++; }
+        )*
+	  	name = SimpleName() { begin=token(); }
+	  	[ args = Arguments() { hasArgs=true; } ]
+	  	{
+
+	  		if (hasArgs) {
+	  			ret = new MethodCallExpr(range(begin, token()), null, null, name, args);
+			} else {
+	  			ret = new DrlNameExpr(name, numberOfBackReferences );
+			}
+	  	}
+  )
+  { return ret; }
+}
+
+Expression PrimarySuffix(Expression scope):
+{
+	Expression ret;
+}
+{
+  (
+  	LOOKAHEAD(2)
+	ret = PrimarySuffixWithoutSuper(scope)
+	|
+  	"." "super" { ret = new SuperExpr(range(scope, token()), scope); }
+  )
+  { return ret; }
+}
+
+Expression PrimarySuffixWithoutSuper(Expression scope):
+{
+	Expression ret;
+	RangedList<Type> typeArgs = new RangedList<Type>(null);
+	NodeList<Expression> args = emptyList();
+	boolean hasArgs = false;
+	SimpleName name;
+	Type type;
+	NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
+}
+{
+  (
+  	"."
+  	(
+		"this" { ret = new ThisExpr(range(scope, token()), scope); }
+      |
+        ret = AllocationExpression(scope)
+      |
+	  	LOOKAHEAD( [ TypeArguments() ] Identifier() )
+	  	[ typeArgs = TypeArguments() ]
+	  	name = SimpleName()
+	  	[ args = Arguments() {hasArgs=true;} ]
+	  	{
+			if (hasArgs) {
+	  			ret = new MethodCallExpr(range(scope, token()), scope, typeArgs.list, name, args);
+			} else {
+	  			ret =  new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
+			}
+	  	}
+	)
+	|
+	  "["ret = Expression() "]" { ret = new ArrayAccessExpr(range(scope, token()), scope, ret); }
+// drlcontraintparser start
+	|
+	  "#"
+	  (
+	    name = SimpleName() { ret = new InlineCastExpr(range(scope, token()),
+	                                                   new ClassOrInterfaceType(range(scope, token()), null, name, null, annotations),
+	                                                   scope); }
+	  |
+	    "(" type = Type(emptyList()) ")" { ret = new InlineCastExpr(range(scope, token()), type, scope); }
+	  )
+	|
+  	  "!."
+       (
+        "this" { ret = new ThisExpr(range(scope.getTokenRange().get().getBegin(), token()), scope); }
+      |
+        ret = AllocationExpression(scope)
+      |
+        LOOKAHEAD( [ TypeArguments() ] Identifier() )
+        [ typeArgs = TypeArguments() ]
+        name = SimpleName()
+        [ args = Arguments() {hasArgs=true;} ]
+        {
+            if (hasArgs) {
+                ret = new NullSafeMethodCallExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name, args);
+            } else {
+                ret =  new NullSafeFieldAccessExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name);
+            }
+        }
+        )
+// drlcontraintparser end
+  )
+  { return ret; }
+}
+
+Expression Literal():
+{
+	Expression ret;
+}
+{
+  (
+	  <INTEGER_LITERAL> {
+	  		ret = new IntegerLiteralExpr(tokenRange(), token.image);
+	  }
+	|
+	  <LONG_LITERAL> {
+	  		ret = new LongLiteralExpr(tokenRange(), token.image);
+	  }
+	|
+	  <BIG_DECIMAL_LITERAL> {
+	  		ret = new BigDecimalLiteralExpr(tokenRange(), token.image);
+	  }
+	|
+	  <BIG_INTEGER_LITERAL> {
+	  		ret = new BigIntegerLiteralExpr(tokenRange(), token.image);
+	  }
+	|
+	  <FLOATING_POINT_LITERAL> {
+	  		ret = new DoubleLiteralExpr(tokenRange(), token.image);
+	  }
+	|
+	  <CHARACTER_LITERAL> {
+	  	ret = new CharLiteralExpr(tokenRange(), token.image.substring(1, token.image.length()-1));
+	  }
+	|
+	  <STRING_LITERAL> {
+	  	ret = new StringLiteralExpr(tokenRange(), token.image.substring(1, token.image.length()-1));
+	  }
+	|
+	  ret = BooleanLiteral()
+	|
+	  ret = NullLiteral()
+  )
+  { return ret; }
+}
+
+Expression BooleanLiteral():
+{
+	Expression ret;
+}
+{
+  (
+	  "true" { ret = new BooleanLiteralExpr(tokenRange(), true); }
+	|
+	  "false" { ret = new BooleanLiteralExpr(tokenRange(), false); }
+  )
+  { return ret; }
+}
+
+Expression NullLiteral():
+{}
+{
+  "null"
+  { return new NullLiteralExpr(tokenRange()); }
+}
+
+NodeList<Expression> Arguments():
+{
+	NodeList<Expression> ret = emptyList();
+}
+{
+  "(" [ ret = ArgumentList() ] ")"
+  { return ret; }
+}
+
+NodeList<Expression> ArgumentList():
+{
+	NodeList<Expression> ret = emptyList();
+	Expression expr;
+}
+{
+  expr = Expression() { ret.add(expr); } ( "," expr = Expression() { ret.add(expr); } )*
+  { return ret; }
+}
+
+Expression AllocationExpression(Expression scope):
+{
+	Expression ret;
+	Type type;
+	RangedList<Type> typeArgs = new RangedList<Type>(null);
+	NodeList<BodyDeclaration<?>> anonymousBody = null;
+	NodeList<Expression> args;
+	JavaToken begin = INVALID;
+    NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
+}
+{
+    "new" { if(scope==null) {begin=token();} else {begin = orIfInvalid(begin, scope);} }
+
+    (
+        type = PrimitiveType(annotations)
+        ret = ArrayCreation(begin, type)
+     |
+        [ typeArgs = TypeArguments() ]
+        type = AnnotatedClassOrInterfaceType()
+        (
+            ret = ArrayCreation(begin, type)
+        |
+            args = Arguments()
+            { ret = new ObjectCreationExpr(range(begin, token()), scope, (ClassOrInterfaceType) type, typeArgs.list, args, anonymousBody); }
+        )
+    )
+    { return ret; }
+}
+
+ArrayCreationExpr ArrayCreation(JavaToken begin, Type type):
+{
+	Expression expr = null;
+	ArrayInitializerExpr arrayInitializerExpr = null;
+	NodeList<Expression> inits = emptyList();
+	List<NodeList<AnnotationExpr>> accum = new ArrayList<NodeList<AnnotationExpr>>();
+	NodeList<AnnotationExpr> annotations = new NodeList<AnnotationExpr>();
+	JavaToken arrayCreationLevelStart = INVALID;
+	List<TokenRange> levelRanges = new ArrayList<TokenRange>();
+}
+{
+    ( LOOKAHEAD(2)
+        "[" { arrayCreationLevelStart = annotations.isEmpty() ? token() : orIfInvalid(arrayCreationLevelStart, annotations.get(0)); }
+        (expr = Expression())? { accum = add(accum, annotations); inits = add(inits, expr); annotations=null; expr=null; }
+        "]" { levelRanges.add(range(arrayCreationLevelStart, token())); }
+    )+
+    (arrayInitializerExpr = ArrayInitializer())?
+    {
+        return juggleArrayCreation(range(begin, token()), levelRanges, type, inits, accum, arrayInitializerExpr);
+    }
+}
+
+
+/*
+ * Statement syntax follows.
+ */
+
+Statement Statement():
+{
+	Statement ret;
+}
+{
+    try {
+        ( LOOKAHEAD(2)
+            ret = LabeledStatement()
+        |
+            ret = AssertStatement()
+        |
+            ret = EmptyStatement()
+        |
+            ret = StatementExpression()
+        )
+        { return ret; }
+    } catch (ParseException e) {
+        TokenRange errorRange = recover(SEMICOLON, e);
+        return new UnparsableStmt(errorRange);
+    }
+}
+
+AssertStmt AssertStatement():
+{
+	Expression check;
+	Expression msg = null;
+	JavaToken begin;
+}
+{
+  "assert" {begin=token();} check = Expression() [ ":" msg = Expression() ] ";"
+  { return new AssertStmt(range(begin, token()), check, msg);  }
+}
+
+LabeledStmt LabeledStatement():
+{
+	SimpleName label;
+	Statement stmt;
+	JavaToken begin;
+}
+{
+  label = SimpleName() {begin=token();} ":" stmt = Statement()
+  { return new LabeledStmt(range(begin, token()), label, stmt); }
+}
+
+EmptyStmt EmptyStatement():
+{}
+{
+    ";"
+    { return new EmptyStmt(tokenRange()); }
+}
+
+ExpressionStmt StatementExpression():
+/*
+ * The last expansion of this production accepts more than the legal
+ * Java expansions for StatementExpression.  This expansion does not
+ * use PostfixExpression for performance reasons.
+ */
+{
+	Expression expr;
+	AssignExpr.Operator op;
+	Expression value;
+	RangedList<Type> typeArgs = new RangedList<Type>(null);
+	Statement lambdaBody;
+}
+{
+    ( LOOKAHEAD(2)
+        expr = PreIncrementExpression()
+        |
+        expr = PreDecrementExpression()
+        |
+        expr = PrimaryExpression()
+        [
+            "++" { expr = new UnaryExpr(range(expr, token()), expr, UnaryExpr.Operator.POSTFIX_INCREMENT);  }
+            |
+            "--" { expr = new UnaryExpr(range(expr, token()), expr, UnaryExpr.Operator.POSTFIX_DECREMENT);  }
+            |
+            op = AssignmentOperator() value = Expression() { expr = new AssignExpr(range(expr, token()), expr, value, op); }
+        ]
+    )
+    ";"
+    { return new ExpressionStmt(range(expr, token()), expr); }
+}
+
+NodeList<Expression> ResourceSpecification() :
+{
+  NodeList<Expression> variables;
+}
+{
+  "("
+  variables = Resources()
+  (LOOKAHEAD(2) ";")?
+  ")"
+  { return variables; }
+}
+
+
+NodeList<Expression> Resources() :
+{
+	NodeList<Expression> expressions = new NodeList<Expression>();
+	Expression expr;
+}
+{
+    expr = Resource() {expressions.add(expr);} (LOOKAHEAD(2) ";" expr = Resource() {expressions.add(expr);})*
+    { return expressions; }
+}
+
+Expression Resource() :
+{
+	Expression expr;
+}
+{
+    ( expr = PrimaryExpression()
+    )
+    { return expr; }
+}
+
+
+/* We use productions to match >>>, >> and > so that we can keep the
+ * type declaration syntax with generics clean
+ */
+
+void RUNSIGNEDSHIFT():
+{}
+{
+  ( LOOKAHEAD({ getToken(1).kind == GT &&
+                getToken(1).realKind == RUNSIGNEDSHIFT} )
+   ">" ">" ">"
+  )
+}
+
+void RSIGNEDSHIFT():
+{}
+{
+  ( LOOKAHEAD({ getToken(1).kind == GT &&
+                getToken(1).realKind == RSIGNEDSHIFT} )
+  ">" ">"
+  )
+}
+
+/* Rules for matching partial inputs.
+These rules are needed to properly terminate them -
+if we simply use the usual rules, they will ignore everything in the provider
+after they matched their desired input, which will lead to unexpected behaviour
+*/
+
+Expression ExpressionParseStart():
+{ Expression ret; }
+{ ret = Expression() <EOF> { return ret; } }
+
+ClassOrInterfaceType ClassOrInterfaceTypeParseStart():
+{ ClassOrInterfaceType ret; }
+{ ret = AnnotatedClassOrInterfaceType() <EOF> { return ret; } }
+
+Type ResultTypeParseStart():
+{ NodeList<AnnotationExpr> annotations; Type ret; }
+{ ret = ResultType(emptyList()) <EOF> { return ret; } }
+
+ExplicitConstructorInvocationStmt ExplicitConstructorInvocationParseStart():
+{ ExplicitConstructorInvocationStmt ret; }
+{ ret = ExplicitConstructorInvocation() <EOF> { return ret; } }
+
+Name NameParseStart():
+{ Name ret; }
+{ ret = Name() <EOF> { return ret; } }
+
+SimpleName SimpleNameParseStart():
+{ SimpleName ret; }
+{ ret = SimpleName() <EOF> { return ret; } }
+
+
+/* Rule syntax follows */
+
+TOKEN :
+{
+  < MILLISECOND_LITERAL: <DECIMAL_LITERAL> "ms" >
+|
+  < SECOND_LITERAL: <DECIMAL_LITERAL> "s" >
+|
+  < MINUTE_LITERAL: <DECIMAL_LITERAL> "m" >
+|
+  < HOUR_LITERAL: <DECIMAL_LITERAL> "h" >
+}
+
+NodeList<Expression> Expressions():
+{
+	NodeList<Expression> ret = emptyList();
+	Expression expr;
+}
+{
+  "(" [ expr = Expression() { ret = add(ret, expr); } ( "," expr = Expression() { ret = add(ret, expr); } )* ] ")"
+  { return ret; }
+}
+
+RuleDeclaration RuleDeclaration(ModifierHolder modifier):
+{
+    SimpleName name;
+    JavaToken begin = modifier.begin;
+    RuleBody body;
+}
+{
+  "rule"
+  name = SimpleName()
+  body = RuleBody()
+
+	{ return new RuleDeclaration(range(begin, token()), modifier.annotations, name, body); }
+}
+
+RuleBody RuleBody():
+{
+    NodeList<RuleItem> items = emptyList();
+    JavaToken begin;
+}
+{
+  "{" { begin=token(); }
+  items = RuleItems()
+  "}"
+
+    { return new RuleBody(range(begin, token()), items); }
+}
+
+NodeList<RuleItem> RuleItems():
+{
+    NodeList<RuleItem> items = emptyList();
+    RuleItem item;
+    RuleConsequence consequnce;
+}
+{
+  (
+    item = RulePattern() { items.add(item); }
+  |
+    item = RuleConsequence() { items.add(item); }
+  )*
+
+    { return items; }
+}
+
+RulePattern RulePattern():
+{
+    JavaToken begin;
+    SimpleName type;
+    SimpleName bind;
+    OOPathExpr expr;
+}
+{
+  type = SimpleName() { begin=token(); }
+  bind = SimpleName()
+  "="
+  expr = OOPathExpr()
+  ";"
+
+    { return new RulePattern(range(begin, token()), type, bind, expr); }
+}
+
+RuleConsequence RuleConsequence():
+{
+    JavaToken begin;
+    BlockStmt block = null;
+}
+{
+  "do" { begin=token(); }
+    { return new RuleConsequence(range(begin, token()), block); }
+}
+
+OOPathExpr OOPathExpr():
+{
+    JavaToken begin;
+    NodeList<OOPathChunk> chunks = emptyList();
+    OOPathChunk chunk;
+}
+{
+  "/" { begin=token(); }
+  chunk = OOPathChunk() { chunks.add(chunk); }
+  ( "/" chunk = OOPathChunk() { chunks.add(chunk); } )*
+
+    { return new OOPathExpr(range(begin, token()), chunks); }
+}
+
+OOPathChunk OOPathChunk():
+{
+    JavaToken begin;
+    SimpleName field;
+    SimpleName inlineCast = null;
+    Expression tempExpr;
+    List<Expression> conditions = new ArrayList<Expression>();
+}
+{
+  field = SimpleName() { begin=token(); }
+  [ "#" inlineCast = SimpleName() ]
+  [ "[" (tempExpr = Expression() { conditions = add(conditions, tempExpr); } )
+    (<COMMA> tempExpr = Expression() { conditions = add(conditions, tempExpr); } )* "]" ]
+
+    { return new OOPathChunk(range(begin, token()), field, inlineCast, conditions); }
+}
+
+DrlxExpression DrlxExpression():
+{
+	SimpleName decl = null;
+	Expression expr;
+}
+{
+  [ LOOKAHEAD(2) decl = SimpleName() ":" ]
+  (
+  LOOKAHEAD(OOPathExpr())
+    expr = OOPathExpr()
+  |
+  expr = Expression()
+  )
+
+  { return new DrlxExpression(decl, expr); }
+}
+
+Expression CommaSeparatedMethodCallExpr():
+{
+    JavaToken begin;
+    Expression first = null;
+    Expression other = null;
+    NodeList<Expression> all = emptyList();
+}
+{
+    (
+        (
+            first = PrimaryPrefix() { begin=token(); all.add(first); }
+            (
+                          <COMMA>
+                          other = PrimaryPrefix() { all.add(other); }
+            )*
+            <SEMICOLON>
+            {
+                return new CommaSeparatedMethodCallExpr(range(begin, token()), all);
+            }
+
+        )
+    )
+}
+
+
+Expression PointFreeExpr():
+{
+    JavaToken begin;
+    Expression left;
+    NodeList<Expression> right = emptyList();
+    SimpleName operator;
+    boolean negated = false;
+    TemporalLiteralArguments temporalLiteralArguments;
+    Expression tempExpr;
+}
+{
+    (
+        (
+            left = PrimaryExpression() { begin=token(); }
+            (
+                          <NOT>
+                          { negated = true; }
+            )*
+            (
+                operator = SimpleName()
+                temporalLiteralArguments = TemporalLiteralArguments()
+                (
+                  LOOKAHEAD(1)
+                  ( right = Expressions())
+                  |
+                  ( tempExpr = PrimaryExpression() { right = add(right, tempExpr); } )
+                )
+                  {
+                    if(temporalLiteralArguments != null) {
+                        return new PointFreeExpr(range(begin, token()), left, right, operator, negated, temporalLiteralArguments.getArg1(), temporalLiteralArguments.getArg2(), temporalLiteralArguments.getArg3(), temporalLiteralArguments.getArg4() );
+                    } else {
+                        return new PointFreeExpr(range(begin, token()), left, right, operator, negated, null, null, null, null);
+                    }
+                }
+            )
+        )
+    )
+}
+
+Expression PointFreeExprMvel():
+{
+    JavaToken begin;
+    Expression left;
+    NodeList<Expression> right = emptyList();
+    boolean negated = false;
+    Expression tempExpr;
+    Token mvelOperator = null;
+}
+{
+    (
+        (
+            left = PrimaryExpression() { begin=token(); }
+            (
+                          <NOT>
+                          { negated = true; }
+            )*
+            (
+                (mvelOperator = <MVEL_STARTS_WITH> | mvelOperator = <MVEL_ENDS_WITH> | mvelOperator = <MVEL_LENGTH>)
+                ( tempExpr = PrimaryExpression() { right = add(right, tempExpr); } )
+            )
+            {
+                return new PointFreeExpr(range(begin, token()), left, right, new SimpleName(mvelOperator.toString()), negated, null, null, null, null);
+            }
+
+        )
+    )
+}
+
+
+Expression HalfPointFreeExpr():
+{
+    JavaToken begin = token();
+    NodeList<Expression> right = emptyList();
+    SimpleName operator;
+    boolean negated = false;
+    TemporalLiteralArguments temporalLiteralArguments;
+    Expression tempExpr;
+}
+{
+    (
+        (
+            (
+                          <NOT>
+                          { negated = true; }
+            )*
+            operator = SimpleName() { begin = token(); }
+            temporalLiteralArguments = TemporalLiteralArguments()
+            (
+              LOOKAHEAD(1)
+              ( right = Expressions())
+              |
+              ( tempExpr = PrimaryPrefix() { right = add(right, tempExpr); } )
+            )
+              {
+                if(temporalLiteralArguments != null) {
+                    return new HalfPointFreeExpr(range(begin, token()), right, operator, negated, temporalLiteralArguments.getArg1(), temporalLiteralArguments.getArg2(), temporalLiteralArguments.getArg3(), temporalLiteralArguments.getArg4() );
+                } else {
+                    return new HalfPointFreeExpr(range(begin, token()), right, operator, negated, null, null, null, null);
+                }
+              }
+        )
+    )
+}
+
+Expression HalfPointFreeExprMvel():
+{
+    JavaToken begin;
+    NodeList<Expression> right = emptyList();
+    boolean negated = false;
+    Expression tempExpr;
+    Token mvelOperator = null;
+}
+{
+    (
+        (
+            (
+                          <NOT>
+                          { negated = true; }
+            )*
+            (
+                (mvelOperator = <MVEL_STARTS_WITH> | mvelOperator = <MVEL_ENDS_WITH> | mvelOperator = <MVEL_LENGTH>) { begin = token(); }
+                ( tempExpr = PrimaryExpression() { right = add(right, tempExpr); } )
+            )
+            {
+                return new HalfPointFreeExpr(range(begin, token()), right, new SimpleName(mvelOperator.toString()), negated, null, null, null, null);
+            }
+
+        )
+    )
+}
+
+TemporalLiteralArguments TemporalLiteralArguments():
+{
+    Expression arg1 = null;
+    Expression arg2 = null;
+    Expression arg3 = null;
+    Expression arg4 = null;
+}
+{
+    [
+      LOOKAHEAD("[" TemporalLiteral() "," TemporalLiteral() "," TemporalLiteral() "," TemporalLiteral())
+      ( "[" arg1 = TemporalLiteral() "," arg2 = TemporalLiteral() "," arg3 = TemporalLiteral() "," arg4 = TemporalLiteral() "]" )
+      |
+      LOOKAHEAD("[" TemporalLiteral() ",")
+      ( "[" arg1 = TemporalLiteral() "," arg2 = TemporalLiteral() "]" )
+      |
+      ( "[" arg1 = TemporalLiteral() "]" )
+    ]
+    { return new TemporalLiteralArguments(arg1, arg2, arg3, arg4); }
+}
+
+
+
+TemporalLiteralExpr TemporalLiteral():
+{
+	NodeList<TemporalChunkExpr> chunks = emptyList();
+	TemporalLiteralChunkExpr chunk;
+}
+{
+  (
+	  <INTEGER_LITERAL>
+	  {
+	  		chunks.add(new TemporalLiteralChunkExpr(tokenRange(), token.image));
+	  }
+	| <STAR>
+	  {
+	  		chunks.add(new TemporalLiteralInfiniteChunkExpr(tokenRange(), token.image));
+	  }
+	|
+	  chunk = TemporalLiteralChunk() { chunks.add(chunk); }
+      ( chunk = TemporalLiteralChunk() { chunks.add(chunk); } )*
+  )
+  { return new TemporalLiteralExpr(tokenRange(), chunks); }
+}
+
+TemporalLiteralChunkExpr TemporalLiteralChunk():
+{
+	TemporalLiteralChunkExpr ret;
+}
+{
+  (
+	  <MILLISECOND_LITERAL> {
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.MILLISECONDS);
+	  }
+	|
+	  <SECOND_LITERAL> {
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.SECONDS);
+	  }
+	|
+	  <MINUTE_LITERAL> {
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.MINUTES);
+	  }
+	|
+	  <HOUR_LITERAL> {
+	  		ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.HOURS);
+	  }
+	|
+	  <FLOATING_POINT_LITERAL> {
+	        if (token.image.endsWith("f") || token.image.endsWith("F") || token.image.endsWith("D")) {
+	            addProblem("unexpected float");
+	            ret = null;
+	        } else {
+	  		    ret = new TemporalLiteralChunkExpr(tokenRange(), token.image, TimeUnit.DAYS);
+	  	    }
+	  }
+  )
+  { return ret; }
+}

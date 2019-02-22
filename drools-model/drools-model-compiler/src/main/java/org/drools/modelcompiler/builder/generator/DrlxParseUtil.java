@@ -22,63 +22,66 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
+import com.github.javaparser.ast.expr.ArrayCreationExpr;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BinaryExpr.Operator;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LiteralExpr;
+import com.github.javaparser.ast.expr.LiteralStringValueExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
+import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import com.github.javaparser.ast.nodeTypes.NodeWithTraversableScope;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.constraint.parser.DrlxParser;
+import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.ast.expr.DrlxExpression;
+import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.drlx.DrlxParser;
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ParseProblemException;
-import org.drools.javaparser.ast.Node;
-import org.drools.javaparser.ast.body.Parameter;
-import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
-import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
-import org.drools.javaparser.ast.expr.ArrayAccessExpr;
-import org.drools.javaparser.ast.expr.ArrayCreationExpr;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr.Operator;
-import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
-import org.drools.javaparser.ast.expr.CastExpr;
-import org.drools.javaparser.ast.expr.CharLiteralExpr;
-import org.drools.javaparser.ast.expr.ConditionalExpr;
-import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.LiteralExpr;
-import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
-import org.drools.javaparser.ast.expr.LongLiteralExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.NullLiteralExpr;
-import org.drools.javaparser.ast.expr.ObjectCreationExpr;
-import org.drools.javaparser.ast.expr.SimpleName;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.UnaryExpr;
-import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
-import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
-import org.drools.javaparser.ast.nodeTypes.NodeWithTraversableScope;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.stmt.ExpressionStmt;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.javaparser.ast.type.PrimitiveType;
-import org.drools.javaparser.ast.type.Type;
-import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -184,11 +187,10 @@ public class DrlxParseUtil {
         }
 
         if (expr instanceof NameExpr) {
-            String name = (( NameExpr ) expr).getNameAsString();
-            if (usedDeclarations != null) {
-                usedDeclarations.add(name);
-            }
-            return context.getDeclarationById( name ).map( DeclarationSpec::getDeclarationClass ).get();
+            return expressionTypeNameExpr(context, usedDeclarations, ((NameExpr) expr).getNameAsString());
+        }
+        if (expr instanceof DrlNameExpr) {
+            return expressionTypeNameExpr(context, usedDeclarations, ((DrlNameExpr) expr).getNameAsString());
         }
 
         if (expr instanceof BinaryExpr) {
@@ -237,7 +239,15 @@ public class DrlxParseUtil {
             return Object.class;
         }
 
-        throw new RuntimeException("Unknown expression type: " + expr);
+        throw new RuntimeException("Unknown expression type: " + PrintUtil.printConstraint(expr));
+    }
+
+    private static java.lang.reflect.Type expressionTypeNameExpr(RuleContext context, Collection<String> usedDeclarations, String nameAsString) {
+        String name = nameAsString;
+        if (usedDeclarations != null) {
+            usedDeclarations.add(name);
+        }
+        return context.getDeclarationById( name ).map(DeclarationSpec::getDeclarationClass ).get();
     }
 
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
@@ -360,10 +370,11 @@ public class DrlxParseUtil {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
             return exprWithScope.traverseScope().map((Expression scope) -> {
-                acc.addLast(expr.clone());
+                Expression sanitizedExpr = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
+                acc.addLast(sanitizedExpr.clone());
                 return findRootNodeViaScopeRec(scope, acc);
             }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
-        } else if (expr instanceof NameExpr) {
+        } else if (expr instanceof NameExpr || expr instanceof DrlNameExpr) {
             if(acc.size() > 0 && acc.getLast() instanceof NodeWithOptionalScope) {
                 ((NodeWithOptionalScope) acc.getLast()).setScope(null);
 
@@ -405,8 +416,8 @@ public class DrlxParseUtil {
         @Override
         public String toString() {
             return "RemoveRootNodeResult{" +
-                    "rootNode=" + rootNode +
-                    ", withoutRootNode=" + withoutRootNode +
+                    "rootNode=" + rootNode.map(PrintUtil::printConstraint) +
+                    ", withoutRootNode=" + PrintUtil.printConstraint(withoutRootNode) +
                     '}';
         }
 
@@ -419,8 +430,8 @@ public class DrlxParseUtil {
                 return false;
             }
             RemoveRootNodeResult that = (RemoveRootNodeResult) o;
-            return Objects.equals(rootNode, that.rootNode) &&
-                    Objects.equals(withoutRootNode, that.withoutRootNode);
+            return Objects.equals(rootNode.map(PrintUtil::printConstraint), that.rootNode.map(PrintUtil::printConstraint)) &&
+                    Objects.equals(PrintUtil.printConstraint(withoutRootNode), PrintUtil.printConstraint(that.withoutRootNode));
         }
 
         @Override
@@ -447,6 +458,7 @@ public class DrlxParseUtil {
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr, boolean skipFirstParamAsThis) {
+        DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
         if (skipFirstParamAsThis && usedDeclarations.isEmpty()) {
             return expr;
         }
@@ -456,7 +468,7 @@ public class DrlxParseUtil {
             lambdaExpr.addParameter(new Parameter(new UnknownType(), "_this"));
         }
         usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
-        lambdaExpr.setBody( new ExpressionStmt(expr ) );
+        lambdaExpr.setBody( new ExpressionStmt(expr) );
         return lambdaExpr;
     }
 
@@ -470,7 +482,7 @@ public class DrlxParseUtil {
         Expression previousScope = null;
 
         for (ParsedMethod e : callStackLeftToRight) {
-            if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr) {
+            if (e.expression instanceof DrlNameExpr || e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
                 if (e.fieldToResolve.equals( bindingId )) {
                     continue;
                 }
@@ -762,5 +774,37 @@ public class DrlxParseUtil {
         } catch (NoSuchFieldException e) {
             return null;
         }
+    }
+
+    public static Node transformDrlNameExprToNameExpr(Node e) {
+        e.findAll(DrlNameExpr.class)
+                .forEach(n -> n.replace(new NameExpr(n.getName())));
+        if(e instanceof DrlNameExpr) {
+            return new NameExpr(((DrlNameExpr) e).getName());
+        } else {
+            return e;
+        }
+    }
+
+    public static MethodCallExpr sanitizeDrlNameExpr(MethodCallExpr me) {
+        NodeList<Expression> arguments = NodeList.nodeList();
+        for(Expression e : me.getArguments()) {
+            arguments.add(sanitizeExpr(e, me));
+        }
+        me.getScope().map((Expression e) -> sanitizeExpr(e, me)).ifPresent(me::setScope);
+
+        me.setArguments(arguments);
+        return me;
+    }
+
+    private static Expression sanitizeExpr(Expression e, Expression parent) {
+        Expression sanitized;
+        if (e instanceof DrlNameExpr) {
+            sanitized = new NameExpr(PrintUtil.printConstraint(e));
+            sanitized.setParentNode(parent);
+        } else {
+            sanitized = e;
+        }
+        return sanitized;
     }
 }

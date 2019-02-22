@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.javaparser.ast.drlx.OOPathChunk;
-import org.drools.javaparser.ast.drlx.OOPathExpr;
-import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.constraint.parser.ast.expr.OOPathChunk;
+import org.drools.constraint.parser.ast.expr.OOPathExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
@@ -89,7 +90,7 @@ public class OOPathExprGenerator {
             if (!conditions.isEmpty()) {
                 Class<?> finalFieldType = fieldType;
                 final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) ->
-                                                                                                   new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, c.toString())
+                                                                                                   new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printConstraint(c))
                 ).collect(Collectors.toList());
                 ooPathConditionExpressions.put(bindingId, conditionParseResult);
             } else {

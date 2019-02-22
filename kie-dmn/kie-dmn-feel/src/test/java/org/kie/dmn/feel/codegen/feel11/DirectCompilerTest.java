@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.drools.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.Expression;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
