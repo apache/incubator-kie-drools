@@ -1,10 +1,11 @@
 # qs-playground
+`mvn clean install ` 
+command or 
+`mvn clean install -DskipTests` 
 
-to build it go into individual folders in following order
-
+to build the modules
 * bom
 * api
 * drools
 * jbpm
-
-and issue `mvn clean install` command
+* droolsjbpm-integration
