@@ -19,20 +19,6 @@
     </dependency>
   </dependencies>
 
-  <licenses>
-    <license>
-      <name>GNU Lesser General Public License</name>
-      <url>http://www.gnu.org/licenses/lgpl-3.0.html</url>
-      <distribution>repo</distribution>
-    </license>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-      <comments>A business-friendly OSS license</comments>
-    </license>
-  </licenses>
-
   <build>
     <plugins>
       <plugin>
@@ -77,19 +63,6 @@
                 <source>src/main/javacc-support</source>
               </sources>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>templating-maven-plugin</artifactId>
-        <version>1.0.0</version>
-        <executions>
-          <execution>
-            <id>filter-src</id>
-            <goals>
-              <goal>filter-sources</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
