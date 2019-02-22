@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.javaparser.ast.body.FieldDeclaration;
-import org.drools.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.Expression;
 import org.kie.dmn.feel.lang.Type;
 
 public class DirectCompilerResult {

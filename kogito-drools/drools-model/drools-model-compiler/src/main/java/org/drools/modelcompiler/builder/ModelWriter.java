@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.printer.PrettyPrinter;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;

@@ -31,6 +31,7 @@
   <modules>
     <module>drools-canonical-model</module>
     <module>drools-model-compiler</module>
+    <module>drools-constraint-parser</module>
   </modules>
 
 

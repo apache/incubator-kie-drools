@@ -72,10 +72,16 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-model-compiler</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drlx-parser</artifactId>
+      <artifactId>drools-constraint-parser</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

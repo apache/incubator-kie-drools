@@ -1,7 +1,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 
 public class DrlxParseFail implements DrlxParseResult {
 

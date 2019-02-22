@@ -13,35 +13,37 @@ import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.rule.Pattern;
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.ast.body.MethodDeclaration;
-import org.drools.javaparser.ast.body.Parameter;
-import org.drools.javaparser.ast.body.VariableDeclarator;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BinaryExpr;
-import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.LiteralExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.stmt.ExpressionStmt;
-import org.drools.javaparser.ast.stmt.ReturnStmt;
-import org.drools.javaparser.ast.stmt.Statement;
-import org.drools.javaparser.ast.type.Type;
-import org.drools.javaparser.ast.type.UnknownType;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -223,7 +225,7 @@ public abstract class AccumulateVisitor {
                     .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call"  + accumulateFunctionParameter))
                     .getExpression();
                 } else {
-                    parameterConverted = accumulateFunctionParameter;
+                    parameterConverted = DrlxParseUtil.sanitizeDrlNameExpr((MethodCallExpr) accumulateFunctionParameter);
                 }
 
                 final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
@@ -270,18 +272,19 @@ public abstract class AccumulateVisitor {
                    }
                 );
 
-            } else if (accumulateFunctionParameter instanceof NameExpr ) {
+            } else if (accumulateFunctionParameter instanceof DrlNameExpr) {
                 final Class<?> declarationClass = context
-                        .getDeclarationById(accumulateFunctionParameter.toString())
+                        .getDeclarationById(PrintUtil.printConstraint(accumulateFunctionParameter))
                         .orElseThrow(RuntimeException::new)
                         .getDeclarationClass();
 
-                final String nameExpr = ((NameExpr) accumulateFunctionParameter).getName().asString();
+                final String nameExpr = ((DrlNameExpr) accumulateFunctionParameter).getName().asString();
                 final Optional<AccumulateFunction> optAccumulateFunction = getAccumulateFunction(function, declarationClass);
                 if(!optAccumulateFunction.isPresent()) {
                     addNonExistingFunctionError(context, function);
                     return Optional.empty();
                 }
+
                 final AccumulateFunction accumulateFunction = optAccumulateFunction.get();
                 validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
                 functionDSL.addArgument(new ClassExpr(toType(accumulateFunction.getClass())));
