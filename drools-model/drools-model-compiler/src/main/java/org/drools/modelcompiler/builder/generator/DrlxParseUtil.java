@@ -799,7 +799,7 @@ public class DrlxParseUtil {
 
     private static Expression sanitizeExpr(Expression e, Expression parent) {
         Expression sanitized;
-        if(e instanceof DrlNameExpr) {
+        if (e instanceof DrlNameExpr) {
             sanitized = new NameExpr(PrintUtil.printConstraint(e));
             sanitized.setParentNode(parent);
         } else {
