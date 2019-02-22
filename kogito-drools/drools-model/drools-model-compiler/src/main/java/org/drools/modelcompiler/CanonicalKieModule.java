@@ -106,6 +106,8 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private boolean incrementalUpdate = false;
 
+    private KieModuleModel kieModuleModel;
+
     public CanonicalKieModule( ReleaseId releaseId, KieModuleModel kieProject, File file ) {
         this( releaseId, kieProject, file, null );
     }
@@ -124,10 +126,19 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     public static CanonicalKieModule createFromClasspath() {
-        CanonicalKieModuleModel kmodel = createInstance( null, CanonicalModelKieProject.PROJECT_MODEL_CLASS );
-        InternalKieModule internalKieModule = new CanonicalInternalKieModule(kmodel.getReleaseId(), kmodel.getKieModuleModel());
-        CanonicalKieModule canonicalKieModule = new CanonicalKieModule(internalKieModule);
-        canonicalKieModule.initModels( kmodel );
+        return createFromClassLoader(null);
+    }
+
+    public static CanonicalKieModule createFromClassLoader(ClassLoader classLoader) {
+        CanonicalKieModuleModel kmodel = createInstance( classLoader, CanonicalModelKieProject.PROJECT_MODEL_CLASS );
+        return kmodel == null ? null : new CanonicalKieModule( new CanonicalInternalKieModule(kmodel.getReleaseId(), kmodel.getKieModuleModel()) );
+    }
+
+    public static CanonicalKieModule createFromClassLoader(ClassLoader classLoader, InternalKieModule kieModule) {
+        CanonicalKieModule canonicalKieModule = createFromClassLoader(classLoader);
+        if (canonicalKieModule == null) {
+            canonicalKieModule = new CanonicalKieModule( kieModule );
+        }
         return canonicalKieModule;
     }
 
@@ -570,6 +581,22 @@ public class CanonicalKieModule implements InternalKieModule {
         return internalKieModule;
     }
 
+    @Override
+    public void initModel() {
+        CanonicalKieModuleModel kmodel = createInstance( moduleClassLoader, CanonicalModelKieProject.PROJECT_MODEL_CLASS );
+        if (kmodel != null) {
+            initModels( kmodel );
+            kieModuleModel = kmodel.getKieModuleModel();
+        } else {
+            kieModuleModel = internalKieModule.getKieModuleModel();
+        }
+    }
+
+    @Override
+    public KieModuleModel getKieModuleModel() {
+        return kieModuleModel;
+    }
+
     // Delegate methods
 
     @Override
@@ -595,11 +622,6 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public Map<String, Results> getKnowledgeResultsCache() {
         return internalKieModule.getKnowledgeResultsCache();
-    }
-
-    @Override
-    public KieModuleModel getKieModuleModel() {
-        return internalKieModule.getKieModuleModel();
     }
 
     @Override

@@ -45,6 +45,7 @@ import static java.util.stream.Collectors.joining;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
+import static org.drools.modelcompiler.CanonicalKieModule.createFromClassLoader;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
@@ -62,7 +63,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     protected List<ModelBuilderImpl> modelBuilders = new ArrayList<>();
 
     public CanonicalModelKieProject(boolean isPattern, InternalKieModule kieModule, ClassLoader classLoader) {
-        super(kieModule instanceof CanonicalKieModule ? kieModule : new CanonicalKieModule( kieModule ), classLoader);
+        super(kieModule instanceof CanonicalKieModule ? kieModule : createFromClassLoader( classLoader, kieModule ), classLoader);
         this.isPattern = isPattern;
     }
 

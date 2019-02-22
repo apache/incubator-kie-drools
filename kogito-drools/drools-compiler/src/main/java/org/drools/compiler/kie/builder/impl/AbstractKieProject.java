@@ -15,8 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
@@ -40,6 +39,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 
 public abstract class AbstractKieProject implements KieProject {
 
@@ -212,6 +213,8 @@ public abstract class AbstractKieProject implements KieProject {
         KnowledgeBuilder kbuilder = createKnowledgeBuilder( kBaseModel, kModule );
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
+        boolean useFolders = (( KnowledgeBuilderImpl ) kbuilder).getBuilderConfiguration().isGroupDRLsInKieBasesByFolder();
+
         Set<Asset> assets = new HashSet<>();
 
         boolean allIncludesAreValid = true;
@@ -227,14 +230,14 @@ public abstract class AbstractKieProject implements KieProject {
                 allIncludesAreValid = false;
                 continue;
             }
-            addFiles( assets, getKieBaseModel(include), includeModule );
+            addFiles( assets, getKieBaseModel(include), includeModule, useFolders );
         }
 
         if (!allIncludesAreValid) {
             return null;
         }
 
-        addFiles( assets, kBaseModel, kModule );
+        addFiles( assets, kBaseModel, kModule, useFolders );
 
         if (assets.isEmpty()) {
             if (kModule instanceof FileKieModule) {
@@ -274,11 +277,11 @@ public abstract class AbstractKieProject implements KieProject {
         return KnowledgeBuilderFactory.newKnowledgeBuilder( getBuilderConfiguration( kBaseModel, kModule ) );
     }
 
-    private static void addFiles(Set<Asset> assets,
-                                 KieBaseModel kieBaseModel,
-                                 InternalKieModule kieModule) {
+    private void addFiles(Set<Asset> assets, KieBaseModel kieBaseModel,
+                          InternalKieModule kieModule, boolean useFolders) {
         for (String fileName : kieModule.getFileNames()) {
-            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName)) {
+            if (!fileName.startsWith(".") && !fileName.endsWith(".properties") &&
+                    filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getBytes( fileName ), useFolders)) {
                 assets.add(new Asset( kieModule, fileName ));
             }
         }

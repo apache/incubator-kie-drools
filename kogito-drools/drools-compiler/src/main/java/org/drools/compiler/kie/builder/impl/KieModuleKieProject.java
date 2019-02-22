@@ -58,6 +58,7 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     public void init() {
         if ( kieModules == null ) {
+            kieModule.initModel();
             Collection<InternalKieModule> depKieModules = kieModule.getKieDependencies().values();
             indexParts( kieModule, depKieModules, kJarFromKBaseName );
             kieModules = new ArrayList<InternalKieModule>();

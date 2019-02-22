@@ -15,12 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
-import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -57,6 +51,12 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
 
 public interface InternalKieModule extends KieModule, Serializable {
 
@@ -126,7 +126,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default boolean isFileInKBase(KieBaseModel kieBase, String fileName) {
-        return filterFileInKBase(this, kieBase, fileName);
+        return filterFileInKBase(this, kieBase, fileName, () -> getBytes( fileName ), false);
     }
 
     default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {
@@ -145,6 +145,8 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default CompilationCache getCompilationCache( String kbaseName) { return null; }
+
+    default void initModel() { }
 
     static InternalKieModule createKieModule( ReleaseId releaseId, File jar ) {
         try (ZipFile zipFile = new ZipFile( jar )) {
