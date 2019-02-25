@@ -108,6 +108,7 @@
     <module>jbpm-installer</module>
     <module>jbpm-container-test</module>
     <module>jbpm-event-emitters</module>
+    <module>jbpm-xes</module>
   </modules>
 
   <build>
