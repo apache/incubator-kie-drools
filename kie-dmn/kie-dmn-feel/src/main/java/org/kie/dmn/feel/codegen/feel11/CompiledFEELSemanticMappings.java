@@ -397,17 +397,15 @@ public class CompiledFEELSemanticMappings {
             return null;
         }
 
-        if (!value.getClass().isAssignableFrom(start.getClass())) {
+        Boolean gte = gte(value, start);
+        if (gte == null) {
             ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start"), null));
-            return null;
         }
-
-        if (!value.getClass().isAssignableFrom(end.getClass())) {
+        Boolean lte = lte(value, end);
+        if (lte == null) {
             ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end"), null));
-            return null;
         }
-
-        return and(gte(value, start), lte(value, end)); // do not use Java && to avoid potential NPE due to FEEL 3vl.
+        return and(gte, lte); // do not use Java && to avoid potential NPE due to FEEL 3vl.
     }
 
     /**

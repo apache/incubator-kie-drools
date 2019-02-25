@@ -16,13 +16,12 @@
 
 package org.kie.dmn.feel.lang.ast;
 
-import java.time.Period;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class BetweenNode
@@ -74,38 +73,26 @@ public class BetweenNode
         Object o_val = value.evaluate(ctx);
         Object o_s = start.evaluate(ctx);
         Object o_e = end.evaluate(ctx);
-
-        if (o_val instanceof Period && o_s instanceof Period && o_e instanceof Period) {
-            // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
-            Period val = (Period) o_val;
-            Period s = (Period) o_s;
-            Period e = (Period) o_e;
-            Integer iVal = val.getYears() * 12 + val.getMonths();
-            Integer iL = s.getYears() * 12 + s.getMonths();
-            Integer iR = e.getYears() * 12 + e.getMonths();
-            return iVal.compareTo(iL) >= 0 && iVal.compareTo(iR) <= 0;
-        }
-
-        Comparable val = (Comparable) o_val;
-        Comparable s = (Comparable) o_s;
-        Comparable e = (Comparable) o_e;
-        
-        if ( val == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "value")) ); problem = true; }
-        if ( s == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "start")) ); problem = true; }
-        if ( e == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "end")) ); problem = true; }
+        if ( o_val == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value")) ); problem = true; }
+        if ( o_s == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "start")) ); problem = true; }
+        if ( o_e == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end")) ); problem = true; }
         if (problem) return null;
-        
-        if ( !val.getClass().isAssignableFrom( s.getClass() ) ) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start")) );
-            return null;
+
+        Object gte = InfixOpNode.or(EvalHelper.compare(o_val, o_s, ctx, (l, r) -> l.compareTo(r) > 0),
+                                   EvalHelper.isEqual(o_val, o_s, ctx),
+                                   ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+        if (gte == null) {
+            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start")));
+        }
+
+        Object lte = InfixOpNode.or(EvalHelper.compare(o_val, o_e, ctx, (l, r) -> l.compareTo(r) < 0),
+                                    EvalHelper.isEqual(o_val, o_e, ctx),
+                                    ctx); // do not use Java || to avoid potential NPE due to FEEL 3vl.
+        if (lte == null) {
+            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end")));
         }
         
-        if ( !val.getClass().isAssignableFrom( e.getClass() ) ) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end")) );
-            return null;
-        }
-        
-        return val.compareTo( s ) >= 0 && val.compareTo( e ) <= 0;
+        return InfixOpNode.and(gte, lte, ctx); // do not use Java && to avoid potential NPE due to FEEL 3vl.
     }
 
     @Override

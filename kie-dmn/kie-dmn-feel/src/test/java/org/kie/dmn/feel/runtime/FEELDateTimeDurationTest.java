@@ -107,6 +107,9 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date and time(\"2018-12-08T00:00:00@Europe/Rome\") < date and time(\"2018-12-08T00:00:00@Europe/Rome\")", Boolean.FALSE , null},
                 { "date and time(\"2018-12-08T00:00:00@Europe/Rome\") < date and time(\"2018-12-08T00:00:00@Europe/Paris\")", Boolean.FALSE , null},
                 { "date and time(\"2018-12-08T00:00:00\") < date and time(\"2018-12-08T00:00:00@Europe/Rome\")", Boolean.FALSE , null},
+                { "date and time(\"2018-12-01T08:00:00\") <= date and time(\"2018-12-01T09:30:00@Europe/Rome\")", Boolean.TRUE , null},
+                { "date and time(\"2018-12-01T16:00:00\") >= date and time(\"2018-12-01T09:30:00@Europe/Rome\")", Boolean.TRUE , null},
+                { "date and time(\"2018-12-01T09:30:00@Europe/Rome\") between date and time(\"2018-12-01T08:00:00\") and date and time(\"2018-12-01T16:00:00\")", Boolean.TRUE , null},
 
                 // Math operations with date, time, duration
                 { "duration( \"P2Y2M\" ) + duration( \"P1Y1M\" )", Period.parse("P3Y3M"), null },
