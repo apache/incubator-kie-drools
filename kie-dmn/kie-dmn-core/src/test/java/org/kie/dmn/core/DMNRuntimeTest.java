@@ -1854,6 +1854,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testNowBetweenTwoDates() {
+        // DROOLS-3670 DMN `between` FEEL operator alignments
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("is office open.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_19170B18-B561-4EB2-9D38-714E2442710E",
                                                    "is office open");
@@ -1865,8 +1866,9 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-
-        assertThat(dmnResult.getDecisionResultByName("is open").getResult(), is(false));
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.getDecisionResultByName("is open").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("is open").getResult(), notNullValue());
     }
 
     @Test
