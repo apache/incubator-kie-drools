@@ -78,9 +78,6 @@ public class LightProcessRuntimeContext implements ProcessRuntimeContext {
             processInstance.getMetaData().put("CorrelationKey", correlationKey);
         }
 
-//        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager()
-//                .addProcessInstance( processInstance, correlationKey );
-
         // set variable default values
         // TODO: should be part of processInstanceImpl?
         VariableScope variableScope = (VariableScope) ((ContextContainer) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);

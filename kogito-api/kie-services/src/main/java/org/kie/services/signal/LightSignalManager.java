@@ -24,11 +24,11 @@ import org.kie.api.runtime.process.EventListener;
 
 public class LightSignalManager implements SignalManager {
 
-	private final SignalableResolver instanceResolver;
+	private final EventListenerResolver instanceResolver;
 	private ConcurrentHashMap<String, ArrayList<EventListener>> listeners =
 			new ConcurrentHashMap<>();
 
-	public LightSignalManager(SignalableResolver instanceResolver) {
+	public LightSignalManager(EventListenerResolver instanceResolver) {
 		this.instanceResolver = instanceResolver;
 	}
 	

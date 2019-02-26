@@ -468,12 +468,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     }
 
     public boolean isActive() {
-//        Boolean active = (Boolean) kruntime.getEnvironment().get("Active");
-//        if (active == null) {
-//            return true;
-//        }
-//
-//        return active.booleanValue();
+        // originally: kruntime.getEnvironment().get("Active");
         return runtimeContext.isActive();
     }
 
