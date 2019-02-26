@@ -112,6 +112,10 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+  <artifactId>drlx-parser</artifactId>
+    </dependency>
 
   </dependencies>
   

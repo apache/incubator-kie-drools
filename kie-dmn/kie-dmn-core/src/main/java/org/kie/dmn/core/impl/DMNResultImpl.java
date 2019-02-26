@@ -59,7 +59,7 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     }
 
     @Override
-    public void addAll(List<DMNMessage> messages) {
+    public void addAll(List<? extends DMNMessage> messages) {
         this.messages.addAll( messages );
     }
 

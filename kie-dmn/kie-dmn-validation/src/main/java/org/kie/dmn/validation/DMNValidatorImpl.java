@@ -68,6 +68,8 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
+import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
@@ -76,6 +78,7 @@ import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_DT;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
@@ -439,7 +442,7 @@ public class DMNValidatorImpl implements DMNValidator {
         if( flags.contains( VALIDATE_COMPILATION ) ) {
             results.addAll( validateCompilation( dmnModel ) );
         }
-        if (flags.contains(DMNValidator.Validation.VALIDATE_DT)) {
+        if (flags.contains( VALIDATE_DT )) {
             results.addAll(validateDT(dmnModel));
         }
     }
@@ -526,13 +529,14 @@ public class DMNValidatorImpl implements DMNValidator {
         return Collections.emptyList();
     }
 
-    private List<DMNMessage> validateDT(Definitions dmnModel) {
+    private List<? extends DMNMessage> validateDT(Definitions dmnModel) {
         if (dmnModel != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile(dmnModel);
-            DMNDTValidator.validate(model);
             if (model != null) {
-                return model.getMessages();
+                List<DTAnalysis> vs = DMNDTValidator.validate(model);
+                List<DMNDTAnalysisMessage> results = vs.stream().map(a -> new DMNDTAnalysisMessage(a)).collect(Collectors.toList());
+                return results;
             } else {
                 throw new IllegalStateException("Compiled model is null!");
             }

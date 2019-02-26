@@ -31,20 +31,24 @@ import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputEntry;
 import org.kie.dmn.validation.dtanalysis.model.DDTARule;
 import org.kie.dmn.validation.dtanalysis.model.DDTATable;
+import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
+import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 public class DMNDTValidator {
 
     public static org.kie.dmn.feel.FEEL FEEL = org.kie.dmn.feel.FEEL.newInstance();
 
-    public static void validate(DMNModel model) {
+    public static List<DTAnalysis> validate(DMNModel model) {
+        List<DTAnalysis> results = new ArrayList<>();
         try {
             for (DecisionNode dn : model.getDecisions()) {
                 Expression expression = dn.getDecision().getExpression();
                 if (expression instanceof DecisionTable) {
                     DecisionTable decisionTable = (DecisionTable) expression;
                     droolsVerifierSystout(model, dn, decisionTable);
-                    findGaps(model, dn, decisionTable);
+                    DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
+                    results.add(result);
                 }
             }
         } catch (Throwable t) {
@@ -52,9 +56,10 @@ public class DMNDTValidator {
             t.printStackTrace();
             throw new RuntimeException(t);
         }
+        return results;
     }
 
-    private static void findGaps(DMNModel model, DecisionNode dn, DecisionTable dt) {
+    private static DTAnalysis dmnDTAnalysis(DMNModel model, DecisionNode dn, DecisionTable dt) {
         DDTATable ddtaTable = new DDTATable();
         for (int jRowIdx = 0; jRowIdx < dt.getRule().size(); jRowIdx++) {
 
@@ -90,10 +95,12 @@ public class DMNDTValidator {
             System.out.println(bounds);
         }
         System.out.println("findGaps");
-        findGaps(ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        DTAnalysis analysis = new DTAnalysis(dt);
+        findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        return analysis;
     }
 
-    private static void findGaps(DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
+    private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> activeIntervals = new ArrayList<>();
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
@@ -117,15 +124,19 @@ public class DMNDTValidator {
 
                     // TODO: merge hyperRectangle
 
+                    List<Interval> edges = new ArrayList<>();
                     for (int p = 0; p <= jColIdx; p++) {
                         System.out.print(currentIntervals[p]);
+                        edges.add(currentIntervals[p]);
                     }
                     System.out.println("");
+                    Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), edges);
+                    analysis.addGap(gap);
                 }
                 if (!activeIntervals.isEmpty()) {
                     Interval missingInterval = Interval.newFromBounds(lastBound, currentBound);
                     currentIntervals[jColIdx] = missingInterval;
-                    findGaps(ddtaTable, jColIdx + 1, currentIntervals, activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList()));
+                    findGaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList()));
                 }
                 if (currentBound.isLowerBound()) {
                     activeIntervals.add(currentBound.getParent());
@@ -142,6 +153,7 @@ public class DMNDTValidator {
         for (BaseNode n : elements) {
             if (n instanceof DashNode) {
                 results.add(new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, rule, col));
+                continue;
             }
             UnaryTestNode ut = (UnaryTestNode) n;
             if (ut.getOperator() == UnaryOperator.LTE) {
