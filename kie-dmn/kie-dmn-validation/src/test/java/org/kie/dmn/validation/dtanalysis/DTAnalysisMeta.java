@@ -1,4 +1,4 @@
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.dtanalysis;
 
 import java.math.BigDecimal;
 import java.util.Collection;

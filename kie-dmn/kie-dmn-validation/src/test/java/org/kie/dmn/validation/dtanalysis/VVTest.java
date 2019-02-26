@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.dtanalysis;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -26,6 +26,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.validation.AbstractValidatorTest;
+import org.kie.dmn.validation.ValidatorUtil;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;

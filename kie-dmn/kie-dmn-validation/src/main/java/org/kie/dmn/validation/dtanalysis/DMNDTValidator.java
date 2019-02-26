@@ -1,4 +1,4 @@
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.dtanalysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +11,7 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -37,9 +38,13 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 public class DMNDTValidator {
 
-    public static org.kie.dmn.feel.FEEL FEEL = org.kie.dmn.feel.FEEL.newInstance();
+    private final org.kie.dmn.feel.FEEL FEEL;
 
-    public static List<DTAnalysis> validate(DMNModel model) {
+    public DMNDTValidator(List<DMNProfile> dmnProfiles) {
+        FEEL = org.kie.dmn.feel.FEEL.newInstance((List) dmnProfiles);
+    }
+
+    public List<DTAnalysis> validate(DMNModel model) {
         List<DTAnalysis> results = new ArrayList<>();
         try {
             for (DecisionNode dn : model.getDecisions()) {
@@ -59,7 +64,7 @@ public class DMNDTValidator {
         return results;
     }
 
-    private static DTAnalysis dmnDTAnalysis(DMNModel model, DecisionNode dn, DecisionTable dt) {
+    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionNode dn, DecisionTable dt) {
         DDTATable ddtaTable = new DDTATable();
         for (int jRowIdx = 0; jRowIdx < dt.getRule().size(); jRowIdx++) {
 
@@ -68,7 +73,7 @@ public class DMNDTValidator {
             DDTARule ddtaRule = new DDTARule();
             int jColIdx = 0;
             for (UnaryTests ie : r.getInputEntry()) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) DMNDTValidator.FEEL.compileUnaryTests(ie.getText(), DMNDTValidator.FEEL.newCompilerContext());
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getExpr().getExpression();
 
@@ -180,9 +185,9 @@ public class DMNDTValidator {
         }
     }
 
-    private static void droolsVerifierSystout(DMNModel model, DecisionNode dn, Expression expression) {
+    private void droolsVerifierSystout(DMNModel model, DecisionNode dn, Expression expression) {
         try {
-            DroolsVerifierDTValidator.validateDT(model, dn, (DecisionTable) expression);
+            new DroolsVerifierDTValidator(this.FEEL).validateDT(model, dn, (DecisionTable) expression);
         } catch (Throwable e) {
             e.printStackTrace();
             System.out.println(e);

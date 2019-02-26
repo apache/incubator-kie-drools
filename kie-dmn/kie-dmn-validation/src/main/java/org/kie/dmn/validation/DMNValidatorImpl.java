@@ -68,6 +68,7 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.validation.dtanalysis.DMNDTValidator;
 import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
@@ -121,6 +122,8 @@ public class DMNValidatorImpl implements DMNValidator {
     private final List<DMNProfile> dmnProfiles = new ArrayList<>();
     private final DMNCompilerConfiguration dmnCompilerConfig;
 
+    private final DMNDTValidator dmnDTValidator;
+
     public DMNValidatorImpl(List<DMNProfile> dmnProfiles) {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
@@ -160,6 +163,7 @@ public class DMNValidatorImpl implements DMNValidator {
         this.dmnProfiles.addAll(dmnProfiles);
         final ClassLoader classLoader = this.kieContainer.isPresent() ? this.kieContainer.get().getClassLoader() : ClassLoaderUtil.findDefaultClassLoader();
         this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        dmnDTValidator = new DMNDTValidator(this.dmnProfiles);
     }
     
     public void dispose() {
@@ -534,7 +538,7 @@ public class DMNValidatorImpl implements DMNValidator {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile(dmnModel);
             if (model != null) {
-                List<DTAnalysis> vs = DMNDTValidator.validate(model);
+                List<DTAnalysis> vs = dmnDTValidator.validate(model);
                 List<DMNDTAnalysisMessage> results = vs.stream().map(a -> new DMNDTAnalysisMessage(a)).collect(Collectors.toList());
                 return results;
             } else {

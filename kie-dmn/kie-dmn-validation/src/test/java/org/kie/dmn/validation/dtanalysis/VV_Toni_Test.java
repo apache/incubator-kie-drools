@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.dtanalysis;
 
 import java.util.Set;
 

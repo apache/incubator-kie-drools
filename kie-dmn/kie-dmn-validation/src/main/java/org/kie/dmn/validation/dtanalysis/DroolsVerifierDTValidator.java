@@ -1,4 +1,4 @@
-package org.kie.dmn.validation;
+package org.kie.dmn.validation.dtanalysis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +50,17 @@ import org.kie.dmn.model.api.UnaryTests;
 
 public class DroolsVerifierDTValidator {
 
+    private final org.kie.dmn.feel.FEEL FEEL;
 
     private static final String OBJECT_TYPE_NAME = "mock.Type";
     private static AnalyzerConfiguration analyzerConfiguration = new AnalyzerConfigurationMock(CheckConfiguration.newDefault());
 
-    public static void validateDT(DMNModel model, DecisionNode dn, DecisionTable dt) {
+    public DroolsVerifierDTValidator(org.kie.dmn.feel.FEEL fEEL) {
+        super();
+        FEEL = fEEL;
+    }
+
+    public void validateDT(DMNModel model, DecisionNode dn, DecisionTable dt) {
         IndexImpl index1 = new IndexImpl();
         ObjectType objectType = new ObjectType(OBJECT_TYPE_NAME, analyzerConfiguration);
         int jHeadIdx = 0;
@@ -92,7 +98,7 @@ public class DroolsVerifierDTValidator {
                 final Field field = new Field(objectField, objectField.getFactType(), objectField.getFieldType(), objectField.getName(), analyzerConfiguration);
                 fields.add(field);
                 pattern.getFields().add(field);
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) DMNDTValidator.FEEL.compileUnaryTests(ie.getText(), DMNDTValidator.FEEL.newCompilerContext());
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getExpr().getExpression();
 
@@ -141,7 +147,7 @@ public class DroolsVerifierDTValidator {
                 fields.add(field);
                 pattern.getFields().add(field);
 
-                ProcessedExpression compileUnaryTests = (ProcessedExpression) DMNDTValidator.FEEL.compile(oe.getText(), DMNDTValidator.FEEL.newCompilerContext());
+                ProcessedExpression compileUnaryTests = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
                 InterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 BaseNode baseNode = (BaseNode) interpreted.getExpr().getExpression();
 
