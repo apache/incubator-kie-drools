@@ -130,7 +130,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     public static CanonicalKieModule createFromClassLoader(ClassLoader classLoader) {
-        CanonicalKieModuleModel kmodel = createInstance( classLoader, CanonicalModelKieProject.PROJECT_MODEL_CLASS );
+        CanonicalKieModuleModel kmodel = getModuleModel( classLoader );
         return kmodel == null ? null : new CanonicalKieModule( new CanonicalInternalKieModule(kmodel.getReleaseId(), kmodel.getKieModuleModel()) );
     }
 
@@ -140,6 +140,10 @@ public class CanonicalKieModule implements InternalKieModule {
             canonicalKieModule = new CanonicalKieModule( kieModule );
         }
         return canonicalKieModule;
+    }
+
+    private static CanonicalKieModuleModel getModuleModel(ClassLoader classLoader) {
+        return createInstance( classLoader, CanonicalModelKieProject.PROJECT_MODEL_CLASS );
     }
 
     @Override
@@ -287,7 +291,7 @@ public class CanonicalKieModule implements InternalKieModule {
             if (incrementalUpdate) {
                 initModelsFromProjectDescriptor();
             } else {
-                initModels( createInstance( getModuleClassLoader(), CanonicalModelKieProject.PROJECT_MODEL_CLASS ) );
+                initModels( getModuleModel( getModuleClassLoader() ) );
             }
         }
         return models;
@@ -583,7 +587,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     @Override
     public void initModel() {
-        CanonicalKieModuleModel kmodel = createInstance( moduleClassLoader, CanonicalModelKieProject.PROJECT_MODEL_CLASS );
+        CanonicalKieModuleModel kmodel = getModuleModel( moduleClassLoader );
         if (kmodel != null) {
             initModels( kmodel );
             kieModuleModel = kmodel.getKieModuleModel();

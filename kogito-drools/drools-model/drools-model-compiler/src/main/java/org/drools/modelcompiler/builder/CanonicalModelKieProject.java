@@ -142,6 +142,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                         "import " + ReleaseId.class.getCanonicalName()  + ";\n" +
                         "import " + ReleaseIdImpl.class.getCanonicalName()  + ";\n" +
                         "\n" +
+                        ( hasCdi() ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
                         "public class ProjectModel implements CanonicalKieModuleModel {\n" +
                         "\n" +
                         "    @Override\n" +
@@ -175,5 +176,13 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         sb.append(new KieModuleModelMethod(kBaseModels).toMethod());
         sb.append("\n}" );
         return sb.toString();
+    }
+
+    private boolean hasCdi() {
+        try {
+            Class.forName( "javax.enterprise.context.ApplicationScoped", false, getClassLoader() );
+            return true;
+        } catch (ClassNotFoundException cnfe) { }
+        return false;
     }
 }

@@ -19,12 +19,16 @@ package org.drools.modelcompiler;
 import java.util.List;
 
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.model.Model;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.runtime.KieSession;
+
+import static org.drools.modelcompiler.builder.KieBaseBuilder.createKieBaseFromModel;
 
 public interface CanonicalKieModuleModel {
 
@@ -42,5 +46,10 @@ public interface CanonicalKieModuleModel {
 
     default ReleaseId getReleaseId() {
         return KieServices.get().getRepository().getDefaultReleaseId();
+    }
+
+    default KieSession newKieSession() {
+        InternalKnowledgeBase kbase = createKieBaseFromModel( getModels() );
+        return kbase.newKieSession();
     }
 }
