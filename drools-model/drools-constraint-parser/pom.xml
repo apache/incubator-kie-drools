@@ -8,7 +8,11 @@
   </parent>
 
   <artifactId>drools-constraint-parser</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
+
+  <properties>
+    <java.module.name>org.drools.constraint-parser</java.module.name>
+  </properties>
 
   <description>Parsing of constraints in LHS</description>
 
@@ -65,6 +69,17 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.drools.constraint.parser.*
+            </Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
