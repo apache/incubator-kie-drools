@@ -27,7 +27,7 @@
   <inceptionYear>2006</inceptionYear>
 
   <properties>
-    <findbugs.failOnViolation>true</findbugs.failOnViolation>
+    <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
   </properties>
 
   <repositories>
@@ -195,8 +195,8 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
           <configuration>
             <maxRank>14</maxRank>
             <includeTests>true</includeTests>
