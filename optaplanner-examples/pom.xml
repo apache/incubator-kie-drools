@@ -51,6 +51,9 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <forkCount>0.5C</forkCount>
+            <systemPropertyVariables>
+              <java.awt.headless>true</java.awt.headless>
+            </systemPropertyVariables>
           </configuration>
         </plugin>
         <plugin>
