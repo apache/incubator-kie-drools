@@ -33,9 +33,8 @@ public class DefaultWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        
+
         auth.inMemoryAuthentication().withUser("user").password(encoder.encode("user")).roles("kie-server");
         auth.inMemoryAuthentication().withUser("wbadmin").password(encoder.encode("wbadmin")).roles("admin");
         auth.inMemoryAuthentication().withUser("kieserver").password(encoder.encode("kieserver1!")).roles("kie-server");
@@ -46,6 +45,7 @@ public class DefaultWebSecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.HEAD.name(),
                                                           HttpMethod.POST.name(), HttpMethod.DELETE.name(), HttpMethod.PUT.name()));
         corsConfiguration.applyPermitDefaultValues();
