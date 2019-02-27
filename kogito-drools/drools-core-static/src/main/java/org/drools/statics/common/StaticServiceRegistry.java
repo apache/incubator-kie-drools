@@ -51,7 +51,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
             throw new RuntimeException( e );
         }
 
-        constructorMap.put( "TimerService", constructor("org.drools.core.time.impl.JDKTimerService") );
+        constructorMap.put( "TimerService", constructor("org.kie.services.time.impl.JDKTimerService") );
     }
 
     @Override
