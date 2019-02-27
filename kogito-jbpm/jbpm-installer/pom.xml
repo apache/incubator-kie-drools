@@ -14,7 +14,7 @@
 
   <properties>
     <java.module.name>org.jbpm.installer</java.module.name>
-    <findbugs.skip>true</findbugs.skip>
+    <spotbugs.skip>true</spotbugs.skip>
   </properties>
 
   <dependencies>
