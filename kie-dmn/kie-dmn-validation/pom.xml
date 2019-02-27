@@ -81,7 +81,11 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     
-   <dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-verifier-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier-core</artifactId>
     </dependency>
@@ -111,10 +115,6 @@
       <artifactId>kie-dmn-core</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-  <artifactId>drlx-parser</artifactId>
     </dependency>
 
   </dependencies>

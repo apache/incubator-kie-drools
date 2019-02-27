@@ -32,8 +32,13 @@ public class DTAnalysis {
 
     public String getDMNMessageString() {
         StringBuilder builder = new StringBuilder();
+        builder.append("\n");
         builder.append("Gaps: ");
-        builder.append(gaps);
+        builder.append("\n");
+        for (Hyperrectangle g : gaps) {
+            builder.append(g);
+            builder.append("\n");
+        }
         builder.append(";");
         return MsgUtil.createMessage(Msg.DTANALYSISRESULT, builder.toString());
     }

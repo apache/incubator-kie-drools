@@ -40,7 +40,7 @@ public class DefaultDMNMessagesManager
 
     @Override
     public void addAll(List<? extends DMNMessage> messages) {
-        for ( DMNMessage message : messages ) {
+        for (DMNMessage message : messages) {
             addMessage( message );
         }
     }

@@ -78,8 +78,8 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.dmn.validation.DMNValidator.Validation.DECISION_TABLE_ANALYSIS;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_DT;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
@@ -446,7 +446,7 @@ public class DMNValidatorImpl implements DMNValidator {
         if( flags.contains( VALIDATE_COMPILATION ) ) {
             results.addAll( validateCompilation( dmnModel ) );
         }
-        if (flags.contains( VALIDATE_DT )) {
+        if (flags.contains( DECISION_TABLE_ANALYSIS )) {
             results.addAll(validateDT(dmnModel));
         }
     }
