@@ -12,8 +12,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.util.StringUtils;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
@@ -91,6 +102,12 @@ public class Consequence {
 
     public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
+
+        List<DroolsError> droolsErrors = validateMvelConsequence(ruleDescr, consequenceString);
+        for(DroolsError error : droolsErrors) {
+            context.addCompilationError(new InvalidExpressionErrorResult(error.getMessage()));
+        }
+
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             // mvel consequences will be treated as a ScriptBlock
             ruleConsequence = rewriteConsequence( consequenceString );
@@ -124,6 +141,26 @@ public class Consequence {
             executeCall = executeScriptCall(ruleDescr, onCall);
         }
         return executeCall;
+    }
+
+    private List<DroolsError> validateMvelConsequence(RuleDescr ruleDescr, String consequenceString) {
+
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl(context.getPackageModel().getName());
+        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
+        configuration.setDefaultDialect("mvel");
+        KnowledgeBuilderImpl impl = new KnowledgeBuilderImpl(pkg, configuration);
+        impl.compileAll();
+
+        PackageRegistry pkgRegistry = impl.getPackageRegistry().values().iterator().next();
+        DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
+        RuleBuildContext ruleBuildContext = new RuleBuildContext(impl,
+                                                                 ruleDescr,
+                                                                 ctr,
+                                                                 pkgRegistry.getPackage(),
+                                                                 ctr.getDialect(pkgRegistry.getDialect()));
+
+        new MVELConsequenceBuilder().build(ruleBuildContext, consequenceString);
+        return ruleBuildContext.getErrors();
     }
 
     private BlockStmt rewriteConsequence(String consequence) {
