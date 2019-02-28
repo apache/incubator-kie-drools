@@ -166,11 +166,6 @@ public class Consequence {
     private List<DroolsError> validateMvelConsequence(RuleDescr ruleDescr, String consequenceString) {
 
         KnowledgePackageImpl pkg = new KnowledgePackageImpl(context.getPackageModel().getName());
-        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
-        configuration.setDefaultDialect("mvel");
-        KnowledgeBuilderImpl impl = new KnowledgeBuilderImpl(pkg, configuration);
-        impl.compileAll();
-
         ScriptBlock block = new ScriptBlock(Object.class, consequenceString);
         List<Variable> variables = new ArrayList<>();
 
