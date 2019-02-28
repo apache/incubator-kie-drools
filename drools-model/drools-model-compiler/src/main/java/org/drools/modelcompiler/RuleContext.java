@@ -47,7 +47,7 @@ public class RuleContext {
     private int patternIndex = -1;
     private boolean needStreamMode = false;
 
-    RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
+    public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
         this.builder = builder;
         this.pkg = pkg;
         this.rule = rule;

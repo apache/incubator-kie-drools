@@ -19,6 +19,7 @@ package org.drools.modelcompiler.consequence;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -100,7 +101,7 @@ public class MVELConsequence implements Consequence {
         MVEL.executeExpression(compiledExpression, knowledgeHelper, cachingFactory);
     }
 
-    private void init() {
+    public void init() {
         Variable[] vars = consequence.getVariables();
         ScriptBlock scriptBlock = null;
         try {
@@ -168,7 +169,23 @@ public class MVELConsequence implements Consequence {
             }
         }
 
+        if (ruleClass != null) {
+            for (String m : otherDeclaredMethods()) {
+                Method method = null;
+                try {
+                    method = Object.class.getMethod("toString");
+                    runtimeData.getParserConfiguration().addImport(m, method);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
         compiledExpression = (ExecutableStatement) cu.getCompiledExpression(runtimeData);
     }
 
+    protected Iterable<? extends String> otherDeclaredMethods() {
+        return Collections.emptyList();
+    }
 }

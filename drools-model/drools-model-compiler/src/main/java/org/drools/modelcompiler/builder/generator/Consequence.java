@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,20 +12,17 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.Dialect;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.StringUtils;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
@@ -48,10 +46,15 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
+import org.drools.model.Variable;
 import org.drools.model.bitmask.AllSetButLastBitMask;
+import org.drools.model.consequences.ConsequenceImpl;
+import org.drools.model.functions.ScriptBlock;
+import org.drools.model.impl.DeclarationImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.drools.modelcompiler.consequence.MVELConsequence;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -103,11 +106,6 @@ public class Consequence {
     public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
 
-        List<DroolsError> droolsErrors = validateMvelConsequence(ruleDescr, consequenceString);
-        for(DroolsError error : droolsErrors) {
-            context.addCompilationError(new InvalidExpressionErrorResult(error.getMessage()));
-        }
-
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             // mvel consequences will be treated as a ScriptBlock
             ruleConsequence = rewriteConsequence( consequenceString );
@@ -140,27 +138,71 @@ public class Consequence {
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             executeCall = executeScriptCall(ruleDescr, onCall);
         }
+
+        if(packageModel.getFunctions().isEmpty()) {
+            final String consequenceWithImports = addImports(consequenceString);
+            List<DroolsError> droolsErrors = validateMvelConsequence(ruleDescr, consequenceWithImports);
+            for (DroolsError error : droolsErrors) {
+                context.addCompilationError(new InvalidExpressionErrorResult(error.getMessage()));
+            }
+        }
+
         return executeCall;
+    }
+
+    private String addImports(String consequenceString) {
+        for (String i : packageModel.getImports()) {
+            if (i.equals(packageModel.getName() + ".*")) {
+                continue; // skip same-package star import.
+            }
+            consequenceString = String.format("import %s; %s", i, consequenceString);
+        }
+        return consequenceString;
     }
 
     private List<DroolsError> validateMvelConsequence(RuleDescr ruleDescr, String consequenceString) {
 
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl(context.getPackageModel().getName());
+        KnowledgePackageImpl pkg = new KnowledgePackageImpl(context.getPackageModel().getName());
         KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
         configuration.setDefaultDialect("mvel");
         KnowledgeBuilderImpl impl = new KnowledgeBuilderImpl(pkg, configuration);
         impl.compileAll();
 
-        PackageRegistry pkgRegistry = impl.getPackageRegistry().values().iterator().next();
-        DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
-        RuleBuildContext ruleBuildContext = new RuleBuildContext(impl,
-                                                                 ruleDescr,
-                                                                 ctr,
-                                                                 pkgRegistry.getPackage(),
-                                                                 ctr.getDialect(pkgRegistry.getDialect()));
+        ScriptBlock block = new ScriptBlock(Object.class, consequenceString);
+        List<Variable> variables = new ArrayList<>();
 
-        new MVELConsequenceBuilder().build(ruleBuildContext, consequenceString);
-        return ruleBuildContext.getErrors();
+        for (DeclarationSpec d : context.getAllDeclarations()) {
+            variables.add(new DeclarationImpl(d.getDeclarationClass(), d.getBindingId()));
+        }
+
+        ConsequenceImpl consequence = new ConsequenceImpl(block, variables.toArray(new Variable[0]), true, false, "mvel");
+        RuleImpl rule = new RuleImpl(ruleDescr.getName());
+        org.drools.modelcompiler.RuleContext context = new org.drools.modelcompiler.RuleContext(null, pkg, rule) {
+            @Override
+            public Collection<InternalKnowledgePackage> getKnowledgePackages() {
+                return Collections.singletonList(pkg);
+            }
+
+            @Override
+            public ClassLoader getClassLoader() {
+                return this.getClass().getClassLoader();
+            }
+        };
+
+        final List<DroolsError> errors = new ArrayList<>();
+        try {
+            MVELConsequence mvelConsequence = new MVELConsequence(consequence, context) {
+
+                @Override
+                protected Iterable<? extends String> otherDeclaredMethods() {
+                    return packageModel.getFunctions().stream().map(m -> m.getName().toString()).collect(Collectors.toList());
+                }
+            };
+            mvelConsequence.init();
+        } catch (Exception e) {
+            errors.add(new RuleBuildError(null, ruleDescr, null, e.getMessage()));
+        }
+        return errors;
     }
 
     private BlockStmt rewriteConsequence(String consequence) {
