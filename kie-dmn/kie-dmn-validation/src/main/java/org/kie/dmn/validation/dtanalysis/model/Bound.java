@@ -17,17 +17,42 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
 
     @Override
     public int compareTo(Bound<V> o) {
-        int valueCompare = this.value.compareTo(o.value);
-        if (valueCompare == 0) {
-            if (this.boundaryType == o.boundaryType) {
-                return 0;
-            } else if (this.boundaryType == RangeBoundary.OPEN) {
+        if (this.parent == o.parent && parent != null && o.parent != null) {
+            // never swap lower/upper bounds of the same interval
+            if (this.isLowerBound()) {
                 return -1;
             } else {
                 return 1;
             }
         }
-        return valueCompare;
+
+        int valueCompare = compareValueDispatchingToInf(o);
+        if (valueCompare != 0) {
+            return valueCompare;
+        }
+
+        if (parent != null && o.parent != null) {
+            if (this.isUpperBound() && o.isLowerBound()) {
+                return -1;
+            } else if (this.isLowerBound() && o.isUpperBound()) {
+                return 1;
+            }
+        }
+
+        if (this.boundaryType == o.boundaryType) {
+            return 0;
+        } else if (this.boundaryType == RangeBoundary.OPEN) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+
+    private int compareValueDispatchingToInf(Bound<V> o) {
+        if (this.value != Interval.NEG_INF && this.value != Interval.POS_INF && (o.value == Interval.NEG_INF || o.value == Interval.POS_INF)) {
+            return 0 - o.value.compareTo(this.value);
+        }
+        return this.value.compareTo(o.value);
     }
 
     public V getValue() {

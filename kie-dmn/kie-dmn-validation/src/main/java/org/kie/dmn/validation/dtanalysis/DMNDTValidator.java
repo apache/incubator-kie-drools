@@ -216,7 +216,9 @@ public class DMNDTValidator {
     }
 
     private static Interval utnToInterval(UnaryTestNode ut, Interval minMax, long rule, long col) {
-        if (ut.getOperator() == UnaryOperator.LTE) {
+        if (ut.getOperator() == UnaryOperator.EQ) {
+            return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col);
+        } else if (ut.getOperator() == UnaryOperator.LTE) {
             return new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col);
         } else if (ut.getOperator() == UnaryOperator.LT) {
             return new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), valueFromNode(ut.getValue()), RangeBoundary.OPEN, rule, col);
