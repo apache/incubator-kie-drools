@@ -16,8 +16,11 @@
 
 package org.kie.api.io;
 
+import java.util.List;
+
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -31,5 +34,23 @@ public class ResourceTypeTest {
         assertTrue(BPMN2.matchesExtension("abc.bpmn2"));
         assertTrue(BPMN2.matchesExtension("abc.bpmn-cm"));
         assertFalse(BPMN2.matchesExtension("abc.bpmn2-cm"));
+    }
+
+    @Test
+    public void testGetAllExtensions() throws Exception {
+        final ResourceType BPMN2 = ResourceType.getResourceType("BPMN2");
+        final List<String> extensionsBPMN2 = BPMN2.getAllExtensions();
+
+        assertEquals(3, extensionsBPMN2.size());
+        assertTrue(extensionsBPMN2.contains("bpmn"));
+        assertTrue(extensionsBPMN2.contains("bpmn2"));
+        assertTrue(extensionsBPMN2.contains("bpmn-cm"));
+        assertFalse(extensionsBPMN2.contains("bpmn2-cm"));
+
+        final ResourceType DRL = ResourceType.getResourceType("DRL");
+        final List<String> extensionsDRL = DRL.getAllExtensions();
+
+        assertEquals(1, extensionsDRL.size());
+        assertTrue(extensionsDRL.contains("drl"));
     }
 }
