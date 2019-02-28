@@ -23,9 +23,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import com.github.javaparser.ast.expr.Expression;
-import org.junit.Ignore;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
@@ -202,7 +201,7 @@ public class DirectCompilerTest {
     public void test_between() {
         assertThat(parseCompileEvaluate("10 between 5 and 12"), is(true));
         assertThat(parseCompileEvaluate("10 between 20 and 30"), is(false));
-        assertThat(parseCompileEvaluate("10 between 20 and \"foo\""), nullValue());
+        assertThat(parseCompileEvaluate("10 between 5 and \"foo\""), nullValue());
         assertThat(parseCompileEvaluate("\"foo\" between 5 and 12"), nullValue());
         assertThat(parseCompileEvaluate("\"foo\" between \"bar\" and \"zap\""), is(true));
         assertThat(parseCompileEvaluate("\"foo\" between null and \"zap\""), nullValue());
