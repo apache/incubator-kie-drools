@@ -14,12 +14,15 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
+import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
@@ -74,14 +77,28 @@ public class DMNDTValidator {
             if (ie.getInputValues() != null) {
                 ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getInputValues().getText(), FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
-                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getExpr().getExpression();
+                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {
-                    throw new DMNDTValidatorException("Multiple constraint on column not supported: " + utln, dt);
+                    if (!utln.getElements().stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
+                        throw new DMNDTValidatorException("Multiple constraint on column not supported: " + utln, dt);
+                    }
+                    List<Comparable<?>> discreteValues = new ArrayList<>();
+                    for (BaseNode e : utln.getElements()) {
+                        Comparable<?> v = valueFromNode(((UnaryTestNode) e).getValue());
+                        discreteValues.add(v);
+                    }
+                    Collections.sort((List) discreteValues);
+                    Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
+                    DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues);
+                    ddtaTable.getInputs().add(ic);
+                } else if (utln.getElements().size() == 1) {
+                    UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
+                    Interval interval = utnToInterval(utn0, infDomain, null, 0, jColIdx + 1);
+                    DDTAInputClause ic = new DDTAInputClause(interval);
+                    ddtaTable.getInputs().add(ic);
+                } else {
+                    throw new IllegalStateException("inputValues not null but utln: " + utln);
                 }
-                UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
-                Interval interval = utnToInterval(utn0, infDomain, 0, jColIdx + 1);
-                DDTAInputClause ic = new DDTAInputClause(interval);
-                ddtaTable.getInputs().add(ic);
             } else {
                 DDTAInputClause ic = new DDTAInputClause(infDomain);
                 ddtaTable.getInputs().add(ic);
@@ -95,11 +112,11 @@ public class DMNDTValidator {
             for (UnaryTests ie : r.getInputEntry()) {
                 ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
-                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getExpr().getExpression();
+                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
 
                 DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
 
-                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), ddtaInputClause.getDomainMinMax(), jRowIdx + 1, jColIdx + 1));
+                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
                 // TODO: check all inputEntries is within the Domain min/max.
                 ddtaRule.getInputEntry().add(ddtaInputEntry);
                 jColIdx++;
@@ -127,6 +144,7 @@ public class DMNDTValidator {
     }
 
     private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
+        LOG.debug("findGaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> activeIntervals = new ArrayList<>();
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
@@ -134,17 +152,29 @@ public class DMNDTValidator {
                 // TODO verify, I don't think this need to include activeRules from ALL the previous dimensions, but better prove it.
                 intervals = intervals.stream().filter(i -> activeRules.contains(i.getRule())).collect(Collectors.toList());
             }
+            LOG.debug("intervals {}", intervals);
             List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
             Collections.sort(bounds);
 
             Interval domainRange = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
             // TODO: filter for only those bounds in the typeRef domain range. Might not be needed if during compilation of DT the rule range is checked within the domain.
 
-            // artificial low/high bounds:
-            bounds.add(domainRange.getUpperBound());
-            Bound<?> lastBound = domainRange.getLowerBound();
+            // from domain start to the 1st bound
+            if (!domainRange.getLowerBound().equals(bounds.get(0))) {
+                Interval missingInterval = lastDimensionUncoveredInterval(domainRange.getLowerBound(), bounds.get(0), domainRange);
+                currentIntervals[jColIdx] = missingInterval;
+                List<Interval> edges = new ArrayList<>();
+                for (int p = 0; p <= jColIdx; p++) {
+                    edges.add(currentIntervals[p]);
+                }
+                Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), edges);
+                LOG.debug("STARTLEFT GAP DETECTED {}", gap);
+                analysis.addGap(gap);
+            }
+            Bound<?> lastBound = null;
             for (Bound<?> currentBound : bounds) {
-                if (activeIntervals.isEmpty() && !adOrOver(lastBound, currentBound)) {
+                LOG.debug("lastBound {} currentBound {}   -   activeIntervals {}", lastBound, currentBound, activeIntervals);
+                if (activeIntervals.isEmpty() && lastBound != null && !adOrOver(lastBound, currentBound)) {
                     Interval missingInterval = lastDimensionUncoveredInterval(lastBound, currentBound, domainRange);
                     currentIntervals[jColIdx] = missingInterval;
 
@@ -155,11 +185,15 @@ public class DMNDTValidator {
                         edges.add(currentIntervals[p]);
                     }
                     Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), edges);
-                    LOG.debug("{}", gap);
+                    LOG.debug("GAP DETECTED {}", gap);
                     analysis.addGap(gap);
                 }
-                if (!activeIntervals.isEmpty()) {
-                    Interval missingInterval = Interval.newFromBounds(lastBound, currentBound);
+                if (!activeIntervals.isEmpty() && canBeNewCurrInterval(lastBound, currentBound)) {
+                    Interval missingInterval = new Interval(lastBound.getBoundaryType(),
+                                                            lastBound.getValue(),
+                                                            currentBound.getValue(),
+                                                            currentBound.isLowerBound() ? invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
+                                                            0, 0);
                     currentIntervals[jColIdx] = missingInterval;
                     findGaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList()));
                 }
@@ -170,7 +204,26 @@ public class DMNDTValidator {
                 }
                 lastBound = currentBound;
             }
+            if (!lastBound.equals(domainRange.getUpperBound())) {
+                Interval missingInterval = lastDimensionUncoveredInterval(lastBound, domainRange.getUpperBound(), domainRange);
+                currentIntervals[jColIdx] = missingInterval;
+                List<Interval> edges = new ArrayList<>();
+                for (int p = 0; p <= jColIdx; p++) {
+                    edges.add(currentIntervals[p]);
+                }
+                Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), edges);
+                LOG.debug("ENDRIGHT GAP DETECTED {}", gap);
+                analysis.addGap(gap);
+            }
         }
+        LOG.debug(".");
+    }
+
+    /**
+     * Avoid a situation to "open" a new currentInterval for pair of same-side equals bounds like: x], x]
+     */
+    private static boolean canBeNewCurrInterval(Bound<?> lastBound, Bound<?> currentBound) {
+        return !currentBound.equals(lastBound) || !(lastBound.isLowerBound() == currentBound.isLowerBound());
     }
 
     private static Interval lastDimensionUncoveredInterval(Bound<?> l, Bound<?> r, Interval domain) {
@@ -202,7 +255,7 @@ public class DMNDTValidator {
         return isValueEqual && !isBothOpen;
     }
 
-    private static List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, long rule, long col) {
+    private static List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, List discreteValues, long rule, long col) {
         List<Interval> results = new ArrayList<>();
         for (BaseNode n : elements) {
             if (n instanceof DashNode) {
@@ -210,14 +263,26 @@ public class DMNDTValidator {
                 continue;
             }
             UnaryTestNode ut = (UnaryTestNode) n;
-            results.add(utnToInterval(ut, minMax, rule, col));
+            results.add(utnToInterval(ut, minMax, discreteValues, rule, col));
         }
         return results;
     }
 
-    private static Interval utnToInterval(UnaryTestNode ut, Interval minMax, long rule, long col) {
+    private static Interval utnToInterval(UnaryTestNode ut, Interval minMax, List discreteValues, long rule, long col) {
         if (ut.getOperator() == UnaryOperator.EQ) {
-            return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col);
+            if (discreteValues == null || discreteValues.isEmpty()) {
+                return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col);
+            } else {
+                Comparable<?> thisValue = valueFromNode(ut.getValue());
+                int indexOf = discreteValues.indexOf(thisValue);
+                if (indexOf < 0) {
+                    throw new IllegalStateException("Unable to determine discreteValue index for: " + ut);
+                }
+                if (indexOf + 1 == discreteValues.size()) {
+                    return new Interval(RangeBoundary.CLOSED, thisValue, thisValue, RangeBoundary.CLOSED, rule, col);
+                }
+                return new Interval(RangeBoundary.CLOSED, thisValue, (Comparable<?>) discreteValues.get(indexOf + 1), RangeBoundary.OPEN, rule, col);
+            }
         } else if (ut.getOperator() == UnaryOperator.LTE) {
             return new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col);
         } else if (ut.getOperator() == UnaryOperator.LT) {
@@ -228,7 +293,12 @@ public class DMNDTValidator {
             return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col);
         } else if (ut.getValue() instanceof RangeNode) {
             RangeNode rangeNode = (RangeNode) ut.getValue();
-            return new Interval(RangeBoundary.CLOSED, valueFromNode(rangeNode.getStart()), valueFromNode(rangeNode.getEnd()), RangeBoundary.CLOSED, rule, col);
+            return new Interval(rangeNode.getLowerBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
+                                valueFromNode(rangeNode.getStart()),
+                                valueFromNode(rangeNode.getEnd()),
+                                rangeNode.getUpperBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
+                                rule,
+                                col);
         } else {
             throw new UnsupportedOperationException("UnaryTest type not supported: " + ut);
         }
@@ -238,9 +308,9 @@ public class DMNDTValidator {
         if (node instanceof NumberNode) {
             NumberNode numberNode = (NumberNode) node;
             return numberNode.getValue(); 
-            //        } else if (node instanceof StringNode) {
-            //            StringNode stringNode = (StringNode) node;
-            //            return stringNode.getText();
+        } else if (node instanceof StringNode) {
+            StringNode stringNode = (StringNode) node;
+            return EvalHelper.unescapeString(stringNode.getText());
         } else {
             throw new UnsupportedOperationException("valueFromNode not supported: " + node);
         }

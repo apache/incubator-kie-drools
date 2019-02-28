@@ -63,6 +63,11 @@ public class DTAnalysisMeta {
             StringLiteralExpr stringRep = new StringLiteralExpr(bigDecimal.toString());
             newExpression.addArgument(stringRep);
             valueExpr = newExpression;
+        } else if (value instanceof String) {
+            String string = (String) value;
+            StringLiteralExpr newExpression = new StringLiteralExpr();
+            newExpression.setString(string);
+            valueExpr = newExpression;
         } else {
             throw new UnsupportedOperationException("TODO");
         }

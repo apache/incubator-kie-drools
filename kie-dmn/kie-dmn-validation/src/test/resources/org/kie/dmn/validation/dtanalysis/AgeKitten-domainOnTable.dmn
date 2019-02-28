@@ -62,7 +62,7 @@
             </semantic:rule>
             <semantic:rule id="_b4dacc71-fdca-4b2a-91f9-f3b435758aac">
                 <semantic:inputEntry id="_1eb3c81e-eae4-43c7-8de9-722d41d16ab6">
-                    <semantic:text>&gt;15</semantic:text>
+                    <semantic:text>&gt;=15</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_b1bb72b2-3708-45fc-86e7-7f1b093bd1b2">
                     <semantic:text>"Cat"</semantic:text>
@@ -76,7 +76,7 @@
             </semantic:rule>
             <semantic:rule id="_d2e2fb3e-5dc2-41e8-81be-59df825d63af">
                 <semantic:inputEntry id="_0228e5be-df69-49b5-90fd-7266d3c9041c">
-                    <semantic:text>&gt;18</semantic:text>
+                    <semantic:text>&gt;=18</semantic:text>
                 </semantic:inputEntry>
                 <semantic:inputEntry id="_d9114227-03e8-4a84-83a3-f9bbe4f042dc">
                     <semantic:text>"Dog"</semantic:text>

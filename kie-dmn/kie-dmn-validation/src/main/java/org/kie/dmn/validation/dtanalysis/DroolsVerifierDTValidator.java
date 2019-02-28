@@ -100,7 +100,7 @@ public class DroolsVerifierDTValidator {
                 pattern.getFields().add(field);
                 ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
-                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getExpr().getExpression();
+                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
 
                 if (utln.getElements().size() > 1) {
                     throw new UnsupportedOperationException("TODO: verify drools-verifier for multiple UT in the same cell.");
@@ -149,7 +149,7 @@ public class DroolsVerifierDTValidator {
 
                 ProcessedExpression compileUnaryTests = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
                 InterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
-                BaseNode baseNode = (BaseNode) interpreted.getExpr().getExpression();
+                BaseNode baseNode = (BaseNode) interpreted.getASTNode();
 
                 final FieldAction action = new FieldAction(field, columns.get(jColIdx), dataTypeFromNode(baseNode), valuesFromNode(baseNode), analyzerConfiguration);
                 field.getActions().add(action);

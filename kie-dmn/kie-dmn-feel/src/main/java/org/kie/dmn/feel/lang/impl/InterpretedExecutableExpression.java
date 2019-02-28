@@ -2,6 +2,7 @@ package org.kie.dmn.feel.lang.impl;
 
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 
 public class InterpretedExecutableExpression implements CompiledFEELExpression {
@@ -21,8 +22,11 @@ public class InterpretedExecutableExpression implements CompiledFEELExpression {
         return expr.apply(evaluationContext);
     }
 
-    public CompiledExpressionImpl getExpr() {
-        return expr;
+    /**
+     * Internals helper methods.
+     */
+    public ASTNode getASTNode() {
+        return expr.getExpression();
     }
 
 }

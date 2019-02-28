@@ -35,8 +35,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.DECISION_TABLE_ANALYSIS;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
 public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
 
@@ -67,7 +67,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
                                                                                                           new Bound(new BigDecimal("1"),
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)),
                                                                                    Interval.newFromBounds(new Bound(Interval.NEG_INF,
                                                                                                                     RangeBoundary.CLOSED,
@@ -80,7 +80,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
                                                                                                           new Bound(new BigDecimal("1"),
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)),
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("2"),
                                                                                                                     RangeBoundary.OPEN,
@@ -93,7 +93,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
                                                                                                           new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)),
                                                                                    Interval.newFromBounds(new Bound(Interval.NEG_INF,
                                                                                                                     RangeBoundary.CLOSED,
@@ -106,7 +106,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
                                                                                                           new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)),
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("2"),
                                                                                                                     RangeBoundary.OPEN,
@@ -119,7 +119,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
                                                                                                           new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)),
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("6"),
                                                                                                                     RangeBoundary.OPEN,
