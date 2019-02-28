@@ -139,7 +139,10 @@ public class Consequence {
             executeCall = executeScriptCall(ruleDescr, onCall);
         }
 
-        if(packageModel.getFunctions().isEmpty()) {
+        if(context.getRuleDialect() == RuleContext.RuleDialect.MVEL
+                && packageModel.getFunctions().isEmpty()
+                && packageModel.getGeneratedPOJOsSource().isEmpty()
+                && ruleDescr != null && context.getRuleUnitDescr() == null) {
             final String consequenceWithImports = addImports(consequenceString);
             List<DroolsError> droolsErrors = validateMvelConsequence(ruleDescr, consequenceWithImports);
             for (DroolsError error : droolsErrors) {
@@ -191,13 +194,7 @@ public class Consequence {
 
         final List<DroolsError> errors = new ArrayList<>();
         try {
-            MVELConsequence mvelConsequence = new MVELConsequence(consequence, context) {
-
-                @Override
-                protected Iterable<? extends String> otherDeclaredMethods() {
-                    return packageModel.getFunctions().stream().map(m -> m.getName().toString()).collect(Collectors.toList());
-                }
-            };
+            MVELConsequence mvelConsequence = new MVELConsequence(consequence, context);
             mvelConsequence.init();
         } catch (Exception e) {
             errors.add(new RuleBuildError(null, ruleDescr, null, e.getMessage()));

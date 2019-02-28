@@ -169,23 +169,6 @@ public class MVELConsequence implements Consequence {
             }
         }
 
-        if (ruleClass != null) {
-            for (String m : otherDeclaredMethods()) {
-                Method method = null;
-                try {
-                    method = Object.class.getMethod("toString");
-                    runtimeData.getParserConfiguration().addImport(m, method);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-
         compiledExpression = (ExecutableStatement) cu.getCompiledExpression(runtimeData);
-    }
-
-    protected Iterable<? extends String> otherDeclaredMethods() {
-        return Collections.emptyList();
     }
 }
