@@ -60,7 +60,7 @@ public class DMNDTValidator {
                     DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
                     results.add(result);
                 } catch (Throwable t) {
-                    LOG.warn("Failed dmnDTAnalysis for table:" + decisionTable.getId(), t);
+                    LOG.warn("Failed dmnDTAnalysis for table: " + decisionTable.getId(), t);
                     throw new DMNDTValidatorException(t, decisionTable);
                 }
             }
@@ -146,7 +146,6 @@ public class DMNDTValidator {
     private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
         LOG.debug("findGaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
-            List<Interval> activeIntervals = new ArrayList<>();
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
             if (!activeRules.isEmpty()) {
                 // TODO verify, I don't think this need to include activeRules from ALL the previous dimensions, but better prove it.
@@ -168,17 +167,17 @@ public class DMNDTValidator {
                     edges.add(currentIntervals[p]);
                 }
                 Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), edges);
-                LOG.debug("STARTLEFT GAP DETECTED {}", gap);
                 analysis.addGap(gap);
+                LOG.debug("STARTLEFT GAP DETECTED {}", gap);
             }
+            // cycle rule's interval bounds
+            List<Interval> activeIntervals = new ArrayList<>();
             Bound<?> lastBound = null;
             for (Bound<?> currentBound : bounds) {
-                LOG.debug("lastBound {} currentBound {}   -   activeIntervals {}", lastBound, currentBound, activeIntervals);
+                LOG.debug("lastBound {} currentBound {}      activeIntervals {}", lastBound, currentBound, activeIntervals);
                 if (activeIntervals.isEmpty() && lastBound != null && !adOrOver(lastBound, currentBound)) {
                     Interval missingInterval = lastDimensionUncoveredInterval(lastBound, currentBound, domainRange);
                     currentIntervals[jColIdx] = missingInterval;
-
-                    // TODO: merge hyperRectangle
 
                     List<Interval> edges = new ArrayList<>();
                     for (int p = 0; p <= jColIdx; p++) {
@@ -204,6 +203,7 @@ public class DMNDTValidator {
                 }
                 lastBound = currentBound;
             }
+            // from last Nth bound, to domain end.
             if (!lastBound.equals(domainRange.getUpperBound())) {
                 Interval missingInterval = lastDimensionUncoveredInterval(lastBound, domainRange.getUpperBound(), domainRange);
                 currentIntervals[jColIdx] = missingInterval;
@@ -215,6 +215,7 @@ public class DMNDTValidator {
                 LOG.debug("ENDRIGHT GAP DETECTED {}", gap);
                 analysis.addGap(gap);
             }
+            currentIntervals[jColIdx] = null; // facilitate debugging.
         }
         LOG.debug(".");
     }
