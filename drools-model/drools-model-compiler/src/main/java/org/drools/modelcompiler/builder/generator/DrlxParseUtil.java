@@ -143,7 +143,7 @@ public class DrlxParseUtil {
         } else {
             // try parse it as inner class
             for(Class<?> declaredClass : clazz.getDeclaredClasses()) {
-                if(declaredClass.getCanonicalName().endsWith(name)) {
+                if (declaredClass.getCanonicalName().endsWith(name)) {
                     FieldAccessExpr fieldAccessExpr = new FieldAccessExpr(scope, name);
                     return new TypedExpression(fieldAccessExpr, declaredClass);
                 }
