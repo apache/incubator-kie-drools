@@ -3,6 +3,7 @@ package org.kie.dmn.validation.dtanalysis.model;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Hyperrectangle {
 
@@ -17,7 +18,13 @@ public class Hyperrectangle {
 
     @Override
     public String toString() {
-        return edges.stream().map(Interval::toString).collect(Collectors.joining(" "));
+        return IntStream.range(0, dimensions).mapToObj(i -> {
+            if (i < edges.size()) {
+                return edges.get(i).toString();
+            } else {
+                return "-";
+            }
+        }).collect(Collectors.joining(" "));
     }
 
     public int getDimensions() {
