@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
@@ -57,6 +58,7 @@ import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Rule;
 import org.drools.model.WindowReference;
+import org.drools.modelcompiler.builder.generator.ConsequenceValidation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -121,6 +123,7 @@ public class PackageModel {
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
+    private List<ConsequenceValidation> consequenceValidations = new ArrayList<>();
 
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this.name = name;
@@ -309,6 +312,14 @@ public class PackageModel {
 
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
+    }
+
+    public void addConsequenceValidation(ConsequenceValidation consequenceValidation) {
+        consequenceValidations.add(consequenceValidation);
+    }
+
+    public List<ConsequenceValidation> getConsequenceValidations() {
+        return consequenceValidations;
     }
 
     public static class RuleSourceResult {
