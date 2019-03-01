@@ -19,7 +19,9 @@ package org.drools.modelcompiler.builder;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -68,6 +70,24 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         return modelBuilder;
     }
 
+    public static class ByteClassLoader extends ClassLoader {
+        private final Map<String, byte[]> extraClassDefs;
+
+        public ByteClassLoader(ClassLoader parent, Map<String, byte[]> extraClassDefs) {
+            this.extraClassDefs = new HashMap<String, byte[]>(extraClassDefs);
+        }
+
+        @Override
+        protected Class<?> findClass(final String name) throws ClassNotFoundException {
+            byte[] classBytes = this.extraClassDefs.remove(name);
+            if (classBytes != null) {
+                return defineClass(name, classBytes, 0, classBytes.length);
+            }
+            return super.findClass(name);
+        }
+
+    }
+
     @Override
     public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
@@ -81,8 +101,23 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             if(sources.length != 0) {
                 CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
+                Map<String, byte[]> compiledClasses = new HashMap<>();
+
+                trgMfs
+                        .getFileNames()
+                        .stream()
+                        .filter(fn -> fn.endsWith(".class"))
+                        .forEach(f -> {
+                            MemoryFile file = (MemoryFile) trgMfs.getFile(f);
+                            byte[] fileContents = trgMfs.getFileContents(file);
+                            String className = f.replace("/", ".").replace(".class", "");
+                            compiledClasses.put(className, fileContents);
+                        });
+
+                ByteClassLoader byteClassLoader = new ByteClassLoader(getClassLoader(), compiledClasses);
+
                 for(PackageModel pm : modelBuilder.getPackageModels()) {
-                    pm.validateConsequence(trgMfs, messages);
+                    pm.validateConsequence(byteClassLoader, messages);
                 }
 
                 Stream.of(res.getErrors()).collect(groupingBy(CompilationProblem::getFileName))

@@ -3,7 +3,9 @@ package org.drools.modelcompiler.builder.generator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.RuleBuildError;
@@ -40,30 +42,10 @@ public class ConsequenceValidation {
         variables.add(new DeclarationImpl(d.getDeclarationClass(), d.getBindingId()));
     }
 
-    public static class ByteClassLoader extends ClassLoader {
-
-        private final byte[] classBytes;
-
-        public ByteClassLoader(byte[] classBytes) {
-            this.classBytes = classBytes;
-        }
-
-        @Override
-        protected Class<?> findClass(final String name) throws ClassNotFoundException {
-            if (classBytes != null) {
-                return defineClass(name, classBytes, 0, classBytes.length);
-            }
-            return super.findClass(name);
-        }
-    }
-
-    public void validate(MemoryFileSystem mfs, ResultsImpl messages) {
+    public void validate(ClassLoader classLoader, ResultsImpl messages) {
         Class<?> ruleClass;
         try {
-            String replace = className.replace(".", "/");
-            MemoryFile file = (MemoryFile) mfs.getFile(replace + ".class");
-            byte[] ba = mfs.getFileContents(file);
-            ruleClass = new ByteClassLoader(ba).findClass(className);
+            ruleClass = classLoader.loadClass(className);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

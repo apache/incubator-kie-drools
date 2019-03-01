@@ -321,9 +321,9 @@ public class PackageModel {
         consequenceValidation.setClassName(getName() + "." + rulesFileName);
     }
 
-    public void validateConsequence(MemoryFileSystem mfs, ResultsImpl messages) {
+    public void validateConsequence(ClassLoader classLoader, ResultsImpl messages) {
         for(ConsequenceValidation cv : consequenceValidations) {
-            cv.validate(mfs, messages);
+            cv.validate(classLoader, messages);
         }
     }
 
