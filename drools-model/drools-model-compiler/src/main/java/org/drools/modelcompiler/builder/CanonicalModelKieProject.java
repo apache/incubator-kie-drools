@@ -16,20 +16,12 @@
 
 package org.drools.modelcompiler.builder;
 
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-import com.sun.tools.corba.se.idl.ExceptionEntry;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.kie.internal.jci.CompilationProblem;;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -40,10 +32,12 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.jci.CompilationProblem;
 
 import static java.util.stream.Collectors.groupingBy;
-
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
+
+;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
