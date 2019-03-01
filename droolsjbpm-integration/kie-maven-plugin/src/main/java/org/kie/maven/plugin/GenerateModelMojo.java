@@ -45,6 +45,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
+import org.drools.modelcompiler.builder.KieModuleModelMethod;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.api.KieServices;
@@ -256,7 +257,11 @@ public class GenerateModelMojo extends AbstractKieMojo {
                     ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
                     modelFiles.addAll(result.getModelFiles());
                 }
-                srcMfs.write(PROJECT_MODEL_SOURCE, buildModelSourceClass( modelFiles ).getBytes());
+
+                KieModuleModelMethod modelMethod = new KieModuleModelMethod(kBaseModels);
+                srcMfs.write(PROJECT_MODEL_SOURCE, buildModelSourceClass( modelMethod, modelFiles ).getBytes());
+                srcMfs.write( PROJECT_RUNTIME_SOURCE, buildProjectSourceClass( modelMethod ).getBytes());
+
                 srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("."));
                 writeModelFile(modelFiles, trgMfs);
             }

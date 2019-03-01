@@ -34,9 +34,10 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.util.Drools;
 import org.drools.model.Model;
 import org.drools.modelcompiler.CanonicalKieModule;
-import org.drools.modelcompiler.CanonicalKieModuleModel;
+import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
+
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.createFromClassLoader;
@@ -52,6 +54,10 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
     Logger logger = LoggerFactory.getLogger(CanonicalModelKieProject.class);
+
+    public static final String PROJECT_RUNTIME_CLASS = "org.drools.project.model.ProjectRuntime";
+    public static final String PROJECT_RUNTIME_RESOURCE_CLASS = PROJECT_RUNTIME_CLASS.replace( '.', '/' ) + ".class";
+    protected static final String PROJECT_RUNTIME_SOURCE = "src/main/java/" + PROJECT_RUNTIME_CLASS.replace( '.', '/' ) + ".java";
 
     public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
     public static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace( '.', '/' ) + ".class";
@@ -90,13 +96,19 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             sourceFiles.addAll(result.getSources());
         }
 
+        KieModuleModelMethod modelMethod = new KieModuleModelMethod(kBaseModels);
         if (!sourceFiles.isEmpty()) {
-            String[] sources = sourceFiles.toArray( new String[sourceFiles.size()+1] );
+            String[] sources = sourceFiles.toArray( new String[sourceFiles.size()+2] );
 
-            String sourceClass = buildModelSourceClass(modelFiles);
-            logger.debug(sourceClass);
-            srcMfs.write(PROJECT_MODEL_SOURCE, sourceClass.getBytes());
-            sources[sources.length-1] = PROJECT_MODEL_SOURCE;
+            String modelSourceClass = buildModelSourceClass(modelMethod, modelFiles);
+            logger.debug(modelSourceClass);
+            srcMfs.write(PROJECT_MODEL_SOURCE, modelSourceClass.getBytes());
+            sources[sources.length-2] = PROJECT_MODEL_SOURCE;
+
+            String projectSourceClass = buildProjectSourceClass(modelMethod);
+            logger.debug(projectSourceClass);
+            srcMfs.write( PROJECT_RUNTIME_SOURCE, projectSourceClass.getBytes());
+            sources[sources.length-1] = PROJECT_RUNTIME_SOURCE;
 
             CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
@@ -114,7 +126,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                 messages.addMessage(problem);
             }
         } else {
-            srcMfs.write(PROJECT_MODEL_SOURCE, buildModelSourceClass( modelFiles ).getBytes());
+            srcMfs.write(PROJECT_MODEL_SOURCE, buildModelSourceClass( modelMethod, modelFiles ).getBytes());
             CompilationResult res = getCompiler().compile(new String[] { PROJECT_MODEL_SOURCE }, srcMfs, trgMfs, getClassLoader());
             System.out.println(res.getErrors());
         }
@@ -130,24 +142,23 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         trgMfs.write( MODEL_FILE, pkgNames.getBytes() );
     }
 
-    protected String buildModelSourceClass( List<String> modelSources ) {
+    protected String buildModelSourceClass( KieModuleModelMethod modelMethod, List<String> modelSources ) {
         ReleaseId releaseId = getInternalKieModule().getReleaseId();
 
         StringBuilder sb = new StringBuilder();
         sb.append(
                 "package org.drools.project.model;\n" +
-                        "\n" +
-                        "import " + Model.class.getCanonicalName()  + ";\n" +
-                        "import " + CanonicalKieModuleModel.class.getCanonicalName()  + ";\n" +
-                        "import " + ReleaseId.class.getCanonicalName()  + ";\n" +
-                        "import " + ReleaseIdImpl.class.getCanonicalName()  + ";\n" +
-                        "\n" +
-                        ( hasCdi() ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
-                        "public class ProjectModel implements CanonicalKieModuleModel {\n" +
-                        "\n" +
-                        "    @Override\n" +
-                        "    public String getVersion() {\n" +
-                        "        return \"" );
+                "\n" +
+                "import " + Model.class.getCanonicalName()  + ";\n" +
+                "import " + ReleaseId.class.getCanonicalName()  + ";\n" +
+                "import " + ReleaseIdImpl.class.getCanonicalName()  + ";\n" +
+                "\n" +
+                "public class ProjectModel implements org.drools.modelcompiler.CanonicalKieModuleModel {\n" +
+                "\n");
+        sb.append(
+                "    @Override\n" +
+                "    public String getVersion() {\n" +
+                "        return \"" );
         sb.append( Drools.getFullVersion() );
         sb.append(
                 "\";\n" +
@@ -170,10 +181,33 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         sb.append(
                 ");\n" +
                         "    }\n");
+        sb.append("\n");
+        sb.append(modelMethod.toGetKieModuleModelMethod());
+        sb.append("\n}" );
+        return sb.toString();
+    }
+
+    protected String buildProjectSourceClass( KieModuleModelMethod modelMethod ) {
+        StringBuilder sb = new StringBuilder();
         sb.append(
+                "package org.drools.project.model;\n" +
                 "\n" +
-                "    @Override\n");
-        sb.append(new KieModuleModelMethod(kBaseModels).toMethod());
+                "import " + Model.class.getCanonicalName()  + ";\n" +
+                "import " + KieBase.class.getCanonicalName()  + ";\n" +
+                "import " + KieSession.class.getCanonicalName()  + ";\n" +
+                "\n" +
+                ( hasCdi() ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
+                "public class ProjectRuntime implements org.drools.modelcompiler.KieRuntimeBuilder {\n" +
+                "\n");
+        sb.append(modelMethod.getConstructor());
+        sb.append("\n");
+        sb.append(modelMethod.toNewKieSessionMethod());
+        sb.append("\n");
+        sb.append(modelMethod.toGetKieBaseForSessionMethod());
+        sb.append("\n");
+        sb.append(modelMethod.toKieBaseConfMethod());
+        sb.append("\n");
+        sb.append(modelMethod.toKieSessionConfMethod());
         sb.append("\n}" );
         return sb.toString();
     }
