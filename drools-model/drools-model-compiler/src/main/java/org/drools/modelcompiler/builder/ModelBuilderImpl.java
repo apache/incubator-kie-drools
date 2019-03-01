@@ -119,6 +119,8 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
             allGeneratedPojos.forEach(c -> registerType(pkg.getTypeResolver(), allCompiledClasses));
         }
+
+        // valida qui
     }
 
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
