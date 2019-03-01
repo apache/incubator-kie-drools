@@ -33,6 +33,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.modelcompiler.builder.generator.ConsequenceValidation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 
@@ -62,6 +63,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         deregisterTypeDeclarations( packages );
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
+        validateMvelConsequence();
     }
 
     private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
@@ -119,8 +121,6 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
             allGeneratedPojos.forEach(c -> registerType(pkg.getTypeResolver(), allCompiledClasses));
         }
-
-        // valida qui
     }
 
     protected void generatePOJOs(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
@@ -144,6 +144,14 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         generateModel(this, pkg, packageDescr, model, isPattern);
+    }
+
+    private void validateMvelConsequence() {
+        for(PackageModel pm : packageModels.values()) {
+            for(ConsequenceValidation cv : pm.getConsequenceValidations()) {
+                cv.validate(this);
+            }
+        }
     }
 
     public List<PackageModel> getPackageModels() {

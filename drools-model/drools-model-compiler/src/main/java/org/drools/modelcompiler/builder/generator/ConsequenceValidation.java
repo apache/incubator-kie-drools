@@ -15,6 +15,8 @@ import org.drools.model.Variable;
 import org.drools.model.consequences.ConsequenceImpl;
 import org.drools.model.functions.ScriptBlock;
 import org.drools.model.impl.DeclarationImpl;
+import org.drools.modelcompiler.builder.ModelBuilderImpl;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.MVELConsequence;
 
 public class ConsequenceValidation {
@@ -34,11 +36,11 @@ public class ConsequenceValidation {
         variables.add(new DeclarationImpl(d.getDeclarationClass(), d.getBindingId()));
     }
 
-    public void validate() {
-//            List<DroolsError> droolsErrors = findErrors();
-//            for (DroolsError error : droolsErrors) {
-//                context.addCompilationError(new InvalidExpressionErrorResult(error.getMessage()));
-//            }
+    public void validate(ModelBuilderImpl kbuilder) {
+        List<DroolsError> droolsErrors = findErrors();
+        for (DroolsError error : droolsErrors) {
+            kbuilder.addBuilderResult(new InvalidExpressionErrorResult(error.getMessage()));
+        }
     }
 
     private List<DroolsError> findErrors() {
