@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import com.github.javaparser.JavaParser;
@@ -316,10 +318,13 @@ public class PackageModel {
 
     public void addConsequenceValidation(ConsequenceValidation consequenceValidation) {
         consequenceValidations.add(consequenceValidation);
+        consequenceValidation.setClassName(getName() + "." + rulesFileName);
     }
 
-    public List<ConsequenceValidation> getConsequenceValidations() {
-        return consequenceValidations;
+    public void validateConsequence(MemoryFileSystem classloader, ResultsImpl messages) {
+        for(ConsequenceValidation cv : consequenceValidations) {
+            cv.validate(classloader, messages);
+        }
     }
 
     public static class RuleSourceResult {

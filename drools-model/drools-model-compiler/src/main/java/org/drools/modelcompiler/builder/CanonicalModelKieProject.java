@@ -16,11 +16,15 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
+import com.sun.tools.corba.se.idl.ExceptionEntry;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.kie.internal.jci.CompilationProblem;;
 import org.drools.compiler.compiler.io.File;
@@ -76,6 +80,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             final String[] sources = result.getSources();
             if(sources.length != 0) {
                 CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
+
+                for(PackageModel pm : modelBuilder.getPackageModels()) {
+                    pm.validateConsequence(trgMfs, messages);
+                }
 
                 Stream.of(res.getErrors()).collect(groupingBy(CompilationProblem::getFileName))
                     .forEach( (name, errors) -> {

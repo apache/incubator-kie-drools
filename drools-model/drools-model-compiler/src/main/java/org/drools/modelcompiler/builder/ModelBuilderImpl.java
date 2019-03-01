@@ -63,7 +63,6 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         deregisterTypeDeclarations( packages );
         buildRules(packages);
         DrlxParseUtil.clearAccessorCache();
-        validateMvelConsequence();
     }
 
     private void registerTypeDeclarations( Collection<CompositePackageDescr> packages ) {
@@ -144,14 +143,6 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         generateModel(this, pkg, packageDescr, model, isPattern);
-    }
-
-    private void validateMvelConsequence() {
-        for(PackageModel pm : packageModels.values()) {
-            for(ConsequenceValidation cv : pm.getConsequenceValidations()) {
-                cv.validate(this);
-            }
-        }
     }
 
     public List<PackageModel> getPackageModels() {
