@@ -321,9 +321,12 @@ public class PackageModel {
         consequenceValidation.setClassName(getName() + "." + rulesFileName);
     }
 
-    public void validateConsequence(ClassLoader classLoader, ResultsImpl messages) {
-        for(ConsequenceValidation cv : consequenceValidations) {
-            cv.validate(classLoader, messages);
+    public void validateConsequence(ClassLoader parentClassLoader, MemoryFileSystem memoryFileSystem, ResultsImpl messages) {
+        if(!consequenceValidations.isEmpty()) {
+            ClassLoader byteClassLoader = memoryFileSystem.memoryClassLoader(parentClassLoader);
+            for(ConsequenceValidation cv : consequenceValidations) {
+                cv.validate(byteClassLoader, messages);
+            }
         }
     }
 
