@@ -142,8 +142,9 @@ public class DrlxParseUtil {
             return new TypedExpression( body, accessor.getGenericReturnType() );
         } else {
             // try parse it as inner class
-            for(Class<?> declaredClass : clazz.getDeclaredClasses()) {
-                if (declaredClass.getCanonicalName().endsWith(name)) {
+            for (Class<?> declaredClass : clazz.getClasses()) {
+                // An internal class has always a dot on the canonical name path
+                if (declaredClass.getCanonicalName().endsWith("." + name)) {
                     FieldAccessExpr fieldAccessExpr = new FieldAccessExpr(scope, name);
                     return new TypedExpression(fieldAccessExpr, declaredClass);
                 }
