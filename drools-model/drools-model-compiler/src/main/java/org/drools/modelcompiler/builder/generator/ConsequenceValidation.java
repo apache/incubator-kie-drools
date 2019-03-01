@@ -57,12 +57,12 @@ public class ConsequenceValidation {
         }
     }
 
-    public void validate(MemoryFileSystem classLoader, ResultsImpl messages) {
+    public void validate(MemoryFileSystem mfs, ResultsImpl messages) {
         Class<?> ruleClass;
         try {
             String replace = className.replace(".", "/");
-            MemoryFile file = (MemoryFile) classLoader.getFile(replace + ".class");
-            byte[] ba = classLoader.getFileContents(file);
+            MemoryFile file = (MemoryFile) mfs.getFile(replace + ".class");
+            byte[] ba = mfs.getFileContents(file);
             ruleClass = new ByteClassLoader(ba).findClass(className);
         } catch (Exception e) {
             throw new RuntimeException(e);
