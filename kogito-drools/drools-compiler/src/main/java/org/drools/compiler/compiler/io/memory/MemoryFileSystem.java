@@ -24,8 +24,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -573,6 +573,38 @@ public class MemoryFileSystem
             clone.write(entry.getKey(), entry.getValue());
         }
         return clone;
+    }
+
+    public ClassLoader memoryClassLoader(ClassLoader parent) {
+        return new ByteClassLoader(parent, this);
+    }
+
+    static class ByteClassLoader extends URLClassLoader {
+        private final Map<String, byte[]> extraClassDefs = new HashMap<>();
+
+        public ByteClassLoader(ClassLoader parent, MemoryFileSystem memoryFileSystem) {
+            super(new URL[0], parent);
+            memoryFileSystem
+                    .getFileNames()
+                    .stream()
+                    .filter(fn -> fn.endsWith(".class"))
+                    .forEach(f -> {
+                        MemoryFile file = (MemoryFile) memoryFileSystem.getFile(f);
+                        byte[] fileContents = memoryFileSystem.getFileContents(file);
+                        String className = f.replace("/", ".").replace(".class", "");
+                        extraClassDefs.put(className, fileContents);
+                    });
+        }
+
+        @Override
+        protected Class<?> findClass(final String name) throws ClassNotFoundException {
+            byte[] classBytes = this.extraClassDefs.remove(name);
+            if (classBytes != null) {
+                return defineClass(name, classBytes, 0, classBytes.length);
+            }
+            return super.findClass(name);
+        }
+
     }
 
 }

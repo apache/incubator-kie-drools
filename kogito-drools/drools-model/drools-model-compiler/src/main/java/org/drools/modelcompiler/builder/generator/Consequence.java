@@ -1,5 +1,6 @@
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,9 +12,17 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.util.StringUtils;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
@@ -37,10 +46,15 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
+import org.drools.model.Variable;
 import org.drools.model.bitmask.AllSetButLastBitMask;
+import org.drools.model.consequences.ConsequenceImpl;
+import org.drools.model.functions.ScriptBlock;
+import org.drools.model.impl.DeclarationImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.drools.modelcompiler.consequence.MVELConsequence;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -91,6 +105,7 @@ public class Consequence {
 
     public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
+
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             // mvel consequences will be treated as a ScriptBlock
             ruleConsequence = rewriteConsequence( consequenceString );
@@ -123,7 +138,32 @@ public class Consequence {
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             executeCall = executeScriptCall(ruleDescr, onCall);
         }
+
+        if(context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
+            validateMvelConsequence(ruleDescr, consequenceString);
+        }
+
         return executeCall;
+    }
+
+    private String addImports(String consequenceString) {
+        for (String i : packageModel.getImports()) {
+            if (i.equals(packageModel.getName() + ".*")) {
+                continue; // skip same-package star import.
+            }
+            consequenceString = String.format("import %s; %s", i, consequenceString);
+        }
+        return consequenceString;
+    }
+
+
+    private void validateMvelConsequence(RuleDescr ruleDescr, String consequenceWithoutImports) {
+        final String consequenceString = addImports(consequenceWithoutImports);
+        ConsequenceValidation consequenceValidation = new ConsequenceValidation(context.getPackageModel().getName(), consequenceString, ruleDescr);
+        for (DeclarationSpec d : context.getAllDeclarations()) {
+            consequenceValidation.addVariable(d);
+        }
+        packageModel.addConsequenceValidation(consequenceValidation);
     }
 
     private BlockStmt rewriteConsequence(String consequence) {

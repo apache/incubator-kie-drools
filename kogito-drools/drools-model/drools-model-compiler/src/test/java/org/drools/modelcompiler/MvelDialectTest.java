@@ -22,6 +22,8 @@ import java.util.List;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -348,5 +350,22 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(1, john.getAge());
+    }
+
+    @Test
+    public void testMVELNonExistingMethod() {
+        // DROOLS-3559
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  modify($p) {likes = nonExistingMethod()};\n" +
+                "end";
+
+        Results results = createKieBuilder( drl ).getResults();
+        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
     }
 }
