@@ -22,7 +22,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
-import org.kie.internal.jci.CompilationProblem;;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -33,10 +32,12 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.jci.CompilationProblem;
 
 import static java.util.stream.Collectors.groupingBy;
-
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
+
+;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
@@ -76,6 +77,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             final String[] sources = result.getSources();
             if(sources.length != 0) {
                 CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
+
+                for (PackageModel pm : modelBuilder.getPackageModels()) {
+                    pm.validateConsequence(getClassLoader(), trgMfs, messages);
+                }
 
                 Stream.of(res.getErrors()).collect(groupingBy(CompilationProblem::getFileName))
                     .forEach( (name, errors) -> {

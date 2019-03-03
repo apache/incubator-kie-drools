@@ -18,7 +18,7 @@ public class ConsequenceImpl implements Consequence, ModelComponent {
 
     private final String language;
 
-    ConsequenceImpl(BlockN block, Variable[] variables, boolean usingDrools, boolean breaking, String language) {
+    public ConsequenceImpl(BlockN block, Variable[] variables, boolean usingDrools, boolean breaking, String language) {
         this.variables = variables;
         this.declarations = Stream.of(variables).filter( Variable::isFact ).toArray(Variable[]::new);
         this.block = block;
