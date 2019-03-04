@@ -50,9 +50,9 @@ public class AgeKitten_domainOnTable_Test extends AbstractDTAnalysisTest {
 
         DMNDTAnalysisMessage dtMsg = (DMNDTAnalysisMessage) dmnMessage;
         DTAnalysis analysis = dtMsg.getAnalysis();
-        assertThat(analysis.getGaps(), hasSize(2));
-
         debugAnalysis(analysis);
+
+        assertThat(analysis.getGaps(), hasSize(2));
         
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
@@ -79,6 +79,9 @@ public class AgeKitten_domainOnTable_Test extends AbstractDTAnalysisTest {
 
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
+
+        // assert OVERLAPs count.
+        assertThat(analysis.getOverlaps(), hasSize(0));
     }
 
 
