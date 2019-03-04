@@ -56,9 +56,13 @@ public class Interval {
     @Override
     public String toString() {
         return (lowerBound.getBoundaryType() == RangeBoundary.OPEN ? "(" : "[") +
-               " " + lowerBound.getValue() +
-               " .. " + upperBound.getValue() +
+               " " + boundValueToString(lowerBound.getValue()) +
+               " .. " + boundValueToString(upperBound.getValue()) +
                " " + (upperBound.getBoundaryType() == RangeBoundary.OPEN ? ")" : "]");
+    }
+
+    private String boundValueToString(Comparable<?> value) {
+        return value instanceof String ? "\"" + value + "\"" : value.toString();
     }
 
     public Bound<?> getLowerBound() {
