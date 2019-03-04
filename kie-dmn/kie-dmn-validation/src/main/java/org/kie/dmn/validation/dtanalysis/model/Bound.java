@@ -111,4 +111,13 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
             return false;
         return true;
     }
+
+    /**
+     * Returns true if left is overlapping or adjacent to right
+     */
+    public static boolean adOrOver(Bound<?> left, Bound<?> right) {
+        boolean isValueEqual = left.getValue().equals(right.getValue());
+        boolean isBothOpen = left.getBoundaryType() == RangeBoundary.OPEN && right.getBoundaryType() == RangeBoundary.OPEN;
+        return isValueEqual && !isBothOpen;
+    }
 }

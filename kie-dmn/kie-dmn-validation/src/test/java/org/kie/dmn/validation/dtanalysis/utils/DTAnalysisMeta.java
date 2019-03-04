@@ -15,6 +15,7 @@ import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
+import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 public class DTAnalysisMeta {
 
@@ -22,13 +23,37 @@ public class DTAnalysisMeta {
         Collection<Hyperrectangle> gaps = analysis.getGaps();
         MethodCallExpr parseExpression = JavaParser.parseExpression("Arrays.asList()");
         for (Hyperrectangle gap : gaps) {
-            Expression gapAsExpression = gapAsExpression(gap);
+            Expression gapAsExpression = hrAsExpression(gap);
             parseExpression.addArgument(gapAsExpression);
         }
         return parseExpression;
     }
 
-    private static Expression gapAsExpression(Hyperrectangle gap) {
+    public static Expression printOverlaps(DTAnalysis analysis) {
+        Collection<Overlap> overlaps = analysis.getOverlaps();
+        MethodCallExpr parseExpression = JavaParser.parseExpression("Arrays.asList()");
+        for (Overlap overlap : overlaps) {
+            Expression overlapAsExpression = overlapAsExpression(overlap);
+            parseExpression.addArgument(overlapAsExpression);
+        }
+        return parseExpression;
+    }
+
+    private static Expression overlapAsExpression(Overlap overlap) {
+        MethodCallExpr edgesExpression = JavaParser.parseExpression("Arrays.asList()");
+        for (Number edge : overlap.getRules()) {
+            MethodCallExpr longValue = JavaParser.parseExpression("Long.valueOf()");
+            Expression intervalAsExpression = new IntegerLiteralExpr(edge.intValue());
+            longValue.addArgument(intervalAsExpression);
+            edgesExpression.addArgument(longValue);
+        }
+        ObjectCreationExpr newExpression = JavaParser.parseExpression("new Overlap()");
+        newExpression.addArgument(edgesExpression);
+        newExpression.addArgument(hrAsExpression(overlap.getOverlap()));
+        return newExpression;
+    }
+
+    private static Expression hrAsExpression(Hyperrectangle gap) {
         int dimensions = gap.getDimensions();
         MethodCallExpr edgesExpression = JavaParser.parseExpression("Arrays.asList()");
         for (Interval edge : gap.getEdges()) {
@@ -85,5 +110,6 @@ public class DTAnalysisMeta {
         newExpression.addArgument(new NullLiteralExpr());
         return newExpression;
     }
+
 
 }

@@ -1,6 +1,7 @@
 package org.kie.dmn.validation.dtanalysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputClause;
@@ -36,6 +38,7 @@ import org.kie.dmn.validation.dtanalysis.model.DDTATable;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
+import org.kie.dmn.validation.dtanalysis.model.Overlap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +63,7 @@ public class DMNDTValidator {
                     DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
                     results.add(result);
                 } catch (Throwable t) {
+                    t.printStackTrace();
                     LOG.warn("Failed dmnDTAnalysis for table: " + decisionTable.getId(), t);
                     throw new DMNDTValidatorException(t, decisionTable);
                 }
@@ -121,7 +125,9 @@ public class DMNDTValidator {
                 ddtaRule.getInputEntry().add(ddtaInputEntry);
                 jColIdx++;
             }
-            // output not in scope for processing: // for (LiteralExpression oe : r.getOutputEntry()) { }
+            for (LiteralExpression oe : r.getOutputEntry()) {
+                // TODO output check is required for some DT analysis rules.
+            }
             ddtaTable.getRule().add(ddtaRule);
         }
         if (LOG.isDebugEnabled()) {
@@ -140,7 +146,55 @@ public class DMNDTValidator {
         DTAnalysis analysis = new DTAnalysis(dt);
         LOG.debug("findGaps");
         findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        LOG.debug("findOverlaps");
+        findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        LOG.debug("findOverlaps");
+        analysis.normalize();
         return analysis;
+    }
+
+    private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
+        LOG.debug("findOverlaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
+        if (jColIdx < ddtaTable.inputCols()) {
+            List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
+            if (!activeRules.isEmpty()) {
+                intervals = intervals.stream().filter(i -> activeRules.contains(i.getRule())).collect(Collectors.toList());
+            }
+            LOG.debug("intervals {}", intervals);
+            List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
+            Collections.sort(bounds);
+
+            List<Interval> activeIntervals = new ArrayList<>();
+            Bound<?> lastBound = bounds.get(0);
+            for (Bound<?> currentBound : bounds) {
+                LOG.debug("lastBound {} currentBound {}      activeIntervals {}", lastBound, currentBound, activeIntervals);
+                if (activeIntervals.size() > 1 && canBeNewCurrInterval(lastBound, currentBound)) {
+                    Interval analysisInterval = new Interval(lastBound.isUpperBound() ? invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
+                                                             lastBound.getValue(),
+                                                             currentBound.getValue(),
+                                                             currentBound.isLowerBound() ? invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
+                                                             0, 0);
+                    currentIntervals[jColIdx] = analysisInterval;
+                    findOverlaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList()));
+                }
+                if (currentBound.isLowerBound()) {
+                    activeIntervals.add(currentBound.getParent());
+                } else {
+                    activeIntervals.remove(currentBound.getParent());
+                }
+                lastBound = currentBound;
+            }
+            currentIntervals[jColIdx] = null; // facilitate debugging.
+        } else if (jColIdx == ddtaTable.inputCols()) {
+            if (activeRules.size() > 1) {
+                Hyperrectangle overlap = new Hyperrectangle(ddtaTable.inputCols(), Arrays.asList(currentIntervals));
+                LOG.debug("OVERLAP DETECTED {}", overlap);
+                analysis.addOverlap(new Overlap(activeRules, overlap));
+            }
+        } else {
+            throw new IllegalStateException();
+        }
+        LOG.debug(".");
     }
 
     private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
@@ -175,7 +229,7 @@ public class DMNDTValidator {
             Bound<?> lastBound = null;
             for (Bound<?> currentBound : bounds) {
                 LOG.debug("lastBound {} currentBound {}      activeIntervals {}", lastBound, currentBound, activeIntervals);
-                if (activeIntervals.isEmpty() && lastBound != null && !adOrOver(lastBound, currentBound)) {
+                if (activeIntervals.isEmpty() && lastBound != null && !Bound.adOrOver(lastBound, currentBound)) {
                     Interval missingInterval = lastDimensionUncoveredInterval(lastBound, currentBound, domainRange);
                     currentIntervals[jColIdx] = missingInterval;
 
@@ -245,15 +299,6 @@ public class DMNDTValidator {
         } else {
             throw new IllegalStateException("invertBoundary for: " + b);
         }
-    }
-
-    /**
-     * Returns true if left is overlapping or adjacent to right
-     */
-    private static boolean adOrOver(Bound<?> left, Bound<?> right) {
-        boolean isValueEqual = left.getValue().equals(right.getValue());
-        boolean isBothOpen = left.getBoundaryType() == RangeBoundary.OPEN && right.getBoundaryType() == RangeBoundary.OPEN;
-        return isValueEqual && !isBothOpen;
     }
 
     private static List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, List discreteValues, long rule, long col) {

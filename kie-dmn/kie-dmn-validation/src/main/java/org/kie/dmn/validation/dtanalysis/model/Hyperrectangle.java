@@ -1,5 +1,6 @@
 package org.kie.dmn.validation.dtanalysis.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,12 +9,12 @@ import java.util.stream.IntStream;
 public class Hyperrectangle {
 
     private final int dimensions;
-    private final List<Interval> edges;
+    private final List<Interval> edges = new ArrayList<>();
 
     public Hyperrectangle(int dimensions, List<Interval> edges) {
         super();
         this.dimensions = dimensions;
-        this.edges = edges;
+        this.edges.addAll(edges);
     }
 
     @Override

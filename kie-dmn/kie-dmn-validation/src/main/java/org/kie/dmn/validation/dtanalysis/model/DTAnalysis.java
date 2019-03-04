@@ -11,7 +11,8 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 
 public class DTAnalysis {
 
-    private List<Hyperrectangle> gaps = new ArrayList<>();
+    private final List<Hyperrectangle> gaps = new ArrayList<>();
+    private final List<Overlap> overlaps = new ArrayList<>();
     private final DMNModelInstrumentedBase sourceDT;
 
     public DTAnalysis(DMNModelInstrumentedBase sourceDT) {
@@ -28,6 +29,37 @@ public class DTAnalysis {
 
     public DMNModelInstrumentedBase getSource() {
         return sourceDT;
+    }
+
+    public List<Overlap> getOverlaps() {
+        return Collections.unmodifiableList(overlaps);
+    }
+
+    public void addOverlap(Overlap overlap) {
+        this.overlaps.add(overlap);
+    }
+
+    public void normalize() {
+        List<Overlap> newOverlaps = new ArrayList<>();
+        List<Overlap> overlapsProcessing = new ArrayList<>();
+        overlapsProcessing.addAll(overlaps);
+        while (!overlapsProcessing.isEmpty()) {
+            Overlap curOverlap = overlapsProcessing.remove(0);
+            for (Overlap otherOverlap : overlapsProcessing) {
+                int x = curOverlap.contigousOnDimension(otherOverlap);
+                if (x > 0) {
+                    Overlap mergedOverlap = Overlap.newByMergeOnDimension(curOverlap, otherOverlap, x);
+                    curOverlap = null;
+                    overlapsProcessing.remove(otherOverlap);
+                    overlapsProcessing.add(0, mergedOverlap);
+                }
+            }
+            if (curOverlap != null) {
+                newOverlaps.add(curOverlap);
+            }
+        }
+        this.overlaps.clear();
+        this.overlaps.addAll(newOverlaps);
     }
 
     public String getDMNMessageString() {
