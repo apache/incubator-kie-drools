@@ -29,6 +29,7 @@ import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
+import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -50,10 +51,10 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
 
         DMNDTAnalysisMessage dtMsg = (DMNDTAnalysisMessage) dmnMessage;
         DTAnalysis analysis = dtMsg.getAnalysis();
-        assertThat(analysis.getGaps(), hasSize(17));
-
         debugAnalysis(analysis);
         
+        assertThat(analysis.getGaps(), hasSize(17));
+
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(Interval.NEG_INF,
@@ -262,6 +263,30 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
 
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
+
+        // assert OVERLAPs count.
+        assertThat(analysis.getOverlaps(), hasSize(1));
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(Long.valueOf(1),
+                                                                         Long.valueOf(3)),
+                                                           new Hyperrectangle(2,
+                                                                              Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("2"),
+                                                                                                                             RangeBoundary.CLOSED,
+                                                                                                                             null),
+                                                                                                                   new Bound(new BigDecimal("4"),
+                                                                                                                             RangeBoundary.CLOSED,
+                                                                                                                             null)),
+                                                                                            Interval.newFromBounds(new Bound(new BigDecimal("1"),
+                                                                                                                             RangeBoundary.CLOSED,
+                                                                                                                             null),
+                                                                                                                   new Bound(new BigDecimal("2"),
+                                                                                                                             RangeBoundary.CLOSED,
+                                                                                                                             null))))));
+        assertThat(overlaps, hasSize(1));
+
+        // Assert OVERLAPs same values
+        assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
     }
 
 
