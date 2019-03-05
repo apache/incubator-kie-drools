@@ -1,8 +1,15 @@
 package org.kie.dmn.validation.dtanalysis;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.AbstractValidatorTest;
+import org.kie.dmn.validation.ValidatorUtil;
+import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
@@ -10,9 +17,42 @@ import org.kie.dmn.validation.dtanalysis.utils.DTAnalysisMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(AbstractDTAnalysisTest.class);
+
+    protected DTAnalysis getAnalysis(List<DMNMessage> dmnMessages, String id) {
+        assertThat("Expected to find DTAnalysis but messages are empty.", dmnMessages, not(empty()));
+
+        if (LOG.isDebugEnabled() ) {
+            LOG.debug("List<DMNMessage> dmnMessages: \n{}", ValidatorUtil.formatMessages(dmnMessages));
+        }
+
+        Map<String, DTAnalysis> as = new HashMap<>();
+        for (DMNMessage dmnMessage : dmnMessages) {
+            if (dmnMessage.getSourceId().equals(id) && dmnMessage instanceof DMNDTAnalysisMessage) {
+                DMNDTAnalysisMessage dmndtAnalysisMessage = (DMNDTAnalysisMessage) dmnMessage;
+                if (as.containsKey(id)) {
+                    assertThat("Inconsistency detected", as.get(id), is(dmndtAnalysisMessage.getAnalysis()));
+                } else {
+                    as.put(id, dmndtAnalysisMessage.getAnalysis());
+                }
+            }
+        }
+
+        DTAnalysis analysis = as.get(id);
+        assertThat("Null analysis value for key.", analysis, notNullValue());
+
+        debugAnalysis(analysis);
+
+        return analysis;
+    }
 
     protected void debugAnalysis(DTAnalysis analysis) {
         StringBuilder sbGaps = new StringBuilder("\nGaps:\n");

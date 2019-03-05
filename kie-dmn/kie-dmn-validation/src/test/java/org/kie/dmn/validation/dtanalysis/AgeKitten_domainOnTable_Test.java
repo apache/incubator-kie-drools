@@ -23,15 +23,11 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
-import org.kie.dmn.validation.ValidatorUtil;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
-import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -43,14 +39,7 @@ public class AgeKitten_domainOnTable_Test extends AbstractDTAnalysisTest {
     @Test
     public void test() {
         List<DMNMessage> validate = validator.validate(getReader("AgeKitten-domainOnTable.dmn"), VALIDATE_COMPILATION, DECISION_TABLE_ANALYSIS);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
-
-        DMNMessage dmnMessage = validate.get(0);
-        assertThat(dmnMessage, is(instanceOf(DMNDTAnalysisMessage.class)));
-
-        DMNDTAnalysisMessage dtMsg = (DMNDTAnalysisMessage) dmnMessage;
-        DTAnalysis analysis = dtMsg.getAnalysis();
-        debugAnalysis(analysis);
+        DTAnalysis analysis = getAnalysis(validate, "_5e3e4546-69c2-43f2-b93a-7ea285878ca0");
 
         assertThat(analysis.getGaps(), hasSize(2));
         
@@ -83,6 +72,8 @@ public class AgeKitten_domainOnTable_Test extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps(), hasSize(0));
     }
+
+
 
 
 }
