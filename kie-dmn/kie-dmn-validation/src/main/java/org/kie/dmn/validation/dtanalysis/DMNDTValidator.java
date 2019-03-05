@@ -148,7 +148,7 @@ public class DMNDTValidator {
         findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
         LOG.debug("findOverlaps");
         findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
-        LOG.debug("findOverlaps");
+        LOG.debug("normalize");
         analysis.normalize();
         return analysis;
     }

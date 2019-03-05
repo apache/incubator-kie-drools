@@ -69,7 +69,6 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.validation.dtanalysis.DMNDTValidator;
-import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.ChainedProperties;
@@ -533,13 +532,13 @@ public class DMNValidatorImpl implements DMNValidator {
         return Collections.emptyList();
     }
 
-    private List<? extends DMNMessage> validateDT(Definitions dmnModel) {
+    private List<DMNMessage> validateDT(Definitions dmnModel) {
         if (dmnModel != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile(dmnModel);
             if (model != null) {
                 List<DTAnalysis> vs = dmnDTValidator.validate(model);
-                List<DMNDTAnalysisMessage> results = vs.stream().map(a -> new DMNDTAnalysisMessage(a)).collect(Collectors.toList());
+                List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
                 return results;
             } else {
                 throw new IllegalStateException("Compiled model is null!");
