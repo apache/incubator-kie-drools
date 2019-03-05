@@ -100,6 +100,7 @@ public final class Msg {
     public static final Message2 FUNC_DEF_MISSING_ENTRY                              = new Message2( DMNMessageType.INVALID_SYNTAX, "A Java function definition requires both the 'class' and the 'method signature' attributes. Invalid definition for function '%s' on node '%s'" );
     public static final Message2 ERROR_CHECKING_ALLOWED_VALUES                       = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error checking allowed values for node '%s': %s" );
     public static final Message1 DTANALYSISRESULT                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis results: %s");
+    public static final Message1 DTANALYSIS_GAP                                      = new Message1( DMNMessageType.DECISION_TABLE_GAP, "Gap: %s");
 
     public static interface Message {
         String getMask();

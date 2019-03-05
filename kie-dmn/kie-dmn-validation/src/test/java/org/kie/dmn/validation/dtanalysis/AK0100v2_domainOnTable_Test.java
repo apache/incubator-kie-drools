@@ -23,15 +23,11 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
-import org.kie.dmn.validation.ValidatorUtil;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
-import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -43,17 +39,10 @@ public class AK0100v2_domainOnTable_Test extends AbstractDTAnalysisTest {
     @Test
     public void test() {
         List<DMNMessage> validate = validator.validate(getReader("AK0100v2-domainOnTable.dmn"), VALIDATE_COMPILATION, DECISION_TABLE_ANALYSIS);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        DTAnalysis analysis = getAnalysis(validate, "_e9e5c68a-ebc3-4f09-a107-2049edbe554d");
 
-        DMNMessage dmnMessage = validate.get(0);
-        assertThat(dmnMessage, is(instanceOf(DMNDTAnalysisMessage.class)));
-
-        DMNDTAnalysisMessage dtMsg = (DMNDTAnalysisMessage) dmnMessage;
-        DTAnalysis analysis = dtMsg.getAnalysis();
         assertThat(analysis.getGaps(), hasSize(2));
 
-        debugAnalysis(analysis);
-        
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),

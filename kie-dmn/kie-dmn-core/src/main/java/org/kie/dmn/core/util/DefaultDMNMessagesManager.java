@@ -46,6 +46,13 @@ public class DefaultDMNMessagesManager
     }
 
     @Override
+    public void addAllUnfiltered(List<? extends DMNMessage> messages) {
+        for (DMNMessage message : messages) {
+            this.messages.add(message);
+        }
+    }
+
+    @Override
     public DMNMessage addMessage(DMNMessage newMessage) {
         for( DMNMessage existingMessage : messages ) {
             if( isDuplicate( existingMessage, newMessage ) ) {
@@ -78,4 +85,5 @@ public class DefaultDMNMessagesManager
         return existingMsg.getMessageType().equals( newMessage.getMessageType() ) &&
                existingMsg.getSourceReference() == newMessage.getSourceReference();
     }
+
 }

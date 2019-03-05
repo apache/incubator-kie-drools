@@ -23,16 +23,12 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
-import org.kie.dmn.validation.ValidatorUtil;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
-import org.kie.dmn.validation.dtanalysis.model.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -44,16 +40,8 @@ public class GapsAndOverlaps1_domainOnTable_Test extends AbstractDTAnalysisTest 
     @Test
     public void test() {
         List<DMNMessage> validate = validator.validate(getReader("GapsAndOverlaps1-domainOnTable.dmn"), VALIDATE_COMPILATION, DECISION_TABLE_ANALYSIS);
-        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        DTAnalysis analysis = getAnalysis(validate, "_cd2e0a28-3cc2-456b-90b6-392d9c3574af");
 
-        DMNMessage dmnMessage = validate.get(0);
-        assertThat(dmnMessage, is(instanceOf(DMNDTAnalysisMessage.class)));
-
-        DMNDTAnalysisMessage dtMsg = (DMNDTAnalysisMessage) dmnMessage;
-        DTAnalysis analysis = dtMsg.getAnalysis();
-        debugAnalysis(analysis);
-
-        // assert GAPs count.
         assertThat(analysis.getGaps(), hasSize(11));
 
         @SuppressWarnings({"unchecked", "rawtypes"})

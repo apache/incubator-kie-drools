@@ -7,6 +7,11 @@ public class DMNDTAnalysisMessage extends DMNMessageImpl {
 
     private final DTAnalysis analysis;
 
+    public DMNDTAnalysisMessage(DTAnalysis analysis, Severity severity, String message, DMNMessageType messageType) {
+        super(severity, message, messageType, analysis.getSource());
+        this.analysis = analysis;
+    }
+
     public DMNDTAnalysisMessage(DTAnalysis analysis) {
         super(Severity.INFO, analysis.getDMNMessageString(), DMNMessageType.DECISION_TABLE_ANALYSIS, analysis.getSource());
         this.analysis = analysis;

@@ -1,12 +1,13 @@
 package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessage.Severity;
+import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
@@ -89,8 +90,15 @@ public class DTAnalysis {
 
     public List<? extends DMNMessage> asDMNMessages() {
         List<? extends DMNMessage> results = new ArrayList<>();
-        DMNDTAnalysisMessage thisAsMsg = new DMNDTAnalysisMessage(this);
-        results.addAll((Collection) Arrays.asList(thisAsMsg));
+        results.addAll(gapsAsMessages());
+        return results;
+    }
+
+    private Collection gapsAsMessages() {
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (Hyperrectangle gap : gaps) {
+            results.add(new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_GAP, gap), DMNMessageType.DECISION_TABLE_GAP));
+        }
         return results;
     }
 

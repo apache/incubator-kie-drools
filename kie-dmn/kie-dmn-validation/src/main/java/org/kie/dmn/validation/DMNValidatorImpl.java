@@ -446,7 +446,7 @@ public class DMNValidatorImpl implements DMNValidator {
             results.addAll( validateCompilation( dmnModel ) );
         }
         if (flags.contains( DECISION_TABLE_ANALYSIS )) {
-            results.addAll(validateDT(dmnModel));
+            results.addAllUnfiltered(validateDT(dmnModel));
         }
     }
 

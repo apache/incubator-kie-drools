@@ -527,4 +527,9 @@ public class DMNModelImpl
             return result;
         }
     }
+
+    @Override
+    public void addAllUnfiltered(List<? extends DMNMessage> messages) {
+        this.messages.addAllUnfiltered( messages );
+    }
 }
