@@ -235,7 +235,7 @@ This gives the employee more autonomy, but makes it harder to do certain optimiz
 such as minimize travel time between task locations.
 
 
-[[multiStragePlanning]]
+[[multiStagePlanning]]
 == Multi-stage planning
 
 For practical or organizational reasons (such as Conway's law), complex planning problems are often broken down in multiple stages.
@@ -245,3 +245,11 @@ Each stage has its own solver configuration (and therefore its own ``SolverFacto
 
 Similarly to <<partitionedSearch,Partitioned Search>>, multi-stage planning leads to suboptimal results.
 Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help to start a project.
+
+
+[[cloudArchitecturePatterns]]
+== Cloud Architecture Patterns
+
+image::DesignPatterns/serverlessCloudArchitecture.png[align="center"]
+
+image::DesignPatterns/realTimePlanningCloudArchitecture.png[align="center"]
