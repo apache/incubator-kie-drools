@@ -250,6 +250,19 @@ Nevertheless, it may be beneficial in order to simplify the maintenance, ownersh
 [[cloudArchitecturePatterns]]
 == Cloud Architecture Patterns
 
+There are two common usage patterns of Planner in the cloud:
+
+* *Batch planning*:
+Typically runs at night for hours to solve each tenant's dataset
+and deliver each schedule for the upcoming day(s) or week(s).
+Only the final best solution is send back to the client.
+This is a good fit for a serverless cloud architecture.
+
+* *Real-time planning*:
+Typically runs during the day,
+to handle unexpected problem changes as they occur in real-time
+and sends best solutions as they are discovered to the client.
+
 image::DesignPatterns/serverlessCloudArchitecture.png[align="center"]
 
 image::DesignPatterns/realTimePlanningCloudArchitecture.png[align="center"]
