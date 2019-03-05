@@ -23,6 +23,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.FloorFunction;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 public class ModuloFunction
@@ -40,6 +41,10 @@ public class ModuloFunction
         if ( divisor == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "divisor", "cannot be null"));
         }
-        return FEELFnResult.ofResult( divident.remainder( divisor, MathContext.DECIMAL128 ) );
+        return FloorFunction.INSTANCE.invoke(divident.divide(divisor,
+                                                             MathContext.DECIMAL128))
+                                     .map(f -> divident.subtract(divisor.multiply(f,
+                                                                                  MathContext.DECIMAL128),
+                                                                 MathContext.DECIMAL128));
     }
 }
