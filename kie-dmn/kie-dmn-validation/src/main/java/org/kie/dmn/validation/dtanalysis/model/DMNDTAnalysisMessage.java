@@ -12,11 +12,6 @@ public class DMNDTAnalysisMessage extends DMNMessageImpl {
         this.analysis = analysis;
     }
 
-    public DMNDTAnalysisMessage(DTAnalysis analysis) {
-        super(Severity.INFO, analysis.getDMNMessageString(), DMNMessageType.DECISION_TABLE_ANALYSIS, analysis.getSource());
-        this.analysis = analysis;
-    }
-
     public DTAnalysis getAnalysis() {
         return analysis;
     }

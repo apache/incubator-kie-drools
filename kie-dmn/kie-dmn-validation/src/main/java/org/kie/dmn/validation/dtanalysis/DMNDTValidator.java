@@ -63,9 +63,9 @@ public class DMNDTValidator {
                     DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
                     results.add(result);
                 } catch (Throwable t) {
-                    t.printStackTrace();
                     LOG.warn("Failed dmnDTAnalysis for table: " + decisionTable.getId(), t);
-                    throw new DMNDTValidatorException(t, decisionTable);
+                    DTAnalysis result = DTAnalysis.ofError(decisionTable, t);
+                    results.add(result);
                 }
             }
         }

@@ -63,6 +63,4 @@ public class Gaps0100_domainOnTable_Test extends AbstractDTAnalysisTest {
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
     }
-
-
 }

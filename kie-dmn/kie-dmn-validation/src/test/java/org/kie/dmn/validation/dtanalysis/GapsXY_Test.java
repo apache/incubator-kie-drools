@@ -88,6 +88,4 @@ public class GapsXY_Test extends AbstractDTAnalysisTest {
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
     }
-
-
 }

@@ -1,6 +1,7 @@
 package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -18,9 +19,24 @@ public class DTAnalysis {
     private final List<Hyperrectangle> gaps = new ArrayList<>();
     private final List<Overlap> overlaps = new ArrayList<>();
     private final DecisionTable sourceDT;
+    private final Throwable error;
 
     public DTAnalysis(DecisionTable sourceDT) {
         this.sourceDT = sourceDT;
+        this.error = null;
+    }
+
+    private DTAnalysis(DecisionTable sourceDT, Throwable error) {
+        this.sourceDT = sourceDT;
+        this.error = error;
+    }
+
+    public static DTAnalysis ofError(DecisionTable sourceDT, Throwable error) {
+        return new DTAnalysis(sourceDT, error);
+    }
+
+    public boolean isError() {
+        return error != null;
     }
 
     public Collection<Hyperrectangle> getGaps() {
@@ -75,22 +91,23 @@ public class DTAnalysis {
         this.overlaps.addAll(newOverlaps);
     }
 
-    public String getDMNMessageString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\n");
-        builder.append("Gaps: ");
-        builder.append("\n");
-        for (Hyperrectangle g : gaps) {
-            builder.append(g);
-            builder.append("\n");
-        }
-        builder.append(";");
-        return MsgUtil.createMessage(Msg.DTANALYSISRESULT, builder.toString());
-    }
-
     public List<? extends DMNMessage> asDMNMessages() {
         List<? extends DMNMessage> results = new ArrayList<>();
+        if (isError()) {
+            DMNMessage m = new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_ERROR, error.getMessage()), DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR);
+            results.addAll((Collection) Arrays.asList(m));
+            return results;
+        }
         results.addAll(gapsAsMessages());
+        results.addAll(overlapsAsMessages());
+        return results;
+    }
+
+    private Collection overlapsAsMessages() {
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (Overlap overlap : overlaps) {
+            results.add(new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP, overlap), DMNMessageType.DECISION_TABLE_OVERLAP));
+        }
         return results;
     }
 

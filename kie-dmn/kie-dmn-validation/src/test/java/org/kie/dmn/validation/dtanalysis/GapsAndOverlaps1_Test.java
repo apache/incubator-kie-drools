@@ -277,6 +277,4 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
         // Assert OVERLAPs same values
         assertThat(analysis.getOverlaps(), contains(overlaps.toArray()));
     }
-
-
 }

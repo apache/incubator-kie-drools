@@ -101,6 +101,4 @@ public class GapsCube3_Test extends AbstractDTAnalysisTest {
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
     }
-
-
 }

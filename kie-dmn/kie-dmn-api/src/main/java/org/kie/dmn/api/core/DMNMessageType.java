@@ -39,7 +39,9 @@ public enum DMNMessageType {
     FAILED_VALIDATION("DMN Validation stopped on failed validation for some DMN Model", Tag.VALIDATION, Tag.DMN_VALIDATOR),
 
     DECISION_TABLE_ANALYSIS("DMN Validation, Decision Table Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
-    DECISION_TABLE_GAP("DMN Validation, Decision Table Analysis, Gap Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR);
+    DECISION_TABLE_ANALYSIS_ERROR("DMN Validation, Decision Table Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
+    DECISION_TABLE_GAP("DMN Validation, Decision Table Analysis, Gap Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
+    DECISION_TABLE_OVERLAP("DMN Validation, Decision Table Analysis, Overlap Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR);
 
     private final Tag[]  tags;
     private final String description;

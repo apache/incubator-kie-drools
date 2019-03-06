@@ -72,8 +72,4 @@ public class AgeKitten_domainOnTable_Test extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps(), hasSize(0));
     }
-
-
-
-
 }

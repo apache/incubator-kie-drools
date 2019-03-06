@@ -25,7 +25,7 @@ public class Overlap {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Overlap ");
+        builder.append("Overlap values ");
         builder.append(overlap);
         builder.append(" for rules: ");
         builder.append(rules);
