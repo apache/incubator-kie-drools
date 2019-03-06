@@ -163,7 +163,13 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+      <version>7.18.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

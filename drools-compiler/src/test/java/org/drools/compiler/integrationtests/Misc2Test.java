@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -9129,6 +9130,36 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(john);
         Person paul = new Person("Paul", 20);
         ksession.insert(paul);
+
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
+    }
+
+    @Test
+    public void testOrClause() {
+        //PLANNER-1433
+        String drl = "package org.drools.compiler.integrationtests;\n"
+                + "import " + Person.class.getName() + ";\n"
+                + "import " + HardSoftScoreHolder.class.getName() + ";\n"
+                + "global HardSoftScoreHolder scoreHolder;\n"
+                + "rule R1\n"
+                + "when\n"
+                + "    Person( age > 20 )\n"
+                + "    or\n"
+                + "    Person( name == \"John\")\n"
+                + "then\n"
+                + "    scoreHolder.addSoftConstraintMatch(kcontext, -1);\n"
+                + "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        ksession.getGlobals().set("scoreHolder",new HardSoftScoreHolder(true));
+
+        Person john = new Person("John", 25);
+        ksession.insert(john);
 
         int fired = ksession.fireAllRules();
 
