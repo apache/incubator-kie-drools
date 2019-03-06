@@ -46,9 +46,17 @@ endif::[]
 * Root context (`kie-server`)
 * Base REST path (`services/rest/`)
 
+ifeval::["{context}" == "dmn-models"]
 Example base URL in local deployment:
 
 `\http://localhost:8080/kie-server/services/rest/`
+endif::[]
+
+ifeval::["{context}" == "decision-service-getting-started"]
+Example base URL in local deployment for the traffic violations project:
+
+`\http://localhost:8080/kie-server/services/rest/server/containers/Traffic-Violation_1.0.0`
+endif::[]
 --
 . Determine user authentication requirements.
 +
@@ -89,6 +97,7 @@ curl -H "accept: application/xml" -H "content-type: application/xml"
 
 Example curl request:
 
+ifeval::["{context}" == "dmn-models"]
 [source]
 ----
 curl -u krisv:krisv -H "accept: application/xml" -X GET "http://localhost:8080/kie-server/services/rest/server/containers/MovieDMNContainer/dmn"
@@ -139,7 +148,403 @@ Sample JSON output:
 }
 ----
 --
+endif::[]
+ifeval::["{context}" == "decision-service-getting-started"]
+[source]
+----
+curl -u wbadmin:wbadmin -H "accept: application/xml" -X GET "http://localhost:8080/kie-server/services/rest/server/containers/Traffic-Violation_1.0.0/dmn"
+----
+
+Sample XML output:
+
+[source,xml]
+----
+<?XML VERSION="1.0" ENCODING="UTF-8" STANDALONE="YES"?>
+<RESPONSE TYPE="SUCCESS" MSG="OK MODELS SUCCESSFULLY RETRIEVED FROM CONTAINER 'TRAFFIC-VIOLATION_1.0.0'">
+    <DMN-MODEL-INFO-LIST>
+        <MODEL>
+            <MODEL-NAMESPACE>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</MODEL-NAMESPACE>
+            <MODEL-NAME>TRAFFIC VIOLATION</MODEL-NAME>
+            <MODEL-ID>_2CD7D1AA-BD84-4B43-AD21-B0342ADE655A</MODEL-ID>
+            <DECISIONS>
+                <DMN-DECISION-INFO>
+                    <DECISION-ID>_23428EE8-DC8B-4067-8E67-9D7C53EC975F</DECISION-ID>
+                    <DECISION-NAME>FINE</DECISION-NAME>
+                </DMN-DECISION-INFO>
+                <DMN-DECISION-INFO>
+                    <DECISION-ID>_B5EEE2B1-915C-44DC-BE43-C244DC066FD8</DECISION-ID>
+                    <DECISION-NAME>SHOULD THE DRIVER BE SUSPENDED?</DECISION-NAME>
+                </DMN-DECISION-INFO>
+            </DECISIONS>
+            <INPUTS>
+                <DMN-INPUTDATA-INFO>
+                    <INPUTDATA-ID>_CEB959CD-3638-4A87-93BA-03CD0FB63AE3</INPUTDATA-ID>
+                    <INPUTDATA-NAME>VIOLATION</INPUTDATA-NAME>
+                    <INPUTDATA-TYPEREF>
+                        <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                        <LOCAL-PART>TVIOLATION</LOCAL-PART>
+                        <PREFIX></PREFIX>
+                    </INPUTDATA-TYPEREF>
+                </DMN-INPUTDATA-INFO>
+                <DMN-INPUTDATA-INFO>
+                    <INPUTDATA-ID>_B0E810E6-7596-430A-B5CF-67CE16863B6C</INPUTDATA-ID>
+                    <INPUTDATA-NAME>DRIVER</INPUTDATA-NAME>
+                    <INPUTDATA-TYPEREF>
+                        <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                        <LOCAL-PART>TDRIVER</LOCAL-PART>
+                        <PREFIX></PREFIX>
+                    </INPUTDATA-TYPEREF>
+                </DMN-INPUTDATA-INFO>
+            </INPUTS>
+            <ITEMDEFINITIONS>
+                <DMN-ITEMDEFINITION-INFO>
+                    <ITEMDEFINITION-ID>_9C758F4A-7D72-4D0F-B63F-2F5B8405980E</ITEMDEFINITION-ID>
+                    <ITEMDEFINITION-NAME>TVIOLATION</ITEMDEFINITION-NAME>
+                    <ITEMDEFINITION-ITEMCOMPONENT>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_0B6FF1E2-ACE9-4FB3-876B-5BB30B88009B</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>CODE</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>STRING</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_27A5DA18-3CA7-4C06-81B7-CF7F2F050E29</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>DATE</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>DATE</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_8961969A-8A80-4F12-B568-346920C0F038</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>TYPE</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>STRING</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_7450F12A-3E95-4D5E-8DCE-2CB1FAC2BDD4</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>SPEED LIMIT</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>NUMBER</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_0A9A6F26-6C14-414D-A9BF-765E5850429A</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>ACTUAL SPEED</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>NUMBER</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                    </ITEMDEFINITION-ITEMCOMPONENT>
+                    <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                </DMN-ITEMDEFINITION-INFO>
+                <DMN-ITEMDEFINITION-INFO>
+                    <ITEMDEFINITION-ID>_13C7EFD8-B85C-43BF-94D3-14FABE39A4A0</ITEMDEFINITION-ID>
+                    <ITEMDEFINITION-NAME>TDRIVER</ITEMDEFINITION-NAME>
+                    <ITEMDEFINITION-ITEMCOMPONENT>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_EC11744C-4160-4549-9610-2C757F40DFE8</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>NAME</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>STRING</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_E95BE3DB-4A51-4658-A166-02493EAAC9D2</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>AGE</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>NUMBER</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_7B3023E2-BC44-4BF3-BF7E-773C240FB9AD</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>STATE</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>STRING</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_3D4B49DD-700C-4925-99A7-3B2B873F7800</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>CITY</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>STRING</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_B37C49E8-B0D9-4B20-9DC6-D655BB1CA7B1</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>POINTS</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>NUMBER</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                    </ITEMDEFINITION-ITEMCOMPONENT>
+                    <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                </DMN-ITEMDEFINITION-INFO>
+                <DMN-ITEMDEFINITION-INFO>
+                    <ITEMDEFINITION-ID>_A4077C7E-B57A-4DEE-9C65-7769636316F3</ITEMDEFINITION-ID>
+                    <ITEMDEFINITION-NAME>TFINE</ITEMDEFINITION-NAME>
+                    <ITEMDEFINITION-ITEMCOMPONENT>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_79B152A8-DE83-4001-B88B-52DFF0D73B2D</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>AMOUNT</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>NUMBER</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                        <DMN-ITEMDEFINITION-INFO>
+                            <ITEMDEFINITION-ID>_D7CB5F9C-9D55-48C2-83EE-D47045EC90D0</ITEMDEFINITION-ID>
+                            <ITEMDEFINITION-NAME>POINTS</ITEMDEFINITION-NAME>
+                            <ITEMDEFINITION-TYPEREF>
+                                <NAMESPACE-URI>HTTPS://GITHUB.COM/KIEGROUP/DROOLS/KIE-DMN/_60B01F4D-E407-43F7-848E-258723B5FAC8</NAMESPACE-URI>
+                                <LOCAL-PART>NUMBER</LOCAL-PART>
+                                <PREFIX></PREFIX>
+                            </ITEMDEFINITION-TYPEREF>
+                            <ITEMDEFINITION-ITEMCOMPONENT/>
+                            <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                        </DMN-ITEMDEFINITION-INFO>
+                    </ITEMDEFINITION-ITEMCOMPONENT>
+                    <ITEMDEFINITION-ISCOLLECTION>FALSE</ITEMDEFINITION-ISCOLLECTION>
+                </DMN-ITEMDEFINITION-INFO>
+            </ITEMDEFINITIONS>
+            <DECISIONSERVICES/>
+        </MODEL>
+    </DMN-MODEL-INFO-LIST>
+</RESPONSE>
+----
+
+Sample JSON output:
+
+[source,json]
+----
+{
+  "type" : "SUCCESS",
+  "msg" : "OK models successfully retrieved from container 'Traffic-Violation_1.0.0'",
+  "result" : {
+    "dmn-model-info-list" : {
+      "models" : [ {
+        "model-namespace" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+        "model-name" : "Traffic Violation",
+        "model-id" : "_2CD7D1AA-BD84-4B43-AD21-B0342ADE655A",
+        "decisions" : [ {
+          "decision-id" : "_23428EE8-DC8B-4067-8E67-9D7C53EC975F",
+          "decision-name" : "Fine"
+        }, {
+          "decision-id" : "_B5EEE2B1-915C-44DC-BE43-C244DC066FD8",
+          "decision-name" : "Should the driver be suspended?"
+        } ],
+        "inputs" : [ {
+          "inputdata-id" : "_CEB959CD-3638-4A87-93BA-03CD0FB63AE3",
+          "inputdata-name" : "Violation",
+          "inputdata-typeRef" : {
+            "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+            "local-part" : "tViolation",
+            "prefix" : ""
+          }
+        }, {
+          "inputdata-id" : "_B0E810E6-7596-430A-B5CF-67CE16863B6C",
+          "inputdata-name" : "Driver",
+          "inputdata-typeRef" : {
+            "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+            "local-part" : "tDriver",
+            "prefix" : ""
+          }
+        } ],
+        "itemDefinitions" : [ {
+          "itemdefinition-id" : "_13C7EFD8-B85C-43BF-94D3-14FABE39A4A0",
+          "itemdefinition-name" : "tDriver",
+          "itemdefinition-typeRef" : null,
+          "itemdefinition-itemComponent" : [ {
+            "itemdefinition-id" : "_EC11744C-4160-4549-9610-2C757F40DFE8",
+            "itemdefinition-name" : "Name",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_E95BE3DB-4A51-4658-A166-02493EAAC9D2",
+            "itemdefinition-name" : "Age",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_7B3023E2-BC44-4BF3-BF7E-773C240FB9AD",
+            "itemdefinition-name" : "State",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_3D4B49DD-700C-4925-99A7-3B2B873F7800",
+            "itemdefinition-name" : "City",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_B37C49E8-B0D9-4B20-9DC6-D655BB1CA7B1",
+            "itemdefinition-name" : "Points",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          } ],
+          "itemdefinition-isCollection" : false
+        }, {
+          "itemdefinition-id" : "_A4077C7E-B57A-4DEE-9C65-7769636316F3",
+          "itemdefinition-name" : "tFine",
+          "itemdefinition-typeRef" : null,
+          "itemdefinition-itemComponent" : [ {
+            "itemdefinition-id" : "_79B152A8-DE83-4001-B88B-52DFF0D73B2D",
+            "itemdefinition-name" : "Amount",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_D7CB5F9C-9D55-48C2-83EE-D47045EC90D0",
+            "itemdefinition-name" : "Points",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          } ],
+          "itemdefinition-isCollection" : false
+        }, {
+          "itemdefinition-id" : "_9C758F4A-7D72-4D0F-B63F-2F5B8405980E",
+          "itemdefinition-name" : "tViolation",
+          "itemdefinition-typeRef" : null,
+          "itemdefinition-itemComponent" : [ {
+            "itemdefinition-id" : "_0B6FF1E2-ACE9-4FB3-876B-5BB30B88009B",
+            "itemdefinition-name" : "Code",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_27A5DA18-3CA7-4C06-81B7-CF7F2F050E29",
+            "itemdefinition-name" : "Date",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "date",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_8961969A-8A80-4F12-B568-346920C0F038",
+            "itemdefinition-name" : "Type",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "string",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_7450F12A-3E95-4D5E-8DCE-2CB1FAC2BDD4",
+            "itemdefinition-name" : "Speed Limit",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          }, {
+            "itemdefinition-id" : "_0A9A6F26-6C14-414D-A9BF-765E5850429A",
+            "itemdefinition-name" : "Actual Speed",
+            "itemdefinition-typeRef" : {
+              "namespace-uri" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+              "local-part" : "number",
+              "prefix" : ""
+            },
+            "itemdefinition-itemComponent" : [ ],
+            "itemdefinition-isCollection" : false
+          } ],
+          "itemdefinition-isCollection" : false
+        } ],
+        "decisionServices" : [ ]
+      } ]
+    }
+  }
+}
+----
+--
+endif::[]
+
 . Execute the model:
+
+ifeval::["{context}" == "dmn-models"]
 +
 --
 *[POST]* `server/containers/{containerId}/dmn`
@@ -247,6 +652,160 @@ Example XML (JAXB format) response:
                               <decision-id>_3</decision-id>
                               <decision-name>AgeClassification</decision-name>
                               <result xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Senior</result>
+                              <messages/>
+                              <status>SUCCEEDED</status>
+                        </value>
+                  </entry>
+            </decisionResults>
+      </dmn-evaluation-result>
+</response>
+----
+--
+endif::[]
+ifeval::["{context}" == "decision-service-getting-started"]
++
+--
+*[POST]* `server/containers/{containerId}/dmn`
+
+[NOTE]
+====
+The attribute `model-namespace` is automatically generated and is different for every user. Ensure that the `model-namespace` and `model-name` attributes that you use match those of the deployed model.
+====
+
+Example curl request:
+
+[source]
+----
+curl -u wbadmin:wbadmin -H "accept: application/json" -H "content-type: application/json" -X POST "http://localhost:8080/kie-server/services/rest/server/containers/Traffic-Violation_1.0.0/dmn" -d "{ \"model-namespace\" : \"https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8\", \"model-name\" : "Traffic Violation", \"dmn-context\" : {"Driver" : {"Points" : 15}, "Violation" : {"Type" : "speed", "Actual Speed" : 135, "Speed Limit" : 100}}"
+----
+
+Example JSON request:
+
+[source,json]
+----
+{
+  "model-namespace" : "https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8",
+  "model-name" : "Traffic Violation",
+  "dmn-context" :
+  {
+    "Driver" :
+    {
+  	   "Points" : 15
+    },
+  	"Violation" :
+    {
+  		"Type" : "speed",
+  		"Actual Speed" : 135,
+  		"Speed Limit" : 100
+  	}
+  }
+}
+----
+
+Example XML request (JAXB format):
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn-evaluation-context>
+    <model-namespace>https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</model-namespace>
+    <model-name>Traffic Violation</model-name>
+    <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <type>MAP</type>
+        <element xsi:type="jaxbStringObjectPair" key="Points">
+            <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
+        </element>
+    </dmn-context>
+</dmn-evaluation-context>
+----
+
+[NOTE]
+====
+Regardless of the request format, the request requires the following elements:
+
+* Model namespace
+* Model name
+* Context object containing input values
+====
+
+Example JSON response:
+
+[source,json]
+----
+{
+  "type": "SUCCESS",
+  "msg": "OK from container 'Traffic-Violation_1.0.0'",
+  "result": {
+      "dmn-evaluation-result": {
+          "messages": [],
+          "model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_7D8116DE-ADF5-4560-A116-FE1A2EAFFF48",
+          "model-name": "Traffic Violation",
+          "decision-name": [],
+          "dmn-context": {
+              "Violation": {
+                "Type": "speed",
+                "Speed Limit": 100,
+                "Actual Speed": 135
+              },
+              "Should Driver be Suspended?": "YES",
+                "Driver": {
+                  "Points": 15
+                },
+                "Fine": {
+                  "Points": 7,
+                  "Amount": 1000
+                }
+            },
+      "decision-results": {
+          "_E1AF5AC2-E259-455C-96E4-596E30D3BC86": {
+              "messages": [],
+              "decision-id": "_E1AF5AC2-E259-455C-96E4-596E30D3BC86",
+              "decision-name": "Should the Driver be Suspended?",
+              "result": "YES",
+              "status": "SUCCEEDED"
+            },
+          "_D7F02CE0-AF50-4505-AB80-C7D6DE257920": {
+              "messages": [],
+              "decision-id": "_D7F02CE0-AF50-4505-AB80-C7D6DE257920",
+              "decision-name": "Fine",
+              "result": {
+                "Points": 7,
+                "Amount": 1000
+              },
+          "status": "SUCCEEDED"
+        }
+      }
+    }
+  }
+}
+----
+
+Example XML (JAXB format) response:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response type="SUCCESS" msg="OK from container 'Traffic-Violation_1.0.0'">
+      <dmn-evaluation-result>
+            <model-namespace>https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</model-namespace>
+            <model-name>Traffic Violation</model-name>
+            <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                  <type>MAP</type>
+                  <element xsi:type="jaxbStringObjectPair" key="Violation">
+                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">Speed</value>
+                  </element>
+                  <element xsi:type="jaxbStringObjectPair" key="Points">
+                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
+                  </element>
+            </dmn-context>
+            <messages/>
+            <decisionResults>
+                  <entry>
+                        <key>_3</key>
+                        <value>
+                              <decision-id>_3</decision-id>
+                              <decision-name>Should the driver be suspended?</decision-name>
+                              <result xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Yes</result>
                               <messages/>
                               <status>SUCCEEDED</status>
                         </value>

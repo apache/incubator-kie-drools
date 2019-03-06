@@ -1,0 +1,29 @@
+[id='dmn-gs-new-project-creating-proc']
+= Creating the traffic violations project
+
+For this example, create a new project called `traffic-violation`. A project is a container for assets such as data objects, DMN assets, and test scenarios.
+
+.Procedure
+. Log in to {CENTRAL}.
+. Go to *Menu* -> *Design* -> *Projects*.
++
+
+{PRODUCT} provides a default space called *MySpace*, as shown in the following image. You can use the default space to create and test example projects.
++
+
+.Default space
+image::getting-started/spaces-teams.png[]
+
+. Click *Add Project*.
+. Enter `traffic-violation` in the *Name* field.
+. Click *Show Advanced Options* to expand the GAV fields and enter the following values:
+* *Group ID*: `org.kie.example.traffic`
+* *Artifact ID*: `traffic-violation`
+* *Version*: `1.0.0`
+. Click *Add*.
++
+
+.Add Project window with expanded Advanced Options
+image::dmn/dmn-new-project-gs.png[]
++
+The *Assets* view of the project opens.

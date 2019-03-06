@@ -1,0 +1,24 @@
+[id='dmn-gs-creating-drd-proc']
+= Creating the traffic violations DMN decision requirements diagram (DRD)
+
+A decision requirements diagram (DRD) is a visual representation of your DMN model. Use the  DMN designer in {CENTRAL} to design the DRD for the traffic violations project and to define the decision logic of the DRD components.
+
+.DRD for the Traffic Violations example
+image::dmn/dmn-traffic-violations-drd.png[]
+
+.Prerequisite
+* You have created the traffic violations project in {CENTRAL}.
+
+.Procedure
+. On the *traffic-violations* project's home screen, click *Add Asset* to open the *Add Asset* screen.
+. Click *DMN* to open the *Create new DMN* dialog.
+.. Enter `Traffic Violation` in the *Name* field.
+.. From the *Package* list, select `org.kie.example.traffic.traffic_violations`.
+.. Click *Ok* to open the DMN asset in the DMN designer.
+. In the DMN designer canvas, drag two input nodes to the canvas. Double-click the input nodes and rename them as `Driver` and `Violation`.
+. Drag a decision node to the canvas. Double-click and rename it as `Fine`.
+. Click the *Violation* input node and select the `Create DMN Information Requirement` option to connect to the `Fine` decision node.
+. Drag another decision node to the canvas and double-click and rename it as `Should the driver be suspended?`.
+. Click the *Driver* input node and select the  `Create DMN Information Requirement` option to connect to the `Should the driver be suspended?` decision node.
+. Click the *Fine* decision node and select the  `Create DMN Information Requirement` option to connect to the `Should the driver be suspended?` decision node.
+. Click *Save* to open the *Confirm Save* dialog box and click *Save* again.
