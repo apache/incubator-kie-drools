@@ -94,7 +94,7 @@ public class DTAnalysis {
     public List<? extends DMNMessage> asDMNMessages() {
         List<? extends DMNMessage> results = new ArrayList<>();
         if (isError()) {
-            DMNMessage m = new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_ERROR, error.getMessage()), DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR);
+            DMNMessage m = new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_ERROR, sourceDT.getOutputLabel(), error.getMessage()), DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR);
             results.addAll((Collection) Arrays.asList(m));
             return results;
         }

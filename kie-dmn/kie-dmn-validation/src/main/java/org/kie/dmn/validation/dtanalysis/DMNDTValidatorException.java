@@ -16,9 +16,8 @@ public class DMNDTValidatorException extends RuntimeException {
         this.dt = dt;
     }
 
-    @Override
-    public String getMessage() {
-        return super.getMessage() + "\nIn table:\n" + dt.toString();
+    public DecisionTable getDt() {
+        return dt;
     }
 
 }

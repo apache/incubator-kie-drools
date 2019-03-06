@@ -107,7 +107,7 @@ public class DMNDTValidator {
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {
                     if (!utln.getElements().stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
-                        throw new DMNDTValidatorException("Multiple constraint on column not supported: " + utln, dt);
+                        throw new DMNDTValidatorException("Multiple constraint on column: " + utln, dt);
                     }
                     List<Comparable<?>> discreteValues = new ArrayList<>();
                     for (BaseNode e : utln.getElements()) {
@@ -369,7 +369,7 @@ public class DMNDTValidator {
                                 rule,
                                 col);
         } else {
-            throw new UnsupportedOperationException("UnaryTest type not supported: " + ut);
+            throw new UnsupportedOperationException("UnaryTest type: " + ut);
         }
     }
 
@@ -381,7 +381,7 @@ public class DMNDTValidator {
             StringNode stringNode = (StringNode) node;
             return EvalHelper.unescapeString(stringNode.getText());
         } else {
-            throw new UnsupportedOperationException("valueFromNode not supported: " + node);
+            throw new UnsupportedOperationException("valueFromNode: " + node);
         }
     }
 
