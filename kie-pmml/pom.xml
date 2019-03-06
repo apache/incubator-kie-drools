@@ -87,6 +87,12 @@
       <artifactId>activation</artifactId>
     </dependency>
 
+    <!-- xstream -->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
