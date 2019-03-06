@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.kie.api.definition.type.PropertyReactive;
-//import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
 
 @PropertyReactive
 @XmlType(name = "PMML4Result")

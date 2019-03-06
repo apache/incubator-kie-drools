@@ -222,8 +222,17 @@
           "methodName": "weave",
           "elementKind": "method",
           "justification": "expose a method to weave packages, without explicitly 'getting' the specific weaver"
+        },
+        {
+          "code": "java.annotation.added",
+          "old": "class org.kie.api.pmml.PMML4Result",
+          "new": "class org.kie.api.pmml.PMML4Result",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAlias",
+          "annotation": "@com.thoughtworks.xstream.annotations.XStreamAlias(\"PMML4Result\")",
+          "package": "org.kie.api.pmml",
+          "classSimpleName": "PMML4Result",
+          "elementKind": "class",
         }
-
       ]
     }
   }
