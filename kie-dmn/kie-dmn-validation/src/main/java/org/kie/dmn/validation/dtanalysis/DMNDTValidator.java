@@ -69,7 +69,7 @@ public class DMNDTValidator {
                     DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
                     results.add(result);
                 } catch (Throwable t) {
-                    LOG.warn("Failed dmnDTAnalysis for table: " + decisionTable.getId(), t);
+                    LOG.warn("Skipped dmnDTAnalysis for table: " + decisionTable.getId(), t);
                     DTAnalysis result = DTAnalysis.ofError(decisionTable, t);
                     results.add(result);
                 }

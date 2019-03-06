@@ -34,11 +34,21 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class AgeKitten_domainOnTable_Test extends AbstractDTAnalysisTest {
+public class AgeKitten_Test extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
+    public void test_AgeKitten_domainOnTable() {
         List<DMNMessage> validate = validator.validate(getReader("AgeKitten-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        checkAnalysis(validate);
+    }
+
+    @Test
+    public void test_AgeKitten() {
+        List<DMNMessage> validate = validator.validate(getReader("AgeKitten.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        checkAnalysis(validate);
+    }
+
+    private void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_5e3e4546-69c2-43f2-b93a-7ea285878ca0");
 
         assertThat(analysis.getGaps(), hasSize(2));
