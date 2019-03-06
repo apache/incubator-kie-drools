@@ -29,10 +29,14 @@ import javax.xml.bind.annotation.XmlType;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.pmml.PMML4OutputField;
+import org.kie.pmml.pmml_4_2.model.PMMLOutputConverter;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 @XmlRootElement(name="@{name}")
 @XmlType(name="@{modelId}_@{name}")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XStreamAlias("@{className}")
 @Role(Role.Type.EVENT)
 @PropertyReactive
 public class @{className} extends PMML4OutputField {
