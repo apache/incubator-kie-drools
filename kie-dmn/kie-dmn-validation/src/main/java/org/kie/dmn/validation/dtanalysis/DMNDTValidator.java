@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -28,6 +33,7 @@ import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.InputClause;
+import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
@@ -78,8 +84,25 @@ public class DMNDTValidator {
         for (int jColIdx = 0; jColIdx < dt.getInput().size(); jColIdx++) {
             InputClause ie = dt.getInput().get(jColIdx);
             Interval infDomain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, jColIdx + 1);
+            String allowedValues = null;
             if (ie.getInputValues() != null) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getInputValues().getText(), FEEL.newCompilerContext());
+                allowedValues = ie.getInputValues().getText();
+            } else {
+                QName typeRef = DMNCompilerImpl.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), ie.getInputExpression().getTypeRef(), model.getNamespace());
+                if (typeRef.getNamespaceURI().equals(model.getNamespace())) {
+                    Optional<ItemDefinition> opt = model.getDefinitions().getItemDefinition().stream().filter(id -> id.getName().equals(typeRef.getLocalPart())).findFirst();
+                    if (opt.isPresent()) {
+                        ItemDefinition id = opt.get();
+                        if (id.getAllowedValues() != null) {
+                            allowedValues = id.getAllowedValues().getText();
+                        }
+                    } else {
+                        throw new IllegalStateException("Unable to locate typeRef " + typeRef + " to determine domain.");
+                    }
+                }
+            }
+            if (allowedValues != null) {
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {

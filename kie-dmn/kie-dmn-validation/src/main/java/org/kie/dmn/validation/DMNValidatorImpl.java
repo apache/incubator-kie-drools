@@ -374,7 +374,7 @@ public class DMNValidatorImpl implements DMNValidator {
         if( flags.contains( VALIDATE_SCHEMA ) ) {
             results.addAll( validateSchema( xmlFile ) );
         }
-        if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
+        if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
             Definitions dmndefs = null;
             try {
                 dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new FileReader(xmlFile));
@@ -408,7 +408,7 @@ public class DMNValidatorImpl implements DMNValidator {
             if( flags.contains( VALIDATE_SCHEMA ) ) {
                 results.addAll( validateSchema( new StringReader( content ) ) );
             }
-            if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
+            if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
                 Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new StringReader(content));
                 dmndefs.normalize();
                 validateModelCompilation( dmndefs, results, flags );

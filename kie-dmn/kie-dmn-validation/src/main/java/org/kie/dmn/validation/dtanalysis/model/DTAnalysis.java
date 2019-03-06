@@ -100,6 +100,13 @@ public class DTAnalysis {
         }
         results.addAll(gapsAsMessages());
         results.addAll(overlapsAsMessages());
+
+        // keep last.
+        if (results.isEmpty()) {
+            DMNMessage m = new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_EMPTY, sourceDT.getOutputLabel()), DMNMessageType.DECISION_TABLE_ANALYSIS);
+            results.addAll((Collection) Arrays.asList(m));
+            return results;
+        }
         return results;
     }
 
