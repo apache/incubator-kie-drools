@@ -869,7 +869,7 @@ public class ExpressionTyper {
         }
     }
 
-    static class TypedExpressionCursor {
+    public static class TypedExpressionCursor {
         public final Expression expressionCursor;
         public final java.lang.reflect.Type typeCursor;
 
