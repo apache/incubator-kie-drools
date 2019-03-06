@@ -32,14 +32,14 @@ import org.kie.dmn.validation.dtanalysis.model.Overlap;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.kie.dmn.validation.DMNValidator.Validation.DECISION_TABLE_ANALYSIS;
+import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
 public class GapsAndOverlaps1_domainOnTable_Test extends AbstractDTAnalysisTest {
 
     @Test
     public void test() {
-        List<DMNMessage> validate = validator.validate(getReader("GapsAndOverlaps1-domainOnTable.dmn"), VALIDATE_COMPILATION, DECISION_TABLE_ANALYSIS);
+        List<DMNMessage> validate = validator.validate(getReader("GapsAndOverlaps1-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_cd2e0a28-3cc2-456b-90b6-392d9c3574af");
 
         assertThat(analysis.getGaps(), hasSize(11));

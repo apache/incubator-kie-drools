@@ -31,14 +31,14 @@ import org.kie.dmn.validation.dtanalysis.model.Interval;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.kie.dmn.validation.DMNValidator.Validation.DECISION_TABLE_ANALYSIS;
+import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
 public class Gaps0100_domainOnTable_Test extends AbstractDTAnalysisTest {
 
     @Test
     public void test() {
-        List<DMNMessage> validate = validator.validate(getReader("Gaps0100-domainOnTable.dmn"), VALIDATE_COMPILATION, DECISION_TABLE_ANALYSIS);
+        List<DMNMessage> validate = validator.validate(getReader("Gaps0100-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_70a95e62-8f5b-4b75-8cb9-9a9f781077da");
 
         assertThat(analysis.getGaps(), hasSize(2));
