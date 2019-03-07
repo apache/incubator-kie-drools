@@ -1,26 +1,21 @@
-package org.drools.mvelcompiler.phase3;
+package org.drools.mvelcompiler.phase4;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
-public class MethodTypedExpression implements TypedExpression {
+public class NameTypedExpression implements TypedExpression {
 
     final Node expression;
-    final TypedExpression scope;
     final Type type;
-    final Method accessor;
 
-    MethodTypedExpression(Node expression, TypedExpression scope, Type type, Method accessor) {
+    public NameTypedExpression(Node expression, Type type) {
         this.expression = expression;
-        this.scope = scope;
         this.type = type;
-        this.accessor = accessor;
     }
 
     @Override
@@ -30,15 +25,14 @@ public class MethodTypedExpression implements TypedExpression {
 
     @Override
     public Expression toJavaExpression() {
-        return new MethodCallExpr(scope.toJavaExpression(), accessor.getName());
+        return new NameExpr(printConstraint(expression));
     }
 
     @Override
     public String toString() {
-        return "MethodTypedExpression{" +
+        return "NameTypedExpression{" +
                 "expression=" + printConstraint(expression) +
                 ", type=" + type +
-                ", accessor=" + accessor +
                 '}';
     }
 }
