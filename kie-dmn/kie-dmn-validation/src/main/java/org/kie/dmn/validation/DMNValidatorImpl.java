@@ -68,7 +68,7 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
-import org.kie.dmn.validation.dtanalysis.DMNDTValidator;
+import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.ChainedProperties;
@@ -121,7 +121,7 @@ public class DMNValidatorImpl implements DMNValidator {
     private final List<DMNProfile> dmnProfiles = new ArrayList<>();
     private final DMNCompilerConfiguration dmnCompilerConfig;
 
-    private final DMNDTValidator dmnDTValidator;
+    private final DMNDTAnalyser dmnDTValidator;
 
     public DMNValidatorImpl(List<DMNProfile> dmnProfiles) {
         final KieServices ks = KieServices.Factory.get();
@@ -162,7 +162,7 @@ public class DMNValidatorImpl implements DMNValidator {
         this.dmnProfiles.addAll(dmnProfiles);
         final ClassLoader classLoader = this.kieContainer.isPresent() ? this.kieContainer.get().getClassLoader() : ClassLoaderUtil.findDefaultClassLoader();
         this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
-        dmnDTValidator = new DMNDTValidator(this.dmnProfiles);
+        dmnDTValidator = new DMNDTAnalyser(this.dmnProfiles);
     }
     
     public void dispose() {
@@ -537,7 +537,7 @@ public class DMNValidatorImpl implements DMNValidator {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile(dmnModel);
             if (model != null) {
-                List<DTAnalysis> vs = dmnDTValidator.validate(model);
+                List<DTAnalysis> vs = dmnDTValidator.analyse(model);
                 List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
                 return results;
             } else {

@@ -16,24 +16,21 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
-import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.api.core.DMNMessageType;
+import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
-public class DMNDTValidatorException extends RuntimeException {
+public class DMNDTAnalysisMessage extends DMNMessageImpl {
 
-    private final DecisionTable dt;
+    private final DTAnalysis analysis;
 
-    public DMNDTValidatorException(String message, DecisionTable dt) {
-        super(message);
-        this.dt = dt;
+    public DMNDTAnalysisMessage(DTAnalysis analysis, Severity severity, String message, DMNMessageType messageType) {
+        super(severity, message, messageType, analysis.getSource());
+        this.analysis = analysis;
     }
 
-    public DMNDTValidatorException(Throwable cause, DecisionTable dt) {
-        super(cause);
-        this.dt = dt;
-    }
-
-    public DecisionTable getDt() {
-        return dt;
+    public DTAnalysis getAnalysis() {
+        return analysis;
     }
 
 }

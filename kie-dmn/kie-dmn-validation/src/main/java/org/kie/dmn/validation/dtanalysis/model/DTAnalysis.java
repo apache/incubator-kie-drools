@@ -29,6 +29,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
 
 public class DTAnalysis {
 

@@ -68,16 +68,16 @@ import org.kie.dmn.validation.dtanalysis.model.Overlap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNDTValidator {
+public class DMNDTAnalyser {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DMNDTValidator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DMNDTAnalyser.class);
     private final org.kie.dmn.feel.FEEL FEEL;
 
-    public DMNDTValidator(List<DMNProfile> dmnProfiles) {
+    public DMNDTAnalyser(List<DMNProfile> dmnProfiles) {
         FEEL = org.kie.dmn.feel.FEEL.newInstance((List) dmnProfiles);
     }
 
-    public List<DTAnalysis> validate(DMNModel model) {
+    public List<DTAnalysis> analyse(DMNModel model) {
         List<DTAnalysis> results = new ArrayList<>();
 
         for (DecisionNode dn : model.getDecisions()) {
@@ -127,7 +127,7 @@ public class DMNDTValidator {
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {
                     if (!utln.getElements().stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
-                        throw new DMNDTValidatorException("Multiple constraint on column: " + utln, dt);
+                        throw new DMNDTAnalysisException("Multiple constraint on column: " + utln, dt);
                     }
                     List<Comparable<?>> discreteValues = new ArrayList<>();
                     for (BaseNode e : utln.getElements()) {

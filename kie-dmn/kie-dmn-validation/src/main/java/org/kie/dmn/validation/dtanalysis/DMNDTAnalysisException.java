@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.validation.dtanalysis.model;
+package org.kie.dmn.validation.dtanalysis;
 
-import org.kie.dmn.api.core.DMNMessageType;
-import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.model.api.DecisionTable;
 
-public class DMNDTAnalysisMessage extends DMNMessageImpl {
+public class DMNDTAnalysisException extends RuntimeException {
 
-    private final DTAnalysis analysis;
+    private final DecisionTable dt;
 
-    public DMNDTAnalysisMessage(DTAnalysis analysis, Severity severity, String message, DMNMessageType messageType) {
-        super(severity, message, messageType, analysis.getSource());
-        this.analysis = analysis;
+    public DMNDTAnalysisException(String message, DecisionTable dt) {
+        super(message);
+        this.dt = dt;
     }
 
-    public DTAnalysis getAnalysis() {
-        return analysis;
+    public DMNDTAnalysisException(Throwable cause, DecisionTable dt) {
+        super(cause);
+        this.dt = dt;
+    }
+
+    public DecisionTable getDt() {
+        return dt;
     }
 
 }
