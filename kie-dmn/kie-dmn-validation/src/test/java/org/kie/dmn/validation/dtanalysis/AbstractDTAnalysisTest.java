@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.printer.PrettyPrinterConfiguration;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.AbstractValidatorTest;
 import org.kie.dmn.validation.ValidatorUtil;
