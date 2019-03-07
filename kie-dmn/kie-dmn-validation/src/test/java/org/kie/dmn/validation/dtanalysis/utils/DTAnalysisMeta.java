@@ -110,7 +110,7 @@ public class DTAnalysisMeta {
             newExpression.setString(string);
             valueExpr = newExpression;
         } else {
-            throw new UnsupportedOperationException("boundAsExpression value not supported.");
+            throw new UnsupportedOperationException("boundAsExpression value " + value + "not supported.");
         }
         Expression typeExpr = null;
         if (bound.getBoundaryType() == RangeBoundary.OPEN) {
