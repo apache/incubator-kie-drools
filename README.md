@@ -1,11 +1,10 @@
-# qs-playground
+# submarine-runtimes
 `mvn clean install ` 
 command or 
 `mvn clean install -DskipTests` 
 
 to build the modules
-* bom
 * api
 * drools
 * jbpm
-* droolsjbpm-integration
+* kie-maven-plugin

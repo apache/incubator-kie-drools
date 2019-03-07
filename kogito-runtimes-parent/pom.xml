@@ -4,19 +4,18 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie</groupId>
-  <artifactId>qs-playground</artifactId>
+  <artifactId>submarine-runtimes</artifactId>
   <packaging>pom</packaging>
   <version>8.0.0-SNAPSHOT</version>
 
-  <name>QS Playground</name>
-  <description>QS Playground</description>
+  <name>Submarine Runtimes</name>
+  <description>Submarine Runtimes</description>
 
   <modules>
-    <module>bom</module>
     <module>api</module>
     <module>drools</module>
     <module>jbpm</module>
-    <module>droolsjbpm-integration</module>
+    <module>kie-maven-plugin</module>
   </modules>
 
   <properties>

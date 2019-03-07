@@ -50,13 +50,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>droolsjbpm-integration-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -121,18 +114,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Replacement for above excluded 'commons-logging:commons-logging' -->
-    <!--<dependency>-->
-      <!--<groupId>org.slf4j</groupId>-->
-      <!--<artifactId>jcl-over-slf4j</artifactId>-->
-      <!--<scope>runtime</scope>-->
-    <!--</dependency>-->
-    <!-- Replacement for the above excluded 'log4j:log4j' -->
-    <!--<dependency>-->
-      <!--<groupId>org.slf4j</groupId>-->
-      <!--<artifactId>log4j-over-slf4j</artifactId>-->
-      <!--<scope>runtime</scope>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
@@ -170,11 +151,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.optaplanner</groupId>-->
-      <!--<artifactId>optaplanner-core</artifactId>-->
-      <!--<scope>runtime</scope>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
@@ -183,38 +159,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.apache.commons</groupId>-->
-      <!--<artifactId>commons-compress</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.apache.commons</groupId>-->
-      <!--<artifactId>commons-exec</artifactId>-->
-    <!--</dependency>-->
-
-    <!-- Testing deps -->
-    <!--<dependency>-->
-      <!--<groupId>org.apache.maven</groupId>-->
-      <!--<artifactId>maven-compat</artifactId>-->
-      <!--<scope>test</scope>-->
-      <!--<exclusions>-->
-        <!--<exclusion>-->
-          <!--<groupId>org.eclipse.sisu</groupId>-->
-          <!--<artifactId>org.eclipse.sisu.plexus</artifactId>-->
-        <!--</exclusion>-->
-      <!--</exclusions>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>io.takari.maven.plugins</groupId>-->
-      <!--<artifactId>takari-plugin-testing</artifactId>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--Logs-->
-    <!--<dependency>-->
-      <!--<groupId>org.slf4j</groupId>-->
-      <!--<artifactId>slf4j-ext</artifactId>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
