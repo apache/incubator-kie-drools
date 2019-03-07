@@ -1,4 +1,4 @@
-package org.drools.mvelcompiler.phase3;
+package org.drools.mvelcompiler.phase4;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -9,7 +9,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.SimpleName;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.phase2.FlattenExpressionResult;
+import org.drools.mvelcompiler.phase2.FirstChildProcessResult;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getAccessor;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -21,12 +21,12 @@ public class ExpressionWithTypePhase implements DrlGenericVisitor<TypedExpressio
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
-    public TypedExpressions invoke(FlattenExpressionResult flattenExpressionResult) {
-        TypedExpression firstNode = flattenExpressionResult.getFirstNode();
+    public TypedExpressions invoke(FirstChildProcessResult firstChildProcessResult) {
+        TypedExpression firstNode = firstChildProcessResult.getFirstNode();
         List<TypedExpression> typedExpressions = new ArrayList<>();
 
         PreviousNode previousNode = new PreviousNode(firstNode.getType(), firstNode);
-        flattenExpressionResult.getOtherNodes()
+        firstChildProcessResult.getOtherNodes()
                 .stream()
                 .reduce(previousNode, (PreviousNode t, Node e) -> {
                     TypedExpression te = e.accept(this, t);
