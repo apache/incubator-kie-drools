@@ -84,6 +84,10 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
 
     private Double fixedProbabilityWeight = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public SelectionCacheType getCacheType() {
         return cacheType;
     }
@@ -162,6 +166,60 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
 
     public void setFixedProbabilityWeight(Double fixedProbabilityWeight) {
         this.fixedProbabilityWeight = fixedProbabilityWeight;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public MoveSelectorConfig withCacheType(SelectionCacheType cacheType) {
+        this.cacheType = cacheType;
+        return this;
+    }
+
+    public MoveSelectorConfig withSelectionOrder(SelectionOrder selectionOrder) {
+        this.selectionOrder = selectionOrder;
+        return this;
+    }
+
+    public MoveSelectorConfig withFilterClassList(List<Class<? extends SelectionFilter>> filterClassList) {
+        this.filterClassList = filterClassList;
+        return this;
+    }
+
+    public MoveSelectorConfig withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
+        this.sorterComparatorClass = sorterComparatorClass;
+        return this;
+    }
+
+    public MoveSelectorConfig withSorterWeightFactoryClass(Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
+        this.sorterWeightFactoryClass = sorterWeightFactoryClass;
+        return this;
+    }
+
+    public MoveSelectorConfig withSorterOrder(SelectionSorterOrder sorterOrder) {
+        this.sorterOrder = sorterOrder;
+        return this;
+    }
+
+    public MoveSelectorConfig withSorterClass(Class<? extends SelectionSorter> sorterClass) {
+        this.sorterClass = sorterClass;
+        return this;
+    }
+
+    public MoveSelectorConfig withProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
+        this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
+        return this;
+    }
+
+    public MoveSelectorConfig withSelectedCountLimit(Long selectedCountLimit) {
+        this.selectedCountLimit = selectedCountLimit;
+        return this;
+    }
+
+    public MoveSelectorConfig withFixedProbabilityWeight(Double fixedProbabilityWeight) {
+        this.fixedProbabilityWeight = fixedProbabilityWeight;
+        return this;
     }
 
     // ************************************************************************

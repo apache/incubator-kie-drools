@@ -215,6 +215,85 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SolverConfig withEnvironmentMode(EnvironmentMode environmentMode) {
+        this.environmentMode = environmentMode;
+        return this;
+    }
+
+    public SolverConfig withDaemon(Boolean daemon) {
+        this.daemon = daemon;
+        return this;
+    }
+
+    public SolverConfig withRandomType(RandomType randomType) {
+        this.randomType = randomType;
+        return this;
+    }
+
+    public SolverConfig withRandomSeed(Long randomSeed) {
+        this.randomSeed = randomSeed;
+        return this;
+    }
+
+    public SolverConfig withRandomFactoryClass(Class<? extends RandomFactory> randomFactoryClass) {
+        this.randomFactoryClass = randomFactoryClass;
+        return this;
+    }
+
+    public SolverConfig withMoveThreadCount(String moveThreadCount) {
+        this.moveThreadCount = moveThreadCount;
+        return this;
+    }
+
+    public SolverConfig withMoveThreadBufferSize(Integer moveThreadBufferSize) {
+        this.moveThreadBufferSize = moveThreadBufferSize;
+        return this;
+    }
+
+    public SolverConfig withThreadFactoryClass(Class<? extends ThreadFactory> threadFactoryClass) {
+        this.threadFactoryClass = threadFactoryClass;
+        return this;
+    }
+
+    public SolverConfig withSolutionClass(Class<?> solutionClass) {
+        this.solutionClass = solutionClass;
+        return this;
+    }
+
+    public SolverConfig withEntityClassList(List<Class<?>> entityClassList) {
+        this.entityClassList = entityClassList;
+        return this;
+    }
+
+    public SolverConfig withEntityClasses(Class<?>... entityClasses) {
+        this.entityClassList = Arrays.asList(entityClasses);
+        return this;
+    }
+
+    public SolverConfig withScoreDirectorFactory(ScoreDirectorFactoryConfig scoreDirectorFactoryConfig) {
+        this.scoreDirectorFactoryConfig = scoreDirectorFactoryConfig;
+        return this;
+    }
+
+    public SolverConfig withTermination(TerminationConfig terminationConfig) {
+        this.terminationConfig = terminationConfig;
+        return this;
+    }
+
+    public SolverConfig withPhaseList(List<PhaseConfig> phaseConfigList) {
+        this.phaseConfigList = phaseConfigList;
+        return this;
+    }
+
+    public SolverConfig withPhases(PhaseConfig... phaseConfigs) {
+        this.phaseConfigList = Arrays.asList(phaseConfigs);
+        return this;
+    }
+
+    // ************************************************************************
     // Smart getters
     // ************************************************************************
 

@@ -240,6 +240,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     // With methods
     // ************************************************************************
 
+    @Deprecated
     public AcceptorConfig withAcceptorClassList(List<Class<? extends Acceptor>> acceptorClassList) {
         this.acceptorClassList = acceptorClassList;
         return this;

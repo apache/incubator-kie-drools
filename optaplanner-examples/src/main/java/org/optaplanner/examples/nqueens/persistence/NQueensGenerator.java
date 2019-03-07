@@ -80,6 +80,14 @@ public class NQueensGenerator extends LoggingMain {
         outputDir = new File(CommonApp.determineDataDir(NQueensApp.DATA_DIR_NAME), "unsolved");
     }
 
+    public NQueensGenerator(boolean withoutDao) {
+        if (!withoutDao) {
+            throw new IllegalArgumentException("The parameter withoutDao (" + withoutDao + ") must be true.");
+        }
+        solutionFileIO = null;
+        outputDir = null;
+    }
+
     private void writeNQueens(int n) {
         String outputFileName = n + "queens.xml";
         File outputFile = new File(outputDir, outputFileName);

@@ -122,6 +122,40 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public ConstructionHeuristicPhaseConfig withConstructionHeuristicType(ConstructionHeuristicType constructionHeuristicType) {
+        this.constructionHeuristicType = constructionHeuristicType;
+        return this;
+    }
+
+    public ConstructionHeuristicPhaseConfig withEntitySorterManner(EntitySorterManner entitySorterManner) {
+        this.entitySorterManner = entitySorterManner;
+        return this;
+    }
+
+    public ConstructionHeuristicPhaseConfig withValueSorterManner(ValueSorterManner valueSorterManner) {
+        this.valueSorterManner = valueSorterManner;
+        return this;
+    }
+
+    public ConstructionHeuristicPhaseConfig withEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
+        this.entityPlacerConfigList = entityPlacerConfig == null ? null : Collections.singletonList(entityPlacerConfig);
+        return this;
+    }
+
+    public ConstructionHeuristicPhaseConfig withMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
+        return this;
+    }
+
+    public ConstructionHeuristicPhaseConfig withForagerConfig(ConstructionHeuristicForagerConfig foragerConfig) {
+        this.foragerConfig = foragerConfig;
+        return this;
+    }
+
+    // ************************************************************************
     // Builder methods
     // ************************************************************************
 

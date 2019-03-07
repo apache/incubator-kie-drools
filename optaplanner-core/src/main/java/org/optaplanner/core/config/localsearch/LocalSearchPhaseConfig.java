@@ -104,6 +104,30 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public LocalSearchPhaseConfig withLocalSearchType(LocalSearchType localSearchType) {
+        this.localSearchType = localSearchType;
+        return this;
+    }
+
+    public LocalSearchPhaseConfig withMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
+        this.moveSelectorConfigList = moveSelectorConfig == null ? null : Collections.singletonList(moveSelectorConfig);
+        return this;
+    }
+
+    public LocalSearchPhaseConfig withAcceptorConfig(AcceptorConfig acceptorConfig) {
+        this.acceptorConfig = acceptorConfig;
+        return this;
+    }
+
+    public LocalSearchPhaseConfig withForagerConfig(LocalSearchForagerConfig foragerConfig) {
+        this.foragerConfig = foragerConfig;
+        return this;
+    }
+
+    // ************************************************************************
     // Builder methods
     // ************************************************************************
 

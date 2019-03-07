@@ -33,7 +33,7 @@ public class NQueensHelloWorld {
         Solver<NQueens> solver = solverFactory.buildSolver();
 
         // Load a problem with 8 queens
-        NQueens unsolved8Queens = new NQueensGenerator().createNQueens(8);
+        NQueens unsolved8Queens = new NQueensGenerator(true).createNQueens(8);
 
         // Solve the problem
         NQueens solved8Queens = solver.solve(unsolved8Queens);

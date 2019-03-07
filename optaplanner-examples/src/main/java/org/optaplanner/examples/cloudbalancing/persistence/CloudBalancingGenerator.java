@@ -127,15 +127,16 @@ public class CloudBalancingGenerator extends LoggingMain {
     public CloudBalancingGenerator() {
         solutionFileIO = new XStreamSolutionFileIO<>(CloudBalance.class);
         outputDir = new File(CommonApp.determineDataDir(CloudBalancingApp.DATA_DIR_NAME), "unsolved");
+        checkConfiguration();
     }
 
     public CloudBalancingGenerator(boolean withoutDao) {
         if (!withoutDao) {
             throw new IllegalArgumentException("The parameter withoutDao (" + withoutDao + ") must be true.");
         }
-        checkConfiguration();
         solutionFileIO = null;
         outputDir = null;
+        checkConfiguration();
     }
 
     private void checkConfiguration() {

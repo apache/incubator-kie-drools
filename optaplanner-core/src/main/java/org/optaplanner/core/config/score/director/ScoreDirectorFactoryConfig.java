@@ -18,6 +18,7 @@ package org.optaplanner.core.config.score.director;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +110,10 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     @XStreamAlias("assertionScoreDirectorFactory")
     protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
+
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
 
     /**
      * @return sometimes null
@@ -276,6 +281,60 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     public void setGenerateDroolsTestOnError(Boolean generateDroolsTestOnError) {
         this.generateDroolsTestOnError = generateDroolsTestOnError;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public ScoreDirectorFactoryConfig withEasyScoreCalculatorClass(Class<? extends EasyScoreCalculator> easyScoreCalculatorClass) {
+        this.easyScoreCalculatorClass = easyScoreCalculatorClass;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withEasyScoreCalculatorCustomProperties(Map<String, String> easyScoreCalculatorCustomProperties) {
+        this.easyScoreCalculatorCustomProperties = easyScoreCalculatorCustomProperties;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
+        this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorCustomProperties(Map<String, String> incrementalScoreCalculatorCustomProperties) {
+        this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withScoreDrlList(List<String> scoreDrlList) {
+        this.scoreDrlList = scoreDrlList;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withScoreDrls(String... scoreDrls) {
+        this.scoreDrlList = Arrays.asList(scoreDrls);
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withScoreDrlFileList(List<File> scoreDrlFileList) {
+        this.scoreDrlFileList = scoreDrlFileList;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withScoreDrlFiles(File... scoreDrlFiles) {
+        this.scoreDrlFileList = Arrays.asList(scoreDrlFiles);
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withInitializingScoreTrend(String initializingScoreTrend) {
+        this.initializingScoreTrend = initializingScoreTrend;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig withAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig assertionScoreDirectorFactory) {
+        this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
+        return this;
     }
 
     // ************************************************************************
