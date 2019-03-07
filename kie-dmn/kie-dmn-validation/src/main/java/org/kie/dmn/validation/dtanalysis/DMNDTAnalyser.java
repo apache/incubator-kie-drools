@@ -100,6 +100,71 @@ public class DMNDTAnalyser {
 
     private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionNode dn, DecisionTable dt) {
         DDTATable ddtaTable = new DDTATable();
+        compileTableInputClauses(model, dt, ddtaTable);
+        compileTableRules(dt, ddtaTable);
+        printDebugTableInfo(ddtaTable);
+        DTAnalysis analysis = new DTAnalysis(dt);
+        LOG.debug("findGaps");
+        findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        LOG.debug("findOverlaps");
+        findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        LOG.debug("normalize");
+        analysis.normalize();
+        return analysis;
+    }
+
+    private void printDebugTableInfo(DDTATable ddtaTable) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("{}", ddtaTable);
+            LOG.debug("project on columns.");
+            for (int colIdx = 0; colIdx < ddtaTable.inputCols(); colIdx++) {
+                LOG.debug("colIdx " + colIdx);
+                List<Interval> intervals = ddtaTable.projectOnColumnIdx(colIdx);
+                LOG.debug("{}", intervals);
+                List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
+                LOG.debug("{}", bounds);
+                Collections.sort(bounds);
+                LOG.debug("{}", bounds);
+            }
+        }
+    }
+
+    private void compileTableRules(DecisionTable dt, DDTATable ddtaTable) {
+        for (int jRowIdx = 0; jRowIdx < dt.getRule().size(); jRowIdx++) {
+            DecisionRule r = dt.getRule().get(jRowIdx);
+
+            DDTARule ddtaRule = new DDTARule();
+            int jColIdx = 0;
+            for (UnaryTests ie : r.getInputEntry()) {
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
+                UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
+                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
+
+                DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
+
+                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
+                for (Interval interval : ddtaInputEntry.getIntervals()) {
+                    Interval domainMinMax = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
+                    if (!domainMinMax.includes(interval)) {
+                        throw new IllegalStateException(MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN, jRowIdx + 1, interval, domainMinMax, jColIdx + 1));
+                    }
+                }
+                ddtaRule.getInputEntry().add(ddtaInputEntry);
+                jColIdx++;
+            }
+            for (LiteralExpression oe : r.getOutputEntry()) {
+                ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
+                InterpretedExecutableExpression interpreted = compile.getInterpreted();
+                BaseNode outputEntryNode = (BaseNode) interpreted.getASTNode();
+                Comparable<?> value = valueFromNode(outputEntryNode);
+                ddtaRule.getOutputEntry().add(value);
+                jColIdx++;
+            }
+            ddtaTable.getRule().add(ddtaRule);
+        }
+    }
+
+    private void compileTableInputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int jColIdx = 0; jColIdx < dt.getInput().size(); jColIdx++) {
             InputClause ie = dt.getInput().get(jColIdx);
             Interval infDomain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, jColIdx + 1);
@@ -150,59 +215,6 @@ public class DMNDTAnalyser {
                 ddtaTable.getInputs().add(ic);
             }
         }
-        for (int jRowIdx = 0; jRowIdx < dt.getRule().size(); jRowIdx++) {
-            DecisionRule r = dt.getRule().get(jRowIdx);
-
-            DDTARule ddtaRule = new DDTARule();
-            int jColIdx = 0;
-            for (UnaryTests ie : r.getInputEntry()) {
-                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(ie.getText(), FEEL.newCompilerContext());
-                UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
-                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
-
-                DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
-
-                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
-                for (Interval interval : ddtaInputEntry.getIntervals()) {
-                    Interval domainMinMax = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
-                    if (!domainMinMax.includes(interval)) {
-                        throw new IllegalStateException(MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN, jRowIdx + 1, interval, domainMinMax, jColIdx + 1));
-                    }
-                }
-                ddtaRule.getInputEntry().add(ddtaInputEntry);
-                jColIdx++;
-            }
-            for (LiteralExpression oe : r.getOutputEntry()) {
-                ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
-                InterpretedExecutableExpression interpreted = compile.getInterpreted();
-                BaseNode outputEntryNode = (BaseNode) interpreted.getASTNode();
-                Comparable<?> value = valueFromNode(outputEntryNode);
-                ddtaRule.getOutputEntry().add(value);
-                jColIdx++;
-            }
-            ddtaTable.getRule().add(ddtaRule);
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("{}", ddtaTable);
-            LOG.debug("project on columns.");
-            for (int colIdx = 0; colIdx < ddtaTable.inputCols(); colIdx++) {
-                LOG.debug("colIdx " + colIdx);
-                List<Interval> intervals = ddtaTable.projectOnColumnIdx(colIdx);
-                LOG.debug("{}", intervals);
-                List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
-                LOG.debug("{}", bounds);
-                Collections.sort(bounds);
-                LOG.debug("{}", bounds);
-            }
-        }
-        DTAnalysis analysis = new DTAnalysis(dt);
-        LOG.debug("findGaps");
-        findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
-        LOG.debug("findOverlaps");
-        findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
-        LOG.debug("normalize");
-        analysis.normalize();
-        return analysis;
     }
 
     private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
