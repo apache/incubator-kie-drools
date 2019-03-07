@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 public class DDTARule {
 
     private List<DDTAInputEntry> inputEntry = new ArrayList<>();
-    private List<Object> outputEntry = new ArrayList<>();
+    private List<Comparable<?>> outputEntry = new ArrayList<>();
 
     public List<DDTAInputEntry> getInputEntry() {
         return inputEntry;
     }
 
-    public List<Object> getOutputEntry() {
+    public List<Comparable<?>> getOutputEntry() {
         return outputEntry;
     }
 
@@ -22,6 +22,8 @@ public class DDTARule {
         StringBuilder builder = new StringBuilder();
         builder.append("DDTARule inputEntries > ");
         builder.append(inputEntry.stream().map(DDTAInputEntry::toString).collect(Collectors.joining(" | ")));
+        builder.append(" outputEntries > ");
+        builder.append(outputEntry.stream().map(Object::toString).collect(Collectors.joining(" | ")));
         return builder.toString();
     }
 
