@@ -17,6 +17,7 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -27,6 +28,7 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
+import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -156,7 +158,12 @@ public class DMNDTValidator {
                 jColIdx++;
             }
             for (LiteralExpression oe : r.getOutputEntry()) {
-                // TODO output check will be required for some DT analysis rules.
+                ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
+                InterpretedExecutableExpression interpreted = compile.getInterpreted();
+                BaseNode outputEntryNode = (BaseNode) interpreted.getASTNode();
+                Comparable<?> value = valueFromNode(outputEntryNode);
+                ddtaRule.getOutputEntry().add(value);
+                jColIdx++;
             }
             ddtaTable.getRule().add(ddtaRule);
         }

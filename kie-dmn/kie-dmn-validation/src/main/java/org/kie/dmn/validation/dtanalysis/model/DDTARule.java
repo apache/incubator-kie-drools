@@ -7,11 +7,15 @@ import java.util.stream.Collectors;
 public class DDTARule {
 
     private List<DDTAInputEntry> inputEntry = new ArrayList<>();
+    private List<Object> outputEntry = new ArrayList<>();
 
     public List<DDTAInputEntry> getInputEntry() {
         return inputEntry;
     }
 
+    public List<Object> getOutputEntry() {
+        return outputEntry;
+    }
 
     @Override
     public String toString() {
