@@ -16,7 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -3731,7 +3730,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end";
         KieBase kb = loadKnowledgeBaseFromString( drl );
         KieSession ks = kb.newKieSession();
-        
+
         ReteDumper.dumpRete(kb);
 
         final List created = new ArrayList();
@@ -8804,8 +8803,8 @@ public class Misc2Test extends CommonTestMethodBase {
 
         kieSession.fireAllRules();
     }
-    
-   
+
+
 
     public class Shift1187 {
 
@@ -8936,7 +8935,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertFalse( list.contains( "GreaterThanCompare:5" ) );
         assertFalse( list.contains( "GreaterThanCompare:null" ) );
     }
-    
+
     @Test
     public void testUnderscoreDoubleMultiplicationCastedToInt() {
         // DROOLS-1420
@@ -8961,15 +8960,15 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals("42000", list.get(0));
     }
-    
+
     /**
      * This test deliberately creates a deadlock, failing the test with a timeout.
      * Helpful to test thread dump when a timeout occur on the JUnit listener.
      * See {@link org.kie.test.util.TestStatusListener#testFailure(org.junit.runner.notification.Failure)}
      * @throws Exception
      */
-    @Ignore("This test deliberately creates a deadlock, failing the test with a timeout.\n" + 
-            "Helpful to test thread dump when a timeout occur on the JUnit listener.\n" + 
+    @Ignore("This test deliberately creates a deadlock, failing the test with a timeout.\n" +
+            "Helpful to test thread dump when a timeout occur on the JUnit listener.\n" +
             "See org.kie.test.util.TestStatusListener#testFailure()")
     @Test(timeout=5_000L)
     public void testDeadlock() {
@@ -9011,7 +9010,7 @@ public class Misc2Test extends CommonTestMethodBase {
         @Override
         public void nothing() {}
     }
-    
+
     @Test
     public void test01841522() {
         String str = "package com.sample\n" +
@@ -9141,22 +9140,22 @@ public class Misc2Test extends CommonTestMethodBase {
         //PLANNER-1433
         String drl = "package org.drools.compiler.integrationtests;\n"
                 + "import " + Person.class.getName() + ";\n"
-                + "import " + HardSoftScoreHolder.class.getName() + ";\n"
-                + "global HardSoftScoreHolder scoreHolder;\n"
+                + "import " + HardSoftScoreHolderMock.class.getName() + ";\n"
+                + "global HardSoftScoreHolderMock scoreHolderMock;\n"
                 + "rule R1\n"
                 + "when\n"
                 + "    Person( age > 20 )\n"
                 + "    or\n"
                 + "    Person( name == \"John\")\n"
                 + "then\n"
-                + "    scoreHolder.addSoftConstraintMatch(kcontext, -1);\n"
+                + "    scoreHolderMock.addSoftConstraintMatch(kcontext, -1);\n"
                 + "end";
 
         KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
                 .build()
                 .newKieSession();
 
-        ksession.getGlobals().set("scoreHolder",new HardSoftScoreHolder(true));
+        ksession.getGlobals().set("scoreHolderMock", new HardSoftScoreHolderMock());
 
         Person john = new Person("John", 25);
         ksession.insert(john);
