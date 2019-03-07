@@ -110,7 +110,7 @@ public class DTAnalysisMeta {
             newExpression.setString(string);
             valueExpr = newExpression;
         } else {
-            throw new UnsupportedOperationException("TODO");
+            throw new UnsupportedOperationException("boundAsExpression value not supported.");
         }
         Expression typeExpr = null;
         if (bound.getBoundaryType() == RangeBoundary.OPEN) {
@@ -118,7 +118,7 @@ public class DTAnalysisMeta {
         } else if (bound.getBoundaryType() == RangeBoundary.CLOSED) {
             typeExpr = JavaParser.parseExpression("RangeBoundary.CLOSED");
         } else {
-            throw new IllegalStateException("??");
+            throw new IllegalStateException("illegal getBoundaryType");
         }
         ObjectCreationExpr newExpression = JavaParser.parseExpression("new Bound()");
         newExpression.addArgument(valueExpr);
