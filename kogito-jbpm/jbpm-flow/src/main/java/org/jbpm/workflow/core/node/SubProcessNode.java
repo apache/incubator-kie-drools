@@ -45,6 +45,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
 	private String processId;
 	private String processName;
 	private boolean waitForCompletion = true;
+	private boolean callActivity = false;
 
     private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
@@ -235,6 +236,14 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
             return true;
         }
         return Boolean.parseBoolean(abortParent);
+    }
+
+    public boolean isCallActivity() {
+        return callActivity;
+    }
+
+    public void setIsCallActivity(boolean isCallActivity) {
+        this.callActivity = isCallActivity;
     }
 
 }

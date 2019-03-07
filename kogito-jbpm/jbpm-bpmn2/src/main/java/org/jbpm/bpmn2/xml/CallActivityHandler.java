@@ -54,6 +54,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	SubProcessNode subProcessNode = (SubProcessNode) node;
+    	subProcessNode.setIsCallActivity(true);
 		String processId = element.getAttribute("calledElement");
 		if (processId != null && processId.length() > 0) {
 			subProcessNode.setProcessId(processId);
