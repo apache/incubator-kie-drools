@@ -29,13 +29,6 @@
         <classifier>tests</classifier>
         <version>${project.version}</version>
       </dependency>
-      
-          <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier-core</artifactId>
-      <classifier>tests</classifier>
-      <version>${version.org.kie}</version>
-    </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -79,20 +72,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier-core</artifactId>
-      <classifier>tests</classifier>
     </dependency>
 
     <dependency>

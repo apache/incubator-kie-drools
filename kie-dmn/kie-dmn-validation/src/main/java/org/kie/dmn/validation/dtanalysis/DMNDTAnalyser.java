@@ -85,11 +85,10 @@ public class DMNDTAnalyser {
             if (expression instanceof DecisionTable) {
                 DecisionTable decisionTable = (DecisionTable) expression;
                 try {
-                    droolsVerifierSystout(model, dn, decisionTable);
                     DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
                     results.add(result);
                 } catch (Throwable t) {
-                    LOG.warn("Skipped dmnDTAnalysis for table: " + decisionTable.getId(), t);
+                    LOG.debug("Skipped dmnDTAnalysis for table: " + decisionTable.getId(), t);
                     DTAnalysis result = DTAnalysis.ofError(decisionTable, t);
                     results.add(result);
                 }
@@ -412,17 +411,4 @@ public class DMNDTAnalyser {
             throw new UnsupportedOperationException("valueFromNode: " + node);
         }
     }
-
-    private void droolsVerifierSystout(DMNModel model, DecisionNode dn, Expression expression) {
-        try {
-            new DroolsVerifierDTValidator(this.FEEL).validateDT(model, dn, (DecisionTable) expression);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            LOG.debug("droolsVerifierSystout", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-
-
 }

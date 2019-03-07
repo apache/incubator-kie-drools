@@ -70,6 +70,9 @@ public abstract class AbstractDTAnalysisTest extends AbstractValidatorTest {
     }
 
     protected void debugAnalysis(DTAnalysis analysis) {
+        if (!LOG.isDebugEnabled()) {
+            return;
+        }
         StringBuilder sbGaps = new StringBuilder("\nGaps:\n");
         for (Hyperrectangle gap : analysis.getGaps()) {
             sbGaps.append(gap.toString());
