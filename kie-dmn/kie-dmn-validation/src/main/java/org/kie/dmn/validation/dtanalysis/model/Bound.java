@@ -36,6 +36,22 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
                 return -1;
             } else if (this.isLowerBound() && o.isUpperBound()) {
                 return 1;
+            } else if (this.isLowerBound() && o.isLowerBound()) {
+                if (this.boundaryType == o.boundaryType) {
+                    return 0;
+                } else if (this.boundaryType == RangeBoundary.OPEN) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else if (this.isUpperBound() && o.isUpperBound()) {
+                if (this.boundaryType == o.boundaryType) {
+                    return 0;
+                } else if (this.boundaryType == RangeBoundary.OPEN) {
+                    return -1;
+                } else {
+                    return 1;
+                }
             }
         }
 

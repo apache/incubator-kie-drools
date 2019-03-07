@@ -15,6 +15,8 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -144,12 +146,17 @@ public class DMNDTValidator {
                 DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
 
                 DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
-                // TODO: check all inputEntries is within the Domain min/max.
+                for (Interval interval : ddtaInputEntry.getIntervals()) {
+                    Interval domainMinMax = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
+                    if (!domainMinMax.includes(interval)) {
+                        throw new IllegalStateException(MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN, jRowIdx + 1, interval, domainMinMax, jColIdx + 1));
+                    }
+                }
                 ddtaRule.getInputEntry().add(ddtaInputEntry);
                 jColIdx++;
             }
             for (LiteralExpression oe : r.getOutputEntry()) {
-                // TODO output check is required for some DT analysis rules.
+                // TODO output check will be required for some DT analysis rules.
             }
             ddtaTable.getRule().add(ddtaRule);
         }
@@ -225,7 +232,6 @@ public class DMNDTValidator {
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
             if (!activeRules.isEmpty()) {
-                // TODO verify, I don't think this need to include activeRules from ALL the previous dimensions, but better prove it.
                 intervals = intervals.stream().filter(i -> activeRules.contains(i.getRule())).collect(Collectors.toList());
             }
             LOG.debug("intervals {}", intervals);
@@ -233,7 +239,6 @@ public class DMNDTValidator {
             Collections.sort(bounds);
 
             Interval domainRange = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
-            // TODO: filter for only those bounds in the typeRef domain range. Might not be needed if during compilation of DT the rule range is checked within the domain.
 
             // from domain start to the 1st bound
             if (!domainRange.getLowerBound().equals(bounds.get(0))) {

@@ -112,5 +112,7 @@ public class Interval {
         return true;
     }
 
-
+    public boolean includes(Interval o) {
+        return this.lowerBound.compareTo((Bound) o.lowerBound) <= 0 && this.upperBound.compareTo((Bound) o.upperBound) >= 0;
+    }
 }

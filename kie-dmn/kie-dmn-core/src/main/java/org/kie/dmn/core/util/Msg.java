@@ -102,6 +102,7 @@ public final class Msg {
     public static final Message1 DTANALYSISRESULT                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis results: %s");
     public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
     public static final Message2 DTANALYSIS_ERROR                                    = new Message2( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Skipped Decision Table Analysis of table '%s' because: %s");
+    public static final Message4 DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN                = new Message4( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Rule %s defines %s which is outside the domain min/max %s of column %s");
     public static final Message1 DTANALYSIS_GAP                                      = new Message1( DMNMessageType.DECISION_TABLE_GAP, "Gap detected: %s");
     public static final Message1 DTANALYSIS_OVERLAP                                  = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP, "Overlap detected: %s");
 
