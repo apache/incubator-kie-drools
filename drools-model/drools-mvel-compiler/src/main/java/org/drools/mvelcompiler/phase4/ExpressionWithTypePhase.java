@@ -9,7 +9,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.SimpleName;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.phase2.FirstChildProcessResult;
+import org.drools.mvelcompiler.phase3.FirstChildProcessResult;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getAccessor;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;

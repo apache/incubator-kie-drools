@@ -1,12 +1,13 @@
-package org.drools.mvelcompiler.phase2;
+package org.drools.mvelcompiler.phase3;
 
 import java.util.Optional;
 
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.phase3.FlattenedExpressionResult;
+import org.drools.mvelcompiler.phase2.FlattenedExpressionResult;
 import org.drools.mvelcompiler.phase4.NameTypedExpression;
 import org.drools.mvelcompiler.phase4.TypedExpression;
 
@@ -22,6 +23,11 @@ public class FirstChildProcessPhase implements DrlGenericVisitor<TypedExpression
 
         TypedExpression accept = flattenedExpressionResult.getFirstNode().accept(this, null);
         return new FirstChildProcessResult(accept, flattenedExpressionResult.getOtherNodes());
+    }
+
+    @Override
+    public TypedExpression visit(NullSafeFieldAccessExpr nullSafeFieldAccessExpr, Void arg) {
+        return null;
     }
 
     @Override
