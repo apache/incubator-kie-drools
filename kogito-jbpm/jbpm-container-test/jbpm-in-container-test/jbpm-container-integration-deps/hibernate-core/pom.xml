@@ -10,14 +10,14 @@
     <version>7.19.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>idep-hibernate-entitymanager</artifactId>
+  <artifactId>idep-hibernate-core</artifactId>
 
-  <name>jBPM :: Container Test IDEPS Hibernate Entity Manager</name>
+  <name>jBPM :: Container Test IDEPS Hibernate Core</name>
 
   <dependencies>
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
+      <artifactId>hibernate-core</artifactId>
     </dependency>
   </dependencies>
 

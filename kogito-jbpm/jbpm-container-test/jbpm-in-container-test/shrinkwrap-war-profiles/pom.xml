@@ -39,16 +39,6 @@
   <!-- Configuration for specific integration modules -->
   <profiles>
     <profile>
-      <id>hibernate-entitymanager</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.jbpm</groupId>
-          <artifactId>idep-hibernate-entitymanager</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
       <id>jbpm</id>
       <dependencies>
         <dependency>
@@ -215,7 +205,7 @@
         </dependency>
         <dependency>
           <groupId>org.jbpm</groupId>
-          <artifactId>idep-hibernate-entitymanager</artifactId>
+          <artifactId>idep-hibernate-core</artifactId>
           <exclusions>
             <exclusion>
               <groupId>org.jboss.spec.javax.transaction</groupId>

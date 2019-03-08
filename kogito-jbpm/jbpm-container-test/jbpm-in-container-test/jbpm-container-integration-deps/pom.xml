@@ -45,7 +45,7 @@
 
       <dependency>
         <groupId>org.jbpm</groupId>
-        <artifactId>idep-hibernate-entitymanager</artifactId>
+        <artifactId>idep-hibernate-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -53,7 +53,7 @@
   </dependencyManagement>
 
   <modules>
-    <module>hibernate-entitymanager</module>
+    <module>hibernate-core</module>
     <module>jbpm</module>
     <module>jbpm-ejb-services</module>
     <module>jbpm-persistence</module>
