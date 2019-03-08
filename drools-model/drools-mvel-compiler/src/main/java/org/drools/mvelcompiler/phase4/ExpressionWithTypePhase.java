@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -26,6 +27,12 @@ public class ExpressionWithTypePhase implements DrlGenericVisitor<TypedExpressio
         List<TypedExpression> typedExpressions = new ArrayList<>();
 
         PreviousNode previousNode = new PreviousNode(firstNode.getType(), firstNode);
+
+        List<Node> fromTree = firstNode.stream().collect(Collectors.toList());
+
+        List<Node> fromList = firstChildProcessResult.getOtherNodes()
+                .stream().collect(Collectors.toList());
+
         firstChildProcessResult.getOtherNodes()
                 .stream()
                 .reduce(previousNode, (PreviousNode t, Node e) -> {
