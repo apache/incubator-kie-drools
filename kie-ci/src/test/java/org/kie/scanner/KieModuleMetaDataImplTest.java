@@ -30,4 +30,10 @@ public class KieModuleMetaDataImplTest {
         assertTrue(KieModuleMetaDataImpl.isProcessFile("abc.bpmn-cm"));
         assertFalse(KieModuleMetaDataImpl.isProcessFile("abc.bpmn2-cm"));
     }
+
+    @Test
+    public void testIsFormFile() {
+        assertTrue(KieModuleMetaDataImpl.isFormFile("abc.frm"));
+        assertFalse(KieModuleMetaDataImpl.isFormFile("abc.form"));
+    }
 }

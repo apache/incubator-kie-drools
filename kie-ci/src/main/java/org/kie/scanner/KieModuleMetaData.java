@@ -37,6 +37,8 @@ public interface KieModuleMetaData {
 
     Map<String, String> getProcesses();
 
+    Map<String, String> getForms();
+
     TypeMetaInfo getTypeMetaInfo( Class<?> clazz );
 
     Collection<String> getRuleNamesInPackage( String packageName );
