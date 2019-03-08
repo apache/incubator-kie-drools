@@ -2,6 +2,7 @@ package org.drools.mvelcompiler.phase4;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.stream.Stream;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
@@ -31,6 +32,11 @@ public class MethodTypedExpression implements TypedExpression {
     @Override
     public Expression toJavaExpression() {
         return new MethodCallExpr(scope.toJavaExpression(), accessor.getName());
+    }
+
+    @Override
+    public Stream<Node> stream() {
+        return null;
     }
 
     @Override
