@@ -3,19 +3,21 @@ package org.drools.mvelcompiler.phase2;
 import java.util.List;
 
 import com.github.javaparser.ast.Node;
-import org.drools.mvelcompiler.phase4.TypedExpression;
+import com.github.javaparser.ast.expr.Expression;
 
-public class FirstChildProcessResult {
+public class FlattenedExpressionResult {
 
-    private TypedExpression firstNode;
+    private Node firstNode;
     private List<Node> otherNodes;
+    private Expression expression;
 
-    public FirstChildProcessResult(TypedExpression firstNode, List<Node> otherNodes) {
+    public FlattenedExpressionResult(Node firstNode, List<Node> otherNodes, Expression expression) {
         this.firstNode = firstNode;
         this.otherNodes = otherNodes;
+        this.expression = expression;
     }
 
-    public TypedExpression getFirstNode() {
+    public Node getFirstNode() {
         return firstNode;
     }
 

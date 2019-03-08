@@ -1,9 +1,8 @@
-package org.drools.mvelcompiler.phase3;
+package org.drools.mvelcompiler.phase2;
 
 import java.util.List;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
@@ -35,16 +34,10 @@ public class FlattenExpressionPhase implements DrlGenericVisitor<FlattenedExpres
         final Node firstChild = childrenNodes.get(0);
 
 
-
         List<Node> expressionNodesWithoutFirst = childrenNodes
                 .subList(1, childrenNodes.size());
 
-        return new FlattenedExpressionResult(firstChild, expressionNodesWithoutFirst);
-    }
-
-    @Override
-    public FlattenedExpressionResult visit(AssignExpr n, Void arg) {
-        return null;
+        return new FlattenedExpressionResult(firstChild, expressionNodesWithoutFirst, mvelExpression);
     }
 }
 
