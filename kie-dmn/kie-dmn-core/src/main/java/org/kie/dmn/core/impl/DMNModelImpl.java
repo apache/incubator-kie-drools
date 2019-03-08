@@ -344,7 +344,7 @@ public class DMNModelImpl
     }
 
     @Override
-    public void addAll(List<DMNMessage> messages) {
+    public void addAll(List<? extends DMNMessage> messages) {
         this.messages.addAll( messages );
     }
 
@@ -526,5 +526,10 @@ public class DMNModelImpl
             }
             return result;
         }
+    }
+
+    @Override
+    public void addAllUnfiltered(List<? extends DMNMessage> messages) {
+        this.messages.addAllUnfiltered( messages );
     }
 }

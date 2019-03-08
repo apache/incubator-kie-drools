@@ -14,7 +14,12 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
  */
 public interface DMNMessageManager extends DMNMessageContainer {
 
-    void addAll( List<DMNMessage> messages );
+    void addAll(List<? extends DMNMessage> messages);
+
+    /**
+     * Internal utility method.
+     */
+    void addAllUnfiltered(List<? extends DMNMessage> messages);
 
     DMNMessage addMessage(DMNMessage msg);
 

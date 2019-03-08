@@ -1,0 +1,46 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.dmn.validation.dtanalysis.model;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class DDTARule {
+
+    private List<DDTAInputEntry> inputEntry = new ArrayList<>();
+    private List<Comparable<?>> outputEntry = new ArrayList<>();
+
+    public List<DDTAInputEntry> getInputEntry() {
+        return inputEntry;
+    }
+
+    public List<Comparable<?>> getOutputEntry() {
+        return outputEntry;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("DDTARule inputEntries > ");
+        builder.append(inputEntry.stream().map(DDTAInputEntry::toString).collect(Collectors.joining(" | ")));
+        builder.append(" outputEntries > ");
+        builder.append(outputEntry.stream().map(Object::toString).collect(Collectors.joining(" | ")));
+        return builder.toString();
+    }
+
+}

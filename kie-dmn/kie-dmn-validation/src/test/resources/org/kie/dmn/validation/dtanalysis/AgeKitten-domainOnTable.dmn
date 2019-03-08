@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_3169e24b-cf83-49e5-8225-2c831b67cc44" id="_3169e24b-cf83-49e5-8225-2c831b67cc44" namespace="http://www.trisotech.com/definitions/_3169e24b-cf83-49e5-8225-2c831b67cc44"          exporter="DMN Modeler" exporterVersion="6.1.21" name="Basic" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:inputData id="_b0ce50d6-62c1-4b19-9758-27aedcfe891f" name="Age">
+        <semantic:variable name="Age" id="_ce2167c1-ff0f-4b57-ac12-9dff036c6fd1" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:inputData id="_ef63e933-a9e5-4297-af30-19726891109c" name="Kitten">
+        <semantic:variable name="Kitten" id="_1b68a412-b559-4cee-8b83-5a6599f839f5" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:decision id="_603bda06-c4be-4c6f-970a-5ef956d69253" name="Eligibility Risk">
+        <semantic:variable name="Eligibility Risk" id="_ef7e01a4-8973-4ff2-8edb-6ea6d28767bc" typeRef="Any"/>
+        <semantic:informationRequirement id="_92136d20-edc8-45bb-ab30-6a1e60d053a0">
+            <semantic:requiredInput href="#_b0ce50d6-62c1-4b19-9758-27aedcfe891f"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_fd3617a4-0bdd-4e27-88b1-7b1b86451f86">
+            <semantic:requiredInput href="#_ef63e933-a9e5-4297-af30-19726891109c"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_5e3e4546-69c2-43f2-b93a-7ea285878ca0" hitPolicy="UNIQUE" outputLabel="Eligibility Risk" typeRef="Any" triso:expressionId="_82c248d1-067b-4da5-8b53-ea447e4afcdd">
+            <semantic:input id="_9a06d16e-ed44-490e-9472-bc40fa83b24b">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>Age</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="expression">
+                    <semantic:text>&gt;=0</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:input id="_2a62c0c8-5d21-43df-aead-eb985cca7e90">
+                <semantic:inputExpression typeRef="string">
+                    <semantic:text>Kitten</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Cat","Dog"</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_1fe3cc5e-5ec0-4200-9fb3-a4fcaa2e542b"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_d092d67f-e0d1-49cb-b432-c5c43b5174d9">
+                <semantic:inputEntry id="_2340c2d7-cde3-4d02-8883-430d407f0330">
+                    <semantic:text>[12..15)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_67efe19c-c59c-4cbe-8ca4-57ee93ecfbcf">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_0171b571-c129-49dc-a5e7-c3d4dd5a6e7c">
+                    <semantic:text>"supervised"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b4dacc71-fdca-4b2a-91f9-f3b435758aac">
+                <semantic:inputEntry id="_1eb3c81e-eae4-43c7-8de9-722d41d16ab6">
+                    <semantic:text>&gt;=15</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_b1bb72b2-3708-45fc-86e7-7f1b093bd1b2">
+                    <semantic:text>"Cat"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_147a04a4-863b-4886-9eb6-911db846eea5">
+                    <semantic:text>"ok"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_d2e2fb3e-5dc2-41e8-81be-59df825d63af">
+                <semantic:inputEntry id="_0228e5be-df69-49b5-90fd-7266d3c9041c">
+                    <semantic:text>&gt;=18</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_d9114227-03e8-4a84-83a3-f9bbe4f042dc">
+                    <semantic:text>"Dog"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_f99e7db6-0b2e-496e-b06f-fc80def8de65">
+                    <semantic:text>"ok"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_d0274954-83ee-4032-b17a-2207dcf8b586" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_cee150f8-1cab-4a19-8d1e-adbe451c17d0" dmnElementRef="_b0ce50d6-62c1-4b19-9758-27aedcfe891f">
+                <dc:Bounds x="194.7588291168213" y="77.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_3169e24b-cf83-49e5-8225-2c831b67cc44_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="166.99680137634277" y="100.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_db44e6c0-ed37-4fae-b030-eab8cb9bbc4e" dmnElementRef="_ef63e933-a9e5-4297-af30-19726891109c">
+                <dc:Bounds x="194.7588291168213" y="242.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_3169e24b-cf83-49e5-8225-2c831b67cc44_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="166.99680137634277" y="265.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_b60ac4dc-ec8d-478c-a06d-54461d2a1e1b" dmnElementRef="_603bda06-c4be-4c6f-970a-5ef956d69253">
+                <dc:Bounds x="385.2411708831787" y="78" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_3169e24b-cf83-49e5-8225-2c831b67cc44_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="315.2411708831787" y="102"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_7faccecd-76c0-4510-a082-7fe0a7a5a1ce" dmnElementRef="_92136d20-edc8-45bb-ab30-6a1e60d053a0">
+                <di:waypoint x="330.9968013763428" y="107.99999618530273"/>
+                <di:waypoint x="385.2411708831787" y="108"/>
+                <dmndi:DMNLabel sharedStyle="LS_3169e24b-cf83-49e5-8225-2c831b67cc44_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_8c5cd062-0e9f-4f4d-88bc-579be725a7ba" dmnElementRef="_fd3617a4-0bdd-4e27-88b1-7b1b86451f86">
+                <di:waypoint x="323.9968013763428" y="292.99999618530273"/>
+                <di:waypoint x="451.7411708831787" y="138"/>
+                <dmndi:DMNLabel sharedStyle="LS_3169e24b-cf83-49e5-8225-2c831b67cc44_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_3169e24b-cf83-49e5-8225-2c831b67cc44_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
