@@ -701,6 +701,53 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("new value", listOut.get(0));
         assertEquals("new value", listOut.get(1));
     }
+    
+    @Test
+    public void testCallActivityMISequential() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityMISequential.bpmn2",
+                "BPMN2-UserTask.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        final List<Long> subprocessStarted = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                if (event.getProcessInstance().getProcessId().equals("UserTask")) {
+                    subprocessStarted.add(event.getProcessInstance().getId());
+                }
+            }
+
+        });
+
+        List<String> list = new ArrayList<String>();
+        list.add("first");
+        list.add("second");
+        List<String> listOut = new ArrayList<String>();
+
+        Map<String, Object> params = new HashMap<String, Object>();        
+        params.put("list", list);
+        params.put("listOut", listOut);
+
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        
+        List<WorkItem> tasks = workItemHandler.getWorkItems();
+        assertEquals("There should be only one task assigned", 1, tasks.size());
+        
+        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);        
+        
+        tasks = workItemHandler.getWorkItems();
+        assertEquals("There should be only one task assigned", 1, tasks.size());
+        
+        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+
+        assertEquals(2, subprocessStarted.size());
+        
+    }
 
 	@Test
 	public void testCallActivity2() throws Exception {

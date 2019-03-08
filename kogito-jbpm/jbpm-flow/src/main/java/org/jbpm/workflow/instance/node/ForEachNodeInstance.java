@@ -50,6 +50,8 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
    
     private static final String TEMP_OUTPUT_VAR = "foreach_output";
     
+    private int sequentialCounter = 0;
+    
     public ForEachNode getForEachNode() {
         return (ForEachNode) getNode();
     }
@@ -146,6 +148,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             	ForEachNodeInstance.this.triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
             } else {
             	List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
+            	
             	for (Object o: collection) {
             		String variableName = getForEachNode().getVariableName();
             		NodeInstance nodeInstance = (NodeInstance)
@@ -154,6 +157,12 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             			nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
             		variableScopeInstance.setVariable(variableName, o);
             		nodeInstances.add(nodeInstance);
+            		
+            		if (getForEachNode().isSequential()) {
+            		    // for sequential mode trigger only first item from the list
+            		    sequentialCounter++;
+            		    break;
+            		}
             	}
             	for (NodeInstance nodeInstance: nodeInstances) {
             	    logger.debug( "Triggering [{}] in multi-instance loop.", ((NodeInstanceImpl) nodeInstance).getNodeId() );
@@ -205,6 +214,28 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 }
             }
             boolean isCompletionConditionMet = evaluateCompletionCondition(getForEachNode().getCompletionConditionExpression(), tempVariables);
+            
+
+            if (getForEachNode().isSequential() && !isCompletionConditionMet) {
+                String collectionExpression = getForEachNode().getCollectionExpression();
+                Collection<?> collection = evaluateCollectionExpression(collectionExpression);
+                
+                if (collection.size() > sequentialCounter) {
+                                       
+                    String variableName = getForEachNode().getVariableName();
+                    NodeInstance nodeInstance = (NodeInstance)
+                    ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachNode().getForEachSplitNode().getTo().getTo());
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                        nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+                    variableScopeInstance.setVariable(variableName, new ArrayList<>(collection).get(sequentialCounter));                        
+                    sequentialCounter++;                    
+                                
+                    logger.debug( "Triggering [{}] in multi-instance loop.", ((NodeInstanceImpl) nodeInstance).getNodeId() );
+                    ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, getForEachNode().getForEachSplitNode().getTo().getToType());
+                
+                }
+            }
+            
             if (getNodeInstanceContainer().getNodeInstances().size() == 1 || isCompletionConditionMet) {
                 String outputCollection = getForEachNode().getOutputCollectionExpression();
                 if (outputCollection != null) {
@@ -232,6 +263,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 	}
                 }
             }
+            
         }
         
         private boolean evaluateCompletionCondition(String expression, Map<String, Object> tempVariables) {
@@ -270,6 +302,14 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
         // always 1 for for each
         return 1;
     }  
+    
+    public void setInternalSequentialCounter(int counter) {
+        this.sequentialCounter = counter;
+    }
+    
+    public int getSequentialCounter() {
+        return this.sequentialCounter;
+    }
     
     private class ForEachNodeInstanceResolverFactory extends NodeInstanceResolverFactory {
 

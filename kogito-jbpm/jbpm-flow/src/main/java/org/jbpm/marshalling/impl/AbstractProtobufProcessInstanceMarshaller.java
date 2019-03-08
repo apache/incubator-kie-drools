@@ -392,6 +392,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 }
             }
             
+            _foreach.setSequentialCounter(forEachNodeInstance.getSequentialCounter());
+            
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.FOR_EACH_NODE )
                     .setForEach( _foreach.build() );
@@ -799,6 +801,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 break;
             case FOR_EACH_NODE :
                 nodeInstance = new ForEachNodeInstance();
+                ((ForEachNodeInstance) nodeInstance).setInternalSequentialCounter(_content.getForEach().getSequentialCounter());
                 break;
             case COMPOSITE_CONTEXT_NODE :
                 nodeInstance = new CompositeContextNodeInstance();
