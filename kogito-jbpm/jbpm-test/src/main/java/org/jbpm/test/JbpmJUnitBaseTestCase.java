@@ -20,11 +20,13 @@ package org.jbpm.test;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.Properties;
 import java.util.Set;
 
@@ -46,8 +48,6 @@ import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.SimpleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.kie.test.util.db.DataSourceFactory;
-import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -77,10 +77,15 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.test.util.db.DataSourceFactory;
+import org.kie.test.util.db.PoolingDataSourceWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * Base test case class that shall be used for jBPM related tests. It provides four sections:
@@ -667,49 +672,18 @@ public abstract class JbpmJUnitBaseTestCase {
     }
 
     public void assertNodeActive(long processInstanceId, KieSession ksession, String... name) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (String n : name) {
             names.add(n);
         }
-        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
-        if (processInstance instanceof WorkflowProcessInstance) {
-            if (sessionPersistence) {
-                List<? extends NodeInstanceLog> logs = logService.findNodeInstances(processInstanceId); // ENTER -> EXIT is correctly ordered
-                if (logs != null) {
-                    List<String> activeNodes = new ArrayList<String>();
-                    for (NodeInstanceLog l : logs) {
-                        String nodeName = l.getNodeName();
-                        if (l.getType() == NodeInstanceLog.TYPE_ENTER && names.contains(nodeName)) {
-                            activeNodes.add(nodeName);
-                        }
-                        if (l.getType() == NodeInstanceLog.TYPE_EXIT && names.contains(nodeName)) {
-                            activeNodes.remove(nodeName);
-                        }
-                    }
-                    names.removeAll(activeNodes);
-                }
-            } else {
-                assertNodeActive((WorkflowProcessInstance) processInstance, names);
-            }
-        }
+        List<String> activeNodes = getActiveNodesInProcessInstance(ksession, processInstanceId);
+        names.removeAll(activeNodes);
         if (!names.isEmpty()) {
             String s = names.get(0);
             for (int i = 1; i < names.size(); i++) {
                 s += ", " + names.get(i);
             }
             fail("Node(s) not active: " + s);
-        }
-    }
-
-    private void assertNodeActive(NodeInstanceContainer container, List<String> names) {
-        for (NodeInstance nodeInstance : container.getNodeInstances()) {
-            String nodeName = nodeInstance.getNodeName();
-            if (names.contains(nodeName)) {
-                names.remove(nodeName);
-            }
-            if (nodeInstance instanceof NodeInstanceContainer) {
-                assertNodeActive((NodeInstanceContainer) nodeInstance, names);
-            }
         }
     }
 
@@ -983,6 +957,46 @@ public abstract class JbpmJUnitBaseTestCase {
             for (String file : jbpmSerFiles) {
 
                 new File(tempDir, file).delete();
+            }
+        }
+    }
+
+    public Collection<ProcessInstance> getActiveProcesses(KieSession ksession) {
+        return ksession.getProcessInstances().stream().filter(e -> e.getState() == ProcessInstance.STATE_ACTIVE).collect(Collectors.toList());
+    }
+
+    public List<String> getActiveNodesInProcessInstance(KieSession ksession, long processInstanceId) {
+        List<String> activeNodes = new ArrayList<String>();
+
+        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        if (processInstance instanceof WorkflowProcessInstance) {
+            if (sessionPersistence) {
+                List<? extends NodeInstanceLog> logs = logService.findNodeInstances(processInstanceId); // ENTER -> EXIT is correctly ordered
+                if (logs != null) {
+                    for (NodeInstanceLog l : logs) {
+                        String nodeName = l.getNodeName();
+                        if (l.getType() == NodeInstanceLog.TYPE_ENTER) {
+                            activeNodes.add(nodeName);
+                        }
+                        if (l.getType() == NodeInstanceLog.TYPE_EXIT) {
+                            activeNodes.remove(nodeName);
+                        }
+                    }
+                }
+            } else {
+                addActiveNodesInProcessInstance((WorkflowProcessInstance) processInstance, activeNodes);
+            }
+        }
+        return activeNodes;
+    }
+
+    private void addActiveNodesInProcessInstance(NodeInstanceContainer container, List<String> activeNodes) {
+        for (NodeInstance nodeInstance : container.getNodeInstances()) {
+            String nodeName = nodeInstance.getNodeName();
+            activeNodes.add(nodeName);
+
+            if (nodeInstance instanceof NodeInstanceContainer) {
+                addActiveNodesInProcessInstance((NodeInstanceContainer) nodeInstance, activeNodes);
             }
         }
     }
