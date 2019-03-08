@@ -59,7 +59,7 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     }
 
     @Override
-    public void addAll(List<DMNMessage> messages) {
+    public void addAll(List<? extends DMNMessage> messages) {
         this.messages.addAll( messages );
     }
 
@@ -123,5 +123,8 @@ public class DMNResultImpl implements DMNResult, DMNMessageManager {
     public DMNModel getModel() {
         return model;
     }
-
+    @Override
+    public void addAllUnfiltered(List<? extends DMNMessage> messages) {
+        this.messages.addAllUnfiltered(messages);
+    }
 }

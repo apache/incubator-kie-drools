@@ -36,7 +36,12 @@ public enum DMNMessageType {
 
     FAILED_VALIDATOR( "The DMN validator failed to load the validation rules. Impossible to proceed with validation.", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     FAILED_XML_VALIDATION( "DMN model failed XML schema validation", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
-    FAILED_VALIDATION("DMN Validation stopped on failed validation for some DMN Model",Tag.VALIDATION,Tag.DMN_VALIDATOR);
+    FAILED_VALIDATION("DMN Validation stopped on failed validation for some DMN Model", Tag.VALIDATION, Tag.DMN_VALIDATOR),
+
+    DECISION_TABLE_ANALYSIS("DMN Validation, Decision Table Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
+    DECISION_TABLE_ANALYSIS_ERROR("DMN Validation, Decision Table Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
+    DECISION_TABLE_GAP("DMN Validation, Decision Table Analysis, Gap Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
+    DECISION_TABLE_OVERLAP("DMN Validation, Decision Table Analysis, Overlap Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR);
 
     private final Tag[]  tags;
     private final String description;
@@ -58,7 +63,7 @@ public enum DMNMessageType {
         // message source
         DMN_CORE, DMN_VALIDATOR,
         // validation phase
-        VALIDATION, COMPILATION, RUNTIME
+        VALIDATION, COMPILATION, RUNTIME, DECISION_TABLE_ANALYSIS
     }
 
 }

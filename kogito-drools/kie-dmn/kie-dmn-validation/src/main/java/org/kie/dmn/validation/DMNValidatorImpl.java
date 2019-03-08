@@ -68,6 +68,8 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
+import org.kie.dmn.validation.dtanalysis.DMNDTAnalyser;
+import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
@@ -75,6 +77,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -118,6 +121,8 @@ public class DMNValidatorImpl implements DMNValidator {
     private final List<DMNProfile> dmnProfiles = new ArrayList<>();
     private final DMNCompilerConfiguration dmnCompilerConfig;
 
+    private final DMNDTAnalyser dmnDTValidator;
+
     public DMNValidatorImpl(List<DMNProfile> dmnProfiles) {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
@@ -157,6 +162,7 @@ public class DMNValidatorImpl implements DMNValidator {
         this.dmnProfiles.addAll(dmnProfiles);
         final ClassLoader classLoader = this.kieContainer.isPresent() ? this.kieContainer.get().getClassLoader() : ClassLoaderUtil.findDefaultClassLoader();
         this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        dmnDTValidator = new DMNDTAnalyser(this.dmnProfiles);
     }
     
     public void dispose() {
@@ -368,7 +374,7 @@ public class DMNValidatorImpl implements DMNValidator {
         if( flags.contains( VALIDATE_SCHEMA ) ) {
             results.addAll( validateSchema( xmlFile ) );
         }
-        if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
+        if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
             Definitions dmndefs = null;
             try {
                 dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new FileReader(xmlFile));
@@ -402,7 +408,7 @@ public class DMNValidatorImpl implements DMNValidator {
             if( flags.contains( VALIDATE_SCHEMA ) ) {
                 results.addAll( validateSchema( new StringReader( content ) ) );
             }
-            if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) ) {
+            if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
                 Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(dmnCompilerConfig.getRegisteredExtensions()).unmarshal(new StringReader(content));
                 dmndefs.normalize();
                 validateModelCompilation( dmndefs, results, flags );
@@ -438,6 +444,9 @@ public class DMNValidatorImpl implements DMNValidator {
         }
         if( flags.contains( VALIDATE_COMPILATION ) ) {
             results.addAll( validateCompilation( dmnModel ) );
+        }
+        if (flags.contains( ANALYZE_DECISION_TABLE )) {
+            results.addAllUnfiltered(validateDT(dmnModel));
         }
     }
 
@@ -516,6 +525,21 @@ public class DMNValidatorImpl implements DMNValidator {
             DMNModel model = compiler.compile( dmnModel );
             if( model != null ) {
                 return model.getMessages();
+            } else {
+                throw new IllegalStateException("Compiled model is null!");
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private List<DMNMessage> validateDT(Definitions dmnModel) {
+        if (dmnModel != null) {
+            DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
+            DMNModel model = compiler.compile(dmnModel);
+            if (model != null) {
+                List<DTAnalysis> vs = dmnDTValidator.analyse(model);
+                List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
+                return results;
             } else {
                 throw new IllegalStateException("Compiled model is null!");
             }

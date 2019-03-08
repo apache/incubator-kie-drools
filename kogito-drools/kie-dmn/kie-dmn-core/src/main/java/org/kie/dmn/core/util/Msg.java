@@ -99,6 +99,12 @@ public final class Msg {
     public static final Message3 FUNC_DEF_COMPILATION_ERR                            = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling Java function '%s' on node '%s': %s" );
     public static final Message2 FUNC_DEF_MISSING_ENTRY                              = new Message2( DMNMessageType.INVALID_SYNTAX, "A Java function definition requires both the 'class' and the 'method signature' attributes. Invalid definition for function '%s' on node '%s'" );
     public static final Message2 ERROR_CHECKING_ALLOWED_VALUES                       = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error checking allowed values for node '%s': %s" );
+    public static final Message1 DTANALYSISRESULT                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis results: %s");
+    public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
+    public static final Message2 DTANALYSIS_ERROR                                    = new Message2( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Skipped Decision Table Analysis of table '%s' because: %s");
+    public static final Message4 DTANALYSIS_ERROR_RULE_OUTSIDE_DOMAIN                = new Message4( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Rule %s defines %s which is outside the domain min/max %s of column %s");
+    public static final Message1 DTANALYSIS_GAP                                      = new Message1( DMNMessageType.DECISION_TABLE_GAP, "Gap detected: %s");
+    public static final Message1 DTANALYSIS_OVERLAP                                  = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP, "Overlap detected: %s");
 
     public static interface Message {
         String getMask();

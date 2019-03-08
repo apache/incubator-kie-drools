@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_ca6ddbe9-753a-421e-8ae6-f161f905cf14" id="_ca6ddbe9-753a-421e-8ae6-f161f905cf14" namespace="http://www.trisotech.com/definitions/_ca6ddbe9-753a-421e-8ae6-f161f905cf14"          exporter="DMN Modeler" exporterVersion="6.1.21" name="Drawing 1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:inputData id="_7dcd43bd-6aba-4dca-b921-ae448d9de458" name="input1">
+        <semantic:variable name="input1" id="_9ccda34a-6a6c-4e43-8a20-1345a7e34c73" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_435dc348-7a1c-4f19-b3fa-7aa4e5d9b6e7" name="my decision">
+        <semantic:variable name="my decision" id="_8c9c57f9-b1e3-45db-b129-ae8cce94076c" typeRef="string"/>
+        <semantic:informationRequirement id="_6a5c8b6e-9a87-4f43-9578-7a4c46010396">
+            <semantic:requiredInput href="#_7dcd43bd-6aba-4dca-b921-ae448d9de458"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_70a95e62-8f5b-4b75-8cb9-9a9f781077da" hitPolicy="UNIQUE" outputLabel="my decision" typeRef="string" triso:expressionId="_0e40d87c-e78c-4519-a7a6-b621492a8f79">
+            <semantic:input id="_f803b771-6344-4aa0-8635-d55c39ff9a43">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>input1</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="simple">
+                    <semantic:text>[0..100]</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_adc23803-6495-465c-becf-b33c3ae9d228"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_f2676bfa-5c8f-4abb-8963-3414ef0acee0">
+                <semantic:inputEntry id="_4d2b4f51-b450-4947-bfa9-81fcb5f3a12e">
+                    <semantic:text>(0..100)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_230772e5-1566-4ffa-a7e8-49ba78182e72">
+                    <semantic:text>"R1"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_38693591-391a-4890-8389-dbc3a2e5ed50" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_f0b4acde-06bc-4dc8-bbd5-79a2d408fa3f" dmnElementRef="_7dcd43bd-6aba-4dca-b921-ae448d9de458">
+                <dc:Bounds x="318.7588291168213" y="313.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca6ddbe9-753a-421e-8ae6-f161f905cf14_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="337.9968013763428" y="336.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_01813436-943a-4eed-8192-4bdaf439ac94" dmnElementRef="_435dc348-7a1c-4f19-b3fa-7aa4e5d9b6e7">
+                <dc:Bounds x="310" y="198.99999618530273" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca6ddbe9-753a-421e-8ae6-f161f905cf14_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="313" y="222.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_35496ab3-3b1c-456e-a096-c1b15f2cf0a9" dmnElementRef="_6a5c8b6e-9a87-4f43-9578-7a4c46010396">
+                <di:waypoint x="386.4968013763428" y="313.99999618530273"/>
+                <di:waypoint x="386.5" y="258.99999618530273"/>
+                <dmndi:DMNLabel sharedStyle="LS_ca6ddbe9-753a-421e-8ae6-f161f905cf14_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_ca6ddbe9-753a-421e-8ae6-f161f905cf14_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

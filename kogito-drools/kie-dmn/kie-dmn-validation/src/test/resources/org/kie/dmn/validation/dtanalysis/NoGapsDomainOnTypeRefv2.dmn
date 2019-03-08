@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_2E63AE09-0349-4E26-AA13-76A43044DB47" id="_2E63AE09-0349-4E26-AA13-76A43044DB47" namespace="http://www.trisotech.com/definitions/_2E63AE09-0349-4E26-AA13-76A43044DB47"          exporter="DMN Modeler" exporterVersion="6.1.21.1" name="dmn1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition isCollection="false" name="tMyRange" label="tMyRange">
+        <semantic:typeRef>number</semantic:typeRef>
+        <semantic:allowedValues id="_10B85FB0-6EC0-45F1-8EA5-01A2A4317AB1" triso:constraintsType="simple">
+            <semantic:text>&gt;=0</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:decision id="_777F078C-0A24-44BF-95A2-D07D7BD5FA71" name="Decision-1">
+        <semantic:variable name="Decision-1" id="_E4C7407F-2DFC-4798-975D-EF2BEF2A9FD7" typeRef="Any"/>
+        <semantic:informationRequirement id="_AD39168C-7E96-44F4-8E28-EE9C44440AD1">
+            <semantic:requiredInput href="#_F5A2A86B-DDE1-4982-87FE-39E00AEE976C"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_E064FD38-56EA-40EB-97B4-F061ACD6F58F" hitPolicy="UNIQUE" outputLabel="Decision-1" typeRef="Any" triso:expressionId="_5b30997e-bf60-4c48-a762-e5848774d7e5">
+            <semantic:input id="_2BEEBBBC-E39E-42A9-9062-49E935ACE915">
+                <semantic:inputExpression typeRef="tMyRange">
+                    <semantic:text>InputData-1</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="simple">
+                    <semantic:text>&gt;=0</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_0A23464D-4409-4B63-8BA4-385BDF4EAA67"/>
+            <semantic:annotation/>
+            <semantic:rule id="_08E31991-0B49-43FF-8268-641EE262C0A1">
+                <semantic:inputEntry id="_D4A6EEC9-1FCF-472F-AFEC-2610E430C4EF">
+                    <semantic:text>&gt;=0</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_DE1D9550-25D3-4821-8E94-8F788F08B556">
+                    <semantic:text>"always ok"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:inputData id="_F5A2A86B-DDE1-4982-87FE-39E00AEE976C" name="InputData-1">
+        <semantic:variable name="InputData-1" id="_40FCE645-12AC-4569-BA32-E618AA77A150" typeRef="tMyRange"/>
+    </semantic:inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_b169ef62-4b1e-4d93-a631-9c13e336deb9" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="dmnshape-_777F078C-0A24-44BF-95A2-D07D7BD5FA71" dmnElementRef="_777F078C-0A24-44BF-95A2-D07D7BD5FA71">
+                <dc:Bounds x="544" y="203" width="100" height="50"/>
+                <dmndi:DMNLabel sharedStyle="LS_2E63AE09-0349-4E26-AA13-76A43044DB47_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="dmnshape-_F5A2A86B-DDE1-4982-87FE-39E00AEE976C" dmnElementRef="_F5A2A86B-DDE1-4982-87FE-39E00AEE976C">
+                <dc:Bounds x="364" y="203" width="100" height="50"/>
+                <dmndi:DMNLabel sharedStyle="LS_2E63AE09-0349-4E26-AA13-76A43044DB47_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="dmnedge-_AD39168C-7E96-44F4-8E28-EE9C44440AD1" dmnElementRef="_AD39168C-7E96-44F4-8E28-EE9C44440AD1">
+                <di:waypoint x="414" y="228"/>
+                <di:waypoint x="594" y="228"/>
+                <dmndi:DMNLabel sharedStyle="LS_2E63AE09-0349-4E26-AA13-76A43044DB47_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_2E63AE09-0349-4E26-AA13-76A43044DB47_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

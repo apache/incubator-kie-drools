@@ -1,16 +1,16 @@
 package org.kie.dmn.core.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DefaultDMNMessagesManager
         implements DMNMessageManager {
@@ -39,9 +39,16 @@ public class DefaultDMNMessagesManager
     }
 
     @Override
-    public void addAll(List<DMNMessage> messages) {
-        for ( DMNMessage message : messages ) {
+    public void addAll(List<? extends DMNMessage> messages) {
+        for (DMNMessage message : messages) {
             addMessage( message );
+        }
+    }
+
+    @Override
+    public void addAllUnfiltered(List<? extends DMNMessage> messages) {
+        for (DMNMessage message : messages) {
+            this.messages.add(message);
         }
     }
 
@@ -78,4 +85,5 @@ public class DefaultDMNMessagesManager
         return existingMsg.getMessageType().equals( newMessage.getMessageType() ) &&
                existingMsg.getSourceReference() == newMessage.getSourceReference();
     }
+
 }
