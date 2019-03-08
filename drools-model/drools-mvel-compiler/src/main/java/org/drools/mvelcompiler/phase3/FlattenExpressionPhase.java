@@ -29,9 +29,13 @@ public class FlattenExpressionPhase implements DrlGenericVisitor<FlattenedExpres
     }
 
     private FlattenedExpressionResult defaultExpression(Expression mvelExpression) {
+        // is Flatten avoidable?
         final List<Node> childrenNodes = flattenScope(mvelExpression);
 
         final Node firstChild = childrenNodes.get(0);
+
+
+
         List<Node> expressionNodesWithoutFirst = childrenNodes
                 .subList(1, childrenNodes.size());
 
