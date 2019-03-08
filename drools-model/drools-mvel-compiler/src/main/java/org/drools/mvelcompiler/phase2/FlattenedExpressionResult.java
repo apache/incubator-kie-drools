@@ -24,4 +24,8 @@ public class FlattenedExpressionResult {
     public List<Node> getOtherNodes() {
         return otherNodes;
     }
+
+    public Expression getExpression() {
+        return expression;
+    }
 }
