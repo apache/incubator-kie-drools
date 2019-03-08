@@ -83,6 +83,7 @@ public class EmailWorkItemHandlerTest {
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "To", "person1@domain.com" );
         workItem.setParameter( "From", "person2@domain.com" );
+        workItem.setParameter( "DisplayName", "Mr. John Doe" );
         workItem.setParameter( "Reply-To", "person3@domain.com" );
         workItem.setParameter( "Subject", "Subject 1" );
         workItem.setParameter( "Body", "Body 1" );
@@ -100,6 +101,7 @@ public class EmailWorkItemHandlerTest {
         assertEquals( workItem.getParameter( "From" ), ((InternetAddress)msg.getFrom()[0]).getAddress() );
         assertEquals( workItem.getParameter( "Reply-To" ), ((InternetAddress)msg.getReplyTo()[0]).getAddress() );
         assertEquals( workItem.getParameter( "To" ), ((InternetAddress)msg.getRecipients( RecipientType.TO )[0]).getAddress() );
+        assertEquals( workItem.getParameter( "DisplayName" ), ((InternetAddress)msg.getFrom()[0]).getPersonal());
         assertNull( msg.getRecipients( RecipientType.CC ) );
         assertNull( msg.getRecipients( RecipientType.BCC ) );
     }

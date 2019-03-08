@@ -235,6 +235,7 @@ public class SendHtmlTest {
         String testMethodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         String toAddress = "rgivens@yahoo.com";
         String fromAddress = "rgivens@kty.us.gov";
+        String displayName = "Mr. Pepito Pérez";
 
         EmailWorkItemHandler handler = new EmailWorkItemHandler();
         handler.setConnection( emailHost, emailPort, authUsername, authPassword );
@@ -242,10 +243,10 @@ public class SendHtmlTest {
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "To", toAddress );
         workItem.setParameter( "From", fromAddress );
+        workItem.setParameter( "DisplayName", displayName );
         workItem.setParameter( "Reply-To", fromAddress );
         workItem.setParameter( "Subject", "Test mail for " + testMethodName );
-        workItem.setParameter( "Body", "Don't forget to check on Boyd later today." );
-
+        workItem.setParameter( "Body", "Don't forget to check on Boyd later today." );    
         WorkItemManager manager = new DefaultWorkItemManager(null);
         handler.executeWorkItem( workItem, manager );
 
@@ -254,6 +255,16 @@ public class SendHtmlTest {
 
         for (WiserMessage wiserMessage : messages ) {
             MimeMessage message = wiserMessage.getMimeMessage();
+            String content = ((String) message.getContent()).replace("\r\n", "");
+            assertEquals(workItem.getParameter("To"), 
+              ((InternetAddress) message.getRecipients(RecipientType.TO)[0]).getAddress());
+            assertEquals(workItem.getParameter("From"),
+                        ((InternetAddress) message.getFrom()[0]).getAddress());          
+            assertEquals(workItem.getParameter("DisplayName"), 
+            		     ((InternetAddress) message.getFrom()[0]).getPersonal());
+            assertEquals(workItem.getParameter("Reply-To"),
+            		    ((InternetAddress) message.getReplyTo()[0]).getAddress());         
+            assertEquals(workItem.getParameter("Body"), content);
             assertEquals(workItem.getParameter("Subject"), message.getSubject());
             assertTrue(Arrays.equals(InternetAddress.parse(toAddress),
                                      message.getRecipients(RecipientType.TO)));
