@@ -379,6 +379,9 @@
             <container>
               <containerId>${container.id}</containerId>
               <timeout>600000</timeout>
+              <systemProperties>
+                <org.jbpm.deploy.sync.enabled>false</org.jbpm.deploy.sync.enabled>
+              </systemProperties>
               <dependencies>
                 <dependency>
                   <groupId>com.h2database</groupId>
