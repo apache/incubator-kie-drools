@@ -12,21 +12,21 @@ public class MvelCompilerTest {
     @Test
     public void testConvertPropertyToAccessor() {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext().addDeclaration("$p", Person.class);
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("$p.parent.name");
+        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("{ $p.parent.name; } ");
         assertEquals("$p.getParent().getName()", compiled.resultAsString());
     }
 
     @Test
     public void testStringLength() {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext().addDeclaration("$p", Person.class);
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("$p.name.length");
+        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("{ $p.name.length; }");
         assertEquals("$p.getName().length()", compiled.resultAsString());
     }
 
     @Test
     public void testAssignment() {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext();
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("a = 10;");
+        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("{ Integer a = 10; }");
         assertEquals("Integer a = 0;", compiled.resultAsString());
     }
 }

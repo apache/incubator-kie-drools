@@ -1529,6 +1529,7 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore("support better modify")
     public void testCommaInModify() {
         // DROOLS-3505
         final String drl =
