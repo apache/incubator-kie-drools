@@ -12,8 +12,5 @@ public interface TypedExpression {
 
     Expression toJavaExpression();
 
-//    TypedExpressions childNodes();
-
-    public Stream<Node> stream();
 }
 
