@@ -1,7 +1,6 @@
 package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
-import java.util.Optional;
 import java.util.Stack;
 
 import com.github.javaparser.ast.Node;
@@ -61,7 +60,7 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
     @Override
     public TypedExpression visit(SimpleName n, Context arg) {
         if (arg.lastTypedExpression.isEmpty()) { // first node
-            Declaration typeFromDeclarations = findTypeFromDeclarations(n.asString());
+            Declaration typeFromDeclarations = mvelCompilerContext.getDeclarations(n.asString());
             Class<?> clazz = typeFromDeclarations.getClazz();
             SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
             arg.lastTypedExpression.push(simpleNameTExpr);
@@ -73,11 +72,6 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
             arg.lastTypedExpression.push(methodCallTExpr);
             return methodCallTExpr;
         }
-    }
-
-    private Declaration findTypeFromDeclarations(String declarationName) {
-        Optional<Declaration> declarationById = mvelCompilerContext.findDeclarations(declarationName);
-        return declarationById.get();
     }
 }
 
