@@ -1,24 +1,22 @@
-package org.drools.mvelcompiler.phase4;
+package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.stream.Stream;
 
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
-public class MethodTypedExpression implements TypedExpression {
+public class MethodCallTExpr extends TypedExpression {
 
-    final Node expression;
     final TypedExpression scope;
     final Type type;
     final Method accessor;
 
-    MethodTypedExpression(Node expression, TypedExpression scope, Type type, Method accessor) {
-        this.expression = expression;
+    public MethodCallTExpr(SimpleName expression, TypedExpression scope, Type type, Method accessor) {
+        super(expression);
         this.scope = scope;
         this.type = type;
         this.accessor = accessor;
@@ -36,8 +34,8 @@ public class MethodTypedExpression implements TypedExpression {
 
     @Override
     public String toString() {
-        return "MethodTypedExpression{" +
-                "expression=" + printConstraint(expression) +
+        return "MethodCallTExpr{" +
+                "expression=" + printConstraint(originalExpression) +
                 ", type=" + type +
                 ", accessor=" + accessor +
                 '}';
