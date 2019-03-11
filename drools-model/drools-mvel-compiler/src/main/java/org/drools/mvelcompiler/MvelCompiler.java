@@ -1,6 +1,6 @@
 package org.drools.mvelcompiler;
 
-import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.DrlConstraintParser;
@@ -25,7 +25,7 @@ public class MvelCompiler {
         for (Statement t : mvelExpression.getStatements()) {
             TypedExpression expressionsWithType = typedExpressionPhase.invoke(t.asExpressionStmt().getExpression());
 
-            Expression expression = expressionsWithType.toJavaExpression();
+            Node expression = expressionsWithType.toJavaExpression();
             return new ParsingResult(mvelCompilerContext, expression.toString());
         }
 
