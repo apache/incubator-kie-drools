@@ -48,6 +48,7 @@ import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
@@ -492,6 +493,7 @@ public class DrlxParserTest {
     }
 
     @Test
+    @Ignore("this should be only inside a modify block")
     public void testMethodCallWithComma() {
         System.out.println("CommaSeparatedMethodCallExpr.class = " + CommaSeparatedMethodCallExpr.class);
         System.out.println("new ClassOrInterfaceDeclaration().getModifiers().getClass() = " + new ClassOrInterfaceDeclaration().getModifiers().getClass());
