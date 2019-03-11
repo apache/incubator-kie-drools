@@ -37,6 +37,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
@@ -48,6 +49,7 @@ import static com.github.javaparser.utils.Utils.assertNotNull;
 import static org.drools.constraint.parser.ParseStart.CLASS_OR_INTERFACE_TYPE;
 import static org.drools.constraint.parser.ParseStart.EXPLICIT_CONSTRUCTOR_INVOCATION_STMT;
 import static org.drools.constraint.parser.ParseStart.EXPRESSION;
+import static org.drools.constraint.parser.ParseStart.BLOCK;
 import static org.drools.constraint.parser.ParseStart.NAME;
 import static org.drools.constraint.parser.ParseStart.SIMPLE_NAME;
 import static org.drools.constraint.parser.ParseStart.TYPE;
@@ -266,6 +268,18 @@ public final class DrlConstraintParser {
             return result.getResult().get();
         }
         throw new ParseProblemException(result.getProblems());
+    }
+
+    /**
+     * Parses the Java block contained in a {@link String} and returns a
+     * {@link BlockStmt} that represents it.
+     *
+     * @param blockStatement {@link String} containing Java block code
+     * @return BlockStmt representing the Java block
+     * @throws ParseProblemException if the source code has parser errors
+     */
+    public static BlockStmt parseBlock(final String blockStatement) {
+        return simplifiedParse(BLOCK, Providers.provider(blockStatement));
     }
 
     /**

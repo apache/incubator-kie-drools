@@ -222,7 +222,7 @@ public class TokenTypes {
             case NOT:
             case 150:
             case 151:
-            case 149:
+            case 152:
             // The following are tokens that are only used internally by the lexer
             case ASSIGN:
             case LT:

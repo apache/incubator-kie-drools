@@ -29,6 +29,7 @@ import com.github.javaparser.Provider;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
@@ -44,6 +45,7 @@ import com.github.javaparser.ast.type.Type;
  */
 @FunctionalInterface
 public interface ParseStart<R> {
+    ParseStart<BlockStmt> BLOCK = GeneratedDrlConstraintParser::BlockParseStart;
     ParseStart<Expression> EXPRESSION = GeneratedDrlConstraintParser::ExpressionParseStart;
     ParseStart<ClassOrInterfaceType> CLASS_OR_INTERFACE_TYPE = GeneratedDrlConstraintParser::ClassOrInterfaceTypeParseStart;
     ParseStart<Type> TYPE = GeneratedDrlConstraintParser::ResultTypeParseStart;
