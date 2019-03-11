@@ -28,8 +28,6 @@ public class ExpressionWithTypePhase implements DrlGenericVisitor<TypedExpressio
 
         PreviousNode previousNode = new PreviousNode(firstNode.getType(), firstNode);
 
-        List<Node> fromTree = firstNode.stream().collect(Collectors.toList());
-
         List<Node> fromList = firstChildProcessResult.getOtherNodes()
                 .stream().collect(Collectors.toList());
 

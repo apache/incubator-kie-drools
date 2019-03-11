@@ -35,11 +35,6 @@ public class MethodTypedExpression implements TypedExpression {
     }
 
     @Override
-    public Stream<Node> stream() {
-        return null;
-    }
-
-    @Override
     public String toString() {
         return "MethodTypedExpression{" +
                 "expression=" + printConstraint(expression) +
