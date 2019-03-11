@@ -3,6 +3,7 @@ package org.drools.mvelcompiler.ast;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -28,8 +29,8 @@ public class MethodCallTExpr extends TypedExpression {
     }
 
     @Override
-    public Expression toJavaExpression() {
-        return new MethodCallExpr(scope.toJavaExpression(), accessor.getName());
+    public Node toJavaExpression() {
+        return new MethodCallExpr((Expression) scope.toJavaExpression(), accessor.getName());
     }
 
     @Override

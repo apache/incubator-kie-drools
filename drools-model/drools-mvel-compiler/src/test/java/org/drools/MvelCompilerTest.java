@@ -25,8 +25,8 @@ public class MvelCompilerTest {
 
     @Test
     public void testAssignment() {
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext();
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("{ Integer a = 10; }");
-        assertEquals("Integer a = 0;", compiled.resultAsString());
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext().addDeclaration("$p", Person.class);;
+        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile("{ Person np = $p; }");
+        assertEquals("org.drools.Person np = $p", compiled.resultAsString());
     }
 }
