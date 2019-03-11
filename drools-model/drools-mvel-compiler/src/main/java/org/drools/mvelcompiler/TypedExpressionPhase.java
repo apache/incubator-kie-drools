@@ -60,18 +60,26 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
     @Override
     public TypedExpression visit(SimpleName n, Context arg) {
         if (arg.lastTypedExpression.isEmpty()) { // first node
-            Declaration typeFromDeclarations = mvelCompilerContext.getDeclarations(n.asString());
-            Class<?> clazz = typeFromDeclarations.getClazz();
-            SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
-            arg.lastTypedExpression.push(simpleNameTExpr);
-            return simpleNameTExpr;
+            return simpleNameAsFirstNode(n, arg);
         } else {
-            TypedExpression lastTypedExpression = arg.lastTypedExpression.peek();
-            Method accessor = getAccessor(toRawClass(lastTypedExpression.getType()), n.asString());
-            MethodCallTExpr methodCallTExpr = new MethodCallTExpr(n, lastTypedExpression, accessor.getGenericReturnType(), accessor);
-            arg.lastTypedExpression.push(methodCallTExpr);
-            return methodCallTExpr;
+            return simpleNameAsField(n, arg);
         }
+    }
+
+    private SimpleNameTExpr simpleNameAsFirstNode(SimpleName n, Context arg) {
+        Declaration typeFromDeclarations = mvelCompilerContext.getDeclarations(n.asString());
+        Class<?> clazz = typeFromDeclarations.getClazz();
+        SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
+        arg.lastTypedExpression.push(simpleNameTExpr);
+        return simpleNameTExpr;
+    }
+
+    private TypedExpression simpleNameAsField(SimpleName n, Context arg) {
+        TypedExpression lastTypedExpression = arg.lastTypedExpression.peek();
+        Method accessor = getAccessor(toRawClass(lastTypedExpression.getType()), n.asString());
+        MethodCallTExpr methodCallTExpr = new MethodCallTExpr(n, lastTypedExpression, accessor);
+        arg.lastTypedExpression.push(methodCallTExpr);
+        return methodCallTExpr;
     }
 }
 

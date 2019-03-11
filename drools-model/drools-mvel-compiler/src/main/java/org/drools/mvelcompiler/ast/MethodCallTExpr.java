@@ -11,15 +11,15 @@ import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
 public class MethodCallTExpr extends TypedExpression {
 
-    final TypedExpression scope;
-    final Type type;
-    final Method accessor;
+    private final TypedExpression scope;
+    private final Type type;
+    private final Method accessor;
 
-    public MethodCallTExpr(SimpleName expression, TypedExpression scope, Type type, Method accessor) {
+    public MethodCallTExpr(SimpleName expression, TypedExpression scope, Method accessor) {
         super(expression);
         this.scope = scope;
-        this.type = type;
         this.accessor = accessor;
+        this.type = accessor.getGenericReturnType();
     }
 
     @Override
