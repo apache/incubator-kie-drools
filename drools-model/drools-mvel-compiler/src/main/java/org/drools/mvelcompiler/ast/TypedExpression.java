@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.Expression;
 
 public abstract class TypedExpression {
 
@@ -23,7 +22,7 @@ public abstract class TypedExpression {
 
     public abstract Type getType();
 
-    public Expression toJavaExpression() {
+    public Node toJavaExpression() {
         if (!children.isEmpty()) {
             TypedExpression last = children.get(children.size() - 1);
             return last.toJavaExpression();

@@ -1,19 +1,26 @@
 package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.MethodCallTExpr;
 import org.drools.mvelcompiler.ast.NameTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
+import org.drools.mvelcompiler.ast.VariableDeclarationTExpr;
+import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
@@ -38,7 +45,7 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
         Context ctx = new Context();
 
         TypedExpression typedExpression = expression.accept(this, ctx);
-        if(typedExpression == null) {
+        if (typedExpression == null) {
             throw new MvelCompilerException("Type check of " + printConstraint(expression) + " failed.");
         }
         return typedExpression;
@@ -85,6 +92,21 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
         MethodCallTExpr methodCallTExpr = new MethodCallTExpr(n, lastTypedExpression, accessor);
         arg.lastTypedExpression.push(methodCallTExpr);
         return methodCallTExpr;
+    }
+
+    @Override
+    public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
+        VariableDeclarationTExpr expr = new VariableDeclarationTExpr(n);
+        for (Node e : n.getChildNodes()) {
+            expr.addChildren(e.accept(this, arg));
+        }
+        return expr;
+    }
+
+    @Override
+    public TypedExpression visit(VariableDeclarator n, Context arg) {
+        Optional<TypedExpression> initExpression = n.getInitializer().map(i -> i.accept(this, arg));
+        return new VariableDeclaratorTExpr(n, n.getName(), initExpression);
     }
 }
 
