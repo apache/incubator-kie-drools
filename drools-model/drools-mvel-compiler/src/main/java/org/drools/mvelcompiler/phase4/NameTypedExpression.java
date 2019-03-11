@@ -29,14 +29,6 @@ public class NameTypedExpression implements TypedExpression {
         return new NameExpr(printConstraint(expression));
     }
 
-    @Override
-    public Stream<Node> stream() {
-        Stream.Builder<Node> builder = Stream.builder();
-//        builder.add(expression);
-        addParentNode(builder, expression);
-        return builder.build();
-    }
-
     public void addParentNode(Stream.Builder<Node> aggr, Node n) {
         n.getParentNode().ifPresent(pn -> {
             aggr.add(n);
