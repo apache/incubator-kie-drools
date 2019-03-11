@@ -17,6 +17,7 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getAccessor;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
@@ -36,7 +37,11 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
     public TypedExpression invoke(Expression expression) {
         Context ctx = new Context();
 
-        return expression.accept(this, ctx);
+        TypedExpression typedExpression = expression.accept(this, ctx);
+        if(typedExpression == null) {
+            throw new MvelCompilerException("Type check of " + printConstraint(expression) + " failed.");
+        }
+        return typedExpression;
     }
 
     @Override
