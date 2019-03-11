@@ -33,7 +33,6 @@
     <module>drools-model-compiler</module>
     <module>drools-constraint-parser</module>
     <module>drools-mvel-compiler</module>
-    <module>javaparser-utilities</module>
   </modules>
 
 
