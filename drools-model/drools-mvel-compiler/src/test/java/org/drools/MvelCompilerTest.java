@@ -5,6 +5,7 @@ import java.util.function.Function;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
@@ -50,6 +51,14 @@ public class MvelCompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ Person np = $p; np = $p; }",
              "{ org.drools.Person np = $p; np = $p; }");
+    }
+
+    @Test
+    @Ignore
+    public void testModify() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify ( $p )  { setName( \"Luca\"), setAge(35) } }",
+             "{ $p.setName(\"Luca\"); $p.setAge(35); }");
     }
 
     private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction, String actualExpression, String expectedResult) {
