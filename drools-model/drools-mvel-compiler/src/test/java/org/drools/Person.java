@@ -3,6 +3,7 @@ package org.drools;
 public class Person {
 
     private String name;
+    private int age;
 
     private Person parent;
 
@@ -25,5 +26,13 @@ public class Person {
 
     public Person getParent() {
         return parent;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }
