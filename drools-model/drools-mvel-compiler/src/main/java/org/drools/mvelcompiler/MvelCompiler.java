@@ -1,7 +1,10 @@
 package org.drools.mvelcompiler;
 
-import com.github.javaparser.ast.Node;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.DrlConstraintParser;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -9,12 +12,9 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 public class MvelCompiler {
 
-    private final MvelCompilerContext mvelCompilerContext;
-
     private TypedExpressionPhase typedExpressionPhase;
 
     public MvelCompiler(MvelCompilerContext mvelCompilerContext) {
-        this.mvelCompilerContext = mvelCompilerContext;
         typedExpressionPhase = new TypedExpressionPhase(mvelCompilerContext);
     }
 
@@ -22,13 +22,14 @@ public class MvelCompiler {
 
         BlockStmt mvelExpression = DrlConstraintParser.parseBlock(mvelBlock);
 
+        List<Statement> statements = new ArrayList<>();
         for (Statement t : mvelExpression.getStatements()) {
-            TypedExpression expressionsWithType = typedExpressionPhase.invoke(t.asExpressionStmt().getExpression());
-
-            Node expression = expressionsWithType.toJavaExpression();
-            return new ParsingResult(mvelCompilerContext, expression.toString());
+            ExpressionStmt expressionStatement = t.asExpressionStmt();
+            TypedExpression expressionsWithType = typedExpressionPhase.invoke(expressionStatement);
+            Statement expression = (Statement) expressionsWithType.toJavaExpression();
+            statements.add(expression);
         }
 
-        return null;
+        return new ParsingResult(statements);
     }
 }
