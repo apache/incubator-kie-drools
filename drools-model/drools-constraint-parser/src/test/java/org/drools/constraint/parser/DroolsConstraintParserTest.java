@@ -493,14 +493,11 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
-    @Ignore("this should be only inside a modify block")
     public void testMethodCallWithComma() {
-        System.out.println("CommaSeparatedMethodCallExpr.class = " + CommaSeparatedMethodCallExpr.class);
-        System.out.println("new ClassOrInterfaceDeclaration().getModifiers().getClass() = " + new ClassOrInterfaceDeclaration().getModifiers().getClass());
-        String expr = "setAge(1), setLikes(\"bread\");";
+        String expr = "modify ( $p )  { name = \"Luca\", age = \"35\" });";
 
         Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals("setAge(1), setLikes(\"bread\");", printConstraint(expression));
+        assertEquals("modify ( $p )  { name = \"Luca\", age = \"35\" });", printConstraint(expression));
     }
 
     @Test
@@ -520,7 +517,7 @@ public class DroolsConstraintParserTest {
     }
 
 
-@Test
+    @Test
     public void testArrayCreation2() {
     String expr = "functions.arrayContainsInstanceWithParameters((Object[]) $f.getPersons())";
 
