@@ -15,8 +15,20 @@ public class MvelCompilerTest {
     @Test
     public void testConvertPropertyToAccessor() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ $p.parent.name; } ",
-             "{ $p.getParent().getName(); }");
+             "{ $p.parent.getParent().name; } ",
+             "{ $p.getParent().getParent().getName(); }");
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.getParent().parent.name; } ",
+             "{ $p.getParent().getParent().getName(); }");
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.parent.parent.name; } ",
+             "{ $p.getParent().getParent().getName(); }");
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.getParent().getParent().getName(); } ",
+             "{ $p.getParent().getParent().getName(); }");
     }
 
     @Test
