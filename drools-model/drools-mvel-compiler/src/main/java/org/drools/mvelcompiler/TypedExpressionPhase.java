@@ -1,19 +1,20 @@
 package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.mvelcompiler.ast.AssignExprT;
+import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.MethodCallTExpr;
 import org.drools.mvelcompiler.ast.NameTExpr;
@@ -41,7 +42,7 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
-    public TypedExpression invoke(Expression expression) {
+    public TypedExpression invoke(ExpressionStmt expression) {
         Context ctx = new Context();
 
         TypedExpression typedExpression = expression.accept(this, ctx);
@@ -107,6 +108,22 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
     public TypedExpression visit(VariableDeclarator n, Context arg) {
         Optional<TypedExpression> initExpression = n.getInitializer().map(i -> i.accept(this, arg));
         return new VariableDeclaratorTExpr(n, n.getName(), initExpression);
+    }
+
+    @Override
+    public TypedExpression visit(ExpressionStmt n, Context arg) {
+        ExpressionStmtT expressionStmtT = new ExpressionStmtT(n);
+        TypedExpression expression = n.getExpression().accept(this, arg);
+        expressionStmtT.addChildren(expression);
+        return expressionStmtT;
+    }
+
+    @Override
+    public TypedExpression visit(AssignExpr n, Context arg) {
+        AssignExprT assignExprT = new AssignExprT(n);
+        TypedExpression accept = n.getValue().accept(this, arg);
+        assignExprT.addChildren(accept);
+        return assignExprT;
     }
 }
 
