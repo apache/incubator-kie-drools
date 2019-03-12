@@ -8,6 +8,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -94,6 +95,16 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
         arg.lastTypedExpression.push(methodCallTExpr);
         return methodCallTExpr;
     }
+
+    @Override
+    public TypedExpression visit(MethodCallExpr n, Context arg) {
+        TypedExpression last = null;
+        for(Node children : n.getChildNodes()) {
+            last = children.accept(this, arg);
+        }
+        return last;
+    }
+
 
     @Override
     public TypedExpression visit(VariableDeclarationExpr n, Context arg) {

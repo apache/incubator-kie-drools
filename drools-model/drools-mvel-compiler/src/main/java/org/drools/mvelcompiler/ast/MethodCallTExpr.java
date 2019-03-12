@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.SimpleName;
 
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
@@ -16,7 +15,7 @@ public class MethodCallTExpr extends TypedExpression {
     private final Type type;
     private final Method accessor;
 
-    public MethodCallTExpr(SimpleName expression, TypedExpression scope, Method accessor) {
+    public MethodCallTExpr(Node expression, TypedExpression scope, Method accessor) {
         super(expression);
         this.scope = scope;
         this.accessor = accessor;
@@ -37,6 +36,7 @@ public class MethodCallTExpr extends TypedExpression {
     public String toString() {
         return "MethodCallTExpr{" +
                 "expression=" + printConstraint(originalExpression) +
+                ", scope=" + scope.toString() +
                 ", type=" + type +
                 ", accessor=" + accessor +
                 '}';
