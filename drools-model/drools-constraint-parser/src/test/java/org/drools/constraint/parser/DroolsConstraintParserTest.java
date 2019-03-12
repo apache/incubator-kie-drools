@@ -56,7 +56,7 @@ import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
-public class DrlxParserTest {
+public class DroolsConstraintParserTest {
 
     private static final Collection<String> operators = new HashSet<>();
     {
