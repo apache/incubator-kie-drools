@@ -292,6 +292,7 @@ TOKEN :
 | < TRANSITIVE: "transitive" >
 | < RULE: "rule" >
 | < NOT: "not" >
+| < MODIFY: "modify" >
 | < MVEL_STARTS_WITH: "str[startsWith]" >
 | < MVEL_ENDS_WITH: "str[endsWith]" >
 | < MVEL_LENGTH: "str[length]" >
@@ -1690,6 +1691,9 @@ Expression DrlxExpressionSwitch():
 }
 {
   (
+  LOOKAHEAD(ModifyExpr())
+    ret = ModifyExpr()
+  |
   LOOKAHEAD(PointFreeExprMvel())
     ret = PointFreeExprMvel()
   |
@@ -2991,24 +2995,27 @@ DrlxExpression DrlxExpression():
   { return new DrlxExpression(decl, expr); }
 }
 
-Expression CommaSeparatedMethodCallExpr():
+Expression ModifyExpr():
 {
     JavaToken begin;
     Expression first = null;
     Expression other = null;
     NodeList<Expression> all = emptyList();
+    SimpleName modifyObject = null;
 }
 {
     (
         (
-            first = PrimaryPrefix() { begin=token(); all.add(first); }
+            <MODIFY><LPAREN> (modifyObject = SimpleName())<RPAREN> <LBRACE>
+            first = Expression() { begin=token(); all.add(first); }
             (
                           <COMMA>
-                          other = PrimaryPrefix() { all.add(other); }
+                          other = Expression() { all.add(other); }
             )*
+            <RBRACE>
             <SEMICOLON>
             {
-                return new CommaSeparatedMethodCallExpr(range(begin, token()), all);
+                return new ModifyExpression(range(begin, token()), modifyObject, all);
             }
 
         )
