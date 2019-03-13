@@ -22,17 +22,32 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class SomeProblem_ruleOutsideDomain_Test extends AbstractDTAnalysisTest {
+public class NoGapsDomainOnTypeRefTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
-        List<DMNMessage> validate = validator.validate(getReader("SomeProblem-ruleOutsideDomain.dmn"), ANALYZE_DECISION_TABLE);
-        
-        DTAnalysis analysis = getAnalysis(validate, "_4466518e-6240-46b0-bcb4-c7ddf5560e3a");
-        assertThat(analysis.isError(), is(true));
+    public void test_NoGapsDomainOnTypeRef() {
+        List<DMNMessage> validate = validator.validate(getReader("NoGapsDomainOnTypeRef.dmn"), ANALYZE_DECISION_TABLE);
+
+        checkAnalysis(validate);
     }
+
+    @Test
+    public void test_NoGapsDomainOnTypeRefv2() {
+        List<DMNMessage> validate = validator.validate(getReader("NoGapsDomainOnTypeRefv2.dmn"), ANALYZE_DECISION_TABLE);
+
+        checkAnalysis(validate);
+    }
+
+    private void checkAnalysis(List<DMNMessage> validate) {
+        DTAnalysis analysis1 = getAnalysis(validate, "_E064FD38-56EA-40EB-97B4-F061ACD6F58F");
+        assertThat(analysis1.isError(), is(false));
+        assertThat(analysis1.getGaps(), hasSize(0));
+        assertThat(analysis1.getOverlaps(), hasSize(0));
+    }
+
 }

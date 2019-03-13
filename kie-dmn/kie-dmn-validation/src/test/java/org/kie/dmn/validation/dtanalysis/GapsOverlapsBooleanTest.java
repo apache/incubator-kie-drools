@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class GapsOverlapsBoolean_Test extends AbstractDTAnalysisTest {
+public class GapsOverlapsBooleanTest extends AbstractDTAnalysisTest {
 
     @Test
     public void test() {

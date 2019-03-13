@@ -34,69 +34,56 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class GapsCube3_Test extends AbstractDTAnalysisTest {
+public class GapsXYTest extends AbstractDTAnalysisTest {
 
     @Test
     public void test() {
-        List<DMNMessage> validate = validator.validate(getReader("GapsCube3.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
-        DTAnalysis analysis = getAnalysis(validate, "_4b41743d-ff04-4855-bf0b-993d475a9d62");
+        List<DMNMessage> validate = validator.validate(getReader("GapsXY.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_ce297a95-b16c-4631-8da5-e739dac9e3c4");
 
-        assertThat(analysis.getGaps(), hasSize(4));
-
+        assertThat(analysis.getGaps(), hasSize(3));
+        
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(3,
+        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
+                                                                     Arrays.asList(Interval.newFromBounds(new Bound(Interval.NEG_INF,
+                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    null),
+                                                                                                          new Bound(new BigDecimal("0"),
+                                                                                                                    RangeBoundary.OPEN,
+                                                                                                                    null)),
+                                                                                   Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                                    RangeBoundary.OPEN,
+                                                                                                                    null),
+                                                                                                          new Bound(Interval.POS_INF,
+                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    null)))),
+                                                  new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("1"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("3"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(3,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("1"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(3,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("3"),
+                                                                                                          new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)),
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("1"),
-                                                                                                                    RangeBoundary.OPEN,
+                                                                                                          new Bound(Interval.POS_INF,
+                                                                                                                    RangeBoundary.CLOSED,
                                                                                                                     null)))),
-                                                  new Hyperrectangle(3,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.CLOSED,
+                                                  new Hyperrectangle(2,
+                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("3"),
+                                                                                                          new Bound(Interval.POS_INF,
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)),
-                                                                                   Interval.newFromBounds(new Bound(new BigDecimal("1"),
+                                                                                   Interval.newFromBounds(new Bound(Interval.NEG_INF,
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("3"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("1"),
+                                                                                                          new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(4));
+        assertThat(gaps, hasSize(3));
 
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));

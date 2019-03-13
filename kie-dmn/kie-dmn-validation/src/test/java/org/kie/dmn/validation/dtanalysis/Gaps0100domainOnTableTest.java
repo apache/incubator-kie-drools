@@ -34,35 +34,29 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class AK0100_domainOnTable_Test extends AbstractDTAnalysisTest {
+public class Gaps0100domainOnTableTest extends AbstractDTAnalysisTest {
 
     @Test
     public void test() {
-        List<DMNMessage> validate = validator.validate(getReader("AK0100-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
-        DTAnalysis analysis = getAnalysis(validate, "_e9e5c68a-ebc3-4f09-a107-2049edbe554d");
+        List<DMNMessage> validate = validator.validate(getReader("Gaps0100-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_70a95e62-8f5b-4b75-8cb9-9a9f781077da");
 
         assertThat(analysis.getGaps(), hasSize(2));
         
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
+        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("12"),
-                                                                                                                    RangeBoundary.OPEN,
+                                                                                                          new Bound(new BigDecimal("0"),
+                                                                                                                    RangeBoundary.CLOSED,
                                                                                                                     null)))),
-                                                  new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("15"),
+                                                  new Hyperrectangle(1,
+                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("100"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("18"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                          new Bound(new BigDecimal("100"),
                                                                                                                     RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("50"),
-                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)))));
         assertThat(gaps, hasSize(2));
 

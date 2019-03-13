@@ -35,37 +35,17 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
+public class GapsAndOverlaps1domainOnTableTest extends AbstractDTAnalysisTest {
 
     @Test
     public void test() {
-        List<DMNMessage> validate = validator.validate(getReader("GapsAndOverlaps1.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        List<DMNMessage> validate = validator.validate(getReader("GapsAndOverlaps1-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         DTAnalysis analysis = getAnalysis(validate, "_cd2e0a28-3cc2-456b-90b6-392d9c3574af");
-        
-        assertThat(analysis.getGaps(), hasSize(17));
+
+        assertThat(analysis.getGaps(), hasSize(11));
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(Interval.NEG_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("1"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound(Interval.NEG_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
@@ -75,20 +55,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("2"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null),
-                                                                                                          new Bound(Interval.POS_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("1"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound(Interval.NEG_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
+                                                                                                          new Bound(new BigDecimal("999"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)))),
                                                   new Hyperrectangle(2,
@@ -114,20 +81,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("6"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null),
-                                                                                                          new Bound(Interval.POS_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("2"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("3"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound(Interval.NEG_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
+                                                                                                          new Bound(new BigDecimal("999"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)))),
                                                   new Hyperrectangle(2,
@@ -153,20 +107,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("6"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null),
-                                                                                                          new Bound(Interval.POS_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("3"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("4"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound(Interval.NEG_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
+                                                                                                          new Bound(new BigDecimal("999"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)))),
                                                   new Hyperrectangle(2,
@@ -179,8 +120,8 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("4"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null),
-                                                                                                          new Bound(Interval.POS_INF,
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                          new Bound(new BigDecimal("999"),
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)))),
                                                   new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("4"),
@@ -189,7 +130,7 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("5"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)),
-                                                                                   Interval.newFromBounds(new Bound(Interval.NEG_INF,
+                                                                                   Interval.newFromBounds(new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
                                                                                                           new Bound(new BigDecimal("1"),
@@ -205,8 +146,8 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("4"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null),
-                                                                                                          new Bound(Interval.POS_INF,
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                          new Bound(new BigDecimal("999"),
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)))),
                                                   new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("5"),
@@ -222,24 +163,11 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("7"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)),
-                                                                                   Interval.newFromBounds(new Bound(Interval.NEG_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))),
-                                                  new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("6"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("7"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)),
                                                                                    Interval.newFromBounds(new Bound(new BigDecimal("3"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null),
-                                                                                                          new Bound(Interval.POS_INF,
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                          new Bound(new BigDecimal("999"),
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)))),
                                                   new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("7"),
@@ -248,9 +176,9 @@ public class GapsAndOverlaps1_Test extends AbstractDTAnalysisTest {
                                                                                                           new Bound(Interval.POS_INF,
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
-        assertThat(gaps, hasSize(17));
+        assertThat(gaps, hasSize(11));
 
-        // Assert GAPS
+        // Assert GAPs same values
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
 
         // assert OVERLAPs count.

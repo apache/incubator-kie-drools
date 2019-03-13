@@ -34,22 +34,12 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class AgeKitten_Test extends AbstractDTAnalysisTest {
+public class AK0100domainOnTableTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test_AgeKitten_domainOnTable() {
-        List<DMNMessage> validate = validator.validate(getReader("AgeKitten-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
-        checkAnalysis(validate);
-    }
-
-    @Test
-    public void test_AgeKitten() {
-        List<DMNMessage> validate = validator.validate(getReader("AgeKitten.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
-        checkAnalysis(validate);
-    }
-
-    private void checkAnalysis(List<DMNMessage> validate) {
-        DTAnalysis analysis = getAnalysis(validate, "_5e3e4546-69c2-43f2-b93a-7ea285878ca0");
+    public void test() {
+        List<DMNMessage> validate = validator.validate(getReader("AK0100-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        DTAnalysis analysis = getAnalysis(validate, "_e9e5c68a-ebc3-4f09-a107-2049edbe554d");
 
         assertThat(analysis.getGaps(), hasSize(2));
         
@@ -68,18 +58,15 @@ public class AgeKitten_Test extends AbstractDTAnalysisTest {
                                                                                                           new Bound(new BigDecimal("18"),
                                                                                                                     RangeBoundary.OPEN,
                                                                                                                     null)),
-                                                                                   Interval.newFromBounds(new Bound("Dog",
+                                                                                   Interval.newFromBounds(new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound("Dog",
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                          new Bound(new BigDecimal("50"),
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)))));
         assertThat(gaps, hasSize(2));
 
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
-
-        // assert OVERLAPs count.
-        assertThat(analysis.getOverlaps(), hasSize(0));
     }
 }
