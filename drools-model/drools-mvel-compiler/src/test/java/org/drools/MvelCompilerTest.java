@@ -43,13 +43,6 @@ public class MvelCompilerTest {
     @Test
     public void testAssignment() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ Person np = $p; }",
-             "{ org.drools.Person np = $p; }");
-    }
-
-    @Test
-    public void testMultiLineAssignment() {
-        test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ Person np = $p; np = $p; }",
              "{ org.drools.Person np = $p; np = $p; }");
     }
