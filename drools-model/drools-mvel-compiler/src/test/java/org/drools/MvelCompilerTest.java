@@ -1,5 +1,6 @@
 package org.drools;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.drools.mvelcompiler.MvelCompiler;
@@ -54,16 +55,37 @@ public class MvelCompilerTest {
     }
 
     @Test
+    public void testSetter() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.name = \"Luca\"; }",
+             "{ $p.setName(\"Luca\"); }");
+    }
+
+    @Test
+    @Ignore
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = \"35\" }; }",
-             "{ $p.setName(\"Luca\"); $p.setAge(35); }");
+             "{ $p.setName(\"Luca\"); $p.setAge(35); }",
+             result -> {
+                 // check it has "name" and "age" as property
+             });
     }
 
-    private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction, String actualExpression, String expectedResult) {
+    private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
+                      String actualExpression,
+                      String expectedResult,
+                      Consumer<ParsingResult> resultAssert) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext();
         testFunction.apply(mvelCompilerContext);
         ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
         assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
+        resultAssert.accept(compiled);
+    }
+
+    private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
+                      String actualExpression,
+                      String expectedResult) {
+        test(testFunction, actualExpression, expectedResult, t -> {});
     }
 }
