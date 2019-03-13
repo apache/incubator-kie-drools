@@ -36,6 +36,7 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
@@ -183,6 +184,8 @@ public class DMNDTAnalyser {
                     } else {
                         throw new IllegalStateException("Unable to locate typeRef " + typeRef + " to determine domain.");
                     }
+                } else if (typeRef.getNamespaceURI().equals(model.getDefinitions().getURIFEEL()) && typeRef.getLocalPart().equals("boolean")) {
+                    allowedValues = "false, true";
                 }
             }
             if (allowedValues != null) {
@@ -227,6 +230,7 @@ public class DMNDTAnalyser {
             LOG.debug("intervals {}", intervals);
             List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
             Collections.sort(bounds);
+            LOG.debug("bounds (sorted) {}", bounds);
 
             List<Interval> activeIntervals = new ArrayList<>();
             Bound<?> lastBound = bounds.get(0);
@@ -271,6 +275,7 @@ public class DMNDTAnalyser {
             LOG.debug("intervals {}", intervals);
             List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
             Collections.sort(bounds);
+            LOG.debug("bounds (sorted) {}", bounds);
 
             Interval domainRange = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
 
@@ -416,6 +421,9 @@ public class DMNDTAnalyser {
         if (node instanceof NumberNode) {
             NumberNode numberNode = (NumberNode) node;
             return numberNode.getValue(); 
+        } else if (node instanceof BooleanNode) {
+            BooleanNode booleanNode = (BooleanNode) node;
+            return booleanNode.getValue();
         } else if (node instanceof StringNode) {
             StringNode stringNode = (StringNode) node;
             return EvalHelper.unescapeString(stringNode.getText());
