@@ -177,7 +177,7 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
 
     default R visit(DrlNameExpr drlNameExpr, A arg) { return null; }
 
-    default R visit(ModifyStatement modifyExpression, A arg) { return null; }
+    default R visit(ModifyStatement n, A arg) { return null; }
 
     @Override
     default R visit(CompilationUnit n, A arg) {

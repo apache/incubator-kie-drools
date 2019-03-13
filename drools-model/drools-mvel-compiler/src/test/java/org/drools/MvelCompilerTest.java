@@ -54,10 +54,9 @@ public class MvelCompilerTest {
     }
 
     @Test
-    @Ignore
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ modify ( $p )  { name = \"Luca\", age = \"35\" } }",
+             "{ modify ( $p )  { name = \"Luca\", age = \"35\" }; }",
              "{ $p.setName(\"Luca\"); $p.setAge(35); }");
     }
 
