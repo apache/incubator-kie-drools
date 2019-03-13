@@ -24,8 +24,7 @@ public class MvelCompiler {
 
         List<Statement> statements = new ArrayList<>();
         for (Statement t : mvelExpression.getStatements()) {
-            ExpressionStmt expressionStatement = t.asExpressionStmt();
-            TypedExpression expressionsWithType = typedExpressionPhase.invoke(expressionStatement);
+            TypedExpression expressionsWithType = typedExpressionPhase.invoke(t);
             Statement expression = (Statement) expressionsWithType.toJavaExpression();
             statements.add(expression);
         }

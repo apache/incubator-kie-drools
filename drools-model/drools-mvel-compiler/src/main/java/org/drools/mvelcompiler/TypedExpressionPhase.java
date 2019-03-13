@@ -12,12 +12,15 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.MethodCallTExpr;
+import org.drools.mvelcompiler.ast.ModifyStatementT;
 import org.drools.mvelcompiler.ast.NameTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -43,12 +46,12 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
-    public TypedExpression invoke(ExpressionStmt expression) {
+    public TypedExpression invoke(Statement statement) {
         Context ctx = new Context();
 
-        TypedExpression typedExpression = expression.accept(this, ctx);
+        TypedExpression typedExpression = statement.accept(this, ctx);
         if (typedExpression == null) {
-            throw new MvelCompilerException("Type check of " + printConstraint(expression) + " failed.");
+            throw new MvelCompilerException("Type check of " + printConstraint(statement) + " failed.");
         }
         return typedExpression;
     }
@@ -135,6 +138,16 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
         TypedExpression accept = n.getValue().accept(this, arg);
         assignExprT.addChildren(accept);
         return assignExprT;
+    }
+
+    @Override
+    public TypedExpression visit(ModifyStatement modifyStatement, Context arg) {
+        TypedExpression modifyObjectT = modifyStatement.getModifyObject().accept(this, arg);
+        ModifyStatementT modifyStatementT = new ModifyStatementT(modifyStatement, modifyObjectT);
+        for(Node n : modifyStatement.getExpressions()) {
+            modifyStatementT.addChildren(n.accept(this, arg));
+        }
+        return modifyStatementT;
     }
 }
 
