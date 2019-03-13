@@ -36,6 +36,7 @@ import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
@@ -48,6 +49,7 @@ import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.junit.Test;
 
+import static com.github.javaparser.JavaParser.parseStatement;
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -490,19 +492,13 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
-    public void testMethodCallWithCommaSimple() {
-        String expr = "modify ($p) { name = \"Luca\" };";
+    public void testModifyStatement() {
+        String expr = "{ modify ( $p )  { name = \"Luca\", age = \"35\" }; }";
 
-        Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals("modify ($p) { name = \"Luca\" };", printConstraint(expression));
-    }
-
-    @Test
-    public void testMethodCallWithComma() {
-        String expr = "modify ($p) { name = \"Luca\", age = \"35\" };";
-
-        Expression expression = parseExpression(parser, expr).getExpr();
-        assertEquals("modify ($p) { name = \"Luca\", age = \"35\" };", printConstraint(expression));
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    modify ($p) { name = \"Luca\", age = \"35\" };\n" +
+                             "}", printConstraint(expression));
     }
 
     @Test

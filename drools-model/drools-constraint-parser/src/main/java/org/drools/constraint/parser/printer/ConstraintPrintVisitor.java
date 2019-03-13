@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
@@ -33,7 +32,7 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.ModifyExpression;
+import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.expr.OOPathChunk;
 import org.drools.constraint.parser.ast.expr.OOPathExpr;
 import org.drools.constraint.parser.ast.expr.RuleBody;
@@ -293,7 +292,7 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
         printer.print("I");
     }
 
-    public void visit(ModifyExpression modifyExpression, Void arg) {
+    public void visit(ModifyStatement modifyExpression, Void arg) {
         printer.print("modify (");
         modifyExpression.getModifyObject().accept(this, arg);
         printer.print(") { ");
