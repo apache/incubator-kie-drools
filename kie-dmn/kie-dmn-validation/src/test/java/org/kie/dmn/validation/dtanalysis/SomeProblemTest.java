@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class SomeProblem_Test extends AbstractDTAnalysisTest {
+public class SomeProblemTest extends AbstractDTAnalysisTest {
 
     @Test
     public void test() {

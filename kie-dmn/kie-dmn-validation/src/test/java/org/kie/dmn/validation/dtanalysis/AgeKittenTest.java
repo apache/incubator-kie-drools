@@ -34,33 +34,52 @@ import static org.junit.Assert.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-public class Gaps0100_domainOnTable_Test extends AbstractDTAnalysisTest {
+public class AgeKittenTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
-        List<DMNMessage> validate = validator.validate(getReader("Gaps0100-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
-        DTAnalysis analysis = getAnalysis(validate, "_70a95e62-8f5b-4b75-8cb9-9a9f781077da");
+    public void test_AgeKitten_domainOnTable() {
+        List<DMNMessage> validate = validator.validate(getReader("AgeKitten-domainOnTable.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        checkAnalysis(validate);
+    }
+
+    @Test
+    public void test_AgeKitten() {
+        List<DMNMessage> validate = validator.validate(getReader("AgeKitten.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        checkAnalysis(validate);
+    }
+
+    private void checkAnalysis(List<DMNMessage> validate) {
+        DTAnalysis analysis = getAnalysis(validate, "_5e3e4546-69c2-43f2-b93a-7ea285878ca0");
 
         assertThat(analysis.getGaps(), hasSize(2));
         
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
+        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                          new Bound(new BigDecimal("12"),
+                                                                                                                    RangeBoundary.OPEN,
                                                                                                                     null)))),
-                                                  new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("100"),
+                                                  new Hyperrectangle(2,
+                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("15"),
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null),
-                                                                                                          new Bound(new BigDecimal("100"),
+                                                                                                          new Bound(new BigDecimal("18"),
+                                                                                                                    RangeBoundary.OPEN,
+                                                                                                                    null)),
+                                                                                   Interval.newFromBounds(new Bound("Dog",
+                                                                                                                    RangeBoundary.CLOSED,
+                                                                                                                    null),
+                                                                                                          new Bound("Dog",
                                                                                                                     RangeBoundary.CLOSED,
                                                                                                                     null)))));
         assertThat(gaps, hasSize(2));
 
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
+
+        // assert OVERLAPs count.
+        assertThat(analysis.getOverlaps(), hasSize(0));
     }
 }
