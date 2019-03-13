@@ -540,7 +540,7 @@ provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the 
 
 When using Planner from code on the modulepath (Java 9 and higher),
 _open_ your packages that contain your domain objects, DRL files and solver configuration
-in your `module-info.java` file:
+_to all modules_ in your `module-info.java` file:
 
 [source,java,options="nowrap"]
 ----
@@ -556,6 +556,26 @@ module org.optaplanner.cloudbalancing {
 
 Otherwise Planner can't reach those classes or files, even if they are exported.
 
+The package `org.xmlpull.v1` is split between dependencies of XStream.
+A workaround is to patch the `xmlpull` module with the `xpp3_min-1.1.4c.jar` artifact.
+
+Since OptaPlanner has no `module-info.java`, it is required to add its `java.scripting` dependency manually to the modulepath with this JVM argument:
+
+[source,bash,options="nowrap"]
+----
+--add-modules java.scripting
+----
+
+Drools and XStream require illegal reflective access to some internal Java packages. This can be achieved with the following JVM arguments:
+
+[source,bash,options="nowrap"]
+----
+--add-opens java.base/java.lang=org.drools.core \
+--add-opens java.base/java.util=xstream \
+--add-opens java.base/java.lang.reflect=xstream \
+--add-opens java.base/java.text=xstream \
+--add-opens java.desktop/java.awt.font=xstream
+----
 
 [[integrationWithOSGi]]
 === OSGi
