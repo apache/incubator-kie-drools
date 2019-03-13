@@ -115,12 +115,12 @@ import com.github.javaparser.ast.type.WildcardType;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
-import org.drools.constraint.parser.ast.expr.CommaSeparatedMethodCallExpr;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.ModifyExpression;
 import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
@@ -175,9 +175,9 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
 
     default R visit(TemporalLiteralInfiniteChunkExpr temporalLiteralInfiniteChunkExpr, A arg) { return null; }
 
-    default R visit(CommaSeparatedMethodCallExpr commaSeparatedMethodCallExpr, A arg) { throw new UnsupportedOperationException(); }
+    default R visit(DrlNameExpr drlNameExpr, A arg) { return null; }
 
-    default R visit(DrlNameExpr drlNameExpr, A arg) { return null; };
+    default R visit(ModifyExpression modifyExpression, A arg) { return null; }
 
     @Override
     default R visit(CompilationUnit n, A arg) {

@@ -32,6 +32,12 @@ import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.ast.expr.ModifyExpression;
+import org.drools.constraint.parser.ast.expr.OOPathChunk;
+import org.drools.constraint.parser.ast.expr.OOPathExpr;
+import org.drools.constraint.parser.ast.expr.RuleBody;
+import org.drools.constraint.parser.ast.expr.RuleDeclaration;
 import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.constraint.parser.ast.expr.CommaSeparatedMethodCallExpr;
@@ -56,6 +62,7 @@ import org.drools.constraint.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
 import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 
 import static com.github.javaparser.utils.Utils.isNullOrEmpty;
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
 public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoidVisitor<Void> {
 
@@ -286,13 +293,19 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
         printer.print("I");
     }
 
-    public void visit(CommaSeparatedMethodCallExpr commaSeparatedMethodCallExpr, Void arg) {
-        String expressionWithComma = commaSeparatedMethodCallExpr.getExpressions()
+    public void visit(ModifyExpression modifyExpression, Void arg) {
+        printer.print("modify (");
+        modifyExpression.getModifyObject().accept(this, arg);
+        printer.print(") { ");
+
+        String expressionWithComma = modifyExpression.getExpressions()
                 .stream()
-                .map(Node::toString)
+                .map(n -> printConstraint(n))
                 .collect(Collectors.joining(", "));
 
         printer.print(expressionWithComma);
+        printer.print(" }");
+
         printer.print(";");
     }
 

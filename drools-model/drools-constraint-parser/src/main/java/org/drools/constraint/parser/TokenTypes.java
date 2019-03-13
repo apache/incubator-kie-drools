@@ -220,9 +220,10 @@ public class TokenTypes {
             case MVEL_ENDS_WITH:
             case MVEL_LENGTH:
             case NOT:
-            case 150:
+            case 76:
             case 151:
             case 152:
+            case 153:
             // The following are tokens that are only used internally by the lexer
             case ASSIGN:
             case LT:
