@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.Parameter;
@@ -31,7 +32,6 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.constraint.parser.ast.expr.CommaSeparatedMethodCallExpr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.StringUtils;
@@ -282,11 +282,7 @@ public class Consequence {
                 DrlxExpression modifyBlock = DrlxParseUtil.parseExpression(originalBlock);
                 Expression expr = modifyBlock.getExpr();
                 List<Expression> originalMethodCalls;
-                if (expr instanceof CommaSeparatedMethodCallExpr) {
-                    originalMethodCalls = ((CommaSeparatedMethodCallExpr) expr).getExpressions();
-                } else {
-                    originalMethodCalls = Collections.singletonList(expr);
-                }
+                originalMethodCalls = Collections.singletonList(expr);
                 for (Expression e : originalMethodCalls) {
                     MethodCallExpr mc = (MethodCallExpr) e;
                     Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
