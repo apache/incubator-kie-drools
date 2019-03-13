@@ -27,7 +27,7 @@ options {
   JDK_VERSION = "1.8";
   TOKEN_EXTENDS ="TokenBase";
   JAVA_TEMPLATE_TYPE = "modern";
-//   DEBUG_PARSER=true;
+//  DEBUG_PARSER=true;
 }
 
 PARSER_BEGIN(GeneratedDrlConstraintParser)
@@ -1691,9 +1691,6 @@ Expression DrlxExpressionSwitch():
 }
 {
   (
-  LOOKAHEAD(ModifyExpr())
-    ret = ModifyExpr()
-  |
   LOOKAHEAD(PointFreeExprMvel())
     ret = PointFreeExprMvel()
   |
@@ -2147,6 +2144,8 @@ Statement Statement():
             ret = SynchronizedStatement()
         |
             ret = TryStatement()
+        |
+            ret = ModifyStatement()
         )
         { return ret; }
     } catch (ParseException e) {
@@ -2543,6 +2542,33 @@ TryStmt TryStatement():
   		"finally" finallyBlock = Block()
   )
   { return new TryStmt(range(begin, token()), resources, tryBlock, catchs, finallyBlock); }
+}
+
+ModifyStatement ModifyStatement():
+{
+    JavaToken begin;
+    Expression first = null;
+    Expression other = null;
+    NodeList<Expression> all = emptyList();
+    SimpleName modifyObject = null;
+}
+{
+    (
+        (
+            <MODIFY><LPAREN> (modifyObject = SimpleName())<RPAREN> <LBRACE>
+            first = Expression() { begin=token(); all.add(first); }
+            (
+                          <COMMA>
+                          other = Expression() { all.add(other); }
+            )*
+            <RBRACE>
+            <SEMICOLON>
+            {
+                return new ModifyStatement(range(begin, token()), modifyObject, all);
+            }
+
+        )
+    )
 }
 
 
