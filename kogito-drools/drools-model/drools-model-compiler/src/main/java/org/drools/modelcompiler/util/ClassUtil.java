@@ -30,6 +30,10 @@ public class ClassUtil {
 
     public static class NullType { }
 
+    public static String asJavaSourceName( Class<?> clazz ) {
+        return clazz.getCanonicalName().replace( '.', '_' );
+    }
+
     public static List<String> getAccessibleProperties( Class<?> clazz ) {
         return ACCESSIBLE_PROPS_CACHE.computeIfAbsent( clazz, org.drools.core.util.ClassUtils::getAccessibleProperties );
     }

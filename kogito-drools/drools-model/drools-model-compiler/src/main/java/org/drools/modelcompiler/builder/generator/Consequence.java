@@ -23,7 +23,6 @@ import org.drools.javaparser.ast.drlx.expr.CommaSeparatedMethodCallExpr;
 import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
 import org.drools.javaparser.ast.expr.AssignExpr;
 import org.drools.javaparser.ast.expr.CastExpr;
-import org.drools.javaparser.ast.expr.ClassExpr;
 import org.drools.javaparser.ast.expr.EnclosedExpr;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.LambdaExpr;
@@ -46,6 +45,8 @@ import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.javaparser.JavaParser.parseExpression;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
@@ -55,6 +56,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTESCRIPT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 
 public class Consequence {
 
@@ -323,8 +325,9 @@ public class Consequence {
                     String declarationVar = newDeclarations.containsKey( updatedVar ) ? newDeclarations.get( updatedVar ) : updatedVar;
                     Class<?> updatedClass = context.getDeclarationById(declarationVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
 
+                    String domainClassSourceName = asJavaSourceName( updatedClass );
                     bitMaskCreation = new MethodCallExpr( new NameExpr( BitMask.class.getCanonicalName() ), "getPatternMask" );
-                    bitMaskCreation.addArgument( new ClassExpr( toClassOrInterfaceType( updatedClass ) ) );
+                    bitMaskCreation.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + packageModel.getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
                     modifiedProps.forEach( s -> bitMaskCreation.addArgument( new StringLiteralExpr( s ) ) );
                 } else {
                     bitMaskCreation = new MethodCallExpr( new NameExpr( AllSetButLastBitMask.class.getCanonicalName() ), "get" );
