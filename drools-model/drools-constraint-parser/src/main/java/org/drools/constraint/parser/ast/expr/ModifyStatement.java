@@ -4,17 +4,18 @@ import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 
-public class ModifyExpression extends Expression {
+public class ModifyStatement extends Statement {
 
     private final SimpleName modifyObject;
     private final NodeList<Expression> expressions;
 
-    public ModifyExpression(TokenRange tokenRange, SimpleName modifyObject, NodeList<Expression> expressions) {
+    public ModifyStatement(TokenRange tokenRange, SimpleName modifyObject, NodeList<Expression> expressions) {
         super(tokenRange);
         this.modifyObject = modifyObject;
         this.expressions = expressions;

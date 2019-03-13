@@ -120,7 +120,7 @@ import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
-import org.drools.constraint.parser.ast.expr.ModifyExpression;
+import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
@@ -176,7 +176,7 @@ public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
 
     default void visit(DrlNameExpr drlNameExpr, A arg) { }
 
-    default void visit(ModifyExpression modifyExpression, A arg) { }
+    default void visit(ModifyStatement modifyExpression, A arg) { }
 
     @Override
     default void visit(NodeList n, A arg) {

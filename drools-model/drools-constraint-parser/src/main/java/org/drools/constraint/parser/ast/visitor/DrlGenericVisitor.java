@@ -120,7 +120,7 @@ import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
-import org.drools.constraint.parser.ast.expr.ModifyExpression;
+import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
@@ -177,7 +177,7 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
 
     default R visit(DrlNameExpr drlNameExpr, A arg) { return null; }
 
-    default R visit(ModifyExpression modifyExpression, A arg) { return null; }
+    default R visit(ModifyStatement modifyExpression, A arg) { return null; }
 
     @Override
     default R visit(CompilationUnit n, A arg) {
