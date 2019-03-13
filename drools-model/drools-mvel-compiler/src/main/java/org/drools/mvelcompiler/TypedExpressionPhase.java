@@ -102,12 +102,11 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
     @Override
     public TypedExpression visit(MethodCallExpr n, Context arg) {
         TypedExpression last = null;
-        for(Node children : n.getChildNodes()) {
+        for (Node children : n.getChildNodes()) {
             last = children.accept(this, arg);
         }
         return last;
     }
-
 
     @Override
     public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
@@ -144,7 +143,7 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
     public TypedExpression visit(ModifyStatement modifyStatement, Context arg) {
         TypedExpression modifyObjectT = modifyStatement.getModifyObject().accept(this, arg);
         ModifyStatementT modifyStatementT = new ModifyStatementT(modifyStatement, modifyObjectT);
-        for(Node n : modifyStatement.getExpressions()) {
+        for (Node n : modifyStatement.getExpressions()) {
             modifyStatementT.addChildren(n.accept(this, arg));
         }
         return modifyStatementT;
