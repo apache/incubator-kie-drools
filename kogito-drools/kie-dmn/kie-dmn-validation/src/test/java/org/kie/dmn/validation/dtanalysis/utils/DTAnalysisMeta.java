@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -109,8 +110,11 @@ public class DTAnalysisMeta {
             StringLiteralExpr newExpression = new StringLiteralExpr();
             newExpression.setString(string);
             valueExpr = newExpression;
+        } else if (value instanceof Boolean) {
+            Boolean b = (Boolean) value;
+            valueExpr = new BooleanLiteralExpr(b);
         } else {
-            throw new UnsupportedOperationException("boundAsExpression value " + value + "not supported.");
+            throw new UnsupportedOperationException("boundAsExpression value " + value + " not supported.");
         }
         Expression typeExpr = null;
         if (bound.getBoundaryType() == RangeBoundary.OPEN) {
