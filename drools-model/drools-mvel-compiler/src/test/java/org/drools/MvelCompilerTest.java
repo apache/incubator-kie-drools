@@ -55,6 +55,7 @@ public class MvelCompilerTest {
     }
 
     @Test
+    @Ignore
     public void testSetter() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.name = \"Luca\"; }",
