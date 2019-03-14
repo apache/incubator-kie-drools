@@ -29,14 +29,14 @@ endif::[]
 --
 [source,xml,subs="attributes+"]
 ----
-// Required for the DMN runtime API
+<!-- Required for the DMN runtime API -->
 <dependency>
   <groupId>org.kie</groupId>
   <artifactId>kie-dmn-core</artifactId>
   <version>${{PRODUCT_INIT}.version}</version>
 </dependency>
 
-// Required if not using classpath KIE container
+<!-- Required if not using classpath KIE container -->
 <dependency>
   <groupId>org.kie</groupId>
   <artifactId>kie-ci</artifactId>
