@@ -469,29 +469,29 @@ public final class ClassUtils {
                     () -> "get" + field,
                     () -> "is" + field
         )
-                .map( f -> getMethod(clazz, f.get()) )
+                .map( f -> getMethod(clazz, f.get(), new Class<?>[0] ))
                 .filter( Optional::isPresent )
                 .findFirst()
                 .flatMap( Function.identity() )
                 .orElse( null );
     }
 
-    public static Method getSetter(Class<?> clazz, String field) {
+    public static Method getSetter(Class<?> clazz, String field, Class<?>... parameterTypes) {
         return Stream.<Supplier<String>>of(
                 () -> "set" + ucFirst(field),
                 () -> field,
                 () -> "set" + field
         )
-                .map( f -> getMethod(clazz, f.get()) )
+                .map( f -> getMethod(clazz, f.get(), parameterTypes) )
                 .filter( Optional::isPresent )
                 .findFirst()
                 .flatMap( Function.identity() )
                 .orElse( null );
     }
 
-    private static Optional<Method> getMethod(Class<?> clazz, String name) {
+    private static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
         try {
-            return Optional.of( clazz.getMethod(name) );
+            return Optional.of( clazz.getMethod(name, parameterTypes) );
         } catch (NoSuchMethodException e) {
             return Optional.empty();
         }
