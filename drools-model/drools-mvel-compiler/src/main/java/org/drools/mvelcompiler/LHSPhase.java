@@ -9,8 +9,6 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -19,7 +17,6 @@ import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.MethodCallTExpr;
-import org.drools.mvelcompiler.ast.NameTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.VariableDeclarationTExpr;
@@ -35,8 +32,6 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Context> {
 
     static class Context {
-
-        Stack<TypedExpression> lastTypedExpression = new Stack<>();
     }
 
     private final MvelCompilerContext mvelCompilerContext;
@@ -61,9 +56,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     public TypedExpression visit(DrlNameExpr n, Context arg) {
         Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(printConstraint(n), (Class<?>) rhs.getType());
         Class<?> clazz = typeFromDeclarations.getClazz();
-        SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
-        arg.lastTypedExpression.push(simpleNameTExpr);
-        return simpleNameTExpr;
+        return new SimpleNameTExpr(n, clazz);
     }
 
     @Override
