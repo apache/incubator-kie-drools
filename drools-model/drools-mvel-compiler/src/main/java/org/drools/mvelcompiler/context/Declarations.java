@@ -14,4 +14,8 @@ public class Declarations {
     public Optional<Declaration> findDeclaration(String name) {
         return Optional.ofNullable(declarations.get(name));
     }
+
+    public Declaration getOrCreateDeclarations(String name, Class<?> clazz) {
+        return declarations.computeIfAbsent(name, (key) -> new Declaration(name, clazz));
+    }
 }
