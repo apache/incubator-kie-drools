@@ -10,6 +10,7 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -21,6 +22,7 @@ import org.drools.mvelcompiler.ast.MethodCallTExpr;
 import org.drools.mvelcompiler.ast.ModifyStatementT;
 import org.drools.mvelcompiler.ast.NameTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
+import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
@@ -133,6 +135,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(AssignExpr n, Context arg) {
         return n.getValue().accept(this, arg);
+    }
+
+    @Override
+    public TypedExpression visit(StringLiteralExpr n, Context arg) {
+        return new StringLiteralExpressionT(n);
     }
 }
 
