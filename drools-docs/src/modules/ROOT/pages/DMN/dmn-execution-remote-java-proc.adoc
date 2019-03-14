@@ -38,11 +38,12 @@ endif::[]
 * You have the container ID of the KIE container containing the DMN model. If more than one model is present, you must also know the model namespace and model name of the relevant model.
 
 .Procedure
-. In your client application, add the following dependencies to the relevant classpath of your Java project:
+. In your client application, add the following dependency to the relevant classpath of your Java project:
 +
 --
 [source,xml,subs="attributes+"]
 ----
+<!-- Required for the {KIE_SERVER} Java client API -->
 <dependency>
   <groupId>org.kie.server</groupId>
   <artifactId>kie-server-client</artifactId>

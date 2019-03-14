@@ -815,3 +815,4 @@ Example XML (JAXB format) response:
 </response>
 ----
 --
+endif::[]
