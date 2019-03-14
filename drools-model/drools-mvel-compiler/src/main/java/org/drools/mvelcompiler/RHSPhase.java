@@ -16,16 +16,12 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvelcompiler.ast.AssignExprT;
-import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.MethodCallTExpr;
 import org.drools.mvelcompiler.ast.ModifyStatementT;
 import org.drools.mvelcompiler.ast.NameTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
-import org.drools.mvelcompiler.ast.VariableDeclarationTExpr;
-import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
@@ -33,7 +29,7 @@ import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getAccessor;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
-public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, TypedExpressionPhase.Context> {
+public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
     static class Context {
 
@@ -42,7 +38,7 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
 
     private final MvelCompilerContext mvelCompilerContext;
 
-    public TypedExpressionPhase(MvelCompilerContext mvelCompilerContext) {
+    public RHSPhase(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
@@ -109,37 +105,6 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
     }
 
     @Override
-    public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
-        VariableDeclarationTExpr expr = new VariableDeclarationTExpr(n);
-        for (Node e : n.getChildNodes()) {
-            expr.addChildren(e.accept(this, arg));
-        }
-        return expr;
-    }
-
-    @Override
-    public TypedExpression visit(VariableDeclarator n, Context arg) {
-        Optional<TypedExpression> initExpression = n.getInitializer().map(i -> i.accept(this, arg));
-        return new VariableDeclaratorTExpr(n, n.getName(), initExpression);
-    }
-
-    @Override
-    public TypedExpression visit(ExpressionStmt n, Context arg) {
-        ExpressionStmtT expressionStmtT = new ExpressionStmtT(n);
-        TypedExpression expression = n.getExpression().accept(this, arg);
-        expressionStmtT.addChildren(expression);
-        return expressionStmtT;
-    }
-
-    @Override
-    public TypedExpression visit(AssignExpr n, Context arg) {
-        AssignExprT assignExprT = new AssignExprT(n);
-        TypedExpression accept = n.getValue().accept(this, arg);
-        assignExprT.addChildren(accept);
-        return assignExprT;
-    }
-
-    @Override
     public TypedExpression visit(ModifyStatement modifyStatement, Context arg) {
         TypedExpression modifyObjectT = modifyStatement.getModifyObject().accept(this, arg);
         ModifyStatementT modifyStatementT = new ModifyStatementT(modifyStatement, modifyObjectT);
@@ -147,6 +112,27 @@ public class TypedExpressionPhase implements DrlGenericVisitor<TypedExpression, 
             modifyStatementT.addChildren(n.accept(this, arg));
         }
         return modifyStatementT;
+    }
+
+    @Override
+    public TypedExpression visit(ExpressionStmt n, Context arg) {
+        return n.getExpression().accept(this, arg);
+    }
+
+    @Override
+    public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
+        return n.getVariables().iterator().next().accept(this, arg);
+    }
+
+    @Override
+    public TypedExpression visit(VariableDeclarator n, Context arg) {
+        Optional<TypedExpression> initExpression = n.getInitializer().map(i -> i.accept(this, arg));
+        return initExpression.orElse(null);
+    }
+
+    @Override
+    public TypedExpression visit(AssignExpr n, Context arg) {
+        return n.getValue().accept(this, arg);
     }
 }
 
