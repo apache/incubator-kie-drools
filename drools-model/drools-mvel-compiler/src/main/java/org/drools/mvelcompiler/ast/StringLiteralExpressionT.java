@@ -19,4 +19,11 @@ public class StringLiteralExpressionT extends TypedExpression {
     public Node toJavaExpression() {
         return originalExpression;
     }
+
+    @Override
+    public String toString() {
+        return "StringLiteralExpressionT{" +
+                "originalExpression=" + originalExpression +
+                '}';
+    }
 }
