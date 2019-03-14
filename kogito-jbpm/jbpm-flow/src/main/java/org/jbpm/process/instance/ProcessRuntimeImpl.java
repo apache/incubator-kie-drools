@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
@@ -34,9 +33,6 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
-import org.kie.services.time.impl.CronExpression;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
@@ -44,10 +40,8 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
-import org.kie.services.signal.SignalManager;
-import org.jbpm.process.instance.event.SignalManagerFactory;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
+import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
+import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.process.instance.timer.TimerManagerRuntimeAdaptor;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
@@ -70,6 +64,12 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.services.signal.SignalManager;
+import org.kie.services.time.TimerService;
+import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
+import org.kie.services.time.impl.CronExpression;
+import org.kie.services.time.manager.TimerInstance;
+import org.kie.services.time.manager.TimerManager;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -134,36 +134,13 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	}
 	
 	private void initProcessInstanceManager() {
-		String processInstanceManagerClass = ((SessionConfiguration) kruntime.getSessionConfiguration()).getProcessInstanceManagerFactory();
-		try {
-			processInstanceManager = 
-				((ProcessInstanceManagerFactory) loadClass(processInstanceManagerClass).newInstance())
-			        .createProcessInstanceManager(kruntime);
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+		processInstanceManager = new DefaultProcessInstanceManagerFactory().createProcessInstanceManager(kruntime);
+		
 	}
 	
-	private void initSignalManager() {
-		String signalManagerClass = ((SessionConfiguration) kruntime.getSessionConfiguration()).getSignalManagerFactory();
-		try {
-			signalManager = ((SignalManagerFactory) loadClass(signalManagerClass).newInstance())
-		        .createSignalManager(kruntime);
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private Class<?> loadClass(String className) {
-	    try {
-            return getRootClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+	private void initSignalManager() {	
+		signalManager = new DefaultSignalManagerFactory().createSignalManager(kruntime);
+		
 	}
 	
 	private ClassLoader getRootClassLoader() {

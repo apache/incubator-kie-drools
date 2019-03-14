@@ -56,15 +56,12 @@ public class DocumentationHandler extends BaseAbstractHandler implements Handler
 		Element element = parser.endElementBuilder();
 		Object parent = parser.getParent();
 		if (parent instanceof NodeImpl) {
-	        String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
-	        if (text != null) {
-	            text = text.trim();
-	            if ("".equals(text)) {
-	                text = null;
-	            }
-	        }
-	        ((NodeImpl) parent).getMetaData().put("Documentation", text);
-		}
+	        
+	        ((NodeImpl) parent).getMetaData().put("Documentation", extractDocumentationText(element));
+		} else if (parent instanceof org.jbpm.process.core.Process) {
+            
+            ((org.jbpm.process.core.Process) parent).getMetaData().put("Documentation", extractDocumentationText(element));
+        }
 		return parser.getCurrent();
 	}
 
@@ -72,4 +69,15 @@ public class DocumentationHandler extends BaseAbstractHandler implements Handler
 		return null;
 	}
 
+	protected String extractDocumentationText(Element element) {
+	    String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
+        if (text != null) {
+            text = text.trim();
+            if ("".equals(text)) {
+                text = null;
+            }
+        }
+        
+        return text;
+	}
 }

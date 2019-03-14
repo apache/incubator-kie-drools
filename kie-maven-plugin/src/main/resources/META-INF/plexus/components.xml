@@ -9,7 +9,7 @@
             <configuration>
                 <phases>
                     <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-                    <compile>org.apache.maven.plugins:maven-compiler-plugin:compile,org.kie:kie-maven-plugin:generateModel,org.kie:kie-maven-plugin:generateDMNModel,org.apache.maven.plugins:maven-compiler-plugin:compile,org.kie:kie-maven-plugin:build</compile>
+                    <compile>org.apache.maven.plugins:maven-compiler-plugin:compile,org.kie:kie-maven-plugin:generateModel,org.kie:kie-maven-plugin:generateDMNModel,,org.kie:kie-maven-plugin:generateProcessModel,org.apache.maven.plugins:maven-compiler-plugin:compile,org.kie:kie-maven-plugin:build</compile>
                     <!-- proces-classes does not have a default plug-in binding for JAR/KJAR, accordingly to https://maven.apache.org/ref/3-LATEST/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging
                          so can directly declare the inject reactive bytecode goal -->
                     <process-classes>org.kie:kie-maven-plugin:injectreactive</process-classes>

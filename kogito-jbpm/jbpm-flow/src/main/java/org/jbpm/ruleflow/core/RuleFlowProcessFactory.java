@@ -137,6 +137,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     	return exceptionHandler(exception, exceptionHandler);
     }
     
+    public RuleFlowProcessFactory metaData(String name, Object value) {
+        getRuleFlowProcess().setMetaData(name, value);
+        return this;
+    }
+    
     public RuleFlowProcessFactory validate() {
         ProcessValidationError[] errors = RuleFlowProcessValidator.getInstance().validateProcess(getRuleFlowProcess());
         for (ProcessValidationError error : errors) {

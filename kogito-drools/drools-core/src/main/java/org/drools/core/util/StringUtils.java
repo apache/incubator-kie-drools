@@ -1251,4 +1251,16 @@ public class StringUtils {
     public static String uuid() {
         return "x" + UUID.randomUUID().toString().replace( '-', 'x' );
     }
+    
+    public static String capitalize(String string) {
+        if (string == null) {
+            return null;
+        }
+        
+        if (string.length() == 1) {
+            return string.toUpperCase();
+        }
+        
+        return Character.toString(string.charAt(0)).toUpperCase() + string.substring(1);
+    }
 }
