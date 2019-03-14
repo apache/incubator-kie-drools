@@ -9,6 +9,7 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.*;
 
@@ -55,13 +56,12 @@ public class MvelCompilerTest {
     }
 
     @Test
-    @Ignore
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ modify ( $p )  { name = \"Luca\", age = \"35\" }; }",
+             "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
              "{ $p.setName(\"Luca\"); $p.setAge(35); }",
              result -> {
-                 // check it has "name" and "age" as property
+                 assertThat(result.getModifyProperties(), containsInAnyOrder("name", "age"));
              });
     }
 

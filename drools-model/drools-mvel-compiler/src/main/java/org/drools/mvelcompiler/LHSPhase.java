@@ -9,6 +9,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -57,21 +58,12 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     }
 
     @Override
-    public TypedExpression visit(SimpleName n, Context arg) {
-        Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(n.asString(), (Class<?>) rhs.getType());
+    public TypedExpression visit(DrlNameExpr n, Context arg) {
+        Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(printConstraint(n), (Class<?>) rhs.getType());
         Class<?> clazz = typeFromDeclarations.getClazz();
         SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
         arg.lastTypedExpression.push(simpleNameTExpr);
         return simpleNameTExpr;
-    }
-
-    @Override
-    public TypedExpression visit(DrlNameExpr n, Context arg) {
-        NameTExpr nameTExpr = new NameTExpr(n, null);
-        for (Node children : n.getChildNodes()) {
-            nameTExpr.addChildren(children.accept(this, arg));
-        }
-        return nameTExpr;
     }
 
     @Override
@@ -81,10 +73,9 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         }
 
         TypedExpression scope = n.getScope().accept(this, arg);
-        TypedExpression lastTypedExpression = arg.lastTypedExpression.peek();
 
         Class<?> setterArgumentType = (Class<?>) rhs.getType();
-        Class<?> objectClass = toRawClass(lastTypedExpression.getType());
+        Class<?> objectClass = toRawClass(scope.getType());
         String setterName = printConstraint(n.getName());
         Method accessor = getSetter(objectClass, setterName, setterArgumentType);
 
