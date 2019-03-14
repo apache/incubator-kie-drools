@@ -8,18 +8,19 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
+import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.MethodCallTExpr;
-import org.drools.mvelcompiler.ast.ModifyStatementT;
 import org.drools.mvelcompiler.ast.NameTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
@@ -107,16 +108,6 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     @Override
-    public TypedExpression visit(ModifyStatement modifyStatement, Context arg) {
-        TypedExpression modifyObjectT = modifyStatement.getModifyObject().accept(this, arg);
-        ModifyStatementT modifyStatementT = new ModifyStatementT(modifyStatement, modifyObjectT);
-        for (Node n : modifyStatement.getExpressions()) {
-            modifyStatementT.addChildren(n.accept(this, arg));
-        }
-        return modifyStatementT;
-    }
-
-    @Override
     public TypedExpression visit(ExpressionStmt n, Context arg) {
         return n.getExpression().accept(this, arg);
     }
@@ -140,6 +131,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(StringLiteralExpr n, Context arg) {
         return new StringLiteralExpressionT(n);
+    }
+
+    @Override
+    public TypedExpression visit(IntegerLiteralExpr n, Context arg) {
+        return new IntegerLiteralExpressionT(n);
     }
 }
 

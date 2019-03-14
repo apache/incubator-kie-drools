@@ -1,6 +1,9 @@
 package org.drools.constraint.parser.ast.expr;
 
+import java.util.List;
+
 import com.github.javaparser.TokenRange;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -37,5 +40,14 @@ public class ModifyStatement extends Statement {
 
     public SimpleName getModifyObject() {
         return modifyObject;
+    }
+
+    @Override
+    public List<Node> getChildNodes() {
+        NodeList nodeList = NodeList.nodeList();
+        for(Expression e : expressions) {
+            nodeList.add(e);
+        }
+        return nodeList;
     }
 }
