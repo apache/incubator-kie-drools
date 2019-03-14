@@ -76,6 +76,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     @Override
     public TypedExpression visit(FieldAccessExpr n, Context arg) {
+        if(parentIsExpressionStmt(n)) {
+            return rhs;
+        }
+
         TypedExpression scope = n.getScope().accept(this, arg);
         TypedExpression lastTypedExpression = arg.lastTypedExpression.peek();
 
@@ -123,6 +127,13 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         } else {
             return new AssignExprT(n, target, rhs);
         }
+    }
+
+    /*
+        This means there's not LHS
+     */
+    private boolean parentIsExpressionStmt(FieldAccessExpr n) {
+        return n.getParentNode().filter(p -> p instanceof ExpressionStmt).isPresent();
     }
 }
 
