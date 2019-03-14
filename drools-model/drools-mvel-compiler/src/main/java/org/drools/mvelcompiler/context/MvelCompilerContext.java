@@ -23,6 +23,11 @@ public class MvelCompilerContext {
                 .orElseThrow(() -> new MvelCompilerException("No declaration found with name: " + name));
     }
 
+    public Declaration getOrCreateDeclarations(String name, Class<?> clazz) {
+        return declarations
+                .getOrCreateDeclarations(name, clazz);
+    }
+
     public void addCompilationError(String message) {
 
     }

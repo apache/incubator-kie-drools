@@ -58,7 +58,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     @Override
     public TypedExpression visit(SimpleName n, Context arg) {
-        Declaration typeFromDeclarations = mvelCompilerContext.getDeclarations(n.asString());
+        Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(n.asString(), (Class<?>) rhs.getType());
         Class<?> clazz = typeFromDeclarations.getClazz();
         SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
         arg.lastTypedExpression.push(simpleNameTExpr);
