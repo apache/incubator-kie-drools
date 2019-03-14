@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_FCDB1FE0-E9B5-4C17-9CE7-388A935AFDCD" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_6564F6BE-F0F5-47FE-91E4-8BC9D727BA2A" name="Pi" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_FCDB1FE0-E9B5-4C17-9CE7-388A935AFDCD">
+  <dmn:extensionElements/>
+  <dmn:decision id="_C4410017-2953-4B1F-A3D3-0A54C6AD8F08" name="a decision">
+    <dmn:variable id="_70834C20-E4CD-47FE-B550-AF399BBD7CA8" name="a decision" typeRef="string"/>
+    <dmn:informationRequirement id="_F4AAAF1D-3EED-4915-9BF2-6CCB2A8A2519">
+      <dmn:requiredInput href="#_6DFCCE1B-950D-4C31-85C6-61C81B2AC565"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_F32338CF-6F14-4E66-95AE-8BD4276BA75F" hitPolicy="ANY" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_FD31B19C-4C5C-42E5-BAFB-2D2D77C9E206">
+        <dmn:inputExpression id="_DD71827B-E471-4701-AE98-5673034D3290" typeRef="number">
+          <dmn:text>a number</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_2A906E54-976C-4719-B49F-B206678A9913" typeRef="string"/>
+      <dmn:rule id="_D29157E4-9589-4188-A3C6-51A40FF45E79">
+        <dmn:inputEntry id="_240EC8AE-94FC-475A-8BB5-D784C8BE9854">
+          <dmn:text>&lt; 3.1415926535897932384626433832794</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_34D19BE7-99EE-46AC-8B62-2D9E66FFF23B">
+          <dmn:text>"less pi"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_A18DD884-0FB7-4006-A428-2CA41EF0A2A8">
+        <dmn:inputEntry id="_784A61DD-12E9-46BD-B905-D15429BEC1D5">
+          <dmn:text>&gt; 3.1415926535897932384626433832794</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_931FEC6A-871A-42BA-BD37-235CFA20FC02">
+          <dmn:text>"moar pi"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_6DFCCE1B-950D-4C31-85C6-61C81B2AC565" name="a number">
+    <dmn:variable id="_6665A16C-3861-4E3C-87EA-BA9C79532777" name="a number" typeRef="number"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="dmnshape-_C4410017-2953-4B1F-A3D3-0A54C6AD8F08" dmnElementRef="_C4410017-2953-4B1F-A3D3-0A54C6AD8F08" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="448" y="168" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_6DFCCE1B-950D-4C31-85C6-61C81B2AC565" dmnElementRef="_6DFCCE1B-950D-4C31-85C6-61C81B2AC565" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="268" y="168" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_F4AAAF1D-3EED-4915-9BF2-6CCB2A8A2519" dmnElementRef="_F4AAAF1D-3EED-4915-9BF2-6CCB2A8A2519">
+        <di:waypoint x="318" y="193"/>
+        <di:waypoint x="498" y="193"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
