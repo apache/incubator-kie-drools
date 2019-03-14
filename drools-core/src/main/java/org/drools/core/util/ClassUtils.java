@@ -462,8 +462,31 @@ public final class ClassUtils {
     }
 
     public static Method getAccessor(Class<?> clazz, String field) {
-        return Stream.<Supplier<String>>of( () -> "get" + ucFirst(field), () -> field, () -> "is" + ucFirst(field), () -> "get" + field, () -> "is" + field )
-                .map( f -> getMethod(clazz, f.get()) ).filter( Optional::isPresent ).findFirst().flatMap( Function.identity() ).orElse( null );
+        return Stream.<Supplier<String>>of(
+                    () -> "get" + ucFirst(field),
+                    () -> field,
+                    () -> "is" + ucFirst(field),
+                    () -> "get" + field,
+                    () -> "is" + field
+        )
+                .map( f -> getMethod(clazz, f.get()) )
+                .filter( Optional::isPresent )
+                .findFirst()
+                .flatMap( Function.identity() )
+                .orElse( null );
+    }
+
+    public static Method getSetter(Class<?> clazz, String field) {
+        return Stream.<Supplier<String>>of(
+                () -> "set" + ucFirst(field),
+                () -> field,
+                () -> "set" + field
+        )
+                .map( f -> getMethod(clazz, f.get()) )
+                .filter( Optional::isPresent )
+                .findFirst()
+                .flatMap( Function.identity() )
+                .orElse( null );
     }
 
     private static Optional<Method> getMethod(Class<?> clazz, String name) {
