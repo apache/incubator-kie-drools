@@ -18,8 +18,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
+import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
-import org.drools.mvelcompiler.ast.MethodCallTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -76,19 +76,33 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     private SimpleNameTExpr simpleNameAsFirstNode(SimpleName n, Context arg) {
-        Declaration typeFromDeclarations = mvelCompilerContext.getDeclarations(n.asString());
-        Class<?> clazz = typeFromDeclarations.getClazz();
-        SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
-        arg.lastTypedExpression.push(simpleNameTExpr);
-        return simpleNameTExpr;
+        return tryParseAsDeclaration(n, arg)
+                .orElse(new SimpleNameTExpr(n, null));
     }
 
     private TypedExpression simpleNameAsField(SimpleName n, Context arg) {
-        TypedExpression lastTypedExpression = arg.lastTypedExpression.peek();
-        Method accessor = getAccessor((Class)lastTypedExpression.getType(), n.asString());
-        MethodCallTExpr methodCallTExpr = new MethodCallTExpr(n, lastTypedExpression, accessor);
-        arg.lastTypedExpression.push(methodCallTExpr);
-        return methodCallTExpr;
+        return tryParseItAsPropertyAccessor(n, arg)
+                .orElse(new SimpleNameTExpr(n, null));
+    }
+
+    private Optional<SimpleNameTExpr> tryParseAsDeclaration(SimpleName n, Context arg) {
+        Optional<Declaration> typeFromDeclarations = mvelCompilerContext.findDeclarations(n.asString());
+        return typeFromDeclarations.map(d -> {
+            Class<?> clazz = d.getClazz();
+            SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, clazz);
+            arg.lastTypedExpression.push(simpleNameTExpr);
+            return simpleNameTExpr;
+        });
+    }
+
+    private Optional<TypedExpression> tryParseItAsPropertyAccessor(SimpleName n, Context arg) {
+        Optional<TypedExpression> lastTypedExpression = Optional.of(arg.lastTypedExpression.peek());
+        return lastTypedExpression.map(lt -> {
+            Method accessor = getAccessor((Class) lt.getType(), n.asString());
+            FieldToAccessorTExpr fieldToAccessorTExpr = new FieldToAccessorTExpr(n, lt, accessor);
+            arg.lastTypedExpression.push(fieldToAccessorTExpr);
+            return fieldToAccessorTExpr;
+        });
     }
 
     @Override
@@ -97,6 +111,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         for (Node children : n.getChildNodes()) {
             last = children.accept(this, arg);
         }
+
         return last;
     }
 

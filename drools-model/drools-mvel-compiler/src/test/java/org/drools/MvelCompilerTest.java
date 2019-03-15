@@ -35,6 +35,12 @@ public class MvelCompilerTest {
     }
 
     @Test
+    public void testLeaveMethod() {
+        test("{ System.out.println(\"Hello World\"); }",
+             "{ System.out.println(\"Hello World\"); }");
+    }
+
+    @Test
     public void testStringLength() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.name.length; }",
@@ -80,5 +86,10 @@ public class MvelCompilerTest {
                       String actualExpression,
                       String expectedResult) {
         test(testFunction, actualExpression, expectedResult, t -> {});
+    }
+
+    private void test(String actualExpression,
+                      String expectedResult) {
+        test(d -> d, actualExpression, expectedResult, t -> {});
     }
 }
