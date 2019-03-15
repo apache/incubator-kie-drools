@@ -87,6 +87,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
                 .orElseGet(() -> asSimpleName(n, arg));
     }
 
+    // This should be as FieldAccessTExpr
     private TypedExpression asSimpleName(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
         Optional<Type> typedExpression = arg.getScopeType();
