@@ -20,7 +20,7 @@ public class SimpleNameTExpr extends TypedExpression {
 
     @Override
     public Optional<Type> getType() {
-        return Optional.of(clazz);
+        return Optional.ofNullable(clazz);
     }
 
     @Override
