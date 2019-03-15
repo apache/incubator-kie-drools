@@ -34,7 +34,7 @@ public class MvelCompiler {
         for (Statement s : preProcessedStatements) {
             TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
             TypedExpression lhs = new LHSPhase(mvelCompilerContext, rhs).invoke(s);
-            System.out.println(lhs);
+//            System.out.println(lhs);
             Statement expression = (Statement) lhs.toJavaExpression();
             statements.add(expression);
         }
