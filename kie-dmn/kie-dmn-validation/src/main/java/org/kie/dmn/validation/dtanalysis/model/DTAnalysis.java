@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessage.Severity;
-import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
@@ -37,15 +36,18 @@ public class DTAnalysis {
     private final List<Overlap> overlaps = new ArrayList<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
+    private final DDTATable ddtaTable;
 
-    public DTAnalysis(DecisionTable sourceDT) {
+    public DTAnalysis(DecisionTable sourceDT, DDTATable ddtaTable) {
         this.sourceDT = sourceDT;
         this.error = null;
+        this.ddtaTable = ddtaTable;
     }
 
     private DTAnalysis(DecisionTable sourceDT, Throwable error) {
         this.sourceDT = sourceDT;
         this.error = error;
+        this.ddtaTable = null;
     }
 
     public static DTAnalysis ofError(DecisionTable sourceDT, Throwable error) {
@@ -54,6 +56,10 @@ public class DTAnalysis {
 
     public boolean isError() {
         return error != null;
+    }
+
+    public DDTATable getDdtaTable() {
+        return ddtaTable;
     }
 
     public Collection<Hyperrectangle> getGaps() {
@@ -111,7 +117,12 @@ public class DTAnalysis {
     public List<? extends DMNMessage> asDMNMessages() {
         List<? extends DMNMessage> results = new ArrayList<>();
         if (isError()) {
-            DMNMessage m = new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_ERROR, sourceDT.getOutputLabel(), error.getMessage()), DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR);
+            DMNMessage m = new DMNDTAnalysisMessage(this,
+                                                    Severity.WARN,
+                                                    MsgUtil.createMessage(Msg.DTANALYSIS_ERROR_ANALYSIS_SKIPPED,
+                                                                          sourceDT.getOutputLabel(),
+                                                                          error.getMessage()),
+                                                    Msg.DTANALYSIS_ERROR_ANALYSIS_SKIPPED.getType());
             results.addAll((Collection) Arrays.asList(m));
             return results;
         }
@@ -120,7 +131,11 @@ public class DTAnalysis {
 
         // keep last.
         if (results.isEmpty()) {
-            DMNMessage m = new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_EMPTY, sourceDT.getOutputLabel()), DMNMessageType.DECISION_TABLE_ANALYSIS);
+            DMNMessage m = new DMNDTAnalysisMessage(this,
+                                                    Severity.INFO,
+                                                    MsgUtil.createMessage(Msg.DTANALYSIS_EMPTY,
+                                                                          sourceDT.getOutputLabel()),
+                                                    Msg.DTANALYSIS_EMPTY.getType());
             results.addAll((Collection) Arrays.asList(m));
             return results;
         }
@@ -130,7 +145,39 @@ public class DTAnalysis {
     private Collection overlapsAsMessages() {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
         for (Overlap overlap : overlaps) {
-            results.add(new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP, overlap), DMNMessageType.DECISION_TABLE_OVERLAP));
+            switch (sourceDT.getHitPolicy()) {
+                case UNIQUE:
+                    results.add(new DMNDTAnalysisMessage(this,
+                                                         Severity.ERROR,
+                                                         MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE,
+                                                                               overlap.asHumanFriendly(ddtaTable)),
+                                                         Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType()));
+                    break;
+                case ANY:
+                    List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0).intValue() - 1).getOutputEntry();
+                    for (int i = 1; i < overlap.getRules().size(); i++) { // deliberately start index 1 for 2nd overlapping rule number.
+                        int curIndex = overlap.getRules().get(i).intValue() - 1;
+                        List<Comparable<?>> curValue = ddtaTable.getRule().get(curIndex).getOutputEntry();
+                        if (!prevValue.equals(curValue)) {
+                            results.add(new DMNDTAnalysisMessage(this,
+                                                                 Severity.ERROR,
+                                                                 MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY,
+                                                                                       overlap.asHumanFriendly(ddtaTable)),
+                                                                 Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY.getType()));
+                            break;
+                        } else {
+                            prevValue = curValue;
+                        }
+                    }
+                    break;
+                default:
+                    results.add(new DMNDTAnalysisMessage(this,
+                                                         Severity.WARN,
+                                                         MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
+                                                                               overlap.asHumanFriendly(ddtaTable)),
+                                                         Msg.DTANALYSIS_OVERLAP.getType()));
+                    break;
+            }
         }
         return results;
     }
@@ -138,7 +185,11 @@ public class DTAnalysis {
     private Collection gapsAsMessages() {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
         for (Hyperrectangle gap : gaps) {
-            results.add(new DMNDTAnalysisMessage(this, Severity.INFO, MsgUtil.createMessage(Msg.DTANALYSIS_GAP, gap), DMNMessageType.DECISION_TABLE_GAP));
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_GAP,
+                                                                       gap.asHumanFriendly(ddtaTable)),
+                                                 Msg.DTANALYSIS_GAP.getType()));
         }
         return results;
     }

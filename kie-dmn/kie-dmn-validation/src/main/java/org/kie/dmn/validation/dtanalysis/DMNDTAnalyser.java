@@ -19,6 +19,7 @@ package org.kie.dmn.validation.dtanalysis;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
+import org.kie.dmn.validation.dtanalysis.model.BoundValueComparator;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputClause;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputEntry;
 import org.kie.dmn.validation.dtanalysis.model.DDTARule;
@@ -66,6 +68,7 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
+import org.kie.dmn.validation.dtanalysis.model.OverlapSorter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +107,7 @@ public class DMNDTAnalyser {
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableRules(dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
-        DTAnalysis analysis = new DTAnalysis(dt);
+        DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
         LOG.debug("findGaps");
         findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
         LOG.debug("findOverlaps");
@@ -229,14 +232,14 @@ public class DMNDTAnalyser {
             }
             LOG.debug("intervals {}", intervals);
             List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
-            Collections.sort(bounds);
+            Collections.sort(bounds, (Comparator) new OverlapSorter());
             LOG.debug("bounds (sorted) {}", bounds);
 
             List<Interval> activeIntervals = new ArrayList<>();
             Bound<?> lastBound = bounds.get(0);
             for (Bound<?> currentBound : bounds) {
                 LOG.debug("lastBound {} currentBound {}      activeIntervals {}", lastBound, currentBound, activeIntervals);
-                if (activeIntervals.size() > 1 && canBeNewCurrInterval(lastBound, currentBound)) {
+                if (activeIntervals.size() > 1 && canBeNewCurrIntervalForOverlaps(lastBound, currentBound)) {
                     Interval analysisInterval = new Interval(lastBound.isUpperBound() ? invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
                                                              lastBound.getValue(),
                                                              currentBound.getValue(),
@@ -263,6 +266,11 @@ public class DMNDTAnalyser {
             throw new IllegalStateException();
         }
         LOG.debug(".");
+    }
+
+    private static boolean canBeNewCurrIntervalForOverlaps(Bound<?> lastBound, Bound<?> currentBound) {
+        int vCompare = BoundValueComparator.compareValueDispatchingToInf(lastBound, currentBound);
+        return vCompare < 0 || (vCompare == 0 && lastBound.getBoundaryType() == RangeBoundary.CLOSED && currentBound.getBoundaryType() == RangeBoundary.CLOSED);
     }
 
     private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {

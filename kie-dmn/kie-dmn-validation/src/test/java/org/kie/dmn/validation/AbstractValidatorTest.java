@@ -78,6 +78,8 @@ public abstract class AbstractValidatorTest {
     protected Definitions getDefinitions(final String resourceName, final String namespace, final String modelName ) {
         final Definitions definitions = marshaller.unmarshal(getReader(resourceName));
         assertThat( definitions, notNullValue() );
+        assertThat(definitions.getNamespace(), is(namespace));
+        assertThat(definitions.getName(), is(modelName));
         return definitions;
     }
 

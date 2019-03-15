@@ -42,7 +42,7 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
             }
         }
 
-        int valueCompare = compareValueDispatchingToInf(o);
+        int valueCompare = BoundValueComparator.compareValueDispatchingToInf(this, o);
         if (valueCompare != 0) {
             return valueCompare;
         }
@@ -78,13 +78,6 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
         } else {
             return 1;
         }
-    }
-
-    private int compareValueDispatchingToInf(Bound<V> o) {
-        if (this.value != Interval.NEG_INF && this.value != Interval.POS_INF && (o.value == Interval.NEG_INF || o.value == Interval.POS_INF)) {
-            return 0 - o.value.compareTo(this.value);
-        }
-        return this.value.compareTo(o.value);
     }
 
     public V getValue() {
@@ -151,5 +144,9 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
         boolean isValueEqual = left.getValue().equals(right.getValue());
         boolean isBothOpen = left.getBoundaryType() == RangeBoundary.OPEN && right.getBoundaryType() == RangeBoundary.OPEN;
         return isValueEqual && !isBothOpen;
+    }
+
+    public static String boundValueToString(Comparable<?> value) {
+        return value instanceof String ? "\"" + value + "\"" : value.toString();
     }
 }

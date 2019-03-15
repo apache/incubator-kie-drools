@@ -126,4 +126,13 @@ public class Overlap {
         return true;
     }
 
+    public String asHumanFriendly(DDTATable ddtaTable) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Overlap values: ");
+        builder.append(overlap.asHumanFriendly(ddtaTable));
+        builder.append(" for rules: ");
+        builder.append(rules);
+        return builder.toString();
+    }
+
 }
