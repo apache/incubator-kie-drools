@@ -27,8 +27,7 @@ import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getAccessor;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.core.util.ClassUtils.getAccessor;
 
 public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
@@ -86,7 +85,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private TypedExpression simpleNameAsField(SimpleName n, Context arg) {
         TypedExpression lastTypedExpression = arg.lastTypedExpression.peek();
-        Method accessor = getAccessor(toRawClass(lastTypedExpression.getType()), n.asString());
+        Method accessor = getAccessor((Class)lastTypedExpression.getType(), n.asString());
         MethodCallTExpr methodCallTExpr = new MethodCallTExpr(n, lastTypedExpression, accessor);
         arg.lastTypedExpression.push(methodCallTExpr);
         return methodCallTExpr;
