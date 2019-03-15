@@ -1,5 +1,6 @@
 package org.drools.mvelcompiler;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.core.util.ClassUtils;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
@@ -30,6 +32,7 @@ import org.drools.mvelcompiler.util.OptionalUtils;
 
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getAccessor;
+import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
 public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
@@ -57,12 +60,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(FieldAccessExpr n, Context arg) {
         TypedExpression scope = n.getScope().accept(this, arg);
-        TypedExpression name = n.getName().accept(this, arg);
-        if(name instanceof FieldToAccessorTExpr) {
-            return name;
-        } else {
-            return new FieldAccessTExpr(n, scope, name);
-        }
+        return n.getName().accept(this, arg);
     }
 
     @Override
@@ -79,7 +77,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         }
     }
 
-    private SimpleNameTExpr simpleNameAsFirstNode(SimpleName n, Context arg) {
+    private TypedExpression simpleNameAsFirstNode(SimpleName n, Context arg) {
         return tryParseAsDeclaration(n, arg)
                 .orElseGet(() -> asSimpleName(n, arg));
     }
@@ -89,15 +87,26 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
                 .orElseGet(() -> asSimpleName(n, arg));
     }
 
-    private SimpleNameTExpr asSimpleName(SimpleName n, Context arg) {
+    private TypedExpression asSimpleName(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = Optional.of(arg.lastTypedExpression.peek());
-        Type typedExpression = lastTypedExpression.flatMap(TypedExpression::getType).orElse(null);
-        SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, (Class<?>) typedExpression);
-        arg.lastTypedExpression.push(simpleNameTExpr);
-        return simpleNameTExpr;
+        Optional<Type> typedExpression = lastTypedExpression.flatMap(TypedExpression::getType);
+        Optional<Field> fieldType = typedExpression.flatMap(te -> {
+            Class parentClass = (Class) te;
+            Field field = ClassUtils.getField(parentClass, n.asString());
+            return Optional.ofNullable(field);
+        });
+
+        return OptionalUtils.<TypedExpression, Field, TypedExpression>map2(lastTypedExpression, fieldType, (te, ft) -> {
+            Node parent = n.getParentNode().get(); // TODO fix this
+            FieldAccessTExpr simpleNameTExpr = new FieldAccessTExpr(parent, te, ft);
+            arg.lastTypedExpression.push(simpleNameTExpr);
+            return simpleNameTExpr;
+        }).orElseGet(() -> {
+            return new SimpleNameTExpr(n, null);
+        });
     }
 
-    private Optional<SimpleNameTExpr> tryParseAsDeclaration(SimpleName n, Context arg) {
+    private Optional<TypedExpression> tryParseAsDeclaration(SimpleName n, Context arg) {
         Optional<Declaration> typeFromDeclarations = mvelCompilerContext.findDeclarations(n.asString());
         return typeFromDeclarations.map(d -> {
             Class<?> clazz = d.getClazz();
@@ -112,7 +121,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> scopeType = lastTypedExpression.flatMap(TypedExpression::getType);
         Optional<Method> optAccessor = scopeType.flatMap(t -> Optional.ofNullable(getAccessor((Class) t, n.asString())));
 
-        return OptionalUtils.map2(lastTypedExpression, optAccessor, (lt, accessor) -> {
+        return map2(lastTypedExpression, optAccessor, (lt, accessor) -> {
             FieldToAccessorTExpr fieldToAccessorTExpr = new FieldToAccessorTExpr(n, lt, accessor);
             arg.lastTypedExpression.push(fieldToAccessorTExpr);
             return fieldToAccessorTExpr;
@@ -121,12 +130,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(MethodCallExpr n, Context arg) {
-        TypedExpression last = null;
-        for (Node children : n.getChildNodes()) {
-            last = children.accept(this, arg);
-        }
-
-        return last;
+        n.getScope().map(s -> s.accept(this, arg));
+        return n.getName().accept(this, arg);
     }
 
     @Override

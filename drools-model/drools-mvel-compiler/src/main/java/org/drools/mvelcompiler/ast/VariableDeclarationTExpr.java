@@ -22,4 +22,9 @@ public class VariableDeclarationTExpr extends TypedExpression {
     public Node toJavaExpression() {
         return new VariableDeclarationExpr((VariableDeclarator) children.iterator().next().toJavaExpression());
     }
+
+    @Override
+    public String toString() {
+        return "VariableDeclarationTExpr{}";
+    }
 }

@@ -27,4 +27,12 @@ public class SimpleNameTExpr extends TypedExpression {
     public Expression toJavaExpression() {
         return new NameExpr(printConstraint(originalExpression));
     }
+
+    @Override
+    public String toString() {
+        return "SimpleNameTExpr{" +
+                "name=" + printConstraint(originalExpression) +
+                ",clazz=" + clazz +
+                '}';
+    }
 }

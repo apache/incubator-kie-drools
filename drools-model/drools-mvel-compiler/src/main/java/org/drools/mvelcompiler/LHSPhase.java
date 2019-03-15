@@ -1,5 +1,6 @@
 package org.drools.mvelcompiler;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.core.util.ClassUtils;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
@@ -70,7 +72,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         Class<?> setterArgumentType = getRHSType();
 
         return tryParseItAsSetter(n, scope, setterArgumentType)
-                .orElse(new FieldAccessTExpr(n, scope, name));
+                .orElse(new FieldAccessTExpr(n, scope, null)); // TODO public field access
 
     }
 
@@ -105,10 +107,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     @Override
     public TypedExpression visit(ExpressionStmt n, Context arg) {
-        ExpressionStmtT expressionStmtT = new ExpressionStmtT(n);
         TypedExpression expression = n.getExpression().accept(this, arg);
-        expressionStmtT.addChildren(expression);
-        return expressionStmtT;
+        return new ExpressionStmtT(n, expression);
     }
 
     @Override
