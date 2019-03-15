@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
@@ -38,8 +39,8 @@ public class FieldToAccessorTExpr extends TypedExpression {
     }
 
     @Override
-    public Type getType() {
-        return type;
+    public Optional<Type> getType() {
+        return Optional.of(type);
     }
 
     @Override
