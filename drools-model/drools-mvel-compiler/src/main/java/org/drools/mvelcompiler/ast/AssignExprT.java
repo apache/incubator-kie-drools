@@ -30,4 +30,14 @@ public class AssignExprT extends TypedExpression {
                               (Expression) value.toJavaExpression(),
                               originalExpression.getOperator());
     }
+
+    @Override
+    public String toString() {
+        return "AssignExprT\n{" +
+                "\ttarget=" + target +
+                ",\t value=" + value +
+                '}';
+    }
+
+
 }

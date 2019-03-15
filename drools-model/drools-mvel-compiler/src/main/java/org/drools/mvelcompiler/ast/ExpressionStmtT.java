@@ -9,8 +9,11 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 
 public class ExpressionStmtT extends TypedExpression {
 
-    public ExpressionStmtT(ExpressionStmt originalExpression) {
+    private final TypedExpression child;
+
+    public ExpressionStmtT(ExpressionStmt originalExpression, TypedExpression child) {
         super(originalExpression);
+        this.child = child;
     }
 
     @Override
@@ -20,6 +23,13 @@ public class ExpressionStmtT extends TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        return new ExpressionStmt((Expression) children.iterator().next().toJavaExpression());
+        return new ExpressionStmt((Expression) child.toJavaExpression());
+    }
+
+    @Override
+    public String toString() {
+        return "ExpressionStmtT{\n" +
+                "\tchild=" + child +
+                '}';
     }
 }

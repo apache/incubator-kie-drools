@@ -1,5 +1,6 @@
 package org.drools.mvelcompiler.ast;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
@@ -7,26 +8,32 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
-
 public class FieldAccessTExpr extends TypedExpression {
 
     private final TypedExpression scope;
-    private final TypedExpression fieldName;
+    private final Field field;
 
-    public FieldAccessTExpr(FieldAccessExpr originalExpression, TypedExpression scope, TypedExpression fieldName) {
+    public FieldAccessTExpr(Node originalExpression, TypedExpression scope, Field field) {
         super(originalExpression);
         this.scope = scope;
-        this.fieldName = fieldName;
+        this.field = field;
     }
 
     @Override
     public Optional<Type> getType() {
-        return Optional.empty();
+        return Optional.of(field.getType());
     }
 
     @Override
     public Node toJavaExpression() {
-        return new FieldAccessExpr((Expression) scope.toJavaExpression(), printConstraint(fieldName.toJavaExpression()));
+        return new FieldAccessExpr((Expression) scope.toJavaExpression(), field.getName());
+    }
+
+    @Override
+    public String toString() {
+        return "FieldAccessTExpr{" +
+                "scope=" + scope +
+                ", field=" + field +
+                '}';
     }
 }
