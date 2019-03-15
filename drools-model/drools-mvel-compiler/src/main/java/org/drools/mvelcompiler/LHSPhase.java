@@ -15,7 +15,7 @@ import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
-import org.drools.mvelcompiler.ast.MethodCallTExpr;
+import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.VariableDeclarationTExpr;
@@ -70,7 +70,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         String setterName = printConstraint(n.getName());
         Method accessor = getSetter(objectClass, setterName, setterArgumentType);
 
-        return new MethodCallTExpr(n, scope, accessor, singletonList(rhs));
+        return new FieldToAccessorTExpr(n, scope, accessor, singletonList(rhs));
     }
 
     @Override
@@ -104,7 +104,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     @Override
     public TypedExpression visit(AssignExpr n, Context arg) {
         TypedExpression target = n.getTarget().accept(this, arg);
-        if(target instanceof MethodCallTExpr) {
+        if(target instanceof FieldToAccessorTExpr) {
             return target;
         } else {
             return new AssignExprT(n, target, rhs);
