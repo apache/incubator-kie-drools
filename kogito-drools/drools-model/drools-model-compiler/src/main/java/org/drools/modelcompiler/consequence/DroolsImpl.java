@@ -34,7 +34,7 @@ import org.kie.api.runtime.rule.Match;
 import static java.util.Arrays.asList;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.modelcompiler.consequence.LambdaConsequence.adaptBitMask;
+import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext {
     private final KnowledgeHelper knowledgeHelper;

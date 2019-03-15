@@ -23,10 +23,13 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 
 public class FlowExpressionBuilder extends AbstractExpressionBuilder {
 
@@ -116,6 +119,8 @@ public class FlowExpressionBuilder extends AbstractExpressionBuilder {
     private MethodCallExpr buildReactOn(SingleDrlxParseSuccess drlxParseResult, MethodCallExpr exprDSL ) {
         if ( !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() ) ) {
             exprDSL = new MethodCallExpr(exprDSL, REACT_ON_CALL);
+            String domainClassSourceName = asJavaSourceName( drlxParseResult.getPatternType() );
+            exprDSL.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + context.getPackageModel().getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
             drlxParseResult.getReactOnProperties().stream()
                     .map( StringLiteralExpr::new )
                     .forEach( exprDSL::addArgument );

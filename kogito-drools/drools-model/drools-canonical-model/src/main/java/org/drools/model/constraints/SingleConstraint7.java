@@ -44,7 +44,7 @@ public class SingleConstraint7<A, B, C, D, E, F, G> extends AbstractSingleConstr
 
     public SingleConstraint7( Expr7ViewItemImpl<A, B, C, D, E, F, G> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getVar6(), expr.getVar7(), expr.getPredicate());
-        setReactiveProps( expr.getReactiveProps() );
+        setReactivitySpecs( expr.getReactivitySpecs() );
     }
 
     @Override

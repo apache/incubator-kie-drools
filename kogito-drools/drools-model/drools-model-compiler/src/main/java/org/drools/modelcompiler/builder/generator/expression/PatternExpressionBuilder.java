@@ -27,9 +27,12 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 
 import static java.util.Optional.of;
 
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 
 public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
@@ -100,6 +103,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
     private Optional<MethodCallExpr> buildReactOn(SingleDrlxParseSuccess drlxParseResult) {
         if (!drlxParseResult.isTemporal() && !drlxParseResult.getReactOnProperties().isEmpty() && context.isPropertyReactive( drlxParseResult.getPatternType() )) {
             MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
+            String domainClassSourceName = asJavaSourceName( drlxParseResult.getPatternType() );
+            reactOnDSL.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + context.getPackageModel().getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)
                     .forEach(reactOnDSL::addArgument);

@@ -15,16 +15,17 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Tuple;
-import org.kie.services.time.Interval;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.Index;
+import org.kie.services.time.Interval;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
+import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class LambdaConstraint extends AbstractConstraint {
 
@@ -72,10 +73,16 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public BitMask getListenedPropertyMask( Class modifiedClass, List<String> settableProperties ) {
-        if (evaluator.getReactiveProps() == null) {
+        BitMask mask = adaptBitMask( evaluator.getReactivityBitMask() );
+        if (mask != null) {
+            return mask;
+        }
+
+        if (evaluator.getReactiveProps().length == 0) {
             return super.getListenedPropertyMask( modifiedClass, settableProperties );
         }
-        BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
+
+        mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (String prop : evaluator.getReactiveProps()) {
             int pos = settableProperties.indexOf(prop);
             if (pos >= 0) { // Ignore not settable properties

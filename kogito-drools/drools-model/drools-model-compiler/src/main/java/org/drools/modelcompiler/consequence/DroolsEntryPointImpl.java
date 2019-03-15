@@ -24,7 +24,7 @@ import org.drools.model.BitMask;
 import org.drools.model.DroolsEntryPoint;
 import org.kie.api.runtime.rule.EntryPoint;
 
-import static org.drools.modelcompiler.consequence.LambdaConsequence.adaptBitMask;
+import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
 public class DroolsEntryPointImpl implements DroolsEntryPoint {
 

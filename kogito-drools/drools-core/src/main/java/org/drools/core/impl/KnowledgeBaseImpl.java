@@ -16,11 +16,6 @@
 
 package org.drools.core.impl;
 
-import static org.drools.core.util.BitMaskUtil.isSet;
-import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
-import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
-import static org.drools.reflective.util.ClassUtils.convertClassToResourcePath;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -105,10 +100,8 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -116,6 +109,11 @@ import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.util.BitMaskUtil.isSet;
+import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
+import static org.drools.reflective.util.ClassUtils.convertClassToResourcePath;
 
 public class KnowledgeBaseImpl
     implements
@@ -951,22 +949,17 @@ public class KnowledgeBaseImpl
         Collections.sort( allTypeDeclarations );
 
         String lastType = null;
-        try {
-            // add type declarations according to the global order
-            for ( TypeDeclaration newDecl : allTypeDeclarations ) {
-                lastType = newDecl.getTypeClassName();
-                InternalKnowledgePackage newPkg = null;
-                for ( InternalKnowledgePackage kpkg : pkgs ) {
-                    if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
-                        newPkg = kpkg;
-                        break;
-                    }
+        // add type declarations according to the global order
+        for ( TypeDeclaration newDecl : allTypeDeclarations ) {
+            lastType = newDecl.getTypeClassName();
+            InternalKnowledgePackage newPkg = null;
+            for ( InternalKnowledgePackage kpkg : pkgs ) {
+                if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
+                    newPkg = kpkg;
+                    break;
                 }
-                processTypeDeclaration( newDecl, newPkg );
             }
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
+            processTypeDeclaration( newDecl, newPkg );
         }
     }
 
@@ -1032,7 +1025,7 @@ public class KnowledgeBaseImpl
         this.classTypeDeclaration.put( newDecl.getTypeClassName(), newDecl );
     }
 
-    protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) throws ClassNotFoundException {
+    protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) {
         JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
 
         TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( newDecl.getTypeClassName() );
@@ -1040,16 +1033,18 @@ public class KnowledgeBaseImpl
             String className = newDecl.getTypeClassName();
 
             byte [] def = runtime != null ? runtime.getClassDefinition(convertClassToResourcePath(className)) : null;
-            Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
+            try {
+                Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
-            if ( definedKlass == null && newDecl.isNovel() ) {
-                throw new RuntimeException( "Registering null bytes for class " + className );
+                if (newDecl.getTypeClassDef() == null) {
+                    newDecl.setTypeClassDef( new ClassDefinition() );
+                }
+                newDecl.setTypeClass( definedKlass );
+            } catch (ClassNotFoundException e) {
+                if (newDecl.isNovel()) {
+                    throw new RuntimeException( "unable to resolve Type Declaration class '" + className + "'", e );
+                }
             }
-
-            if (newDecl.getTypeClassDef() == null) {
-                newDecl.setTypeClassDef( new ClassDefinition() );
-            }
-            newDecl.setTypeClass( definedKlass );
 
             this.classTypeDeclaration.put( className, newDecl );
             typeDeclaration = newDecl;

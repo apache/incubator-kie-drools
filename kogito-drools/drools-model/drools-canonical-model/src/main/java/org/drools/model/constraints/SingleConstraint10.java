@@ -58,7 +58,7 @@ public class SingleConstraint10<A, B, C, D, E, F, G, H, I, J> extends AbstractSi
     public SingleConstraint10( Expr10ViewItemImpl<A, B, C, D, E, F, G, H, I, J> expr) {
         this(expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getVar3(), expr.getVar4(), expr.getVar5(), expr.getVar6(), expr.getVar7(),
                 expr.getVar8(), expr.getVar9(), expr.getVar10(), expr.getPredicate());
-        setReactiveProps( expr.getReactiveProps() );
+        setReactivitySpecs( expr.getReactivitySpecs() );
     }
 
     @Override

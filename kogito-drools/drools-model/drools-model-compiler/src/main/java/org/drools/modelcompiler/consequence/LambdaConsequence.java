@@ -26,14 +26,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
-import org.drools.model.BitMask;
 import org.drools.model.Variable;
-import org.drools.model.bitmask.AllSetBitMask;
-import org.drools.model.bitmask.AllSetButLastBitMask;
-import org.drools.model.bitmask.EmptyBitMask;
-import org.drools.model.bitmask.EmptyButLastBitMask;
-import org.drools.model.bitmask.LongBitMask;
-import org.drools.model.bitmask.OpenBitSet;
 
 public class LambdaConsequence implements Consequence {
 
@@ -90,27 +83,5 @@ public class LambdaConsequence implements Consequence {
     private static InternalFactHandle getOriginalFactHandle(InternalFactHandle handle) {
         InternalFactHandle linkedFH = handle.isEvent() ? ((EventFactHandle )handle).getLinkedFactHandle() : null;
         return linkedFH != null ? linkedFH : handle;
-    }
-
-    static org.drools.core.util.bitmask.BitMask adaptBitMask(BitMask mask) {
-        if (mask instanceof LongBitMask) {
-            return new org.drools.core.util.bitmask.LongBitMask( ( (LongBitMask) mask ).asLong() );
-        }
-        if (mask instanceof EmptyBitMask) {
-            return org.drools.core.util.bitmask.EmptyBitMask.get();
-        }
-        if (mask instanceof AllSetBitMask) {
-            return org.drools.core.util.bitmask.AllSetBitMask.get();
-        }
-        if (mask instanceof AllSetButLastBitMask) {
-            return org.drools.core.util.bitmask.AllSetButLastBitMask.get();
-        }
-        if (mask instanceof EmptyButLastBitMask) {
-            return org.drools.core.util.bitmask.EmptyButLastBitMask.get();
-        }
-        if (mask instanceof OpenBitSet) {
-            return new org.drools.core.util.bitmask.OpenBitSet( ( (OpenBitSet) mask ).getBits(), ( (OpenBitSet) mask ).getNumWords() );
-        }
-        throw new IllegalArgumentException( "Unknown bitmask: " + mask );
     }
 }

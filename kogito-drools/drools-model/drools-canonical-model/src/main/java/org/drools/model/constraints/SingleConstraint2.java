@@ -30,7 +30,7 @@ public class SingleConstraint2<A, B> extends AbstractSingleConstraint {
     public SingleConstraint2(Expr2ViewItemImpl<A, B> expr) {
         this( expr.getExprId(), expr.getFirstVariable(), expr.getVar2(), expr.getPredicate() );
         setIndex( expr.getIndex() );
-        setReactiveProps( expr.getReactiveProps() );
+        setReactivitySpecs( expr.getReactivitySpecs() );
     }
 
     @Override
