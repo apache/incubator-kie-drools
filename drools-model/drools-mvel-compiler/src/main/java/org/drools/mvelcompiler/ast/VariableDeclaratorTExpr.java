@@ -39,4 +39,13 @@ public class VariableDeclaratorTExpr extends TypedExpression {
             return new VariableDeclarator(initializationExpressionType, name.asString(), (Expression) ie.toJavaExpression());
         }).orElse(originalNode);
     }
+
+    @Override
+    public String toString() {
+        return "VariableDeclaratorTExpr{" +
+                "originalNode=" + originalNode +
+                ", name=" + name +
+                ", initExpression=" + initExpression +
+                '}';
+    }
 }

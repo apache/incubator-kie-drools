@@ -34,13 +34,5 @@ public abstract class TypedExpression {
             return toJavaExpression();
         }
     }
-
-    @Override
-    public String toString() {
-        return "TypedExpression{" +
-                "originalExpression=" + printConstraint(originalExpression) +
-                ", children=" + children.stream().map(Object::toString).collect(Collectors.joining()) +
-                '}';
-    }
 }
 
