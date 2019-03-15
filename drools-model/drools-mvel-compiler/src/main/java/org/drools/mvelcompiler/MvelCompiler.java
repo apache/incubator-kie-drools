@@ -40,4 +40,9 @@ public class MvelCompiler {
 
         return new ParsingResult(statements).addModifyProperties(modifiedProperties);
     }
+
+    public static String sanitizeMvelScript(String mvelScript) {
+        String withSemiColons = mvelScript.replace("\n", ";");
+        return String.format("{ %s } ", withSemiColons);
+    }
 }
