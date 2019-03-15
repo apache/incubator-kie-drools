@@ -21,7 +21,6 @@ import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
-import org.drools.mvelcompiler.ast.SimpleNameExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -82,12 +81,20 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private SimpleNameTExpr simpleNameAsFirstNode(SimpleName n, Context arg) {
         return tryParseAsDeclaration(n, arg)
-                .orElse(new SimpleNameTExpr(n, null));
+                .orElseGet(() -> asSimpleName(n, arg));
     }
 
     private TypedExpression simpleNameAsField(SimpleName n, Context arg) {
         return tryParseItAsPropertyAccessor(n, arg)
-                .orElse(new SimpleNameExpr(n));
+                .orElseGet(() -> asSimpleName(n, arg));
+    }
+
+    private SimpleNameTExpr asSimpleName(SimpleName n, Context arg) {
+        Optional<TypedExpression> lastTypedExpression = Optional.of(arg.lastTypedExpression.peek());
+        Type typedExpression = lastTypedExpression.flatMap(TypedExpression::getType).orElse(null);
+        SimpleNameTExpr simpleNameTExpr = new SimpleNameTExpr(n, (Class<?>) typedExpression);
+        arg.lastTypedExpression.push(simpleNameTExpr);
+        return simpleNameTExpr;
     }
 
     private Optional<SimpleNameTExpr> tryParseAsDeclaration(SimpleName n, Context arg) {

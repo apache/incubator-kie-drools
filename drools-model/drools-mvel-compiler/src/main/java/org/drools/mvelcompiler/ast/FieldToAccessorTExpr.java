@@ -31,11 +31,7 @@ public class FieldToAccessorTExpr extends TypedExpression {
     }
 
     public FieldToAccessorTExpr(Node expression, TypedExpression scope, Method accessor) {
-        super(expression);
-        this.scope = scope;
-        this.accessor = accessor;
-        this.type = accessor.getGenericReturnType();
-        this.arguments = Collections.emptyList();
+        this(expression, scope, accessor, Collections.emptyList());
     }
 
     @Override

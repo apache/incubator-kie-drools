@@ -39,6 +39,10 @@ public class MvelCompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.parentPublic.getParent().name; } ",
              "{ $p.parentPublic.getParent().getName(); }");
+
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.getParent().parentPublic.name; } ",
+             "{ $p.getParent().parentPublic.getName(); }");
     }
 
     @Test
