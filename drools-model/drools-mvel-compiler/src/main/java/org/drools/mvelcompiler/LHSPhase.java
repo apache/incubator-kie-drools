@@ -2,7 +2,6 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
-import java.util.Stack;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -27,7 +26,6 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 import static java.util.Collections.singletonList;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getSetter;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Context> {
 
@@ -68,7 +66,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         TypedExpression scope = n.getScope().accept(this, arg);
 
         Class<?> setterArgumentType = (Class<?>) rhs.getType();
-        Class<?> objectClass = toRawClass(scope.getType());
+        Class<?> objectClass = (Class)scope.getType();
         String setterName = printConstraint(n.getName());
         Method accessor = getSetter(objectClass, setterName, setterArgumentType);
 
