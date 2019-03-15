@@ -15,6 +15,7 @@ import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
+import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -52,7 +53,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     @Override
     public TypedExpression visit(DrlNameExpr n, Context arg) {
-        Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(printConstraint(n), (Class<?>) rhs.getType());
+        Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(printConstraint(n), getRHSType());
         Class<?> clazz = typeFromDeclarations.getClazz();
         return new SimpleNameTExpr(n, clazz);
     }
@@ -64,13 +65,22 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         }
 
         TypedExpression scope = n.getScope().accept(this, arg);
+        TypedExpression name = n.getName().accept(this, arg);
 
-        Class<?> setterArgumentType = (Class<?>) rhs.getType();
-        Class<?> objectClass = (Class)scope.getType();
-        String setterName = printConstraint(n.getName());
-        Method accessor = getSetter(objectClass, setterName, setterArgumentType);
+        Class<?> setterArgumentType = getRHSType();
 
-        return new FieldToAccessorTExpr(n, scope, accessor, singletonList(rhs));
+        return tryParseItAsSetter(n, scope, setterArgumentType)
+                .orElse(new FieldAccessTExpr(n, scope, name));
+
+    }
+
+    private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
+        return scope.getType().map(scopeType -> {
+            String setterName = printConstraint(n.getName());
+            Method accessor = getSetter((Class<?>) scopeType, setterName, setterArgumentType);
+
+            return new FieldToAccessorTExpr(n, scope, accessor, singletonList(rhs));
+        });
     }
 
     @Override
@@ -116,6 +126,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
      */
     private boolean parentIsExpressionStmt(FieldAccessExpr n) {
         return n.getParentNode().filter(p -> p instanceof ExpressionStmt).isPresent();
+    }
+
+    private Class<?> getRHSType() {
+        return (Class<?>) rhs.getType().orElseThrow(() -> new MvelCompilerException("RHS doesn't have a type"));
     }
 }
 

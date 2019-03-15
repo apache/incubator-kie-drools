@@ -1,6 +1,7 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
@@ -13,8 +14,8 @@ public class ExpressionStmtT extends TypedExpression {
     }
 
     @Override
-    public Type getType() {
-        return null;
+    public Optional<Type> getType() {
+        return Optional.empty();
     }
 
     @Override

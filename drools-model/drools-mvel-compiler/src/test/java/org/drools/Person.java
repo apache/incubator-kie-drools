@@ -7,6 +7,8 @@ public class Person {
 
     private Person parent;
 
+    public Person parentPublic;
+
     public Person(String name) {
         this.name = name;
     }

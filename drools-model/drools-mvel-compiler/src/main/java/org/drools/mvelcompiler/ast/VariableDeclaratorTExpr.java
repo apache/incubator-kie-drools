@@ -2,12 +2,15 @@ package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.SimpleName;
+
+import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
 public class VariableDeclaratorTExpr extends TypedExpression {
 
@@ -23,14 +26,16 @@ public class VariableDeclaratorTExpr extends TypedExpression {
     }
 
     @Override
-    public Type getType() {
-        return initExpression.map(typedExpression -> typedExpression.children.get(0).getType()).orElse(null);
+    public Optional<Type> getType() {
+        return initExpression.flatMap(typedExpression -> typedExpression.children.get(0).getType());
     }
 
     @Override
     public Node toJavaExpression() {
-        return initExpression.map(ie -> {
-            com.github.javaparser.ast.type.Type initializationExpressionType = JavaParser.parseType(ie.getType().getTypeName());
+        final Optional<Type> ieType = initExpression.flatMap(TypedExpression::getType);
+
+        return map2(initExpression, ieType, (ie, type) -> {
+            com.github.javaparser.ast.type.Type initializationExpressionType = JavaParser.parseType(type.getTypeName());
             return new VariableDeclarator(initializationExpressionType, name.asString(), (Expression) ie.toJavaExpression());
         }).orElse(originalNode);
     }

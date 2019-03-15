@@ -35,7 +35,15 @@ public class MvelCompilerTest {
     }
 
     @Test
-    public void testLeaveMethod() {
+    public void testPublicField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.parentPublic.getParent().name; } ",
+             "{ $p.parentPublic.getParent().getName(); }");
+    }
+
+    @Test
+    @Ignore
+    public void testUncompiledMethod() {
         test("{ System.out.println(\"Hello World\"); }",
              "{ System.out.println(\"Hello World\"); }");
     }
