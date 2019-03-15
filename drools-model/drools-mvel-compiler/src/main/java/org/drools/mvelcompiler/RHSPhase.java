@@ -36,10 +36,14 @@ import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
     static class Context {
-        final TypedExpression scope;
+        final Optional<TypedExpression> scope;
 
         Context(TypedExpression scope) {
-            this.scope = scope;
+            this.scope = Optional.ofNullable(scope);
+        }
+
+        Optional<Type> getScopeType() {
+            return scope.flatMap(TypedExpression::getType);
         }
     }
 
@@ -84,8 +88,9 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     private TypedExpression asSimpleName(SimpleName n, Context arg) {
-        Optional<TypedExpression> lastTypedExpression = Optional.of(arg.scope);
-        Optional<Type> typedExpression = lastTypedExpression.flatMap(TypedExpression::getType);
+        Optional<TypedExpression> lastTypedExpression = arg.scope;
+        Optional<Type> typedExpression = arg.getScopeType();
+
         Optional<Field> fieldType = typedExpression.flatMap(te -> {
             Class parentClass = (Class) te;
             Field field = ClassUtils.getField(parentClass, n.asString());
@@ -107,23 +112,23 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     }
 
     private Optional<TypedExpression> tryParseItAsPropertyAccessor(SimpleName n, Context arg) {
-        Optional<TypedExpression> lastTypedExpression = Optional.of(arg.scope);
-        Optional<Type> scopeType = lastTypedExpression.flatMap(TypedExpression::getType);
+        Optional<TypedExpression> lastTypedExpression = arg.scope;
+        Optional<Type> scopeType = arg.getScopeType();
         Optional<Method> optAccessor = scopeType.flatMap(t -> Optional.ofNullable(getAccessor((Class) t, n.asString())));
 
         return map2(lastTypedExpression, optAccessor, (lt, accessor) -> new FieldToAccessorTExpr(n, lt, accessor));
     }
 
     @Override
-    public TypedExpression visit(MethodCallExpr n, Context arg) {
-        Optional<TypedExpression> typedExpression = n.getScope().map(s -> s.accept(this, arg));
-        return n.getName().accept(this, new Context(typedExpression.orElse(null)));
-    }
-
-    @Override
     public TypedExpression visit(FieldAccessExpr n, Context arg) {
         TypedExpression scope = n.getScope().accept(this, arg);
         return n.getName().accept(this, new Context(scope));
+    }
+
+    @Override
+    public TypedExpression visit(MethodCallExpr n, Context arg) {
+        Optional<TypedExpression> typedExpression = n.getScope().map(s -> s.accept(this, arg));
+        return n.getName().accept(this, new Context(typedExpression.orElse(null)));
     }
 
     @Override
