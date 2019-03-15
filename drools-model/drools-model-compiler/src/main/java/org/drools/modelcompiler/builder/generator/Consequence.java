@@ -30,6 +30,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
@@ -40,12 +41,16 @@ import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.drools.mvelcompiler.MvelCompiler;
+import org.drools.mvelcompiler.ParsingResult;
+import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.JavaParser.parseExpression;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
@@ -120,7 +125,19 @@ public class Consequence {
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
+
+            String consequence = ruleDescr.getConsequence().toString();
+            String mvelBlock = MvelCompiler.sanitizeMvelScript(consequence);
+            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext();
+
+            for(DeclarationSpec d : context.getAllDeclarations()) {
+                Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getType());
+                mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
+            }
+
             executeCall = executeScriptCall(ruleDescr, onCall);
+            ParsingResult compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
+
         }
 
         if(context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
