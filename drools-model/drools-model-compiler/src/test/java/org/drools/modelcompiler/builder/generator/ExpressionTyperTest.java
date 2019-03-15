@@ -62,6 +62,11 @@ public class ExpressionTyperTest {
     }
 
     @Test
+    public void prova2() {
+        assertEquals("System.out.println(\"Hello World\");", toTypedExpression("System.out.println(\"Hello World\");", null).getExpression().toString());
+    }
+
+    @Test
     public void inlineCastTest() {
         String result = "((org.drools.modelcompiler.domain.Person) _this).getName()";
         assertEquals(result, toTypedExpression("this#Person.name", Object.class).getExpression().toString());

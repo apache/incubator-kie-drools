@@ -13,7 +13,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
-public class MethodCallTExpr extends TypedExpression {
+public class FieldToAccessorTExpr extends TypedExpression {
 
     private final TypedExpression scope;
     private final Type type;
@@ -21,7 +21,7 @@ public class MethodCallTExpr extends TypedExpression {
 
     private final List<TypedExpression> arguments;
 
-    public MethodCallTExpr(Node expression, TypedExpression scope, Method accessor, List<TypedExpression> arguments) {
+    public FieldToAccessorTExpr(Node expression, TypedExpression scope, Method accessor, List<TypedExpression> arguments) {
         super(expression);
         this.scope = scope;
         this.accessor = accessor;
@@ -29,7 +29,7 @@ public class MethodCallTExpr extends TypedExpression {
         this.arguments = arguments;
     }
 
-    public MethodCallTExpr(Node expression, TypedExpression scope, Method accessor) {
+    public FieldToAccessorTExpr(Node expression, TypedExpression scope, Method accessor) {
         super(expression);
         this.scope = scope;
         this.accessor = accessor;
@@ -53,7 +53,7 @@ public class MethodCallTExpr extends TypedExpression {
 
     @Override
     public String toString() {
-        return "MethodCallTExpr{" +
+        return "FieldToAccessorTExpr{" +
                 "expression=" + printConstraint(originalExpression) +
                 ", scope=" + scope.toString() +
                 ", type=" + type +
