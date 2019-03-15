@@ -9,18 +9,15 @@ import com.github.javaparser.ast.expr.NameExpr;
 
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
-public class SimpleNameTExpr extends TypedExpression {
+public class SimpleNameExpr extends TypedExpression {
 
-    private final Class<?> clazz;
-
-    public SimpleNameTExpr(Node originalExpression, Class<?> clazz) {
+    public SimpleNameExpr(Node originalExpression) {
         super(originalExpression);
-        this.clazz = clazz;
     }
 
     @Override
     public Optional<Type> getType() {
-        return Optional.of(clazz);
+        return Optional.empty();
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.drools.mvelcompiler.ast;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
@@ -23,7 +24,7 @@ public abstract class TypedExpression {
         return this;
     }
 
-    public abstract Type getType();
+    public abstract Optional<Type> getType();
 
     public Node toJavaExpression() {
         if (!children.isEmpty()) {

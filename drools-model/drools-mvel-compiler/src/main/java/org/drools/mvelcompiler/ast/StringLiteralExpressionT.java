@@ -1,6 +1,7 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 
@@ -11,8 +12,8 @@ public class StringLiteralExpressionT extends TypedExpression {
     }
 
     @Override
-    public Type getType() {
-        return String.class;
+    public Optional<Type> getType() {
+        return Optional.of(String.class);
     }
 
     @Override
