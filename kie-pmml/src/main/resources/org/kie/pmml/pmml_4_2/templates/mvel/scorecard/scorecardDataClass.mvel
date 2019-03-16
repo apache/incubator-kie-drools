@@ -22,6 +22,7 @@ import java.util.Map;
 import org.kie.pmml.pmml_4_2.model.AbstractPMMLData;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @comment{
    The class that is generated from this MVEL template is meant to
