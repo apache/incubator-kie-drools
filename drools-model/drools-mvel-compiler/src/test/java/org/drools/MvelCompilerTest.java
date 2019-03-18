@@ -46,7 +46,6 @@ public class MvelCompilerTest {
     }
 
     @Test
-    @Ignore
     public void testUncompiledMethod() {
         test("{ System.out.println(\"Hello World\"); }",
              "{ System.out.println(\"Hello World\"); }");

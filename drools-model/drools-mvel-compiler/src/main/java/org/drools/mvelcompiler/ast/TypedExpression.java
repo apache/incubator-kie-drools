@@ -4,11 +4,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
-
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
 public abstract class TypedExpression {
 
