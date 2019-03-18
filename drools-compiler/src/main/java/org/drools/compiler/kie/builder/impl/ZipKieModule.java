@@ -139,7 +139,7 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
                 }); 
             } 
         } else if (urlPath.indexOf( '!' ) > 0) {
-            urlPath = urlPath.substring( urlPath.lastIndexOf( '!' ) + 1 );
+            urlPath = urlPath.substring( urlPath.lastIndexOf( '!' ) + 1 ).replace("\\", "/");
             ArrayList<ZipEntry> entries = new ArrayList<>();
             // read jar file from uber-jar
             InputStream in = this.getClass().getResourceAsStream(urlPath);
