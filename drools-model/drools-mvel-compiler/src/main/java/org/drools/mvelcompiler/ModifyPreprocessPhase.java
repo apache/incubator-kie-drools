@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -13,10 +14,12 @@ import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.ModifyStatement;
 
 import static java.util.Collections.singletonList;
+import static org.drools.core.util.StringUtils.lcFirst;
 
 public class ModifyPreprocessPhase {
 
     static class ModifyPreprocessPhaseResult {
+
         final List<Statement> statements;
         final List<String> modifyProperties;
 
@@ -56,6 +59,20 @@ public class ModifyPreprocessPhase {
                     assignExpr.setTarget(fieldAccessWithScope);
 
                     return assignExpr;
+                });
+
+        modifyStatement
+                .findAll(MethodCallExpr.class)
+                .replaceAll(mcExpr -> {
+
+                    SimpleName scope = modifyStatement.getModifyObject();
+                    DrlNameExpr newScope = new DrlNameExpr(scope);
+                    mcExpr.setScope(newScope);
+
+                    final String methodName = mcExpr.getName().asString();
+                    modifyProperties.add(lcFirst(methodName.replace("set", "")));
+
+                    return mcExpr;
                 });
 
         List<Statement> statements = modifyStatement.getExpressions()
