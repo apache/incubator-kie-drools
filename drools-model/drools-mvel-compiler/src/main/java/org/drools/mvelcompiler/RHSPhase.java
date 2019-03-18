@@ -3,11 +3,14 @@ package org.drools.mvelcompiler;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -20,9 +23,11 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.core.util.ClassUtils;
+import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
+import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -91,7 +96,6 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
                 .orElseGet(() -> new UnalteredTypedExpression(n));
     }
 
-    // This should be as FieldAccessTExpr
     private Optional<TypedExpression> asFieldAccessTExpr(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
         Optional<Type> typedExpression = arg.getScopeType();
@@ -132,13 +136,21 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(MethodCallExpr n, Context arg) {
-        Optional<TypedExpression> typedExpression = n.getScope().map(s -> s.accept(this, arg));
-        TypedExpression methodCall = n.getName().accept(this, new Context(typedExpression.orElse(null)));
+        Optional<TypedExpression> scope = n.getScope().map(s -> s.accept(this, arg));
+        TypedExpression name = n.getName().accept(this, new Context(scope.orElse(null)));
+        final List<TypedExpression> arguments = new ArrayList<>(n.getArguments().size());
         for(Expression child : n.getArguments()) {
             TypedExpression a = child.accept(this, arg);
-            methodCall.addChildren(a);
+            arguments.add(a);
         }
-        return methodCall;
+        return new MethodCallExprT(n, n.getName().asString(), scope, arguments);
+    }
+
+    @Override
+    public TypedExpression visit(BinaryExpr n, Context arg) {
+        TypedExpression left = n.getLeft().accept(this, arg);
+        TypedExpression right = n.getRight().accept(this, arg);
+        return new BinaryTExpr(n, left, right, n.getOperator());
     }
 
     @Override

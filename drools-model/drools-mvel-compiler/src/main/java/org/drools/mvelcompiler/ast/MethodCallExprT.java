@@ -1,0 +1,42 @@
+package org.drools.mvelcompiler.ast;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
+
+public class MethodCallExprT extends TypedExpression {
+
+    private final String name;
+    private final Optional<TypedExpression> scope;
+    private final List<TypedExpression> arguments;
+
+    public MethodCallExprT(Node originalExpression, String name, Optional<TypedExpression> scope, List<TypedExpression> arguments) {
+        super(originalExpression);
+        this.name = name;
+        this.scope = scope;
+        this.arguments = arguments;
+    }
+
+    @Override
+    public Optional<Type> getType() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Node toJavaExpression() {
+        Node scopeE = scope.map(TypedExpression::toJavaExpression).orElse(null);
+        List<Expression> arguments = this.arguments
+                .stream()
+                .map(a -> (Expression)a.toJavaExpression())
+                .collect(Collectors.toList());
+
+        return new MethodCallExpr((Expression) scopeE, name, nodeList(arguments));
+    }
+}
