@@ -502,6 +502,16 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    public void testModifyStatementSemicolon() {
+        String expr = "{ modify ( $p )  { name = \"Luca\"; }; }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    modify ($p) { name = \"Luca\" };\n" +
+                             "}", printConstraint(expression));
+    }
+
+    @Test
     public void testNewExpression() {
         String expr = "money == new BigInteger(\"3\")";
 
