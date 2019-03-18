@@ -95,6 +95,14 @@ public class MvelCompilerTest {
              result -> assertThat(result.getModifyProperties(), containsInAnyOrder("age")));
     }
 
+    @Test
+    public void testModifyWithAssignment() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify($p) { age = $p.age+1 }; }",
+             "{ $p.setAge($p.getAge() + 1); }",
+             result -> assertThat(result.getModifyProperties(), containsInAnyOrder("age")));
+    }
+
     private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
                       String actualExpression,
                       String expectedResult,

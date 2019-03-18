@@ -22,7 +22,7 @@ public class BinaryTExpr extends TypedExpression {
 
     @Override
     public Optional<Type> getType() {
-        return Optional.empty();
+        return right.getType();
     }
 
     @Override
