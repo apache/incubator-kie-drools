@@ -70,7 +70,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(SimpleName n, Context arg) {
-        if (arg.scope == null) { // first node
+        if (!arg.scope.isPresent()) { // first node
             return simpleNameAsFirstNode(n, arg);
         } else {
             return simpleNameAsField(n, arg);
