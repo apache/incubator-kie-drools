@@ -322,6 +322,16 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
+    public ScoreDirectorFactoryConfig  withConstraintProviderClass(Class<? extends ConstraintProvider> constraintProviderClass) {
+        this.constraintProviderClass = constraintProviderClass;
+        return this;
+    }
+
+    public ScoreDirectorFactoryConfig  withConstraintProviderCustomProperties(Map<String, String> constraintProviderCustomProperties) {
+        this.constraintProviderCustomProperties = constraintProviderCustomProperties;
+        return this;
+    }
+
     public ScoreDirectorFactoryConfig withIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
         return this;
