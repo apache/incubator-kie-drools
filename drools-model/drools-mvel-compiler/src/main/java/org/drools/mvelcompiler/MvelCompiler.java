@@ -43,7 +43,12 @@ public class MvelCompiler {
     }
 
     public static String sanitizeMvelScript(String mvelScript) {
-        String withSemiColons = mvelScript.replace("\n", ";");
+        String withSemiColons;
+        if(mvelScript.contains("\n")) {
+            withSemiColons = mvelScript.replace("\n", ";");
+        } else {
+            withSemiColons = mvelScript + ";";
+        }
         return String.format("{ %s } ", withSemiColons);
     }
 }
