@@ -72,13 +72,9 @@ public class Interval {
     @Override
     public String toString() {
         return (lowerBound.getBoundaryType() == RangeBoundary.OPEN ? "(" : "[") +
-               " " + boundValueToString(lowerBound.getValue()) +
-               " .. " + boundValueToString(upperBound.getValue()) +
+               " " + Bound.boundValueToString(lowerBound.getValue()) +
+               " .. " + Bound.boundValueToString(upperBound.getValue()) +
                " " + (upperBound.getBoundaryType() == RangeBoundary.OPEN ? ")" : "]");
-    }
-
-    private String boundValueToString(Comparable<?> value) {
-        return value instanceof String ? "\"" + value + "\"" : value.toString();
     }
 
     public Bound<?> getLowerBound() {

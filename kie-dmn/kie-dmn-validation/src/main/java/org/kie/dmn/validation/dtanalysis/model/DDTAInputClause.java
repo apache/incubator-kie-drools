@@ -51,7 +51,7 @@ public class DDTAInputClause {
     }
 
     public boolean isDiscreteDomain() {
-        return discreteValues != null;
+        return discreteValues != null && !discreteValues.isEmpty();
     }
 
 }

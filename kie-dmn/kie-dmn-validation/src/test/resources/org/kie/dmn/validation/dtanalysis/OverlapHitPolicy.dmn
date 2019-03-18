@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_3010653A-DD3F-4C88-89DA-3FDD845F6604" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_034727F5-4FFB-4F3A-AA22-A1B9C6498A8E" name="OverlapHitPolicy" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_3010653A-DD3F-4C88-89DA-3FDD845F6604">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_E8796DD0-55A6-4062-BAC5-9F4393DEB0CA" name="tRiskCategory" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_D6B4AC5D-23E7-4B2A-A3EE-8DD03263B5E4">
+      <dmn:text>"High", "Medium", "Low"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:decision id="_493259A7-424A-488D-8864-33D07C234F7B" name="Risk Category">
+    <dmn:variable id="_C538B24C-DE6E-493E-BFA9-18946E484788" name="Risk Category" typeRef="tRiskCategory"/>
+    <dmn:informationRequirement id="_1C1CD709-24B7-4D0F-99F4-BF8FAE6C6250">
+      <dmn:requiredInput href="#_EDC1B517-6DE8-4FC3-B22F-1E1B192DEE73"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_C4A1625B-0606-4F2D-9779-49B1A981718E" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_B9B26C1F-C580-45F4-9B6A-675FB0F006C7">
+        <dmn:inputExpression id="_BCF01A8D-0D9E-4CE1-8018-3E7684D0F531" typeRef="number">
+          <dmn:text>Risk Score</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_F0857EE2-CAF0-4774-9279-42B42D94F712" typeRef="string"/>
+      <dmn:rule id="_46BB1F44-92E4-4FC3-B894-120446872384">
+        <dmn:inputEntry id="_0160B081-7637-4934-9B6C-8A7E82B14779">
+          <dmn:text>&lt;10</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_08E8A1C6-B9C6-48E9-8F7D-FAA9BBC9B315">
+          <dmn:text>"Low"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_7CD63F0F-D9E6-4B31-A1AB-9AE8956AAEC1">
+        <dmn:inputEntry id="_9CFA2BF9-4FE1-4753-9037-A44CBDC55D2E">
+          <dmn:text>[10..30]</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_29149349-D77F-4D69-B7EC-685AFED93A4E">
+          <dmn:text>"Medium"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_D5230C89-7F07-4531-8468-DD59E315F585">
+        <dmn:inputEntry id="_8B841884-BECF-4577-9A4F-02FEE181A437">
+          <dmn:text>&gt;=30</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_91F579F2-A344-4AAE-B536-5949BE9A47BA">
+          <dmn:text>"High"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_EDC1B517-6DE8-4FC3-B22F-1E1B192DEE73" name="Risk Score">
+    <dmn:variable id="_96E83373-E42B-42C2-B5AD-8444FD5A96A9" name="Risk Score" typeRef="number"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_C4A1625B-0606-4F2D-9779-49B1A981718E">
+            <kie:width>50.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>100.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_493259A7-424A-488D-8864-33D07C234F7B" dmnElementRef="_493259A7-424A-488D-8864-33D07C234F7B" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="470" y="167" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_EDC1B517-6DE8-4FC3-B22F-1E1B192DEE73" dmnElementRef="_EDC1B517-6DE8-4FC3-B22F-1E1B192DEE73" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="290" y="167" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_1C1CD709-24B7-4D0F-99F4-BF8FAE6C6250" dmnElementRef="_1C1CD709-24B7-4D0F-99F4-BF8FAE6C6250">
+        <di:waypoint x="390" y="192"/>
+        <di:waypoint x="470" y="192"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
