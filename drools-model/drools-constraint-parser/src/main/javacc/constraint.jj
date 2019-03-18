@@ -2556,7 +2556,7 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = SimpleName())<RPAREN> <LBRACE>
-            first = Expression() { begin=token(); all.add(first); }
+            first = Expression()(<SEMICOLON>)? { begin=token(); all.add(first); }
             (
                           <COMMA>
                           other = Expression() { all.add(other); }
