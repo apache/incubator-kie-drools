@@ -141,437 +141,437 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
 
     default R visit(RuleDeclaration ruleDeclaration, A arg) { return defaultMethod(ruleDeclaration, arg); }
 
-    default R visit(RuleBody ruleBody, A arg) { return null; }
+    default R visit(RuleBody n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(RulePattern rulePattern, A arg) { return null; }
+    default R visit(RulePattern n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(DrlxExpression expr, A arg) { return null; }
+    default R visit(DrlxExpression n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(OOPathExpr expr, A arg) { return null; }
+    default R visit(OOPathExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(OOPathChunk chunk, A arg) { return null; }
+    default R visit(OOPathChunk n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(RuleConsequence ruleConsequence, A arg) { return null; }
+    default R visit(RuleConsequence n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(InlineCastExpr inlineCastExpr, A arg) { return null; }
+    default R visit(InlineCastExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(NullSafeFieldAccessExpr nullSafeFieldAccessExpr, A arg) { return null; }
+    default R visit(NullSafeFieldAccessExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(NullSafeMethodCallExpr nullSafeMethodCallExpr, A arg) { return null; }
+    default R visit(NullSafeMethodCallExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(PointFreeExpr pointFreeExpr, A arg) { return null; }
+    default R visit(PointFreeExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(TemporalLiteralExpr temporalLiteralExpr, A arg) { return null; }
+    default R visit(TemporalLiteralExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(TemporalLiteralChunkExpr temporalLiteralChunkExpr, A arg) { return null; }
+    default R visit(TemporalLiteralChunkExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(HalfBinaryExpr n, A arg) { return null; }
+    default R visit(HalfBinaryExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(HalfPointFreeExpr n, A arg) { return null; }
+    default R visit(HalfPointFreeExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(BigDecimalLiteralExpr bigDecimalLiteralExpr, A arg) { return null; }
+    default R visit(BigDecimalLiteralExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(BigIntegerLiteralExpr bigIntegerLiteralExpr, A arg) { return null; }
+    default R visit(BigIntegerLiteralExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(TemporalLiteralInfiniteChunkExpr temporalLiteralInfiniteChunkExpr, A arg) { return null; }
+    default R visit(TemporalLiteralInfiniteChunkExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(DrlNameExpr drlNameExpr, A arg) { return null; }
+    default R visit(DrlNameExpr n, A arg) { return defaultMethod(n, arg); }
 
-    default R visit(ModifyStatement n, A arg) { return null; }
+    default R visit(ModifyStatement n, A arg) { return defaultMethod(n, arg); }
 
     @Override
     default R visit(CompilationUnit n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(PackageDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(TypeParameter n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(LineComment n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(BlockComment n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ClassOrInterfaceDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(EnumDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(EnumConstantDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(AnnotationDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(AnnotationMemberDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(FieldDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(VariableDeclarator n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ConstructorDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(MethodDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(Parameter n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(InitializerDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(JavadocComment n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ClassOrInterfaceType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(PrimitiveType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ArrayType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ArrayCreationLevel n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(IntersectionType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(UnionType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(VoidType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(WildcardType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(UnknownType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ArrayAccessExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ArrayCreationExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ArrayInitializerExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(AssignExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(BinaryExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(CastExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ClassExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ConditionalExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(EnclosedExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(FieldAccessExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(InstanceOfExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(StringLiteralExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(IntegerLiteralExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(LongLiteralExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(CharLiteralExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(DoubleLiteralExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(BooleanLiteralExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(NullLiteralExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(MethodCallExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(NameExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ObjectCreationExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ThisExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(SuperExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(UnaryExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(VariableDeclarationExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(MarkerAnnotationExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(SingleMemberAnnotationExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(NormalAnnotationExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(MemberValuePair n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ExplicitConstructorInvocationStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(LocalClassDeclarationStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(AssertStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(BlockStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(LabeledStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(EmptyStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ExpressionStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(SwitchStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(SwitchEntryStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(BreakStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ReturnStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(IfStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(WhileStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ContinueStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(DoStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ForEachStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ForStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ThrowStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(SynchronizedStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(TryStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(CatchClause n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(LambdaExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(MethodReferenceExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(TypeExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
@@ -581,72 +581,72 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
 
     @Override
     default R visit(Name n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(SimpleName n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ImportDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ModuleDeclaration n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ModuleRequiresDirective n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ModuleExportsDirective n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ModuleProvidesDirective n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ModuleUsesDirective n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ModuleOpensDirective n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(UnparsableStmt n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(ReceiverParameter n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(VarType n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(Modifier n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     @Override
     default R visit(SwitchExpr n, A arg) {
-        return null;
+        return defaultMethod(n, arg);
     }
 
     default R visit(MapCreationLiteralExpression n, A arg) { return null; };
