@@ -74,12 +74,6 @@ public class MvelCompilerTest {
     }
 
     @Test
-    public void testProva() {
-        test("{ modify($p) { setAge(1); };  insert(\"Modified person age to 1 for: \"+$p.name); } ",
-             "{ $p.setAge(1); insert(\"Modified person age to 1 for: \"+$p.name); } ");
-    }
-
-    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
@@ -88,6 +82,7 @@ public class MvelCompilerTest {
     }
 
     @Test
+    @Ignore
     public void testModifySemiColon() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { setAge(1); };",
