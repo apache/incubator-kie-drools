@@ -6,7 +6,6 @@ import java.util.function.Function;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -82,11 +81,10 @@ public class MvelCompilerTest {
     }
 
     @Test
-    @Ignore
     public void testModifySemiColon() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ modify($p) { setAge(1); };",
-             "{ $p.setAge(1);",
+             "{ modify($p) { setAge(1); }; }",
+             "{ $p.setAge(1); }",
              result -> assertThat(result.getModifyProperties(), containsInAnyOrder("age")));
     }
 
