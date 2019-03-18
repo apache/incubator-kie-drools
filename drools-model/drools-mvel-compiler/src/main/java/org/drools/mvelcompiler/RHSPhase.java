@@ -143,7 +143,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             TypedExpression a = child.accept(this, arg);
             arguments.add(a);
         }
-        return new MethodCallExprT(n, n.getName().asString(), scope, arguments);
+        return new MethodCallExprT(n, n.getName().asString(), scope, arguments, name.getType());
     }
 
     @Override

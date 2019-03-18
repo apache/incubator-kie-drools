@@ -16,17 +16,19 @@ public class MethodCallExprT extends TypedExpression {
     private final String name;
     private final Optional<TypedExpression> scope;
     private final List<TypedExpression> arguments;
+    private final Optional<Type> type;
 
-    public MethodCallExprT(Node originalExpression, String name, Optional<TypedExpression> scope, List<TypedExpression> arguments) {
+    public MethodCallExprT(Node originalExpression, String name, Optional<TypedExpression> scope, List<TypedExpression> arguments, Optional<Type> type) {
         super(originalExpression);
         this.name = name;
         this.scope = scope;
         this.arguments = arguments;
+        this.type = type;
     }
 
     @Override
     public Optional<Type> getType() {
-        return Optional.empty();
+        return type;
     }
 
     @Override
