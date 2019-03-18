@@ -51,6 +51,7 @@ public class MvelCompilerTest {
              "{ System.out.println(\"Hello World\"); }");
     }
 
+
     @Test
     public void testStringLength() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
@@ -73,13 +74,25 @@ public class MvelCompilerTest {
     }
 
     @Test
+    public void testProva() {
+        test("{ modify($p) { setAge(1); };  insert(\"Modified person age to 1 for: \"+$p.name); } ",
+             "{ $p.setAge(1); insert(\"Modified person age to 1 for: \"+$p.name); } ");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
              "{ $p.setName(\"Luca\"); $p.setAge(35); }",
-             result -> {
-                 assertThat(result.getModifyProperties(), containsInAnyOrder("name", "age"));
-             });
+             result -> assertThat(result.getModifyProperties(), containsInAnyOrder("name", "age")));
+    }
+
+    @Test
+    public void testModifySemiColon() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ modify($p) { setAge(1); };",
+             "{ $p.setAge(1);",
+             result -> assertThat(result.getModifyProperties(), containsInAnyOrder("age")));
     }
 
     private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,

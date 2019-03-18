@@ -47,6 +47,7 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.JavaParser.parseExpression;
 import static java.util.stream.Collectors.toSet;
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
@@ -135,8 +136,14 @@ public class Consequence {
                 mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
             }
 
-            executeCall = executeScriptCall(ruleDescr, onCall);
+            Expression mvelExecuteCall = executeScriptCall(ruleDescr, onCall);
             ParsingResult compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
+
+            System.out.println("compile = " + compile);
+
+            Expression executeCallJava = executeCall(ruleVariablesBlock, compile.statementResults(), usedDeclarationInRHS, onCall);
+
+            System.out.println("executeCallJava = " + printConstraint(executeCallJava));
 
         }
 
@@ -304,7 +311,7 @@ public class Consequence {
                     MethodCallExpr mc = (MethodCallExpr) e;
                     Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
                     modifyBlock.replace(mc, mcWithScope);
-                    sb.append(PrintUtil.printConstraint(mc));
+                    sb.append(printConstraint(mc));
                     sb.append(";\n");
                 }
             }

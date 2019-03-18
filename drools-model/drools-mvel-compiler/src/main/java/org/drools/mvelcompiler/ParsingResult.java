@@ -20,10 +20,11 @@ public class ParsingResult {
     }
 
     public String resultAsString() {
+        return printConstraint(statementResults());
+    }
 
-        BlockStmt blockStmt = new BlockStmt(NodeList.nodeList(statements));
-
-        return printConstraint(blockStmt);
+    public BlockStmt statementResults() {
+        return new BlockStmt(NodeList.nodeList(statements));
     }
 
     public ParsingResult addModifyProperties(Collection<? extends String> properties) {
