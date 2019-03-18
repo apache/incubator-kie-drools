@@ -37,9 +37,12 @@ import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.MvelCompiler;
+import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.SemicolonSanitizer;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
@@ -136,8 +139,13 @@ public class Consequence {
             }
 
             Expression mvelExecuteCall = executeScriptCall(ruleDescr, onCall);
-            ParsingResult compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
-
+            ParsingResult compile = null;
+            try {
+                compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
+            } catch (MvelCompilerException e) {
+                context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
+                return null;
+            }
 
             executeCall = executeCall(ruleVariablesBlock, compile.statementResults(), usedDeclarationInRHS, onCall);
 
