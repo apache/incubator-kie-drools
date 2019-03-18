@@ -71,24 +71,26 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(SimpleName n, Context arg) {
         if (!arg.scope.isPresent()) { // first node
-            return simpleNameAsFirstNode(n, arg);
+            return simpleNameAsFirstNode(n);
         } else {
             return simpleNameAsField(n, arg);
         }
     }
 
-    private TypedExpression simpleNameAsFirstNode(SimpleName n, Context arg) {
-        return tryParseAsDeclaration(n)
-                .orElseGet(() -> asSimpleName(n, arg));
+    private TypedExpression simpleNameAsFirstNode(SimpleName n) {
+        return asDeclaration(n)
+                .orElseGet(() -> new SimpleNameTExpr(n, null));
     }
 
     private TypedExpression simpleNameAsField(SimpleName n, Context arg) {
-        return tryParseItAsPropertyAccessor(n, arg)
-                .orElseGet(() -> asSimpleName(n, arg));
+        return asPropertyAccessor(n, arg)
+                .map(Optional::of)
+                .orElseGet(() -> asFieldAccessTExpr(n, arg))
+                .orElseGet(() -> new SimpleNameTExpr(n, null));
     }
 
     // This should be as FieldAccessTExpr
-    private TypedExpression asSimpleName(SimpleName n, Context arg) {
+    private Optional<TypedExpression> asFieldAccessTExpr(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
         Optional<Type> typedExpression = arg.getScopeType();
 
@@ -100,11 +102,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
         return OptionalUtils.map2(lastTypedExpression, fieldType, (te, ft) -> {
             Node parent = n.getParentNode().get(); // TODO fix this
-            return (TypedExpression) new FieldAccessTExpr(parent, te, ft);
-        }).orElseGet(() -> new SimpleNameTExpr(n, null));
+            return new FieldAccessTExpr(parent, te, ft);
+        });
     }
 
-    private Optional<TypedExpression> tryParseAsDeclaration(SimpleName n) {
+    private Optional<TypedExpression> asDeclaration(SimpleName n) {
         Optional<Declaration> typeFromDeclarations = mvelCompilerContext.findDeclarations(n.asString());
         return typeFromDeclarations.map(d -> {
             Class<?> clazz = d.getClazz();
@@ -112,7 +114,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         });
     }
 
-    private Optional<TypedExpression> tryParseItAsPropertyAccessor(SimpleName n, Context arg) {
+    private Optional<TypedExpression> asPropertyAccessor(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
         Optional<Type> scopeType = arg.getScopeType();
         Optional<Method> optAccessor = scopeType.flatMap(t -> Optional.ofNullable(getAccessor((Class) t, n.asString())));
