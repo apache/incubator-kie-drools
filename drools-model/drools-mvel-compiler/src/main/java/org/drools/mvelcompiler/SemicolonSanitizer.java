@@ -9,8 +9,10 @@ public class SemicolonSanitizer {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
         for (String s : split) {
+            String trimmed = s.trim();
             builder.append(s);
-            if (!s.trim().endsWith(";")) {
+            if (!trimmed.endsWith(";")
+                    && !trimmed.startsWith("modify")) {
                 builder.append(";");
             }
         }
