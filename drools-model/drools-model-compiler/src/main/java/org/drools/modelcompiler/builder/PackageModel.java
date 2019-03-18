@@ -30,13 +30,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -56,6 +49,10 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Rule;
@@ -69,12 +66,11 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.stream.Collectors.joining;
-
-import static org.drools.core.util.StringUtils.generateUUID;
-import static com.github.javaparser.ast.Modifier.*;
+import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
+import static java.util.stream.Collectors.joining;
+import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
@@ -321,15 +317,6 @@ public class PackageModel {
         consequenceValidation.setClassName(getName() + "." + rulesFileName);
     }
 
-    public void validateConsequence(ClassLoader parentClassLoader, MemoryFileSystem memoryFileSystem, ResultsImpl messages) {
-        if(!consequenceValidations.isEmpty()) {
-            ClassLoader byteClassLoader = memoryFileSystem.memoryClassLoader(parentClassLoader);
-            for(ConsequenceValidation cv : consequenceValidations) {
-                cv.validate(byteClassLoader, messages);
-            }
-        }
-    }
-
     public static class RuleSourceResult {
 
         private final CompilationUnit mainRuleClass;
@@ -491,10 +478,13 @@ public class PackageModel {
 
         ruleMethods.values().parallelStream().forEach(DrlxParseUtil::transformDrlNameExprToNameExpr);
 
-        int maxLength = ruleMethods
+        List<String> rulemethods = ruleMethods
                 .values()
                 .parallelStream()
-                .map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
+                .map(MethodDeclaration::toString).collect(Collectors.toList());
+
+
+        int maxLength = rulemethods.stream().mapToInt(String::length ).max().orElse(1 );
         int rulesPerClass = Math.max( 50000 / maxLength, 1 );
 
         // each method per Drlx parser result

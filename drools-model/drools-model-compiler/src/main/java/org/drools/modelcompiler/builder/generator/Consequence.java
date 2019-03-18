@@ -30,11 +30,9 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -141,9 +139,9 @@ public class Consequence {
 
             System.out.println("compile = " + compile);
 
-            Expression executeCallJava = executeCall(ruleVariablesBlock, compile.statementResults(), usedDeclarationInRHS, onCall);
+            executeCall = executeCall(ruleVariablesBlock, compile.statementResults(), usedDeclarationInRHS, onCall);
 
-            System.out.println("executeCallJava = " + printConstraint(executeCallJava));
+            System.out.println("executeCallJava = " + printConstraint(executeCall));
 
         }
 
