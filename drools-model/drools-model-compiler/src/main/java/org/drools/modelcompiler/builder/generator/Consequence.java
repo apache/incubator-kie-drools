@@ -41,6 +41,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.ParsingResult;
+import org.drools.mvelcompiler.SemicolonSanitizer;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.JavaParser.parseExpression;
@@ -126,7 +127,7 @@ public class Consequence {
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
 
             String consequence = ruleDescr.getConsequence().toString();
-            String mvelBlock = MvelCompiler.sanitizeMvelScript(consequence);
+            String mvelBlock = SemicolonSanitizer.sanitizeMvelScript(consequence);
             MvelCompilerContext mvelCompilerContext = new MvelCompilerContext();
 
             for(DeclarationSpec d : context.getAllDeclarations()) {
