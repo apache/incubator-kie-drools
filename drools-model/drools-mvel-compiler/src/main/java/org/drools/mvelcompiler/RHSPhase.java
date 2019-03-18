@@ -25,6 +25,7 @@ import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
+import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.OptionalUtils;
@@ -79,14 +80,14 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private TypedExpression simpleNameAsFirstNode(SimpleName n) {
         return asDeclaration(n)
-                .orElseGet(() -> new SimpleNameTExpr(n, null));
+                .orElseGet(() -> new UnalteredTypedExpression(n));
     }
 
     private TypedExpression simpleNameAsField(SimpleName n, Context arg) {
         return asPropertyAccessor(n, arg)
                 .map(Optional::of)
                 .orElseGet(() -> asFieldAccessTExpr(n, arg))
-                .orElseGet(() -> new SimpleNameTExpr(n, null));
+                .orElseGet(() -> new UnalteredTypedExpression(n));
     }
 
     // This should be as FieldAccessTExpr
@@ -163,6 +164,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(IntegerLiteralExpr n, Context arg) {
         return new IntegerLiteralExpressionT(n);
+    }
+
+    @Override
+    public TypedExpression defaultMethod(Node n, Context context) {
+        return new UnalteredTypedExpression(n);
     }
 }
 
