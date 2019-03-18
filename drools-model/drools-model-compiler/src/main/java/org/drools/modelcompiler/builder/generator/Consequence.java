@@ -137,7 +137,6 @@ public class Consequence {
             Expression mvelExecuteCall = executeScriptCall(ruleDescr, onCall);
             ParsingResult compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
 
-            System.out.println("compile = " + compile);
 
             executeCall = executeCall(ruleVariablesBlock, compile.statementResults(), usedDeclarationInRHS, onCall);
 
