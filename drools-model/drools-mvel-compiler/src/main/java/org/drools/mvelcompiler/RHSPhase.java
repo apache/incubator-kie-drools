@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -132,7 +133,12 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(MethodCallExpr n, Context arg) {
         Optional<TypedExpression> typedExpression = n.getScope().map(s -> s.accept(this, arg));
-        return n.getName().accept(this, new Context(typedExpression.orElse(null)));
+        TypedExpression methodCall = n.getName().accept(this, new Context(typedExpression.orElse(null)));
+        for(Expression child : n.getArguments()) {
+            TypedExpression a = child.accept(this, arg);
+            methodCall.addChildren(a);
+        }
+        return methodCall;
     }
 
     @Override
