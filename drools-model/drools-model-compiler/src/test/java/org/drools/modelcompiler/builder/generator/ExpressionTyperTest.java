@@ -5,14 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.RuleDescr;
 import com.github.javaparser.ast.NodeList;
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
@@ -59,11 +59,6 @@ public class ExpressionTyperTest {
 
         assertEquals("_this.method(5, 9, \"x\")", toTypedExpression("method(5,9,\"x\")", Overloaded.class).getExpression().toString());
         assertEquals("_this.getAddress().getCity().length()", toTypedExpression("address.getCity().length", Person.class).getExpression().toString());
-    }
-
-    @Test
-    public void prova2() {
-        assertEquals("System.out.println(\"Hello World\");", toTypedExpression("System.out.println(\"Hello World\");", null).getExpression().toString());
     }
 
     @Test
