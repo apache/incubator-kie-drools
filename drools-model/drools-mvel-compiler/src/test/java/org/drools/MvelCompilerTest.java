@@ -34,6 +34,13 @@ public class MvelCompilerTest {
     }
 
     @Test
+    public void testAccessorInArguments() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ insert(\"Modified person age to 1 for: \" + $p.name); }",
+             "{ insert(\"Modified person age to 1 for: \" + $p.getName()); } ");
+    }
+
+    @Test
     public void testPublicField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.parentPublic.getParent().name; } ",
