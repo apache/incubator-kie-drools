@@ -49,7 +49,6 @@ import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.junit.Test;
 
-import static com.github.javaparser.JavaParser.parseStatement;
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -510,6 +509,18 @@ public class DroolsConstraintParserTest {
                              "    modify ($p) { name = \"Luca\" };\n" +
                              "}", printConstraint(expression));
     }
+
+    @Test
+    public void testModifySemiColon() {
+        String expr = "{ modify($p) { setAge(1); }; }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    modify ($p) { setAge(1) };\n" +
+                             "}", printConstraint(expression));
+
+    }
+
 
     @Test
     public void testNewExpression() {
