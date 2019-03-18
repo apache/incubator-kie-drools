@@ -41,13 +41,19 @@ public class MvelCompiler {
         return new ParsingResult(statements).addModifyProperties(modifiedProperties);
     }
 
+    // TODO this has to be properly parsed
     public static String sanitizeMvelScript(String mvelScript) {
-        String withSemiColons;
-        if(mvelScript.contains("\n")) {
-            withSemiColons = mvelScript.replace("\n", ";");
-        } else {
-            withSemiColons = mvelScript + ";";
+        String[] split = mvelScript.split("\n");
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        for(String s : split) {
+            builder.append(s);
+            if(!s.trim().endsWith(";")) {
+                builder.append(";");
+            }
         }
-        return String.format("{ %s } ", withSemiColons);
+        builder.append("}");
+        return builder.toString();
     }
 }
