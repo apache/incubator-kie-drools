@@ -12,7 +12,7 @@ public class SemicolonSanitizer {
             String trimmed = s.trim();
             builder.append(s);
             if (!trimmed.endsWith(";")
-                    && !trimmed.startsWith("modify")) {
+                    && !trimmed.endsWith("{")) {
                 builder.append(";");
             }
         }
