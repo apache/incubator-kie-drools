@@ -25,6 +25,7 @@ public class ModifyPreprocessPhase {
     static class ModifyPreprocessPhaseResult {
 
         final List<Statement> statements = new ArrayList<>();
+        // TODO: Refactor this
         final Map<String, Set<String>> modifyProperties = new HashMap<>();
 
         ModifyPreprocessPhaseResult() {
