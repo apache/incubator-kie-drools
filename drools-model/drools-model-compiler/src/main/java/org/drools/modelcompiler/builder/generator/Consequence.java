@@ -138,7 +138,7 @@ public class Consequence {
                 mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
             }
 
-            Expression mvelExecuteCall = executeScriptCall(ruleDescr, onCall);
+            MethodCallExpr mvelExecuteCall = executeScriptCall(ruleDescr, onCall);
             ParsingResult compile = null;
             try {
                 compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
