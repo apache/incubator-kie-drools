@@ -93,8 +93,8 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getOverlaps(), hasSize(1));
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(Long.valueOf(2),
-                                                                         Long.valueOf(3)),
+        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
+                                                                         3),
                                                            new Hyperrectangle(1,
                                                                               Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("30"),
                                                                                                                              RangeBoundary.CLOSED,

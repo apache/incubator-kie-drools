@@ -59,10 +59,7 @@ public class DTAnalysisMeta {
     private static Expression overlapAsExpression(Overlap overlap) {
         MethodCallExpr edgesExpression = JavaParser.parseExpression("Arrays.asList()");
         for (Number edge : overlap.getRules()) {
-            MethodCallExpr longValue = JavaParser.parseExpression("Long.valueOf()");
-            Expression intervalAsExpression = new IntegerLiteralExpr(edge.intValue());
-            longValue.addArgument(intervalAsExpression);
-            edgesExpression.addArgument(longValue);
+            edgesExpression.addArgument(new IntegerLiteralExpr(edge.intValue()));
         }
         ObjectCreationExpr newExpression = JavaParser.parseExpression("new Overlap()");
         newExpression.addArgument(edgesExpression);

@@ -23,6 +23,7 @@ public class DDTATable {
 
     private List<DDTAInputClause> inputs = new ArrayList<>();
     private List<DDTARule> rules = new ArrayList<>();
+    private List<DDTAOutputClause> outputs = new ArrayList<>();
 
     public List<DDTAInputClause> getInputs() {
         return inputs;
@@ -56,6 +57,14 @@ public class DDTATable {
         rules.forEach(r -> builder.append("\n" + r));
         builder.append("\n]");
         return builder.toString();
+    }
+
+    public List<DDTAOutputClause> getOutputs() {
+        return outputs;
+    }
+
+    public int outputCols() {
+        return outputs.size();
     }
 
 }

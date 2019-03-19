@@ -18,20 +18,21 @@ package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Overlap {
 
-    private final List<Number> rules = new ArrayList<>();
+    private final List<Integer> rules = new ArrayList<>();
     private final Hyperrectangle overlap;
 
-    public Overlap(List<Number> rules, Hyperrectangle overlap) {
+    public Overlap(List<Integer> rules, Hyperrectangle overlap) {
         this.rules.addAll(rules);
         this.overlap = overlap;
     }
 
-    public List<Number> getRules() {
-        return rules;
+    public List<Integer> getRules() {
+        return Collections.unmodifiableList(rules);
     }
 
     public Hyperrectangle getOverlap() {
@@ -72,7 +73,7 @@ public class Overlap {
 
     public static Overlap newByMergeOnDimension(Overlap o1, Overlap o2, int dimension) {
         int d = dimension - 1;
-        List<Number> rules = o1.rules;
+        List<Integer> rules = o1.rules;
         Interval[] newOverlapHR = new Interval[o1.getOverlap().getDimensions()];
         for (int o = 0; o < o1.overlap.getDimensions(); o++) {
             if (o != d) {

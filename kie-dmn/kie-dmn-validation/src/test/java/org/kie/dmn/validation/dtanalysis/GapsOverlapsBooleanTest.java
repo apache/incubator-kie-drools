@@ -66,8 +66,8 @@ public class GapsOverlapsBooleanTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getOverlaps(), hasSize(1));
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(Long.valueOf(1),
-                                                                         Long.valueOf(2)),
+        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(1,
+                                                                         2),
                                                            new Hyperrectangle(2,
                                                                               Arrays.asList(Interval.newFromBounds(new Bound(false,
                                                                                                                              RangeBoundary.CLOSED,
