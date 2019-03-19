@@ -126,7 +126,7 @@ public class Consequence {
         }
         MethodCallExpr executeCall = null;
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
-            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
+            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptyMap());
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
 
             String consequence = ruleDescr.getConsequence().toString();
@@ -147,7 +147,8 @@ public class Consequence {
                 return null;
             }
 
-            executeCall = executeCall(ruleVariablesBlock, compile.statementResults(), usedDeclarationInRHS, onCall);
+            executeCall = executeCall(ruleVariablesBlock, compile.statementResults(), usedDeclarationInRHS, onCall, compile.getModifyProperties());
+//            executeCall = mvelExecuteCall;
 
             System.out.println("executeCallJava = " + printConstraint(executeCall));
 
@@ -217,8 +218,8 @@ public class Consequence {
         return m.find();
     }
 
-    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
-        boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
+    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Map<String, Set<String>> modifyProperties) {
+        boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence, modifyProperties);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTE_CALL : EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
         executeCall.addArgument(executeLambda);
@@ -334,7 +335,7 @@ public class Consequence {
         return sb.toString();
     }
 
-    private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {
+    private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs, Map<String, Set<String>> modifyProperties) {
         AtomicBoolean requireDrools = new AtomicBoolean(false);
         List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
@@ -380,8 +381,10 @@ public class Consequence {
             }
         }
 
+
         return requireDrools.get();
     }
+
 
     private MethodCallExpr createBitMaskInitialization(Map<String, String> newDeclarations, String updatedVar, Set<String> modifiedProps) {
         MethodCallExpr bitMaskCreation;
