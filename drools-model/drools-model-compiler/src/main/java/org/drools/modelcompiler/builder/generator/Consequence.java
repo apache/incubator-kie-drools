@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -30,9 +31,11 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
+import org.drools.core.util.Entry;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -48,6 +51,7 @@ import org.drools.mvelcompiler.SemicolonSanitizer;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.JavaParser.parseExpression;
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -219,6 +223,18 @@ public class Consequence {
     }
 
     private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Map<String, Set<String>> modifyProperties) {
+
+        // TODO: refactor this
+        for(Map.Entry<String, Set<String>> modifiedProperty : modifyProperties.entrySet()) {
+            for(String s : modifiedProperty.getValue()) {
+                NodeList<Expression> arguments = nodeList(new NameExpr(modifiedProperty.getKey()));
+                MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update",
+                                                           arguments);
+                ruleConsequence.getStatements().add(new ExpressionStmt(update));
+            }
+        }
+
+
         boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence, modifyProperties);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTE_CALL : EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
