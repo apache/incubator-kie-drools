@@ -1,7 +1,10 @@
 package org.drools.mvelcompiler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -23,10 +26,12 @@ public class MvelCompiler {
         BlockStmt mvelExpression = DrlConstraintParser.parseBlock(mvelBlock);
 
         List<Statement> preProcessedStatements = new ArrayList<>();
-        List<String> modifiedProperties = new ArrayList<>();
+        // TODO: This preprocessing will change the order of the modify statments
+        // Write a test for that
+        Map<String, Set<String>> modifiedProperties = new HashMap<>();
         for(Statement t : mvelExpression.getStatements()) {
             ModifyPreprocessPhase.ModifyPreprocessPhaseResult invoke = modifyPreprocessPhase.invoke(t);
-            modifiedProperties.addAll(invoke.getModifyProperties());
+            modifiedProperties.putAll(invoke.getModifyProperties());
             preProcessedStatements.addAll(invoke.getStatements());
         }
 
@@ -38,6 +43,6 @@ public class MvelCompiler {
             statements.add(expression);
         }
 
-        return new ParsingResult(statements).addModifyProperties(modifiedProperties);
+        return new ParsingResult(statements).setModifyProperties(modifiedProperties);
     }
 }
