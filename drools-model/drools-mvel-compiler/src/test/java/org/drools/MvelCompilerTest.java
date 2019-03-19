@@ -1,5 +1,10 @@
 package org.drools;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -84,7 +89,7 @@ public class MvelCompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
              "{ $p.setName(\"Luca\"); $p.setAge(35); }",
-             result -> assertThat(result.getModifyProperties(), containsInAnyOrder("name", "age")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("name", "age")));
     }
 
     @Test
@@ -92,7 +97,7 @@ public class MvelCompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { setAge(1); }; }",
              "{ $p.setAge(1); }",
-             result -> assertThat(result.getModifyProperties(), containsInAnyOrder("age")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("age")));
     }
 
     @Test
@@ -100,7 +105,7 @@ public class MvelCompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { age = $p.age+1 }; }",
              "{ $p.setAge($p.getAge() + 1); }",
-             result -> assertThat(result.getModifyProperties(), containsInAnyOrder("age")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("age")));
     }
 
     private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
@@ -123,5 +128,14 @@ public class MvelCompilerTest {
     private void test(String actualExpression,
                       String expectedResult) {
         test(d -> d, actualExpression, expectedResult, t -> {});
+    }
+
+    private Collection<String> allModifiedProperties(ParsingResult result) {
+        List<String> results = new ArrayList<>();
+        for(Set<String> values : result.getModifyProperties().values()) {
+            results.addAll(values);
+        }
+        return results;
+
     }
 }

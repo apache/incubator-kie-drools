@@ -2,7 +2,10 @@ package org.drools.mvelcompiler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -13,7 +16,7 @@ import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 public class ParsingResult {
 
     private List<Statement> statements;
-    private List<String> modifyProperties = new ArrayList<>();
+    private Map<String, Set<String>> modifyProperties = new HashMap<>();
 
     public ParsingResult(List<Statement> statements) {
         this.statements = statements;
@@ -27,12 +30,12 @@ public class ParsingResult {
         return new BlockStmt(NodeList.nodeList(statements));
     }
 
-    public ParsingResult addModifyProperties(Collection<? extends String> properties) {
-        modifyProperties.addAll(properties);
+    public ParsingResult setModifyProperties(Map<String, Set<String>> modifyProperties) {
+        this.modifyProperties = modifyProperties;
         return this;
     }
 
-    public List<String> getModifyProperties() {
+    public Map<String, Set<String>> getModifyProperties() {
         return modifyProperties;
     }
 
