@@ -67,11 +67,11 @@ public interface Score<Score_ extends Score> extends Comparable<Score_> {
     Score_ withInitScore(int newInitScore);
 
     /**
-     * Returns a Score whose value is (this + augment).
-     * @param augment value to be added to this Score
-     * @return this + augment
+     * Returns a Score whose value is (this + addend).
+     * @param addend value to be added to this Score
+     * @return this + addend
      */
-    Score_ add(Score_ augment);
+    Score_ add(Score_ addend);
 
     /**
      * Returns a Score whose value is (this - subtrahend).

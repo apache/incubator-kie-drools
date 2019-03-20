@@ -146,11 +146,11 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
-    public HardSoftBigDecimalScore add(HardSoftBigDecimalScore augment) {
+    public HardSoftBigDecimalScore add(HardSoftBigDecimalScore addend) {
         return new HardSoftBigDecimalScore(
-                initScore + augment.getInitScore(),
-                hardScore.add(augment.getHardScore()),
-                softScore.add(augment.getSoftScore()));
+                initScore + addend.getInitScore(),
+                hardScore.add(addend.getHardScore()),
+                softScore.add(addend.getSoftScore()));
     }
 
     @Override

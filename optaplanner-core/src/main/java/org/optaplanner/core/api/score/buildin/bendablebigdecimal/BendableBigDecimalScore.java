@@ -257,18 +257,18 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
-    public BendableBigDecimalScore add(BendableBigDecimalScore augment) {
-        validateCompatible(augment);
+    public BendableBigDecimalScore add(BendableBigDecimalScore addend) {
+        validateCompatible(addend);
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = hardScores[i].add(augment.getHardScore(i));
+            newHardScores[i] = hardScores[i].add(addend.getHardScore(i));
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = softScores[i].add(augment.getSoftScore(i));
+            newSoftScores[i] = softScores[i].add(addend.getSoftScore(i));
         }
         return new BendableBigDecimalScore(
-                initScore + augment.getInitScore(),
+                initScore + addend.getInitScore(),
                 newHardScores, newSoftScores);
     }
 

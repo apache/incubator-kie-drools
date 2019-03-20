@@ -142,11 +142,11 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
     }
 
     @Override
-    public HardSoftScore add(HardSoftScore augment) {
+    public HardSoftScore add(HardSoftScore addend) {
         return new HardSoftScore(
-                initScore + augment.getInitScore(),
-                hardScore + augment.getHardScore(),
-                softScore + augment.getSoftScore());
+                initScore + addend.getInitScore(),
+                hardScore + addend.getHardScore(),
+                softScore + addend.getSoftScore());
     }
 
     @Override

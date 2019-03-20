@@ -113,10 +113,10 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     }
 
     @Override
-    public SimpleDoubleScore add(SimpleDoubleScore augment) {
+    public SimpleDoubleScore add(SimpleDoubleScore addend) {
         return new SimpleDoubleScore(
-                initScore + augment.getInitScore(),
-                score + augment.getScore());
+                initScore + addend.getInitScore(),
+                score + addend.getScore());
     }
 
     @Override

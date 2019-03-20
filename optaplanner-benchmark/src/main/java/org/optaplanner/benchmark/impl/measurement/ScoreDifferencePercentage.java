@@ -73,15 +73,15 @@ public class ScoreDifferencePercentage implements Serializable {
     // Worker methods
     // ************************************************************************
 
-    public ScoreDifferencePercentage add(ScoreDifferencePercentage augment) {
-        if (percentageLevels.length != augment.getPercentageLevels().length) {
-            throw new IllegalStateException("The augment (" + augment + ")'s levelsLength (" +
-                    augment.getPercentageLevels().length + ") is different from the base (" +
+    public ScoreDifferencePercentage add(ScoreDifferencePercentage addend) {
+        if (percentageLevels.length != addend.getPercentageLevels().length) {
+            throw new IllegalStateException("The addend (" + addend + ")'s levelsLength (" +
+                    addend.getPercentageLevels().length + ") is different from the base (" +
                     this + ")'s levelsLength (" + percentageLevels.length + ").");
         }
         double[] newPercentageLevels = new double[percentageLevels.length];
         for (int i = 0; i < percentageLevels.length; i++) {
-            newPercentageLevels[i] = percentageLevels[i] + augment.percentageLevels[i];
+            newPercentageLevels[i] = percentageLevels[i] + addend.percentageLevels[i];
         }
         return new ScoreDifferencePercentage(newPercentageLevels);
     }

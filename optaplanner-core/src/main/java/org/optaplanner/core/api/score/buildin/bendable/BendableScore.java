@@ -247,18 +247,18 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
     }
 
     @Override
-    public BendableScore add(BendableScore augment) {
-        validateCompatible(augment);
+    public BendableScore add(BendableScore addend) {
+        validateCompatible(addend);
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = hardScores[i] + augment.getHardScore(i);
+            newHardScores[i] = hardScores[i] + addend.getHardScore(i);
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = softScores[i] + augment.getSoftScore(i);
+            newSoftScores[i] = softScores[i] + addend.getSoftScore(i);
         }
         return new BendableScore(
-                initScore + augment.getInitScore(),
+                initScore + addend.getInitScore(),
                 newHardScores, newSoftScores);
     }
 
