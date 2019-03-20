@@ -9,8 +9,11 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 
 public class VariableDeclarationTExpr extends TypedExpression {
 
-    public VariableDeclarationTExpr(Node originalExpression) {
+    private final TypedExpression variableDeclaratorTExpr;
+
+    public VariableDeclarationTExpr(Node originalExpression, TypedExpression variableDeclaratorTExpr) {
         super(originalExpression);
+        this.variableDeclaratorTExpr = variableDeclaratorTExpr;
     }
 
     @Override
@@ -20,7 +23,7 @@ public class VariableDeclarationTExpr extends TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        return new VariableDeclarationExpr((VariableDeclarator) children.iterator().next().toJavaExpression());
+        return new VariableDeclarationExpr((VariableDeclarator) variableDeclaratorTExpr.toJavaExpression());
     }
 
     @Override

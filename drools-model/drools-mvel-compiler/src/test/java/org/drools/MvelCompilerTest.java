@@ -92,12 +92,10 @@ public class MvelCompilerTest {
              "{ " +
                      "l = new ArrayList(); " +
                      "l.add(\"first\"); " +
-                     "System.out.println(l[0]); " +
                      "}",
              "{ " +
                      "java.util.ArrayList l = new ArrayList(); " +
                      "l.add(\"first\"); " +
-                     "System.out.println(l.get(0)); " +
                      "}");
     }
 
