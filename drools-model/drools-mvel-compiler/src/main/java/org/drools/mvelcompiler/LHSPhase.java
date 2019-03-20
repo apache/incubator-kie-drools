@@ -35,6 +35,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     Logger logger = LoggerFactory.getLogger(LHSPhase.class);
 
     static class Context {
+
     }
 
     private final MvelCompilerContext mvelCompilerContext;
@@ -61,16 +62,23 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     public TypedExpression visit(DrlNameExpr n, Context arg) {
         logger.debug("DrlNameExpr:\t\t" + printConstraint(n));
 
-        Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(printConstraint(n), getRHSType());
-        Class<?> clazz = typeFromDeclarations.getClazz();
-        return new SimpleNameTExpr(n, clazz);
+        String variableName = printConstraint(n);
+        Optional<Declaration> declaration = mvelCompilerContext.findDeclarations(variableName);
+
+        return declaration.<TypedExpression>map(d -> new SimpleNameTExpr(n, d.getClazz()))
+                .orElseGet(() -> {
+                    mvelCompilerContext.addDeclaration(variableName, getRHSType());
+
+                    VariableDeclaratorTExpr declaratorTExpr = new VariableDeclaratorTExpr(n, variableName, Optional.of(rhs));
+                    return new VariableDeclarationTExpr(n, declaratorTExpr);
+                });
     }
 
     @Override
     public TypedExpression visit(FieldAccessExpr n, Context arg) {
         logger.debug("FieldAccessExpr:\t\t" + printConstraint(n));
 
-        if(parentIsExpressionStmt(n)) {
+        if (parentIsExpressionStmt(n)) {
             return rhs;
         }
 
@@ -81,7 +89,6 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
         return tryParseItAsSetter(n, scope, setterArgumentType)
                 .orElse(new FieldAccessTExpr(n, scope, null)); // TODO public field access
-
     }
 
     private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
@@ -104,11 +111,11 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
         logger.debug("VariableDeclarationExpr:\t\t" + printConstraint(n));
 
-        VariableDeclarationTExpr expr = new VariableDeclarationTExpr(n);
+        TypedExpression te = null;
         for (Node e : n.getChildNodes()) {
-            expr.addChildren(e.accept(this, arg));
+            te = e.accept(this, arg);
         }
-        return expr;
+        return new VariableDeclarationTExpr(n, te);
     }
 
     @Override
@@ -116,7 +123,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         logger.debug("VariableDeclarator:\t\t" + printConstraint(n));
 
         Optional<TypedExpression> initExpression = Optional.of(rhs);
-        return new VariableDeclaratorTExpr(n, n.getName(), initExpression);
+
+        String variableName = n.getName().asString();
+        mvelCompilerContext.addDeclaration(variableName, getRHSType());
+        return new VariableDeclaratorTExpr(n, variableName, initExpression);
     }
 
     @Override
@@ -132,7 +142,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         logger.debug("AssignExpr:\t\t" + printConstraint(n));
 
         TypedExpression target = n.getTarget().accept(this, arg);
-        if(target instanceof FieldToAccessorTExpr) {
+        if (target instanceof FieldToAccessorTExpr) {
+            return target;
+        }
+        if (target instanceof VariableDeclarationTExpr) {
             return target;
         } else {
             return new AssignExprT(n, target, rhs);
