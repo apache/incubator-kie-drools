@@ -7,12 +7,11 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 
-public class ExpressionStmtT extends TypedExpression {
+public class ExpressionStmtT implements TypedExpression {
 
     private final TypedExpression child;
 
-    public ExpressionStmtT(ExpressionStmt originalExpression, TypedExpression child) {
-        super(originalExpression);
+    public ExpressionStmtT(TypedExpression child) {
         this.child = child;
     }
 

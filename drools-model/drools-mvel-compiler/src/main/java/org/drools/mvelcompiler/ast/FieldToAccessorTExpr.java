@@ -12,9 +12,8 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 
-public class FieldToAccessorTExpr extends TypedExpression {
+public class FieldToAccessorTExpr implements TypedExpression {
 
     private final TypedExpression scope;
     private final Type type;
@@ -22,16 +21,15 @@ public class FieldToAccessorTExpr extends TypedExpression {
 
     private final List<TypedExpression> arguments;
 
-    public FieldToAccessorTExpr(Node expression, TypedExpression scope, Method accessor, List<TypedExpression> arguments) {
-        super(expression);
+    public FieldToAccessorTExpr(TypedExpression scope, Method accessor, List<TypedExpression> arguments) {
         this.scope = scope;
         this.accessor = accessor;
         this.type = accessor.getGenericReturnType();
         this.arguments = arguments;
     }
 
-    public FieldToAccessorTExpr(Node expression, TypedExpression scope, Method accessor) {
-        this(expression, scope, accessor, Collections.emptyList());
+    public FieldToAccessorTExpr(TypedExpression scope, Method accessor) {
+        this(scope, accessor, Collections.emptyList());
     }
 
     @Override
@@ -42,7 +40,7 @@ public class FieldToAccessorTExpr extends TypedExpression {
     @Override
     public Node toJavaExpression() {
         List<Expression> arguments = this.arguments.stream()
-                .map(a -> (Expression)(a.toJavaExpression()))
+                .map(a -> (Expression) (a.toJavaExpression()))
                 .collect(Collectors.toList());
 
         return new MethodCallExpr((Expression) scope.toJavaExpression(), accessor.getName(), nodeList(arguments));
@@ -51,8 +49,7 @@ public class FieldToAccessorTExpr extends TypedExpression {
     @Override
     public String toString() {
         return "FieldToAccessorTExpr{" +
-                "expression=" + printConstraint(originalExpression) +
-                ", scope=" + scope.toString() +
+                " scope=" + scope.toString() +
                 ", type=" + type +
                 ", accessor=" + accessor +
                 '}';

@@ -11,22 +11,23 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
-public class VariableDeclaratorTExpr extends TypedExpression {
+public class VariableDeclaratorTExpr implements TypedExpression {
 
     private final Node originalNode;
     private final String name;
+    private final Type type;
     private final Optional<TypedExpression> initExpression;
 
-    public VariableDeclaratorTExpr(Node originalNode, String name, Optional<TypedExpression> initExpression) {
-        super(originalNode);
+    public VariableDeclaratorTExpr(Node originalNode, String name, Type type, Optional<TypedExpression> initExpression) {
         this.originalNode = originalNode;
         this.name = name;
+        this.type = type;
         this.initExpression = initExpression;
     }
 
     @Override
     public Optional<Type> getType() {
-        return initExpression.flatMap(typedExpression -> typedExpression.children.get(0).getType());
+        return Optional.of(type);
     }
 
     @Override

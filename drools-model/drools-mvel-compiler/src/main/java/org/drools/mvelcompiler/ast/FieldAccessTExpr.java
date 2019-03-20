@@ -8,13 +8,12 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 
-public class FieldAccessTExpr extends TypedExpression {
+public class FieldAccessTExpr implements TypedExpression {
 
     private final TypedExpression scope;
     private final Field field;
 
-    public FieldAccessTExpr(Node originalExpression, TypedExpression scope, Field field) {
-        super(originalExpression);
+    public FieldAccessTExpr(TypedExpression scope, Field field) {
         this.scope = scope;
         this.field = field;
     }
