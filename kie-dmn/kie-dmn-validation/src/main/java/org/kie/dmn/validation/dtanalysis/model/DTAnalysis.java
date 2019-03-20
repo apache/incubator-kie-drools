@@ -28,6 +28,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
 
 public class DTAnalysis {
@@ -128,6 +129,7 @@ public class DTAnalysis {
         }
         results.addAll(gapsAsMessages());
         results.addAll(overlapsAsMessages());
+        results.addAll(warnAboutHitPolicyFirst());
 
         // keep last.
         if (results.isEmpty()) {
@@ -140,6 +142,18 @@ public class DTAnalysis {
             return results;
         }
         return results;
+    }
+
+    private Collection warnAboutHitPolicyFirst() {
+        if (sourceDT.getHitPolicy() == HitPolicy.FIRST) {
+            return Arrays.asList(new DMNDTAnalysisMessage(this,
+                                                          Severity.WARN,
+                                                          MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_FIRST,
+                                                                                sourceDT.getOutputLabel()),
+                                                          Msg.DTANALYSIS_HITPOLICY_FIRST.getType()));
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private Collection overlapsAsMessages() {
