@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -28,6 +29,7 @@ import org.drools.mvelcompiler.ast.BinaryTExpr;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
+import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
@@ -194,6 +196,18 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     @Override
     public TypedExpression visit(ObjectCreationExpr n, Context arg) {
         return new ObjectCreationExpressionT(n, mvelCompilerContext.resolveType(n.getType().asString()));
+    }
+
+    @Override
+    public TypedExpression visit(ArrayAccessExpr n, Context arg) {
+        TypedExpression name = n.getName().accept(this, arg);
+
+        Optional<Type> type = name.getType();
+        // TODO: Need a better type check here, check ExpressionTyper
+        if(type.map(t -> t.getTypeName().endsWith("ArrayList")).isPresent()) {
+            return new ListAccessExprT(n, name, n.getIndex(), type.get());
+        }
+        return new UnalteredTypedExpression(n, type.orElse(null));
     }
 }
 
