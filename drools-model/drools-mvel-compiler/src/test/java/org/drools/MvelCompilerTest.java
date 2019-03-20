@@ -95,7 +95,7 @@ public class MvelCompilerTest {
                      "System.out.println(l[0]); " +
                      "}",
              "{ " +
-                     "ArrayList l = new ArrayList(); " +
+                     "java.util.ArrayList l = new ArrayList(); " +
                      "l.add(\"first\"); " +
                      "System.out.println(l.get(0)); " +
                      "}");
