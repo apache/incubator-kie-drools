@@ -35,7 +35,6 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.core.util.Entry;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -135,7 +134,7 @@ public class Consequence {
 
             String consequence = ruleDescr.getConsequence().toString();
             String mvelBlock = SemicolonSanitizer.sanitizeMvelScript(consequence);
-            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext();
+            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
             for(DeclarationSpec d : context.getAllDeclarations()) {
                 Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getType());

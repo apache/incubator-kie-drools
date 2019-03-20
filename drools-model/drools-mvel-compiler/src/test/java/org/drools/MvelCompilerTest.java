@@ -2,8 +2,8 @@ package org.drools;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -12,6 +12,8 @@ import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
@@ -85,6 +87,21 @@ public class MvelCompilerTest {
     }
 
     @Test
+    public void testInitializer() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "l = new ArrayList(); " +
+                     "l.add(\"first\"); " +
+                     "System.out.println(l[0]); " +
+                     "}",
+             "{ " +
+                     "ArrayList l = new ArrayList(); " +
+                     "l.add(\"first\"); " +
+                     "System.out.println(l.get(0)); " +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
@@ -112,7 +129,11 @@ public class MvelCompilerTest {
                       String actualExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext();
+        Set<String> imports = new HashSet<>();
+        // TODO: find which are the mvel implicit imports
+        imports.add("java.util.ArrayList");
+        TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.apply(mvelCompilerContext);
         ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
         assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
