@@ -6,16 +6,17 @@ import java.util.Optional;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.SimpleName;
 
-public class UnalteredTypedExpression extends TypedExpression {
+public class UnalteredTypedExpression implements TypedExpression {
 
+    private final Node originalExpression;
     private Type type;
 
     public UnalteredTypedExpression(Node originalExpression) {
-        super(originalExpression);
+        this(originalExpression, null);
     }
 
     public UnalteredTypedExpression(Node originalExpression, Type type) {
-        super(originalExpression);
+        this.originalExpression = originalExpression;
         this.type = type;
     }
 

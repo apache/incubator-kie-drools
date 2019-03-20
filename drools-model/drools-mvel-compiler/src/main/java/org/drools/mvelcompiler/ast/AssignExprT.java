@@ -7,13 +7,14 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 
-public class AssignExprT extends TypedExpression {
+public class AssignExprT implements TypedExpression {
 
+    private final AssignExpr.Operator operator;
     private final TypedExpression target;
     private final TypedExpression value;
 
-    public AssignExprT(AssignExpr originalExpression, TypedExpression target, TypedExpression value) {
-        super(originalExpression);
+    public AssignExprT(AssignExpr.Operator operator, TypedExpression target, TypedExpression value) {
+        this.operator = operator;
         this.target = target;
         this.value = value;
     }
@@ -25,10 +26,9 @@ public class AssignExprT extends TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        AssignExpr originalExpression = (AssignExpr) this.originalExpression;
         return new AssignExpr((Expression) target.toJavaExpression(),
                               (Expression) value.toJavaExpression(),
-                              originalExpression.getOperator());
+                              operator);
     }
 
     @Override
@@ -38,6 +38,4 @@ public class AssignExprT extends TypedExpression {
                 ",\t value=" + value +
                 '}';
     }
-
-
 }

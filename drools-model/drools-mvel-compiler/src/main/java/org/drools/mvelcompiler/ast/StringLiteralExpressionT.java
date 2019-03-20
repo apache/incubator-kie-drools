@@ -4,11 +4,15 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public class StringLiteralExpressionT extends TypedExpression {
+public class StringLiteralExpressionT implements TypedExpression {
 
-    public StringLiteralExpressionT(Node originalExpression) {
-        super(originalExpression);
+    private final StringLiteralExpr stringLiteralExpr;
+
+    public StringLiteralExpressionT(StringLiteralExpr stringLiteralExpr) {
+
+        this.stringLiteralExpr = stringLiteralExpr;
     }
 
     @Override
@@ -18,13 +22,13 @@ public class StringLiteralExpressionT extends TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        return originalExpression;
+        return stringLiteralExpr;
     }
 
     @Override
     public String toString() {
         return "StringLiteralExpressionT{" +
-                "originalExpression=" + originalExpression +
+                "originalExpression=" + stringLiteralExpr +
                 '}';
     }
 }

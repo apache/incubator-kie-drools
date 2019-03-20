@@ -5,18 +5,16 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
-public class ListAccessExprT extends TypedExpression {
+public class ListAccessExprT implements TypedExpression {
 
     private final TypedExpression name;
     private final Expression index;
     private final Type type;
 
-    public ListAccessExprT(ArrayAccessExpr n, TypedExpression name, Expression index, Type type) {
-        super(n);
+    public ListAccessExprT(TypedExpression name, Expression index, Type type) {
         this.name = name;
         this.index = index;
         this.type = type;
@@ -29,6 +27,6 @@ public class ListAccessExprT extends TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        return new MethodCallExpr((Expression)name.toJavaExpression(), "get", NodeList.nodeList(index));
+        return new MethodCallExpr((Expression) name.toJavaExpression(), "get", NodeList.nodeList(index));
     }
 }

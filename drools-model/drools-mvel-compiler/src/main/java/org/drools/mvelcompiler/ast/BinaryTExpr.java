@@ -7,14 +7,13 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 
-public class BinaryTExpr extends TypedExpression {
+public class BinaryTExpr implements TypedExpression {
 
     private final TypedExpression left;
     private final TypedExpression right;
     private final BinaryExpr.Operator operator;
 
-    public BinaryTExpr(BinaryExpr original, TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
-        super(original);
+    public BinaryTExpr(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
         this.left = left;
         this.right = right;
         this.operator = operator;

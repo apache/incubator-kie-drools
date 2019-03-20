@@ -63,10 +63,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         String variableName = printConstraint(n);
         Optional<Declaration> declaration = mvelCompilerContext.findDeclarations(variableName);
 
-        return declaration.<TypedExpression>map(d -> new SimpleNameTExpr(n, d.getClazz()))
+        return declaration.<TypedExpression>map(d -> new SimpleNameTExpr(n.getNameAsString(), d.getClazz()))
                 .orElseGet(() -> {
                     mvelCompilerContext.addDeclaration(variableName, getRHSType());
-                    return new VariableDeclaratorTExpr(n, variableName, Optional.of(rhs));
+                    return new VariableDeclaratorTExpr(n, variableName, getRHSType(), Optional.of(rhs));
                 });
     }
 
@@ -84,7 +84,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         Class<?> setterArgumentType = getRHSType();
 
         return tryParseItAsSetter(n, scope, setterArgumentType)
-                .orElse(new FieldAccessTExpr(n, scope, null)); // TODO public field access
+                .orElse(new FieldAccessTExpr(scope, null)); // TODO public field access
     }
 
     private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
@@ -92,7 +92,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
             String setterName = printConstraint(n.getName());
             Method accessor = getSetter((Class<?>) scopeType, setterName, setterArgumentType);
 
-            return new FieldToAccessorTExpr(n, scope, accessor, singletonList(rhs));
+            return new FieldToAccessorTExpr(scope, accessor, singletonList(rhs));
         });
     }
 
@@ -119,7 +119,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
         String variableName = n.getName().asString();
         mvelCompilerContext.addDeclaration(variableName, getRHSType());
-        return new VariableDeclaratorTExpr(n, variableName, initExpression);
+        return new VariableDeclaratorTExpr(n, variableName, getRHSType(), initExpression);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         logger.debug("ExpressionStmt:\t\t" + printConstraint(n));
 
         TypedExpression expression = n.getExpression().accept(this, arg);
-        return new ExpressionStmtT(n, expression);
+        return new ExpressionStmtT(expression);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         } else if (target instanceof VariableDeclaratorTExpr) {
             return target;
         } else {
-            return new AssignExprT(n, target, rhs);
+            return new AssignExprT(n.getOperator(), target, rhs);
         }
     }
 
