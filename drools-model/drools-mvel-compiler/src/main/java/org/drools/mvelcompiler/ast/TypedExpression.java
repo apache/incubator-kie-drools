@@ -1,35 +1,14 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 
-public abstract class TypedExpression {
+public interface TypedExpression {
 
-    Node originalExpression;
-    List<TypedExpression> children = new ArrayList<>();
+    Optional<Type> getType();
 
-    TypedExpression(Node originalExpression) {
-        this.originalExpression = originalExpression;
-    }
-
-    public TypedExpression addChildren(TypedExpression te) {
-        children.add(te);
-        return this;
-    }
-
-    public abstract Optional<Type> getType();
-
-    public Node toJavaExpression() {
-        if (!children.isEmpty()) {
-            TypedExpression last = children.get(children.size() - 1);
-            return last.toJavaExpression();
-        } else {
-            return toJavaExpression();
-        }
-    }
+    Node toJavaExpression();
 }
 

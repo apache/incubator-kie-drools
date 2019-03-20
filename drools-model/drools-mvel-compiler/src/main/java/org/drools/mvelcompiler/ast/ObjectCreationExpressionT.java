@@ -4,13 +4,16 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
-public class ObjectCreationExpressionT extends TypedExpression {
+public class ObjectCreationExpressionT implements TypedExpression {
 
     private final Class<?> type;
 
-    public ObjectCreationExpressionT(Node originalExpression, Class<?> type) {
-        super(originalExpression);
+    ObjectCreationExpr originalExpression;
+
+    public ObjectCreationExpressionT(ObjectCreationExpr originalExpression, Class<?> type) {
+        this.originalExpression = originalExpression;
         this.type = type;
     }
 

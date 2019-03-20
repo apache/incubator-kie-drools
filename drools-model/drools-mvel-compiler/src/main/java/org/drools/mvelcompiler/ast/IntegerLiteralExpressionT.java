@@ -4,11 +4,15 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 
-public class IntegerLiteralExpressionT extends TypedExpression {
+public class IntegerLiteralExpressionT implements TypedExpression {
 
-    public IntegerLiteralExpressionT(Node originalExpression) {
-        super(originalExpression);
+    private final IntegerLiteralExpr integerLiteralExpr;
+
+    public IntegerLiteralExpressionT(IntegerLiteralExpr integerLiteralExpr) {
+
+        this.integerLiteralExpr = integerLiteralExpr;
     }
 
     @Override
@@ -18,13 +22,13 @@ public class IntegerLiteralExpressionT extends TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        return originalExpression;
+        return integerLiteralExpr;
     }
 
     @Override
     public String toString() {
         return "IntegerLiteralExpressionT{" +
-                "originalExpression=" + originalExpression +
+                "originalExpression=" + integerLiteralExpr +
                 '}';
     }
 }

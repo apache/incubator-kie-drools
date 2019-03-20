@@ -112,7 +112,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
         return OptionalUtils.map2(lastTypedExpression, fieldType, (te, ft) -> {
             Node parent = n.getParentNode().get(); // TODO fix this
-            return new FieldAccessTExpr(parent, te, ft);
+            return new FieldAccessTExpr(te, ft);
         });
     }
 
@@ -120,7 +120,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Declaration> typeFromDeclarations = mvelCompilerContext.findDeclarations(n.asString());
         return typeFromDeclarations.map(d -> {
             Class<?> clazz = d.getClazz();
-            return new SimpleNameTExpr(n, clazz);
+            return new SimpleNameTExpr(n.asString(), clazz);
         });
     }
 
@@ -129,7 +129,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> scopeType = arg.getScopeType();
         Optional<Method> optAccessor = scopeType.flatMap(t -> Optional.ofNullable(getAccessor((Class) t, n.asString())));
 
-        return map2(lastTypedExpression, optAccessor, (lt, accessor) -> new FieldToAccessorTExpr(n, lt, accessor));
+        return map2(lastTypedExpression, optAccessor, (lt, accessor) -> new FieldToAccessorTExpr(lt, accessor));
     }
 
     @Override
@@ -154,7 +154,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     public TypedExpression visit(BinaryExpr n, Context arg) {
         TypedExpression left = n.getLeft().accept(this, arg);
         TypedExpression right = n.getRight().accept(this, arg);
-        return new BinaryTExpr(n, left, right, n.getOperator());
+        return new BinaryTExpr(left, right, n.getOperator());
     }
 
     @Override
@@ -205,7 +205,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> type = name.getType();
         // TODO: Need a better type check here, check ExpressionTyper
         if(type.map(t -> t.getTypeName().endsWith("ArrayList")).isPresent()) {
-            return new ListAccessExprT(n, name, n.getIndex(), type.get());
+            return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
     }
