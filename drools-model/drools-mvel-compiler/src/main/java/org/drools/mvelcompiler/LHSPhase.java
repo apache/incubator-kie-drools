@@ -1,6 +1,5 @@
 package org.drools.mvelcompiler;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -14,7 +13,6 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.core.util.ClassUtils;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
@@ -25,12 +23,16 @@ import org.drools.mvelcompiler.ast.VariableDeclarationTExpr;
 import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.singletonList;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getSetter;
 
 public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Context> {
+
+    Logger logger = LoggerFactory.getLogger(LHSPhase.class);
 
     static class Context {
     }
@@ -44,17 +46,21 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     }
 
     public TypedExpression invoke(Statement statement) {
+        logger.debug("RHS phase on:\t\t" + printConstraint(statement));
         Context ctx = new Context();
 
         TypedExpression typedExpression = statement.accept(this, ctx);
         if (typedExpression == null) {
             throw new MvelCompilerException("Type check of " + printConstraint(statement) + " failed.");
         }
+        logger.debug("RHS phase completed");
         return typedExpression;
     }
 
     @Override
     public TypedExpression visit(DrlNameExpr n, Context arg) {
+        logger.debug("DrlNameExpr:\t\t" + printConstraint(n));
+
         Declaration typeFromDeclarations = mvelCompilerContext.getOrCreateDeclarations(printConstraint(n), getRHSType());
         Class<?> clazz = typeFromDeclarations.getClazz();
         return new SimpleNameTExpr(n, clazz);
@@ -62,6 +68,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     @Override
     public TypedExpression visit(FieldAccessExpr n, Context arg) {
+        logger.debug("FieldAccessExpr:\t\t" + printConstraint(n));
+
         if(parentIsExpressionStmt(n)) {
             return rhs;
         }
@@ -87,11 +95,15 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     @Override
     public TypedExpression visit(MethodCallExpr n, Context arg) {
+        logger.debug("MethodCallExpr:\t\t" + printConstraint(n));
+
         return rhs;
     }
 
     @Override
     public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
+        logger.debug("VariableDeclarationExpr:\t\t" + printConstraint(n));
+
         VariableDeclarationTExpr expr = new VariableDeclarationTExpr(n);
         for (Node e : n.getChildNodes()) {
             expr.addChildren(e.accept(this, arg));
@@ -101,18 +113,24 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     @Override
     public TypedExpression visit(VariableDeclarator n, Context arg) {
+        logger.debug("VariableDeclarator:\t\t" + printConstraint(n));
+
         Optional<TypedExpression> initExpression = Optional.of(rhs);
         return new VariableDeclaratorTExpr(n, n.getName(), initExpression);
     }
 
     @Override
     public TypedExpression visit(ExpressionStmt n, Context arg) {
+        logger.debug("ExpressionStmt:\t\t" + printConstraint(n));
+
         TypedExpression expression = n.getExpression().accept(this, arg);
         return new ExpressionStmtT(n, expression);
     }
 
     @Override
     public TypedExpression visit(AssignExpr n, Context arg) {
+        logger.debug("AssignExpr:\t\t" + printConstraint(n));
+
         TypedExpression target = n.getTarget().accept(this, arg);
         if(target instanceof FieldToAccessorTExpr) {
             return target;
