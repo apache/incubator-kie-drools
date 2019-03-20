@@ -3,7 +3,6 @@ package org.drools.mvelcompiler;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -19,7 +18,6 @@ import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
-import org.drools.mvelcompiler.ast.VariableDeclarationTExpr;
 import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
@@ -68,9 +66,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         return declaration.<TypedExpression>map(d -> new SimpleNameTExpr(n, d.getClazz()))
                 .orElseGet(() -> {
                     mvelCompilerContext.addDeclaration(variableName, getRHSType());
-
-                    VariableDeclaratorTExpr declaratorTExpr = new VariableDeclaratorTExpr(n, variableName, Optional.of(rhs));
-                    return new VariableDeclarationTExpr(n, declaratorTExpr);
+                    return new VariableDeclaratorTExpr(n, variableName, Optional.of(rhs));
                 });
     }
 
@@ -111,11 +107,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     public TypedExpression visit(VariableDeclarationExpr n, Context arg) {
         logger.debug("VariableDeclarationExpr:\t\t" + printConstraint(n));
 
-        TypedExpression te = null;
-        for (Node e : n.getChildNodes()) {
-            te = e.accept(this, arg);
-        }
-        return new VariableDeclarationTExpr(n, te);
+        // assuming there's always one declaration for variable
+        return n.getVariables().iterator().next().accept(this, arg);
     }
 
     @Override
@@ -144,8 +137,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         TypedExpression target = n.getTarget().accept(this, arg);
         if (target instanceof FieldToAccessorTExpr) {
             return target;
-        }
-        if (target instanceof VariableDeclarationTExpr) {
+        } else if (target instanceof VariableDeclaratorTExpr) {
             return target;
         } else {
             return new AssignExprT(n, target, rhs);
