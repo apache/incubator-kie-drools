@@ -8,13 +8,20 @@ import com.github.javaparser.ast.expr.SimpleName;
 
 public class UnalteredTypedExpression extends TypedExpression {
 
+    private Type type;
+
     public UnalteredTypedExpression(Node originalExpression) {
         super(originalExpression);
     }
 
+    public UnalteredTypedExpression(Node originalExpression, Type type) {
+        super(originalExpression);
+        this.type = type;
+    }
+
     @Override
     public Optional<Type> getType() {
-        return Optional.empty();
+        return Optional.ofNullable(type);
     }
 
     @Override

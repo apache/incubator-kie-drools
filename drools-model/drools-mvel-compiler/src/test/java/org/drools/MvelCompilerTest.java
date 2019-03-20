@@ -86,16 +86,19 @@ public class MvelCompilerTest {
              "{ $p.setName(\"Luca\"); }");
     }
 
+
     @Test
-    public void testInitializer() {
+    public void testInitializerArrayAccess() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ " +
                      "l = new ArrayList(); " +
                      "l.add(\"first\"); " +
+                     "System.out.println(l[0]); " +
                      "}",
              "{ " +
                      "java.util.ArrayList l = new ArrayList(); " +
                      "l.add(\"first\"); " +
+                     "System.out.println(l.get(0)); " +
                      "}");
     }
 
