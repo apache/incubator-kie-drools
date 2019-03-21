@@ -133,26 +133,39 @@ public class SingleRangeCheck extends CheckBase {
                 .map(rangeSupplier)
                 .collect(toList());
 
-        T lower = getCoverageUpperBound(min, ranges);
+        final T lower = getCoverageUpperBound(min, ranges);
         if (lower.equals(max)) {
             dimensions.add(ranges);
         } else {
 
-            ArrayList<MissingRange> missingRanges = new ArrayList<>();
+            final ArrayList<MissingRange> missingRanges = findMissingRanges(field, max, ranges, lower);
 
-            while (!lower.equals(max)) {
-                final T upper = getCoverageNextBound(lower, ranges.stream());
-                missingRanges.add(new MissingRange(field.getFactType(),
-                                                   field.getName(),
-                                                   lower,
-                                                   upper));
-
-                lower = getCoverageUpperBound(upper, ranges);
+            if (!missingRanges.isEmpty()) {
+                errors.add(new RangeError(partition.getValue(),
+                                          partition.getKey(),
+                                          missingRanges));
             }
-            errors.add(new RangeError(partition.getValue(),
-                                      partition.getKey(),
-                                      missingRanges));
         }
+    }
+
+    private <T extends Comparable> ArrayList<MissingRange> findMissingRanges(final ObjectField field,
+                                                                             final T max,
+                                                                             final List<Range<T>> ranges,
+                                                                             final T lowest) {
+        final ArrayList<MissingRange> result = new ArrayList<>();
+
+        T lower = lowest;
+
+        while (lower.compareTo(max) < 0) {
+            final T upper = getCoverageNextBound(lower, max, ranges.stream());
+            result.add(new MissingRange(field.getFactType(),
+                                        field.getName(),
+                                        lower,
+                                        upper));
+            lower = getCoverageUpperBound(upper, ranges);
+        }
+
+        return result;
     }
 
     private void checkBidimensionalRanges(final Entry<PartitionKey, List<RuleInspector>> partition,
@@ -325,6 +338,7 @@ public class SingleRangeCheck extends CheckBase {
     }
 
     private <T extends Comparable> T getCoverageNextBound(final T bound,
+                                                          final T max,
                                                           final Stream<? extends Range<? extends T>> ranges) {
         final Iterator<? extends Range<? extends T>> i = ranges.sorted().iterator();
         while (i.hasNext()) {
@@ -334,7 +348,7 @@ public class SingleRangeCheck extends CheckBase {
                 return range.lowerBound;
             }
         }
-        return null;
+        return max;
     }
 
     @Override

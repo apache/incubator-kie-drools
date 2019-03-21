@@ -39,13 +39,21 @@ public class IntegerRange
             final Operator op = resolve(cond.getOperator());
             switch (op) {
                 case LESS_OR_EQUAL:
-                    upperBound = (Integer) cond.getValues().iterator().next() + 1;
+                    if (cond.getValues().iterator().next().equals(Integer.MAX_VALUE)) {
+                        upperBound = Integer.MAX_VALUE;
+                    } else {
+                        upperBound = (Integer) cond.getValues().iterator().next() + 1;
+                    }
                     break;
                 case LESS_THAN:
                     upperBound = (Integer) cond.getValues().iterator().next();
                     break;
                 case GREATER_OR_EQUAL:
-                    lowerBound = (Integer) cond.getValues().iterator().next() - 1;
+                    if (cond.getValues().iterator().next().equals(Integer.MIN_VALUE)) {
+                        lowerBound = Integer.MIN_VALUE;
+                    } else {
+                        lowerBound = (Integer) cond.getValues().iterator().next() - 1;
+                    }
                     break;
                 case GREATER_THAN:
                     lowerBound = (Integer) cond.getValues().iterator().next();
