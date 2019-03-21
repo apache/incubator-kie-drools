@@ -118,6 +118,27 @@ public class MvelCompilerTest {
     }
 
     @Test
+    public void testMixArrayMap() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    m = new HashMap();\n" +
+                     "    l = new ArrayList();\n" +
+                     "    l.add(\"first\");\n" +
+                     "    m.put(\"content\", l);\n" +
+                     "    System.out.println(((ArrayList)m[\"content\"])[0]);\n" +
+                     "    list.add(((ArrayList)m[\"content\"])[0]);\n" +
+                     "}",
+             "{ " +
+                     "    java.util.HashMap m = new HashMap();\n" +
+                     "    java.util.ArrayList l = new ArrayList();\n" +
+                     "    l.add(\"first\");\n" +
+                     "    m.put(\"content\", l);\n" +
+                     "    System.out.println(((java.util.ArrayList) m.get(\"content\")).get(0));\n" +
+                     "    list.add(((java.util.ArrayList) m.get(\"content\")).get(0));\n" +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
