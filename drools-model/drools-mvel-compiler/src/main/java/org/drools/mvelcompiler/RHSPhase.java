@@ -12,6 +12,8 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -26,6 +28,7 @@ import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.core.util.ClassUtils;
 import org.drools.mvelcompiler.ast.BinaryTExpr;
+import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
@@ -196,7 +199,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(ObjectCreationExpr n, Context arg) {
-        return new ObjectCreationExpressionT(n, mvelCompilerContext.resolveType(n.getType().asString()));
+        return new ObjectCreationExpressionT(n, resolveType(n.getType()));
     }
 
     @Override
@@ -209,6 +212,21 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
+    }
+
+    @Override
+    public TypedExpression visit(EnclosedExpr n, Context arg) {
+        return n.getInner().accept(this, arg);
+    }
+
+    @Override
+    public TypedExpression visit(CastExpr n, Context arg) {
+        TypedExpression innerExpr = n.getExpression().accept(this, arg);
+        return new CastExprT(innerExpr, resolveType(n.getType()));
+    }
+
+    private Class<?> resolveType(com.github.javaparser.ast.type.Type type) {
+        return mvelCompilerContext.resolveType(type.asString());
     }
 }
 
