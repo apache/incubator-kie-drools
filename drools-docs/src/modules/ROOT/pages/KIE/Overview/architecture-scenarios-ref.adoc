@@ -5,6 +5,8 @@ The following scenarios illustrate common variations of {PRODUCT} installation, 
 
 ifdef::DM,PAM[]
 {PRODUCT} authoring and managed server environments on OpenShift with {CENTRAL} and {KIE_SERVER}::
++
+--
 * *Installation environment*: {PRODUCT} on {OPENSHIFT}, using the `{PRODUCT_INIT}{ENTERPRISE_VERSION_SHORT}-authoring.yaml` and `{PRODUCT_INIT}{ENTERPRISE_VERSION_SHORT}-kieserver.yaml` template files
 * *Project storage and build environment*: External Git repository for project versioning synchronized with the {CENTRAL} Git repository using Git hooks, and external Maven repository for project management and building configured with {KIE_SERVER}
 * *Asset-authoring tool*: {CENTRAL}
@@ -18,6 +20,10 @@ ifdef::PAM[and Business Process Model and Notation (BPMN) models for processes]
 ifdef::PAM,JBPM[and BPMN]
 for optimal integration and stability.
 ** Access to {KIE_SERVER} functionality and KIE APIs for asset deployment and execution.
+
+.{PRODUCT} on OpenShift with {CENTRAL} and {KIE_SERVER}
+image::KIE/Overview/architecture-BA-on-OpenShift_enterprise.png[]
+--
 endif::[]
 
 ifdef::DM,PAM[]
@@ -26,6 +32,8 @@ endif::[]
 ifdef::DROOLS,JBPM,OP[]
 {PRODUCT} on Wildfly with {CENTRAL} and {KIE_SERVER}::
 endif::[]
++
+--
 * *Installation environment*: {PRODUCT} on
 ifdef::DM,PAM[{EAP_LONG}]
 ifdef::DROOLS,JBPM,OP[Wildfly]
@@ -42,12 +50,24 @@ ifdef::PAM,JBPM[and BPMN]
 for optimal integration and stability
 ** Access to {KIE_SERVER} functionality and KIE APIs for asset deployment and execution
 
+ifdef::DROOLS,JBPM,OP[]
+.{PRODUCT} on Wildfly with {CENTRAL} and {KIE_SERVER}
+image::KIE/Overview/architecture-BA-on-wildfly.png[]
+endif::[]
+ifdef::DM,PAM[]
+.{PRODUCT} on {EAP} with {CENTRAL} and {KIE_SERVER}
+image::KIE/Overview/architecture-BA-on-eap_enterprise.png[]
+endif::[]
+--
+
 ifdef::DM,PAM[]
 {PRODUCT} on {EAP} with an IDE and {KIE_SERVER}::
 endif::[]
 ifdef::DROOLS,JBPM,OP[]
 {PRODUCT} on Wildfly with an IDE and {KIE_SERVER}::
 endif::[]
++
+--
 * *Installation environment*: {PRODUCT} on
 ifdef::DM,PAM[{EAP_LONG}]
 ifdef::DROOLS,JBPM,OP[Wildfly]
@@ -65,12 +85,20 @@ ifdef::PAM,JBPM[Drools Rule Language (DRL) rules, spreadsheet decision tables, a
 ** Ability to define business assets using an external IDE and other asset-authoring tools of your choice
 ** Access to {KIE_SERVER} functionality and KIE APIs for asset deployment and execution
 
-{PRODUCT} with an IDE and an embedded Java application::
-* *Installation environment*: {PRODUCT} {DECISION_ENGINE}
-ifdef::PAM,JBPM[]
-and {PROCESS_ENGINE}
+ifdef::DM,PAM[]
+.{PRODUCT} on {EAP} with an IDE and {KIE_SERVER}
+image::KIE/Overview/architecture-BA-with-IDE_enterprise.png[]
 endif::[]
-embedded within a custom application
+ifdef::DROOLS,JBPM,OP[]
+.{PRODUCT} on Wildfly with an IDE and {KIE_SERVER}
+image::KIE/Overview/architecture-BA-with-IDE.png[]
+endif::[]
+--
+
+{PRODUCT} with an IDE and an embedded Java application::
++
+--
+* *Installation environment*: {PRODUCT} libraries embedded within a custom application
 * *Project storage and build environment*: External Git repository for project versioning (not synchronized with {CENTRAL}) and external Maven repository for project management and building configured with your embedded Java application (not configured with {KIE_SERVER})
 * *Asset-authoring tools*: Integrated development environment (IDE), such as
 ifdef::DM,PAM[Red Hat Developer Studio,]
@@ -84,3 +112,12 @@ ifdef::PAM,JBPM[Drools Rule Language (DRL) rules, spreadsheet decision tables, a
 ** Custom implementation of {PRODUCT} in an on-premise development environment with an embedded Java application
 ** Ability to define business assets using an external IDE and other asset-authoring tools of your choice
 ** Use of custom APIs to interact with core KIE APIs (not {KIE_SERVER} APIs) and to execute assets in the embedded engine
+
+.{PRODUCT} with an IDE and an embedded Java application
+ifdef::DM,PAM[]
+image::KIE/Overview/architecture-BA-with-custom-app_enterprise.png[]
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+image::KIE/Overview/architecture-BA-with-custom-app.png[]
+endif::[]
+--
