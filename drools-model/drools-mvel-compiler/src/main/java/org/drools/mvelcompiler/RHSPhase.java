@@ -40,6 +40,7 @@ import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.OptionalUtils;
 
+import static java.util.stream.Stream.of;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
@@ -204,7 +205,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
         Optional<Type> type = name.getType();
         // TODO: Need a better type check here, check ExpressionTyper
-        if(type.map(t -> t.getTypeName().endsWith("ArrayList")).isPresent()) {
+        if(type.filter(t -> of("ArrayList", "Map").anyMatch(typeEnd -> t.getTypeName().endsWith(typeEnd))).isPresent()) {
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
