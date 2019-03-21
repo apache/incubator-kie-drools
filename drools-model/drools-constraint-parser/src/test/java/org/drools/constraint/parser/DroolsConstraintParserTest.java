@@ -47,6 +47,7 @@ import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
@@ -522,6 +523,21 @@ public class DroolsConstraintParserTest {
     }
 
 
+    @Test
+    @Ignore
+    public void testWithoutSemicolon() {
+        String expr = "{             " +
+                        "delete($person) // some comment\n" +
+                        "delete($pet) // another comment\n" +
+                        "}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{             " +
+                             "delete($person); // some comment\n" +
+                             "delete($pet); // another comment\n" +
+                             "}", printConstraint(expression));
+
+    }
     @Test
     public void testNewExpression() {
         String expr = "money == new BigInteger(\"3\")";
