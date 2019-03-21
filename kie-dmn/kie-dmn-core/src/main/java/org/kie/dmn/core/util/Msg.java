@@ -107,7 +107,7 @@ public final class Msg {
     public static final Message1 DTANALYSIS_OVERLAP                                  = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP, "Overlap detected: %s");
     public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE                 = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE, "Overlap detected: %s. Unique hit policy decision tables can only have one matching rule.");
     public static final Message1 DTANALYSIS_OVERLAP_HITPOLICY_ANY                    = new Message1( DMNMessageType.DECISION_TABLE_OVERLAP_HITPOLICY_ANY   , "Overlap detected: %s. Any hit policy decision tables allows multiple rules to match, but they [must] all have the same output");
-    public static final Message1 DTANALYSIS_HITPOLICY_FIRST                          = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table '%s' uses First hit policy. First hit policy decision tables are not considered good practice because they do not offer a clear overview of the decision logic (quoted from: Decision Model and Notation specification)");
+    public static final Message1 DTANALYSIS_HITPOLICY_FIRST                          = new Message1( DMNMessageType.DECISION_TABLE_HITPOLICY_FIRST, "Decision Table '%s' uses First hit policy. First hit policy decision tables are not considered good practice because they do not offer a clear overview of the decision logic (quoted from: Decision Model and Notation specification)");
 
     public static interface Message {
         String getMask();
