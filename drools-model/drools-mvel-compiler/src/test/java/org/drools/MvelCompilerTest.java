@@ -103,6 +103,21 @@ public class MvelCompilerTest {
     }
 
     @Test
+    public void testInitializerMap() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "m = new HashMap();\n" +
+                     "m.put(\"key\", 2);\n" +
+                     "System.out.println(m[\"key\"]);\n" +
+                     "}",
+             "{ " +
+                     "java.util.HashMap m = new HashMap();\n" +
+                     "m.put(\"key\", 2);\n" +
+                     "System.out.println(m.get(\"key\"));\n" +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
@@ -133,6 +148,7 @@ public class MvelCompilerTest {
         Set<String> imports = new HashSet<>();
         // TODO: find which are the mvel implicit imports
         imports.add("java.util.ArrayList");
+        imports.add("java.util.HashMap");
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.apply(mvelCompilerContext);
