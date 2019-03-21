@@ -15,6 +15,7 @@
  */
 package org.drools.verifier.core.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,8 +24,19 @@ import org.drools.verifier.core.configuration.DateTimeFormatProvider;
 public class DateTimeFormatProviderMock
         implements DateTimeFormatProvider {
 
+    private final static String DATE_FORMAT = "dd-MMM-yyyy";
+
     @Override
     public String format(final Date dateValue) {
-        return new SimpleDateFormat("dd-MMM-yyyy").format(dateValue);
+        return new SimpleDateFormat(DATE_FORMAT).format(dateValue);
+    }
+
+    @Override
+    public Date parse(String dateValue) {
+        try {
+            return new SimpleDateFormat(DATE_FORMAT).parse(dateValue);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

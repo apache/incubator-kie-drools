@@ -30,9 +30,9 @@ import static java.util.stream.Collectors.toSet;
 
 public class RangeError {
 
-    private final Collection<RuleInspector> ruleInspectors;
     private final PartitionKey partitionKey;
     private final Collection<MissingRange> uncoveredRanges;
+    private Collection<RuleInspector> ruleInspectors;
 
     public RangeError(final Collection<RuleInspector> ruleInspectors,
                       final PartitionKey partitionKey,
@@ -46,9 +46,9 @@ public class RangeError {
                          final CheckType checkType) {
         return new MissingRangeIssue(severity,
                                      checkType,
-                                     new HashSet<>(ruleInspectors.stream().map(r -> r.getRowIndex() + 1).collect(toSet())),
                                      partitionKey.getConditions(),
-                                     uncoveredRanges
+                                     uncoveredRanges,
+                                     new HashSet<>(ruleInspectors.stream().map(r -> r.getRowIndex()).collect(toSet()))
         ).setDebugMessage(getMessage());
     }
 
