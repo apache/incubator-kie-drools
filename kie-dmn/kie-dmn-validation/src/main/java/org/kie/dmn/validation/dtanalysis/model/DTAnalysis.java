@@ -236,44 +236,65 @@ public class DTAnalysis {
             return;
         }
         for (Overlap overlap : overlaps) {
-            for (Integer ruleId : overlap.getRules()) {
-                List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
-                for (int jOutputIdx = 0; jOutputIdx < ddtaTable.outputCols(); jOutputIdx++) {
-                    DDTAOutputClause curOutputClause = ddtaTable.getOutputs().get(jOutputIdx);
-                    if (curOutputClause.isDiscreteDomain()) {
-                        int curOutputIdx = curOutputClause.getDiscreteValues().indexOf(curValues.get(jOutputIdx));
-                        List<Integer> otherRules = new ArrayList<>(overlap.getRules());
-                        otherRules.remove(ruleId);
-                        for (Integer otherRuleID : overlap.getRules()) {
-                            List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
-                            int otherOutputIdx = curOutputClause.getDiscreteValues().indexOf(otherRuleValues.get(jOutputIdx));
-                            if (curOutputIdx > otherOutputIdx) {
-                                boolean isOtherRuleWider = true;
-                                for (int jInputIdx = 0; isOtherRuleWider && jInputIdx < ddtaTable.inputCols(); jInputIdx++) {
-                                    DDTAInputEntry ruleIdInputAtIdx = ddtaTable.getRule().get(ruleId - 1).getInputEntry().get(jInputIdx);
-                                    DDTAInputEntry otherRuleInputAtIdx = ddtaTable.getRule().get(otherRuleID - 1).getInputEntry().get(jInputIdx);
-                                    if (ruleIdInputAtIdx.getIntervals().size() != 1 || otherRuleInputAtIdx.getIntervals().size() != 1) {
-                                        passThruMessages.add(new DMNDTAnalysisMessage(this,
-                                                                                      Severity.WARN,
-                                                                                      MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED,
-                                                                                                            sourceDT.getOutputLabel(),
-                                                                                                            ruleId, otherRuleID),
-                                                                                      Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED.getType()));
-                                    } else {
-                                        Interval ruleIdInterval = ruleIdInputAtIdx.getIntervals().get(0);
-                                        Interval otherRuleInterval = otherRuleInputAtIdx.getIntervals().get(0);
-                                        isOtherRuleWider = isOtherRuleWider && otherRuleInterval.includes(ruleIdInterval);
-                                    }
-                                }
+            analyseOverlapForMappedRules(overlap);
+        }
+    }
+
+    private void analyseOverlapForMappedRules(Overlap overlap) {
+        for (Integer ruleId : overlap.getRules()) {
+            List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+            for (int jOutputIdx = 0; jOutputIdx < ddtaTable.outputCols(); jOutputIdx++) {
+                DDTAOutputClause curOutputClause = ddtaTable.getOutputs().get(jOutputIdx);
+                if (curOutputClause.isDiscreteDomain()) {
+                    int curOutputIdx = curOutputClause.getDiscreteValues().indexOf(curValues.get(jOutputIdx));
+                    List<Integer> otherRules = new ArrayList<>(overlap.getRules());
+                    otherRules.remove(ruleId);
+                    for (Integer otherRuleID : overlap.getRules()) {
+                        List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
+                        int otherOutputIdx = curOutputClause.getDiscreteValues().indexOf(otherRuleValues.get(jOutputIdx));
+                        if (curOutputIdx > otherOutputIdx) {
+                            try {
+                                boolean isOtherRuleWider = comparingRulesIsRightWider(ruleId, otherRuleID);
                                 if (isOtherRuleWider) {
                                     maskedRules.add(new MaskedRule(ruleId, otherRuleID));
                                 }
+                            } catch (ComparingRulesWithMultipleInputEntries e) {
+                                passThruMessages.add(new DMNDTAnalysisMessage(this,
+                                                                              Severity.WARN,
+                                                                              MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED,
+                                                                                                    sourceDT.getOutputLabel(),
+                                                                                                    ruleId, otherRuleID),
+                                                                              Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED.getType()));
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    public boolean comparingRulesIsRightWider(int ruleId, int isWiderRuleId) throws ComparingRulesWithMultipleInputEntries {
+        boolean isOtherRuleWider = true;
+        for (int jInputIdx = 0; isOtherRuleWider && jInputIdx < ddtaTable.inputCols(); jInputIdx++) {
+            DDTAInputEntry ruleIdInputAtIdx = ddtaTable.getRule().get(ruleId - 1).getInputEntry().get(jInputIdx);
+            DDTAInputEntry otherRuleInputAtIdx = ddtaTable.getRule().get(isWiderRuleId - 1).getInputEntry().get(jInputIdx);
+            if (ruleIdInputAtIdx.getIntervals().size() != 1 || otherRuleInputAtIdx.getIntervals().size() != 1) {
+                throw new ComparingRulesWithMultipleInputEntries("Multiple entries not supported");
+            } else {
+                Interval ruleIdInterval = ruleIdInputAtIdx.getIntervals().get(0);
+                Interval otherRuleInterval = otherRuleInputAtIdx.getIntervals().get(0);
+                isOtherRuleWider = isOtherRuleWider && otherRuleInterval.includes(ruleIdInterval);
+            }
+        }
+        return isOtherRuleWider;
+    }
+
+    public class ComparingRulesWithMultipleInputEntries extends Exception {
+
+        public ComparingRulesWithMultipleInputEntries(String message) {
+            super(message);
+        }
+
     }
 
     public List<MaskedRule> getMaskedRules() {
