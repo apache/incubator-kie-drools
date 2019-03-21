@@ -37,6 +37,7 @@ import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.jci.CompilationProblem;
@@ -194,6 +195,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
                 "\n" +
                 "import " + Model.class.getCanonicalName()  + ";\n" +
                 "import " + KieBase.class.getCanonicalName()  + ";\n" +
+                "import " + KieBaseModel.class.getCanonicalName()  + ";\n" +
                 "import " + KieSession.class.getCanonicalName()  + ";\n" +
                 "\n" +
                 ( hasCdi() ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
@@ -204,8 +206,6 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         sb.append(modelMethod.toNewKieSessionMethod());
         sb.append("\n");
         sb.append(modelMethod.toGetKieBaseForSessionMethod());
-        sb.append("\n");
-        sb.append(modelMethod.toKieBaseConfMethod());
         sb.append("\n");
         sb.append(modelMethod.toKieSessionConfMethod());
         sb.append("\n}" );

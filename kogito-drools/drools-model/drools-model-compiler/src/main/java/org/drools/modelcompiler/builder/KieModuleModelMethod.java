@@ -49,10 +49,11 @@ public class KieModuleModelMethod {
                 "    private java.util.Map<String, KieBase> kbases = new java.util.HashMap<>();\n" +
                 "\n" +
                 "    public ProjectRuntime() {\n" +
-                "        ProjectModel model = new ProjectModel();\n"
+                "        ProjectModel model = new ProjectModel();\n" +
+                "        java.util.Map<String, KieBaseModel> kBaseModelMap = model.getKieModuleModel().getKieBaseModels();\n"
         );
         kBaseModels.keySet().forEach( kBaseName ->
-                sb.append( "        kbases.put(\"" + kBaseName + "\", org.drools.modelcompiler.builder.KieBaseBuilder.createKieBaseFromModel( model.getModels(), getConfForKieBase( \"" + kBaseName + "\" ) ));\n" ));
+                sb.append( "        kbases.put(\"" + kBaseName + "\", org.drools.modelcompiler.builder.KieBaseBuilder.createKieBaseFromModel( model.getModels(), kBaseModelMap.get( \"" + kBaseName + "\" ) ));\n" ));
         sb.append( "    }\n" );
         return sb.toString();
     }
@@ -90,26 +91,6 @@ public class KieModuleModelMethod {
         sb.append(
                 "        }\n" +
                 "        return null;\n" +
-                "    }\n" );
-        return sb.toString();
-    }
-
-    public String toKieBaseConfMethod() {
-        StringBuilder sb = new StringBuilder(
-                "    private org.kie.api.KieBaseConfiguration getConfForKieBase( String kbaseName ) {\n" +
-                "        org.drools.core.RuleBaseConfiguration conf = new org.drools.core.RuleBaseConfiguration();\n" +
-                "        switch (kbaseName) {\n"
-        );
-
-        for (Map.Entry<String, BlockStmt> entry : kBaseConfs.entrySet()) {
-            sb.append( "            case \"" + entry.getKey() + "\":\n" );
-            sb.append( entry.getValue() );
-            sb.append( "                break;\n" );
-        }
-
-        sb.append(
-                "        }\n" +
-                "        return conf;\n" +
                 "    }\n" );
         return sb.toString();
     }

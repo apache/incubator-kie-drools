@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.model.Model;
@@ -27,7 +28,10 @@ import org.drools.modelcompiler.CanonicalKiePackages;
 import org.drools.modelcompiler.KiePackagesBuilder;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.conf.KieBaseOption;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBase;
 
 public class KieBaseBuilder {
 
@@ -74,6 +78,15 @@ public class KieBaseBuilder {
     public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseConfiguration kieBaseConf ) {
         KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
         models.forEach( builder::addModel );
+        return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
+    }
+
+    public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseModel kieBaseModel ) {
+        RuleBaseConfiguration kieBaseConf = new RuleBaseConfiguration();
+        kieBaseConf.setEventProcessingMode(kieBaseModel.getEventProcessingMode());
+
+        KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
+        models.stream().filter( m -> isPackageInKieBase(kieBaseModel, m.getName()) ).forEach( builder::addModel );
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }
 }

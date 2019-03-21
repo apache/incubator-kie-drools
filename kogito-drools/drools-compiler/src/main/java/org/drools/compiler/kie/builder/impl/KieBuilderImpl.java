@@ -405,7 +405,11 @@ public class KieBuilderImpl
     }
 
     public static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
-        for ( String candidatePkg : kieBaseModel.getPackages() ) {
+        return isPackageInKieBase( kieBaseModel.getName(), kieBaseModel.getPackages(), pkgName );
+    }
+
+    public static boolean isPackageInKieBase( String kieBaseName, List<String> kieBasePackages, String pkgName ) {
+        for ( String candidatePkg : kieBasePackages ) {
             boolean isNegative = candidatePkg.startsWith( "!" );
             if ( isNegative ) {
                 candidatePkg = candidatePkg.substring( 1 );
@@ -419,8 +423,8 @@ public class KieBuilderImpl
                 if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
                     return !isNegative;
                 }
-                if ( relativePkgNameForFile.startsWith( kieBaseModel.getName() + "." ) ) {
-                    relativePkgNameForFile = relativePkgNameForFile.substring( kieBaseModel.getName().length() + 1 );
+                if ( relativePkgNameForFile.startsWith( kieBaseName + "." ) ) {
+                    relativePkgNameForFile = relativePkgNameForFile.substring( kieBaseName.length() + 1 );
                     if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
                         return !isNegative;
                     }
