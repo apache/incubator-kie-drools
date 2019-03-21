@@ -35,9 +35,11 @@ public class DTAnalysis {
 
     private final List<Hyperrectangle> gaps = new ArrayList<>();
     private final List<Overlap> overlaps = new ArrayList<>();
+    private final List<MaskedRule> maskedRules = new ArrayList<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
+    private final Collection passThruMessages = new ArrayList<>();
 
     public DTAnalysis(DecisionTable sourceDT, DDTATable ddtaTable) {
         this.sourceDT = sourceDT;
@@ -127,6 +129,8 @@ public class DTAnalysis {
             results.addAll((Collection) Arrays.asList(m));
             return results;
         }
+        results.addAll(passThruMessages());
+
         results.addAll(gapsAsMessages());
         results.addAll(overlapsAsMessages());
         results.addAll(warnAboutHitPolicyFirst());
@@ -156,6 +160,10 @@ public class DTAnalysis {
         }
     }
 
+    private Collection passThruMessages() {
+        return passThruMessages;
+    }
+
     private Collection overlapsAsMessages() {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
         for (Overlap overlap : overlaps) {
@@ -167,10 +175,21 @@ public class DTAnalysis {
                                                                                overlap.asHumanFriendly(ddtaTable)),
                                                          Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType()));
                     break;
+                case PRIORITY:
+                    for (MaskedRule masked : maskedRules) {
+                        results.add(new DMNDTAnalysisMessage(this,
+                                                             Severity.ERROR,
+                                                             MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE,
+                                                                                   masked.maskedRule,
+                                                                                   masked.maskedBy),
+                                                             Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
+                    }
+                    results.add(overlapToStandardDMNMessage(overlap));
+                    break;
                 case ANY:
-                    List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0).intValue() - 1).getOutputEntry();
+                    List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0) - 1).getOutputEntry();
                     for (int i = 1; i < overlap.getRules().size(); i++) { // deliberately start index 1 for 2nd overlapping rule number.
-                        int curIndex = overlap.getRules().get(i).intValue() - 1;
+                        int curIndex = overlap.getRules().get(i) - 1;
                         List<Comparable<?>> curValue = ddtaTable.getRule().get(curIndex).getOutputEntry();
                         if (!prevValue.equals(curValue)) {
                             results.add(new DMNDTAnalysisMessage(this,
@@ -185,15 +204,19 @@ public class DTAnalysis {
                     }
                     break;
                 default:
-                    results.add(new DMNDTAnalysisMessage(this,
-                                                         Severity.WARN,
-                                                         MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
-                                                                               overlap.asHumanFriendly(ddtaTable)),
-                                                         Msg.DTANALYSIS_OVERLAP.getType()));
+                    results.add(overlapToStandardDMNMessage(overlap));
                     break;
             }
         }
         return results;
+    }
+
+    private DMNDTAnalysisMessage overlapToStandardDMNMessage(Overlap overlap) {
+        return new DMNDTAnalysisMessage(this,
+                                        Severity.WARN,
+                                        MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
+                                                              overlap.asHumanFriendly(ddtaTable)),
+                                        Msg.DTANALYSIS_OVERLAP.getType());
     }
 
     private Collection gapsAsMessages() {
@@ -206,6 +229,76 @@ public class DTAnalysis {
                                                  Msg.DTANALYSIS_GAP.getType()));
         }
         return results;
+    }
+
+    public void computeMaskedRules() {
+        if (sourceDT.getHitPolicy() != HitPolicy.PRIORITY) {
+            return;
+        }
+        for (Overlap overlap : overlaps) {
+            analyseOverlapForMappedRules(overlap);
+        }
+    }
+
+    private void analyseOverlapForMappedRules(Overlap overlap) {
+        for (Integer ruleId : overlap.getRules()) {
+            List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+            for (int jOutputIdx = 0; jOutputIdx < ddtaTable.outputCols(); jOutputIdx++) {
+                DDTAOutputClause curOutputClause = ddtaTable.getOutputs().get(jOutputIdx);
+                if (curOutputClause.isDiscreteDomain()) {
+                    int curOutputIdx = curOutputClause.getDiscreteValues().indexOf(curValues.get(jOutputIdx));
+                    List<Integer> otherRules = new ArrayList<>(overlap.getRules());
+                    otherRules.remove(ruleId);
+                    for (Integer otherRuleID : overlap.getRules()) {
+                        List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
+                        int otherOutputIdx = curOutputClause.getDiscreteValues().indexOf(otherRuleValues.get(jOutputIdx));
+                        if (curOutputIdx > otherOutputIdx) {
+                            try {
+                                boolean isOtherRuleWider = comparingRulesIsRightWider(ruleId, otherRuleID);
+                                if (isOtherRuleWider) {
+                                    maskedRules.add(new MaskedRule(ruleId, otherRuleID));
+                                }
+                            } catch (ComparingRulesWithMultipleInputEntries e) {
+                                passThruMessages.add(new DMNDTAnalysisMessage(this,
+                                                                              Severity.WARN,
+                                                                              MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED,
+                                                                                                    sourceDT.getOutputLabel(),
+                                                                                                    ruleId, otherRuleID),
+                                                                              Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED.getType()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean comparingRulesIsRightWider(int ruleId, int isWiderRuleId) throws ComparingRulesWithMultipleInputEntries {
+        boolean isOtherRuleWider = true;
+        for (int jInputIdx = 0; isOtherRuleWider && jInputIdx < ddtaTable.inputCols(); jInputIdx++) {
+            DDTAInputEntry ruleIdInputAtIdx = ddtaTable.getRule().get(ruleId - 1).getInputEntry().get(jInputIdx);
+            DDTAInputEntry otherRuleInputAtIdx = ddtaTable.getRule().get(isWiderRuleId - 1).getInputEntry().get(jInputIdx);
+            if (ruleIdInputAtIdx.getIntervals().size() != 1 || otherRuleInputAtIdx.getIntervals().size() != 1) {
+                throw new ComparingRulesWithMultipleInputEntries("Multiple entries not supported");
+            } else {
+                Interval ruleIdInterval = ruleIdInputAtIdx.getIntervals().get(0);
+                Interval otherRuleInterval = otherRuleInputAtIdx.getIntervals().get(0);
+                isOtherRuleWider = isOtherRuleWider && otherRuleInterval.includes(ruleIdInterval);
+            }
+        }
+        return isOtherRuleWider;
+    }
+
+    public class ComparingRulesWithMultipleInputEntries extends Exception {
+
+        public ComparingRulesWithMultipleInputEntries(String message) {
+            super(message);
+        }
+
+    }
+
+    public List<MaskedRule> getMaskedRules() {
+        return Collections.unmodifiableList(maskedRules);
     }
 
 }

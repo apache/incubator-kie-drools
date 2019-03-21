@@ -48,10 +48,10 @@ public class Interval {
 
     private final Bound<?> lowerBound;
     private final Bound<?> upperBound;
-    private final long rule;
-    private final long col;
+    private final int rule;
+    private final int col;
 
-    public Interval(RangeBoundary lowBoundary, Comparable<?> start, Comparable<?> end, RangeBoundary highBoundary, long rule, long col) {
+    public Interval(RangeBoundary lowBoundary, Comparable<?> start, Comparable<?> end, RangeBoundary highBoundary, int rule, int col) {
         this.lowerBound = new Bound(start, lowBoundary, this);
         this.upperBound = new Bound(end, highBoundary, this);
         this.rule = rule;
@@ -85,11 +85,11 @@ public class Interval {
         return upperBound;
     }
 
-    public long getRule() {
+    public int getRule() {
         return rule;
     }
 
-    public long getCol() {
+    public int getCol() {
         return col;
     }
 

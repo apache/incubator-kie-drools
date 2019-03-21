@@ -18,6 +18,7 @@ package org.kie.dmn.validation.dtanalysis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -57,11 +58,13 @@ import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
+import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.BoundValueComparator;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputClause;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputEntry;
+import org.kie.dmn.validation.dtanalysis.model.DDTAOutputClause;
 import org.kie.dmn.validation.dtanalysis.model.DDTARule;
 import org.kie.dmn.validation.dtanalysis.model.DDTATable;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
@@ -105,6 +108,7 @@ public class DMNDTAnalyser {
     private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionNode dn, DecisionTable dt) {
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
+        compileTableOutputClauses(model, dt, ddtaTable);
         compileTableRules(dt, ddtaTable);
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
@@ -112,6 +116,8 @@ public class DMNDTAnalyser {
         findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
         LOG.debug("findOverlaps");
         findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+        LOG.debug("computeMaskedRules");
+        analysis.computeMaskedRules();
         LOG.debug("normalize");
         analysis.normalize();
         return analysis;
@@ -223,7 +229,65 @@ public class DMNDTAnalyser {
         }
     }
 
-    private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
+    private void compileTableOutputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
+        for (int jColIdx = 0; jColIdx < dt.getOutput().size(); jColIdx++) {
+            OutputClause oe = dt.getOutput().get(jColIdx);
+            Interval infDomain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, jColIdx + 1);
+            String allowedValues = null;
+            if (oe.getOutputValues() != null) {
+                allowedValues = oe.getOutputValues().getText();
+            } else {
+                QName outputTypeRef = (oe.getTypeRef() == null && dt.getOutput().size() == 1) ? dt.getTypeRef() : oe.getTypeRef();
+                if (outputTypeRef != null) {
+                    QName typeRef = DMNCompilerImpl.getNamespaceAndName(dt, ((DMNModelImpl) model).getImportAliasesForNS(), outputTypeRef, model.getNamespace());
+                    if (typeRef.getNamespaceURI().equals(model.getNamespace())) {
+                        Optional<ItemDefinition> opt = model.getDefinitions().getItemDefinition().stream().filter(id -> id.getName().equals(typeRef.getLocalPart())).findFirst();
+                        if (opt.isPresent()) {
+                            ItemDefinition id = opt.get();
+                            if (id.getAllowedValues() != null) {
+                                allowedValues = id.getAllowedValues().getText();
+                            }
+                        } else {
+                            throw new IllegalStateException("Unable to locate typeRef " + typeRef + " to determine domain.");
+                        }
+                    } else if (typeRef.getNamespaceURI().equals(model.getDefinitions().getURIFEEL()) && typeRef.getLocalPart().equals("boolean")) {
+                        allowedValues = "false, true";
+                    }
+                }
+            }
+            if (allowedValues != null) {
+                ProcessedUnaryTest compileUnaryTests = (ProcessedUnaryTest) FEEL.compileUnaryTests(allowedValues, FEEL.newCompilerContext());
+                UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
+                UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
+                if (utln.getElements().size() != 1) {
+                    if (!utln.getElements().stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
+                        throw new DMNDTAnalysisException("Multiple constraint on column: " + utln, dt);
+                    }
+                    List<Comparable<?>> discreteValues = new ArrayList<>();
+                    for (BaseNode e : utln.getElements()) {
+                        Comparable<?> v = valueFromNode(((UnaryTestNode) e).getValue());
+                        discreteValues.add(v);
+                    }
+                    Collections.sort((List) discreteValues);
+                    Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
+                    DDTAOutputClause ic = new DDTAOutputClause(discreteDomainMinMax, discreteValues);
+                    ddtaTable.getOutputs().add(ic);
+                } else if (utln.getElements().size() == 1) {
+                    UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
+                    Interval interval = utnToInterval(utn0, infDomain, null, 0, jColIdx + 1);
+                    DDTAOutputClause ic = new DDTAOutputClause(interval);
+                    ddtaTable.getOutputs().add(ic);
+                } else {
+                    throw new IllegalStateException("inputValues not null but utln: " + utln);
+                }
+            } else {
+                DDTAOutputClause ic = new DDTAOutputClause(infDomain);
+                ddtaTable.getOutputs().add(ic);
+            }
+        }
+    }
+
+    private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Integer> activeRules) {
         LOG.debug("findOverlaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
@@ -273,7 +337,7 @@ public class DMNDTAnalyser {
         return vCompare < 0 || (vCompare == 0 && lastBound.getBoundaryType() == RangeBoundary.CLOSED && currentBound.getBoundaryType() == RangeBoundary.CLOSED);
     }
 
-    private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Number> activeRules) {
+    private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Integer> activeRules) {
         LOG.debug("findGaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
@@ -376,20 +440,80 @@ public class DMNDTAnalyser {
         }
     }
 
-    private static List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, List discreteValues, long rule, long col) {
+    private static List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
-        for (BaseNode n : elements) {
-            if (n instanceof DashNode) {
-                results.add(new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col));
-                continue;
+        if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
+            BitSet hitValues = new BitSet(discreteValues.size());
+            for (BaseNode n : elements) {
+                Comparable<?> thisValue = valueFromNode(((UnaryTestNode) n).getValue());
+                int indexOf = discreteValues.indexOf(thisValue);
+                if (indexOf < 0) {
+                    throw new IllegalStateException("Unable to determine discreteValue index for: " + n);
+                }
+                hitValues.set(indexOf);
             }
-            UnaryTestNode ut = (UnaryTestNode) n;
-            results.add(utnToInterval(ut, minMax, discreteValues, rule, col));
+            int lowerBoundIdx = -1;
+            int upperBoundIdx = -1;
+            for (int i = 0; i < hitValues.length(); i++) {
+                boolean curValue = hitValues.get(i);
+                if (curValue) {
+                    if (lowerBoundIdx < 0) {
+                        lowerBoundIdx = i;
+                        upperBoundIdx = i;
+                    } else {
+                        upperBoundIdx = i;
+                    }
+                } else {
+                    if (lowerBoundIdx >= 0 && upperBoundIdx >=0) {
+                        Comparable<?> lowValue = (Comparable<?>) discreteValues.get(lowerBoundIdx);
+                        Comparable<?> highValue = (Comparable<?>) discreteValues.get(upperBoundIdx);
+                        Interval newInterval = null;
+                        if (upperBoundIdx + 1 == discreteValues.size()) {
+                            newInterval = new Interval(RangeBoundary.CLOSED, lowValue, highValue, RangeBoundary.CLOSED, rule, col);
+                        } else {
+                            newInterval = new Interval(RangeBoundary.CLOSED, lowValue, (Comparable<?>) discreteValues.get(upperBoundIdx + 1), RangeBoundary.OPEN, rule, col);
+                        }
+                        results.add(newInterval);
+                    }
+                }
+            }
+            if (lowerBoundIdx >= 0 && upperBoundIdx >= 0) {
+                Comparable<?> lowValue = (Comparable<?>) discreteValues.get(lowerBoundIdx);
+                Comparable<?> highValue = (Comparable<?>) discreteValues.get(upperBoundIdx);
+                Interval newInterval = null;
+                if (upperBoundIdx + 1 == discreteValues.size()) {
+                    newInterval = new Interval(RangeBoundary.CLOSED, lowValue, highValue, RangeBoundary.CLOSED, rule, col);
+                } else {
+                    newInterval = new Interval(RangeBoundary.CLOSED, lowValue, (Comparable<?>) discreteValues.get(upperBoundIdx + 1), RangeBoundary.OPEN, rule, col);
+                }
+                results.add(newInterval);
+            }
+        } else {
+            for (BaseNode n : elements) {
+                if (n instanceof DashNode) {
+                    results.add(new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col));
+                    continue;
+                }
+                UnaryTestNode ut = (UnaryTestNode) n;
+                results.add(utnToInterval(ut, minMax, discreteValues, rule, col));
+            }
         }
         return results;
     }
 
-    private static Interval utnToInterval(UnaryTestNode ut, Interval minMax, List discreteValues, long rule, long col) {
+    private static boolean areAllEQUnaryTest(List<BaseNode> elements) {
+        try {
+            boolean result = true;
+            for (BaseNode n : elements) {
+                result = result && ((UnaryTestNode) n).getOperator() == UnaryOperator.EQ;
+            }
+            return result;
+        } catch (Throwable e) {
+            return false;    
+        }
+    }
+
+    private static Interval utnToInterval(UnaryTestNode ut, Interval minMax, List discreteValues, int rule, int col) {
         if (ut.getOperator() == UnaryOperator.EQ) {
             if (discreteValues == null || discreteValues.isEmpty()) {
                 return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col);

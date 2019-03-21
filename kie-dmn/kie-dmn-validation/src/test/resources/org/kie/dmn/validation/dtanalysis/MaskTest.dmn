@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_FF8E71AB-F531-483B-BA19-EA65C62B45BE" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_FFBCC220-576F-497A-B710-46782B97B020" name="MaskBasic" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_FF8E71AB-F531-483B-BA19-EA65C62B45BE">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_8859494E-213B-4722-A604-97CC5256AC87" name="tApproval" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_30E8CDFC-768F-4627-ACEA-3E88CD1B9AF6">
+      <dmn:text>"NO", "OK"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_61C35DBF-B41C-44FB-80D1-AD974311B412" name="tRisk" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_61CDD8FB-A3B7-413C-B0A2-172CFA6CF894">
+      <dmn:text>"H", "M", "L"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_513EBE25-73FA-4A2F-8569-A4922CDE2C92" name="Risk">
+    <dmn:variable id="_4BD66574-1E53-4C9A-9455-2D07DE852A51" name="Risk" typeRef="tRisk"/>
+  </dmn:inputData>
+  <dmn:inputData id="_B8DA3EAC-81B8-4533-8856-793FE17BC14E" name="Age">
+    <dmn:variable id="_71C094F0-9755-4BD3-9424-D51A7A31EAD0" name="Age" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="_EBF4E4EE-CC07-4E8A-84A7-D652B1AFB3F2" name="Decision-1">
+    <dmn:variable id="_A3CF0304-2263-43D7-BBB9-90814FD9A151" name="Decision-1" typeRef="tApproval"/>
+    <dmn:informationRequirement id="_4C8172E3-D233-491C-B2AE-88967398D23B">
+      <dmn:requiredInput href="#_B8DA3EAC-81B8-4533-8856-793FE17BC14E"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_35298692-112D-478A-9255-8144DA9E8398">
+      <dmn:requiredInput href="#_513EBE25-73FA-4A2F-8569-A4922CDE2C92"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_9E19661B-252A-41C2-949C-A9D12DBE989D">
+      <dmn:requiredInput href="#_29C83CA5-53C6-4B47-9322-C1F35D852A54"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_BA703D04-803A-44AA-8A31-F5EEDD4FD54E" hitPolicy="PRIORITY" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_64DF72DF-1E53-42FC-AEF3-B2105F547CAB">
+        <dmn:inputExpression id="_B4AD85C7-03EF-4534-8C36-38B7AF27EC63" typeRef="number">
+          <dmn:text>Age</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_5D436375-41AE-447C-A422-8BD5D8826C0E">
+        <dmn:inputExpression id="_E78D333B-7CA6-4FA6-89A7-2794E8B71D7E" typeRef="tRisk">
+          <dmn:text>Risk</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="_ACA7B163-98AB-4045-865D-C42EAE9D13E5">
+        <dmn:inputExpression id="_1D9077E0-7534-4F9F-8A72-462C11AB565F" typeRef="boolean">
+          <dmn:text>is Mitigated</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_996A8F6D-1FFF-4C46-9D31-9931BE43A15C" typeRef="tApproval"/>
+      <dmn:rule id="_2FC5E463-8DD0-47F2-A08C-B509E2DDF961">
+        <dmn:inputEntry id="_75995482-B161-4B8C-8713-424E2420A0E7">
+          <dmn:text>&gt;=18</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_40CAD444-2976-4C53-B174-19E7B317B5C5">
+          <dmn:text>"M", "L"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_BF8713FB-3284-4878-8DD8-D631AF225863">
+          <dmn:text>true</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_0932BA08-3BCF-45B2-8065-9DFA13CB6798">
+          <dmn:text>"OK"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="_F514C4AA-F578-4F17-810A-0E045CE16936">
+        <dmn:inputEntry id="_AE3D328D-65FC-4AAE-8709-775BC4AD0CB9">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_12FAA613-4C61-495A-9D70-9DDED14F324D">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="_F6447FAD-CB5C-4995-951E-70A6C0FE0B20">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_E092F3A4-88A0-4C5B-AD0F-B273D5795A85">
+          <dmn:text>"NO"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="_29C83CA5-53C6-4B47-9322-C1F35D852A54" name="is Mitigated">
+    <dmn:variable id="_521DA551-1FD6-49EB-8AE8-DEB9EDC06493" name="is Mitigated" typeRef="boolean"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_BA703D04-803A-44AA-8A31-F5EEDD4FD54E">
+            <kie:width>50.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>100.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_29C83CA5-53C6-4B47-9322-C1F35D852A54" dmnElementRef="_29C83CA5-53C6-4B47-9322-C1F35D852A54" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="208" y="350" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_B8DA3EAC-81B8-4533-8856-793FE17BC14E" dmnElementRef="_B8DA3EAC-81B8-4533-8856-793FE17BC14E" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="208" y="201" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_513EBE25-73FA-4A2F-8569-A4922CDE2C92" dmnElementRef="_513EBE25-73FA-4A2F-8569-A4922CDE2C92" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="208" y="278" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_EBF4E4EE-CC07-4E8A-84A7-D652B1AFB3F2" dmnElementRef="_EBF4E4EE-CC07-4E8A-84A7-D652B1AFB3F2" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="388" y="201" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_4C8172E3-D233-491C-B2AE-88967398D23B" dmnElementRef="_4C8172E3-D233-491C-B2AE-88967398D23B">
+        <di:waypoint x="308" y="226"/>
+        <di:waypoint x="388" y="226"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_35298692-112D-478A-9255-8144DA9E8398" dmnElementRef="_35298692-112D-478A-9255-8144DA9E8398">
+        <di:waypoint x="308" y="303"/>
+        <di:waypoint x="388" y="226"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_9E19661B-252A-41C2-949C-A9D12DBE989D" dmnElementRef="_9E19661B-252A-41C2-949C-A9D12DBE989D">
+        <di:waypoint x="308" y="375"/>
+        <di:waypoint x="388" y="226"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
