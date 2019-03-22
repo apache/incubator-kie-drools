@@ -534,6 +534,12 @@ Normally Planner just works on Spring Boot, simply add the `optaplanner-core` de
 If it has trouble finding classpath resources (such as the solver config, score DRL's and domain classes),
 provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>.
 
+[WARNING]
+====
+Drools score calculation is currently incompatible with the dependency `spring-boot-devtools`:
+none of the DRL rules will fire, due to ClassLoader issues.
+====
+
 
 [[integrationWithJPMS]]
 === Java Platform Module System (Jigsaw)
