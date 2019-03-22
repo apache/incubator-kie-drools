@@ -101,11 +101,11 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     protected SolverFactory<Solution_> buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
-        solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
-        solverFactory.getSolverConfig().setTerminationConfig(
-                new TerminationConfig().withBestScoreLimit(bestScoreLimitString));
-        solverFactory.getSolverConfig().setMoveThreadCount(moveThreadCount);
-
+        solverFactory.getSolverConfig()
+                .withEnvironmentMode(environmentMode)
+                .withTermination(new TerminationConfig()
+                        .withBestScoreLimit(bestScoreLimitString))
+                .withMoveThreadCount(moveThreadCount);
         return solverFactory;
     }
 

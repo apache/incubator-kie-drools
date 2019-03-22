@@ -51,13 +51,13 @@ public class VehicleRoutingMultiThreadedReproducibilityTest extends AbstractTurt
         solverFactory = SolverFactory.createFromXmlResource(vehicleRoutingApp.getSolverConfig());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
 
+        solverConfig.withEnvironmentMode(EnvironmentMode.REPRODUCIBLE)
+                .withMoveThreadCount(MOVE_THREAD_COUNT);
         solverConfig.getPhaseConfigList().forEach(phaseConfig -> {
             if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
                 phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(STEP_LIMIT));
             }
         });
-        solverConfig.setMoveThreadCount(MOVE_THREAD_COUNT);
-        solverConfig.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
     }
 
     @Test
