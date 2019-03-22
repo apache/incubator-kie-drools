@@ -14,7 +14,7 @@
 The following table highlights the main decision-authoring assets supported in {PRODUCT} projects to help you decide or confirm the best method for defining decisions in your decision service.
 
 .Decision-authoring assets supported in {PRODUCT}
-[cols="15%,45%,20%,20%", options="header"]
+[cols="20%,40%,20%,20%", options="header"]
 |===
 |Asset
 |Highlights
