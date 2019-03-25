@@ -9,6 +9,7 @@ import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.jbpm.process.core.dummy.DummyWorkingMemory;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.kie.api.definition.process.Process;
 
 public class ProcessRuntimeProvider {
@@ -34,6 +35,7 @@ public class ProcessRuntimeProvider {
         wm.setProcessRuntime(processRuntime);
         
         processRuntime.getWorkItemManager().registerWorkItemHandler("Log", new DoNothingWorkItemHandler());
+        processRuntime.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         
         runtime = processRuntime;        
         

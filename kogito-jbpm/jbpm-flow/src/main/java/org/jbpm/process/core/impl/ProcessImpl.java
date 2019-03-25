@@ -31,6 +31,7 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.Process;
 import org.jbpm.process.core.context.AbstractContext;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
 
 /**
@@ -45,6 +46,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     private String name;
     private String version;
     private String type;
+    private String visibility;
     private String packageName;
     private Resource resource;
     private ContextContainer contextContainer = new ContextContainerImpl();
@@ -94,8 +96,21 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
 	public void setPackageName(String packageName) {
 		this.packageName = packageName;
 	}
+	
+    public String getVisibility() {
+        return visibility;
+    }
+    
+    public void setVisibility(String visibility) {
+        if (WorkflowProcess.NONE_VISIBILITY.equals(visibility)) {
+            // since None is default visibility (process type in bpmn) then treat it
+            // as public otherwise nothing will be visible
+            visibility = WorkflowProcess.PUBLIC_VISIBILITY;
+        }
+        this.visibility = visibility;
+    }
 
-	public List<Context> getContexts(String contextType) {
+    public List<Context> getContexts(String contextType) {
 	    return this.contextContainer.getContexts(contextType);
 	}
     

@@ -482,32 +482,32 @@ public class DummyWorkingMemory implements InternalWorkingMemory,
 
     @Override
     public ProcessInstance startProcess(String processId) {
-        return null;
+        return getProcessRuntime().startProcess(processId);
     }
 
     @Override
     public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
-        return null;
+        return getProcessRuntime().startProcess(processId, parameters);
     }
 
     @Override
     public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
-        return null;
+        return getProcessRuntime().createProcessInstance(processId, parameters);
     }
 
     @Override
     public ProcessInstance startProcessInstance(long processInstanceId) {
-        return null;
+        return getProcessRuntime().startProcessInstance(processInstanceId);
     }
 
     @Override
     public void signalEvent(String type, Object event) {
-
+        getProcessRuntime().signalEvent(type, event);
     }
 
     @Override
     public void signalEvent(String type, Object event, long processInstanceId) {
-
+        getProcessRuntime().signalEvent(type, event, processInstanceId);
     }
 
     @Override
@@ -517,17 +517,17 @@ public class DummyWorkingMemory implements InternalWorkingMemory,
 
     @Override
     public ProcessInstance getProcessInstance(long id) {
-        return null;
+        return getProcessRuntime().getProcessInstance(id);
     }
 
     @Override
     public ProcessInstance getProcessInstance(long id, boolean readOnly) {
-        return null;
+        return getProcessRuntime().getProcessInstance(id, readOnly);
     }
 
     @Override
     public void abortProcessInstance(long processInstanceId) {
-
+        getProcessRuntime().abortProcessInstance(processInstanceId);
     }
 
     @Override

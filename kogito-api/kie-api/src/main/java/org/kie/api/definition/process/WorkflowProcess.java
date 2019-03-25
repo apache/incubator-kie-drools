@@ -25,4 +25,9 @@ public interface WorkflowProcess
     Process,
     NodeContainer {
 
+    public static final String PUBLIC_VISIBILITY = "Public";
+    public static final String PRIVATE_VISIBILITY = "Private";
+    public static final String NONE_VISIBILITY = "None";
+    
+    String getVisibility();
 }

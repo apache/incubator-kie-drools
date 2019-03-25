@@ -54,6 +54,11 @@ public class SubProcessNodeFactory extends NodeFactory {
     	getSubProcessNode().setProcessId(processId);
         return this;
     }
+    
+    public SubProcessNodeFactory processName(final String processName) {
+        getSubProcessNode().setProcessName(processName);
+        return this;
+    }
 
     public SubProcessNodeFactory waitForCompletion(boolean waitForCompletion) {
     	getSubProcessNode().setWaitForCompletion(waitForCompletion);

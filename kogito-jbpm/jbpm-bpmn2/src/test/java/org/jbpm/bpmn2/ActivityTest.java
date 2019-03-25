@@ -104,7 +104,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         
     }
 
-       @After
+    @After
     public void dispose() {
         if (ksession != null) {   
             ksession.dispose();

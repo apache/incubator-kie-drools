@@ -19,7 +19,7 @@ public class XXXModel {
         
     }
 
-    public static OrdersModel fromMap(Long id, Map<String, Object> params) {
+    public static XXXModel fromMap(Long id, Map<String, Object> params) {
         
     }
 }

@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,12 +55,13 @@ import org.kie.internal.io.ResourceWithConfigurationImpl;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.AssignExpr.Operator;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -78,6 +78,8 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
@@ -150,11 +152,12 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
             addNewCompileRoot(additionalCompilerPath);
 
             for (Process process : processes) {
-                
+                WorkflowProcess workFlowProcess = (WorkflowProcess) process;
+
                 String classPrefix = StringUtils.capitalize(ProcessToExecModelGenerator.INSTANCE.exctactProcessId(process.getId()));
                 String packageName = process.getPackageName().replaceAll("\\.", "/");
                 
-                String sourceContent = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process);
+                String sourceContent = ProcessToExecModelGenerator.INSTANCE.generate(workFlowProcess);
                 // create class with executable model for the process
                 String processClazzName = classPrefix + "Process";
                 final Path processFileNameRelative = transformPathToMavenPath( packageName + "/" + processClazzName + ".java");
@@ -164,23 +167,25 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
                 final Path processFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, processFileNameRelative.toString());                
                 createSourceFile(processFileName, sourceContent);
                 
+                if (WorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(workFlowProcess.getVisibility())) {
                 
-                // create model class for all variables
-                String modelClazzName = classPrefix + "Model";
-                String modelDataClazz = ProcessToExecModelGenerator.INSTANCE.generateModel((WorkflowProcess) process);
+                    // create model class for all variables
+                    String modelClazzName = classPrefix + "Model";
+                    String modelDataClazz = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
+                    
+                    final Path modelFileNameRelative = transformPathToMavenPath( packageName + "/" + modelClazzName + ".java");
+                    final Path modelFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, modelFileNameRelative.toString());
+                    createSourceFile(modelFileName, modelDataClazz);
+                    
                 
-                final Path modelFileNameRelative = transformPathToMavenPath( packageName + "/" + modelClazzName + ".java");
-                final Path modelFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, modelFileNameRelative.toString());
-                createSourceFile(modelFileName, modelDataClazz);
-                
-                
-                // create REST resource class for process
-                String resourceClazzName = classPrefix + "Resource";
-                String resourceClazz = generateResourceClass((WorkflowProcess) process, process.getId(), modelClazzName, compiledClassNames);
-                
-                final Path resourceFileNameRelative = transformPathToMavenPath( packageName + "/" + resourceClazzName + ".java");
-                final Path resourceFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, resourceFileNameRelative.toString());
-                createSourceFile(resourceFileName, resourceClazz);
+                    // create REST resource class for process
+                    String resourceClazzName = classPrefix + "Resource";
+                    String resourceClazz = generateResourceClass(workFlowProcess, process.getId(), modelClazzName, compiledClassNames);
+                    
+                    final Path resourceFileNameRelative = transformPathToMavenPath( packageName + "/" + resourceClazzName + ".java");
+                    final Path resourceFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, resourceFileNameRelative.toString());
+                    createSourceFile(resourceFileName, resourceClazz);
+                }
             }
             if (!compiledClassNames.isEmpty()) {
                 String boostrapClass = generateProcessRuntimeBootstrap(compiledClassNames);
@@ -292,6 +297,13 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
             
             create.addParameter(type, "resource");
             BlockStmt bodyCreate = create.createBody();
+            
+            IfStmt nullResource = new IfStmt(new BinaryExpr(new NameExpr("resource"), new NullLiteralExpr(), com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS)
+                                             , new ExpressionStmt(new AssignExpr(new NameExpr("resource"), 
+                                                              new ObjectCreationExpr(null, type, NodeList.nodeList()), AssignExpr.Operator.ASSIGN)),
+                                             null);
+            bodyCreate.addStatement(nullResource);
+            
             MethodCallExpr startProcess = new MethodCallExpr(new FieldAccessExpr(new ThisExpr(), "processRuntime"), "startProcess");
             startProcess.addArgument(new FieldAccessExpr(new ThisExpr(), "processId"));
             startProcess.addArgument(new MethodCallExpr(new NameExpr("resource"), "toMap"));            

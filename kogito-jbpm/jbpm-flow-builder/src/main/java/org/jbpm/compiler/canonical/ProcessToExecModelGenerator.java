@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -34,12 +35,16 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
+import org.jbpm.ruleflow.core.factory.HumanTaskNodeFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
+import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
@@ -174,9 +179,10 @@ public class ProcessToExecModelGenerator {
             
             Optional<MethodDeclaration> fromMapMethod = clazz.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap"));
             if (fromMapMethod.isPresent()) {
-                
+                MethodDeclaration fromMap = fromMapMethod.get();
+                fromMap.setType(modelClass.getNameAsString());
                 fromMapBody.addStatement(new ReturnStmt(new NameExpr("item")));
-                fromMapMethod.get().setBody(fromMapBody);
+                fromMap.setBody(fromMapBody);
             }
         }
         return clazz.toString();
@@ -206,7 +212,8 @@ public class ProcessToExecModelGenerator {
 	    addFactoryMethodWithArgs(body, "name", new StringLiteralExpr(process.getName()));
 	    addFactoryMethodWithArgs(body, "packageName", new StringLiteralExpr(process.getPackageName()));
 	    addFactoryMethodWithArgs(body, "dynamic", new BooleanLiteralExpr(((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic()));
-	    addFactoryMethodWithArgs(body, "version", new StringLiteralExpr(process.getVersion()));
+	    addFactoryMethodWithArgs(body, "version", new StringLiteralExpr(getOrDefault(process.getVersion(), "1.0")));
+	    addFactoryMethodWithArgs(body, "visibility", new StringLiteralExpr(getOrDefault(((org.jbpm.workflow.core.WorkflowProcess) process).getVisibility(), WorkflowProcess.PUBLIC_VISIBILITY)));
 	    
 	    for (Entry<String, Object> entry : process.getMetaData().entrySet()) {
 	        Expression value = null;
@@ -350,7 +357,7 @@ public class ProcessToExecModelGenerator {
             for (Variable v : variableScope.getVariables()) {
                 actionBody.addStatement(makeAssignment(v));
             }
-            actionBody.addStatement(actionNode.getAction().toString());
+            actionBody.addStatement(new NameExpr(actionNode.getAction().toString()));
             
             addFactoryMethodWithArgs(body, "actionNode", "action", lambda);
             addFactoryMethodWithArgs(body, "actionNode", "done");
@@ -362,6 +369,17 @@ public class ProcessToExecModelGenerator {
             addFactoryMethodWithArgs(body, "endNode", "terminate", new BooleanLiteralExpr(endNode.isTerminate()));
             addFactoryMethodWithArgs(body, "endNode", "done");
             
+        } else if (node instanceof HumanTaskNode) {
+            HumanTaskNode humanTaskNode = (HumanTaskNode) node;
+            Work work = humanTaskNode.getWork();
+            
+            addFactoryMethodWithArgsWithAssignment(body, HumanTaskNodeFactory.class, "humanTaskNode", "humanTaskNode", new LongLiteralExpr(humanTaskNode.getId()));
+            addFactoryMethodWithArgs(body, "humanTaskNode", "name", new StringLiteralExpr(getOrDefault(humanTaskNode.getName(), "Task")));            
+            
+            addWorkItemParameters(work, body, "humanTaskNode");
+            
+            addFactoryMethodWithArgs(body, "humanTaskNode", "done");
+            
         } else if (node instanceof WorkItemNode) {
             WorkItemNode workItemNode = (WorkItemNode) node;
             Work work = workItemNode.getWork();
@@ -369,17 +387,28 @@ public class ProcessToExecModelGenerator {
             addFactoryMethodWithArgsWithAssignment(body, WorkItemNodeFactory.class, "workItemNode", "workItemNode", new LongLiteralExpr(workItemNode.getId()));
             addFactoryMethodWithArgs(body, "workItemNode", "name", new StringLiteralExpr(getOrDefault(workItemNode.getName(), work.getName())));
             addFactoryMethodWithArgs(body, "workItemNode", "workName", new StringLiteralExpr(work.getName()));
-            
-//            for (String parameter : work.getParameterNames()) {
-//                nodefactory.workParameter(parameter, work.getParameter(parameter));
-//            }
-//            
-//            for (ParameterDefinition parameter : work.getParameterDefinitions()) {
-//                nodefactory.workParameterDefinition(parameter.getName(), parameter.getType());
-//            }
+  
+            addWorkItemParameters(work, body, "workItemNode");
             
             addFactoryMethodWithArgs(body, "workItemNode", "done");
             
+        } else if (node instanceof SubProcessNode) {
+            SubProcessNode subProcessNode = (SubProcessNode) node;
+            addFactoryMethodWithArgsWithAssignment(body, SubProcessNodeFactory.class, "subProcessNode", "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
+            addFactoryMethodWithArgs(body, "subProcessNode", "name", new StringLiteralExpr(getOrDefault(subProcessNode.getName(), "Call Activity")));
+            addFactoryMethodWithArgs(body, "subProcessNode", "processId", new StringLiteralExpr(subProcessNode.getProcessId()));
+            addFactoryMethodWithArgs(body, "subProcessNode", "processName", new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), "")));
+            addFactoryMethodWithArgs(body, "subProcessNode", "waitForCompletion", new BooleanLiteralExpr(subProcessNode.isWaitForCompletion()));
+            addFactoryMethodWithArgs(body, "subProcessNode", "independent", new BooleanLiteralExpr(subProcessNode.isIndependent()));
+            
+            for (Entry<String, String> entry : subProcessNode.getInMappings().entrySet()) {
+                addFactoryMethodWithArgs(body, "subProcessNode", "inMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
+            }
+            for (Entry<String, String> entry : subProcessNode.getOutMappings().entrySet()) {
+                addFactoryMethodWithArgs(body, "subProcessNode", "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
+            }
+            
+            addFactoryMethodWithArgs(body, "subProcessNode", "done");
         }
     }
 
@@ -476,6 +505,17 @@ public class ProcessToExecModelGenerator {
         }
         
         return value;
+    }
+    
+    protected void addWorkItemParameters(Work work, BlockStmt body, String variableName) {
+        
+        for (Entry<String, Object> entry : work.getParameters().entrySet()) {             
+            addFactoryMethodWithArgs(body, variableName, "workParameter", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue().toString()));
+        }
+        
+        for (ParameterDefinition parameter : work.getParameterDefinitions()) {                
+            addFactoryMethodWithArgs(body, variableName, "workParameterDefinition", new StringLiteralExpr(parameter.getName()), new StringLiteralExpr(parameter.getType().getStringType()));
+        }
     }
     
     public String exctactProcessId(String processId) {

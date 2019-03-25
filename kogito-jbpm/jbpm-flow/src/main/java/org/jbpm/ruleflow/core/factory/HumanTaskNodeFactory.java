@@ -72,6 +72,16 @@ public class HumanTaskNodeFactory extends NodeFactory {
     	return this;
     }
     
+    public HumanTaskNodeFactory groupId(String groupId) {
+        Work work = getHumanTaskNode().getWork();
+        if (work == null) {
+            work = new WorkImpl();
+            getHumanTaskNode().setWork(work);
+        }
+        work.setParameter("GroupId", groupId);
+        return this;
+    }
+    
     public HumanTaskNodeFactory priority(String priority) {
     	Work work = getHumanTaskNode().getWork();
     	if (work == null) {

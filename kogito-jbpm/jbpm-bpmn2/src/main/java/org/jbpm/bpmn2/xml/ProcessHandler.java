@@ -128,6 +128,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
 		String id = attrs.getValue("id");
 		String name = attrs.getValue("name");
+		String visibility = attrs.getValue("processType");
 		String packageName = attrs.getValue("http://www.jboss.org/drools", "packageName");
 		String dynamic = attrs.getValue("http://www.jboss.org/drools", "adHoc");
 		String version = attrs.getValue("http://www.jboss.org/drools", "version");
@@ -151,6 +152,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		if (version != null) {
 			process.setVersion(version);
 		}
+		process.setVisibility(visibility);
 
 		((ProcessBuildData) parser.getData()).addProcess(process);
 		// register the definitions object as metadata of process.

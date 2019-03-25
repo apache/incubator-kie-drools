@@ -93,6 +93,6 @@ public interface WorkflowProcess extends org.kie.api.definition.process.Workflow
     
     boolean isDynamic();
 
-    Integer getProcessType();
+    Integer getProcessType();       
     
 }

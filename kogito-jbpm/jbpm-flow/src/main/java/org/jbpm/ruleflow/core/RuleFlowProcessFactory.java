@@ -54,6 +54,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     	getRuleFlowProcess().setName(name);
         return this;
     }
+    
+    public RuleFlowProcessFactory visibility(String visibility) {
+        getRuleFlowProcess().setVisibility(visibility);
+        return this;
+    }
 
     public RuleFlowProcessFactory dynamic(boolean dynamic) {
         getRuleFlowProcess().setDynamic(dynamic);

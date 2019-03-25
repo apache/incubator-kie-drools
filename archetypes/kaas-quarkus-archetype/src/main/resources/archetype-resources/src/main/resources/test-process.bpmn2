@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <definitions id="Definition"
              targetNamespace="http://www.example.org/MinimalExample"
              typeLanguage="http://www.java.com/javaTypes"
@@ -11,23 +11,12 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_subXItem" structureRef="String" />
-  <itemDefinition id="_subYItem" structureRef="String" />
-
-  <process processType="Private" isExecutable="true" id="SubProcess" name="Sub Process" tns:version="1" >
-
-    <!-- process variables -->
-    <property id="subX" itemSubjectRef="_subXItem"/>
-    <property id="subY" itemSubjectRef="_subYItem"/>
+  <process processType="Public" isExecutable="true" id="tests" name="ScriptTask Process" tns:packageName="${groupId}" >
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
-    <scriptTask id="_2" name="Hello" >
-      <script>System.out.println("subX=" + subX);
-System.out.println("ParentProcessInstanceId=" + ((org.jbpm.process.instance.ProcessInstance)kcontext.getProcessInstance()).getMetaData().get("ParentProcessInstanceId"));
-System.out.println("ParentNodeInstanceId=" + ((org.jbpm.process.instance.ProcessInstance)kcontext.getProcessInstance()).getMetaData().get("ParentNodeInstanceId"));
-System.out.println("ParentNodeId=" + ((org.jbpm.process.instance.ProcessInstance)kcontext.getProcessInstance()).getMetaData().get("ParentNodeId"));
-kcontext.setVariable("subY", "new value");</script>
+    <scriptTask id="_2" name="Hello" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("Hello World");</script>
     </scriptTask>
     <endEvent id="_3" name="EndProcess" >
         <terminateEventDefinition/>
@@ -40,7 +29,7 @@ kcontext.setVariable("subY", "new value");</script>
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="SubProcess" >
+    <bpmndi:BPMNPlane bpmnElement="ScriptTask" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
