@@ -15,11 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.models.KieModuleModelImpl.KMODULE_JAR_PATH;
-import static org.drools.compiler.kproject.models.KieModuleModelImpl.KMODULE_SPRING_JAR_PATH;
-import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,6 +46,11 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.models.KieModuleModelImpl.KMODULE_JAR_PATH;
+import static org.drools.compiler.kproject.models.KieModuleModelImpl.KMODULE_SPRING_JAR_PATH;
+import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -113,6 +113,7 @@ public class ClasspathKieProject extends AbstractKieProject {
                 notifyKieModuleFound(url);
                 try {
                     InternalKieModule kModule = fetchKModule(url);
+                    kModule.initModel(classLoader);
 
                     if (kModule != null) {
                         ReleaseId releaseId = kModule.getReleaseId();

@@ -587,7 +587,12 @@ public class CanonicalKieModule implements InternalKieModule {
 
     @Override
     public void initModel() {
-        CanonicalKieModuleModel kmodel = getModuleModel( moduleClassLoader );
+        initModel( moduleClassLoader );
+    }
+
+    @Override
+    public void initModel(ClassLoader classLoader) {
+        CanonicalKieModuleModel kmodel = getModuleModel( classLoader );
         if (kmodel != null) {
             initModels( kmodel );
             kieModuleModel = kmodel.getKieModuleModel();

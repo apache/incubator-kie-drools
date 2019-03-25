@@ -147,6 +147,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     default CompilationCache getCompilationCache( String kbaseName) { return null; }
 
     default void initModel() { }
+    default void initModel(ClassLoader classLoader) { }
 
     static InternalKieModule createKieModule( ReleaseId releaseId, File jar ) {
         try (ZipFile zipFile = new ZipFile( jar )) {
