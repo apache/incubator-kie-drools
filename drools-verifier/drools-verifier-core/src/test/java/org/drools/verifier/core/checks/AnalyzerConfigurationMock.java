@@ -15,6 +15,7 @@
  */
 package org.drools.verifier.core.checks;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,6 +38,15 @@ public class AnalyzerConfigurationMock
                   @Override
                   public String format(final Date dateValue) {
                       return new SimpleDateFormat("dd-MMM-yyyy").format(dateValue);
+                  }
+
+                  @Override
+                  public Date parse(String dateValue) {
+                      try {
+                          return new SimpleDateFormat("dd-MMM-yyyy").parse(dateValue);
+                      } catch (ParseException e) {
+                          return null;
+                      }
                   }
               },
               new UUIDKeyProvider() {

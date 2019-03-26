@@ -60,6 +60,10 @@ public class AnalyzerConfiguration {
         return dateTimeFormatter.format(dateValue);
     }
 
+    public Date parse(final String dateValue) {
+        return dateTimeFormatter.parse(dateValue);
+    }
+
     public CheckConfiguration getCheckConfiguration() {
         return checkConfiguration;
     }
