@@ -1,9 +1,0 @@
-package com.bpms.customer
-
-rule dummyRule
-    ruleflow-group "rfg"
-    when
-        // conditions
-    then
-        // consequences
-end

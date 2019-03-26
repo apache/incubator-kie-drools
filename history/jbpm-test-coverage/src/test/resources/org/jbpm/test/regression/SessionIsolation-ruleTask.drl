@@ -1,9 +1,0 @@
-package org.jbpm.test.regression
-
-rule dummyRule
-    ruleflow-group "rfg"
-    when
-        // conditions
-    then
-        // consequences
-end
