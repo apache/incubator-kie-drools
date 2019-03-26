@@ -17,3 +17,7 @@ dependency-reduced-pom.xml
 
 # these modules don't exist anymore on master
 /drools-clips/
+
+move.sh
+deletefromhistory.sh
+
