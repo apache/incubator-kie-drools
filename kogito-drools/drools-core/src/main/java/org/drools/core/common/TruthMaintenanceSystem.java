@@ -16,6 +16,10 @@
 
 package org.drools.core.common;
 
+import static org.drools.core.common.ClassAwareObjectStore.getActualClass;
+
+import java.util.Iterator;
+
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
@@ -26,12 +30,8 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.internal.runtime.beliefs.Mode;
-
-import java.util.Iterator;
-
-import static org.drools.core.common.ClassAwareObjectStore.getActualClass;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.signavio.com/dmn/1.1/diagram/da213bb354be4ec197ce1d0755322c75.xml" exporterVersion="11.8.2" name="Starts with an A" id="id-fae002d2e79b4f0f92337a516f1421a3" sigExt:revisionId="e40448e234ae4cc9a7b8aaca79152b49" sigExt:revisionNumber="4" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/da213bb354be4ec197ce1d0755322c75.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+    <extensionElements/>
+    <itemDefinition isCollection="false" name="surname" id="id-895d8ff13210bf71fe3962f10c8ad8e4" label="Surname">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="startsWithAnA" id="id-26d140ac6b352bd30e812745a54d1b34" label="Starts with an A">
+        <typeRef>feel:boolean</typeRef>
+    </itemDefinition>
+    <inputData name="surname" id="id-0e2f007d3844cffc944dff7d7894c2ac" label="Surname" sigExt:shapeId="sid-0EDD5397-7768-4FD5-A3FC-CF5BCD1A7FAF" sigExt:diagramId="da213bb354be4ec197ce1d0755322c75">
+        <extensionElements/>
+        <variable typeRef="sig:surname" name="surname" id="id-0e2f007d3844cffc944dff7d7894c2ac_variable"/>
+    </inputData>
+    <decision name="startsWithAnA" id="id-9a672ee6e61e67959ec6d6abef15da6c" label="Starts with an A" sigExt:shapeId="sid-2E1CE48F-3183-4385-942B-EC7FF6EEED5C" sigExt:diagramId="da213bb354be4ec197ce1d0755322c75">
+        <extensionElements/>
+        <variable typeRef="sig:startsWithAnA" name="startsWithAnA" id="id-9a672ee6e61e67959ec6d6abef15da6c_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-0e2f007d3844cffc944dff7d7894c2ac"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <text>startsWith(surname, "A")</text>
+        </literalExpression>
+    </decision>
+</definitions>

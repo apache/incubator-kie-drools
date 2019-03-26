@@ -19,9 +19,9 @@ package org.drools.compiler.lang.descr;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class EnumDeclarationDescr extends AbstractClassTypeDeclarationDescr {
 

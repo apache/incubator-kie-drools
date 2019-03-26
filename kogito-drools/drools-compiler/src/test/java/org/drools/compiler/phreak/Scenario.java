@@ -15,6 +15,12 @@
 
 package org.drools.compiler.phreak;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
@@ -35,12 +41,6 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.junit.Assert;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 public class Scenario {
     /**

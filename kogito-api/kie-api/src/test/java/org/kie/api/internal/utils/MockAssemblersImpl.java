@@ -33,10 +33,16 @@ public class MockAssemblersImpl implements KieAssemblers,
 
     private Map<ResourceType, KieAssemblerService> assemblers = new HashMap();
 
+    
     public Map<ResourceType, KieAssemblerService> getAssemblers() {
         return this.assemblers;
     }
 
+    @Override
+    public void accept(KieAssemblerService kieAssemblerService) {
+        this.assemblers.put(kieAssemblerService.getResourceType(), kieAssemblerService);
+    }
+    
     @Override
     public void addResource(Object knowledgeBuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
 
@@ -45,10 +51,5 @@ public class MockAssemblersImpl implements KieAssemblers,
     @Override
     public void addResources(Object knowledgeBuilder, List<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
 
-    }
-
-    @Override
-    public void accept(KieAssemblerService kieAssemblerService) {
-        this.assemblers.put(kieAssemblerService.getResourceType(), kieAssemblerService);
     }
 }

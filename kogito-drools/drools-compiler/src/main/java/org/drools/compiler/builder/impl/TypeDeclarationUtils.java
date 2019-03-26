@@ -15,17 +15,17 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.IOException;
+
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
-
-import java.io.IOException;
 
 public class TypeDeclarationUtils {
 

@@ -1,40 +1,38 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
-
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.QueryDescr;
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.ClassExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.Type;
-import org.drools.model.Query;
-import org.drools.model.QueryDef;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
+
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
+import org.drools.core.addon.TypeResolver;
+import org.drools.javaparser.ast.expr.AssignExpr;
+import org.drools.javaparser.ast.expr.ClassExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
+import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.stmt.ReturnStmt;
+import org.drools.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.model.Query;
+import org.drools.model.QueryDef;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
+
 public class QueryGenerator {
 
-    public static void processQueryDef(PackageModel packageModel, QueryDescr queryDescr, RuleContext context) {
-        context.setDescr(queryDescr);
+    public static void processQueryDef( KnowledgeBuilderImpl kbuilder, TypeResolver typeResolver, PackageModel packageModel, QueryDescr queryDescr, boolean isPattern ) {
+        RuleContext context = new RuleContext(kbuilder, packageModel, queryDescr, typeResolver, isPattern);
         String queryName = queryDescr.getName();
         final String queryDefVariableName = toQueryDef(queryName);
         context.setQueryName(Optional.of(queryDefVariableName));
@@ -82,12 +80,12 @@ public class QueryGenerator {
         String queryDefVariableName = toQueryDef(queryDescr.getName());
         RuleContext context = packageModel.getQueryDefWithType().get(queryDefVariableName).getContext();
         context.addGlobalDeclarations(packageModel.getGlobals());
-        context.setDialectFromAttributes(queryDescr.getAttributes().values());
 
+        ModelGenerator.setDialectFromRuleDescr(context, queryDescr);
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
         final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
 
-        MethodDeclaration queryMethod = new MethodDeclaration(NodeList.nodeList(Modifier.privateModifier()), queryType, "query_" + toId(queryDescr.getName()));
+        MethodDeclaration queryMethod = new MethodDeclaration(EnumSet.of(Modifier.PRIVATE), queryType, "query_" + toId(queryDescr.getName()));
 
         BlockStmt queryBody = new BlockStmt();
         ModelGenerator.createVariables(kbuilder, queryBody, packageModel, context);

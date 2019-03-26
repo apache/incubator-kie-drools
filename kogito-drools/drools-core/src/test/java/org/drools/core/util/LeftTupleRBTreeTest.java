@@ -15,13 +15,13 @@
 
 package org.drools.core.util;
 
-import org.drools.core.util.TupleRBTree.Node;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.drools.core.util.TupleRBTree.Node;
+import org.junit.Test;
 
 public class LeftTupleRBTreeTest {
 

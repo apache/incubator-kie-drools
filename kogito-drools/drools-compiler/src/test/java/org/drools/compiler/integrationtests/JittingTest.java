@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -27,8 +29,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertEquals;
 
 public class JittingTest extends CommonTestMethodBase {
 

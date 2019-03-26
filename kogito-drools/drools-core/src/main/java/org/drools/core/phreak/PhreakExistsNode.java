@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
@@ -27,8 +29,6 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
-
-import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
 /**
 * Created with IntelliJ IDEA.

@@ -16,14 +16,18 @@
 
 package org.drools.core.util.asm;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class ClassFieldInspectorTest {
 

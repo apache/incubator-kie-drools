@@ -16,6 +16,8 @@
 
 package org.drools.core.spi;
 
+import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +32,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.ruleunit.RuleUnitDescription;
-
-import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
  * A class capable of resolving a declaration in the current build context

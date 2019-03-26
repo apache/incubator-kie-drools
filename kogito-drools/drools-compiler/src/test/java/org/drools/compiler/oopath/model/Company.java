@@ -19,8 +19,6 @@ package org.drools.compiler.oopath.model;
 
 import org.drools.core.phreak.AbstractReactiveObject;
 
-import java.util.Arrays;
-
 public class Company extends AbstractReactiveObject {
 
     private String name;

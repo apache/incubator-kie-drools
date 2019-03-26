@@ -15,6 +15,8 @@
 
 package org.drools.compiler.commons.jci.readers;
 
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -25,8 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class DiskResourceReader implements ResourceReader {
     private final File root;

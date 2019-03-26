@@ -16,14 +16,16 @@
 
 package org.drools.core.base.extractors;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TestBean;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     InternalReadAccessor reader;

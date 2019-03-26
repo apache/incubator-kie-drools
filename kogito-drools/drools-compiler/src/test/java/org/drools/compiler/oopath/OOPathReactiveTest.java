@@ -16,6 +16,10 @@
 
 package org.drools.compiler.oopath;
 
+import static org.drools.compiler.oopath.model.BodyMeasurement.CHEST;
+import static org.drools.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +52,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import static org.drools.compiler.oopath.model.BodyMeasurement.CHEST;
-import static org.drools.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
-import static org.junit.Assert.*;
 
 public class OOPathReactiveTest {
 

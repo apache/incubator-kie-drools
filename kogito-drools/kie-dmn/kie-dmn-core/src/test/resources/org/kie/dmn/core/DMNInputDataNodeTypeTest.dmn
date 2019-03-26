@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.10.201704111510" id="_17396034-163a-48aa-9a7f-c6eb17f9cc6c" name="DMNInputDataNodeTypeTest" namespace="http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c" triso:logoChoice="Default">
+  <semantic:itemDefinition label="tMembershipLevel" name="tMembershipLevel">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Gold","Silver","None"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tPercent" name="tPercent">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="simple">
+      <semantic:text>[0..100]</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tCarDamageResponsibility" name="tCarDamageResponsibility">
+    <semantic:itemComponent id="_b8bbf07b-da22-4624-84a9-25071ab07051" name="EU Rent">
+      <semantic:typeRef>tPercent</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_02c5857e-0985-4966-a0fa-cf2d8f456d34" name="Renter">
+      <semantic:typeRef>tPercent</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tMembershipLevels" name="tMembershipLevels" isCollection="true">
+    <semantic:typeRef>tMembershipLevel</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_90aab494-9458-4b43-bdf4-0a82c22761b3" name="Membership Level">
+    <semantic:variable id="_231079a9-c20d-4772-9748-a63025a37898" name="Membership Level" typeRef="tMembershipLevel"/>
+  </semantic:inputData>
+  <semantic:inputData id="forgedInput" name="Car Damage Responsibility">
+    <semantic:variable id="forgedInputVariable" name="Car Damage Responsibility" typeRef="tCarDamageResponsibility"/>
+  </semantic:inputData>
+  <semantic:inputData id="forgedInput2" name="Percent">
+    <semantic:variable id="forgedInput2Variable" name="Percent" typeRef="tPercent"/>
+  </semantic:inputData>
+    <semantic:inputData id="forgedInput3" name="Membership Levels">
+    <semantic:variable id="forgedInput3Variable" name="Membership Levels" typeRef="tMembershipLevels"/>
+  </semantic:inputData>
+</semantic:definitions>

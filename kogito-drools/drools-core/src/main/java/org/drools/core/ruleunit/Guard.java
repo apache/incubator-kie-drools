@@ -16,12 +16,12 @@
 
 package org.drools.core.ruleunit;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Activation;
 import org.kie.api.runtime.rule.RuleUnit;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class Guard {
     private final RuleUnit guardedUnit;

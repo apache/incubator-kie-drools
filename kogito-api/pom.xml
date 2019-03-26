@@ -6,9 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.19.0.Final</version>
-    <!-- relativePath causes out-of-date problems on hudson slaves -->
-    <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-api-parent</artifactId>
@@ -40,16 +38,9 @@
     </repository>
   </repositories>
 
-  <scm>
-    <connection>scm:git:https://github.com/kiegroup/droolsjbpm-knowledge.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/droolsjbpm-knowledge.git</developerConnection>
-    <url>https://github.com/kiegroup/droolsjbpm-knowledge</url>
-  </scm>
-
   <modules>
     <module>kie-api</module>
     <module>kie-internal</module>
-    <module>kie-archetypes</module>
   </modules>
 
   <dependencyManagement>

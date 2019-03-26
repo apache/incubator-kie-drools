@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,16 +25,14 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.security.CodeSource;
 
+import org.drools.core.WorkingMemory;
+import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.WorkingMemory;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
+import org.junit.Test;
 
 public class PackageCompilationDataTest {
     public static class TestEvalExpression implements EvalExpression {

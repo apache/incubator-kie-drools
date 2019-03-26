@@ -15,6 +15,9 @@
 
 package org.drools.compiler.lang;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
@@ -22,11 +25,8 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.api.io.Resource;
-
-import java.util.LinkedList;
-import java.util.List;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public abstract class AbstractDRLParser implements DRLParser {
 

@@ -15,6 +15,14 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,14 +58,6 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
 import org.junit.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
 
 public class JavaConsequenceBuilderPRAlwaysTest {
 

@@ -16,6 +16,13 @@
 
 package org.drools.core.rule;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
@@ -23,13 +30,6 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 public class DeclarationTest {
 

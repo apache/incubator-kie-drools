@@ -16,12 +16,12 @@
 
 package org.drools.compiler.oopath.model;
 
-import org.drools.core.phreak.AbstractReactiveObject;
-import org.drools.core.phreak.ReactiveSet;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.phreak.AbstractReactiveObject;
+import org.drools.core.phreak.ReactiveSet;
 
 public abstract class Person extends AbstractReactiveObject {
 

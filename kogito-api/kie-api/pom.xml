@@ -6,11 +6,11 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-api-parent</artifactId>
-    <version>7.19.0.Final</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-api</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+  <packaging>jar</packaging>
 
   <name>KIE :: Public API</name>
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
@@ -19,179 +19,17 @@
     <java.module.name>org.kie.api</java.module.name>
   </properties>
 
-  <profiles>
-    <profile>
-      <id>apiviz-config</id>
-      <activation>
-        <jdk>(,10]</jdk>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <!-- Important: this doclet requires Graphviz (the 'dot' command) to be installed.
-                     It logs warning if it can not find the command, but the build continues and the generated javadoc simply
-                     does not contain the graphs. This is not ideal, but it's better that just failing directly as the 'dot'
-                     command is not installed by default on most systems and this would put additional burden for contributors
-                     to build the project. We need to make sure that our build machines do have the Graphviz installed. -->
-                <doclet>org.jboss.apiviz.APIviz</doclet>
-                <docletArtifact>
-                  <groupId>com.grahamedgecombe.apiviz</groupId>
-                  <artifactId>apiviz</artifactId>
-                  <version>1.3.4</version>
-                </docletArtifact>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              org.appformer.maven.support,
-              org.kie.soup.project.datamodel,
-              org.kie.soup.project.datamodel.commons,
-              *;resolution:=optional,
-              org.jbpm.runtime.manager.impl;resolution:=optional,
-              org.drools.compiler.kie.builder.impl,
-              org.drools.core.fluent.impl,
-              org.drools.core.builder.conf.impl;resolution:=optional,
-            </Import-Package>
-            <Export-Package>
-              org.kie.api.*
-            </Export-Package>
-            <Bundle-Activator>org.kie.api.internal.utils.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <sourcepath>${project.basedir}/src/main/java</sourcepath>
-          <excludePackageNames>org.kie.util*</excludePackageNames>
-          <groups>
-            <group>
-              <title>KIE Base API</title>
-              <packages>org.kie.api</packages>
-            </group>
-            <group>
-              <title>Builder API</title>
-              <packages>org.kie.api.builder*</packages>
-            </group>
-            <group>
-              <title>Definition API</title>
-              <packages>org.kie.api.definition*</packages>
-            </group>
-            <group>
-              <title>Configuration API</title>
-              <packages>org.kie.api.conf*</packages>
-            </group>
-            <group>
-              <title>Runtime API</title>
-              <packages>org.kie.api.runtime*</packages>
-            </group>
-            <group>
-              <title>Commands API</title>
-              <packages>org.kie.api.command*</packages>
-            </group>
-            <group>
-              <title>Event API</title>
-              <packages>org.kie.api.event*</packages>
-            </group>
-            <group>
-              <title>Time API</title>
-              <packages>org.kie.api.time*</packages>
-            </group>
-            <group>
-              <title>Task API</title>
-              <packages>org.kie.api.task*</packages>
-            </group>
-            <group>
-              <title>CDI Support API</title>
-              <packages>org.kie.api.cdi*</packages>
-            </group>
-          </groups>
-          <useStandardDocletOptions>true</useStandardDocletOptions>
-          <additionalparam>-sourceclasspath ${project.build.outputDirectory}</additionalparam>
-        </configuration>
-        <executions>
-          <execution>
-            <!-- Run the javadoc plugin also as part of the standard build (for other modules, it is executed only when -Dfull is specified).
-                 Some downstream repositories (e.g. Drools) depend on this -javadoc artifact and need it even for non-full builds. -->
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.revapi</groupId>
-        <artifactId>revapi-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-maven-support</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.xml.stream</groupId>
-      <artifactId>stax-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_2.0_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    
+    <!--  test -->
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

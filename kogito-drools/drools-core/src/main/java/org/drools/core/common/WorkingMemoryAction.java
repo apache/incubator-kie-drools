@@ -16,11 +16,11 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
-
-import java.io.IOException;
 
 public interface WorkingMemoryAction extends PropagationEntry {
     short WorkingMemoryReteAssertAction  = 1;

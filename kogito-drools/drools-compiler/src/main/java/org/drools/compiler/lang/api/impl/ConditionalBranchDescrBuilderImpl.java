@@ -17,8 +17,8 @@ package org.drools.compiler.lang.api.impl;
 
 import org.drools.compiler.lang.api.ConditionalBranchDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
-import org.drools.compiler.lang.api.NamedConsequenceDescrBuilder;
 import org.drools.compiler.lang.api.EvalDescrBuilder;
+import org.drools.compiler.lang.api.NamedConsequenceDescrBuilder;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 
 public class ConditionalBranchDescrBuilderImpl<P extends DescrBuilder< ?, ? >>

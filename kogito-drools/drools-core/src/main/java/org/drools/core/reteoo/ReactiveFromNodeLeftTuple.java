@@ -16,14 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.core.phreak.ReactiveObjectUtil.ModificationType.REMOVE;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
-
-import static org.drools.core.phreak.ReactiveObjectUtil.ModificationType.REMOVE;
 
 public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
 

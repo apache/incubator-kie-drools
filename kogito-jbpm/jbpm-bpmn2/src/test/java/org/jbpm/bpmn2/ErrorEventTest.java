@@ -16,6 +16,11 @@
 
 package org.jbpm.bpmn2;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,7 +40,6 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,14 +57,12 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 @RunWith(Parameterized.class)
 public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { { false } };
         return Arrays.asList(data);
     };
 
@@ -70,12 +72,6 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     private KieSession ksession;
     
     public ErrorEventTest(boolean persistence) {
-        super(persistence);
-    }
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
     }
 
     @After

@@ -15,6 +15,16 @@
 
 package org.drools.compiler.integrationtests.marshalling;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Date;
+
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.marshalling.util.OldOutputMarshallerMethods;
 import org.drools.core.SessionConfiguration;
@@ -45,16 +55,6 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.marshalling.MarshallerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Date;
-
-import static org.junit.Assert.assertTrue;
 
 public class FactHandleMarshallingTest {
 

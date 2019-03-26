@@ -20,9 +20,9 @@ import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.AttributeDescrBuilder;
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.RuleDescr;
 
 /**

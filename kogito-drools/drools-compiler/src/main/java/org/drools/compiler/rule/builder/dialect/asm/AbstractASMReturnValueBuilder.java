@@ -15,19 +15,19 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateMethodTemplate;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.registerInvokerBytecode;
+
+import java.util.Map;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.compiler.rule.builder.ReturnValueBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.ReturnValueRestriction;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-
-import java.util.Map;
-
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateMethodTemplate;
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.registerInvokerBytecode;
 
 public abstract class AbstractASMReturnValueBuilder implements ReturnValueBuilder {
 

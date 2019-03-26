@@ -16,11 +16,11 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
-
-import java.lang.reflect.Method;
 
 public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
 

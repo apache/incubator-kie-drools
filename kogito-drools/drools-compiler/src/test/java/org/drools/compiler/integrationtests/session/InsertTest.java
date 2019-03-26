@@ -16,8 +16,13 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Move;
 import org.drools.compiler.Person;
@@ -28,10 +33,6 @@ import org.drools.compiler.integrationtests.SerializationHelper;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 public class InsertTest extends CommonTestMethodBase {
 

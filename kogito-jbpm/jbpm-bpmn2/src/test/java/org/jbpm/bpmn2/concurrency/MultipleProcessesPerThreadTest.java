@@ -16,6 +16,8 @@
 
 package org.jbpm.bpmn2.concurrency;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -24,7 +26,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.bpmn2.objects.Status;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -43,13 +44,11 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 /**
  * This test costs time and resources, please only run locally for the time being.
  */
 @Ignore
-public class MultipleProcessesPerThreadTest extends AbstractBaseTest {
+public class MultipleProcessesPerThreadTest {
     
     private static final int LOOPS = 1000;
     

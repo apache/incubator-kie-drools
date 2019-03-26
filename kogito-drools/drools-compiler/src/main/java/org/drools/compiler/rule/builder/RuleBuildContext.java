@@ -18,12 +18,13 @@ package org.drools.compiler.rule.builder;
 
 import java.util.Optional;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.beliefsystem.abductive.Abductive;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -34,7 +35,6 @@ import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 /**
  * A context for the current build

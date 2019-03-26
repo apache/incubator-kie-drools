@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo.builder;
 
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -43,8 +45,6 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
-
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 /**
  * A build context for Reteoo Builder

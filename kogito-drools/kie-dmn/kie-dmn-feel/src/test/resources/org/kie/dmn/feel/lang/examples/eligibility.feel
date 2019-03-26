@@ -1,0 +1,15 @@
+{
+    Age : Applicant.Age,
+    Monthly Income : Applicant.Monthly.Income,
+    Pre-Bureau Risk Category : Affordability.Pre-Bureau Risk Category
+    Installment Affordable : Affordability.Installment Affordable
+    Eligibility :
+        if Pre-Bureau Risk Category = "DECLINE" or
+           Installment Affordable = false or
+           Age < 18 or
+           Monthly Income < 100
+        then
+           "INELIGIBLE"
+        else
+           "ELIGIBLE"
+}.Eligibility

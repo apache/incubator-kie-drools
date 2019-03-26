@@ -16,6 +16,10 @@
 
 package org.drools.core.command;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.KieBase;
@@ -23,10 +27,6 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RequestContextImpl extends ContextImpl implements RequestContext {
 

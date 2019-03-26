@@ -16,6 +16,11 @@
 
 package org.drools.compiler.rule.builder;
 
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.getNormalizeDate;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeEmptyKeyword;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeStringOperator;
+import static org.drools.core.util.StringUtils.isIdentifier;
+
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -61,7 +67,7 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
@@ -117,18 +123,12 @@ import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
-
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.getNormalizeDate;
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeEmptyKeyword;
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeStringOperator;
-import static org.drools.core.util.StringUtils.isIdentifier;
 
 /**
  * A builder for patterns

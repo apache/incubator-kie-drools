@@ -15,19 +15,6 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.Declaration;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.ReturnValueExpression;
-import org.drools.core.spi.Tuple;
-import org.mvel2.asm.MethodVisitor;
-
-import java.util.List;
-
 import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
 import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
 import static org.mvel2.asm.Opcodes.AALOAD;
@@ -37,6 +24,19 @@ import static org.mvel2.asm.Opcodes.ALOAD;
 import static org.mvel2.asm.Opcodes.ARETURN;
 import static org.mvel2.asm.Opcodes.ASTORE;
 import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+
+import java.util.List;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.FieldValue;
+import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.Tuple;
+import org.mvel2.asm.MethodVisitor;
 
 public class ReturnValueGenerator {
     public static void generate(final ReturnValueStub stub,

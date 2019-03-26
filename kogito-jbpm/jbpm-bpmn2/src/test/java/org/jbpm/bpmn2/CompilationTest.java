@@ -16,6 +16,9 @@
 
 package org.jbpm.bpmn2;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,14 +41,11 @@ import org.kie.api.KieBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 public class CompilationTest extends JbpmBpmn2TestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(XMLBPMNProcessDumperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompilationTest.class);
 
-    public CompilationTest() {
-        super(false);
+    public CompilationTest() {        
     }
 
     @Test

@@ -32,5 +32,4 @@ public class MockChildAssemblerService implements KieAssemblerService {
     public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         // Intentionally empty
     }
-
 }

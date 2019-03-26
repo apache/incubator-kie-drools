@@ -15,6 +15,13 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -38,13 +45,6 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class PhreakActivationIterator
     implements

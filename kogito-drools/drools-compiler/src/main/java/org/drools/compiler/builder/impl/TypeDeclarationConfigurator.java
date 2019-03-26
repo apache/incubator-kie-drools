@@ -15,6 +15,8 @@
 
 package org.drools.compiler.builder.impl;
 
+import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -41,8 +43,6 @@ import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
-
-import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
 
 public class TypeDeclarationConfigurator {
 

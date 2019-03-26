@@ -16,13 +16,13 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.Trigger;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
+
+import org.drools.core.time.Trigger;
 
 public class CompositeMaxDurationTrigger
     implements

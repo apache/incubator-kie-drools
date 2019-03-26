@@ -16,12 +16,12 @@
 
 package org.drools.compiler.lang.api.impl;
 
+import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.QueryDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
 
 /**
  * A descr builder for queries

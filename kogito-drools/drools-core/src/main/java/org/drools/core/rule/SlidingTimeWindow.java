@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -45,8 +47,6 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.PointInTimeTrigger;
-
-import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
 public class SlidingTimeWindow
         implements

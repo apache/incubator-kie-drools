@@ -16,9 +16,9 @@
 
 package org.drools.compiler.compiler;
 
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.api.io.Resource;
 
 public abstract class DroolsError extends BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderError {
 

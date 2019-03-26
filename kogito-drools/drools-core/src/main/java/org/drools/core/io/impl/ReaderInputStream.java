@@ -16,12 +16,12 @@
 
 package org.drools.core.io.impl;
 
-import org.drools.core.util.StringUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import org.drools.core.util.StringUtils;
 
 public class ReaderInputStream extends InputStream {
 

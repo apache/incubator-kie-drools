@@ -16,9 +16,9 @@
 
 package org.drools.core.time;
 
-import org.drools.core.common.InternalWorkingMemory;
-
 import java.io.Serializable;
+
+import org.drools.core.common.InternalWorkingMemory;
 
 public interface JobContext extends Serializable {
     /**

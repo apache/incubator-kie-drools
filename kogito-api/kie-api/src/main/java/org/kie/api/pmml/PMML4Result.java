@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.kie.api.definition.type.PropertyReactive;
+//import org.kie.pmml.pmml_4_2.model.mining.SegmentExecution;
 
 @PropertyReactive
 @XmlType(name = "PMML4Result")
@@ -46,11 +47,8 @@ public class PMML4Result {
     private int segmentIndex;
     @XmlAttribute(name="resultCode", required=true)
     private String resultCode;
-    @XmlAttribute(name="resultObjectName")
-    private String resultObjectName;
     @XmlElementWrapper(name="resultVariables")
     private Map<String, Object> resultVariables;
-
     
     public PMML4Result() {
         resultVariables = new HashMap<>();
@@ -91,15 +89,6 @@ public class PMML4Result {
 
     public void setSegmentIndex(int segmentIndex) {
         this.segmentIndex = segmentIndex;
-    }
-
-    
-    public String getResultObjectName() {
-        return resultObjectName;
-    }
-
-    public void setResultObjectName(String resultObjectName) {
-        this.resultObjectName = resultObjectName;
     }
 
     public Map<String, Object> getResultVariables() {
@@ -146,10 +135,6 @@ public class PMML4Result {
         Object holder = getResultVariables().get(objName);
         if (holder != null) {
             if (objField != null && !objField.trim().isEmpty()) {
-                if (Map.class.isAssignableFrom(holder.getClass())) {
-                    value = ((Map) holder).get(objField);
-                    return value;
-                }
                 String defFldRetriever = getGetterMethodName(holder,objField,"get");
                 try {
                     Class[] paramTypes = null;

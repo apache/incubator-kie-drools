@@ -16,6 +16,22 @@
 
 package org.drools.core.factmodel.traits;
 
+import static org.drools.core.factmodel.traits.TraitBuilderUtil.buildMixinMethods;
+import static org.drools.core.factmodel.traits.TraitBuilderUtil.findMixinInfo;
+import static org.drools.core.factmodel.traits.TraitBuilderUtil.getMixinName;
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.BitSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
@@ -30,22 +46,6 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.BitSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.drools.core.factmodel.traits.TraitBuilderUtil.buildMixinMethods;
-import static org.drools.core.factmodel.traits.TraitBuilderUtil.findMixinInfo;
-import static org.drools.core.factmodel.traits.TraitBuilderUtil.getMixinName;
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 public class TraitTripleProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 

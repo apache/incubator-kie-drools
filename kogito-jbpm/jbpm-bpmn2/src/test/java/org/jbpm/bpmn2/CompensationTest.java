@@ -16,27 +16,19 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertThat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
-import org.hamcrest.core.AnyOf;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsCollectionContaining;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,14 +49,14 @@ public class CompensationTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { { false } };
         return Arrays.asList(data);
     };
 
     private KieSession ksession;
 
     public CompensationTest(boolean persistence) {
-        super(persistence);
+        
     }
 
     private Logger logger = LoggerFactory
@@ -93,11 +85,6 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         }
 
     };
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
-    }
 
     @Before
     public void prepare() {
@@ -262,14 +249,8 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         
         // compensation activity (assoc. with script task) signaled *after* to-compensate script task
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
-        if( ! isPersistence() ) { 
-            assertProcessVarValue(processInstance, "x", null);
-        } else {
-            // We need to check it this way because of some databases like Oracle RAC etc.
-            List<VariableInstanceLog> logs = logService.findVariableInstances(processInstance.getId(), "x");
-            List<String> values = logs.stream().map(VariableInstanceLog::getValue).collect(Collectors.toList());
-            assertThat(values, IsCollectionContaining.hasItem(AnyOf.anyOf(Is.is(" "), Is.is(""), Is.is((String) null))));
-        }
+        
+        assertProcessVarValue(processInstance, "x", null);
     }
     
     @Test

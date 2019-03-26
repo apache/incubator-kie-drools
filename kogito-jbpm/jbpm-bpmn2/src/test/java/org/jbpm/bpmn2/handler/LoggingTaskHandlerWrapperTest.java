@@ -16,6 +16,8 @@
 
 package org.jbpm.bpmn2.handler;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,15 +28,12 @@ import java.util.Map;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerDecorator.InputParameter;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
@@ -43,17 +42,11 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
     
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true} };
+        Object[][] data = new Object[][] { { false }};
         return Arrays.asList(data);
     };
 
     public LoggingTaskHandlerWrapperTest(boolean persistence) {
-        super(persistence);
-    }
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
     }
 
     @After

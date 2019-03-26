@@ -17,6 +17,7 @@
 package org.drools.compiler.integrationtests;
 
 import java.io.IOException;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.junit.Test;

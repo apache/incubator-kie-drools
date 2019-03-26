@@ -15,16 +15,16 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.junit.Test;
 import org.kie.api.KieBase;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class RuleMetadataTest extends CommonTestMethodBase {
 

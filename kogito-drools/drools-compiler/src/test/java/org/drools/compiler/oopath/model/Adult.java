@@ -16,9 +16,9 @@
 
 package org.drools.compiler.oopath.model;
 
-import org.drools.core.phreak.ReactiveList;
-
 import java.util.List;
+
+import org.drools.core.phreak.ReactiveList;
 
 public class Adult extends Person {
 

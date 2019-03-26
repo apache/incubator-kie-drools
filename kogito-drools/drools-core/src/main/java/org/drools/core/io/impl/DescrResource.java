@@ -16,11 +16,6 @@
 
 package org.drools.core.io.impl;
 
-import org.drools.core.io.internal.InternalResource;
-import org.kie.api.definition.KieDescr;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-
 import java.io.Externalizable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +25,11 @@ import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
+
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.definition.KieDescr;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 
 public class DescrResource extends BaseResource implements InternalResource, Externalizable {
     private static final long serialVersionUID = 3931132608413160031L;

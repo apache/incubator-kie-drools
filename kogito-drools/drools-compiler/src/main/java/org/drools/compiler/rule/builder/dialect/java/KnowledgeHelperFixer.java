@@ -16,11 +16,11 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.mvel2.Macro;
-import org.mvel2.MacroProcessor;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.mvel2.Macro;
+import org.mvel2.MacroProcessor;
 
 public class KnowledgeHelperFixer {
     private static final Map<String, Macro> macros = new HashMap<String, Macro>();

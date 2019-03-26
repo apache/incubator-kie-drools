@@ -18,6 +18,9 @@
 package org.kie.api.internal.utils;
 
 import java.util.Map;
+import java.util.function.Supplier;
+
+import static org.kie.api.internal.utils.ServiceUtil.instanceFromNames;
 
 /**
  * This is an internal class, not for public consumption.
@@ -26,11 +29,12 @@ public class ServiceRegistryImpl
         implements
         ServiceRegistry {
 
-    private Map<String, Object> registry;
+    private static final String DYNAMIC_IMPL = "org.drools.dynamic.common.DynamicServiceRegistrySupplier";
+    private static final String STATIC_IMPL = "org.drools.statics.common.StaticServiceRegistrySupplier";
 
-    static class LazyHolder {
-        static final ServiceRegistryImpl INSTANCE = new ServiceRegistryImpl();
-    }
+    private static Supplier<ServiceRegistry> supplier = instanceFromNames(DYNAMIC_IMPL, STATIC_IMPL);
+
+    private Map<String, Object> registry;
 
     public ServiceRegistryImpl() {
         registry = ServiceDiscoveryImpl.getInstance().getServices();
@@ -47,5 +51,9 @@ public class ServiceRegistryImpl
     public synchronized <T> T get(Class<T> cls) {
         Object service = this.registry.get( cls.getName() );
         return cls.isInstance( service ) ? (T) service : null;
+    }
+
+    public static ServiceRegistry getServiceRegistry() {
+        return supplier.get();
     }
 }

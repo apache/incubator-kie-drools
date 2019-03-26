@@ -16,10 +16,10 @@
 
 package org.drools.core.common;
 
-import org.kie.api.concurrent.KieExecutors;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.kie.api.concurrent.KieExecutors;
 
 /**
  * A class to identify RuleBase partitions

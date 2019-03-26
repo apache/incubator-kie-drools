@@ -16,10 +16,10 @@
 
 package org.drools.core.rule;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.core.integrationtests.SerializationHelper;
+import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA. User: Ming Jin Date: Mar 19, 2008 Time: 11:11:45 AM To change this template use File |

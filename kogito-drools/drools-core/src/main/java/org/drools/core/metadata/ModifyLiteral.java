@@ -15,6 +15,8 @@
 
 package org.drools.core.metadata;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Collection;
@@ -26,8 +28,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
 public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modify<T>, Serializable {
     private T target;

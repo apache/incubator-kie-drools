@@ -1,8 +1,9 @@
 package org.drools.core.base.accumulators;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.core.base.accumulators.VarianceAccumulateFunction.VarianceData;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class VarianceNaNTest {
 	

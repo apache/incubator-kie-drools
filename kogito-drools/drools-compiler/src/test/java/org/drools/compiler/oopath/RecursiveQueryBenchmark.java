@@ -15,14 +15,14 @@
 
 package org.drools.compiler.oopath;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class RecursiveQueryBenchmark {
 

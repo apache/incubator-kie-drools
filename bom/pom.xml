@@ -3,26 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <!-- That parent extends the org.jboss:jboss-parent -->
-    <groupId>org.jboss.integration-platform</groupId>
-    <artifactId>jboss-integration-platform-bom</artifactId>
-    <!-- Keep in sync with ip-parent version in kie-user-bom-parent/pom.xml -->
-    <version>8.4.0.Final</version>
-  </parent>
 
   <groupId>org.kie</groupId>
   <artifactId>kie-parent</artifactId>
+  <version>8.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <!-- On updating the version, also look for these variations for OSGi stuff: "5.3.0.qualifier" and "5.3.0.SNAPSHOT" -->
-  <!-- Important a released version should always follow any of these patterns: -->
-  <!-- major.minor.micro.Alpha[n] -->
-  <!-- major.minor.micro.Beta[n] -->
-  <!-- major.minor.micro.CR[n] -->
-  <!-- major.minor.micro.Final -->
-  <!-- For example: 1.2.3 without the suffix ".Final" corrupts the OSGi eclipse updatesite -->
-  <!-- For example: 1.2.3.M2 corrupts the OSGi eclipse updatesite update order -->
-  <version>7.19.0.Final</version>
 
   <name>KIE (Drools, jBPM, OptaPlanner) parent</name>
   <description>
@@ -44,241 +29,31 @@
   </licenses>
 
   <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+
+    <checkstyle.header.template>.*</checkstyle.header.template>
+    <checkstyle.header.extensions>java</checkstyle.header.extensions>
     <!-- Internal dependencies -->
-    <version.org.kie>7.19.0.Final</version.org.kie>
+    <version.org.kie>8.0.0-SNAPSHOT</version.org.kie>
     <version.org.drools>${version.org.kie}</version.org.drools>
     <version.org.optaplanner>${version.org.kie}</version.org.optaplanner>
     <version.org.jbpm>${version.org.kie}</version.org.jbpm>
     <version.org.drools.droolsjbpm-integration>${version.org.drools}</version.org.drools.droolsjbpm-integration>
-    <version.org.uberfire>2.16.0.Final</version.org.uberfire>
-    <version.org.kie.uberfire.extensions>${version.org.drools}</version.org.kie.uberfire.extensions>
-    <version.org.drools.droolsjbpm-tools>${version.org.drools}</version.org.drools.droolsjbpm-tools>
-    <version.org.jbpm.jbpm-designer>${version.org.jbpm}</version.org.jbpm.jbpm-designer>
-    <version.org.jbpm.jbpm-wb>${version.org.jbpm}</version.org.jbpm.jbpm-wb>
-    <version.org.apache.xmlgraphics.commons>2.2</version.org.apache.xmlgraphics.commons>
 
-    <!-- CONVENTIONS:
-           - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
-           - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
-     -->
+    <!-- dependencies versions -->
+    <version.org.antlr>3.5.2</version.org.antlr>
+    <version.org.slf4j>1.7.25</version.org.slf4j>
+    <version.org.mvel>2.4.3.Final</version.org.mvel>
+    <version.com.thoughtworks.xstream>1.4.10</version.com.thoughtworks.xstream>
+    <version.com.google.protobuf>3.6.1</version.com.google.protobuf>
+    <version.org.eclipse.jdt.core.compiler>4.6.1</version.org.eclipse.jdt.core.compiler>
+    <version.org.codehaus.janino>2.5.16</version.org.codehaus.janino>
 
-    <!-- External dependency versions bom -->
-    <!-- ################################################################################ -->
-    <!-- New and overwritten dependencies -->
-    <!-- ################################################################################ -->
-    <version.javaee.api>7.0</version.javaee.api>
-    <version.com.android-dx>1.10</version.com.android-dx>
-    <!-- commons cli 1.3.1+ required by Dashbuilder's ElasticSearch module. This override can be removed once IP BOM upgrades as well. -->
-    <version.commons-cli>1.3.1</version.commons-cli>
-    <!-- IP BOM 7.0.0.Final defines Jackson 2.5.4
-         Wildfly 10.0.0.Final includes Jackson 2.5.4
-         Wildfly 10.1.0.Final includes Jackson 2.7.4
-         JBoss EAP 6.4.16 includes Jackson 2.5.4
-         JBoss EAP 7.1.0.Beta4 includes Jackson 2.8.6
-         Dashbuilder's ElasticSearch module requires Jackson 2.6.2+, so defined here
-         Fabric8 Kubernetes/OpenShift Client 2.6.3 requires Jackson 2.6+, but built against Jackson 2.7.7
-         guvnor-ala-openshift-client shades Jackson 2.7.7 with Fabric8 Kubernetes/OpenShift Client 2.6.3
-         Once the IP BOM gets upgraded and we solely deploy on Wildfly 10.1+ and EAP 7.1+, guvnor-ala-openshift-client can be removed. -->
-    <version.org.eclipse.bpmn2>0.8.2-jboss</version.org.eclipse.bpmn2>
-    <version.com.github.detro>1.2.0</version.com.github.detro>
-    <version.com.github.tomakehurst.wiremock>1.53</version.com.github.tomakehurst.wiremock>
-    <version.com.google.android>4.1.1.4</version.com.google.android>
-    <version.com.google.testing.compile>0.11</version.com.google.testing.compile>
-    <version.jakarta-regexp>1.4</version.jakarta-regexp>
-    <version.link.bek.tools.issue-keeper-junit>4.11.1</version.link.bek.tools.issue-keeper-junit>
-    <version.net.sf.docbook.docbook-xsl>1.76.1</version.net.sf.docbook.docbook-xsl>
-    <version.org.antlr4>4.5.3</version.org.antlr4>
-    <!-- overrides version of cxf coming from jboss-ip-bom 8.3.2.Final since tests in kie-spring-boot (droolsjbpm-integration) fail -->
-    <version.org.apache.cxf>3.1.16</version.org.apache.cxf>
-    <version.org.apache.camel>2.21.3</version.org.apache.camel>
-    <version.org.codehaus.cargo>1.7.1</version.org.codehaus.cargo>
-    <!-- Custom Freemarker build with workaround for random concurrent access issue (annotation processors). See AF-600 for more info.-->
-    <version.org.freemarker>2.3.26.jbossorg-1</version.org.freemarker>
-    <!-- Dependencies for selenium tests -->
-    <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
-    <version.org.jboss.arquillian.extension.drone>2.5.1</version.org.jboss.arquillian.extension.drone>
-    <version.org.jboss.arquillian.graphene>2.3.2</version.org.jboss.arquillian.graphene>
-    <version.com.google.guava.for-selenium>23.0</version.com.google.guava.for-selenium>
-
-    <version.com.google.elemental2>1.0.0-beta-1</version.com.google.elemental2>
-    <version.org.jboss.errai>4.5.0.Final</version.org.jboss.errai>
-
-    <!-- Required for kie-wb-common to build in IntelliJ Idea 2017, due to -->
-    <!-- https://youtrack.jetbrains.com/issue/IDEA-166417 -->
-    <!-- Property can be removed when the above issue is fixed -->
-    <version.org.jboss.errai.wildfly>14.0.1.Final</version.org.jboss.errai.wildfly>
-    <version.org.jboss.remotingjmx>3.0.0.Final</version.org.jboss.remotingjmx>
-    <version.org.jboss.resteasy.async>3.0.19.Final</version.org.jboss.resteasy.async>
-    <!-- Required by jboss-remoting version above -->
-    <version.org.wildfly.security>1.1.0.Final</version.org.wildfly.security>
-
-    <version.org.mortbay.jetty.runner>8.1.7.v20120910</version.org.mortbay.jetty.runner>
-    <version.org.picketlink>2.6.0.Final</version.org.picketlink>
-    <version.com.unboundid>3.2.0</version.com.unboundid>
-    <version.com.wordnik.swagger>1.3.10</version.com.wordnik.swagger>
-    <version.io.swagger>1.5.20</version.io.swagger>
-    <version.org.jboss.as>7.2.0.Final</version.org.jboss.as>
-    <version.org.jboss.byteman>3.0.1</version.org.jboss.byteman>
-    <version.org.roboguice>3.0.1</version.org.roboguice>
-    <version.org.robolectric>3.1.2</version.org.robolectric>
-    <version.org.simpleframework>6.0.1</version.org.simpleframework>
-    <version.org.xmlunit>2.3.0</version.org.xmlunit>
-    <version.org.skyscreamer.jsonassert>1.2.3</version.org.skyscreamer.jsonassert>
-    <!-- WildFly version used together with  the GWT's Super Dev Mode -->
-    <version.org.wildfly.gwt.sdm>14.0.1.Final</version.org.wildfly.gwt.sdm>
-    <version.org.jboss.jboss-dmr>1.4.1.Final</version.org.jboss.jboss-dmr>
-    <!-- Version of Camel patch for Wildfly -->
-    <version.org.wildfly.camel>8.0.0</version.org.wildfly.camel>
-    <!-- this version will overwrite jboss-ip-bom version 2.5.1. The version in jboss-ip-bom couldn't be upgraded as it will break ModeShape Web Explorer application which uses GWT 2.5.1 -->
-    <!-- please look at https://github.com/fredsa/gwt-dnd/wiki/GettingStarted -->
-    <version.net.ltgt.gwt.maven>1.0-rc-6</version.net.ltgt.gwt.maven>
-    <version.org.kie.gwthelper.maven>1.0</version.org.kie.gwthelper.maven>
-    <!-- this version will overwrite jboss-ip-version 3.1.2. The version in jboss-ip-bom couldn't be upgraded as this version needs GWT 2.7.0 -->
-    <!-- please look at https://github.com/fredsa/gwt-dnd/wiki/GettingStarted -->
-    <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0.Beta1 -->
-    <version.javax.validation>1.0.0.GA</version.javax.validation>
-    <!-- temporary because it was removed/rename in jboss-ip-bom and it is needed by droolsjbpm-knowledge/kie-api/pom.xml -->
-    <version.javax.xml.stream.stax>1.0-2</version.javax.xml.stream.stax>
-    <version.org.ops4j.pax.url>2.2.0</version.org.ops4j.pax.url>
-    <version.org.geronimo.atinject>1.0</version.org.geronimo.atinject>
-    <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
-    <version.simple-jndi>0.11.4.1</version.simple-jndi>
-    <version.org.asciidoctor.pdf>1.5.0-alpha.11</version.org.asciidoctor.pdf>
-
-    <!-- Downgrade required for Errai Dynamic Bean validation  -->
-    <version.org.hibernate.hibernate-validator>4.1.0.Final</version.org.hibernate.hibernate-validator>
-
-    <!-- CSS parsing library from Apache used by Stunner. -->
-    <version.net.sourceforge.cssparser>0.9.21</version.net.sourceforge.cssparser>
-    <version.org.w3c.css.sac>1.3</version.org.w3c.css.sac>
-
-    <!-- Tomcat integration with Narayana -->
-    <version.org.jboss.integration.narayana-tomcat>1.0.0.Final</version.org.jboss.integration.narayana-tomcat>
-    <!-- narayana dependencies for tomcat and kie server -->
-    <version.org.jboss.narayana.tomcat>5.9.0.Final</version.org.jboss.narayana.tomcat>
-    <version.org.jboss.transaction.spi>7.6.0.Final</version.org.jboss.transaction.spi>
-
-    <!-- override of version coming from jboss-ip-bom since this is needed for kie-wb-common -->
+    <version.junit>4.12</version.junit>
+    <version.org.assertj>3.8.0</version.org.assertj>
     <version.org.mockito>1.10.19</version.org.mockito>
-
-    <!-- DBCP connection pooling for Narayana -->
-    <version.org.apache.tomcat.tomcat-dbcp>9.0.13</version.org.apache.tomcat.tomcat-dbcp>
-
-    <!-- In community builds productized is false, in product builds it's true to enable branding changes -->
-    <org.kie.productized>false</org.kie.productized>
-
-    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-    <!-- This property needs to be defined in all modules that use the packaging 'jar' or 'bundle'. It is
-         being used by different plugins to make sure the module/bundle names are consistent. -->
-    <java.module.name/>
-    <!-- Make OSGi happy -->
-    <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-
-    <!-- Newer version in ip-bom causes ServiceLoader error -->
     <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
-
-    <!-- IMPORTANT: Don't use this dependency. The right dependency version is the one named as "version.io.netty".
-         This is just needed by Elasticsearch Transport Plugin because it has a compatibility mode with netty 3 and
-         it can't be removed -->
-    <version.io.netty.old>3.10.6.Final</version.io.netty.old>
-
-    <!-- Plugin version overrides.
-         IMPORTANT: always explain the reason for overriding the plugin version! -->
-    <!-- Surefire version 2.19.1 coming from parent is buggy and kie-osgi tests in droolsjbpm-integration are failing because of that. -->
-    <version.surefire.plugin>2.22.1</version.surefire.plugin>
-    <version.enforcer.plugin>3.0.0-M1</version.enforcer.plugin> <!-- Needed to support JDK 9. Can be removed once IP BOM 8.0.0.CR1 is used. -->
-    <version.javadoc.plugin>3.0.1</version.javadoc.plugin> <!-- Needed to support JDK 9. Can be removed once IP BOM 8.0.0.CR1 is used. -->
-    <!-- Jacoco plugin configurations -->
-    <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
-    <jacoco.line.coveredratio.minimum>0.9</jacoco.line.coveredratio.minimum>
-    <version.jacoco.plugin>0.7.5.201505241946</version.jacoco.plugin>
-    <!-- TODO: remove this once all repositories comply to the defined checkstyle rules -->
-    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
-    <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
-    <checkstyle.header.template>.*</checkstyle.header.template>
-    <checkstyle.header.extensions>java</checkstyle.header.extensions>
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
-    <!-- Set to "true" on every project that has no violations. -->
-    <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
-    <!-- org.eclipse.tycho plugin version -->
-    <version.org.eclipse.tycho>1.0.0</version.org.eclipse.tycho>
-    <version.org.jboss.tools.tycho-plugins>1.0.0</version.org.jboss.tools.tycho-plugins>
-    <!-- replaces findbugs-maven-plugin -->
-    <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
-
-    <maven.min.version>3.3.9</maven.min.version>
-    <!-- Important: this is one and only place where the supported user agents (browsers) are configured.
-         All webapps/showcases must use this property in their *.gwt.xml files.
-         We only need to support IE11+, but there is no ie11 permutation. IE11 will use the Firefox one (gecko1_8) -->
-    <gwt.user.agent.all>gecko1_8,safari</gwt.user.agent.all>
-    <!-- Number of GWT compiler worker processes. Defined as property so that it can be easily overridden from cmd line.
-         Default value is 1 to enable building on older machines as well (minimum is still about 4GiB of RAM memory). -->
-    <gwt.compiler.localWorkers>1</gwt.compiler.localWorkers>
-    <!-- property for productisation to know the last released version -->
-    <latestReleasedVersionFromThisBranch>7.19.0.Final</latestReleasedVersionFromThisBranch>
-    <version.io.takari.maven.plugins.compiler>1.13.5</version.io.takari.maven.plugins.compiler>
-    <version.io.takari.maven.plugins.integration-testing>2.9.2</version.io.takari.maven.plugins.integration-testing>
-    <version.org.codehaus.plexus.plexus-io>3.0.0</version.org.codehaus.plexus.plexus-io>
-    <version.org.apache.maven.shared.maven-artifact-transfer>0.9.1</version.org.apache.maven.shared.maven-artifact-transfer>
-    <version.org.apache.maven.plugins.maven-compiler-plugin>3.7.0</version.org.apache.maven.plugins.maven-compiler-plugin>
-    <version.net.openhft.chronicle-queue>5.16.10</version.net.openhft.chronicle-queue>
-    <version.net.openhft.chronicle-core>1.16.16</version.net.openhft.chronicle-core>
-    <version.net.openhft.chronicle-bytes>1.16.16</version.net.openhft.chronicle-bytes>
-    <version.net.openhft.chronicle-wire>1.16.15</version.net.openhft.chronicle-wire>
-    <!-- Version of the KIE Workbench application. Shown for example in About dialog. Will be usually overridden by productisation. -->
-    <version.org.kie.workbench.app>${version.org.kie}</version.org.kie.workbench.app>
-
-    <version.org.wildfly.swarm>2018.3.3</version.org.wildfly.swarm>
-    <version.net.byte-buddy>1.8.17</version.net.byte-buddy>
-    <version.docker-client>3.5.12</version.docker-client>
-    <version.kubernetes-client>4.1.1</version.kubernetes-client>
-    <version.okhttp>3.8.1</version.okhttp>
-    <version.zjsonpatch>0.3.0</version.zjsonpatch>
-    <version.arquillian-cube>1.0.0.Alpha15</version.arquillian-cube>
-    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-
-
-    <version.org.infinispan>9.3.2.Final</version.org.infinispan>
-
-    <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the Kie API. -->
-    <revapi.oldKieVersion>7.14.0.Final</revapi.oldKieVersion>
-    <revapi.newKieVersion>${project.version}</revapi.newKieVersion>
-
-    <version.org.jboss.spec.javax.enterprise.concurrent>1.0.0.Final</version.org.jboss.spec.javax.enterprise.concurrent>
-    <version.org.jboss.spec.javax.websocket>1.1.1.Final</version.org.jboss.spec.javax.websocket>
-
-    <version.javax.xml.soap>1.4.0</version.javax.xml.soap>
-    <version.javax.jws>1.0-MR1</version.javax.jws>
-
-    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
-    <version.org.apache.maven.plugins.dependency>3.0.2</version.org.apache.maven.plugins.dependency>
-
-    <version.org.postgresql>9.4.1207</version.org.postgresql>
-    <version.mariadb-java-client>1.3.4</version.mariadb-java-client>
-
-    <version.org.mvel>2.4.4.Final</version.org.mvel>
-
-    <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.javax.jws-api>1.1</version.javax.jws-api>
-    <version.javax.xml.ws>2.3.1</version.javax.xml.ws>
-    <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
-    <version.com.sun.xml.messaging.saaj>1.5.0</version.com.sun.xml.messaging.saaj>
-
-    <!-- Remove this property when jboss-ip-bom 8.5.1.Final will be released -->
-    <version.org.javassist>3.22.0-GA</version.org.javassist>
-
-    <!-- specifal versions to support different version of hibernate for ee7 servers such as WAS and WLS -->
-    <version.org.hibernate-4ee7>5.1.15.Final</version.org.hibernate-4ee7>
-    <version.org.jboss.logging-4ee7>3.3.1.Final</version.org.jboss.logging-4ee7>
-    <version.org.javassist-4ee7>3.20.0-GA</version.org.javassist-4ee7>
-    <version.antlr-4ee7>2.7.7</version.antlr-4ee7>
-    <version.org.jboss.jandex-4ee7>2.0.3.Final</version.org.jboss.jandex-4ee7>
-    <version.com.fasterxml.classmate-4ee7>1.3.0</version.com.fasterxml.classmate-4ee7>
-
-    <version.io.prometheus>0.5.0</version.io.prometheus>
-    <version.com.github.javaparser>3.10.2</version.com.github.javaparser>
+    <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
   </properties>
 
   <repositories>
@@ -313,6 +88,108 @@
     </repository>
   </repositories>
 
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mvel</groupId>
+        <artifactId>mvel2</artifactId>
+        <version>${version.org.mvel}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${version.com.google.protobuf}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.jdt.core.compiler</groupId>
+        <artifactId>ecj</artifactId>
+        <version>${version.org.eclipse.jdt.core.compiler}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.janino</groupId>
+        <artifactId>janino</artifactId>
+        <version>${version.org.codehaus.janino}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <version>${version.org.antlr}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr-runtime</artifactId>
+        <version>${version.org.antlr}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${version.org.antlr4}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <!-- used by DMN for BigDecimal arithmetics -->
+      <dependency>
+        <groupId>ch.obermuhlner</groupId>
+        <artifactId>big-math</artifactId>
+        <version>${version.ch.obermuhlner}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.org.mockito}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>net.java.dev.glazedlists</groupId>
+        <artifactId>glazedlists_java15</artifactId>
+        <version>${version.net.java.dev.glazedlists}</version>
+        <scope>test</scope>
+      </dependency>
+
+    </dependencies>
+
+  </dependencyManagement>
+
   <pluginRepositories>
     <pluginRepository>
       <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
@@ -341,399 +218,74 @@
     </pluginRepository>
   </pluginRepositories>
 
-  <scm>
-    <connection>scm:git:https://github.com/kiegroup/droolsjbpm-build-bootstrap.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/droolsjbpm-build-bootstrap.git</developerConnection>
-    <url>https://github.com/kiegroup/droolsjbpm-build-bootstrap</url>
-  </scm>
-  <ciManagement>
-    <system>jenkins</system>
-    <url>https://jenkins-kieci.rhcloud.com</url>
-  </ciManagement>
-  <issueManagement>
-    <system>jira</system>
-    <url>https://issues.jboss.org/browse/DROOLS</url>
-  </issueManagement>
-  <developers>
-    <developer>
-      <name>All developers are listed on the team website</name>
-      <url>http://www.drools.org/community/team.html</url>
-    </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name>All contributors are listed on the team website</name>
-      <url>http://www.drools.org/community/team.html</url>
-    </contributor>
-  </contributors>
-  <mailingLists>
-    <mailingList>
-      <name>setup</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-setup</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-setup</unsubscribe>
-      <otherArchives>
-        <!-- Very old (and long deprecated) user mailing list -->
-        <otherArchive>http://drools.46999.n3.nabble.com/Drools-User-forum-f47000.html</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>usage</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-usage</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-usage</unsubscribe>
-    </mailingList>
-    <mailingList>
-      <name>development</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-development</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-development</unsubscribe>
-    </mailingList>
-  </mailingLists>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav-jackrabbit</artifactId>
-        <version>1.0-beta-6</version>
-      </extension>
-    </extensions>
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>extra-enforcer-rules</artifactId>
-              <version>1.0-beta-6</version>
-            </dependency>
-          </dependencies>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
           <executions>
             <execution>
-              <id>enforce-plugin-versions</id>
+              <id>default-clean</id>
+              <phase>clean</phase>
               <goals>
-                <goal>enforce</goal>
+                <goal>clean</goal>
               </goals>
-              <configuration>
-                <rules>
-                  <requirePluginVersions>
-                    <unCheckedPluginList>org.kie:kie-maven-plugin</unCheckedPluginList>
-                  </requirePluginVersions>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>enforce-direct-dependencies</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <illegalTransitiveDependencyCheck
-                      implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <regexIgnoredClasses combine.children="append">
-                      <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
-                           usually contain references to other dependencies which are not part of the project
-                           (transitive dependencies), which then results in the dependency check failure.
-                           From the maintenance point of view, ignoring these generated classes seems like the
-                           best option. -->
-                      <regexIgnoredClass>org\.jboss\.errai\.marshalling\.server\.impl\.ServerMarshallingFactory.*</regexIgnoredClass>
-                      <!-- The maven-shade-plugin needs these classes to be compile-scope in guvnor-ala-openshift-client to be picked up, and
-                           then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can remove these lines. -->
-                      <regexIgnoredClass>io\.fabric8\.kubernetes.*</regexIgnoredClass>
-                      <regexIgnoredClass>io\.fabric8\.openshift.*</regexIgnoredClass>
-                    </regexIgnoredClasses>
-                  </illegalTransitiveDependencyCheck>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>ban-blacklisted-dependencies</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <bannedDependencies>
-                    <excludes combine.children="append">
-                      <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
-                      <exclude>commons-logging:commons-log*</exclude>
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
-                      <exclude>log4j:log4j</exclude>
-                      <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
-                      <exclude>javassist:javassist</exclude>
-                    </excludes>
-                  </bannedDependencies>
-                </rules>
-                <fail>true</fail>
-              </configuration>
-            </execution>
-            <execution>
-              <id>ban-duplicated-classes</id>
-              <!-- Using phase=none as we don't want this execution as part of the default build. The phase
-                   is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
-              <phase>none</phase>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <banDuplicateClasses>
-                    <ignoreClasses>
-                      <!-- ASM is in Wildfly Swarm through Undertow but exclusion will break the swarm jar -->
-                      <!-- when docker-client shaded GAV will be removed, this ignore can be removed too -->
-                      <!-- kie-wb-common-ala-distribution is affected by this -->
-                      <ignoreClass>org.objectweb.asm.*</ignoreClass>
-                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
-                      <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
-                      <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
-                      <!-- Bundled by both com.sun:tools and com.sun.xml.bind:jaxb-xjc. No easy way to exclude one of them. -->
-                      <ignoreClass>org.relaxng.datatype.*</ignoreClass>
-                      <!-- Classes duplicated by the jar itself (bug), see https://issues.apache.org.jira/browse/XMLBEANS-499 -->
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLName</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLInputStream</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable$Util</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLStreamException</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.ReferenceResolver</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLEvent</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
-                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
-                           and there is very little chance this will get ever fixed. -->
-                      <ignoreClass>org.w3c.dom.ElementTraversal</ignoreClass>
-                      <ignoreClass>org.w3c.dom.UserDataHandler</ignoreClass>
-                      <!-- Packaged both in hornetq-commons and hornetq-client. Remove this once we move the testing
-                           from HornetQ to ActiveMQ (https://issues.jboss.org/browse/JBPM-5503) -->
-                      <ignoreClass>org.hornetq.utils.HornetQUtilBundle_$bundle</ignoreClass>
-                      <ignoreClass>org.hornetq.utils.HornetQUtilLogger_$logger</ignoreClass>
-                      <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
-                           See https://github.com/errai/errai/blob/master/errai-javax-enterprise/README -->
-                      <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
-                      <ignoreClass>javax.inject.Provider</ignoreClass>
-                      <ignoreClass>javax.inject.Named</ignoreClass>
-                      <ignoreClass>javax.inject.Scope</ignoreClass>
-                      <ignoreClass>javax.inject.Qualifier</ignoreClass>
-                      <ignoreClass>javax.inject.Singleton</ignoreClass>
-                      <ignoreClass>javax.enterprise.*</ignoreClass>
-                      <!-- Servlet API is bundled in way too many different dependencies, causing nightmares trying to
-                           properly exclude everything. There were no real issues with this so far as mostly the APIs
-                           are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
-                           but it may very well not be worth the effort. -->
-                      <ignoreClass>javax.servlet.*</ignoreClass>
-                      <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
-                           These annotations do not influence the actual behavior of the code, so it's reasonable to
-                           ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
-                           and 'com.google.code.findbugs:annotations'. -->
-                      <ignoreClass>javax.annotation.*</ignoreClass>
-                      <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
-                           these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
-                      <ignoreClass>net.jcip.annotations.*</ignoreClass>
-                      <!-- Classes from gwt-user duplicated in errai-uibinder -->
-                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
-                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderGenerator</ignoreClass>
-                      <!-- ignoring java 9 compatible class for modules -->
-                      <ignoreClass>module-info</ignoreClass>
-                      <!-- Classes repackaged in the maven world-->
-                      <ignoreClass>org.eclipse.aether.*</ignoreClass>
-                      <ignoreClass>org.apache.maven.*</ignoreClass>
-                      <ignoreClass>org.codehaus.plexus.*</ignoreClass>
-                      <!-- Infinispan core includes commons and they have duplicated classes. We can't remove commons because
-                       core needs them. Infinispan team has been informed about this packaging problem -->
-                      <ignoreClass>org.infinispan.util.AbstractDelegatingConcurrentMap</ignoreClass>
-                      <ignoreClass>org.infinispan.util.AbstractDelegatingMap</ignoreClass>
-                      <ignoreClass>org.infinispan.util.AbstractDelegatingSet</ignoreClass>
-                      <ignoreClass>org.infinispan.util.AbstractDelegatingCollection</ignoreClass>
-                    </ignoreClasses>
-                    <dependencies>
-                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
-                           as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
-                           duplicate classes check seems to be the only way. -->
-                      <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-dev</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <groupId>org.elasticsearch</groupId>
-                        <artifactId>elasticsearch</artifactId>
-                        <ignoreClasses>
-                          <!-- Elasticsearch team claims they fixed performance issues in the class and re-bundled it.
-                               See https://discuss.elastic.co/t/an-unshaded-joda-time-classes-in-elasticsearch-2-1-1-jar/38943
-                               Nothing we can do here. -->
-                          <ignoreClass>org.joda.time.base.BaseDateTime</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <!-- ignore jboss-logging included in kie server router as it is required by undertow and uberjar usage-->
-                      <dependency>
-                        <groupId>org.kie.server</groupId>
-                        <artifactId>kie-server-router-proxy</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>org.jboss.logging.*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <!-- ignore jboss-logging included in kie server on tomcat using narayana-->
-                      <dependency>
-                        <groupId>org.jboss.narayana.tomcat</groupId>
-                        <artifactId>tomcat-jta</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>org.jboss.logging.*</ignoreClass>
-                          <ignoreClass>javax.transaction.*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <!-- The openshift-client duplicates these classes from the kubernetes-client.
-                             It is an upstream io.fabric8 issue that needs to be fixed there:
-                             https://github.com/fabric8io/kubernetes-client/issues/828 -->
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>openshift-client</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluent</ignoreClass>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigBuilder</ignoreClass>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluentImpl</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                    </dependencies>
-                    <findAllDuplicates>true</findAllDuplicates>
-                  </banDuplicateClasses>
-                </rules>
-                <fail>${enforcer.failOnDuplicatedClasses}</fail>
-              </configuration>
-            </execution>
-            <execution>
-              <id>no-duplicate-declared-dependencies</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <banDuplicatePomDependencyVersions/>
-                </rules>
-              </configuration>
             </execution>
           </executions>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>validate</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <configuration>
-                <checkstyleRules>
-                  <module name="Checker">
-                    <!-- Checks for whitespace. -->
-                    <module name="FileTabCharacter">
-                      <property name="severity" value="error"/>
-                      <property name="eachLine" value="true"/>
-                    </module>
-                    <module name="TreeWalker">
-                      <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
-                      <module name="RedundantImport"/>
-                      <module name="AvoidStarImport">
-                        <property name="allowClassImports" value="false"/>
-                        <property name="allowStaticMemberImports" value="false"/>
-                      </module>
-                      <module name="CustomImportOrder">
-                        <property name="customImportOrderRules"
-                                  value="STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STATIC"/>
-                        <property name="specialImportsRegExp" value="^javax\."/>
-                        <property name="standardPackageRegExp" value="^java\."/>
-                        <property name="sortImportsInGroupAlphabetically" value="true"/>
-                        <property name="separateLineBetweenGroups" value="true"/>
-                      </module>
-                      <module name="UnusedImports"/>
-                      <module name="NeedBraces">
-                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
-                      </module>
-                      <module name="EqualsHashCode"/>
-                    </module>
-                    <module name="RegexpHeader">
-                      <property name="header" value="${checkstyle.header.template}"/>
-                      <property name="fileExtensions" value="${checkstyle.header.extensions}"/>
-                    </module>
-                  </module>
-                </checkstyleRules>
-                <outputFile>${project.build.directory}/checkstyle.log</outputFile>
-                <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                <includeResources>true</includeResources>
-                <includeTestResources>true</includeTestResources>
-                <consoleOutput>false</consoleOutput>
-                <logViolationsToConsole>${checkstyle.logViolationsToConsole}</logViolationsToConsole>
-                <failsOnError>false</failsOnError>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.revapi</groupId>
-          <artifactId>revapi-maven-plugin</artifactId>
-          <version>0.9.4</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.revapi</groupId>
-              <artifactId>revapi-java</artifactId>
-              <version>0.14.3</version>
-            </dependency>
-          </dependencies>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.2</version>
+        <executions>
+          <execution>
+            <id>default-install</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+        <executions>
+          <execution>
+            <id>default-site</id>
+            <phase>site</phase>
+            <goals>
+              <goal>site</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
           <configuration>
-            <oldArtifacts>
-              <artifact>${project.groupId}:${project.artifactId}:${revapi.oldKieVersion}</artifact>
-            </oldArtifacts>
-            <newArtifacts>
-              <artifact>${project.groupId}:${project.artifactId}:${revapi.newKieVersion}</artifact>
-            </newArtifacts>
-            <!-- By default revapi will check the oldArtifact against the currently executed build -->
-            <analysisConfigurationFiles>
-              <configurationFile>
-                <path>src/build/revapi-config.json</path>
-                <roots>
-                  <root>filters</root>
-                  <root>ignores</root>
-                </roots>
-              </configurationFile>
-            </analysisConfigurationFiles>
-            <!-- By default, revapi will only fail the build if there are potentially breaking or breaking changes. However, in the report
-                 we want even non breaking changes to be present. -->
-            <reportSeverity>nonBreaking</reportSeverity>
-            <failSeverity>potentiallyBreaking</failSeverity>
+            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
           </configuration>
-          <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
-               some incompatible changes. The "check" goal will simply fail the whole build before it could get
-               to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
-               before the "check" goal.
-               Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
-          <executions>
-            <execution>
-              <id>check</id>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <phase>verify</phase>
-            </execution>
-            <execution>
-              <!-- report can be found in ${build.directory}/site/revapi-report.html -->
-              <id>report</id>
-              <goals>
-                <goal>report</goal>
-              </goals>
-              <phase>package</phase>
-            </execution>
-          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0-jboss-1</version>
+          <configuration>
+            <showDeprecation>true</showDeprecation>
+            <showWarnings>true</showWarnings>
+            <source>1.8</source>
+            <target>1.8</target>
+            <testSource>1.8</testSource>
+            <testTarget>1.8</testTarget>
+            <compilerArgs>
+              <arg>-Xlint:unchecked</arg>
+            </compilerArgs>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.8</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.ant</groupId>
@@ -742,30 +294,10 @@
             </dependency>
           </dependencies>
         </plugin>
-
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-
-          <extensions>true</extensions>
-          <configuration>
-            <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->
-            <excludeDependencies>true</excludeDependencies>
-            <instructions>
-              <Bundle-SymbolicName>${java.module.name}</Bundle-SymbolicName>
-              <_removeheaders>Ignore-Package</_removeheaders>
-              <_nouses>true</_nouses>
-              <_snapshot>${osgi.snapshot.qualifier}</_snapshot>
-              <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
-              <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
-            </instructions>
-            <obrRepository>NONE</obrRepository>
-          </configuration>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
+          <version>3.1.0</version>
           <configuration>
             <encoding>UTF-8</encoding>
           </configuration>
@@ -773,6 +305,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
           <configuration>
             <includes>
               <include>**/*Test.java</include>
@@ -790,13 +323,9 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.cargo</groupId>
-          <artifactId>cargo-maven2-plugin</artifactId>
-          <version>${version.org.codehaus.cargo}</version>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.22.1</version>
           <executions>
             <execution>
               <goals>
@@ -813,57 +342,11 @@
             <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>${version.jacoco.plugin}</version>
-          <executions>
-            <execution>
-              <id>default-instrument</id>
-              <goals>
-                <goal>instrument</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>default-restore-instrumented-classes</id>
-              <goals>
-                <goal>restore-instrumented-classes</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>default-report</id>
-              <phase>prepare-package</phase>
-              <goals>
-                <goal>report</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>default-check</id>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <configuration>
-                <haltOnFailure>${jacoco.haltOnFailure}</haltOnFailure>
-                <rules>
-                  <rule>
-                    <element>BUNDLE</element>
-                    <limits>
-                      <limit>
-                        <counter>LINE</counter>
-                        <value>COVEREDRATIO</value>
-                        <minimum>${jacoco.line.coveredratio.minimum}</minimum>
-                      </limit>
-                    </limits>
-                  </rule>
-                </rules>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
         <!-- Packaging -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+          <version>3.1.0</version>
           <executions>
             <execution>
               <id>default-jar</id>
@@ -910,6 +393,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -964,32 +448,9 @@
           </executions>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <dependencies>
-            <!-- Workaround for JDK9. Should be removed once we upgrade the plugin to version which depends directly on plexus-archiver 3.0.3+ -->
-            <dependency>
-              <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-archiver</artifactId>
-              <version>${version.plexus.archiver}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-ear-plugin</artifactId>
-          <dependencies>
-            <!-- Workaround for JDK9. Should be removed once we upgrade the plugin to version which depends directly on plexus-archiver 3.0.3+ -->
-            <dependency>
-              <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-archiver</artifactId>
-              <version>${version.plexus.archiver}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.0.0</version>
           <executions>
             <execution>
               <goals>
@@ -997,81 +458,6 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>xml-maven-plugin</artifactId>
-          <version>1.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.jboss.maven.plugins</groupId>
-          <artifactId>maven-jdocbook-plugin</artifactId>
-          <version>2.3.9</version>
-          <extensions>true</extensions>
-          <dependencies>
-            <dependency>
-              <groupId>org.jboss.pressgang</groupId>
-              <artifactId>pressgang-xslt-ns</artifactId>
-              <version>3.1.3</version>
-            </dependency>
-            <dependency>
-              <groupId>org.jboss.pressgang</groupId>
-              <artifactId>pressgang-jdocbook-style</artifactId>
-              <type>jdocbook-style</type>
-              <version>3.1.3</version>
-            </dependency>
-          </dependencies>
-
-          <configuration>
-            <sourceDocumentName>master.xml</sourceDocumentName>
-            <masterTranslation>en-US</masterTranslation>
-            <imageResource>
-              <directory>${basedir}/src/main/docbook/en-US</directory>
-              <includes>
-                <include>images/</include>
-              </includes>
-            </imageResource>
-            <formats>
-              <format>
-                <formatName>html_single</formatName>
-                <stylesheetResource>classpath:/xslt/org/jboss/pressgang/xhtml-single.xsl</stylesheetResource>
-                <finalName>index.html</finalName>
-                <!-- <profilingTypeName>two_pass</profilingTypeName> -->
-              </format>
-              <format>
-                <formatName>html</formatName>
-                <stylesheetResource>classpath:/xslt/org/jboss/pressgang/xhtml.xsl</stylesheetResource>
-                <finalName>index.html</finalName>
-                <!-- <profilingTypeName>two_pass</profilingTypeName> -->
-              </format>
-              <format>
-                <formatName>pdf</formatName>
-                <stylesheetResource>classpath:/xslt/org/jboss/pressgang/pdf.xsl</stylesheetResource>
-                <finalName>${project.artifactId}.pdf</finalName>
-              </format>
-              <!--<format>-->
-              <!--<formatName>eclipse</formatName>-->
-              <!--<stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource>-->
-              <!--<finalName>${project.artifactId}.html</finalName>-->
-              <!--</format>-->
-            </formats>
-            <injections>
-              <injection>
-                <name>project.version</name>
-                <value>${project.version}</value>
-              </injection>
-            </injections>
-            <options>
-              <xmlTransformerType>saxon</xmlTransformerType>
-              <xincludeSupported>true</xincludeSupported>
-              <useRelativeImageUris>true</useRelativeImageUris>
-            </options>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.asciidoctor</groupId>
@@ -1106,13 +492,6 @@
           <version>2.0.0</version>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <configuration>
-            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
           <version>2.1</version>
@@ -1130,48 +509,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <version>3.0.0</version>
-        </plugin>
-        <!--Fix translations from Zanata -->
-        <plugin>
-          <groupId>com.google.code.maven-replacer-plugin</groupId>
-          <artifactId>replacer</artifactId>
-          <version>1.5.2</version>
-          <configuration>
-            <includes>
-              <include>**/*Constants_de.properties</include>
-              <include>**/*Constants_es_ES.properties</include>
-              <include>**/*Constants_fr_FR.properties</include>
-              <include>**/*Constants_ja_JP.properties</include>
-              <include>**/*Constants_pt_BR.properties</include>
-              <include>**/*Constants_zh_CN.properties</include>
-            </includes>
-            <excludes>
-              <exclude>**/ErraiApp.properties</exclude>
-            </excludes>
-            <replacements>
-              <replacement>
-                <token>''</token>
-                <value>'</value>
-              </replacement>
-              <replacement>
-                <token>'</token>
-                <value>''</value>
-              </replacement>
-            </replacements>
-          </configuration>
-        </plugin>
-        <!-- Zanata -->
-        <plugin>
-          <groupId>org.zanata</groupId>
-          <artifactId>zanata-maven-plugin</artifactId>
-          <version>2.3.0</version>
-          <configuration>
-            <excludes>**/ErraiApp.properties</excludes>
-            <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-            <srcDir>src/main/resources/</srcDir>
-            <transDir>src/main/resources/</transDir>
-            <includes>**/*Constants.properties,**/*Constants_en.properties</includes>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>com.mycila.maven-license-plugin</groupId>
@@ -1193,6 +530,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.1</version>
           <configuration>
             <links>
               <link>http://docs.oracle.com/javase/8/docs/api</link>
@@ -1207,131 +545,14 @@
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
-          <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.com.google.gwt}</version>
-          <configuration>
-            <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
-            <strict>true</strict>
-            <printJavaCommandOnError>false</printJavaCommandOnError>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>net.ltgt.gwt.maven</groupId>
-          <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.net.ltgt.gwt.maven}</version>
-          <extensions>true</extensions>
-        </plugin>
-        <plugin>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-gwthelper-maven-plugin</artifactId>
-          <version>${version.org.kie.gwthelper.maven}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>hibernate3-maven-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-metadata</artifactId>
-          <version>1.5.5</version>
-        </plugin>
-
-        <!-- org.eclipse.tycho -->
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-maven-plugin</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>target-platform-configuration</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-surefire-plugin</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-packaging-plugin</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-source-plugin</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-versions-plugin</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho.extras</groupId>
-          <artifactId>tycho-source-feature-plugin</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-p2-plugin</artifactId>
-          <version>${version.org.eclipse.tycho}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.jboss.tools.tycho-plugins</groupId>
-          <artifactId>repository-utils</artifactId>
-          <version>${version.org.jboss.tools.tycho-plugins}</version>
-        </plugin>
-        <!-- This plugin's configuration is used to store Eclipse m2e settings only.
-             It has no influence on the Maven build itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <!-- Configure m2e to ignore the maven-checkstyle-plugin. -->
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <versionRange>[1.0.0,)</versionRange>
-                    <goals>
-                      <goal>check</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-plugin</artifactId>
-          <version>${version.org.wildfly.swarm}</version>
-        </plugin>
-        <plugin>
-          <groupId>com.github.spotbugs</groupId>
-          <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>${version.com.github.spotbugs-maven-plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.kie</groupId>
-              <artifactId>kie-build-tools</artifactId>
-              <version>${version.org.kie}</version>
-            </dependency>
-          </dependencies>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>3.0.5</version>
           <configuration>
             <maxRank>6</maxRank>
             <effort>Max</effort>
             <xmlOutput>true</xmlOutput>
-	    <failOnError>${spotbugs.failOnViolation}</failOnError>
-	    <excludeFilterFile>spotbugs-excludes.xml</excludeFilterFile>
+            <failOnError>${findbugs.failOnViolation}</failOnError>
+            <excludeFilterFile>findbugs-excludes.xml</excludeFilterFile>
           </configuration>
         </plugin>
         <plugin>
@@ -1339,57 +560,10 @@
           <artifactId>kie-maven-plugin</artifactId>
           <version>${version.org.kie}</version>
         </plugin>
-        <plugin>
-          <groupId>org.pitest</groupId>
-          <artifactId>pitest-maven</artifactId>
-          <version>1.2.0</version>
-          <configuration>
-            <reportsDirectory>local/pit-reports</reportsDirectory>
-            <timestampedReports>false</timestampedReports>
-            <timeoutConstant>1000</timeoutConstant>
-            <mutators>
-              <!--
-              <mutator>CONDITIONALS_BOUNDARY</mutator>
-              <mutator>NEGATE_CONDITIONALS</mutator>
-              <mutator>MATH</mutator>
-              <mutator>INCREMENTS</mutator>
-              <mutator>INVERT_NEGS</mutator>
-              <mutator>RETURN_VALS</mutator>
-              <mutator>VOID_METHOD_CALLS</mutator>
-              -->
-              <mutator>DEFAULTS</mutator>
-              <mutator>NON_VOID_METHOD_CALLS</mutator>
-              <mutator>REMOVE_CONDITIONALS</mutator>
-            </mutators>
-            <avoidCallsTo>java.lang.StringBuilder</avoidCallsTo>
-          </configuration>
-        </plugin>
-        <!-- Incremental compiler-->
-        <plugin>
-          <groupId>io.takari.maven.plugins</groupId>
-          <artifactId>takari-lifecycle-plugin</artifactId>
-          <version>${version.io.takari.maven.plugins}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>1.5.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.wildfly.plugins</groupId>
-          <artifactId>wildfly-maven-plugin</artifactId>
-          <version>1.2.0.Final</version>
-        </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
       <plugin>
         <!-- Entry needed to provide parsed version properties -->
         <!-- also adds generated sources to -source artifact -->
@@ -1418,11 +592,6 @@
         <!-- Entry needed to create, install and deploy sources jars -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <!-- Entry needed to enable jdocbook packaging -->
-        <groupId>org.jboss.maven.plugins</groupId>
-        <artifactId>maven-jdocbook-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1464,1313 +633,19 @@
         <version>2.4</version>
       </plugin>
       <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </reporting>
 
-  <profiles>
-    <profile>
-      <!-- Code coverage disabled by default (use -Dcode-coverage to activate it) -->
-      <id>code-coverage</id>
-      <activation>
-        <property>
-          <name>code-coverage</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.jacoco</groupId>
-          <artifactId>org.jacoco.agent</artifactId>
-          <classifier>runtime</classifier>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <systemPropertyVariables>
-                  <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
-                </systemPropertyVariables>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-        <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <!-- Mutation coverage disabled by default (use -Dmutation-coverage to activate it) -->
-      <id>mutation-coverage</id>
-      <activation>
-        <property>
-          <name>mutation-coverage</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-maven</artifactId>
-            <executions>
-              <execution>
-                <id>default-pitest</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>mutationCoverage</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>generate-revapi-report</id>
-      <!-- There is no need to run tests when generating the report -->
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.revapi</groupId>
-              <artifactId>revapi-maven-plugin</artifactId>
-              <configuration>
-                <analysisConfigurationFiles>
-                  <configurationFile>
-                    <!-- Only filters should be taken into account, not ignores -->
-                    <roots>
-                      <root>filters</root>
-                    </roots>
-                  </configurationFile>
-                </analysisConfigurationFiles>
-              </configuration>
-              <!-- Run only report generation goal -->
-              <executions>
-                <execution>
-                  <!-- Disable check goal -->
-                  <id>check</id>
-                  <phase>none</phase>
-                </execution>
-                <execution>
-                  <!-- Report can be found in ${build.directory}/site/revapi-report.html -->
-                  <id>report</id>
-                  <goals>
-                    <goal>report</goal>
-                  </goals>
-                  <phase>package</phase>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>ban-duplicated-classes</id>
-                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
-                     execution is enabled (by specifying a phase) for full profile builds. -->
-                <phase>validate</phase>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>spotbugs-check</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- This profile needs to be triggered during releases. -->
-    <profile>
-      <id>releaseProfile</id>
-      <activation>
-        <property>
-          <name>release</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.commonjava.maven.plugins</groupId>
-            <artifactId>project-sources-maven-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>productizedProfile</id>
-      <activation>
-        <property>
-          <name>productized</name>
-        </property>
-      </activation>
-      <properties>
-        <org.kie.productized>true</org.kie.productized>
-      </properties>
-    </profile>
-    <profile>
-      <id>m2EclipseIsBeingUsed</id>
-      <activation>
-        <property>
-          <name>m2e.version</name>
-        </property>
-      </activation>
-      <properties>
-        <!-- Stop m2eclipse from continuously regenerating the OSGi manifest timestamp every second -->
-        <osgi.snapshot.qualifier>qualifier</osgi.snapshot.qualifier>
-      </properties>
-    </profile>
-    <profile>
-      <id>java9-specific-config</id>
-      <activation>
-        <jdk>[9,10]</jdk>
-      </activation>
-      <properties>
-        <javadoc.additional.params>-Xdoclint:none --add-modules=java.xml.bind --add-modules=java.xml.ws.annotation --add-modules=java.xml.ws</javadoc.additional.params>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <additionalDependencies>
-                  <additionalDependency>
-                    <groupId>org.jboss.spec.javax.transaction</groupId>
-                    <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-                    <version>${version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec}</version>
-                  </additionalDependency>
-                </additionalDependencies>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    <profile>
-      <id>java11-specific-config</id>
-      <activation>
-        <jdk>[11,)</jdk>
-      </activation>
-      <properties>
-        <javadoc.additional.params>-Xdoclint:none</javadoc.additional.params>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <additionalDependencies>
-                  <additionalDependency>
-                    <groupId>org.jboss.spec.javax.transaction</groupId>
-                    <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-                    <version>${version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec}</version>
-                  </additionalDependency>
-                </additionalDependencies>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    <profile>
-      <id>errai-1101</id>
-      <activation>
-        <property>
-          <name>needs-errai-1101-workaround</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. Needs to stay here until
-                we find a general solution (e.g. moving all localized code to Errai TranslationService. -->
-                <id>create-default-i18n-resource</id>
-                <phase>process-resources</phase>
-                <configuration>
-                  <target>
-                    <copy todir="${project.build.directory}/classes"
-                          includeemptydirs="false" failonerror="false" quiet="true">
-                      <fileset dir="${project.build.directory}/classes"/>
-                      <globmapper from="*Constants.properties" to="*Constants_default.properties"/>
-                    </copy>
-                  </target>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <modules>
-    <module>kie-build-tools</module>
-    <module>kie-user-bom-parent</module>
     <module>kie-bom</module>
     <module>drools-bom</module>
     <module>optaplanner-bom</module>
     <module>jbpm-bom</module>
-    <module>kie-uberfire-extensions-bom</module>
-    <module>kie-platform-bom</module>
     <module>kie-dmn-bom</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons</artifactId>
-        <version>${version.org.uberfire}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-maven-support</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-maven-integration</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-commons</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-project-datamodel-api</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-project-datamodel-commons</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-core</artifactId>
-        <version>${version.org.apache.camel}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-test</artifactId>
-        <version>${version.org.apache.camel}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-cxf</artifactId>
-        <version>${version.org.apache.camel}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-xstream</artifactId>
-        <version>${version.org.apache.camel}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-jaxb</artifactId>
-        <version>${version.org.apache.camel}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-cxf-transport</artifactId>
-        <version>${version.org.apache.camel}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-test-spring</artifactId>
-        <version>${version.org.apache.camel}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax</groupId>
-        <artifactId>javaee-api</artifactId>
-        <version>${version.javaee.api}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.deltaspike.cdictrl</groupId>
-        <artifactId>deltaspike-cdictrl-weld</artifactId>
-        <version>${version.org.apache.deltaspike.core}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.android</groupId>
-        <artifactId>dx</artifactId>
-        <version>${version.com.android-dx}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock</artifactId>
-        <classifier>standalone</classifier>
-        <version>${version.com.github.tomakehurst.wiremock}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.android</groupId>
-        <artifactId>android</artifactId>
-        <version>${version.com.google.android}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.android</groupId>
-        <artifactId>android-test</artifactId>
-        <version>${version.com.google.android}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.gwt.gwtmockito</groupId>
-        <artifactId>gwtmockito</artifactId>
-        <version>${version.com.google.gwt.gwtmockito}</version>
-        <exclusions>
-          <exclusion>
-            <!-- Collides with 'org.jboss.spec.javax.el:jboss-el-api_3.0_spec' -->
-            <groupId>org.mortbay.jasper</groupId>
-            <artifactId>apache-el</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.testing.compile</groupId>
-        <artifactId>compile-testing</artifactId>
-        <version>${version.com.google.testing.compile}</version>
-      </dependency>
-
-      <dependency>
-        <!-- Can be removed once we upgrade to IP BOM 7.0.0.CR10+ -->
-        <groupId>com.lowagie</groupId>
-        <artifactId>itext</artifactId>
-        <version>${version.com.lowagie.itext}</version>
-        <exclusions>
-          <!-- The bouncycastle dependencies should be optional=true in itext's pom -->
-          <exclusion>
-            <groupId>bouncycastle</groupId>
-            <artifactId>bcmail-jdk14</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>bouncycastle</groupId>
-            <artifactId>bcprov-jdk14</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>bouncycastle</groupId>
-            <artifactId>bctsp-jdk14</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <!-- Can be removed when we use ip-bom 7.0.0.CR10+ -->
-        <groupId>com.thoughtworks.xstream</groupId>
-        <artifactId>xstream-hibernate</artifactId>
-        <version>${version.com.thoughtworks.xstream}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.unboundid</groupId>
-        <artifactId>unboundid-ldapsdk</artifactId>
-        <version>${version.com.unboundid}</version>
-      </dependency>
-
-      <!-- temporary because it was removed/rename in jboss-ip-bom and it is needed by droolsjbpm-knowledge/kie-api/pom.xml -->
-      <dependency>
-        <groupId>javax.xml.stream</groupId>
-        <artifactId>stax-api</artifactId>
-        <version>${version.javax.xml.stream.stax}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>link.bek.tools</groupId>
-        <artifactId>issue-keeper-junit</artifactId>
-        <version>${version.link.bek.tools.issue-keeper-junit}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.sf.docbook</groupId>
-        <artifactId>docbook-xsl</artifactId>
-        <version>${version.net.sf.docbook.docbook-xsl}</version>
-        <classifier>resources</classifier>
-        <type>zip</type>
-      </dependency>
-
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty</artifactId>
-        <version>${version.io.netty.old}</version>
-      </dependency>
-      <!-- dependency of org.apache.lucene:lucene-sandbox -->
-      <dependency>
-        <groupId>jakarta-regexp</groupId>
-        <artifactId>jakarta-regexp</artifactId>
-        <version>${version.jakarta-regexp}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.antlr</groupId>
-        <artifactId>antlr4-runtime</artifactId>
-        <version>${version.org.antlr4}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.xmlgraphics</groupId>
-        <artifactId>xmlgraphics-commons</artifactId>
-        <version>${version.org.apache.xmlgraphics.commons}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>org.eclipse.sisu.inject</artifactId>
-        <version>${version.org.eclipse.sisu}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jacoco</groupId>
-        <artifactId>org.jacoco.agent</artifactId>
-        <version>${version.jacoco.plugin}</version>
-        <classifier>runtime</classifier>
-      </dependency>
-
-      <!-- Errai (needed for Guice exclusion) -->
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-bus</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-ioc</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-tools</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-dom</artifactId>
-        <version>${version.com.google.elemental2}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-promise</artifactId>
-        <version>${version.com.google.elemental2}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-runner</artifactId>
-        <version>${version.org.mortbay.jetty.runner}</version>
-      </dependency>
-
-      <!-- GWT -->
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${version.com.google.gwt}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.roboguice</groupId>
-        <artifactId>roboguice</artifactId>
-        <version>${version.org.roboguice}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.roboguice</groupId>
-        <artifactId>roboblender</artifactId>
-        <version>${version.org.roboguice}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.robolectric</groupId>
-        <artifactId>robolectric</artifactId>
-        <version>${version.org.robolectric}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.robolectric</groupId>
-        <artifactId>robolectric-annotations</artifactId>
-        <version>${version.org.robolectric}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.robolectric</groupId>
-        <artifactId>shadows-core</artifactId>
-        <version>${version.org.robolectric}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.robolectric</groupId>
-        <artifactId>robolectric-shadows</artifactId>
-        <version>${version.org.robolectric}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.osgi</groupId>
-        <artifactId>spring-osgi-core</artifactId>
-        <version>${version.org.springframework.osgi}</version>
-      </dependency>
-
-      <!-- jboss as and arquillian deps (JBPM-4403) -->
-      <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-controller</artifactId>
-        <version>${version.org.jboss.as}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-server</artifactId>
-        <version>${version.org.jboss.as}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-naming</artifactId>
-        <version>${version.org.jboss.as}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.geronimo.specs</groupId>
-        <artifactId>geronimo-atinject_1.0_spec</artifactId>
-        <version>${version.org.geronimo.atinject}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.ops4j.pax.url</groupId>
-        <artifactId>pax-url-aether</artifactId>
-        <version>${version.org.ops4j.pax.url}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-spi</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-util</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.sonatype.aether</groupId>
-            <artifactId>aether-connector-wagon</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-aether-provider</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-provider-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-file</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http-lightweight</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-container-default</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.wordnik</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>${version.com.wordnik.swagger}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-core</artifactId>
-        <version>${version.io.swagger}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-jaxrs</artifactId>
-        <version>${version.io.swagger}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>${version.io.swagger}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-models</artifactId>
-        <version>${version.io.swagger}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman</artifactId>
-        <scope>test</scope>
-        <version>${version.org.jboss.byteman}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-submit</artifactId>
-        <scope>test</scope>
-        <version>${version.org.jboss.byteman}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-install</artifactId>
-        <scope>test</scope>
-        <version>${version.org.jboss.byteman}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-bmunit</artifactId>
-        <scope>test</scope>
-        <version>${version.org.jboss.byteman}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-core</artifactId>
-        <version>${version.org.xmlunit}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-matchers</artifactId>
-        <version>${version.org.xmlunit}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.skyscreamer</groupId>
-        <artifactId>jsonassert</artifactId>
-        <version>${version.org.skyscreamer.jsonassert}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.simpleframework</groupId>
-        <artifactId>simple-http</artifactId>
-        <version>${version.org.simpleframework}</version>
-      </dependency>
-
-      <!-- RHDM-588 freemarker -->
-      <dependency>
-        <groupId>org.freemarker</groupId>
-        <artifactId>freemarker</artifactId>
-        <version>${version.org.freemarker}</version>
-      </dependency>
-
-      <!-- if upgraded allen-sauer.gwt.dnd version in jboss-ip-bom to 3.3.3 this can be removed -->
-      <dependency>
-        <groupId>com.allen-sauer.gwt.dnd</groupId>
-        <artifactId>gwt-dnd</artifactId>
-        <version>${version.com.allen-sauer.gwt.dnd}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.github.detro</groupId>
-        <artifactId>phantomjsdriver</artifactId>
-        <version>${version.com.github.detro}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>simple-jndi</groupId>
-        <artifactId>simple-jndi</artifactId>
-        <version>${version.simple-jndi}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>${version.org.hibernate}</version>
-        <exclusions>
-          <exclusion>
-            <!-- We generally use JBoss Spec JARs. Instead of the Geronimo one use
-                 'org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec'. -->
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>${version.org.hibernate}</version>
-        <exclusions>
-          <exclusion>
-            <!-- We generally use JBoss Spec JARs. Instead of the Geronimo one use
-                 'org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec'. -->
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <!-- Required for Errai Dynamic Bean validation  -->
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>${version.org.hibernate.hibernate-validator}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>${version.org.hibernate.hibernate-validator}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- WildFly Core Dependencies missing from ip-bom -->
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-embedded</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-protocol</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-remoting</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-jmx</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-controller-client</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-launcher</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-jms-client-bom</artifactId>
-        <version>${version.org.wildfly}</version>
-        <type>pom</type>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!--this artifact is not existing in the version coming from jboss-ip-bom-->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>async-http-servlet-3.0</artifactId>
-        <version>${version.org.jboss.resteasy.async}</version>
-      </dependency>
-
-      <!-- Need newer remoting-jmx to be compatible with newer jboss-remoting -->
-      <dependency>
-        <groupId>org.jboss.remotingjmx</groupId>
-        <artifactId>remoting-jmx</artifactId>
-        <version>${version.org.jboss.remotingjmx}</version>
-      </dependency>
-
-      <!-- Required by jboss-remoting -->
-      <dependency>
-        <groupId>org.wildfly.security</groupId>
-        <artifactId>wildfly-elytron</artifactId>
-        <version>${version.org.wildfly.security}</version>
-      </dependency>
-
-      <!-- Data source management libraries -->
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-dmr</artifactId>
-        <version>${version.org.jboss.jboss-dmr}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-envers</artifactId>
-        <version>${version.org.hibernate}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.bytebuddy</groupId>
-        <artifactId>byte-buddy</artifactId>
-        <version>${version.net.byte-buddy}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.spotify</groupId>
-        <artifactId>docker-client</artifactId>
-        <classifier>shaded</classifier>
-        <version>${version.docker-client}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-model</artifactId>
-        <version>${version.kubernetes-client}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-client</artifactId>
-        <version>${version.kubernetes-client}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>openshift-client</artifactId>
-        <version>${version.kubernetes-client}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>zjsonpatch</artifactId>
-        <version>${version.zjsonpatch}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jul-to-slf4j</artifactId>
-        <version>${version.org.slf4j}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
-        <version>${version.org.slf4j}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.arquillian.cube</groupId>
-        <artifactId>arquillian-cube-docker</artifactId>
-        <version>${version.arquillian-cube}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.arquillian.cube</groupId>
-        <artifactId>arquillian-cube-requirement</artifactId>
-        <version>${version.arquillian-cube}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>bom</artifactId>
-        <version>${version.org.wildfly.swarm}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- CSS parsing library from Apache used by Stunner. -->
-      <dependency>
-        <groupId>net.sourceforge.cssparser</groupId>
-        <artifactId>cssparser</artifactId>
-        <version>${version.net.sourceforge.cssparser}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.w3c.css</groupId>
-        <artifactId>sac</artifactId>
-        <version>${version.org.w3c.css.sac}</version>
-      </dependency>
-
-      <!-- Incremental compiler-->
-      <dependency>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-plugin-testing</artifactId>
-        <version>${version.io.takari.maven.plugins.integration-testing}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>${version.org.apache.maven.plugins.dependency}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-io</artifactId>
-        <version>${version.org.codehaus.plexus.plexus-io}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven.shared</groupId>
-        <artifactId>maven-artifact-transfer</artifactId>
-        <version>${version.org.apache.maven.shared.maven-artifact-transfer}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.openhft</groupId>
-        <artifactId>chronicle-queue</artifactId>
-        <version>${version.net.openhft.chronicle-queue}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.openhft</groupId>
-        <artifactId>chronicle-core</artifactId>
-        <version>${version.net.openhft.chronicle-core}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.openhft</groupId>
-        <artifactId>chronicle-bytes</artifactId>
-        <version>${version.net.openhft.chronicle-bytes}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.openhft</groupId>
-        <artifactId>chronicle-wire</artifactId>
-        <version>${version.net.openhft.chronicle-wire}</version>
-      </dependency>
-
-      <!-- Integration between Tomcat and Narayana -->
-      <dependency>
-        <groupId>org.jboss.integration</groupId>
-        <artifactId>narayana-tomcat</artifactId>
-        <version>${version.org.jboss.integration.narayana-tomcat}</version>
-      </dependency>
-      <!-- TODO: remove this legacy dependency once all repositories switch to narayana-tomcat -->
-      <dependency>
-        <groupId>org.jboss.narayana.tomcat</groupId>
-        <artifactId>tomcat-jta</artifactId>
-        <version>${version.org.jboss.narayana.tomcat}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.narayana.jta</groupId>
-        <artifactId>narayana-jta</artifactId>
-        <version>${version.org.jboss.narayana.tomcat}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-transaction-spi</artifactId>
-        <version>${version.org.jboss.transaction.spi}</version>
-      </dependency>
-      <!-- Narayana uses DBCP for DB connection pooling on Tomcat and for embedded engine use case -->
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-dbcp</artifactId>
-        <version>${version.org.apache.tomcat.tomcat-dbcp}</version>
-      </dependency>
-
-      <!-- kie server controller over websockets -->
-      <dependency>
-        <groupId>org.jboss.spec.javax.websocket</groupId>
-        <artifactId>jboss-websocket-api_1.1_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.websocket}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${version.ch.qos.logback}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.jws</groupId>
-        <artifactId>jsr181-api</artifactId>
-        <version>${version.javax.jws}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.spec.javax.ws.rs</groupId>
-        <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-        <version>${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-query-dsl</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-remote-query-client</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-client-hotrod</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-commons</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>${version.javax.enterprise}</version>
-        <!-- Avoid collisions with equivalent JBoss Spec APIs -->
-        <exclusions>
-          <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.interceptor</groupId>
-            <artifactId>javax.interceptor-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>${version.org.postgresql}</version>
-        <scope>runtime</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>${version.mysql.connector-java}</version>
-        <scope>runtime</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mariadb.jdbc</groupId>
-        <artifactId>mariadb-java-client</artifactId>
-        <version>${version.mariadb-java-client}</version>
-        <scope>runtime</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.jws</groupId>
-        <artifactId>javax.jws-api</artifactId>
-        <version>${version.javax.jws-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.xml.ws</groupId>
-        <artifactId>jaxws-api</artifactId>
-        <version>${version.javax.xml.ws}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.xml.soap</groupId>
-        <artifactId>javax.xml.soap-api</artifactId>
-        <version>${version.javax.xml.soap}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.annotation</groupId>
-        <artifactId>javax.annotation-api</artifactId>
-        <version>${version.javax.annotation-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.xml.messaging.saaj</groupId>
-        <artifactId>saaj-impl</artifactId>
-        <version>${version.com.sun.xml.messaging.saaj}</version>
-      </dependency>
-
-      <!-- used by DMN for BigDecimal arithmetics -->
-      <dependency>
-        <groupId>ch.obermuhlner</groupId>
-        <artifactId>big-math</artifactId>
-        <version>${version.ch.obermuhlner}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.prometheus</groupId>
-        <artifactId>simpleclient</artifactId>
-        <version>${version.io.prometheus}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.prometheus</groupId>
-        <artifactId>simpleclient_common</artifactId>
-        <version>${version.io.prometheus}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.prometheus</groupId>
-        <artifactId>simpleclient_httpserver</artifactId>
-        <version>${version.io.prometheus}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mvel</groupId>
-        <artifactId>mvel2</artifactId>
-        <version>${version.org.mvel}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.github.javaparser</groupId>
-        <artifactId>javaparser-core</artifactId>
-        <version>${version.com.github.javaparser}</version>
-      </dependency>
-    </dependencies>
-
-  </dependencyManagement>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
 </project>

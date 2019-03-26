@@ -47,7 +47,7 @@ public class RuleContext {
     private int patternIndex = -1;
     private boolean needStreamMode = false;
 
-    public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
+    RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
         this.builder = builder;
         this.pkg = pkg;
         this.rule = rule;
@@ -139,19 +139,5 @@ public class RuleContext {
         innerDeclaration.forEach( (var, decl) -> decls.put( var.getName(), decl ) );
         patterns.forEach( (var, pattern) -> decls.put( var.getName(), pattern.getDeclaration() ) );
         return decls;
-    }
-
-    public Class<?> getDeclarationClass(String name) {
-        for (Map.Entry<Variable, Declaration> entry : innerDeclaration.entrySet()) {
-            if (entry.getKey().getName().equals( name )) {
-                return entry.getValue().getDeclarationClass();
-            }
-        }
-        for (Map.Entry<Variable, Pattern> entry : patterns.entrySet()) {
-            if (entry.getKey().getName().equals( name )) {
-                return entry.getValue().getDeclaration().getDeclarationClass();
-            }
-        }
-        return null;
     }
 }

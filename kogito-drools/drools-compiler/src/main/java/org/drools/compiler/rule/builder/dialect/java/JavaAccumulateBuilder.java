@@ -16,6 +16,9 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateTemplates;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,9 +62,6 @@ import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
-
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateTemplates;
 
 /**
  * A builder for the java dialect accumulate version

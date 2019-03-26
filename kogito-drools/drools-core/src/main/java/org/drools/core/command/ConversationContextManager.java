@@ -1,11 +1,11 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ContextImpl;
-import org.kie.api.runtime.Context;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import org.drools.core.command.impl.ContextImpl;
+import org.kie.api.runtime.Context;
 
 
 public class ConversationContextManager {

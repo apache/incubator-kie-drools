@@ -16,6 +16,8 @@
 
 package org.drools.core.util;
 
+import static java.lang.Character.isWhitespace;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +33,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-
-import static java.lang.Character.isWhitespace;
 
 /**
  * Ripped form commons StringUtil, unless specified:
@@ -1124,57 +1124,11 @@ public class StringUtils {
 
     public static int indexOfOutOfQuotes(String str, String searched, int fromIndex) {
         for (int i = str.indexOf(searched, fromIndex); i >= 0; i = str.indexOf(searched, i + 1)) {
-            if ( !isInQuotes( str, i ) ) {
+            if (countQuoteOccurrences(str, 0, i) % 2 == 0) {
                 return i;
             }
         }
         return -1;
-    }
-
-    public static int codeAwareIndexOf(String str, String searched) {
-        return codeAwareIndexOf(str, searched, 0);
-    }
-
-    public static int codeAwareIndexOf(String str, String searched, int fromIndex) {
-        for (int i = str.indexOf(searched, fromIndex); i >= 0; i = str.indexOf(searched, i + 1)) {
-            if ( !isInQuotes( str, i ) && !isInComment( str, i ) ) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private static boolean isInComment( String str, int pos ) {
-        boolean inMultiLineComment = false;
-        boolean inSingleLineComment = false;
-        for (int i = 0; i < pos; i++) {
-            switch (str.charAt( i )) {
-                case '/':
-                    if (!inMultiLineComment && i+1 < pos) {
-                        if (str.charAt( i+1 ) == '*') {
-                            inMultiLineComment = true;
-                        } else if (str.charAt( i+1 ) == '/') {
-                            inSingleLineComment = true;
-                        }
-                        i++;
-                    }
-                    break;
-                case '*':
-                    if (inMultiLineComment && i+1 < pos && str.charAt( i+1 ) == '/') {
-                        i++;
-                        inMultiLineComment = false;
-                    }
-                    break;
-                case '\n':
-                    inSingleLineComment = false;
-                    break;
-            }
-        }
-        return inSingleLineComment || inMultiLineComment;
-    }
-
-    private static boolean isInQuotes( String str, int i ) {
-        return countQuoteOccurrences(str, 0, i) % 2 == 1;
     }
 
     private static int countQuoteOccurrences(String str, int start, int end) {

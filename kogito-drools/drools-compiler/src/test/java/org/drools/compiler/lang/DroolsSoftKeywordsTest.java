@@ -15,10 +15,10 @@
 
 package org.drools.compiler.lang;
 
-import org.drools.core.base.evaluators.EvaluatorRegistry;
-
-import org.junit.Test;
 import static org.junit.Assert.*;
+
+import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.junit.Test;
 
 public class DroolsSoftKeywordsTest {
 

@@ -15,6 +15,8 @@
 
 package org.drools.core.beliefsystem.simple;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+
 import java.io.IOException;
 
 import org.drools.core.beliefsystem.BeliefSet;
@@ -30,8 +32,6 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class BeliefSystemLogicalCallback
         extends PropagationEntry.AbstractPropagationEntry

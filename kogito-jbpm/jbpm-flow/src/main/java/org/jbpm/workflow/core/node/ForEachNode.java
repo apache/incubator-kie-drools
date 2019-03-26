@@ -46,8 +46,6 @@ public class ForEachNode extends CompositeContextNode {
     private String outputCollectionExpression;
     private String completionConditionExpression;
     private boolean waitForCompletion = true;
-    
-    private boolean sequential = false;
 
     public ForEachNode() {
         // Split
@@ -243,16 +241,8 @@ public class ForEachNode extends CompositeContextNode {
     public void setWaitForCompletion(boolean waitForCompletion) {
         this.waitForCompletion = waitForCompletion;
     }
-  
-    public boolean isSequential() {
-        return sequential;
-    }
-    
-    public void setSequential(boolean sequential) {
-        this.sequential = sequential;
-    }
 
-    public static class ForEachSplitNode extends ExtendedNodeImpl {
+   public static class ForEachSplitNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
     }
 

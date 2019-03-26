@@ -15,6 +15,10 @@
  */
 package org.jbpm.bpmn2.structureref;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,8 +39,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 @RunWith(Parameterized.class)
 public class StructureRefTest extends JbpmBpmn2TestCase {
 
@@ -48,8 +50,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(StartEventTest.class);
 
-    public StructureRefTest(boolean persistence) {
-        super(persistence);
+    public StructureRefTest(boolean persistence) {        
     }
 
     @Test

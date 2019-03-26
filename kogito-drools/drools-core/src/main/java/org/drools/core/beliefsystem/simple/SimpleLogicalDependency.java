@@ -18,8 +18,8 @@ package org.drools.core.beliefsystem.simple;
 
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.LogicalDependency;
-import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 
 /**
  * LogicalDependency is a special node for LinkedLists that maintains

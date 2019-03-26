@@ -15,14 +15,14 @@
 
 package org.drools.core.reteoo.builder;
 
+import static org.drools.core.reteoo.builder.NamedConsequenceBuilder.buildTerminalNodeForNamedConsequence;
+
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.RuleConditionElement;
-
-import static org.drools.core.reteoo.builder.NamedConsequenceBuilder.buildTerminalNodeForNamedConsequence;
 
 public class ConditionalBranchBuilder implements ReteooComponentBuilder {
 

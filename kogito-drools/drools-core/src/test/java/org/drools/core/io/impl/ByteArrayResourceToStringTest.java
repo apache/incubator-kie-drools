@@ -16,16 +16,15 @@
 
 package org.drools.core.io.impl;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ByteArrayResourceToStringTest {
@@ -70,9 +69,22 @@ public class ByteArrayResourceToStringTest {
 
     @Test
     public void testToString() {
-        byte[] byteArray = ArrayUtils.toPrimitive(bytes.toArray(new Byte[0]));
+        byte[] byteArray = toPrimitive(bytes.toArray(new Byte[0]));
         ByteArrayResource byteArrayResource = new ByteArrayResource(byteArray, encoding);
         Assert.assertEquals(expectedString, byteArrayResource.toString());
+    }
+    
+    protected byte[] toPrimitive(final Byte[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new byte[0];
+        }
+        final byte[] result = new byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i].byteValue();
+        }
+        return result;
     }
 
 }

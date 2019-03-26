@@ -16,6 +16,8 @@
 
 package org.drools.core.factmodel;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -42,8 +44,6 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
-
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 /**
  * A builder to dynamically build simple Javabean(TM) classes

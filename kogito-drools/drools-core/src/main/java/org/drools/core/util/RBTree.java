@@ -17,7 +17,6 @@
 package org.drools.core.util;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * @see http://en.literateprograms.org/Red-black_tree_%28Java%29

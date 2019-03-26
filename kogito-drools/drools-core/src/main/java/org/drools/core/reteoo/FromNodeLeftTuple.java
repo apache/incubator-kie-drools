@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,8 +28,6 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
-
-import static java.util.stream.Collectors.joining;
 
 public class FromNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;

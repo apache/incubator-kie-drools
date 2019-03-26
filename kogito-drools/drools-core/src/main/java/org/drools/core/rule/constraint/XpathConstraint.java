@@ -15,6 +15,9 @@
 
 package org.drools.core.rule.constraint;
 
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
+import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -49,9 +52,6 @@ import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.ClassUtils;
-
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
 public class XpathConstraint extends MutableTypeConstraint {
 

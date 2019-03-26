@@ -19,6 +19,7 @@ package org.drools.compiler.phreak;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
@@ -37,7 +38,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 
 public class ReteTesterHelper {
 

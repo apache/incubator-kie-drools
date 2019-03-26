@@ -15,10 +15,10 @@
 
 package org.drools.core.time;
 
+import java.util.Map;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.impl.TimerJobInstance;
-
-import java.util.Map;
 
 public class SelfRemovalJobContext implements JobContext {
 

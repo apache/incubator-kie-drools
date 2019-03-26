@@ -16,6 +16,11 @@
 
 package org.drools.core.impl;
 
+import static java.util.stream.Collectors.toList;
+import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -151,12 +156,6 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import static java.util.stream.Collectors.toList;
-
-import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
-import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
@@ -1087,10 +1086,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.globalResolver.clear();
         this.kieBaseEventListeners.clear();
-        this.ruleRuntimeEventSupport.clear();
-        this.ruleEventListenerSupport.clear();
-        this.agendaEventSupport.clear();
-
         this.handleFactory.clear( 0, 0 );
         this.propagationIdCounter.set(0);
         this.opCounter.set(0);

@@ -16,6 +16,8 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,8 +46,6 @@ import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.PropertyTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 
 /**
  * Expression analyzer.

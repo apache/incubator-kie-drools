@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c"
+             namespace="https://github.com/kiegroup/kie-dmn"
+             name="building-structure-rules"
+             xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+             expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
+             typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+
+  <decision id="_building_structure_province_notifications" name="Notification Status">
+    <variable name="Notification Status" typeRef="feel:string"/>
+    <informationRequirement>
+      <requiredInput href="#_existingActivityApplicability"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#_Distance"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#_willIncreaseTraffic"/>
+    </informationRequirement>
+    <decisionTable hitPolicy="UNIQUE" outputLabel="Notification Status" preferredOrientation="Rule-as-Row">
+      <input id="_iexistingActivityApplicability" label="existingActivityApplicability">
+        <inputExpression typeRef="feel:boolean">
+          <text>existingActivityApplicability</text>
+        </inputExpression>
+      </input>
+      <input id="_iDistance" label="Distance">
+        <inputExpression typeRef="feel:number">
+          <text>Distance</text>
+        </inputExpression>
+      </input>
+      <input id="_iwillIncreaseTraffic" label="willIncreaseTraffic">
+        <inputExpression typeRef="feel:boolean">
+          <text>willIncreaseTraffic</text>
+        </inputExpression>
+      </input>
+      <output id="_oNotificationStatus">
+        <outputValues>
+          <text>"Notification to Province Approved", "Notification to Province Declined"</text>
+        </outputValues>
+      </output>
+      <rule id="rule1">
+        <inputEntry id="rule1-0">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="rule1-1">
+          <text>&lt;=10000</text>
+        </inputEntry>
+        <inputEntry id="rule1-2">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="rule1-3">
+          <text>"Notification to Province Approved"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule2">
+        <inputEntry id="rule2-0">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="rule2-1">
+          <text>&gt;10000</text>
+        </inputEntry>
+        <inputEntry id="rule2-2">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="rule2-3">
+          <text>"Notification to Province Declined"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="_existingActivityApplicability" name="existingActivityApplicability">
+    <variable name="existingActivityApplicability" typeRef="feel:boolean"/>
+  </inputData>
+  <inputData id="_Distance" name="Distance">
+    <variable name="Distance" typeRef="feel:number"/>
+  </inputData>
+  <inputData id="_willIncreaseTraffic" name="willIncreaseTraffic">
+    <variable name="willIncreaseTraffic" typeRef="feel:boolean"/>
+  </inputData>
+
+
+  <decision name="Permit Status" id="_building_structure_permit">
+    <variable name="Permit Status" typeRef="feel:string"/>
+    <informationRequirement>
+      <requiredDecision href="#_building_structure_province_notifications"/>
+    </informationRequirement>
+    <decisionTable hitPolicy="UNIQUE" outputLabel="Permit Status" preferredOrientation="Rule-as-Row">
+      <input id="_iexistingNotification" label="Notification Status">
+        <inputExpression typeRef="feel:string">
+          <text>Notification Status</text>
+        </inputExpression>
+      </input>
+      <output id="_oPermitStatus">
+        <outputValues>
+          <text>"Building Activity Province Permit Required"</text>
+        </outputValues>
+      </output>
+
+      <rule id="xrule1">
+        <inputEntry id="xrule1-0">
+          <text>"Notification to Province Approved"</text>
+        </inputEntry>
+        <outputEntry id="xrule1-1">
+          <text>"Building Activity Province Permit Required"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

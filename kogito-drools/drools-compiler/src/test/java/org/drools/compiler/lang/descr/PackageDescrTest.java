@@ -15,10 +15,7 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.compiler.Person;
-import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.PackageDescrBuilder;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +27,10 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.drools.compiler.Person;
+import org.drools.compiler.lang.api.DescrFactory;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.junit.Test;
 
 public class PackageDescrTest {
 

@@ -16,8 +16,9 @@
 
 package org.drools.core.time;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * Test class for the time distance calculation algorithm

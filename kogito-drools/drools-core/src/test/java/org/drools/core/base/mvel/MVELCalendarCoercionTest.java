@@ -16,15 +16,18 @@
 
 package org.drools.core.base.mvel;
 
-import org.drools.core.util.DateUtils;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import org.drools.core.util.DateUtils;
+import org.junit.Test;
 
 public class MVELCalendarCoercionTest {
 

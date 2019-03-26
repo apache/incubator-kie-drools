@@ -16,8 +16,6 @@
 
 package org.drools.compiler.oopath.model;
 
-import org.drools.compiler.oopath.model.Adult;
-
 public class Woman extends Adult {
 
     private String husband;

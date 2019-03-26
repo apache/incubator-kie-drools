@@ -16,12 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.spi.Accumulator;
-import org.drools.core.spi.Tuple;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -30,6 +24,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.spi.Accumulator;
+import org.drools.core.spi.Tuple;
 
 /**
  * A class to represent the Accumulate CE

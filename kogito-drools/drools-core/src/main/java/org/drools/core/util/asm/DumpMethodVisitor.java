@@ -16,12 +16,6 @@
 
 package org.drools.core.util.asm;
 
-import java.util.function.Consumer;
-
-import org.mvel2.asm.Label;
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.Opcodes;
-
 import static org.mvel2.asm.Opcodes.ACONST_NULL;
 import static org.mvel2.asm.Opcodes.DCONST_0;
 import static org.mvel2.asm.Opcodes.DCONST_1;
@@ -37,6 +31,12 @@ import static org.mvel2.asm.Opcodes.ICONST_5;
 import static org.mvel2.asm.Opcodes.ICONST_M1;
 import static org.mvel2.asm.Opcodes.LCONST_0;
 import static org.mvel2.asm.Opcodes.LCONST_1;
+
+import java.util.function.Consumer;
+
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
 
 public class DumpMethodVisitor extends MethodVisitor {
 

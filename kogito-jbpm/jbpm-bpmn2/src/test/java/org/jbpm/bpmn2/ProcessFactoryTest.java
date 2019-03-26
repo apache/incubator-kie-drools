@@ -16,29 +16,25 @@
 
 package org.jbpm.bpmn2;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
-import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
-
+import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.Test;
-
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.ProcessInstance;
-
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
-    public ProcessFactoryTest() {
-        super(false);
+    public ProcessFactoryTest() {        
     }
 
     @Test

@@ -17,6 +17,7 @@
 package org.drools.core.rule;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.kie.api.definition.rule.Rule;
 
 /**
  * Indicates an attempt to add a <code>Rule</code> to a <code>Package</code>

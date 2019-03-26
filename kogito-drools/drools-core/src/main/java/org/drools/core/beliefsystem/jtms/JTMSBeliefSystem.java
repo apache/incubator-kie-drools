@@ -15,6 +15,8 @@
 
 package org.drools.core.beliefsystem.jtms;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
@@ -31,8 +33,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class JTMSBeliefSystem<M extends JTMSMode<M>>
         implements

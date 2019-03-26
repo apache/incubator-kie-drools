@@ -17,7 +17,6 @@ package org.drools.core.metadata;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 public abstract class PropertyLiteral<T,R,C> implements MetaProperty<T,R,C>, Serializable {
 

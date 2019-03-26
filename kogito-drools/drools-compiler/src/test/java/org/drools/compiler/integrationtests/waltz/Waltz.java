@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests.waltz;
 
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,12 +25,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.CommonTestMethodBase;
-
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.fail;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.

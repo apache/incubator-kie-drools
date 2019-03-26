@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler.util;
 
+import static org.drools.compiler.rule.builder.dialect.mvel.MVELExprAnalyzer.analyze;
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,9 +42,6 @@ import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.util.PropertyTools;
-
-import static org.drools.compiler.rule.builder.dialect.mvel.MVELExprAnalyzer.analyze;
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 
 public class MvelUtil {
 

@@ -16,20 +16,21 @@
 
 package org.drools.core.base.extractors;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Vector;
-
-import org.drools.core.common.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.internal.utils.ClassLoaderUtil;
-
-import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.test.model.Address;
 import org.drools.core.test.model.Person;
-import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.reflective.classloader.ProjectClassLoader;
+import org.junit.Before;
+import org.junit.Test;
 
 public class MVELClassFieldExtractorTest {
 

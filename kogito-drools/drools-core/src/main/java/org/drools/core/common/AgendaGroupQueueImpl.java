@@ -75,7 +75,7 @@ public class AgendaGroupQueueImpl
     }
 
     protected BinaryHeapQueue initPriorityQueue( InternalKnowledgeBase kBase ) {
-        return new BinaryHeapQueue(new PhreakConflictResolver());
+        return new BinaryHeapQueue(PhreakConflictResolver.INSTANCE);
     }
 
     @Override

@@ -16,14 +16,14 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.factmodel.traits.Trait;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.drools.core.factmodel.traits.Trait;
 
 public class TypeDeclarationDescr
     extends AbstractClassTypeDeclarationDescr

@@ -16,10 +16,10 @@
 package org.drools.compiler.rule.builder;
 
 
+import org.drools.compiler.lang.ExpressionRewriter;
+import org.drools.compiler.lang.MVELDumper;
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.FieldFactory;
-import org.drools.compiler.lang.MVELDumper;
-import org.drools.compiler.lang.ExpressionRewriter;
 
 public class DroolsCompilerComponentFactory {
 

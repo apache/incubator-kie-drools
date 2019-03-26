@@ -21,10 +21,10 @@ import static org.junit.Assert.fail;
 import java.io.StringReader;
 
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 
 /**
  * Tests an error appearing when DLR does not contain a new line at the end of

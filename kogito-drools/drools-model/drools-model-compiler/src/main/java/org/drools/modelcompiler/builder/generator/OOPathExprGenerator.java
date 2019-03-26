@@ -1,5 +1,12 @@
 package org.drools.modelcompiler.builder.generator;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
+import static org.drools.reflective.util.ClassUtils.extractGenericType;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -7,13 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.constraint.parser.ast.expr.OOPathChunk;
-import org.drools.constraint.parser.ast.expr.OOPathExpr;
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.javaparser.ast.drlx.OOPathChunk;
+import org.drools.javaparser.ast.drlx.OOPathExpr;
+import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
@@ -21,13 +26,6 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
-
-import static org.drools.core.util.ClassUtils.extractGenericType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 
 public class OOPathExprGenerator {
 
@@ -90,7 +88,7 @@ public class OOPathExprGenerator {
             if (!conditions.isEmpty()) {
                 Class<?> finalFieldType = fieldType;
                 final List<DrlxParseResult> conditionParseResult = conditions.stream().map((Expression c) ->
-                                                                                                   new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printConstraint(c))
+                                                                                                   new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, c.toString())
                 ).collect(Collectors.toList());
                 ooPathConditionExpressions.put(bindingId, conditionParseResult);
             } else {

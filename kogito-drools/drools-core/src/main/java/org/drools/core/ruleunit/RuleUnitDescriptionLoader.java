@@ -22,9 +22,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class RuleUnitDescriptionLoader {
 

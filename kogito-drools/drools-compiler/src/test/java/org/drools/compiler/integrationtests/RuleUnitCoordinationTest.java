@@ -16,6 +16,9 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.drools.reflective.util.ClassUtils.getCanonicalSimpleName;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +30,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.utils.KieHelper;
-
-import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
-import static org.junit.Assert.assertEquals;
 
 public class RuleUnitCoordinationTest {
 

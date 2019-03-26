@@ -18,8 +18,8 @@ package org.drools.core.marshalling.impl;
 import java.io.IOException;
 import java.util.List;
 
-import org.kie.api.runtime.process.ProcessInstance;
 import org.drools.core.process.instance.WorkItem;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public interface ProcessMarshaller {
 

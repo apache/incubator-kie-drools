@@ -16,10 +16,10 @@
 
 package org.drools.core.spi;
 
+import java.io.Serializable;
+
 import org.drools.core.WorkingMemory;
 import org.kie.api.definition.rule.Rule;
-
-import java.io.Serializable;
 
 public interface Salience extends Serializable {
 

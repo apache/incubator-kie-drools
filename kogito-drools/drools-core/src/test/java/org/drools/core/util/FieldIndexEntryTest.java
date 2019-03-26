@@ -16,6 +16,10 @@
 
 package org.drools.core.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
@@ -32,10 +36,6 @@ import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.core.util.index.TupleList;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 public class FieldIndexEntryTest {
 

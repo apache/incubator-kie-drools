@@ -22,6 +22,7 @@ import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.BasicEvent;
 import org.drools.core.ClassObjectFilter;
@@ -37,7 +38,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
 public class ExpirationTest {

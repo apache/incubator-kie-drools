@@ -15,11 +15,11 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import java.util.Map;
+
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.DeclarationScopeResolver;
-
-import java.util.Map;
 
 public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolver {
     private Map declarations;

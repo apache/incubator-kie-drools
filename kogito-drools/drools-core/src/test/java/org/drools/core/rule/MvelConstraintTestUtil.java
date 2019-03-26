@@ -15,6 +15,8 @@
 
 package org.drools.core.rule;
 
+import java.util.ArrayList;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.FieldValue;
@@ -23,8 +25,6 @@ import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.IndexUtil;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
-
-import java.util.ArrayList;
 
 public class MvelConstraintTestUtil extends MvelConstraint {
 

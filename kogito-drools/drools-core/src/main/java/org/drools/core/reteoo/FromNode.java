@@ -16,12 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -34,16 +35,12 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
-import org.drools.core.rule.Pattern;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
-
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     implements
@@ -155,19 +152,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     public BetaConstraints getBetaConstraints() {
         return betaConstraints;
     }
-
-    @Override
-    protected Pattern getLeftInputPattern( BuildContext context ) {
-        return context.getLastBuiltPatterns()[0];
-    }
-
-    @Override
-    protected BitMask setNodeConstraintsPropertyReactiveMask( BitMask mask, Class objectClass, List<String> accessibleProperties) {
-        for (int i = 0; i < alphaConstraints.length; i++) {
-            mask = mask.setAll(alphaConstraints[i].getListenedPropertyMask(objectClass, accessibleProperties));
-        }
-        return mask;
-    }
+    
 
     public Class< ? > getResultClass() {
         return resultClass;

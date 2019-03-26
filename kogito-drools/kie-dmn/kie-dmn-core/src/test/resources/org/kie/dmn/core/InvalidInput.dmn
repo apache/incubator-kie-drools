@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+                      xmlns="http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.0.35.201611211744"
+                      id="_cdf29af2-959b-4004-8271-82a9f5a62147"
+                      name="Dessin 1"
+                      namespace="http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_64821d9d-f976-4ffc-bdfa-418fe32bb255" name="Branches distribution">
+    <semantic:variable id="_3d9a3140-da29-4aa8-acf2-13b8c09c67d1" name="Branches distribution" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_3e17980b-1bac-4c14-ae69-e0c1f1735ed3"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_9d85ad58-af7e-42ac-94c5-c31a73e36933"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Branches distribution">
+      <semantic:input id="_732ed298-1e7a-4e20-b4ab-be68bb915c87" label="Number of Branches">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Number of Branches</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_4472bea5-a081-4063-907a-da404b1990ac" label="Branches dispersion">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Branches dispersion</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>" Continent", " Country", " Province", " Town"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_8338ef39-0636-47e5-b3bc-34a866e35457">
+        <semantic:outputValues>
+          <semantic:text>"Large", "Medium", "Small"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_58ddb4d2-6c4a-4b86-b078-3f943547f403">
+        <semantic:inputEntry id="_58ddb4d2-6c4a-4b86-b078-3f943547f403-0">
+          <semantic:text>&lt;10</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_58ddb4d2-6c4a-4b86-b078-3f943547f403-1">
+          <semantic:text>"Town"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_58ddb4d2-6c4a-4b86-b078-3f943547f403-2">
+          <semantic:text>"Small"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c0d4af26-119f-4f92-9b34-cbde0ca6c675">
+        <semantic:inputEntry id="_c0d4af26-119f-4f92-9b34-cbde0ca6c675-0">
+          <semantic:text>&lt;10</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c0d4af26-119f-4f92-9b34-cbde0ca6c675-1">
+          <semantic:text>"Province"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c0d4af26-119f-4f92-9b34-cbde0ca6c675-2">
+          <semantic:text>"Small"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_74a80f14-b8c9-4704-830e-86fcb13f4c2a">
+        <semantic:inputEntry id="_74a80f14-b8c9-4704-830e-86fcb13f4c2a-0">
+          <semantic:text>&lt;10</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_74a80f14-b8c9-4704-830e-86fcb13f4c2a-1">
+          <semantic:text>"Country"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_74a80f14-b8c9-4704-830e-86fcb13f4c2a-2">
+          <semantic:text>"Small"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_06ba79c4-c640-4bef-9bb6-e6414ae3ba40">
+        <semantic:inputEntry id="_06ba79c4-c640-4bef-9bb6-e6414ae3ba40-0">
+          <semantic:text>&lt;10</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_06ba79c4-c640-4bef-9bb6-e6414ae3ba40-1">
+          <semantic:text>"Continent"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_06ba79c4-c640-4bef-9bb6-e6414ae3ba40-2">
+          <semantic:text>"Medium"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b7c10b9a-3f8e-4022-ade8-784c39a247a4">
+        <semantic:inputEntry id="_b7c10b9a-3f8e-4022-ade8-784c39a247a4-0">
+          <semantic:text>[10..30)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b7c10b9a-3f8e-4022-ade8-784c39a247a4-1">
+          <semantic:text>"Town"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b7c10b9a-3f8e-4022-ade8-784c39a247a4-2">
+          <semantic:text>"Small"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_178ee9d6-1d4c-4d6e-b075-5eaf12a66bb6">
+        <semantic:inputEntry id="_178ee9d6-1d4c-4d6e-b075-5eaf12a66bb6-0">
+          <semantic:text>[10..30)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_178ee9d6-1d4c-4d6e-b075-5eaf12a66bb6-1">
+          <semantic:text>"Province"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_178ee9d6-1d4c-4d6e-b075-5eaf12a66bb6-2">
+          <semantic:text>"Medium"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_470fed3b-f2a9-493b-a438-0d17a902e14b">
+        <semantic:inputEntry id="_470fed3b-f2a9-493b-a438-0d17a902e14b-0">
+          <semantic:text>[10..30)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_470fed3b-f2a9-493b-a438-0d17a902e14b-1">
+          <semantic:text>"Country"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_470fed3b-f2a9-493b-a438-0d17a902e14b-2">
+          <semantic:text>"Large"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c4d9089d-3a7d-4bfa-baa8-d37b01d7b1e8">
+        <semantic:inputEntry id="_c4d9089d-3a7d-4bfa-baa8-d37b01d7b1e8-0">
+          <semantic:text>[10..30)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c4d9089d-3a7d-4bfa-baa8-d37b01d7b1e8-1">
+          <semantic:text>"Continent"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c4d9089d-3a7d-4bfa-baa8-d37b01d7b1e8-2">
+          <semantic:text>"Large"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_cfd31f7f-5d3f-4ddc-84d9-2e1c25129c63">
+        <semantic:inputEntry id="_cfd31f7f-5d3f-4ddc-84d9-2e1c25129c63-0">
+          <semantic:text>&gt;30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_cfd31f7f-5d3f-4ddc-84d9-2e1c25129c63-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_cfd31f7f-5d3f-4ddc-84d9-2e1c25129c63-2">
+          <semantic:text>"Large"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_3e17980b-1bac-4c14-ae69-e0c1f1735ed3" name="Branches dispersion">
+    <semantic:variable id="_53004604-be0f-49cf-8d87-01cfd8555edd" name="Branches dispersion" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:inputData id="_9d85ad58-af7e-42ac-94c5-c31a73e36933" name="Number of Branches">
+    <semantic:variable id="_abddc2a7-1030-4f96-aa48-e4698bef2480" name="Number of Branches" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>

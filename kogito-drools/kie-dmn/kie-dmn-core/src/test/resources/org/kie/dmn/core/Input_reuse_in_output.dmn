@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_098bb607-eff7-4772-83ac-6ded8b371fa7" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.0.35.201611211744" id="_098bb607-eff7-4772-83ac-6ded8b371fa7"
+                      name="Input reuse in output" namespace="http://www.trisotech.com/dmn/definitions/_098bb607-eff7-4772-83ac-6ded8b371fa7"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_30f465a9-e726-47c8-92eb-72efe26b17cf" name="My Decision">
+    <semantic:variable id="_69825d24-3944-474d-be4b-88c1cb7c4e2b" name="My Decision" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_42a79b5e-aab2-4d70-9b4d-3959e2368b29"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_5144757f-ceb2-45eb-ae48-7f0fc6cb1090"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="My Decision">
+      <semantic:input id="_54e428ef-80a9-4e2b-983f-8f131d3a2813" label="Age">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Age</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>&gt;=18</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_9f9666cf-0862-4d41-83ad-2f36af8d8386" label="RequestedProduct">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested Product</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Fixed25", "Fixed30"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_5ba33e9a-17fa-4c08-8886-b19f4cc2c405">
+        <semantic:outputValues>
+          <semantic:text>"Fixed25", "Fixed30"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_13ac6b4b-5d9a-47e9-93ca-d99b19193b84">
+        <semantic:inputEntry id="_13ac6b4b-5d9a-47e9-93ca-d99b19193b84-0">
+          <semantic:text>&lt;25</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_13ac6b4b-5d9a-47e9-93ca-d99b19193b84-1">
+          <semantic:text>"Fixed25"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_13ac6b4b-5d9a-47e9-93ca-d99b19193b84-2">
+          <semantic:text>"Fixed30"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_bbcdda5f-12fa-4578-8201-2c7a6c98f8e7">
+        <semantic:inputEntry id="_bbcdda5f-12fa-4578-8201-2c7a6c98f8e7-0">
+          <semantic:text>&lt;25</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bbcdda5f-12fa-4578-8201-2c7a6c98f8e7-1">
+          <semantic:text>"Fixed30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_bbcdda5f-12fa-4578-8201-2c7a6c98f8e7-2">
+          <semantic:text>"Fixed25"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_869e2472-2714-48f9-bf38-a2106e44ffd7">
+        <semantic:inputEntry id="_869e2472-2714-48f9-bf38-a2106e44ffd7-0">
+          <semantic:text>[25..35)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_869e2472-2714-48f9-bf38-a2106e44ffd7-1">
+          <semantic:text>"Fixed25"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_869e2472-2714-48f9-bf38-a2106e44ffd7-2">
+          <semantic:text>"Fixed25"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3ccfd2a3-4749-4dfc-990d-ad90744afaef">
+        <semantic:inputEntry id="_3ccfd2a3-4749-4dfc-990d-ad90744afaef-0">
+          <semantic:text>[25..35)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3ccfd2a3-4749-4dfc-990d-ad90744afaef-1">
+          <semantic:text>"Fixed30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3ccfd2a3-4749-4dfc-990d-ad90744afaef-2">
+          <semantic:text>"Fixed30"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a542df69-4257-443a-bbd8-9cde13494223">
+        <semantic:inputEntry id="_a542df69-4257-443a-bbd8-9cde13494223-0">
+          <semantic:text>&gt;=35</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a542df69-4257-443a-bbd8-9cde13494223-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a542df69-4257-443a-bbd8-9cde13494223-2">
+          <semantic:text>Requested Product</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_42a79b5e-aab2-4d70-9b4d-3959e2368b29" name="Age">
+    <semantic:variable id="_3b3156c0-3a5d-4175-9e8e-b4b0ebebeefb" name="Age" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_5144757f-ceb2-45eb-ae48-7f0fc6cb1090" name="Requested Product">
+    <semantic:variable id="_87c8b50b-67d9-4614-bbf2-d4769adc29f4" name="Requested Product" typeRef="feel:string"/>
+  </semantic:inputData>
+</semantic:definitions>

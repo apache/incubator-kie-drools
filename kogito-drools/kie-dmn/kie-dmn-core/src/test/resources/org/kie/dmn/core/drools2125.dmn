@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_9f976b29-4cdd-42e9-8737-0ccbc2ad9498" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.11.1" id="_9f976b29-4cdd-42e9-8737-0ccbc2ad9498" name="drools2125" namespace="http://www.trisotech.com/definitions/_9f976b29-4cdd-42e9-8737-0ccbc2ad9498" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="true" label="tListPerson" name="tListPerson">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_abc0c52a-f40a-45a9-ac0d-f315447fb31f" name="person">
+    <semantic:variable id="_a3f9ca88-d307-4a34-8cf9-740505ecec65" name="person" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:inputData id="_96ffad04-8b48-435f-a8dd-bb2776c394d4" name="list of persons">
+    <semantic:variable id="_92647420-b235-4220-b7e9-3b64eb44e280" name="list of persons" typeRef="tListPerson"/>
+  </semantic:inputData>
+  <semantic:decision id="_45b31db5-3bfb-4886-b53f-9798648955e9" name="person is person">
+    <semantic:variable id="_a1c46878-14ff-40e5-af57-ae0df7559e55" name="person is person" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_abc0c52a-f40a-45a9-ac0d-f315447fb31f"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_85bb46ea-d796-4f82-abf3-e49e2386a0a8" outputLabel="person is person">
+      <semantic:input id="_97896a3d-15cf-40cf-a325-eef0eadf546f">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>person</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_0c2898e2-a23c-42dd-943a-e8fc27280b11"/>
+      <semantic:rule id="_ee6d57b5-e5ea-4ac6-be05-d1b3c49a0b5f">
+        <semantic:inputEntry expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_8af76a79-c02d-4047-9106-e04a9b39baf5" triso:unparsed="false">
+          <semantic:text>person</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_46765938-4427-4cce-a869-f9127e9f7a9b">
+          <semantic:text>"yes"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_367a1c02-e1ac-45fe-b2c6-bb0c3829f32e" name="person is Bob">
+    <semantic:variable id="_8e0d68ce-e77c-48d0-afcf-2fa45438bde7" name="person is Bob" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_abc0c52a-f40a-45a9-ac0d-f315447fb31f"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_85bb46ea-d796-4f82-abf3-e49e2386a0a8" outputLabel="person is Bob">
+      <semantic:input id="_356faacf-50b2-4f96-aa64-8e39ae8fd7e4">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>person</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_280ad2f1-976f-46cb-ab3f-6c6bbbebb190"/>
+      <semantic:rule id="_76e4ffea-4a9c-4d9f-9a78-a4502e7e1c96">
+        <semantic:inputEntry id="_c5900001-6a4b-4bfa-8505-677392f9f2cd">
+          <semantic:text>"Bob"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b22377f7-d322-42c2-9d75-dd531a694ace">
+          <semantic:text>"yes"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_dc45e44b-7ecb-49af-bcd1-18c7fedd4ef6" name="person on the list of persons">
+    <semantic:variable id="_10751fe3-3d98-49df-bd13-1cfec0deb3fd" name="person on the list of persons" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_96ffad04-8b48-435f-a8dd-bb2776c394d4"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_abc0c52a-f40a-45a9-ac0d-f315447fb31f"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_85bb46ea-d796-4f82-abf3-e49e2386a0a8" outputLabel="person on the list of persons">
+      <semantic:input id="_49155fdf-c354-4d25-aeba-05e43d49dcd1">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>person</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_e290ee88-6b79-47a8-bcf2-c09f87c4501a"/>
+      <semantic:rule id="_ca11c42e-be7e-4579-9acf-bfbfbe2790ac">
+        <semantic:inputEntry id="_d44ef1c0-a777-4b85-9065-c38c4e9f8a74">
+          <semantic:text>list of persons</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_47f98bf1-1acd-42ba-b857-83a6419af6cf">
+          <semantic:text>"yes"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_bfdfbe77-31e2-4c9d-821a-b29377f8ce38" name="persons complies with UT list">
+    <semantic:variable id="_8bc4a83f-299d-45c6-8148-b2f811e848e9" name="persons complies with UT list" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_abc0c52a-f40a-45a9-ac0d-f315447fb31f"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_85bb46ea-d796-4f82-abf3-e49e2386a0a8" outputLabel="persons complies with UT list">
+      <semantic:input id="_8824e1a6-379b-48dc-977c-b0e0c37753a3">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>person</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_e70e43a5-9776-4ce1-a7b2-157ab87fbaa5"/>
+      <semantic:rule id="_6ef13e43-d73e-4ec2-8263-1e2a8971abe8">
+        <semantic:inputEntry id="_d44ef1c0-a777-4b85-9065-c38c4e9f8a74">
+          <semantic:text>"Bob", "Matteo", "John"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_47f98bf1-1acd-42ba-b857-83a6419af6cf">
+          <semantic:text>"yes"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_0a9d4a3e-d9c3-45f7-91ba-130ba09b3834" name="persons complies with hardcoded list">
+    <semantic:variable id="_b1d8e8fe-819b-427b-9e9c-4cd89a535775" name="persons complies with hardcoded list" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_abc0c52a-f40a-45a9-ac0d-f315447fb31f"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_85bb46ea-d796-4f82-abf3-e49e2386a0a8" outputLabel="persons complies with hardcoded list">
+      <semantic:input id="_3d240709-ef18-4b85-9d52-5d064e857c55">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>person</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_4bf2410c-ef8c-46ac-b64f-c8ae9627d808"/>
+      <semantic:rule id="_44a19dea-36d5-4046-b1ad-e9e854141fd9">
+        <semantic:inputEntry id="_d44ef1c0-a777-4b85-9065-c38c4e9f8a74">
+          <semantic:text>["Bob", "Matteo", "John"]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_47f98bf1-1acd-42ba-b857-83a6419af6cf">
+          <semantic:text>"yes"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+</semantic:definitions>

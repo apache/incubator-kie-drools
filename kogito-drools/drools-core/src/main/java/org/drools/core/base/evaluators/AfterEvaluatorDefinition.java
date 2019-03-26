@@ -16,18 +16,18 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.time.Interval;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.base.ValueType;
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.time.Interval;
 
 /**
  * <p>The implementation of the 'after' evaluator definition.</p>

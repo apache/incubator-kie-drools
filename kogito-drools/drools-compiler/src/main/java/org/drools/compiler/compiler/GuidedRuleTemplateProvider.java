@@ -16,10 +16,10 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.api.Service;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.kie.api.Service;
 
 public interface GuidedRuleTemplateProvider extends Service {
 

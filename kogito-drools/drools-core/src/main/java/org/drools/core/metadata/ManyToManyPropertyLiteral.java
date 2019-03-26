@@ -16,7 +16,6 @@
 package org.drools.core.metadata;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ManyToManyPropertyLiteral<T,R>

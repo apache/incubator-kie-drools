@@ -15,6 +15,10 @@
 
 package org.drools.core.time.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.time.EnqueuedSelfRemovalJobContext;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -23,10 +27,6 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.Trigger;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TrackableTimeJobFactoryManager
     implements

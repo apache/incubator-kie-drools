@@ -42,7 +42,6 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ConstraintEvaluator;
-import org.jbpm.process.instance.impl.NoOpExecutionErrorHandler;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
@@ -50,11 +49,8 @@ import org.jbpm.workflow.instance.node.ActionNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
-import org.kie.internal.runtime.error.ExecutionErrorHandler;
-import org.kie.internal.runtime.error.ExecutionErrorManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,7 +189,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     			.getProcessEventSupport().fireBeforeNodeTriggered(this, kruntime);
     	}
         try {
-            getExecutionErrorHandler().processing(this);
             internalTrigger(from, type);
         }
         catch (WorkflowRuntimeException e) {
@@ -235,8 +230,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
     
-    protected void triggerCompleted(String type, boolean remove) {
-        getExecutionErrorHandler().processed(this);
+    protected void triggerCompleted(String type, boolean remove) {        
         Node node = getNode();
         if (node != null) {
 	    	String uniqueId = (String) node.getMetaData().get("UniqueId");
@@ -550,14 +544,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     
     public void setDynamicParameters(Map<String, Object> dynamicParameters) {
         this.dynamicParameters = dynamicParameters;
-    }
-    
-    protected ExecutionErrorHandler getExecutionErrorHandler() {
-        ExecutionErrorManager errorManager = (ExecutionErrorManager) getProcessInstance().getKnowledgeRuntime().getEnvironment().get(EnvironmentName.EXEC_ERROR_MANAGER);
-        if (errorManager == null) {
-            return new NoOpExecutionErrorHandler();
-        }
-        return errorManager.getHandler();
     }
     
     protected void configureSla() {

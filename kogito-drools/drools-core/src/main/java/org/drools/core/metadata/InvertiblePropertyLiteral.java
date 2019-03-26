@@ -16,7 +16,6 @@
 package org.drools.core.metadata;
 
 import java.net.URI;
-import java.util.Collection;
 
 public abstract class InvertiblePropertyLiteral extends PropertyLiteral implements InvertibleMetaProperty {
 

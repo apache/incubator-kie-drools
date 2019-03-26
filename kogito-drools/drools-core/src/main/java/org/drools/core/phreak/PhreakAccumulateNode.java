@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -34,8 +36,6 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
-
-import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 /**
 * Created with IntelliJ IDEA.

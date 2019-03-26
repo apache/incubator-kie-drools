@@ -19,13 +19,13 @@ import java.util.HashSet;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.lang.descr.ImportDescr;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.ImportDeclaration;
 import org.kie.api.io.Resource;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class PackageRegistry {
 

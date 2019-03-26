@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.2.201701170913" id="_ecf4ea54-2abc-4e2f-a101-4fe14e356a46"
+                      name="Dessin 1" namespace="http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_35417d48-69ee-45b1-9ae0-1b09c9b2fe26" name="a date">
+    <semantic:variable id="_a501392d-0733-4422-9017-3e48e59e8eb1" name="a date" typeRef="feel:dateTime"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_598e78c7-ed8d-4cf3-8d0c-8b1d0532c432"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression>
+      <semantic:text>date and time(datetimestring)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_598e78c7-ed8d-4cf3-8d0c-8b1d0532c432" name="datetimestring">
+    <semantic:variable id="_22d1c1ff-021b-49d2-ac4a-ebb7ec71a652" name="datetimestring"/>
+  </semantic:inputData>
+  <semantic:decision id="_93ef9b6c-97a9-4684-9159-1e93c1533022" name="time">
+    <semantic:variable id="_caa105e2-7240-497b-b9ac-ed168d74d142" name="time" typeRef="feel:time"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_35417d48-69ee-45b1-9ae0-1b09c9b2fe26"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression>
+      <semantic:text>time(a date)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

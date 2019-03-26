@@ -50,10 +50,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
@@ -61,9 +58,6 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.runtime.manager.SessionNotFoundException;
-import org.kie.internal.runtime.manager.context.CaseContext;
-import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,19 +179,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         	throw new RuntimeException("Could not find process " + processId);
         } else {
-            KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
-            RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
-            if (manager != null) {
-                org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
-                
-                String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
-                if (caseId != null) {
-                    context = CaseContext.get(caseId);
-                }
-                
-                RuntimeEngine runtime = manager.getRuntimeEngine(context);
-                kruntime = (KieRuntime) runtime.getKieSession();
-            }
+            KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();    
             if (getSubProcessNode().getMetaData("MICollectionInput") != null) {
                 // remove foreach input variable to avoid problems when running in variable strict mode
                 parameters.remove(getSubProcessNode().getMetaData("MICollectionInput"));
@@ -241,26 +223,9 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
         	ProcessInstance processInstance = null;
         	InternalKnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
-        	RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
-        	if (manager != null) {
-        	    try {
-            	    org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get(processInstanceId);
-                    
-                    String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
-                    if (caseId != null) {
-                        context = CaseContext.get(caseId);
-                    }
-                    
-                    RuntimeEngine runtime = manager.getRuntimeEngine(context);
-
-                    KieRuntime managedkruntime = (KieRuntime) runtime.getKieSession();
-            		processInstance = (ProcessInstance) managedkruntime.getProcessInstance(processInstanceId);
-        	    } catch (SessionNotFoundException e) {
-        	        // in case no session is found for parent process let's skip signal for process instance completion
-        	    }
-        	} else {
-        		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
-        	}
+        	
+    		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
+        	
 
             if (processInstance != null) {
             	processInstance.setState(ProcessInstance.STATE_ABORTED);

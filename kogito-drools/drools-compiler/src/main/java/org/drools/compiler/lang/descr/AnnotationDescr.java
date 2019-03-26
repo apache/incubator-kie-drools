@@ -16,14 +16,14 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.factmodel.PropertyMap;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.factmodel.PropertyMap;
 
 public class AnnotationDescr extends AnnotatedBaseDescr implements PropertyMap {
 

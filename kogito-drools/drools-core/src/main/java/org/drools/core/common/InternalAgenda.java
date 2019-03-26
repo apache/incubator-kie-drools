@@ -35,6 +35,7 @@ import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
+import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 
@@ -145,8 +146,10 @@ public interface InternalAgenda
                                 RuleAgendaItem ruleAgendaItem,
                                 InternalAgendaGroup agendaGroup);
 
-    void cancelActivation(final PropagationContext context,
-                          final Activation activation );
+    void cancelActivation(final Tuple leftTuple,
+                          final PropagationContext context,
+                          final Activation activation,
+                          final TerminalNode rtn );
 
     /**
      * Adds the activation to the agenda. Depending on the mode the agenda is running,

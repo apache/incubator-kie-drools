@@ -16,6 +16,19 @@
 
 package org.drools.modelcompiler;
 
+import static java.util.stream.Collectors.toList;
+import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
+import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
+import static org.drools.core.rule.GroupElement.AND;
+import static org.drools.core.rule.Pattern.getReadAcessor;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.entryPoint;
+import static org.drools.model.functions.FunctionUtils.toFunctionN;
+import static org.drools.model.impl.NamesGenerator.generateName;
+import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
+import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +42,8 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -133,22 +148,6 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
-
-import static java.util.stream.Collectors.toList;
-
-import static org.drools.compiler.lang.descr.ForallDescr.BASE_IDENTIFIER;
-import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
-import static org.drools.core.rule.GroupElement.AND;
-import static org.drools.core.rule.Pattern.getReadAcessor;
-import static org.drools.model.FlowDSL.declarationOf;
-import static org.drools.model.FlowDSL.entryPoint;
-import static org.drools.model.functions.FunctionUtils.toFunctionN;
-import static org.drools.model.impl.NamesGenerator.generateName;
-import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
-import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
-import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
 public class KiePackagesBuilder {
 

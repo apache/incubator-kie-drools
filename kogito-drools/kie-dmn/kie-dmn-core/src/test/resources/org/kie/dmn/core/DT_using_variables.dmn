@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.4.201702131010" id="_ed1ec15b-40aa-424d-b1d0-4936df80b135"
+                      name="DT Using variables" namespace="http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="Complex" name="Complex">
+    <semantic:itemComponent id="_97f54b71-c748-4868-ab2c-1395142d1330" name="aBoolean">
+      <semantic:typeRef>feel:boolean</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_b94be943-6229-47e6-a0d2-1a7e915f4914" name="aNumber">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_f9919c4c-26ac-42ff-b788-ff9a16a797e8" name="aString">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_29fcbd74-791b-4700-b6b9-93654a21f492" name="Compare Boolean">
+    <semantic:variable id="_48418f5b-85be-4423-af2f-42f914744f0b" name="Compare Boolean" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_c714b876-f21c-429f-ab88-010b1f714eab"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Compare Boolean">
+      <semantic:input id="_95019937-a0a9-4f6a-a301-ce7841469454" label="Complex.aBoolean">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>Complex.aBoolean</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_8ffeb4cd-33da-4c1e-97c8-360a6a28d37d" label="Another boolean">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>Another boolean</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_b15510e8-3a5e-41d5-a71a-5c8b77996527"/>
+      <semantic:rule id="_0c4d562a-0720-46f0-8862-d5f8a8515fe8">
+        <semantic:inputEntry id="_0c4d562a-0720-46f0-8862-d5f8a8515fe8-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0c4d562a-0720-46f0-8862-d5f8a8515fe8-1">
+          <semantic:text>Complex.aBoolean</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_0c4d562a-0720-46f0-8862-d5f8a8515fe8-2">
+          <semantic:text>"Same boolean"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_7b6189fc-fc3d-4bf1-b49f-363f071ecccf">
+        <semantic:inputEntry id="_7b6189fc-fc3d-4bf1-b49f-363f071ecccf-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7b6189fc-fc3d-4bf1-b49f-363f071ecccf-1">
+          <semantic:text>not(Complex.aBoolean)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_7b6189fc-fc3d-4bf1-b49f-363f071ecccf-2">
+          <semantic:text>"Not same boolean"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_36fc73e6-8f0e-4cbf-b1f8-3287376a912a" name="Complex">
+    <semantic:variable id="_3ddbaef1-1874-4a8d-aacc-9267ea422ddd" name="Complex" typeRef="Complex"/>
+  </semantic:inputData>
+  <semantic:inputData id="_c714b876-f21c-429f-ab88-010b1f714eab" name="Another boolean">
+    <semantic:variable id="_cde25348-e4b4-42fe-bd8b-fc0b64170f2f" name="Another boolean" typeRef="feel:boolean"/>
+  </semantic:inputData>
+  <semantic:inputData id="_a1395f8a-bf51-40f8-a8e9-89792e23c755" name="Another number">
+    <semantic:variable id="_2fcde052-27a2-4154-bb13-fe634aa4ffc2" name="Another number" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_1fa4679e-196f-4274-85bf-6f50dbad41df" name="Another String">
+    <semantic:variable id="_c1ab082d-1d61-4c92-a475-4631613c57ad" name="Another String" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:decision id="_4f421adb-316c-42e0-b6ff-5243c365bdba" name="Compare String">
+    <semantic:variable id="_1a8428bf-4bb1-431a-a7f4-b77b1d8437a8" name="Compare String" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1fa4679e-196f-4274-85bf-6f50dbad41df"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Compare String">
+      <semantic:input id="_94a220ae-f28f-4fc9-82c1-fa197b275c02" label="Complex.aString">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Complex.aString</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_fe365673-d56b-4a3e-89e0-3e6eadd6f1c4" label="Another String">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Another String</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_90449846-5fa1-4105-8f3f-54ba2f95699e"/>
+      <semantic:rule id="_3becfd70-616a-48e3-a439-78ad9aaa99ad">
+        <semantic:inputEntry id="_3becfd70-616a-48e3-a439-78ad9aaa99ad-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3becfd70-616a-48e3-a439-78ad9aaa99ad-1">
+          <semantic:text>Complex.aString</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3becfd70-616a-48e3-a439-78ad9aaa99ad-2">
+          <semantic:text>"Same String"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6628117c-e142-4d59-b9a2-8213759535a2">
+        <semantic:inputEntry id="_6628117c-e142-4d59-b9a2-8213759535a2-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6628117c-e142-4d59-b9a2-8213759535a2-1">
+          <semantic:text>not(Complex.aString)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6628117c-e142-4d59-b9a2-8213759535a2-2">
+          <semantic:text>"Different String"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_35583bbe-81b8-4797-afe9-d870c3e17d44" name="Compare Number">
+    <semantic:variable id="_59f475cf-3411-4155-bd5d-9683108d3e89" name="Compare Number" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_a1395f8a-bf51-40f8-a8e9-89792e23c755"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_36fc73e6-8f0e-4cbf-b1f8-3287376a912a"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Compare Number">
+      <semantic:input id="_880e75f7-f5d5-4461-aa57-89e96e112208" label="Complex.aNumber">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Complex.aNumber</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_1ec860a8-2194-4748-a692-2544783c88d7" label="Another number">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Another number</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_3a602944-0ce0-43a8-86a7-092f7acd1e84"/>
+      <semantic:rule id="_9d94759c-9da4-48aa-ba97-2a42f18e75b3">
+        <semantic:inputEntry id="_9d94759c-9da4-48aa-ba97-2a42f18e75b3-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9d94759c-9da4-48aa-ba97-2a42f18e75b3-1">
+          <semantic:text>Complex.aNumber</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_9d94759c-9da4-48aa-ba97-2a42f18e75b3-2">
+          <semantic:text>"Equals"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_275dc304-38e6-41bf-8b40-04144d181ede">
+        <semantic:inputEntry id="_275dc304-38e6-41bf-8b40-04144d181ede-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_275dc304-38e6-41bf-8b40-04144d181ede-1">
+          <semantic:text>&gt;Complex.aNumber</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_275dc304-38e6-41bf-8b40-04144d181ede-2">
+          <semantic:text>"Bigger"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_82e82d4c-2df5-4c3a-81f0-f20774fb1d29">
+        <semantic:inputEntry id="_82e82d4c-2df5-4c3a-81f0-f20774fb1d29-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_82e82d4c-2df5-4c3a-81f0-f20774fb1d29-1">
+          <semantic:text>&lt;Complex.aNumber</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_82e82d4c-2df5-4c3a-81f0-f20774fb1d29-2">
+          <semantic:text>"Smaller"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+</semantic:definitions>

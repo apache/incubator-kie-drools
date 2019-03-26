@@ -70,9 +70,5 @@ public interface ProcessContext extends KieContext {
      */
     void setVariable(String variableName,
                      Object value);
-    
-    CaseAssignment getCaseAssignment();
-    
-    CaseData getCaseData();
 
 }

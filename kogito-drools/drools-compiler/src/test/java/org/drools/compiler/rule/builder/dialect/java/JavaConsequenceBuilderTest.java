@@ -15,6 +15,16 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
@@ -40,16 +50,6 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
-import static org.junit.Assert.*;
 
 public class JavaConsequenceBuilderTest {
 

@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -259,12 +258,6 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return nodeInstance;
         }
         Node actualNode = node;
-        // async continuation handling
-        if (node instanceof AsyncEventNode) {
-            actualNode = ((AsyncEventNode) node).getActualNode();
-        } else if (useAsync(node)) {
-            actualNode = new AsyncEventNode(node);
-        }
 
         NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getProcessInstance().getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(actualNode);
         if (conf == null) {

@@ -15,29 +15,8 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.Tuple;
-import org.drools.core.util.asm.MethodComparator;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
-import org.mvel2.asm.Label;
-import org.mvel2.asm.MethodVisitor;
-
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
+import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.reflective.util.ClassUtils.convertPrimitiveNameToType;
 import static org.mvel2.asm.Opcodes.AALOAD;
 import static org.mvel2.asm.Opcodes.ACC_FINAL;
 import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
@@ -55,6 +34,27 @@ import static org.mvel2.asm.Opcodes.ILOAD;
 import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
 import static org.mvel2.asm.Opcodes.IRETURN;
 import static org.mvel2.asm.Opcodes.ISTORE;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.drools.core.WorkingMemory;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.Tuple;
+import org.drools.core.util.asm.MethodComparator;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
 
 public final class GeneratorHelper {
 

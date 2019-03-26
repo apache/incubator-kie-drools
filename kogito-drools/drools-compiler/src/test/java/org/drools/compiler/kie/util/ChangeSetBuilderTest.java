@@ -15,6 +15,14 @@
 
 package org.drools.compiler.kie.util;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,14 +42,6 @@ import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChange.Type;
 import org.kie.internal.builder.ResourceChangeSet;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ChangeSetBuilderTest {
 

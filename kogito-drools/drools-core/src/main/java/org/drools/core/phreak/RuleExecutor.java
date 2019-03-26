@@ -38,7 +38,6 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.index.TupleList;
-import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.slf4j.Logger;
@@ -365,7 +364,7 @@ public class RuleExecutor {
         // we need to make sure it re-activates
         wm.startOperation();
         try {
-            BeforeMatchFiredEvent beforeMatchFiredEvent = wm.getAgendaEventSupport().fireBeforeActivationFired(activation, wm);
+            wm.getAgendaEventSupport().fireBeforeActivationFired( activation, wm );
 
             if ( activation.getActivationGroupNode() != null ) {
                 // We know that this rule will cancel all other activations in the group
@@ -398,7 +397,7 @@ public class RuleExecutor {
                 }
             }
 
-            wm.getAgendaEventSupport().fireAfterActivationFired( activation, wm, beforeMatchFiredEvent );
+            wm.getAgendaEventSupport().fireAfterActivationFired( activation, wm );
         } finally {
             wm.endOperation();
         }

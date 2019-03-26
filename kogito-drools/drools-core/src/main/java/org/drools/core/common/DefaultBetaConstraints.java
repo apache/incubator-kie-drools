@@ -16,6 +16,10 @@
 
 package org.drools.core.common;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.util.index.IndexUtil.compositeAllowed;
+import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -34,10 +38,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.internal.conf.IndexPrecedenceOption;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
-import static org.drools.core.util.index.IndexUtil.compositeAllowed;
-import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
 
 
 public class DefaultBetaConstraints

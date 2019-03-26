@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+					  xmlns="http://www.trisotech.com/definitions/_f2695525-ffe9-4c96-a9ec-15c18e555f68"
+					  xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+					  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+					  xmlns:trisofeed="http://trisotech.com/feed"
+					  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					  exporter="DMN Modeler" exporterVersion="5.2.2"
+					  id="_f2695525-ffe9-4c96-a9ec-15c18e555f68"
+					  name="Hello World semantic namespace"
+					  namespace="http://www.trisotech.com/definitions/_f2695525-ffe9-4c96-a9ec-15c18e555f68"
+					  triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tName" name="tName">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_e34ee32e-ebe8-40e4-9ed6-477ad50951a9" name="My Name" triso:displayName="My Name">
+    <semantic:variable id="_a0a3d084-e6e7-4bb8-8b52-c557ef0f43cb" name="My Name" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:decision id="_70b66b6b-931a-46bb-b9f0-e3e727322896" name="Hello Name" triso:displayName="Hello Name">
+    <semantic:variable id="_f2640616-bbba-4bbc-ac7e-2d3376e1c3de" name="Hello Name" typeRef="tName"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_e34ee32e-ebe8-40e4-9ed6-477ad50951a9"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_95ae7282-553f-4f29-9432-2e1d323d43b7">
+      <semantic:text>"Hello " + My Name</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

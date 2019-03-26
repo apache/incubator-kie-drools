@@ -16,18 +16,18 @@
 
 package org.drools.core.reteoo;
 
+import static org.junit.Assert.assertEquals;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
-
-import static org.junit.Assert.assertEquals;
 
 public class PropertyChangeListenerTest {
     private InternalKnowledgeBase kBase;

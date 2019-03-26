@@ -16,6 +16,8 @@
 
 package org.drools.core.base.mvel;
 
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -55,8 +57,6 @@ import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.SimpleVariableSpaceModel;
-
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 
 public class MVELCompilationUnit
     implements

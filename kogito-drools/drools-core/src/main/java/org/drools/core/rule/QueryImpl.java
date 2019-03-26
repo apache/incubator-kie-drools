@@ -16,12 +16,12 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.kie.api.definition.rule.Query;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.kie.api.definition.rule.Query;
 
 public class QueryImpl extends RuleImpl implements Query {
 

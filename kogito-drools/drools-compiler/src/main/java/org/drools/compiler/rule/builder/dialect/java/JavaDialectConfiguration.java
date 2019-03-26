@@ -15,6 +15,12 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import static org.mvel2.asm.Opcodes.V1_5;
+import static org.mvel2.asm.Opcodes.V1_6;
+import static org.mvel2.asm.Opcodes.V1_7;
+import static org.mvel2.asm.Opcodes.V1_8;
+import static org.mvel2.asm.Opcodes.V9;
+
 import java.util.Arrays;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -25,8 +31,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.builder.dialect.asm.ClassLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.mvel2.asm.Opcodes.*;
 
 /**
  * 

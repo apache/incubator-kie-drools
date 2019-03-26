@@ -16,16 +16,16 @@
 
 package org.drools.core.base.field;
 
-import org.drools.core.common.DroolsObjectInput;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.FieldValue;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.core.common.DroolsObjectInput;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.FieldValue;
 
 public class ClassFieldImpl implements FieldValue, Externalizable {
 

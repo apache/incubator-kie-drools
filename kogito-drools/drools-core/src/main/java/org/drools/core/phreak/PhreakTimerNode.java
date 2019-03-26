@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -58,8 +60,6 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );

@@ -16,6 +16,8 @@
 
 package org.jbpm.bpmn2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.StringReader;
@@ -38,11 +40,9 @@ import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.objects.ExceptionService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
-import org.junit.BeforeClass;
+import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,8 +65,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(Parameterized.class)
 public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
@@ -75,20 +73,13 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @Parameters
     public static Collection<Object[]> persistence() {
         Object[][] data = new Object[][] {
-                { false, false },
-                { true, false }, 
-                { true, true } 
+                { false} 
                 };
         return Arrays.asList(data);
     }
     
-    public StandaloneBPMNProcessTest(boolean persistence, boolean locking) {
-        super(persistence, locking);
-    }
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
+    public StandaloneBPMNProcessTest(boolean persistence) {
+        
     }
 
     /**
@@ -193,22 +184,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         String varValue = "initialValue";
         params.put(varId, varValue);
         ProcessInstance processInstance = ksession.startProcess("UserTask", params);
-        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
-        
-        // Test jbpm-audit findVariableInstancesByName* methods
-        if( isPersistence() ) { 
-            List<VariableInstanceLog> varLogs = logService.findVariableInstancesByName(varId, true);
-            assertThat(varLogs).isNotEmpty();
-            for( VariableInstanceLog varLog : varLogs ) {
-                assertThat(varLog.getVariableId()).isEqualTo(varId);
-            }
-            varLogs = logService.findVariableInstancesByNameAndValue( varId, varValue, true);
-            assertThat(varLogs).isNotEmpty();
-            for( VariableInstanceLog varLog : varLogs ) {
-                assertThat(varLog.getVariableId()).isEqualTo(varId);
-                assertThat(varLog.getValue()).isEqualTo(varValue);
-            }
-        }
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);       
         
         ksession = restoreSession(ksession, true);
         WorkItem workItem = workItemHandler.getWorkItem();

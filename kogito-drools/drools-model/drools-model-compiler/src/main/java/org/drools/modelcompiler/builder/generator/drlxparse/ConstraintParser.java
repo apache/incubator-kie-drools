@@ -1,5 +1,14 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import static org.drools.core.util.StringUtils.lcFirst;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS;
+import static org.drools.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -8,33 +17,28 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.DateUtils;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import org.drools.constraint.parser.ast.expr.OOPathExpr;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
-import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
-import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
-import com.github.javaparser.ast.expr.BinaryExpr;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.LiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.expr.UnaryExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
-import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.javaparser.ast.drlx.OOPathExpr;
+import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
+import org.drools.javaparser.ast.drlx.expr.HalfBinaryExpr;
+import org.drools.javaparser.ast.drlx.expr.HalfPointFreeExpr;
+import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.javaparser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.CastExpr;
+import org.drools.javaparser.ast.expr.EnclosedExpr;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.ThisExpr;
+import org.drools.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
+import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -45,16 +49,8 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
-
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
-import static org.drools.core.util.StringUtils.lcFirst;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
+import org.w3c.dom.NodeList;
 
 public class ConstraintParser {
 
@@ -134,8 +130,8 @@ public class ConstraintParser {
             return parseFieldAccessExpr( ( FieldAccessExpr ) drlxExpr, patternType, bindingId, exprId );
         }
 
-        if (drlxExpr instanceof DrlNameExpr) {
-            return parseNameExpr( (DrlNameExpr) drlxExpr, patternType, bindingId, drlxExpr, hasBind, expression, exprId );
+        if (drlxExpr instanceof NameExpr) {
+            return parseNameExpr( (NameExpr) drlxExpr, patternType, bindingId, drlxExpr, hasBind, expression, exprId );
         }
 
         if (drlxExpr instanceof OOPathExpr ) {
@@ -190,12 +186,10 @@ public class ConstraintParser {
         NodeList<Expression> arguments = methodCallExpr.getArguments();
         List<String> usedDeclarations = new ArrayList<>();
         for (Expression arg : arguments) {
-            String argString = printConstraint(arg);
-            if (arg instanceof DrlNameExpr && !argString.equals("_this")) {
-                usedDeclarations.add(argString);
+            if (arg instanceof NameExpr && !arg.toString().equals("_this")) {
+                usedDeclarations.add(arg.toString());
             } else if (arg instanceof CastExpr ) {
-                String s = printConstraint(((CastExpr) arg).getExpression());
-                usedDeclarations.add(s);
+                usedDeclarations.add((((CastExpr)arg).getExpression().toString()));
             } else if (arg instanceof MethodCallExpr) {
                 TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
                 usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
@@ -204,7 +198,7 @@ public class ConstraintParser {
         return new SingleDrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
     }
 
-    private DrlxParseResult parseNameExpr(DrlNameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression, String exprId) {
+    private DrlxParseResult parseNameExpr( NameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression, String exprId ) {
         TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, nameExpr, bindingId, patternType, context.getTypeResolver());
         if (converted == null) {
             return new DrlxParseFail();
@@ -216,7 +210,7 @@ public class ConstraintParser {
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
                     .addReactOnProperty( lcFirst(nameExpr.getNameAsString()) );
         } else if (context.hasDeclaration( expression )) {
-            return new SingleDrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr(printConstraint(drlxExpr)), context.getDeclarationById(expression ).get().getDeclarationClass() );
+            return new SingleDrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr( drlxExpr.toString() ), context.getDeclarationById( expression ).get().getDeclarationClass() );
         } else {
             return new SingleDrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType() )
                     .addReactOnProperty( nameExpr.getNameAsString() );
@@ -368,7 +362,7 @@ public class ConstraintParser {
         if (expr instanceof FieldAccessExpr ) {
             return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
         }
-        return printConstraint(expr);
+        return expr.toString();
     }
 
     private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {

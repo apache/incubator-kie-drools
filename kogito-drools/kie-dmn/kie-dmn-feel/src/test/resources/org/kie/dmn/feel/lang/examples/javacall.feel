@@ -1,0 +1,28 @@
+/*
+ *  This is an example of java integration
+ *  via external function call
+ */
+{
+    maximum : function( v1, v2 ) external {
+        java : {
+            class : "java.lang.Math",
+            method signature: "max(long,long)"
+        }
+    },
+    now : function() external {
+        java : {
+            class : "java.time.OffsetDateTime",
+            method signature: "now()"
+        }
+    },
+    the max : maximum( v1 : 10, v2: 20 ),   // invocation using named parameters
+    the max2 : maximum( 10, 20 ),           // invocation using positional parameters
+    current date: now(),                    // invocation of parameterless functions
+
+    isBefore: function(adate) adate < date( now() ),
+    isAfter: function(adate) if adate > date( now() ) then true else false,  // the if statement is redundant, but left here as an example
+    testAfter: isAfter(date("2015-05-05")),
+    testBefore: isBefore(date("2015-05-05"))
+
+}
+

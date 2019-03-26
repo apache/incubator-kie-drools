@@ -1,5 +1,9 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
+import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,25 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.CharLiteralExpr;
-import com.github.javaparser.ast.expr.DoubleLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LiteralStringValueExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.type.PrimitiveType;
+import javax.lang.model.type.PrimitiveType;
+
+import org.drools.javaparser.ast.expr.CastExpr;
+import org.drools.javaparser.ast.expr.CharLiteralExpr;
+import org.drools.javaparser.ast.expr.DoubleLiteralExpr;
+import org.drools.javaparser.ast.expr.IntegerLiteralExpr;
+import org.drools.javaparser.ast.expr.LiteralStringValueExpr;
+import org.drools.javaparser.ast.expr.LongLiteralExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
-
-import static org.drools.modelcompiler.builder.PackageModel.STRING_TO_DATE_METHOD;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
-import static org.drools.modelcompiler.util.JavaParserUtil.toJavaParserType;
+import org.w3c.dom.NodeList;
 
 public class CoercedExpression {
 

@@ -18,7 +18,6 @@ package org.kie.internal.builder;
 
 import java.util.Properties;
 
-import com.sun.tools.xjc.Options;
 import org.kie.api.KieBase;
 import org.kie.api.Service;
 
@@ -87,7 +86,5 @@ public interface KnowledgeBuilderFactoryService  extends Service {
 
     public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase,
                                                 KnowledgeBuilderConfiguration conf);
-
-    public JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
-                                                  String systemId);
+    
 }

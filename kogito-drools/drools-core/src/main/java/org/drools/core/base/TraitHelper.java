@@ -15,6 +15,8 @@
 
 package org.drools.core.base;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -59,11 +61,9 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.internal.runtime.beliefs.Mode;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
 public class TraitHelper implements Externalizable {
 

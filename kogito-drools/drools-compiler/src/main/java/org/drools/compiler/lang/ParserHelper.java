@@ -13,6 +13,13 @@
  */
 package org.drools.compiler.lang;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
@@ -52,13 +59,6 @@ import org.drools.compiler.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 /**
  * This is a class to hold all the helper functions/methods used

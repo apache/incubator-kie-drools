@@ -17,10 +17,10 @@
 package org.drools.core.base;
 
 
+import java.io.Serializable;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.KnowledgeHelper;
-
-import java.io.Serializable;
 
 public class DefaultKnowledgeHelperFactory implements KnowledgeHelperFactory, Serializable {
     

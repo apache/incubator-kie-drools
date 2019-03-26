@@ -93,6 +93,7 @@ import org.drools.compiler.rule.builder.dialect.asm.ASMReturnValueStubBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELSalienceBuilder;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.io.internal.InternalResource;
@@ -105,7 +106,6 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.jci.CompilationProblem;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class JavaDialect
         implements

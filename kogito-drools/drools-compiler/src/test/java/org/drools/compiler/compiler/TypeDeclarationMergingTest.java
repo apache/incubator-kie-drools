@@ -15,6 +15,8 @@
 
 package org.drools.compiler.compiler;
 
+import static org.junit.Assert.*;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeDeclaration.Format;
@@ -25,8 +27,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.junit.Assert.*;
 
 
 public class TypeDeclarationMergingTest {

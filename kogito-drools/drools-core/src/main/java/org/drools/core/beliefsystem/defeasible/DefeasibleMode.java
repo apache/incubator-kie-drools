@@ -15,11 +15,11 @@
 
 package org.drools.core.beliefsystem.defeasible;
 
+import java.util.Arrays;
+
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSMode;
 import org.kie.api.internal.runtime.beliefs.Mode;
-
-import java.util.Arrays;
 
 public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { //extends LinkedListEntry<Activation> implements Mode {
     private static final String[] EMPTY_DEFEATS = new String[0];

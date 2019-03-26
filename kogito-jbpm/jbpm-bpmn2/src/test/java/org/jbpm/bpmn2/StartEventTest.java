@@ -16,6 +16,9 @@
 
 package org.jbpm.bpmn2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -31,9 +34,8 @@ import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,14 +54,12 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.assertj.core.api.Assertions.*;
-
 @RunWith(Parameterized.class)
 public class StartEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { { false } };
         return Arrays.asList(data);
     };
 
@@ -68,18 +68,10 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     private KieSession ksession;
 
     public StartEventTest(boolean persistence) {
-        super(persistence);
     }
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
-    }
-
     @After
     public void dispose() {
         if (ksession != null) {
-            abortProcessInstances(ksession);
             clearHistory();
             ksession.dispose();
             ksession = null;
@@ -341,24 +333,22 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartTimer", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        try {
-            ksession.addEventListener(countDownListener);
-            TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                    workItemHandler);
-            final List<Long> list = new ArrayList<Long>();
-            ksession.addEventListener(new DefaultProcessEventListener() {
-                public void beforeProcessStarted(ProcessStartedEvent event) {
-                    list.add(event.getProcessInstance().getId());
-                }
-            });
-            assertThat(list.size()).isEqualTo(0);
-            // Timer in the process takes 500ms, so after 1 second, there should be 2 process IDs in the list.
-            countDownListener.waitTillCompleted();
-            assertThat(getNumberOfProcessInstances("MultipleStartEvents")).isEqualTo(2);
-        } finally {
-            abortProcessInstances(ksession);
-        }
+       
+        ksession.addEventListener(countDownListener);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        assertThat(list.size()).isEqualTo(0);
+        // Timer in the process takes 500ms, so after 1 second, there should be 2 process IDs in the list.
+        countDownListener.waitTillCompleted();
+        assertThat(getNumberOfProcessInstances("MultipleStartEvents")).isEqualTo(2);
+        
     }
 
     @Test

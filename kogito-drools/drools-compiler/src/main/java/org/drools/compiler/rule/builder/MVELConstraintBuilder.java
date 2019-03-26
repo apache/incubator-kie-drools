@@ -15,6 +15,14 @@
 
 package org.drools.compiler.rule.builder;
 
+import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
+import static org.drools.compiler.rule.builder.PatternBuilder.buildOperators;
+import static org.drools.compiler.rule.builder.PatternBuilder.getOperators;
+import static org.drools.compiler.rule.builder.PatternBuilder.getUsedDeclarations;
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
+import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
+
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,14 +63,6 @@ import org.mvel2.ConversionHandler;
 import org.mvel2.DataConversion;
 import org.mvel2.util.CompatibilityStrategy;
 import org.mvel2.util.NullType;
-
-import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
-import static org.drools.compiler.rule.builder.PatternBuilder.buildOperators;
-import static org.drools.compiler.rule.builder.PatternBuilder.getOperators;
-import static org.drools.compiler.rule.builder.PatternBuilder.getUsedDeclarations;
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
-import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
 public class MVELConstraintBuilder implements ConstraintBuilder {
 

@@ -19,10 +19,8 @@ package org.drools.compiler.integrationtests.eventgenerator.example;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 
-import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventGenerator;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventListener;

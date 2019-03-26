@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -80,6 +82,7 @@ import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.WindowReferenceBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaFunctionBuilder;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalWorkingMemory;
@@ -92,11 +95,8 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
-
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 
 public class MVELDialect
         implements

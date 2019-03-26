@@ -16,6 +16,12 @@
 
 package org.drools.compiler.simulation;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.core.fluent.impl.ExecutableBuilderImpl;
@@ -31,12 +37,6 @@ import org.kie.api.runtime.RequestContext;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieSessionFluent;
 import org.kie.internal.builder.fluent.Scope;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 public class BatchRunFluentTest extends CommonTestMethodBase {
 

@@ -24,8 +24,8 @@ import java.util.Properties;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
-import org.junit.Test;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;

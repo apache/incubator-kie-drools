@@ -15,6 +15,8 @@
 
 package org.drools.compiler.oopath;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,8 +31,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.utils.KieHelper;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class OOPathQueriesTest {
 

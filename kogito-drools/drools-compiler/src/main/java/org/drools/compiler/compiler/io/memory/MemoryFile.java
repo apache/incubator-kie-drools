@@ -15,18 +15,18 @@
 
 package org.drools.compiler.compiler.io.memory;
 
-import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import org.drools.compiler.compiler.io.File;
+import org.drools.compiler.compiler.io.Folder;
+import org.drools.compiler.compiler.io.Path;
+import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
 
 public class MemoryFile implements File,
                                    Serializable {

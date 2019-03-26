@@ -16,6 +16,8 @@
 
 package org.drools.core.marshalling.common;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +25,6 @@ import java.util.List;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
-
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class MarshallerTest {

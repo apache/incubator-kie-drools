@@ -49,7 +49,6 @@ import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -69,17 +68,9 @@ import org.jbpm.workflow.instance.node.FaultNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.manager.InternalRuntimeManager;
-import org.kie.internal.runtime.manager.SessionNotFoundException;
-import org.kie.internal.runtime.manager.context.CaseContext;
-import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -251,13 +242,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	
 	public NodeInstance getNodeInstance(final Node node) {
 	    Node actualNode = node;
-	    // async continuation handling
-	    if (node instanceof AsyncEventNode) {
-            actualNode = ((AsyncEventNode) node).getActualNode();
-        } else if (useAsync(node)) {
-            actualNode = new AsyncEventNode(node);
-        }
-
 
 		NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(actualNode);
 		if (conf == null) {
@@ -395,25 +379,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
 
             if (isSignalCompletion()) {
-                RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
-                if (getParentProcessInstanceId() > 0 && manager != null) {
-                	try {
-                	    org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get(getParentProcessInstanceId());
-
-                        String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
-                        if (caseId != null) {
-                            context = CaseContext.get(caseId);
-                        }
-
-    	                RuntimeEngine runtime = manager.getRuntimeEngine(context);
-						KieRuntime managedkruntime = (KieRuntime) runtime.getKieSession();
-    	                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
-                	} catch (SessionNotFoundException e) {
-                		// in case no session is found for parent process let's skip signal for process instance completion
-                	}
-                } else {
-                    processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
-                }
+                
+                processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
+                
             }
         } else {
             super.setState(state, outcome);
@@ -437,7 +405,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
 	public void reconnect() {
-        validate();
+        
 	    super.reconnect();
 		for (NodeInstance nodeInstance : nodeInstances) {
 			if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
@@ -688,16 +656,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         }
     }
 
-    private void validate() {
-	    InternalRuntimeManager manager = (InternalRuntimeManager) getKnowledgeRuntime().getEnvironment().get("RuntimeManager");
-        if (manager != null) {
-            // check if process instance is owned by the same manager as the one owning ksession
-            if (hasDeploymentId() && !manager.getIdentifier().equals(getDeploymentId())) {
-                throw new IllegalStateException("Process instance " + getId() + " is owned by another deployment " +
-                        getDeploymentId() + " != " + manager.getIdentifier());
-            }
-        }
-    }
 
     protected List<String> resolveVariables(List<String> events) {
 	    return events.stream().map( event -> resolveVariable(event)).collect(Collectors.toList());

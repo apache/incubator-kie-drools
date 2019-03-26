@@ -15,6 +15,8 @@
 
 package org.drools.compiler.compiler.xml.rules;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -27,8 +29,6 @@ import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import static org.junit.Assert.*;
 
 /**
  * Helper Class for both xml and drl Dump Tests

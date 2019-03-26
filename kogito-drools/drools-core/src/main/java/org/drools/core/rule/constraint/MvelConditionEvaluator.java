@@ -15,6 +15,8 @@
 
 package org.drools.core.rule.constraint;
 
+import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +45,6 @@ import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.util.ASTLinkedList;
-
-import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
 
 public class MvelConditionEvaluator implements ConditionEvaluator {
 

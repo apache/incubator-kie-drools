@@ -1,18 +1,16 @@
 package org.drools.modelcompiler.builder.generator;
 
+import static org.drools.javaparser.JavaParser.parseType;
+import static org.drools.javaparser.ast.NodeList.nodeList;
+
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.drools.compiler.lang.descr.FunctionDescr;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.TryStmt;
-
-import static com.github.javaparser.JavaParser.parseType;
-import static com.github.javaparser.ast.NodeList.nodeList;
+import org.drools.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.stmt.TryStmt;
+import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
 
 public class FunctionGenerator {
 
@@ -27,7 +25,7 @@ public class FunctionGenerator {
             parameters.add(new Parameter(parseType(type), name));
         }
 
-        NodeList<Modifier> modifiers = NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier());
+        EnumSet<Modifier> modifiers = EnumSet.of(Modifier.PUBLIC, Modifier.STATIC);
         MethodDeclaration methodDeclaration = new MethodDeclaration(modifiers, desc.getName(), parseType(desc.getReturnType()), nodeList(parameters));
 
         BlockStmt block = DrlxParseUtil.parseBlock("try {} catch (Exception e) { throw new RuntimeException(e); }");

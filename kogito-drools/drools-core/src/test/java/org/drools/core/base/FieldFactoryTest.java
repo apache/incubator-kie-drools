@@ -16,8 +16,8 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.FieldValue;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,8 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.drools.core.spi.FieldValue;
+import org.junit.Test;
 
 public class FieldFactoryTest {
 

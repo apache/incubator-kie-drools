@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import static org.drools.core.rule.QueryArgument.Declr.evaluateDeclaration;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -32,8 +34,6 @@ import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
-
-import static org.drools.core.rule.QueryArgument.Declr.evaluateDeclaration;
 
 public interface QueryArgument extends Externalizable {
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_6eef3a7c-bb0d-40bb-858d-f9067789c18a" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.2" id="_6eef3a7c-bb0d-40bb-858d-f9067789c18a" name="Decision Service 20180718" namespace="http://www.trisotech.com/dmn/definitions/_6eef3a7c-bb0d-40bb-858d-f9067789c18a" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_cf49add9-84a4-40ac-8306-1eea599ff43c" name="DS given inputdata">
+        <dmn11:outputDecision href="#_1ea3632f-8d96-4c1b-8442-06787ff5a316"/>
+        <dmn11:encapsulatedDecision href="#_e0bb723e-9f73-435c-9af5-92329c81ef14"/>
+        <dmn11:encapsulatedDecision href="#_084ed4f5-eb96-4d01-8a1e-85dd9e933d19"/>
+        <dmn11:inputData href="#_cd516016-e4e7-4274-9f9a-de42c4e8a242"/>
+        <dmn11:inputData href="#_747b3e38-ea12-44fd-9175-11d3aafb3c34"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <dmn11:inputData id="_cd516016-e4e7-4274-9f9a-de42c4e8a242" name="Person name">
+    <dmn11:variable id="_5e92b485-b274-4a77-b17d-cf3189223cfc" name="Person name" typeRef="feel:string"/>
+  </dmn11:inputData>
+  <dmn11:inputData id="_747b3e38-ea12-44fd-9175-11d3aafb3c34" name="Person age">
+    <dmn11:variable id="_10d8f8b0-833d-46c2-9302-81377bc98078" name="Person age" typeRef="feel:number"/>
+  </dmn11:inputData>
+  <dmn11:decision id="_e0bb723e-9f73-435c-9af5-92329c81ef14" name="Greet the person">
+    <dmn11:variable id="_39864e15-6d4a-470b-942e-404a5cf1e689" name="Greet the person" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_cd516016-e4e7-4274-9f9a-de42c4e8a242"/>
+    </dmn11:informationRequirement>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_ef12690d-0e40-4bd6-ac6a-dacab2141f0c"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_beebf9c2-8522-44b8-985a-57f2a8554769" typeRef="feel:string">
+      <dmn11:text>what to say to greet a person(Person name)</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:businessKnowledgeModel id="_ef12690d-0e40-4bd6-ac6a-dacab2141f0c" name="what to say to greet a person">
+    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_2f0effad-f60b-4ab0-bf52-df09a1436008">
+      <dmn11:formalParameter id="_b1fb2e2d-3ce3-4b63-991f-409312302b87" name="name" typeRef="feel:string"/>
+      <dmn11:literalExpression id="_106aea2f-4fae-47fa-a783-4adf70f4e072">
+        <dmn11:text>"Hello, "+name</dmn11:text>
+      </dmn11:literalExpression>
+    </dmn11:encapsulatedLogic>
+    <dmn11:variable id="_9567cb84-a732-422c-b1a5-f153acb30754" name="what to say to greet a person"/>
+  </dmn11:businessKnowledgeModel>
+  <dmn11:decision id="_084ed4f5-eb96-4d01-8a1e-85dd9e933d19" name="is Person at age allowed">
+    <dmn11:variable id="_9c824eca-65d8-4132-b7ff-16fd7c497ae6" name="is Person at age allowed" typeRef="feel:boolean"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_747b3e38-ea12-44fd-9175-11d3aafb3c34"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_5e770d38-1ef6-4967-a0b3-6bd2189832b4" typeRef="feel:boolean">
+      <dmn11:text>if Person age &gt;= 21 then true else false</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="_1ea3632f-8d96-4c1b-8442-06787ff5a316" name="Final Decision">
+    <dmn11:variable id="_fd8b079b-b2df-45d7-8d3f-9a9fe3026f57" name="Final Decision" typeRef="feel:string"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#_e0bb723e-9f73-435c-9af5-92329c81ef14"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#_084ed4f5-eb96-4d01-8a1e-85dd9e933d19"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_ce57a3ca-0ae2-47de-88d1-ddfa9c37d66b" typeRef="feel:string">
+      <dmn11:text>Greet the person + "; "+  if is Person at age allowed then "you are allowed" else "sorry you are not age allowed"</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

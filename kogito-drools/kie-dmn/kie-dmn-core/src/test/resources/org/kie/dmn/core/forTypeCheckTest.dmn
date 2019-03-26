@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.13" id="_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd" name="forTypeCheckTest" namespace="http://www.trisotech.com/definitions/_6d8af9a2-dcf4-4b9e-8d90-6ccddc8c1bbd" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:inputData id="_0a89d143-f2f1-4c50-b552-5ceb7005ead9" name="a number">
+    <semantic:variable id="_bb71521c-28b1-40d6-b8af-76e6f2ae51cc" name="a number" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:decision id="_6902185b-7fc8-4efa-b9ad-dd88a471c2fa" name="text plus number">
+    <semantic:variable id="_28f8621f-e445-4c54-9523-a6deec49752f" name="text plus number" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_0a89d143-f2f1-4c50-b552-5ceb7005ead9"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_685e4fb5-a7d8-4ab9-9e4d-cf962aa43aac">
+      <semantic:text>"The input number is: "+string(a number)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_634eccd0-8c65-4724-a53c-ec36e5456bd1" name="hundred minus number">
+    <semantic:variable id="_1cb6958c-0bc9-4d7f-89a4-28b2813e3162" name="hundred minus number" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_0a89d143-f2f1-4c50-b552-5ceb7005ead9"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_020415a7-9c04-4057-af6a-9f836c6646a1">
+      <semantic:text>100 - a number</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

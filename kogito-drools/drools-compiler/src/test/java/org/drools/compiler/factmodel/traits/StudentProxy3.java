@@ -16,6 +16,8 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import java.util.Map;
+
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -29,8 +31,6 @@ import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 import org.kie.api.runtime.rule.Variable;
-
-import java.util.Map;
 
 
 public class StudentProxy3 extends TraitProxy implements IStudent {

@@ -16,6 +16,8 @@
 
 package org.drools.core.impl;
 
+import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_ENTRY_POINT;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,8 +50,6 @@ import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
-
-import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_ENTRY_POINT;
 
 public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 

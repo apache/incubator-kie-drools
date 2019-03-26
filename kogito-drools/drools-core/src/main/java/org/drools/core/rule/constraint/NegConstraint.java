@@ -15,16 +15,16 @@
 
 package org.drools.core.rule.constraint;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NegConstraint implements AlphaNodeFieldConstraint {
 

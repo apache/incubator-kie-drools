@@ -16,14 +16,14 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.junit.Assert.*;
+
 import java.util.Collection;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.KieFileSystem;
-
-import static org.junit.Assert.*;
 
 public class KieFileSystemImplTest {
 

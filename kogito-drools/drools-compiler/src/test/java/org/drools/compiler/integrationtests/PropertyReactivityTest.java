@@ -15,6 +15,11 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,11 +44,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
-
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class PropertyReactivityTest extends CommonTestMethodBase {
 
@@ -1771,8 +1771,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals(1, ((List) session.getGlobal("list")).size());
 
         session.fireAllRules();
-        // due to property reactivity the rule shouldn't fire again
-        assertEquals(1, ((List) session.getGlobal("list")).size());
+        assertEquals(2, ((List) session.getGlobal("list")).size());
 
         state.setState("finished");
 

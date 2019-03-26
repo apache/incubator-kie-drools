@@ -16,11 +16,6 @@
 
 package org.drools.compiler.lang.dsl;
 
-import org.drools.compiler.lang.Expander;
-import org.drools.compiler.lang.ExpanderException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -34,6 +29,11 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.drools.compiler.lang.Expander;
+import org.drools.compiler.lang.ExpanderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default expander uses String templates to provide pseudo natural

@@ -16,15 +16,15 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 import org.drools.core.util.ExternalizableLinkedHashMap;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StudentProxy2 extends TraitProxy implements IStudent {
 

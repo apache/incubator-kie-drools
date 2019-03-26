@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.protobuf.ByteString;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -39,6 +38,8 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+
+import com.google.protobuf.ByteString;
 
 public class KieMetaInfoBuilder {
 

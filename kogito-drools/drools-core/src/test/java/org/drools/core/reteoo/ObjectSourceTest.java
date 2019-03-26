@@ -16,13 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import java.lang.reflect.Field;
 
 import org.drools.core.test.model.DroolsTestCase;
-
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ObjectSourceTest extends DroolsTestCase {
 

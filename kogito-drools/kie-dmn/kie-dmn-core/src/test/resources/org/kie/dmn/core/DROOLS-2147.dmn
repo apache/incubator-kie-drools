@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_cbdacb7b-f72d-457d-b4f4-54020a06db24" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.11.1" id="_cbdacb7b-f72d-457d-b4f4-54020a06db24" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_cbdacb7b-f72d-457d-b4f4-54020a06db24" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="true" label="tPeople" name="tPeople">
+    <semantic:itemComponent id="_5978b2cd-4a06-4a9e-86d0-07b2d3130d6e" isCollection="false" name="Name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_88a810c1-f741-4a53-8662-0edeb14cef78" isCollection="false" name="Age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tListPeople" name="tListPeople">
+    <semantic:typeRef>tPeople</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="_a6b0abbf-39cb-4975-b6a8-cd6db20de8f6" name="People">
+    <semantic:variable id="_75d39634-cb1f-496b-a53e-9f326c47570e" name="People" typeRef="tPeople"/>
+    <semantic:relation id="_63866fea-dc7b-4549-94a2-9c2bdaaf34e2">
+      <semantic:column id="_b3fa3e08-6d2c-4c86-9621-2aa892ffe89f" name="Name" typeRef="feel:string"/>
+      <semantic:column id="_83215ec7-d555-4a5c-89d2-e17477c51d1a" name="Age" typeRef="feel:number"/>
+      <semantic:row id="_a67c836e-1c8d-452d-985a-93c85f0d911a">
+        <semantic:literalExpression id="_315b780e-94fc-4b0f-8c22-9d8d60a1704e">
+          <semantic:text>"Ana"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1e8134ea-8eb1-44c6-b393-34b9ea72c108">
+          <semantic:text>20</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_4c26a82b-88b8-4702-8886-0d9aa10e05e7">
+        <semantic:literalExpression id="_989d2125-e7e8-4d45-97d3-95eb87c7cd79">
+          <semantic:text>"Bob"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_06c9b7c6-a449-4060-ae2b-1bbb605322b0">
+          <semantic:text>22</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_c3dfc2a7-903c-463f-93e1-b3133a9945f9">
+        <semantic:literalExpression id="_30bd2feb-cf4b-4646-b0a5-b9e4d91bbecd">
+          <semantic:text>"Charlie"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7b9373a5-e75b-4349-8c2d-6b8546c02609">
+          <semantic:text>27</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_a3ec08eb-e9ce-44db-8125-22cec75e2604">
+        <semantic:literalExpression id="_df0ca5df-7e79-443b-90a5-419919fadf0b">
+          <semantic:text>"Daniel"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e41c958e-4231-408d-a795-5d7870b4c64a">
+          <semantic:text>29</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_6ccefc59-1fdf-4af9-a0bc-ddf64d19a2e7">
+        <semantic:literalExpression id="_def223e3-09db-4e6e-81d6-6b56ec4c638c">
+          <semantic:text>"Edson"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e3d60997-df48-40f2-88f6-8420e0c8d2d8">
+          <semantic:text>31</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_98ab3ae9-a56b-4a99-b528-b2f1dc9635a3">
+        <semantic:literalExpression id="_e1f48ee5-7494-456d-882b-632cc9dbea2d">
+          <semantic:text>"Fred"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_37b07dd5-6357-41e4-9038-fed8711d3196">
+          <semantic:text>32</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_ca455b94-a4c6-4f37-ac97-8b94a4d908eb" name="People groups">
+    <semantic:variable id="_5e2a1403-ba2c-4fd8-854b-c0e8adcee584" name="People groups" typeRef="tListPeople"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_a6b0abbf-39cb-4975-b6a8-cd6db20de8f6"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_601c0ea9-7664-4acf-b32b-6b35aa21df25">
+      <semantic:text>[ People[ Age &lt; 25 ], People[ Age &gt; 25 and Age &lt; 30 ], People[ Age &gt; 30 ] ]</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

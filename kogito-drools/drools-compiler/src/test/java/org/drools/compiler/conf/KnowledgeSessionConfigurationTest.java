@@ -15,15 +15,15 @@
  */
 package org.drools.compiler.conf;
 
+import static org.junit.Assert.*;
+
 import org.drools.core.BeliefSystemType;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
-import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
-
-import static org.junit.Assert.*;
 
 
 public class KnowledgeSessionConfigurationTest {

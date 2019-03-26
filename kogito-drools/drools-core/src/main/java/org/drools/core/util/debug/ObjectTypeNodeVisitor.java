@@ -16,10 +16,10 @@
 
 package org.drools.core.util.debug;
 
+import java.util.Stack;
+
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-
-import java.util.Stack;
 
 public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
     

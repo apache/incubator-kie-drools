@@ -16,7 +16,11 @@
 // $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g 2015-04-23 15:24:03
 
     package org.drools.compiler.lang.dsl;
-    import org.antlr.runtime.BitSet;
+    import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.antlr.runtime.BitSet;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.EarlyExitException;
 import org.antlr.runtime.FailedPredicateException;
@@ -35,10 +39,6 @@ import org.antlr.runtime.tree.RewriteRuleSubtreeStream;
 import org.antlr.runtime.tree.RewriteRuleTokenStream;
 import org.antlr.runtime.tree.TreeAdaptor;
 import org.drools.compiler.compiler.ParserError;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 
 @SuppressWarnings("all")

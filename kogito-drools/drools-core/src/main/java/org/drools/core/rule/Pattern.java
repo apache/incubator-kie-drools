@@ -16,6 +16,11 @@
 
 package org.drools.core.rule;
 
+import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.reflective.util.ClassUtils.isFinal;
+import static org.drools.reflective.util.ClassUtils.isInterface;
+import static org.drools.reflective.util.ClassUtils.isIterable;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -43,11 +48,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.SelfDateExtractor;
 import org.drools.core.spi.SelfNumberExtractor;
-
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.core.util.ClassUtils.isFinal;
-import static org.drools.core.util.ClassUtils.isInterface;
-import static org.drools.core.util.ClassUtils.isIterable;
 
 ;
 

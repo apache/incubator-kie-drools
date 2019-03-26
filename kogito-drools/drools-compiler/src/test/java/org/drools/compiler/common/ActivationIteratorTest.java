@@ -15,6 +15,12 @@
 
 package org.drools.compiler.common;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
@@ -33,12 +39,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
 

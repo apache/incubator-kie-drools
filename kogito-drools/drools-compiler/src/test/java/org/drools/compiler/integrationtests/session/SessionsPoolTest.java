@@ -16,6 +16,12 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionService;
@@ -25,10 +31,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
-import org.drools.core.common.EventSupport;
-import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.event.DefaultRuleRuntimeEventListener;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
@@ -40,15 +42,7 @@ import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
-import org.kie.internal.event.rule.RuleEventListener;
-import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class SessionsPoolTest {
 
@@ -261,26 +255,5 @@ public class SessionsPoolTest {
         assertEquals(1, list.size());
 
         pool.shutdown();
-    }
-
-    @Test
-    public void testListenersReset() {
-        final KieContainerSessionsPool pool = getKieContainer().newKieSessionsPool( 1 );
-        KieSession ksession = pool.newKieSession();
-        try {
-            ksession.addEventListener(new DefaultAgendaEventListener());
-            ksession.addEventListener(new DefaultRuleRuntimeEventListener());
-            ((RuleEventManager) ksession).addEventListener(new RuleEventListener() {});
-        } finally {
-            ksession.dispose();
-        }
-        ksession = pool.newKieSession();
-        try {
-            Assertions.assertThat(ksession.getAgendaEventListeners()).hasSize(0);
-            Assertions.assertThat(ksession.getRuleRuntimeEventListeners()).hasSize(0);
-            Assertions.assertThat(((EventSupport) ksession).getRuleEventSupport().getEventListeners()).hasSize(0);
-        } finally {
-            ksession.dispose();
-        }
     }
 }

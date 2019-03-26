@@ -15,6 +15,16 @@
 
 package org.drools.core.rule.constraint;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.Drools.isJmxAvailable;
+import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
+import static org.drools.core.util.StringUtils.extractFirstIdentifier;
+import static org.drools.core.util.StringUtils.skipBlanks;
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
+import static org.drools.reflective.util.ClassUtils.getter2property;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -37,7 +47,6 @@ import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.PropertySpecificUtil;
@@ -65,6 +74,7 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.MemoryUtil;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.mvel2.ParserConfiguration;
@@ -72,17 +82,6 @@ import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
-import static org.drools.core.util.ClassUtils.getter2property;
-import static org.drools.core.util.Drools.isJmxAvailable;
-import static org.drools.core.util.StringUtils.codeAwareIndexOf;
-import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.skipBlanks;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
     protected static final boolean TEST_JITTING = false;
@@ -596,7 +595,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private String getLeftInExpression(IndexUtil.ConstraintType constraint) {
-        return expression.substring(0, codeAwareIndexOf(expression, constraint.getOperator())).trim();
+        return expression.substring(0, expression.indexOf(constraint.getOperator())).trim();
     }
 
     private boolean isAlphaHashable() {

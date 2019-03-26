@@ -19,8 +19,8 @@ package org.drools.compiler.kie.builder.impl.event;
 import java.util.Iterator;
 
 import org.drools.core.event.AbstractEventSupport;
-import org.kie.api.builder.Results;
 import org.kie.api.builder.KieScanner.Status;
+import org.kie.api.builder.Results;
 import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
 import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;

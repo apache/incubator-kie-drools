@@ -16,11 +16,6 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.util.HierarchyEncoderImpl;
-import org.drools.core.util.Triple;
-import org.drools.core.util.TripleFactory;
-import org.kie.api.runtime.rule.Variable;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,6 +25,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.util.HierarchyEncoderImpl;
+import org.drools.core.util.Triple;
+import org.drools.core.util.TripleFactory;
+import org.kie.api.runtime.rule.Variable;
 
 public abstract class TraitProxy implements Externalizable, TraitType, Comparable<TraitProxy> {
 

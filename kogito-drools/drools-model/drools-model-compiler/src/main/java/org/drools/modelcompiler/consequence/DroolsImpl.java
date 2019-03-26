@@ -16,6 +16,10 @@
 
 package org.drools.modelcompiler.consequence;
 
+import static java.util.Arrays.asList;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.modelcompiler.consequence.LambdaConsequence.adaptBitMask;
+
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -30,11 +34,6 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-
-import static java.util.Arrays.asList;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.modelcompiler.consequence.LambdaConsequence.adaptBitMask;
 
 public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext {
     private final KnowledgeHelper knowledgeHelper;

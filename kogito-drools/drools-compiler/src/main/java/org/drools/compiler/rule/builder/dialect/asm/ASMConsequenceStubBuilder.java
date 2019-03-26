@@ -15,9 +15,25 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACC_VOLATILE;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.ATHROW;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.GOTO;
+import static org.mvel2.asm.Opcodes.IFNONNULL;
+import static org.mvel2.asm.Opcodes.MONITORENTER;
+import static org.mvel2.asm.Opcodes.MONITOREXIT;
+import static org.mvel2.asm.Opcodes.RETURN;
+
+import java.util.Map;
+
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.WorkingMemory;
 import org.drools.core.rule.GroupElement;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.ConsequenceGenerator;
 import org.drools.core.rule.builder.dialect.asm.ConsequenceStub;
@@ -27,10 +43,6 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
-
-import java.util.Map;
-
-import static org.mvel2.asm.Opcodes.*;
 
 public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
 

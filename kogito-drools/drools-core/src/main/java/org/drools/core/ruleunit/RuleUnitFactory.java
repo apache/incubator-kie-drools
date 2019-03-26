@@ -16,6 +16,8 @@
 
 package org.drools.core.ruleunit;
 
+import static org.drools.reflective.util.ClassUtils.isAssignable;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +27,6 @@ import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.kie.api.definition.rule.UnitVar;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
-
-import static org.drools.core.util.ClassUtils.isAssignable;
 
 public class RuleUnitFactory {
 

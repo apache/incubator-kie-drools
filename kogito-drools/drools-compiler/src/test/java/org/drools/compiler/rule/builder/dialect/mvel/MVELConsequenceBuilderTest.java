@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.junit.Assert.*;
+
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -67,8 +69,6 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
-
-import static org.junit.Assert.*;
 
 public class MVELConsequenceBuilderTest {
 

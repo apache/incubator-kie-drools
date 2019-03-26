@@ -16,11 +16,11 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.spi.RuleComponent;
-
 import java.io.Externalizable;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.spi.RuleComponent;
 
 public interface RuleConditionElement
     extends

@@ -17,12 +17,12 @@
 package org.drools.compiler.lang.api.impl;
 
 import org.drools.compiler.lang.api.AccumulateDescrBuilder;
-import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.lang.api.CollectDescrBuilder;
 import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.SourceDescrBuilder;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.FromDescr;
+import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
 

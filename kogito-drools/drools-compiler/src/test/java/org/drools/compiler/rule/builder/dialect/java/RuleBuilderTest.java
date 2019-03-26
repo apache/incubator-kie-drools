@@ -16,6 +16,9 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -43,9 +46,6 @@ import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.util.DateUtils;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class RuleBuilderTest {
 

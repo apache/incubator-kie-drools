@@ -16,10 +16,11 @@
 
 package org.drools.core.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class KieFunctionsTest {

@@ -17,20 +17,20 @@
 package org.drools.compiler.lang.api.impl;
 
 import org.drools.compiler.lang.api.AccumulateDescrBuilder;
+import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.ConditionalBranchDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
-import org.drools.compiler.lang.api.NamedConsequenceDescrBuilder;
-import org.drools.compiler.lang.api.PatternDescrBuilder;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.EvalDescrBuilder;
 import org.drools.compiler.lang.api.ForallDescrBuilder;
+import org.drools.compiler.lang.api.NamedConsequenceDescrBuilder;
+import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
+import org.drools.compiler.lang.descr.NotDescr;
+import org.drools.compiler.lang.descr.OrDescr;
 
 /**
  * An implementation for the CEDescrBuilder

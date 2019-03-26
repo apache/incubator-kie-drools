@@ -16,6 +16,8 @@
 
 package org.drools.core.runtime;
 
+import static java.util.Collections.singletonList;
+
 import java.util.List;
 
 import org.drools.core.fluent.impl.Batch;
@@ -29,8 +31,6 @@ import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.RegistryContext;
-
-import static java.util.Collections.singletonList;
 
 public interface InternalLocalRunner extends ExecutableRunner<RequestContext> {
     default RequestContext execute(Executable executable) {

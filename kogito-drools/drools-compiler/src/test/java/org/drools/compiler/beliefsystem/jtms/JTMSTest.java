@@ -15,6 +15,8 @@
 
 package org.drools.compiler.beliefsystem.jtms;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,9 +45,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import static org.junit.Assert.*;
 
 public class JTMSTest {
 

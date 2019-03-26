@@ -16,13 +16,13 @@
 
 package org.drools.core.base.dataproviders;
 
+import java.util.Iterator;
+
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.ReactiveObject;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-
-import java.util.Iterator;
 
 public class ReactiveMVELDataProvider extends MVELDataProvider {
 

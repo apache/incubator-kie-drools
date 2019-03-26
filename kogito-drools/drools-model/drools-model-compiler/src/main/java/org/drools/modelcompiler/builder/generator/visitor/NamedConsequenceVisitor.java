@@ -1,5 +1,12 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ELSE_WHEN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.THEN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WHEN_CALL;
+import static org.drools.modelcompiler.builder.generator.ModelGenerator.createVariables;
+
 import java.util.Collections;
 
 import org.drools.compiler.lang.descr.AndDescr;
@@ -7,21 +14,14 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.stmt.BlockStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.Consequence;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
-
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.ELSE_WHEN_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.THEN_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.WHEN_CALL;
-import static org.drools.modelcompiler.builder.generator.ModelGenerator.createVariables;
 
 public class NamedConsequenceVisitor {
 

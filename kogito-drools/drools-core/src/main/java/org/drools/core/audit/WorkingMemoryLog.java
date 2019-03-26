@@ -15,9 +15,9 @@
 
 package org.drools.core.audit;
 
-import org.drools.core.audit.event.LogEvent;
-
 import java.util.List;
+
+import org.drools.core.audit.event.LogEvent;
 
 public class WorkingMemoryLog {
 

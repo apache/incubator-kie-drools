@@ -24,7 +24,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 public class IdentityPlaceholderResolverStrategy

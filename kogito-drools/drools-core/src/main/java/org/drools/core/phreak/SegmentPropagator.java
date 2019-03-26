@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
@@ -22,8 +24,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
-
-import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 
 public class SegmentPropagator {
 

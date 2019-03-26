@@ -16,6 +16,12 @@
 
 package org.drools.core.base.mvel;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -28,12 +34,6 @@ import org.drools.core.spi.ReturnValueExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.integration.VariableResolverFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
 
 public class MVELReturnValueExpression
     implements

@@ -15,6 +15,11 @@
 
 package org.drools.core.meta.org.test;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.factmodel.traits.AbstractTraitFactory;
 import org.drools.core.metadata.Lit;
 import org.drools.core.metadata.ManyValuedMetaProperty;
@@ -25,11 +30,6 @@ import org.drools.core.metadata.ToManyPropertyLiteral;
 import org.drools.core.metadata.ToOnePropertyLiteral;
 import org.drools.core.metadata.With;
 import org.drools.core.util.ClassUtils;
-
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 
 public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializable {
 

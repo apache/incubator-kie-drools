@@ -15,19 +15,19 @@
 
 package org.drools.compiler.lang;
 
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.junit.Assert.*;
+
 import java.util.LinkedList;
 
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
-import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
-import static org.junit.Assert.*;
 
 public class DRLContextTest {
 

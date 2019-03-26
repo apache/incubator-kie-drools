@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+
 import java.util.concurrent.CountDownLatch;
 
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -33,8 +35,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
-
-import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 public interface PropagationEntry {
 

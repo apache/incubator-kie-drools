@@ -17,8 +17,8 @@
 package org.drools.compiler.lang.api.impl;
 
 import org.drools.compiler.lang.api.DescrBuilder;
-import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.ForallDescrBuilder;
+import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.descr.ForallDescr;
 
 /**

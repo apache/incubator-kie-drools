@@ -18,11 +18,11 @@ package org.drools.compiler.api;
 import java.util.Collection;
 
 import org.junit.Test;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
 
 
 public class KnowledgeSessionTest {

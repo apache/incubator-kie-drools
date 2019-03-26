@@ -15,12 +15,17 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import static org.junit.Assert.assertEquals;
+import static org.mvel2.asm.Opcodes.ACC_FINAL;
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.RETURN;
+
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.junit.*;
-import org.mvel2.asm.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.mvel2.asm.Opcodes.*;
+import org.mvel2.asm.MethodVisitor;
 
 public class ClassGeneratorTest {
 

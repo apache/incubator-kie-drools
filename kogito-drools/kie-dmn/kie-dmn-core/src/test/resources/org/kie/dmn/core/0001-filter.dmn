@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+             xmlns:tns="http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a"
+             xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="_f52ca843-504b-4c3b-a6bc-4d377bffef7a"
+             namespace="http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a"
+             exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" name="filter01" triso:logoChoice="Default"
+             xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd"
+             expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
+             typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+  <itemDefinition id="tEmployee" name="tEmployee" isCollection="true">
+    <itemComponent id="_c22147cb-9481-404e-8f48-f8eee8d25565" name="id" isCollection="false">
+      <typeRef>feel:number</typeRef>
+    </itemComponent>
+    <itemComponent id="_0b26fc3e-dcb9-4106-ac30-f536247fb48c" name="dept" isCollection="false">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+    <itemComponent id="_e5120ba7-544a-4f7d-8712-f1c659b82f61" name="name" isCollection="false">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <itemDefinition id="tNameList" name="tNameList" isCollection="true">
+    <typeRef>feel:string</typeRef>
+  </itemDefinition>
+  <decision id="_4a786da5-5cd2-4c3a-ba4d-dcb3051c1812" name="filter01">
+    <variable name="filter01" typeRef="tns:tNameList"/>
+    <informationRequirement>
+      <requiredInput href="#_17c8d488-19be-481b-b341-85043176a25c"/>
+    </informationRequirement>
+    <literalExpression>
+      <text>Employee[dept="Engineering"].name</text>
+    </literalExpression>
+  </decision>
+  <inputData id="_17c8d488-19be-481b-b341-85043176a25c" name="Employee">
+    <variable name="Employee" typeRef="tns:tEmployee"/>
+  </inputData>
+</definitions>

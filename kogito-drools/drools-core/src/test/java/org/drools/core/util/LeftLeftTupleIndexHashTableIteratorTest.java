@@ -16,6 +16,16 @@
 
 package org.drools.core.util;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
@@ -26,9 +36,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.util.index.TupleIndexHashTable;
-import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
-import org.drools.core.util.index.TupleList;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -37,19 +45,11 @@ import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.index.TupleIndexHashTable;
+import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
+import org.drools.core.util.index.TupleList;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.runtime.KieSession;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class LeftLeftTupleIndexHashTableIteratorTest {
 

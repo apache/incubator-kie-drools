@@ -16,13 +16,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.Message;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
-import org.drools.core.util.Drools;
-import org.drools.core.util.KeyStoreHelper;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +24,14 @@ import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+
+import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
+import org.drools.core.util.Drools;
+import org.drools.core.util.KeyStoreHelper;
+
+import com.google.protobuf.ByteString;
+import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.Message;
 
 public class KieModuleCacheHelper {
     

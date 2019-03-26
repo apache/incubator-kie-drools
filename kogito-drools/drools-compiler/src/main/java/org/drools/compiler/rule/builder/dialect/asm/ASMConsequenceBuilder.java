@@ -15,6 +15,18 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
+import static org.mvel2.asm.Opcodes.RETURN;
+
+import java.util.Map;
+
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -32,10 +44,6 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.asm.MethodVisitor;
-
-import java.util.Map;
-
-import static org.mvel2.asm.Opcodes.*;
 
 public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
 

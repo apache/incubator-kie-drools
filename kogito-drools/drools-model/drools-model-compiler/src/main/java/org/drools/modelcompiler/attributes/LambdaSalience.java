@@ -16,14 +16,14 @@
 
 package org.drools.modelcompiler.attributes;
 
+import static org.drools.modelcompiler.consequence.LambdaConsequence.declarationsToFacts;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
 import org.drools.core.spi.Tuple;
 import org.drools.model.DynamicValueSupplier;
 import org.kie.api.definition.rule.Rule;
-
-import static org.drools.modelcompiler.consequence.LambdaConsequence.declarationsToFacts;
 
 public class LambdaSalience extends DynamicAttributeEvaluator<Integer> implements Salience {
 

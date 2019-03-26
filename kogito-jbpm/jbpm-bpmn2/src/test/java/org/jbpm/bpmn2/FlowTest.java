@@ -16,6 +16,12 @@
 
 package org.jbpm.bpmn2;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +37,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -62,18 +68,12 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 @RunWith(Parameterized.class)
 public class FlowTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { { false } };
         return Arrays.asList(data);
     };
 
@@ -82,12 +82,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
     private KieSession ksession;
 
     public FlowTest(boolean persistence) {
-        super(persistence);
     }
     
     @BeforeClass
     public static void setup() throws Exception {
-        setUpDataSource();
         VariableScope.setVariableStrictOption(true);
     }
 
@@ -1006,42 +1004,23 @@ public class FlowTest extends JbpmBpmn2TestCase {
         nodeInstance = nodeInstances.iterator().next();
         assertTrue(nodeInstance instanceof ForEachNodeInstance);
 
-        if (isPersistence()) {
-            // when persistence is used there is slightly different behaviour of ContextNodeInstance
-            // it's already tested by SimplePersistenceBPMNProcessTest.testMultiInstanceLoopCharacteristicsProcessWithORGateway
-            nodeInstancesChild = ((ForEachNodeInstance) nodeInstance)
-                    .getNodeInstances();
-            assertEquals(1, nodeInstancesChild.size());
+        nodeInstancesChild = ((ForEachNodeInstance) nodeInstance)
+                .getNodeInstances();
+        assertEquals(2, nodeInstancesChild.size());
 
-            Iterator<NodeInstance> childIterator = nodeInstancesChild
-                    .iterator();
+        Iterator<NodeInstance> childIterator = nodeInstancesChild
+                .iterator();
 
-            assertTrue(childIterator.next() instanceof CompositeContextNodeInstance);
+        assertTrue(childIterator.next() instanceof CompositeContextNodeInstance);
+        assertTrue(childIterator.next() instanceof ForEachJoinNodeInstance);
 
-            ksession.getWorkItemManager().completeWorkItem(
-                    workItems.get(2).getId(), null);
-            ksession.getWorkItemManager().completeWorkItem(
-                    workItems.get(3).getId(), null);
+        ksession.getWorkItemManager().completeWorkItem(
+                workItems.get(2).getId(), null);
+        ksession.getWorkItemManager().completeWorkItem(
+                workItems.get(3).getId(), null);
 
-            assertProcessInstanceFinished(processInstance, ksession);
-        } else {
-            nodeInstancesChild = ((ForEachNodeInstance) nodeInstance)
-                    .getNodeInstances();
-            assertEquals(2, nodeInstancesChild.size());
+        assertProcessInstanceFinished(processInstance, ksession);
 
-            Iterator<NodeInstance> childIterator = nodeInstancesChild
-                    .iterator();
-
-            assertTrue(childIterator.next() instanceof CompositeContextNodeInstance);
-            assertTrue(childIterator.next() instanceof ForEachJoinNodeInstance);
-
-            ksession.getWorkItemManager().completeWorkItem(
-                    workItems.get(2).getId(), null);
-            ksession.getWorkItemManager().completeWorkItem(
-                    workItems.get(3).getId(), null);
-
-            assertProcessInstanceFinished(processInstance, ksession);
-        }
 
     }
     
@@ -1129,104 +1108,6 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess(
                 "MultiInstanceLoopCharacteristicsProcess", params);
         assertProcessInstanceCompleted(processInstance);
-    }
-    
-    @Test
-    public void testMultiInstanceLoopCharacteristicsProcessSequential() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessSequential.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        myList.add("First Item");
-        myList.add("Second Item");
-        myList.add("Third Item");
-        params.put("list", myList);
-        ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcess", params);
-        
-        Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstance)processInstance).getNodeInstances();
-        assertEquals("There should be only one node instance active", 1, nodeInstances.size());
-        
-        NodeInstance nodeInstance = nodeInstances.iterator().next();
-        assertTrue(nodeInstance instanceof ForEachNodeInstance);
-       
-        List<WorkItem> tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        assertEquals(myList.get(0), tasks.get(0).getParameter("data"));
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);        
-        
-        tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        assertEquals(myList.get(1), tasks.get(0).getParameter("data"));
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);
-        
-        tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        assertEquals(myList.get(2), tasks.get(0).getParameter("data"));
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);
-        
-        
-        assertProcessInstanceCompleted(processInstance);
-    }
-    
-    @Test
-    public void testMultiInstanceLoopCharacteristicsTaskSequential() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskSequential.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        myList.add("First Item");
-        myList.add("Second Item");
-        params.put("list", myList);
-        ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsTask", params);
-        
-        List<WorkItem> tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        assertEquals(myList.get(0), tasks.get(0).getParameter("Item"));
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);        
-        
-        tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        assertEquals(myList.get(1), tasks.get(0).getParameter("Item"));
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);
-        
-        assertProcessInstanceCompleted(processInstance);
-
-    }
-    
-    @Test
-    public void testMultiInstanceLoopCharacteristicsTaskCmpCondSequential() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequential.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<String, Object>();
-        List<String> myList = new ArrayList<String>();
-        myList.add("First Item");
-        myList.add("Second Item");
-        params.put("list", myList);
-        ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsTask", params);
-        
-        List<WorkItem> tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        assertEquals(myList.get(0), tasks.get(0).getParameter("Item"));
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);        
-        
-        tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be no more task assigned", 0, tasks.size());
-                
-        assertProcessInstanceCompleted(processInstance);
-
     }
     
     @Test

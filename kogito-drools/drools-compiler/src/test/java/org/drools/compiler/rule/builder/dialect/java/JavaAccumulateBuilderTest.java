@@ -15,6 +15,11 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -31,11 +36,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Accumulate;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class JavaAccumulateBuilderTest {
 

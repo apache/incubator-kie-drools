@@ -16,11 +16,13 @@
 
 package org.drools.core.reteoo;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
+import org.junit.Test;
 
 public class FactHandleTest {
     /*

@@ -16,11 +16,13 @@
 
 package org.drools.core.common;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
-import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
+import org.drools.core.test.model.Cheese;
+import org.junit.Test;
 
 public class EqualityKeyTest {
     @Test

@@ -16,22 +16,22 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.TokenStream;
-import org.drools.core.base.EvaluatorWrapper;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaLexer;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.TokenStream;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaLexer;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
+import org.drools.core.base.EvaluatorWrapper;
 
 /**
  * Expression analyzer.

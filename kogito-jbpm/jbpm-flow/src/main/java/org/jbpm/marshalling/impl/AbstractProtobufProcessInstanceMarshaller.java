@@ -37,7 +37,6 @@ import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.jbpm.workflow.instance.node.AsyncEventNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
@@ -291,14 +290,6 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.MILESTONE_NODE )
                     .setMilestone( _ms.build() );
-        } else if ( nodeInstance instanceof AsyncEventNodeInstance ) {
-            JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.Builder _asyncEvent = JBPMMessages.ProcessInstance.NodeInstanceContent.AsyncEventNode.newBuilder();
-            _asyncEvent.setEventType(((AsyncEventNodeInstance) nodeInstance).getEventType());
-                    
-            _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
-                    .setType( NodeInstanceType.ASYNC_EVENT_NODE )
-                    .setAsyncEvent(_asyncEvent.build());
-            
         } else if ( nodeInstance instanceof EventNodeInstance ) {
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.EVENT_NODE );
@@ -391,8 +382,6 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                             .setLevel(level.getValue()) );
                 }
             }
-            
-            _foreach.setSequentialCounter(forEachNodeInstance.getSequentialCounter());
             
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.FOR_EACH_NODE )
@@ -781,10 +770,6 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 nodeInstance = new TimerNodeInstance();
                 ((TimerNodeInstance) nodeInstance).internalSetTimerId( _content.getTimer().getTimerId() );
                 break;
-            case ASYNC_EVENT_NODE :
-                nodeInstance = new AsyncEventNodeInstance();
-                ((AsyncEventNodeInstance) nodeInstance).setEventType(_content.getAsyncEvent().getEventType());
-                break;
             case EVENT_NODE :
                 nodeInstance = new EventNodeInstance();
                 break;
@@ -801,7 +786,6 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 break;
             case FOR_EACH_NODE :
                 nodeInstance = new ForEachNodeInstance();
-                ((ForEachNodeInstance) nodeInstance).setInternalSequentialCounter(_content.getForEach().getSequentialCounter());
                 break;
             case COMPOSITE_CONTEXT_NODE :
                 nodeInstance = new CompositeContextNodeInstance();

@@ -15,20 +15,20 @@
 
 package org.drools.compiler.lang;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.LinkedList;
+
 import org.antlr.runtime.RecognitionException;
-import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import java.util.LinkedList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class DRLIncompleteCodeTest {
 

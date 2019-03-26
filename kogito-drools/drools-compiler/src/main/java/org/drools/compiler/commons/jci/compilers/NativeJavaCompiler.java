@@ -15,6 +15,8 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
+import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,11 +52,9 @@ import javax.tools.ToolProvider;
 
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.util.IoUtils;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.jci.CompilationProblem;
-
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public class NativeJavaCompiler extends AbstractJavaCompiler {
 

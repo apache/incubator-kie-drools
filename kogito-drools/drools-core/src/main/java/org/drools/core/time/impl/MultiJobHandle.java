@@ -16,10 +16,10 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.JobHandle;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.drools.core.time.JobHandle;
 
 
 /**

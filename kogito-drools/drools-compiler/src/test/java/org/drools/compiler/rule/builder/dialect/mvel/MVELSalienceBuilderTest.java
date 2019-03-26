@@ -15,6 +15,11 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.compiler.Person;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -45,11 +50,6 @@ import org.drools.core.spi.Salience;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class MVELSalienceBuilderTest {
     private RuleBuildContext context;

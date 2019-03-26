@@ -16,11 +16,11 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.kie.api.definition.type.PropertyReactive;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
+
+import org.kie.api.definition.type.PropertyReactive;
 
 @Traitable
 @PropertyReactive

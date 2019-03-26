@@ -16,11 +16,11 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitableBean;
-
 import java.util.BitSet;
 import java.util.Map;
+
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitableBean;
 
 public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithBehaviour<K> {
 

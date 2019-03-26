@@ -16,13 +16,12 @@
 
 package org.drools.core.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class DroolsAssert {
 

@@ -16,8 +16,8 @@
 package org.drools.core.common;
 
 import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.util.LinkedListNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.LinkedListNode;
 
 public interface LogicalDependency<M extends ModedAssertion<M>> extends LinkedListNode<LogicalDependency<M>> {
 

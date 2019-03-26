@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.Cat;
 import org.drools.compiler.Cheese;
@@ -26,8 +28,6 @@ import org.drools.compiler.integrationtests.SerializationHelper;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.assertEquals;
 
 public class FieldAccessTest extends CommonTestMethodBase {
 

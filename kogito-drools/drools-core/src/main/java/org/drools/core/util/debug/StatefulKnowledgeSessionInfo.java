@@ -16,12 +16,6 @@
 
 package org.drools.core.util.debug;
 
-import org.drools.core.common.NetworkNode;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Comparator;
@@ -29,6 +23,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.drools.core.common.NetworkNode;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 
 public class StatefulKnowledgeSessionInfo {
     private StatefulKnowledgeSessionImpl session;

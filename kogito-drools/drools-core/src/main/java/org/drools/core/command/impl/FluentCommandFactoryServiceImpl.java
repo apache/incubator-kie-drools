@@ -16,15 +16,15 @@
 
 package org.drools.core.command.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.api.command.Command;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class FluentCommandFactoryServiceImpl {
     private final CommandFactoryServiceImpl factory = new CommandFactoryServiceImpl();

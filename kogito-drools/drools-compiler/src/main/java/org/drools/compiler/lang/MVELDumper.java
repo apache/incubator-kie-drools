@@ -13,6 +13,11 @@
  */
 package org.drools.compiler.lang;
 
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
+import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
+import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
+import static org.drools.reflective.util.ClassUtils.findClass;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,11 +40,6 @@ import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.rule.XpathBackReference;
 import org.drools.core.util.ReflectiveVisitor;
-
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
-import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
-import static org.drools.core.util.ClassUtils.findClass;
-import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
 
 public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter {
 

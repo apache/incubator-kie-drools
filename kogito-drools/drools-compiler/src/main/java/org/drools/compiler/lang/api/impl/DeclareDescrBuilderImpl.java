@@ -16,12 +16,12 @@
 package org.drools.compiler.lang.api.impl;
 
 import org.drools.compiler.lang.api.DeclareDescrBuilder;
+import org.drools.compiler.lang.api.EntryPointDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.EnumDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.TypeDeclarationDescrBuilder;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.api.EntryPointDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.WindowDeclarationDescrBuilder;
+import org.drools.compiler.lang.descr.PackageDescr;
 
 public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, PackageDescr>
     implements

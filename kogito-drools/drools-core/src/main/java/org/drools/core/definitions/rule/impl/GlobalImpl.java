@@ -16,12 +16,12 @@
 
 package org.drools.core.definitions.rule.impl;
 
-import org.kie.api.definition.rule.Global;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.kie.api.definition.rule.Global;
 
 public class GlobalImpl implements Global, Externalizable {
     

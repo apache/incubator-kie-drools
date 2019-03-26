@@ -22,8 +22,6 @@ import java.util.List;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -325,47 +323,5 @@ public class MvelDialectTest extends BaseModelTest {
         } finally {
             ksession.dispose();
         }
-    }
-
-    @Test
-    public void testMultiDrlWithSamePackageMvel() throws Exception {
-        // DROOLS-3508
-        String drl1 = "package org.pkg\n" +
-                "import " + Person.class.getCanonicalName() + "\n" +
-                "dialect \"mvel\"\n"; // MVEL dialect defined at package level.
-
-        String drl2 = "package org.pkg\n" +
-                "rule R1\n" +
-                "no-loop\n" +
-                "when\n" +
-                "   $p : Person( name == \"John\" )\n" +
-                "then\n" +
-                "   $p.age = 1;\n" +
-                "   update($p);\n" +
-                "end\n";
-
-        KieSession ksession = getKieSession(drl1, drl2);
-
-        Person john = new Person("John", 24);
-        ksession.insert(john);
-        assertEquals(1, ksession.fireAllRules());
-        assertEquals(1, john.getAge());
-    }
-
-    @Test
-    public void testMVELNonExistingMethod() {
-        // DROOLS-3559
-        String drl =
-                "import " + Person.class.getCanonicalName() + "\n" +
-                "dialect \"mvel\"\n" +
-                "rule R\n" +
-                "when\n" +
-                "  $p : Person()\n" +
-                "then\n" +
-                "  modify($p) {likes = nonExistingMethod()};\n" +
-                "end";
-
-        Results results = createKieBuilder( drl ).getResults();
-        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
     }
 }

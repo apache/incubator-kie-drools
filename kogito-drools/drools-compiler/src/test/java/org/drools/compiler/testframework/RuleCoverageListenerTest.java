@@ -15,9 +15,13 @@
 
 package org.drools.compiler.testframework;
 
+import static org.junit.Assert.*;
+
+import java.util.HashSet;
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
@@ -33,11 +37,7 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.junit.Test;
-
-import java.util.HashSet;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleCoverageListenerTest {
 
@@ -54,7 +54,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 0,
                       ls.getPercentCovered() );
 
-        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule1"), null, null));
+        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule1"), null));
         assertEquals( 2,
                       ls.rules.size() );
         assertTrue( ls.rules.contains( "rule2" ) );
@@ -63,7 +63,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 33,
                       ls.getPercentCovered() );
 
-        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule2"), null, null));
+        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule2"), null));
         assertEquals( 1,
                       ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );
@@ -73,7 +73,7 @@ public class RuleCoverageListenerTest {
         assertEquals( 66,
                       ls.getPercentCovered() );
 
-        ls.afterMatchFired( new AfterActivationFiredEventImpl( new MockActivation( "rule3" ), null , null));
+        ls.afterMatchFired( new AfterActivationFiredEventImpl( new MockActivation( "rule3" ), null ));
         assertEquals( 0,
                       ls.rules.size() );
         assertFalse( ls.rules.contains( "rule2" ) );

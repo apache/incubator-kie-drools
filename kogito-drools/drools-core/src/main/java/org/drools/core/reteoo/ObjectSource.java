@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -37,8 +39,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.

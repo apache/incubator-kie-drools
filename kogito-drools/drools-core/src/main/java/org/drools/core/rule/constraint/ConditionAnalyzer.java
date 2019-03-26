@@ -15,6 +15,32 @@
 
 package org.drools.core.rule.constraint;
 
+import static org.drools.reflective.util.ClassUtils.convertToPrimitiveType;
+import static org.mvel2.asm.Opcodes.IADD;
+import static org.mvel2.asm.Opcodes.IAND;
+import static org.mvel2.asm.Opcodes.IDIV;
+import static org.mvel2.asm.Opcodes.IMUL;
+import static org.mvel2.asm.Opcodes.INEG;
+import static org.mvel2.asm.Opcodes.IOR;
+import static org.mvel2.asm.Opcodes.IREM;
+import static org.mvel2.asm.Opcodes.ISHL;
+import static org.mvel2.asm.Opcodes.ISHR;
+import static org.mvel2.asm.Opcodes.ISUB;
+import static org.mvel2.asm.Opcodes.IUSHR;
+import static org.mvel2.asm.Opcodes.IXOR;
+import static org.mvel2.asm.Opcodes.LADD;
+import static org.mvel2.asm.Opcodes.LAND;
+import static org.mvel2.asm.Opcodes.LDIV;
+import static org.mvel2.asm.Opcodes.LMUL;
+import static org.mvel2.asm.Opcodes.LNEG;
+import static org.mvel2.asm.Opcodes.LOR;
+import static org.mvel2.asm.Opcodes.LREM;
+import static org.mvel2.asm.Opcodes.LSHL;
+import static org.mvel2.asm.Opcodes.LSHR;
+import static org.mvel2.asm.Opcodes.LSUB;
+import static org.mvel2.asm.Opcodes.LUSHR;
+import static org.mvel2.asm.Opcodes.LXOR;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -80,32 +106,6 @@ import org.mvel2.optimizers.impl.refl.nodes.StaticReferenceAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.StaticVarAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ThisValueAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.VariableAccessor;
-
-import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
-import static org.mvel2.asm.Opcodes.IADD;
-import static org.mvel2.asm.Opcodes.IAND;
-import static org.mvel2.asm.Opcodes.IDIV;
-import static org.mvel2.asm.Opcodes.IMUL;
-import static org.mvel2.asm.Opcodes.INEG;
-import static org.mvel2.asm.Opcodes.IOR;
-import static org.mvel2.asm.Opcodes.IREM;
-import static org.mvel2.asm.Opcodes.ISHL;
-import static org.mvel2.asm.Opcodes.ISHR;
-import static org.mvel2.asm.Opcodes.ISUB;
-import static org.mvel2.asm.Opcodes.IUSHR;
-import static org.mvel2.asm.Opcodes.IXOR;
-import static org.mvel2.asm.Opcodes.LADD;
-import static org.mvel2.asm.Opcodes.LAND;
-import static org.mvel2.asm.Opcodes.LDIV;
-import static org.mvel2.asm.Opcodes.LMUL;
-import static org.mvel2.asm.Opcodes.LNEG;
-import static org.mvel2.asm.Opcodes.LOR;
-import static org.mvel2.asm.Opcodes.LREM;
-import static org.mvel2.asm.Opcodes.LSHL;
-import static org.mvel2.asm.Opcodes.LSHR;
-import static org.mvel2.asm.Opcodes.LSUB;
-import static org.mvel2.asm.Opcodes.LUSHR;
-import static org.mvel2.asm.Opcodes.LXOR;
 
 public class ConditionAnalyzer {
 

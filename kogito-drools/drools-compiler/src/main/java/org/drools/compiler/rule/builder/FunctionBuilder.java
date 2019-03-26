@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.LineMappings;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public interface FunctionBuilder extends EngineElementBuilder {
 

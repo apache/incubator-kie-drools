@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.internal.definition.KnowledgeDefinition;
 import org.kie.api.io.Resource;
+import org.kie.internal.definition.KnowledgeDefinition;
 
 public class Function implements  KnowledgeDefinition, Dialectable, Externalizable {
     private String name;

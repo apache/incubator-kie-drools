@@ -18,9 +18,6 @@ package org.drools.core.phreak;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
-import org.drools.core.spi.Tuple;
-
 public class ReactiveSet<T> extends ReactiveCollection<T, Set<T>> implements Set<T> {
 
     public ReactiveSet() {

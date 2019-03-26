@@ -19,34 +19,13 @@ package org.drools.core.command.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
-import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
-import org.drools.core.command.runtime.rule.ClearAgendaCommand;
-import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
-import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
-import org.drools.core.command.runtime.rule.DeleteCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.core.command.runtime.rule.FireUntilHaltCommand;
-import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
-import org.drools.core.command.runtime.rule.GetObjectCommand;
-import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
-import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.fluent.impl.Batch;
 import org.kie.api.command.Command;
@@ -63,43 +42,13 @@ import org.kie.api.runtime.ExecutionResults;
  * 1. THE SERIALIZATION OF THOSE COMMANDS
  * 2. THE INTEGRATION OF THOSE COMMANDS IN THE REST AND WS/SOAP IMPLEMENTATIONS!
  */
-@XmlRootElement(name="batch-execution")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "batch-execution", propOrder = {"lookup", "commands"})
 public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<ExecutionResults> {
 
     private static final long serialVersionUID = 510l;
 
-    @XmlAttribute
-    @XStreamAsAttribute
     private String lookup;
 
-    @XmlElements({
-                         @XmlElement(name = "abort-work-item", type = AbortWorkItemCommand.class),
-                         @XmlElement(name = "signal-event", type = SignalEventCommand.class),
-                         @XmlElement(name = "start-process", type = StartProcessCommand.class),
-                         @XmlElement(name = "retract", type = DeleteCommand.class),
-                         @XmlElement(name = "get-global", type = GetGlobalCommand.class),
-                         @XmlElement(name = "set-global", type = SetGlobalCommand.class),
-                         @XmlElement(name = "insert-elements", type = InsertElementsCommand.class),
-                         @XmlElement(name = "query", type = QueryCommand.class),
-                         @XmlElement(name = "insert", type = InsertObjectCommand.class),
-                         @XmlElement(name = "modify", type = ModifyCommand.class),
-                         @XmlElement(name = "get-object", type = GetObjectCommand.class),
-                         @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
-                         @XmlElement(name = "fire-until-halt", type = FireUntilHaltCommand.class),
-                         @XmlElement(name = "dispose", type = DisposeCommand.class),
-                         @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
-                         @XmlElement(name = "get-objects", type = GetObjectsCommand.class),
-                         @XmlElement(name = "set-focus", type = AgendaGroupSetFocusCommand.class),
-                         @XmlElement(name = "clear-activation-group", type = ClearActivationGroupCommand.class),
-                         @XmlElement(name = "clear-agenda", type = ClearAgendaCommand.class),
-                         @XmlElement(name = "clear-agenda-group", type = ClearAgendaGroupCommand.class),
-                         @XmlElement(name = "clear-ruleflow-group", type = ClearRuleFlowGroupCommand.class),
-                         @XmlElement(name = "get-fact-handles", type = GetFactHandlesCommand.class),
-                         @XmlElement(name = "apply-pmml-model-command", type = ApplyPmmlModelCommand.class)
-                 })
-    protected List<Command> commands;
+   protected List<Command> commands;
 
     public BatchExecutionCommandImpl() {
         // JAXB constructor

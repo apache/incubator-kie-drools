@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-user-bom-parent</artifactId>
-    <version>7.19.0.Final</version>
-    <relativePath>../kie-user-bom-parent/pom.xml</relativePath>
+    <artifactId>kie-parent</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -18,47 +18,6 @@
   <description>
     Import this BOM in your dependencyManagement if you want to depend on multiple Kie DMN artifacts.
   </description>
-
-  <url>https://www.drools.org</url>
-
-  <scm>
-    <connection>scm:git:https://github.com/kiegroup/kie-dmn.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/kie-dmn.git</developerConnection>
-    <url>https://github.com/kiegroup/kie-dmn</url>
-  </scm>
-  <issueManagement>
-    <system>jira</system>
-    <url>https://issues.jboss.org/browse/DROOLS</url>
-  </issueManagement>
-  <developers>
-    <developer>
-      <name>All developers are listed on the team website</name>
-      <url>http://www.drools.org/community/team.html</url>
-    </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name>All contributors are listed on the team website</name>
-      <url>http://www.drools.org/community/team.html</url>
-    </contributor>
-  </contributors>
-  <mailingLists>
-    <mailingList>
-      <name>setup</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-setup</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-setup</unsubscribe>
-    </mailingList>
-    <mailingList>
-      <name>usage</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-usage</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-usage</unsubscribe>
-    </mailingList>
-    <mailingList>
-      <name>development</name>
-      <subscribe>https://groups.google.com/forum/#!forum/drools-development</subscribe>
-      <unsubscribe>https://groups.google.com/forum/#!forum/drools-development</unsubscribe>
-    </mailingList>
-  </mailingLists>
 
   <!-- IMPORTANT: Do not declare any build things here! Declare them in kie-user-bom-parent. -->
   <build/>
@@ -82,7 +41,7 @@
           Each module should declare it's direct dependencies and possibly overwrite scope/optional.
           Always declare the sources jar too and optionally the test-jar.
       -->
-    
+
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-api</artifactId>
@@ -156,18 +115,7 @@
       <version>${version.org.kie}</version>
       <classifier>sources</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-signavio</artifactId>
-      <version>${version.org.kie}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-signavio</artifactId>
-      <version>${version.org.kie}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    
+
     </dependencies>
   </dependencyManagement>
 

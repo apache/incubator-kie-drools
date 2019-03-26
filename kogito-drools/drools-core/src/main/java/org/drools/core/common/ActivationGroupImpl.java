@@ -16,9 +16,9 @@
 
 package org.drools.core.common;
 
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.util.LinkedList;
-import org.drools.core.spi.Activation;
 
 public class ActivationGroupImpl
     implements

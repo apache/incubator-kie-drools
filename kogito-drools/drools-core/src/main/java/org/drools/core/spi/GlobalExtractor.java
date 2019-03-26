@@ -27,8 +27,8 @@ import java.math.BigInteger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseDateClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.facttemplates.Fact;
+import org.drools.core.util.ClassUtils;
 
 /**
  * This is a global variable extractor used to get a global variable value

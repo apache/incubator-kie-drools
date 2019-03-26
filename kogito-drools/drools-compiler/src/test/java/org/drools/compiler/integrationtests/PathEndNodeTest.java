@@ -16,6 +16,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaNode;
@@ -28,10 +32,6 @@ import org.drools.core.rule.EntryPointId;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.utils.KieHelper;
-
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class PathEndNodeTest {
 

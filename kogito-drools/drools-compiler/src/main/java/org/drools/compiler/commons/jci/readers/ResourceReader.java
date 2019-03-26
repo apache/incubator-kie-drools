@@ -18,7 +18,6 @@
 package org.drools.compiler.commons.jci.readers;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * A ResourceReader provide access to resource like e.g. source code

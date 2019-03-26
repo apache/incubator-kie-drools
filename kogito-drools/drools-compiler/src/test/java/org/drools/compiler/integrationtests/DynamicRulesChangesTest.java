@@ -15,18 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.command.Command;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.CommandFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +28,17 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.Assert.assertEquals;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.CommandFactory;
 
 public class DynamicRulesChangesTest extends CommonTestMethodBase {
 

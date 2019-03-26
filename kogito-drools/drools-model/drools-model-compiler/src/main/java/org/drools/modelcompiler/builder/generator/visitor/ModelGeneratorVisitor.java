@@ -1,5 +1,10 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXISTS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FORALL_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.OR_CALL;
+
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -22,11 +27,6 @@ import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateV
 import org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitorPatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternDSL;
 import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor;
-
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXISTS_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.FORALL_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.OR_CALL;
 
 public class ModelGeneratorVisitor implements DescrVisitor {
 

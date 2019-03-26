@@ -16,6 +16,8 @@
 
 package org.drools.compiler.lang.api.impl;
 
+import java.util.List;
+
 import org.drools.compiler.lang.api.AccumulateDescrBuilder;
 import org.drools.compiler.lang.api.CEDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
@@ -26,8 +28,6 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-
-import java.util.List;
 
 /**
  * An implementation for the CollectDescrBuilder

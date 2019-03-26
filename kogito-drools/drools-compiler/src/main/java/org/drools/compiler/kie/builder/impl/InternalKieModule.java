@@ -15,6 +15,12 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
+import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -26,15 +32,15 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
+import org.drools.compiler.addon.DependencyFilter;
+import org.drools.compiler.addon.PomModel;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.common.ResourceProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.reflective.ResourceProvider;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -51,12 +57,6 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
-
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
-import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 
 public interface InternalKieModule extends KieModule, Serializable {
 
@@ -126,7 +126,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     }
 
     default boolean isFileInKBase(KieBaseModel kieBase, String fileName) {
-        return filterFileInKBase(this, kieBase, fileName, () -> getBytes( fileName ), false);
+        return filterFileInKBase(this, kieBase, fileName);
     }
 
     default Runnable createKieBaseUpdater(KieBaseUpdateContext context) {

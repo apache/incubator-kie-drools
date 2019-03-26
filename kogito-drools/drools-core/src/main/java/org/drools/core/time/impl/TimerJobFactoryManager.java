@@ -15,13 +15,13 @@
 
 package org.drools.core.time.impl;
 
+import java.util.Collection;
+
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.Trigger;
-
-import java.util.Collection;
 
 public interface TimerJobFactoryManager {
     TimerJobInstance createTimerJobInstance(Job job,

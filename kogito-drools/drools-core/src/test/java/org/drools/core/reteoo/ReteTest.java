@@ -16,6 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +32,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -39,9 +44,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.impl.KnowledgeBaseFactory;
-
-import static org.junit.Assert.*;
 
 public class ReteTest extends DroolsTestCase {
     private PropagationContextFactory pctxFactory;

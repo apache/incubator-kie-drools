@@ -15,14 +15,12 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.util.Triple;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleImpl;
-import org.drools.core.util.TripleStore;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.util.TripleFactory;
+import org.drools.core.util.TripleStore;
 
 
 public class TripleBasedBean extends TripleBasedStruct {

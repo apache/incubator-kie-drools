@@ -3161,7 +3161,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                             CEDescrBuilder.class,
                             null);
                     lhsAnd(source,
-                            true);
+                            false);
                     if (state.failed)
                         return null;
 

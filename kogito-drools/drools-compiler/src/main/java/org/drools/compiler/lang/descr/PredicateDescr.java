@@ -16,9 +16,9 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.kie.api.io.Resource;
-
 import java.util.List;
+
+import org.kie.api.io.Resource;
 
 public class PredicateDescr extends RestrictionDescr {
     private static final long serialVersionUID = 510l;

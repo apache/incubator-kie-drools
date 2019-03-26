@@ -16,11 +16,11 @@
 
 package org.drools.core.rule;
 
+import java.io.Externalizable;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.Tuple;
-
-import java.io.Externalizable;
 
 public interface ContextEntry
     extends

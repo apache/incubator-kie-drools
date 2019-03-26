@@ -15,7 +15,8 @@
 
 package org.drools.core.command.impl;
 
-import org.kie.api.runtime.ExecutableRunner;
+import java.util.Collection;
+
 import org.drools.core.command.runtime.GetFactCountInEntryPointCommand;
 import org.drools.core.command.runtime.rule.DeleteFromEntryPointCommand;
 import org.drools.core.command.runtime.rule.GetFactHandleInEntryPointCommand;
@@ -24,11 +25,10 @@ import org.drools.core.command.runtime.rule.GetObjectInEntryPointCommand;
 import org.drools.core.command.runtime.rule.GetObjectsInEntryPointCommand;
 import org.drools.core.command.runtime.rule.InsertObjectInEntryPointCommand;
 import org.drools.core.command.runtime.rule.UpdateInEntryPointCommand;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.Collection;
 
 public class CommandBasedEntryPoint implements EntryPoint {
 

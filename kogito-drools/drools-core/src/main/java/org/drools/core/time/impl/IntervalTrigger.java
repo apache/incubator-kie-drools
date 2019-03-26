@@ -16,15 +16,15 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.Trigger;
-import org.kie.api.runtime.Calendars;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.drools.core.time.Trigger;
+import org.kie.api.runtime.Calendars;
 
 public class IntervalTrigger
     implements

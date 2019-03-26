@@ -16,8 +16,8 @@
 
 package org.drools.core.common;
 
-import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 
 public class ActivationNode extends AbstractBaseLinkedListNode<ActivationNode> {
 

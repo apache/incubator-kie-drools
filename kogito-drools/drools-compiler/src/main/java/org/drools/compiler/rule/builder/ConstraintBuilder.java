@@ -16,6 +16,9 @@
 package org.drools.compiler.rule.builder;
 
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
@@ -33,9 +36,6 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.index.IndexUtil;
-
-import java.util.Collection;
-import java.util.Map;
 
 
 public interface ConstraintBuilder {

@@ -1,24 +1,31 @@
 // $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2017-05-16 10:26:32
 
     package org.drools.compiler.rule.builder.dialect.java.parser;
-    import java.util.Iterator;
-    import java.util.Queue;
-    import java.util.LinkedList;   
-    import java.util.Stack; 
-    
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaRootBlockDescr;
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
-    
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+    import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+
+import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.IntStream;
+import org.antlr.runtime.MismatchedNotSetException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.MismatchedTreeNodeException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
 
 /** A Java 1.5 grammar for ANTLR v3 derived from the spec
  *

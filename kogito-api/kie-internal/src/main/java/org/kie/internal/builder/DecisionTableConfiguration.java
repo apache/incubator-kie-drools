@@ -68,7 +68,4 @@ public interface DecisionTableConfiguration
     void addRuleTemplateConfiguration(Resource template, int row, int col);
 
     List<RuleTemplateConfiguration> getRuleTemplateConfigurations();
-
-    boolean isTrimCell();
-    void setTrimCell( boolean trimCell );
 }

@@ -15,8 +15,8 @@
 
 package org.drools.compiler.lang.api.impl;
 
-import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.api.ImportDescrBuilder;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.FunctionImportDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 

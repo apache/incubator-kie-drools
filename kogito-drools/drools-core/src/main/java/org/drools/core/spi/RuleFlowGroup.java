@@ -16,10 +16,6 @@
 
 package org.drools.core.spi;
 
-import java.util.Iterator;
-
-import org.drools.core.common.ActivationNode;
-
 public interface RuleFlowGroup extends org.kie.api.runtime.rule.RuleFlowGroup {
 
     String getName();

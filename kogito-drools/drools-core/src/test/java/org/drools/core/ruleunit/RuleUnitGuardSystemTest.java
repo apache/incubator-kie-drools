@@ -16,16 +16,16 @@
 
 package org.drools.core.ruleunit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.core.spi.Activation;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class RuleUnitGuardSystemTest {
 

@@ -15,30 +15,30 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Test;
-import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
-import org.kie.api.io.Resource;
-import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertTrue;
 
 public class DynamicEvalTest {
     KieBase kbase;

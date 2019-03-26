@@ -1,0 +1,9 @@
+/*
+ *  Example 10.6.3 from DMN Spec page 142
+ */
+if
+    applicant.marital status in ("M","S")
+then
+    "valid"
+else
+    "not valid"

@@ -61,18 +61,13 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.manager.context.CaseContext;
-import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.utils.CompositeClassLoader;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
@@ -466,28 +461,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     }
     
     private void startProcessWithParamsAndTrigger(String processId, Map<String, Object> params, String type, boolean dispose) {
-        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
-        if (manager != null) {
-            org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
-            
-            String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
-            if (caseId != null) {
-                context = CaseContext.get(caseId);
-            }
-            
-            RuntimeEngine runtime = manager.getRuntimeEngine(context);
-            KieSession ksession = runtime.getKieSession();
-            try {
-                ksession.execute(new StartProcessWithTypeCommand(processId, params, type));
-            } finally {
-                if (dispose) {
-                    manager.disposeRuntimeEngine(runtime);
-                }
-            }
-            
-        } else {
-            startProcess( processId, params, type );
-        }
+        
+        startProcess( processId, params, type );
+        
     }
     
     private class StartProcessWithTypeCommand implements ExecutableCommand<Void> {

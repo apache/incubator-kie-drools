@@ -15,6 +15,9 @@
 
 package org.drools.compiler.oopath;
 
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -49,9 +52,6 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.*;
 
 public class OOPathTest {
 

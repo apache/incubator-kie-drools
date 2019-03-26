@@ -16,6 +16,8 @@
 
 package org.drools.core.base;
 
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -53,15 +55,13 @@ import org.drools.core.base.extractors.BaseShortClassFieldWriter;
 import org.drools.core.base.extractors.BaseZonedDateTimeClassFieldReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ByteArrayClassLoader;
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.reflective.util.ByteArrayClassLoader;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
-
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 /**
  * This generates subclasses of BaseClassFieldExtractor to provide field extractors.

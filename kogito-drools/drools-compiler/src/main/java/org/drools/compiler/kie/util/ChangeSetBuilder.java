@@ -15,6 +15,8 @@
  */
 package org.drools.compiler.kie.util;
 
+import static org.drools.core.util.StringUtils.isEmpty;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,8 +42,6 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.util.StringUtils.isEmpty;
 
 public class ChangeSetBuilder {
     

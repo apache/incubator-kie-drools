@@ -15,6 +15,13 @@
 
 package org.drools.compiler.rule.builder;
 
+import static org.drools.core.rule.LogicTransformer.toIntArray;
+import static org.drools.core.util.StringUtils.isDereferencingIdentifier;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -45,13 +52,6 @@ import org.drools.core.util.StringUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.drools.core.rule.LogicTransformer.toIntArray;
-import static org.drools.core.util.StringUtils.isDereferencingIdentifier;
 
 public class QueryElementBuilder
     implements

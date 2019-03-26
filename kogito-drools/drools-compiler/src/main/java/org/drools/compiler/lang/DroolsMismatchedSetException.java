@@ -19,7 +19,6 @@ package org.drools.compiler.lang;
 import java.util.Arrays;
 
 import org.antlr.runtime.IntStream;
-import org.antlr.runtime.MismatchedSetException;
 import org.antlr.runtime.RecognitionException;
 
 /**

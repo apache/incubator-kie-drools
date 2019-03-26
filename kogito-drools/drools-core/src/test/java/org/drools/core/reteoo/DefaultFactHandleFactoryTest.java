@@ -16,10 +16,10 @@
 
 package org.drools.core.reteoo;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.core.common.DefaultFactHandle;
+import org.junit.Test;
 
 public class DefaultFactHandleFactoryTest {
 

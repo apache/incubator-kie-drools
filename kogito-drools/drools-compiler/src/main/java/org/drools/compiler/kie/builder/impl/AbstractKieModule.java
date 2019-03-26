@@ -15,6 +15,8 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kproject.ReleaseIdImpl.adaptAll;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.google.protobuf.ExtensionRegistry;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
+import org.drools.compiler.addon.DependencyFilter;
+import org.drools.compiler.addon.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
@@ -42,7 +43,6 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
-import org.drools.core.common.ResourceProvider;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -51,6 +51,7 @@ import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.reflective.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -73,7 +74,7 @@ import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.kproject.ReleaseIdImpl.adaptAll;
+import com.google.protobuf.ExtensionRegistry;
 
 public abstract class AbstractKieModule
         implements
@@ -203,11 +204,10 @@ public abstract class AbstractKieModule
                 // Messages already populated by the buildKnowlegePackages
                 return new KnowledgePackagesBuildResult(true, pkgs);
             }
-
-            // if we get to here, then we know the pkgs is now cached
-            pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
         }
 
+        // if we get to here, then we know the pkgs is now cached
+        pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
         return new KnowledgePackagesBuildResult(false, pkgs);
     }
 
@@ -380,9 +380,9 @@ public abstract class AbstractKieModule
             try {
                 byte[] pomXml = getPomXml();
                 if( pomXml != null ) {
-                    PomModel tempPomModel = PomModel.Parser.parse("pom.xml", new ByteArrayInputStream(pomXml));
-                    validatePomModel(tempPomModel); // throws an exception if invalid
-                    pomModel = tempPomModel;
+//                    PomModel tempPomModel = PomModel.Parser.parse("pom.xml", new ByteArrayInputStream(pomXml));
+//                    validatePomModel(tempPomModel); // throws an exception if invalid
+//                    pomModel = tempPomModel;
                 }
             } catch( Exception e ) {
                 // nothing to do as it was not possible to retrieve pom.xml
@@ -396,18 +396,18 @@ public abstract class AbstractKieModule
     }
 
     private void validatePomModel(PomModel pomModel) {
-        org.appformer.maven.support.AFReleaseId pomReleaseId = pomModel.getReleaseId();
+        ReleaseId pomReleaseId = pomModel.getReleaseId();
         if (StringUtils.isEmpty(pomReleaseId.getGroupId()) || StringUtils.isEmpty(pomReleaseId.getArtifactId()) || StringUtils.isEmpty(pomReleaseId.getVersion())) {
             throw new RuntimeException("Maven pom.properties exists but ReleaseId content is malformed");
         }
     }
 
     private byte[] getPomXml() {
-        return getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
+        return null;//getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
     }
 
     public InputStream getPomAsStream() {
-        byte[] pom = getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
+        byte[] pom = null;//getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
         return pom != null ? new ByteArrayInputStream(pom) : null;
     }
 

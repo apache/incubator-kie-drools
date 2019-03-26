@@ -16,6 +16,12 @@
 
 package org.drools.core.datasources;
 
+import static java.util.Arrays.asList;
+import static org.drools.core.common.DefaultFactHandle.determineIdentityHashCode;
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -52,12 +58,6 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
-
-import static java.util.Arrays.asList;
-import static org.drools.core.common.DefaultFactHandle.determineIdentityHashCode;
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
 
 public class CursoredDataSource<T> implements InternalDataSource<T> {
 

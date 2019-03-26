@@ -15,6 +15,12 @@
 
 package org.drools.core.util.index;
 
+import static org.drools.reflective.util.ClassUtils.getter2property;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -27,12 +33,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.kie.internal.conf.IndexPrecedenceOption;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.drools.core.util.ClassUtils.getter2property;
 
 public class IndexUtil {
 

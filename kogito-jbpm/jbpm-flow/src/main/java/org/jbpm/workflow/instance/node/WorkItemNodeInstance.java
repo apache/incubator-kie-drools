@@ -60,14 +60,10 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
-import org.kie.internal.runtime.manager.context.CaseContext;
-import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -641,19 +637,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
     
     protected KieRuntime getKieRuntimeForSubprocess() {
-        KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
-        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
-        if (manager != null) {
-            org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
-            
-            String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
-            if (caseId != null) {
-                context = CaseContext.get(caseId);
-            }
-            
-            RuntimeEngine runtime = manager.getRuntimeEngine(context);
-            kruntime = (KieRuntime) runtime.getKieSession();
-        }  
+        KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();        
         
         return kruntime;
     }

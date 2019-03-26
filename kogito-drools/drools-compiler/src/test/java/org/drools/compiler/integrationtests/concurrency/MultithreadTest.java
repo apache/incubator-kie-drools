@@ -237,7 +237,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 5000)
     public void testRaceOnAccumulateNodeSimple() throws InterruptedException {
 
         final String drl = "package org.drools.integrationtests;\n" +
@@ -414,7 +414,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 5000)
     public void testConcurrentQueries() {
         // DROOLS-175
         final StringBuilder drl = new StringBuilder();

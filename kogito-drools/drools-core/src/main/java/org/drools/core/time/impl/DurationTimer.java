@@ -16,6 +16,12 @@
 
 package org.drools.core.time.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map;
+
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.ConditionalElement;
@@ -25,12 +31,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.drools.core.util.NumberUtils;
 import org.kie.api.runtime.Calendars;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
 
 public class DurationTimer extends BaseTimer
     implements

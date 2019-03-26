@@ -15,6 +15,17 @@
 
 package org.drools.core.util;
 
+import static org.drools.core.util.KeyStoreConstants.KEY_CERTIFICATE_TYPE;
+import static org.drools.core.util.KeyStoreConstants.KEY_PASSWORD_TYPE;
+import static org.drools.core.util.KeyStoreConstants.PROP_PUB_KS_PWD;
+import static org.drools.core.util.KeyStoreConstants.PROP_PUB_KS_URL;
+import static org.drools.core.util.KeyStoreConstants.PROP_PVT_ALIAS;
+import static org.drools.core.util.KeyStoreConstants.PROP_PVT_KS_PWD;
+import static org.drools.core.util.KeyStoreConstants.PROP_PVT_KS_URL;
+import static org.drools.core.util.KeyStoreConstants.PROP_PVT_PWD;
+import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_PWD;
+import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_URL;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,17 +43,6 @@ import java.security.cert.CertificateException;
 import javax.crypto.SecretKey;
 
 import org.drools.core.RuleBaseConfiguration;
-
-import static org.drools.core.util.KeyStoreConstants.KEY_CERTIFICATE_TYPE;
-import static org.drools.core.util.KeyStoreConstants.KEY_PASSWORD_TYPE;
-import static org.drools.core.util.KeyStoreConstants.PROP_PUB_KS_PWD;
-import static org.drools.core.util.KeyStoreConstants.PROP_PUB_KS_URL;
-import static org.drools.core.util.KeyStoreConstants.PROP_PVT_ALIAS;
-import static org.drools.core.util.KeyStoreConstants.PROP_PVT_KS_PWD;
-import static org.drools.core.util.KeyStoreConstants.PROP_PVT_KS_URL;
-import static org.drools.core.util.KeyStoreConstants.PROP_PVT_PWD;
-import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_PWD;
-import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_URL;
 
 /**
  * A helper class to deal with the key store and signing process during

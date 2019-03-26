@@ -15,6 +15,17 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
+import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
+import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.IRETURN;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,17 +38,6 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.mvel2.asm.MethodVisitor;
-
-import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
-import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
-import static org.mvel2.asm.Opcodes.AALOAD;
-import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
-import static org.mvel2.asm.Opcodes.ACONST_NULL;
-import static org.mvel2.asm.Opcodes.ALOAD;
-import static org.mvel2.asm.Opcodes.ARETURN;
-import static org.mvel2.asm.Opcodes.ASTORE;
-import static org.mvel2.asm.Opcodes.INVOKESTATIC;
-import static org.mvel2.asm.Opcodes.IRETURN;
 
 public class EvalGenerator {
 

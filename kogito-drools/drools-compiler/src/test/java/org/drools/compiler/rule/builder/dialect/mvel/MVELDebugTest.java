@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -24,8 +26,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.compiler.CompiledExpression;
-
-import static org.junit.Assert.assertEquals;
 
 public class MVELDebugTest {
 

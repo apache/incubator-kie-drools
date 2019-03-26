@@ -16,11 +16,6 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
-import org.drools.core.factmodel.traits.TraitableBean;
-
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +23,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitFieldTMS;
+import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
+import org.drools.core.factmodel.traits.TraitableBean;
 
 public class Imp2 implements TraitableBean<Imp2,Imp2> {
 

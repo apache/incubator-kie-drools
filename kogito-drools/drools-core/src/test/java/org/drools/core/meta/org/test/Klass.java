@@ -15,9 +15,9 @@
 
 package org.drools.core.meta.org.test;
 
-import org.drools.core.metadata.Metadatable;
-
 import java.util.List;
+
+import org.drools.core.metadata.Metadatable;
 
 public interface Klass extends Metadatable {
 

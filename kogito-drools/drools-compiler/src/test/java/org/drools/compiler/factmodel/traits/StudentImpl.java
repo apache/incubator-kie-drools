@@ -16,15 +16,15 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Traitable

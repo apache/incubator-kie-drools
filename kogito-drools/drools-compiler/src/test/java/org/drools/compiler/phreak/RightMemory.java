@@ -15,6 +15,9 @@
 
 package org.drools.compiler.phreak;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContext;
@@ -24,9 +27,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleMemory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RightMemory {
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.0.34.201611081547" id="_77ae284e-ce52-4579-a50f-f3cc584d7f4b" name="Calculation1" namespace="http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_990f435f-d597-46d5-b80e-5fc71c7c21cd" name="Logique de décision 1">
+    <semantic:variable id="_84905716-314d-489b-b6d7-a80f0837978d" name="Logique de décision 1" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_MonthlyDeptPmt"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_MonthlyIncome"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_MonthlyPmt"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Logique de décision 1">
+      <semantic:input id="_eb1b19d5-9014-417e-a09f-96fd141f88a6" label="MonthlyDeptPmt">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>MonthlyDeptPmt</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_72a2c6d9-c2df-4570-aae1-82440ae572a2" label="MonthlyPmt">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>MonthlyPmt</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_87f21b1e-b9e8-47c0-a9df-7d9635923fa2" label="MonthlyIncome">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>MonthlyIncome</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_4982c273-575b-4c0c-a624-9f5fb4d85660"/>
+      <semantic:rule id="_da80ca56-153e-495d-b273-cffce73d6613">
+        <semantic:inputEntry id="_da80ca56-153e-495d-b273-cffce73d6613-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_da80ca56-153e-495d-b273-cffce73d6613-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_da80ca56-153e-495d-b273-cffce73d6613-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_da80ca56-153e-495d-b273-cffce73d6613-3">
+          <semantic:text>MonthlyDeptPmt/MonthlyIncome+MonthlyPmt/MonthlyIncome</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_MonthlyDeptPmt" name="MonthlyDeptPmt">
+    <semantic:variable id="_MonthlyDeptPmtVar" name="MonthlyDeptPmt" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_MonthlyIncome" name="MonthlyIncome">
+    <semantic:variable id="_MonthlyIncomeVar" name="MonthlyIncome" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_MonthlyPmt" name="MonthlyPmt">
+    <semantic:variable id="_MonthlyPmtVar" name="MonthlyPmt" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>

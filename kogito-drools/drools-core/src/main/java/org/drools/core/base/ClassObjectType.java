@@ -16,6 +16,13 @@
 
 package org.drools.core.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.InitialFact;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.reteoo.InitialFactImpl;
@@ -24,13 +31,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Match;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Java class semantics <code>ObjectType</code>.

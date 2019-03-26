@@ -17,9 +17,9 @@
 package org.drools.core.factmodel.traits;
 
 
-import org.drools.core.util.CodedHierarchy;
-
 import java.util.BitSet;
+
+import org.drools.core.util.CodedHierarchy;
 
 public interface TypeLattice<T> extends CodedHierarchy<T> {
 

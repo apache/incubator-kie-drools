@@ -25,14 +25,13 @@ import org.kie.api.io.ResourceWithConfiguration;
 
 public interface KieAssemblers extends KieService {
     void addResource(
-            Object knowledgeBuilder,
-            Resource resource,
-            ResourceType type,
-            ResourceConfiguration configuration) throws Exception;
-
-    void addResources(
-            Object knowledgeBuilder,
-            List<ResourceWithConfiguration> resources,
-            ResourceType type) throws Exception;
-
+             Object knowledgeBuilder,
+             Resource resource,
+             ResourceType type,
+             ResourceConfiguration configuration) throws Exception;
+ 
+     void addResources(
+             Object knowledgeBuilder,
+             List<ResourceWithConfiguration> resources,
+             ResourceType type) throws Exception;
 }

@@ -16,12 +16,10 @@
 
 package org.jbpm.process.instance.context.variable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.ClassObjectFilter;
 import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -30,9 +28,6 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.CaseData;
-import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * 
@@ -69,17 +64,6 @@ public class VariableScopeInstance extends AbstractContextInstance {
             value = getProcessInstance().getKnowledgeRuntime().getGlobal(name);
             if (value != null) {
                 return value;
-            }
-            // support for case file data
-            @SuppressWarnings("unchecked")
-            Collection<CaseData> caseFiles = (Collection<CaseData>) getProcessInstance().getKnowledgeRuntime().getObjects(new ClassObjectFilter(CaseData.class));
-            if (caseFiles.size() == 1) {
-                CaseData caseFile = caseFiles.iterator().next();
-                // check if there is case file prefix and if so remove it before checking case file data
-                final String lookUpName = name.startsWith(VariableScope.CASE_FILE_PREFIX) ? name.replaceFirst(VariableScope.CASE_FILE_PREFIX, "") : name;
-                if (caseFile != null) {
-                    return caseFile.getData(lookUpName);
-                }
             }
             
         }    
@@ -118,26 +102,6 @@ public class VariableScopeInstance extends AbstractContextInstance {
     }
     
     public void internalSetVariable(String name, Object value) {
-        if (name.startsWith(VariableScope.CASE_FILE_PREFIX)) {
-            String nameInCaseFile = name.replaceFirst(VariableScope.CASE_FILE_PREFIX, "");            
-            // store it under case file rather regular variables
-            @SuppressWarnings("unchecked")
-            Collection<CaseData> caseFiles = (Collection<CaseData>) getProcessInstance().getKnowledgeRuntime().getObjects(new ClassObjectFilter(CaseData.class));
-            if (caseFiles.size() == 1) {
-                CaseData caseFile = (CaseData) caseFiles.iterator().next();
-                FactHandle factHandle = getProcessInstance().getKnowledgeRuntime().getFactHandle(caseFile);
-                
-                if (value == null) {
-                    caseFile.remove(nameInCaseFile);
-                } else {
-                    caseFile.add(nameInCaseFile, value);
-                }
-                getProcessInstance().getKnowledgeRuntime().update(factHandle, caseFile);
-                ((KieSession)getProcessInstance().getKnowledgeRuntime()).fireAllRules();
-                return;
-            }
-            
-        }
         // not a case, store it in normal variables
     	variables.put(name, value);
     }

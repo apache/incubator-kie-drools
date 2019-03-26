@@ -16,11 +16,10 @@
 
 package org.drools.compiler.oopath.model;
 
-import org.drools.compiler.oopath.model.Child;
+import java.util.List;
+
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveList;
-
-import java.util.List;
 
 public class School extends AbstractReactiveObject {
 

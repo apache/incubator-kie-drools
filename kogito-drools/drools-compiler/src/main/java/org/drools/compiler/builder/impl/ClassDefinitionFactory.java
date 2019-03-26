@@ -41,6 +41,7 @@ import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.rule.builder.util.AnnotationFactory;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.EnumClassDefinition;
@@ -55,7 +56,6 @@ import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class ClassDefinitionFactory {
 

@@ -20,14 +20,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.test.model.MockActivation;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
 /**
  * <p>

@@ -18,13 +18,13 @@ package org.drools.core.event;
 
 import java.util.Iterator;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.event.rule.impl.ObjectDeletedEventImpl;
 import org.drools.core.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.core.event.rule.impl.ObjectUpdatedEventImpl;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleRuntimeEventSupport extends AbstractEventSupport<RuleRuntimeEventListener> {
 

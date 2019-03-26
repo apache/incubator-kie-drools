@@ -15,14 +15,13 @@
 
 package org.drools.compiler.compiler;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
-
-import java.io.InputStream;
-import java.util.List;
 
 public class DecisionTableFactory {
 

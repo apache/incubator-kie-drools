@@ -17,14 +17,14 @@
  */
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.antlr.runtime.RecognitionException;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import org.antlr.runtime.RecognitionException;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.junit.Test;
 
 public class JavaExprAnalyzerTest {
 

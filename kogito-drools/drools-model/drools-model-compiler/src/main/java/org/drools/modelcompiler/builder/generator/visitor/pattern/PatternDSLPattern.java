@@ -1,5 +1,10 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,19 +12,13 @@ import java.util.Set;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
-
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
 
 class PatternDSLPattern extends PatternDSL {
 

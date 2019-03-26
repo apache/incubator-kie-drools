@@ -16,17 +16,7 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.ClockType;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.drools.core.time.TimerService;
-import org.drools.core.time.TimerServiceFactory;
-import org.drools.core.time.Trigger;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -39,7 +29,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
-import static org.junit.Assert.assertEquals;
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.TimerServiceFactory;
+import org.drools.core.time.Trigger;
+import org.junit.Test;
 
 public class JDKTimerServiceTest {
     

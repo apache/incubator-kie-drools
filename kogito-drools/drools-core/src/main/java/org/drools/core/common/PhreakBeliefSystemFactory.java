@@ -15,13 +15,13 @@
 
 package org.drools.core.common;
 
+import java.io.Serializable;
+
 import org.drools.core.BeliefSystemType;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.defeasible.DefeasibleBeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.beliefsystem.simple.SimpleBeliefSystem;
-
-import java.io.Serializable;
 
 public class PhreakBeliefSystemFactory implements BeliefSystemFactory, Serializable {
 

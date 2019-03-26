@@ -15,6 +15,8 @@
 
 package org.drools.core.common;
 
+import java.util.List;
+
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
@@ -24,8 +26,6 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.List;
 
 public class VisitedAgendaGroup implements Activation {
 

@@ -16,13 +16,12 @@
 
 package org.drools.core.factmodel;
 
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
-import org.junit.Before;
-import org.junit.Test;
+import static org.drools.reflective.util.ClassUtils.convertClassToResourcePath;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,8 +33,13 @@ import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
-import static org.junit.Assert.*;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
+import org.drools.reflective.classloader.ProjectClassLoader;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ClassBuilderTest {
 

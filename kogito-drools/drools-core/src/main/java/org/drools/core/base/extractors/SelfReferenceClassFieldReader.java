@@ -16,10 +16,10 @@
 
 package org.drools.core.base.extractors;
 
+import java.io.Externalizable;
+
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
-
-import java.io.Externalizable;
 
 /**
  * A special field extractor for the self reference "this".

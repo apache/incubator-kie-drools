@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.19.0.Final</version>
+    <version>8.0.0-SNAPSHOT</version>
     <!-- relativePath causes out-of-date problems on hudson slaves -->
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
@@ -42,35 +42,14 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <scm>
-    <connection>scm:git:https://github.com:kiegroup/drools.git</connection>
-    <developerConnection>scm:git:git@github.com:kirgroup/drools.git</developerConnection>
-    <url>https://github.com/kiegroup/drools</url>
-  </scm>
-
   <modules>
-    <module>kie-test-util</module>
-    <module>drools-beliefs</module>
+    <module>drools-core-reflective</module>
+    <module>drools-core-static</module>
+    <module>drools-core-dynamic</module>
     <module>drools-core</module>
     <module>drools-compiler</module>
-    <module>drools-cdi</module>
-    <module>drools-verifier</module>
-    <module>drools-persistence</module>
-    <module>drools-templates</module>
-    <module>drools-decisiontables</module>
-    <module>drools-examples</module>
-    <module>kie-ci</module>
-    <module>kie-ci-osgi</module>
-    <module>drools-model</module>
     <module>kie-dmn</module>
-    <module>kie-pmml</module>
-    <module>drools-scorecards</module>
-    <module>drools-examples-api</module>
-    <module>drools-examples-cdi</module>
-    <module>drools-workbench-models</module>
-    <module>drools-test-coverage</module>
-  </modules>
+    </modules>
 
   <dependencyManagement>
     <!-- Important: Do not add any additional dependency versions here!
@@ -102,19 +81,5 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>drools-distribution</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

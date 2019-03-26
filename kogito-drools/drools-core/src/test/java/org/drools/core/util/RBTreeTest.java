@@ -15,9 +15,9 @@
 
 package org.drools.core.util;
 
-import org.drools.core.util.RBTree.Node;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,9 +26,9 @@ import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import org.drools.core.util.RBTree.Node;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class RBTreeTest {
 

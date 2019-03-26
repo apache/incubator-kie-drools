@@ -16,11 +16,11 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.Declaration;
-
 import java.io.Serializable;
 import java.util.Iterator;
+
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.rule.Declaration;
 
 public interface DataProvider
     extends

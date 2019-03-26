@@ -34,13 +34,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
+import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
@@ -253,7 +253,7 @@ public class UrlResource extends BaseResource
         if (con instanceof HttpURLConnection) {
             if ("enabled".equalsIgnoreCase(basicAuthentication)) {
                 String userpassword = username + ":" + password;
-                byte[] authEncBytes = Base64.encodeBase64( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
+                byte[] authEncBytes = Base64.getEncoder().encode( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
 
                 ((HttpURLConnection) con).setRequestProperty("Authorization",
                         "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
@@ -338,7 +338,7 @@ public class UrlResource extends BaseResource
                 ((HttpURLConnection) conn).setRequestMethod("HEAD");
                 if ("enabled".equalsIgnoreCase(basicAuthentication)) {
                     String userpassword = username + ":" + password;
-                    byte[] authEncBytes = Base64.encodeBase64( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
+                    byte[] authEncBytes = Base64.getEncoder().encode( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
 
                     ((HttpURLConnection) conn).setRequestProperty("Authorization",
                             "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));

@@ -15,16 +15,18 @@
  */
 package org.jbpm.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
+import org.drools.core.util.IoUtils;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.mvel2.CompileException;
-
-import static org.junit.Assert.*;
 
 public class WidMVELEvaluatorTest extends AbstractBaseTest {
 
@@ -67,8 +69,7 @@ public class WidMVELEvaluatorTest extends AbstractBaseTest {
     }
 
     protected String getResouceContent(String path) throws Exception {
-        return IOUtils.toString(this.getClass().getResourceAsStream(path),
-                                "UTF-8");
+        return new String(IoUtils.readBytesFromInputStream(this.getClass().getResourceAsStream(path)), "UTF-8");
     }
 
     protected String getResouce(String path) throws Exception {

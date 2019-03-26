@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+
 import org.drools.compiler.Bar;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;

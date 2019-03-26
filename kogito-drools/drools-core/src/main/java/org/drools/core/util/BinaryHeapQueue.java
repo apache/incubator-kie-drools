@@ -16,6 +16,8 @@
 
 package org.drools.core.util;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,8 +29,6 @@ import java.util.stream.Stream;
 import org.drools.core.spi.Activation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.stream.Collectors.toList;
 
 public class BinaryHeapQueue
         implements

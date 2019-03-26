@@ -16,6 +16,10 @@
 
 package org.drools.core.common;
 
+import static java.util.Arrays.asList;
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -50,9 +54,6 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.Arrays.asList;
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 public class NamedEntryPoint
         implements
@@ -728,7 +729,7 @@ public class NamedEntryPoint
         if ( handle == null ) {
             throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
-        update( handle, object, event.getPropertyName() );
+        update( handle, object );
     }
 
     public void dispose() {

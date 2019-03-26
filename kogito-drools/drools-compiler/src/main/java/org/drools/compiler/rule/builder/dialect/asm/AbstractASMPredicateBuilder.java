@@ -15,16 +15,16 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import java.util.Map;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.rule.builder.PredicateBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.PredicateConstraint;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-
-import java.util.Map;
 
 public abstract class AbstractASMPredicateBuilder implements PredicateBuilder {
     public void build(final RuleBuildContext context,

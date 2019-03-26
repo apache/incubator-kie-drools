@@ -16,6 +16,9 @@
 
 package org.drools.core.factmodel.traits;
 
+import static org.drools.core.factmodel.DefaultBeanClassBuilder.addAnnotationAttribute;
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+
 import java.io.Serializable;
 
 import org.drools.core.factmodel.AnnotationDefinition;
@@ -27,9 +30,6 @@ import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
-
-import static org.drools.core.factmodel.DefaultBeanClassBuilder.addAnnotationAttribute;
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 public class TraitClassBuilderImpl implements TraitClassBuilder,
                                               Serializable {

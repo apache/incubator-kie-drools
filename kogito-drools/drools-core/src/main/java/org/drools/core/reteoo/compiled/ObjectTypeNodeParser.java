@@ -17,12 +17,10 @@
 package org.drools.core.reteoo.compiled;
 
 import org.drools.core.base.ClassFieldReader;
-import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
-import org.drools.core.reteoo.WindowNode;
-import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
+import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
@@ -31,6 +29,8 @@ import org.drools.core.reteoo.ObjectSinkNodeList;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.SingleObjectSinkAdapter;
+import org.drools.core.reteoo.WindowNode;
+import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.util.Iterator;

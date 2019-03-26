@@ -16,9 +16,6 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.compiler.rule.builder.util.AnnotationFactory;
-import org.drools.core.rule.Annotated;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -29,6 +26,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.compiler.rule.builder.util.AnnotationFactory;
+import org.drools.core.rule.Annotated;
 
 /**
  * This is the super type for all pattern AST nodes.

@@ -16,13 +16,13 @@
 
 package org.drools.core.conflict;
 
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ConflictResolver;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ConflictResolver;
 
 public class PhreakConflictResolver
         implements

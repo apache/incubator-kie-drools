@@ -15,11 +15,11 @@
  */
 package org.drools.compiler.builder.impl;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
-
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
 
 public class KnowledgeBuilderConfigurationImplTest {
 

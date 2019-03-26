@@ -15,6 +15,11 @@
  */
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.After;
 import org.junit.Before;
@@ -22,11 +27,6 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests iteration through the list of KieSessions of a KieBase.

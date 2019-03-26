@@ -16,14 +16,14 @@
 
 package org.drools.compiler.lang.dsl;
 
-import org.kie.internal.builder.KnowledgeBuilderResult;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 /**
  * A helper class that handles a DSL Mapping file

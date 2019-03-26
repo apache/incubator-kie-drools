@@ -16,10 +16,10 @@
 
 package org.drools.compiler.oopath.graph;
 
+import java.util.List;
+
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveList;
-
-import java.util.List;
 
 public class Vertex<T> extends AbstractReactiveObject {
 

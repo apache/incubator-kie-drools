@@ -16,6 +16,10 @@
 
 package org.drools.core.rule;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -31,8 +35,6 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Salience;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class RuleTest {
 

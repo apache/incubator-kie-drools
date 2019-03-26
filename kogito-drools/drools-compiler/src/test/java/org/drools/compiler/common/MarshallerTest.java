@@ -1,5 +1,8 @@
 package org.drools.compiler.common;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.impl.EnvironmentFactory;
@@ -19,9 +22,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 @RunWith(Parameterized.class)
 public class MarshallerTest {

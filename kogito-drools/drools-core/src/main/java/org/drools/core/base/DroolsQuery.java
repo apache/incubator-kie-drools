@@ -16,6 +16,9 @@
 
 package org.drools.core.base;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.StackEntry;
@@ -26,9 +29,6 @@ import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.runtime.rule.Variable;
-
-import java.util.Arrays;
-import java.util.List;
 
 public final class DroolsQuery extends ArrayElements {
     private final String                           name;

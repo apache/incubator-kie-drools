@@ -18,12 +18,11 @@ package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.test.model.DroolsTestCase;
-import org.drools.core.reteoo.builder.BuildContext;
-
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
 
 public class
         AddRemoveTest extends DroolsTestCase {

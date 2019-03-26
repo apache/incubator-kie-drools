@@ -16,8 +16,6 @@
 
 package org.drools.core.base.field;
 
-import org.drools.core.spi.FieldValue;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -25,6 +23,8 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.core.spi.FieldValue;
 
 public class IntegerFieldImpl
     implements

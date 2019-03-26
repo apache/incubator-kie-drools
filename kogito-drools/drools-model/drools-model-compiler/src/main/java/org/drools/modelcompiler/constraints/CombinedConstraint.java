@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler.constraints;
 
+import static java.util.stream.Collectors.toList;
+import static org.drools.model.Constraint.Type.OR;
+
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -31,10 +34,6 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.Constraint;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
-
-import static java.util.stream.Collectors.toList;
-
-import static org.drools.model.Constraint.Type.OR;
 
 public class CombinedConstraint extends AbstractConstraint {
     private final Constraint.Type type;

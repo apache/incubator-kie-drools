@@ -16,14 +16,14 @@
 
 package org.drools.core.ruleunit;
 
+import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.kie.api.runtime.rule.RuleUnit;
-
-import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
 
 public class RuleUnitDescriptionRegistry {
 

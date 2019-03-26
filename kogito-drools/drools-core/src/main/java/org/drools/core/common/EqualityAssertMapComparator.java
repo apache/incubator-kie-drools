@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class EqualityAssertMapComparator
     extends

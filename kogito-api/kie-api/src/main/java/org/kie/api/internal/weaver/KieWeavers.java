@@ -22,6 +22,6 @@ import org.kie.api.internal.utils.KieService;
 
 public interface KieWeavers extends KieService {
     void weave(KieBase kieBase, KiePackage newPkg, ResourceTypePackage rtkKpg);
-
+    
     void merge(KieBase kieBase, KiePackage pkg, ResourceTypePackage rtkKpg);
 }

@@ -16,13 +16,13 @@
 
 package org.drools.core.util;
 
-import org.drools.core.io.impl.ReaderInputStream;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.junit.Assert.assertEquals;
+import org.drools.core.io.impl.ReaderInputStream;
+import org.junit.Test;
 
 public class IoUtilsTest {
 

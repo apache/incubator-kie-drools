@@ -15,6 +15,11 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import static org.junit.Assert.*;
+
+import java.io.StringReader;
+import java.util.List;
+
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -36,11 +41,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import java.io.StringReader;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class JavaDialectTest {
     

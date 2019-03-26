@@ -16,12 +16,12 @@
 
 package org.drools.core.reteoo.compiled;
 
-import org.drools.core.base.ValueType;
-
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.core.base.ValueType;
 
 /**
  * This class is used to hold information for Hashed {@link org.kie.reteoo.AlphaNode}s for generated subclasses

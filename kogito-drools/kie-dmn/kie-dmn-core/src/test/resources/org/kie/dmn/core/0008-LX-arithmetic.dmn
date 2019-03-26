@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+						 xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+						 xmlns:tns="https://github.com/kiegroup/kie-dmn"
+						 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+						 id="_0008-LX-arithmetic"
+						 name="0008-LX-arithmetic"
+						 namespace="https://github.com/kiegroup/kie-dmn"
+						 xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+						 expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
+						 typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+	<itemDefinition id="tLoan" name="tLoan" isCollection="false">
+		<itemComponent id="_principal" name="principal" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_rate" name="rate" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_termMonths" name="termMonths" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<decision id="_payment" name="payment">
+		<variable name="payment" typeRef="feel:number"/>
+		<informationRequirement>
+			<requiredInput href="#_loan"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>(loan.principal*loan.rate/12)/(1-(1+loan.rate/12)**-loan.termMonths)</text>
+		</literalExpression>
+	</decision>
+	<inputData id="_loan" name="loan">
+		<variable name="loan" typeRef="tns:tLoan"/>
+	</inputData>
+</definitions>

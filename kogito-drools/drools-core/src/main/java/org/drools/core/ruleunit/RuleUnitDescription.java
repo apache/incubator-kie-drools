@@ -16,6 +16,8 @@
 
 package org.drools.core.ruleunit;
 
+import static org.drools.reflective.util.ClassUtils.getter2property;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -33,8 +35,6 @@ import org.drools.core.datasources.BindableObject;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.kie.api.runtime.rule.RuleUnit;
-
-import static org.drools.core.util.ClassUtils.getter2property;
 
 public class RuleUnitDescription {
     private final Class<? extends RuleUnit> ruleUnitClass;

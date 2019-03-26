@@ -16,19 +16,19 @@
 
 package org.drools.compiler.lang;
 
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.dsl.DefaultExpander;
-import org.junit.Test;
-import org.kie.internal.builder.conf.LanguageLevelOption;
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.lang.dsl.DefaultExpander;
+import org.junit.Test;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class ErrorsParserTest {
 

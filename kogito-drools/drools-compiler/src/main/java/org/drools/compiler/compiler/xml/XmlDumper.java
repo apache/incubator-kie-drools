@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.util.ReflectiveVisitor;
-import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -50,6 +48,8 @@ import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.VariableRestrictionDescr;
+import org.drools.core.util.ReflectiveVisitor;
+import org.drools.core.util.StringUtils;
 
 
 /**

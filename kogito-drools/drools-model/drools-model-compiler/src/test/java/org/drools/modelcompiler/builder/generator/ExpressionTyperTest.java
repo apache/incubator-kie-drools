@@ -7,12 +7,12 @@ import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.RuleDescr;
-import com.github.javaparser.ast.NodeList;
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.NodeList;
+import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.expr.Expression;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.SimpleName;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
@@ -45,8 +45,7 @@ public class ExpressionTyperTest {
         imports = new HashSet<>();
         packageModel = new PackageModel("", null, false, null, new DRLIdGenerator());
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
-        ruleContext = new RuleContext(knowledgeBuilder, packageModel, typeResolver, true);
-        ruleContext.setDescr(ruleDescr);
+        ruleContext = new RuleContext(knowledgeBuilder, packageModel, ruleDescr, typeResolver, true);
         imports.add("org.drools.modelcompiler.domain.Person");
     }
 
@@ -98,13 +97,6 @@ public class ExpressionTyperTest {
     }
 
     @Test
-    public void testBigDecimalLiteral() {
-        final TypedExpression expected = typedResult("13.111B", BigDecimal.class);
-        final TypedExpression actual = toTypedExpression("13.111B", null);
-        assertEquals(expected, actual);
-    }
-
-    @Test
     public void testBooleanComparison() {
         final TypedExpression expected = typedResult("_this.getAge() == 18", int.class);
         final TypedExpression actual = toTypedExpression("age == 18", Person.class);
@@ -137,33 +129,15 @@ public class ExpressionTyperTest {
         final TypedExpression expected2 = typedResult("_this.getItems().get(((Integer)1))", Object.class);
         final TypedExpression actual2 = toTypedExpression("items[(Integer)1]", Person.class);
         assertEquals(expected2, actual2);
-    }
 
-    @Test
-    public void mapAccessExpr() {
         final TypedExpression expected3 = typedResult("_this.get(\"type\")", Object.class);
         final TypedExpression actual3 = toTypedExpression("this[\"type\"]", Map.class);
         assertEquals(expected3, actual3);
     }
 
     @Test
-    public void mapAccessExpr2() {
-        final TypedExpression expected3 = typedResult("$p.getItems().get(\"type\")", Integer.class, "$p.items[\"type\"]");
-        final TypedExpression actual3 = toTypedExpression("$p.items[\"type\"]", Object.class, new DeclarationSpec("$p", Person.class));
-        assertEquals(expected3, actual3);
-    }
-
-    @Test
-    public void mapAccessExpr3() {
-        final TypedExpression expected = typedResult("$p.getItems().get(1)", Integer.class, "$p.items[1]");
-        final TypedExpression actual = toTypedExpression("$p.items[1]", Object.class,
-                                                         new DeclarationSpec("$p", Person.class));
-        assertEquals(expected, actual);
-    }
-
-    @Test
     public void arrayAccessExprDeclaration() {
-        final TypedExpression expected = typedResult("$data.getValues().get(0)", Integer.class, "$data.values[0]");
+        final TypedExpression expected = typedResult("$data.getValues().get(0)", Object.class, "$data.values[0]");
         final TypedExpression actual = toTypedExpression("$data.values[0]", Object.class,
                                                          new DeclarationSpec("$data", Data.class));
         assertEquals(expected, actual);

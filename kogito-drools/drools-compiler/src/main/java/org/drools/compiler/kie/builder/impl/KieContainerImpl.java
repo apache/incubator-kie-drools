@@ -15,6 +15,10 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
+import static org.drools.core.util.Drools.isJndiAvailable;
+import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +32,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -37,7 +42,6 @@ import org.drools.compiler.reteoo.compiled.ObjectTypeNodeCompiler;
 import org.drools.core.InitialFact;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
-import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -47,6 +51,7 @@ import org.drools.core.impl.StatefulSessionPool;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.management.DroolsManagementAgent.CBSKey;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -75,10 +80,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.Drools.isJndiAvailable;
 
 public class KieContainerImpl
     implements
@@ -660,11 +661,12 @@ public class KieContainerImpl
     }
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
-        KieSessionConfiguration ksConf = sessionConfsCache.computeIfAbsent(kSessionModel.getName(),
-                k -> new SessionConfigurationImpl( null, kProject.getClassLoader() ) );
-        ksConf.setOption( kSessionModel.getClockType() );
-        ksConf.setOption( kSessionModel.getBeliefSystem() );
-        return ksConf;
+        return sessionConfsCache.computeIfAbsent(kSessionModel.getName(), k -> {
+            KieSessionConfiguration ksConf = new SessionConfigurationImpl( null, kProject.getClassLoader() );
+            ksConf.setOption( kSessionModel.getClockType() );
+            ksConf.setOption( kSessionModel.getBeliefSystem() );
+            return ksConf;
+        });
     }
 
     public void dispose() {

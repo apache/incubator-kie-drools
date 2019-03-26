@@ -15,11 +15,12 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
-import javax.tools.DiagnosticListener;
-import javax.tools.JavaFileManager;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.tools.DiagnosticListener;
+import javax.tools.JavaFileManager;
 
 public class NativeJavaCompilerSettings extends JavaCompilerSettings {
 

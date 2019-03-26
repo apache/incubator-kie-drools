@@ -15,11 +15,11 @@
 
 package org.drools.compiler.compiler;
 
+import java.util.List;
+
 import org.kie.api.Service;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
-
-import java.util.List;
 
 public interface DecisionTableProvider extends Service {
 

@@ -24,17 +24,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -54,7 +50,7 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { { false } };
         return Arrays.asList(data);
     };
     
@@ -62,18 +58,10 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
     private KieSession ksession;    
 
     public SLAComplianceTest(boolean persistence) throws Exception {
-        super(persistence);
     }
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
-    }
-
     @After
     public void dispose() {
         if (ksession != null) {
-            abortProcessInstances(ksession);
             ksession.dispose();
             ksession = null;
         }
@@ -186,7 +174,7 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
 
         NodeInstance userTaskNode = active.iterator().next();
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, NodeInstanceLog.TYPE_ENTER);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, 0);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
         
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
@@ -195,7 +183,7 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_NA, slaCompliance);
         
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, NodeInstanceLog.TYPE_EXIT);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, 1);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
         
         ksession.dispose();
@@ -229,16 +217,12 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_NA, slaCompliance);
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, NodeInstanceLog.TYPE_ENTER);
-        if (sessionPersistence) {
-            // In DB it is still seen as pending
-            assertEquals(ProcessInstance.SLA_PENDING, slaCompliance);
-        } else {
-            // Whereas in memory it is already met
-            assertEquals(ProcessInstance.SLA_MET, slaCompliance);
-        }
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, 0);
+        // Whereas in memory it is already met
+        assertEquals(ProcessInstance.SLA_MET, slaCompliance);
+    
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, NodeInstanceLog.TYPE_EXIT);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, 1);
         assertEquals(ProcessInstance.SLA_MET, slaCompliance);
         
         ksession.dispose();
@@ -344,10 +328,10 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_NA, slaCompliance);
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, NodeInstanceLog.TYPE_ENTER);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, 0);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, NodeInstanceLog.TYPE_EXIT);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) userTaskNode, 1);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
         
         ksession.dispose();
@@ -481,10 +465,10 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_NA, slaCompliance);
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, NodeInstanceLog.TYPE_ENTER);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, 0);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, NodeInstanceLog.TYPE_EXIT);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, 1);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
         
         ksession.dispose();
@@ -521,7 +505,7 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_NA, slaCompliance);
 
-        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, NodeInstanceLog.TYPE_EXIT);
+        slaCompliance = getSLAComplianceForNodeInstance(processInstance.getId(), (org.jbpm.workflow.instance.NodeInstance) eventNode, 1);
         assertEquals(ProcessInstance.SLA_MET, slaCompliance);
         
 
@@ -537,34 +521,14 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
      */
     
     private int getSLAComplianceForProcessInstance(ProcessInstance processInstance) {
-        int slaCompliance = -1;
-        if (sessionPersistence) {
-            ProcessInstanceLog log = logService.findProcessInstance(processInstance.getId());
-            if (log != null) {
-                slaCompliance = log.getSlaCompliance();
-            }
-        } else {
-            slaCompliance = ((org.jbpm.process.instance.ProcessInstance)processInstance).getSlaCompliance();
-        }
+        int slaCompliance = ((org.jbpm.process.instance.ProcessInstance)processInstance).getSlaCompliance();
+        
         return slaCompliance;
     }
     
     private int getSLAComplianceForNodeInstance(long processInstanceId, org.jbpm.workflow.instance.NodeInstance nodeInstance, int logType) {
-        int slaCompliance = -1;
-        if (sessionPersistence) {
-            List<NodeInstanceLog> logs = logService.findNodeInstances(processInstanceId);
-            if (logs != null) {
-
-                for (NodeInstanceLog log : logs) {
-                    if (log.getType() == logType && log.getNodeInstanceId().equals(String.valueOf(nodeInstance.getId()))) {
-                        slaCompliance = log.getSlaCompliance();
-                        break;
-                    }
-                }
-            }
-        } else {
-            slaCompliance = nodeInstance.getSlaCompliance();
-        }
+        int slaCompliance = nodeInstance.getSlaCompliance();
+        
         return slaCompliance;
     }
 }

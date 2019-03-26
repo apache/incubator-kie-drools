@@ -16,11 +16,11 @@
 
 package org.drools.compiler;
 
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
 
 public class TestUtil {
 

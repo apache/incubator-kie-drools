@@ -1,19 +1,18 @@
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_CALL;
+
 import java.util.Optional;
 
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.UnaryExpr;
+import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.functions.Operator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.CoercedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_CALL;
 
 public class NativeOperatorSpec implements OperatorSpec {
     public static final NativeOperatorSpec INSTANCE = new NativeOperatorSpec();

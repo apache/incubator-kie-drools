@@ -16,6 +16,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
+import java.io.FileWriter;
+import java.util.HashMap;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -33,15 +39,8 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileWriter;
-import java.util.HashMap;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class OutOfMemoryTest extends CommonTestMethodBase {

@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.PhreakAsyncSendNode.isAllowed;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -27,8 +29,6 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.index.TupleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.phreak.PhreakAsyncSendNode.isAllowed;
 
 public class PhreakAsyncReceiveNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakAsyncReceiveNode.class );

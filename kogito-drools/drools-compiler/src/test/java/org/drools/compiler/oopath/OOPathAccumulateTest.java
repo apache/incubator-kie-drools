@@ -17,6 +17,7 @@
 package org.drools.compiler.oopath;
 
 import java.util.Collection;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.oopath.model.Child;
 import org.drools.compiler.oopath.model.Man;

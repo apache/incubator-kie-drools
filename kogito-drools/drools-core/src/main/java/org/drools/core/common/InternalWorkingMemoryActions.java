@@ -25,8 +25,8 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.internal.runtime.beliefs.Mode;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalWorkingMemoryActions
         extends

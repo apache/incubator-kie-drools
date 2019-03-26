@@ -15,13 +15,13 @@
 
 package org.drools.compiler.rule.builder;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests for syntactic analysis of XPath constraints.

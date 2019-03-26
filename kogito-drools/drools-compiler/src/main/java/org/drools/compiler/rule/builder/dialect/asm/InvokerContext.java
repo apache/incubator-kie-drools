@@ -15,10 +15,10 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import java.util.Map;
+
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
-
-import java.util.Map;
 
 public class InvokerContext implements InvokerDataProvider {
 

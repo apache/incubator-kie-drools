@@ -16,10 +16,10 @@
 
 package org.drools.core.base.mvel;
 
+import java.util.Date;
+
 import org.drools.core.util.DateUtils;
 import org.mvel2.ConversionHandler;
-
-import java.util.Date;
 
 public class MVELDateCoercion implements ConversionHandler {
 

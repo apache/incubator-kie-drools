@@ -16,6 +16,16 @@
 
 package org.drools.compiler.integrationtests;
 
+import static java.util.Arrays.asList;
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -59,7 +69,6 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.InitialFact;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
@@ -68,7 +77,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
-import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
@@ -140,17 +148,6 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.Arrays.asList;
-
-import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -2402,42 +2399,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testLegacySalienceResolver() {
-        // DROOLS-159
-        String drl = "package org.drools.test; \n" +
-                     "" +
-                     "global java.util.List list; \n " +
-                     "" +
-                     "rule X salience 10 \n" +
-                     "then\n" +
-                     " list.add( 1 ); \n" +
-                     "end\n" +
-                     "" +
-                     "rule Y salience 5 \n" +
-                     "then\n" +
-                     " list.add( 2 ); \n" +
-                     "end\n" +
-                     "";
-
-        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        assertFalse( kb.hasErrors() );
-
-        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        ( (RuleBaseConfiguration) kbconf ).setConflictResolver( SalienceConflictResolver.getInstance() );
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
-        knowledgeBase.addPackages( kb.getKnowledgePackages() );
-        KieSession knowledgeSession = knowledgeBase.newKieSession();
-
-        List list = new ArrayList();
-        knowledgeSession.setGlobal( "list", list );
-        knowledgeSession.fireAllRules();
-
-        assertEquals( Arrays.asList( 1, 2 ), list );
-    }
-
-    @Test
     public void testUnaryNegation() {
         // DROOLS-177
         String str =
@@ -3712,8 +3673,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule \"Rule1\" \n" +
                      "salience 1 \n" +
                      "when\n" +
-                     "  $booking: TradeBooking()\n" +
-                     "  $trade: TradeHeader() @watch(*) from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking() @watch(*) \n" +
+                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
                      "  not String()\n" +
                      "then\n" +
                      "  $trade.setAction(\"New\");\n" +
@@ -3724,8 +3685,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule \"Rule2\"\n" +
                      "lock-on-active true\n" +
                      "when\n" +
-                     "  $booking: TradeBooking( )\n" +
-                     "  $trade: Object( ) @watch(*) from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking( ) @watch(*) \n" +
+                     "  $trade: Object( ) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";
         KieBase kb = loadKnowledgeBaseFromString( drl );
@@ -3786,8 +3747,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "lock-on-active true\n" +
                      "salience 1 \n" +
                      "when\n" +
-                     "  $booking: TradeBooking()\n" +
-                     "  $trade: TradeHeader() @watch(*) from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking() @watch(*) \n" +
+                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
                      "then\n" +
                      "  $trade.setAction(\"New\");\n" +
                      "  modify($booking) {}\n" +
@@ -3795,8 +3756,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "\n" +
                      "rule \"Rule2\"\n" +
                      "when\n" +
-                     "  $booking: TradeBooking( )\n" +
-                     "  $trade: Object( ) @watch(*) from $booking.getTrade()\n" +
+                     "  $booking: TradeBooking( ) @watch(*) \n" +
+                     "  $trade: Object( ) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";
         KieBase kb = loadKnowledgeBaseFromString( drl );

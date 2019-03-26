@@ -25,15 +25,14 @@ import java.util.List;
 import org.drools.core.common.TerminalNodeIterator;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.util.Iterator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.util.Iterator;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 
 public class TerminalNodeIteratorTest {
 

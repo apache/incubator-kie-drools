@@ -15,23 +15,23 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
-import org.drools.core.rule.builder.dialect.asm.GeneratorHelper;
-import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
-import org.mvel2.asm.MethodVisitor;
-
 import static org.mvel2.asm.Opcodes.ACC_FINAL;
 import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
 import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
 import static org.mvel2.asm.Opcodes.ARETURN;
 import static org.mvel2.asm.Opcodes.IRETURN;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.addon.TypeResolver;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.rule.builder.dialect.asm.GeneratorHelper;
+import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
+import org.mvel2.asm.MethodVisitor;
 
 public class InvokerGenerator {
 

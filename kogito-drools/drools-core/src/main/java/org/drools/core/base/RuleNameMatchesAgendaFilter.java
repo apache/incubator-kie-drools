@@ -19,7 +19,6 @@ package org.drools.core.base;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.core.spi.Activation;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 

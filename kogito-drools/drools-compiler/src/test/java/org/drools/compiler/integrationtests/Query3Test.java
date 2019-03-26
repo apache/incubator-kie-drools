@@ -16,6 +16,8 @@
 package org.drools.compiler.integrationtests;
 
 
+import static org.junit.Assert.*;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Before;
@@ -27,8 +29,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.junit.Assert.*;
 
 public class Query3Test {
 

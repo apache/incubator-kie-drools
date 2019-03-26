@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.4.1" id="_88156d21-3acc-43b6-8b81-385caf0bb6ca" name="Calling" namespace="http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:inputData id="_8d5c3681-9616-4834-ad63-2a466eb91c5d" name="Caller name" triso:displayName="Caller name">
+    <semantic:variable id="_73528854-f705-4baf-9e23-72d9238b8832" name="Caller name" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:inputData id="_49dd2ea2-657f-4df0-bcd4-bdca0f84bf85" name="A number" triso:displayName="A number">
+    <semantic:variable id="_bae21883-ec73-40a0-a8a9-3dde50268495" name="A number" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:decision id="_5bcaa0b8-b476-46d2-bcbc-23e9f8fb4662" name="Greet caller" triso:displayName="Greet caller">
+    <semantic:variable id="_37e49c9c-432b-4a9a-8f94-d54ad937bd61" name="Greet caller"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_8d5c3681-9616-4834-ad63-2a466eb91c5d"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_ee9beafd-b311-43e0-bacd-0eefdb295cac">
+      <semantic:text>"Hello, " + Caller name</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_ca1f35a9-34e1-4165-9cfa-d69802c5d6fe" name="Duoble the number" triso:displayName="Duoble the number">
+    <semantic:variable id="_b9114e44-24e2-4014-b578-354c7f61238d" name="Duoble the number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_49dd2ea2-657f-4df0-bcd4-bdca0f84bf85"/>
+    </semantic:informationRequirement>
+    <semantic:context id="_20676122-3bac-4115-9f90-061fba334bef">
+      <semantic:contextEntry>
+        <semantic:variable id="_82a8fb04-7f1f-470a-a211-7fd676f5201a" name="left"/>
+        <semantic:literalExpression id="_18ac29f7-3283-41af-ac11-dfe7e11f115d">
+          <semantic:text>A number</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_30b7ac11-88a7-4cf3-a861-dcae4d285bcd" name="right"/>
+        <semantic:literalExpression id="_574b6c02-a3da-4bd6-9012-e3059e350762">
+          <semantic:text>A number</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_fa68a577-2a79-48a5-b8e6-99a03d53cbfe" name="sum left and right"/>
+        <semantic:literalExpression id="_ac1c79cf-ceb6-49fe-99e1-a8ea530a0668">
+          <semantic:text>left + right</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_ea6503be-c231-4666-801c-0ab23437fad1">
+          <semantic:text>sum left and right</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:decision id="_2337d288-1ec7-457d-8ecc-63ecbdfe6f99" name="Final Result" triso:displayName="Final Result">
+    <semantic:variable id="_e3125b8d-6364-4450-a3d6-f4767bbae8d4" name="Final Result"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_ca1f35a9-34e1-4165-9cfa-d69802c5d6fe"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_5bcaa0b8-b476-46d2-bcbc-23e9f8fb4662"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_fc9f266a-5504-4453-9fad-8814fe505bf9">
+      <semantic:text>Greet caller + " your number once double is equal to: "  + string(Duoble the number)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

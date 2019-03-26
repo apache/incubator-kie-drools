@@ -15,22 +15,21 @@
 
 package org.drools.compiler.common;
 
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActiveActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.Iterator;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.fail;
 
 public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 

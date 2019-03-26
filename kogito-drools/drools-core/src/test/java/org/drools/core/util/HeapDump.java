@@ -16,9 +16,10 @@
 
 package org.drools.core.util;
 
-import javax.management.MBeanServer;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
+
+import javax.management.MBeanServer;
 
 
 @SuppressWarnings("restriction")

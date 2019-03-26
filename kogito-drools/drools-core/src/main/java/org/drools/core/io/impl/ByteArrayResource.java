@@ -16,10 +16,6 @@
 
 package org.drools.core.io.impl;
 
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
-import org.kie.api.io.Resource;
-
 import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.FileNotFoundException;
@@ -32,6 +28,10 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.drools.core.io.internal.InternalResource;
+import org.drools.core.util.IoUtils;
+import org.kie.api.io.Resource;
 
 public class ByteArrayResource extends BaseResource
     implements

@@ -16,6 +16,9 @@
 
 package org.jbpm.bpmn2;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +28,6 @@ import java.util.Map;
 
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,14 +44,12 @@ import org.kie.api.runtime.process.WorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 @RunWith(Parameterized.class)
 public class EscalationEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { { false } };
         return Arrays.asList(data);
     };
 
@@ -59,12 +59,6 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     private KieSession ksession;
     
     public EscalationEventTest(boolean persistence) {
-        super(persistence);
-    }
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
     }
 
     @After

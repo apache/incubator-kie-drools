@@ -15,30 +15,30 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
-import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.EvalDescr;
-import org.drools.compiler.lang.descr.PredicateDescr;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.core.spi.DeclarationScopeResolver;
+import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
+import static org.drools.compiler.rule.builder.PatternBuilder.createImplicitBindings;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateMethodTemplate;
+import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.registerInvokerBytecode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
-import static org.drools.compiler.rule.builder.PatternBuilder.createImplicitBindings;
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateMethodTemplate;
-import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.registerInvokerBytecode;
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.PredicateDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.spi.DeclarationScopeResolver;
 
 public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
     public RuleConditionElement build(RuleBuildContext context, BaseDescr descr) {

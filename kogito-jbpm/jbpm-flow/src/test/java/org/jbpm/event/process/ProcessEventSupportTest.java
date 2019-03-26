@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.lang3.mutable.MutableLong;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -660,11 +660,11 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         kbase.addPackages( pkgs );
 
         KieSession session = kbase.newKieSession();
-        final MutableLong parentProcessId = new MutableLong(0L);
+        final AtomicLong parentProcessId = new AtomicLong(0L);
         final ProcessEventListener processEventListener = new DefaultProcessEventListener() {
 
             public void afterProcessStarted(ProcessStartedEvent event) {
-                parentProcessId.setValue(event.getProcessInstance().getParentProcessInstanceId());
+                parentProcessId.set(event.getProcessInstance().getParentProcessInstanceId());
             }
 
         };

@@ -23,7 +23,6 @@ import org.junit.Test;
 public class ImportClassTest extends JbpmBpmn2TestCase {
     
     public ImportClassTest() {
-        super(false);
     }
 
     @Test

@@ -15,12 +15,12 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.compiler.io.memory.MemoryFolder;
-import org.drools.core.common.ResourceProvider;
+import org.drools.core.util.IoUtils;
+import org.drools.reflective.ResourceProvider;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
@@ -41,7 +41,7 @@ public class MemoryKieModuleResourceProviderTest {
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
-        String folderContents = IOUtils.toString(resourceProvider.getResource("src/main/java").openStream());
+        String folderContents = new String(IoUtils.readBytesFromInputStream(resourceProvider.getResource("src/main/java").openStream()));
         Assertions.assertThat(folderContents).isEmpty();
     }
 
@@ -55,7 +55,7 @@ public class MemoryKieModuleResourceProviderTest {
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
-        String folderContents = IOUtils.toString(resourceProvider.getResource("src/main/java").openStream());
+        String folderContents = new String(IoUtils.readBytesFromInputStream(resourceProvider.getResource("src/main/java").openStream()));
         Assertions.assertThat(folderContents).hasLineCount(2).contains("com", "org");
     }
 
@@ -71,7 +71,7 @@ public class MemoryKieModuleResourceProviderTest {
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
-        String folderContents = IOUtils.toString(resourceProvider.getResource("src/main/java").openStream());
+        String folderContents = new String(IoUtils.readBytesFromInputStream(resourceProvider.getResource("src/main/java").openStream()));
         Assertions.assertThat(folderContents).hasLineCount(4).contains("com", "org", "my-file1", "my-file2");
     }
 
@@ -83,7 +83,7 @@ public class MemoryKieModuleResourceProviderTest {
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
-        String folderContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/resources/my-file1"));
+        String folderContents = new String(IoUtils.readBytesFromInputStream(resourceProvider.getResourceAsStream("src/main/resources/my-file1")));
         Assertions.assertThat(folderContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
     }
 
@@ -97,7 +97,7 @@ public class MemoryKieModuleResourceProviderTest {
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
-        String folderContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/java"));
+        String folderContents = new String(IoUtils.readBytesFromInputStream(resourceProvider.getResourceAsStream("src/main/java")));
         Assertions.assertThat(folderContents).hasLineCount(2).contains("com", "org");
     }
 
@@ -109,10 +109,10 @@ public class MemoryKieModuleResourceProviderTest {
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
 
-        String noTrailingSlashContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/resources/my-file1"));
+        String noTrailingSlashContents = new String(IoUtils.readBytesFromInputStream(resourceProvider.getResourceAsStream("src/main/resources/my-file1")));
         Assertions.assertThat(noTrailingSlashContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
 
-        String withTrailingSlashContents = IOUtils.toString(resourceProvider.getResourceAsStream("src/main/resources/my-file1/"));
+        String withTrailingSlashContents = new String(IoUtils.readBytesFromInputStream(resourceProvider.getResourceAsStream("src/main/resources/my-file1/")));
         Assertions.assertThat(withTrailingSlashContents).hasLineCount(1).contains("AB"); // "AB" == new byte[] {65, 66}
     }
 

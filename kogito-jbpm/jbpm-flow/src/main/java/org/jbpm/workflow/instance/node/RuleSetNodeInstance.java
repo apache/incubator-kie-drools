@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.MVELSafeHelper;
@@ -195,7 +194,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
             
             return;
         } else {
-            Throwable rootCause = ExceptionUtils.getRootCause(e);
+            Throwable rootCause = getRootException(e);
             if(rootCause != null) {                
                 exceptionScopeInstance = getExceptionScopeInstance(rootCause);
                 if(exceptionScopeInstance != null) {
@@ -213,6 +212,13 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         return (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, e.getClass().getName());
     }
    
+    protected Throwable getRootException(Throwable exception) {
+        Throwable rootException = exception;
+        while (rootException.getCause() != null) {
+            rootException = rootException.getCause();
+        }
+        return rootException;
+    }
     
     public void addEventListeners() {
         super.addEventListeners();
@@ -336,7 +342,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
             	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
             	if (transformer != null) {
             		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(association));
-            		if (parameterValue != null || ruleSetNode.isDMN()) {
+            		if (parameterValue != null) {
             			replacements.put(association.getTarget(), parameterValue);
                     }
             	}
@@ -355,7 +361,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         logger.error("Continuing without setting parameter.");
                     }
                 }
-                if (parameterValue != null || ruleSetNode.isDMN()) {
+                if (parameterValue != null) {
                 	replacements.put(association.getTarget(), parameterValue);
                 }
             }

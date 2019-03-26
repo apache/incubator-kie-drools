@@ -1,6 +1,6 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
-import com.github.javaparser.ast.expr.BinaryExpr;
+import org.drools.javaparser.ast.expr.BinaryExpr;
 
 public interface DrlxParseResult {
 

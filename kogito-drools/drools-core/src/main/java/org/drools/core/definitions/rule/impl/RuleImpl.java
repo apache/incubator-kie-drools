@@ -16,6 +16,8 @@
 
 package org.drools.core.definitions.rule.impl;
 
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,6 +25,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -45,6 +48,7 @@ import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AgendaGroup;
+import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.Enabled;
 import org.drools.core.spi.KnowledgeHelper;
@@ -58,8 +62,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
-
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class RuleImpl implements Externalizable,
                                  Wireable,
@@ -171,7 +173,7 @@ public class RuleImpl implements Externalizable,
         out.writeObject( metaAttributes );
         out.writeObject( requiredDeclarations );
 
-        if ( Consequence.isCompiledInvoker( this.consequence ) ) {
+        if ( this.consequence instanceof CompiledInvoker) {
             out.writeObject( null );
             out.writeObject( null );
         } else {
@@ -602,7 +604,7 @@ public class RuleImpl implements Externalizable,
 
     public void wire(Object object) {
         if ( object instanceof Consequence ) {
-            Consequence c = KiePolicyHelper.isPolicyEnabled() ? new Consequence.SafeConsequence((Consequence) object) : (Consequence) object;
+            Consequence c = KiePolicyHelper.isPolicyEnabled() ? new SafeConsequence((Consequence) object) : (Consequence) object;
             if ( DEFAULT_CONSEQUENCE_NAME.equals( c.getName() ) ) {
                 setConsequence( c );
             } else {
@@ -871,6 +873,30 @@ public class RuleImpl implements Externalizable,
 
     public boolean hasRuleUnit() {
         return ruleUnitClassName != null;
+    }
+
+    public static class SafeConsequence implements Consequence, Serializable {
+        private static final long serialVersionUID = -8109957972163261899L;
+        private final Consequence delegate;
+        public SafeConsequence( Consequence delegate ) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public String getName() {
+            return this.delegate.getName();
+        }
+
+        @Override
+        public void evaluate(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory) throws Exception {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    delegate.evaluate(knowledgeHelper, workingMemory);
+                    return null;
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
     }
 
     public static class SafeSalience implements Salience, Serializable {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_95b7ee22-1964-4be5-b7db-7db66692c707" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.9.201704041316" id="_95b7ee22-1964-4be5-b7db-7db66692c707"
+                      name="Dessin 1" namespace="http://www.trisotech.com/dmn/definitions/_95b7ee22-1964-4be5-b7db-7db66692c707"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="toDelete" name="toDelete">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tNumber" name="tNumber">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="expression">
+      <semantic:text>&gt;0,null</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_296047d0-d138-4833-905c-557d884f0078" name="abc" triso:displayName="abc">
+    <semantic:variable id="_449e041b-be39-4616-944b-c717bf2e97d0" name="abc" typeRef="tNumber"/>
+  </semantic:inputData>
+  <semantic:decision id="_a74ba41e-8225-43ab-8c14-863d48e766ae" name="Decision Logic 2" triso:displayName="Decision Logic 2">
+    <semantic:variable id="_85bf4e50-b81c-4bb0-851a-167d62cea5c8" name="Decision Logic 2" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_296047d0-d138-4833-905c-557d884f0078"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_de25fe51-9fc7-4c4e-b5d3-0c652981df95" outputLabel="Decision Logic 2">
+      <semantic:input id="_7aaf40f7-ae60-4fac-a142-de3eef06a952">
+        <semantic:inputExpression typeRef="tNumber">
+          <semantic:text>abc</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="expression">
+          <semantic:text>&gt;0,null</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_f65932c4-4b78-4e06-bc00-e51f420f2ac8"/>
+      <semantic:rule id="_745cccc7-574e-4de1-80a7-e68d5bafbb05">
+        <semantic:inputEntry id="_c9857cc9-7c6e-41f6-b01f-07475570bbc4">
+          <semantic:text>&gt;10</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c7045653-94b3-42c9-b5b2-cc0398237d75">
+          <semantic:text>"Greather than 10"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6547be15-b053-46b1-98ce-4cc6b06545bf">
+        <semantic:inputEntry id="_291b5366-cba8-4d2d-bb4f-bec04074f7c1">
+          <semantic:text>&lt;10</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_7f8c921c-4b56-4e50-92d1-114c05eaf50b">
+          <semantic:text>"Smaller than 10"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b8cd4fa2-7b7d-4a5e-8a17-62c60a928492">
+        <semantic:inputEntry id="_90fdae92-3917-4115-8d75-df9c12ae1f39">
+          <semantic:text>10</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_5e331485-c1b4-4420-80f9-08d9900ff078">
+          <semantic:text>10</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+</semantic:definitions>

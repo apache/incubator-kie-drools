@@ -16,6 +16,8 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,8 +27,6 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.junit.Assert.assertEquals;
 
 public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
@@ -72,12 +72,6 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
         final Resource testResource = new KieBuilderSetImpl.DummyResource( "Dummy Resource" );
 
         assertEquals( testResource, dummyResource );
-    }
-
-    @Test
-    public void testDummyResourceWithWrongEncodedFileName() {
-        final Resource dummyResource = new KieBuilderSetImpl.DummyResource("Dummy 100%");
-        assertEquals(dummyResource.getSourcePath(), "Dummy 100%");
     }
 
     private KieBuilderImpl kieBuilder( final KieServices ks,

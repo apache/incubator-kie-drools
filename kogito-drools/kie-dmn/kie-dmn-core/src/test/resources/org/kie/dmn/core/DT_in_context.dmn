@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns="http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      exporter="DMN Modeler" exporterVersion="5.1.4.201702071031" id="_882d2e81-06eb-40b6-94a6-5464c6d1f575"
+                      name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_10264332-615a-4900-94f1-acda374d4184" name="D1">
+    <semantic:variable id="_7a4f634b-ea94-456a-b8f3-9a7e387adca0" name="D1"/>
+    <semantic:context>
+      <semantic:contextEntry>
+        <semantic:variable id="_bc4f7f6a-362b-4e98-9cc2-6264e9508518" name="Color"/>
+        <semantic:literalExpression>
+          <semantic:text>"ff0000"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_edb028e2-47a4-4634-9eae-e7a063b851ec" name="Text color" typeRef="feel:string"/>
+        <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Text color">
+          <semantic:input id="_03819862-0a2c-4987-b1c5-38ab2e6d6a84" label="Color">
+            <semantic:inputExpression typeRef="feel:string">
+              <semantic:text>Color</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:output id="_d5dedde6-3b69-4432-93f5-156e977057d0"/>
+          <semantic:rule id="_6477779c-8fa5-4145-adff-1a7bedf02f36">
+            <semantic:inputEntry id="_6477779c-8fa5-4145-adff-1a7bedf02f36-0">
+              <semantic:text>"ff0000"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_6477779c-8fa5-4145-adff-1a7bedf02f36-1">
+              <semantic:text>"red"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_7f6e0274-8137-4e25-b3d6-439157e02662">
+            <semantic:inputEntry id="_7f6e0274-8137-4e25-b3d6-439157e02662-0">
+              <semantic:text>"00ff00"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_7f6e0274-8137-4e25-b3d6-439157e02662-1">
+              <semantic:text>"green"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_80652ade-aa9f-4f9e-bfdd-d420f15eb82a">
+            <semantic:inputEntry id="_80652ade-aa9f-4f9e-bfdd-d420f15eb82a-0">
+              <semantic:text>"0000ff"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_80652ade-aa9f-4f9e-bfdd-d420f15eb82a-1">
+              <semantic:text>"blue"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+        </semantic:decisionTable>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+</semantic:definitions>

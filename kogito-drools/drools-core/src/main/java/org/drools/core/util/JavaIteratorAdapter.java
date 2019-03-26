@@ -16,11 +16,11 @@
 
 package org.drools.core.util;
 
+import java.util.NoSuchElementException;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.kie.api.runtime.ObjectFilter;
-
-import java.util.NoSuchElementException;
 
 public class JavaIteratorAdapter<T>
     implements

@@ -16,7 +16,17 @@
 
 package org.drools.compiler.lang;
 
-import junit.framework.TestCase;
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.assertj.core.api.Assertions;
@@ -57,16 +67,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import junit.framework.TestCase;
 
 public class RuleParserTest extends TestCase {
 

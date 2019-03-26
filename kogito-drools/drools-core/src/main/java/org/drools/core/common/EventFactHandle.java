@@ -16,12 +16,12 @@
 
 package org.drools.core.common;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.LinkedList;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 

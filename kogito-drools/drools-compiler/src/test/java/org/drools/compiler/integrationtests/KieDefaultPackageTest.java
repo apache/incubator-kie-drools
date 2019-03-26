@@ -15,14 +15,14 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Testing use of default Package.

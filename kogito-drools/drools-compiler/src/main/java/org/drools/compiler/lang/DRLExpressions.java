@@ -15,15 +15,15 @@
 
 package org.drools.compiler.lang;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.antlr.runtime.Parser;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.BaseDescr;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public abstract class DRLExpressions extends Parser {
     public DRLExpressions(TokenStream input, RecognizerSharedState state) {

@@ -15,6 +15,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
@@ -28,7 +34,7 @@ import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.core.common.ProjectClassLoader;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -47,12 +53,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * This is a sample class to launch a rule.
@@ -203,8 +203,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML( releaseId )
-                .write( "src/main/resources/KBase1/org/pkg1/r1.drl", createDrl( "org.pkg1", "R1" ) )
-                .write( "src/main/resources/KBase1/org/pkg2/r2.drl", createDrl( "org.pkg2", "R2" ) )
+                .write( "src/main/resources/KBase1/org/pkg1/r1.drl", createDrl( "R1" ) )
+                .write( "src/main/resources/KBase1/org/pkg2/r2.drl", createDrl( "R2" ) )
                 .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1" ).toXML() );
         ks.newKieBuilder( kfs ).buildAll();
 
@@ -218,7 +218,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldUsingPackages() throws Exception {
-        String drlDef = "package org.pkg1\n" +
+        String drlDef = "package org.drools.compiler.integrationtests\n" +
                         "import " + Message.class.getCanonicalName() + "\n" +
                         "rule R_def when\n" +
                         "   $m : Message( message == \"Hello World\" )\n" +
@@ -231,42 +231,13 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
-                .write("src/main/resources/KBase1/r1_1.drl", drlDef)
-                .write("src/main/resources/KBase1/r1_2.drl", createDrl("org.pkg1", "R1"))
-                .write("src/main/resources/KBase1/r2.drl", createDrl("org.pkg2", "R2"))
+                .write("src/main/resources/KBase1/org/pkg1/r1_1.drl", drlDef)
+                .write("src/main/resources/KBase1/org/pkg1/r1_2.drl", createDrl("R1"))
+                .write("src/main/resources/KBase1/org/pkg2/r2.drl", createDrl("R2"))
                 .writeKModuleXML(createKieProjectWithPackages(ks, "org.pkg1").toXML());
         ks.newKieBuilder( kfs ).buildAll();
 
         KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
-        ksession.insert( new Message( "Hello World" ) );
-
-        assertEquals( 2, ksession.fireAllRules() );
-    }
-
-    @Test
-    public void testHelloWorldUsingFolders() throws Exception {
-        String drlDef = "package org.drools.compiler.integrationtests\n" +
-                "import " + Message.class.getCanonicalName() + "\n" +
-                "rule R_def when\n" +
-                "   $m : Message( message == \"Hello World\" )\n" +
-                "then\n" +
-                "end\n";
-
-        KieServices ks = KieServices.Factory.get();
-
-        ReleaseId releaseId = ks.newReleaseId( "org.kie", "hello-world", "1.0" );
-
-        KieFileSystem kfs = ks.newKieFileSystem()
-                .generateAndWritePomXML( releaseId )
-                .write( "src/main/resources/KBase1/org/pkg1/r1_1.drl", drlDef )
-                .write( "src/main/resources/KBase1/org/pkg1/r1_2.drl", createDrl( "R1" ) )
-                .write( "src/main/resources/KBase1/org/pkg2/r2.drl", createDrl( "R2" ) )
-                .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1" )
-                        .setConfigurationProperty( "drools.groupDRLsInKieBasesByFolder", "true" )
-                        .toXML() );
-        ks.newKieBuilder( kfs ).buildAll();
-
-        KieSession ksession = ks.newKieContainer( releaseId ).newKieSession( "KSession1" );
         ksession.insert( new Message( "Hello World" ) );
 
         assertEquals( 2, ksession.fireAllRules() );
@@ -279,8 +250,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML( releaseId )
-                .write( "src/main/resources/org/pkg1/test/r1.drl", createDrlWithGlobal( "org.pkg1.test", "R1" ) )
-                .write( "src/main/resources/org/pkg2/test/r2.drl", createDrlWithGlobal( "org.pkg2.test", "R2" ) )
+                .write( "src/main/resources/org/pkg1/test/r1.drl", createDrlWithGlobal( "R1" ) )
+                .write( "src/main/resources/org/pkg2/test/r2.drl", createDrlWithGlobal( "R2" ) )
                 .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1.*" ).toXML() );
         ks.newKieBuilder( kfs ).buildAll();
 
@@ -302,13 +273,13 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
-                .write("src/main/resources/rules/rules.drl", createDrlWithGlobal("rules", "R1"))
-                .write("src/main/resources/rules/tests/tests.drl", createDrlWithGlobal("rules.tests", "R2"))
-                .write("src/main/resources/aaarules/aaarules.drl", createDrlWithGlobal("aaarules", "R3"))
-                .write("src/main/resources/sample/brms601_1310778/rules/rules.drl", createDrlWithGlobal("sample.brms601_1310778.rules", "R4"))
-                .write("src/main/resources/sample/brms601_1310778/tests/tests.drl", createDrlWithGlobal("sample.brms601_1310778.rules", "R5"))
-                .write("src/main/resources/tests/tests.drl", createDrlWithGlobal("tests", "R6"))
-                .write("src/main/resources/rules2/rules2.drl", createDrlWithGlobal("rules2", "R7"))
+                .write("src/main/resources/rules/rules.drl", createDrlWithGlobal("R1"))
+                .write("src/main/resources/rules/tests/tests.drl", createDrlWithGlobal("R2"))
+                .write("src/main/resources/aaarules/aaarules.drl", createDrlWithGlobal("R3"))
+                .write("src/main/resources/sample/brms601_1310778/rules/rules.drl", createDrlWithGlobal("R4"))
+                .write("src/main/resources/sample/brms601_1310778/tests/tests.drl", createDrlWithGlobal("R5"))
+                .write("src/main/resources/tests/tests.drl", createDrlWithGlobal("R6"))
+                .write("src/main/resources/rules2/rules2.drl", createDrlWithGlobal("R7"))
                 .writeKModuleXML( createKieProjectWithPackages(ks, "rules.*").toXML());
         ks.newKieBuilder( kfs ).buildAll();
 
@@ -323,11 +294,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     }
 
     public String createDrl(String ruleName) {
-        return createDrl("org", ruleName);
-    }
-
-    public String createDrl(String packageName, String ruleName) {
-        return "package " + packageName + "\n" +
+        return "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule " + ruleName + " when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
@@ -336,11 +303,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     }
 
     public String createDrlWithGlobal(String ruleName) {
-        return createDrlWithGlobal("org", ruleName);
-    }
-
-    public String createDrlWithGlobal(String packageName, String ruleName) {
-        return "package " + packageName + "\n" +
+        return "package org.drools.compiler.integrationtests\n" +
                 "global java.util.List list\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule " + ruleName + " when\n" +
@@ -438,7 +401,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
-        String drl1 = "package org.pkg1\n" +
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R11 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
@@ -449,7 +412,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.pkg2\n" +
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R21 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
@@ -517,7 +480,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     @Test
     public void testImport() throws Exception {
         // DROOLS-859
-        String drl1 = "package rules\n" +
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
                       "import " + Message.class.getCanonicalName() + "\n" +
                       "global java.util.List list\n" +
                       "rule R1 when\n" +
@@ -526,7 +489,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                       "    list.add(\"ok\");\n" +
                       "end\n";
 
-        String drl2 = "package myrules\n" +
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
                       "import " + Message.class.getCanonicalName() + "\n" +
                       "global java.util.List list\n" +
                       "rule R2 when\n" +

@@ -233,7 +233,10 @@ public class PhreakRuleTerminalNode {
         RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
         rtnLt.setMatched( false );
 
-        agenda.cancelActivation( pctx, rtnLt );
+        agenda.cancelActivation( leftTuple,
+                                 pctx,
+                                 rtnLt,
+                                 rtnLt.getTerminalNode() );
 
         if ( leftTuple.getMemory() != null ) {
             // Expiration propagations should not be removed from the list, as they still need to fire

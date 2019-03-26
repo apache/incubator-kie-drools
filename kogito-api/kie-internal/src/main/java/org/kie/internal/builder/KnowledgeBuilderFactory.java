@@ -18,7 +18,6 @@ package org.kie.internal.builder;
 
 import java.util.Properties;
 
-import com.sun.tools.xjc.Options;
 import org.kie.api.KieBase;
 import org.kie.api.internal.utils.ServiceRegistry;
 
@@ -131,7 +130,4 @@ public class KnowledgeBuilderFactory {
         return FactoryServiceHolder.factoryService.newScoreCardConfiguration();
     }
 
-    public static JaxbConfiguration newJaxbConfiguration(Options xjcOpts, String systemId) {
-        return FactoryServiceHolder.factoryService.newJaxbConfiguration(xjcOpts, systemId);
-    }
 }

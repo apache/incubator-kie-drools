@@ -16,11 +16,11 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.drools.compiler.rule.builder.RuleClassBuilder;
-import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.util.StringUtils;
 
 public class JavaRuleClassBuilder
     implements

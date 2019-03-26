@@ -2,17 +2,21 @@
 
     package org.drools.compiler.lang;
 
-    import org.kie.internal.builder.conf.LanguageLevelOption;
-    import org.drools.compiler.compiler.DroolsParserException;
-    import org.drools.core.util.StringUtils;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
+    import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+
+import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.IntStream;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 @SuppressWarnings("all")
 public class DRL6Lexer extends AbstractDRLLexer {

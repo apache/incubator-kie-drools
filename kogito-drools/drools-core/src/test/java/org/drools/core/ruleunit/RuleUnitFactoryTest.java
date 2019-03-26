@@ -16,6 +16,12 @@
 
 package org.drools.core.ruleunit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 
@@ -24,12 +30,6 @@ import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class RuleUnitFactoryTest {
 

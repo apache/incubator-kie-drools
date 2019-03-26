@@ -36,6 +36,11 @@ public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBas
         return createCanonicalKieModule( super.createKieModule(releaseId, kieProject, mfs) );
     }
 
+    @Override
+    public InternalKieModule createClasspathKieModule() {
+        return CanonicalKieModule.createFromClasspath();
+    }
+
     private InternalKieModule createCanonicalKieModule( InternalKieModule internalKieModule ) {
         return internalKieModule.hasResource( CanonicalKieModule.MODEL_FILE ) ? new CanonicalKieModule( internalKieModule ) : internalKieModule;
     }

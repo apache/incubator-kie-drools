@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
-import org.jbpm.bpmn2.XMLBPMNProcessDumperTest;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
@@ -41,16 +40,14 @@ import org.slf4j.LoggerFactory;
 
 public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(XMLBPMNProcessDumperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkItemHandlerExceptionHandlingTest.class);
 
     private static Boolean strictVariableSetting = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
-    public WorkItemHandlerExceptionHandlingTest() {
-        super(true);
+    public WorkItemHandlerExceptionHandlingTest() {        
     }
     
     @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
+    public static void setup() throws Exception {        
         VariableScope.setVariableStrictOption(false);
         WorkItemNodeInstance.setVariableStrictOption(false);
     }

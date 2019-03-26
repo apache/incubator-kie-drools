@@ -1,0 +1,1152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.10" id="_9105d4a6-6049-4ace-a9cd-88f18d29bc8f"
+                      name="Loan Recommendation - context" namespace="http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="false" label="tLoanRecommendation" name="tClassification">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Approve","Decline"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tCreditRisk" name="tRisk3">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"A","B","C","D","X"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tCollateralRisk" name="tCollateralRisk">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"High","Medium","Low"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tAffordability" name="tAffordability">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Not affordable","Marginal","Affordable"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tLoan" name="tLoan">
+    <semantic:itemComponent id="_88fdbcaf-5087-4f24-b6e6-90926d0ce297" name="Amount">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_1dccb822-5995-458b-967d-fb89fb6060d1" name="Rate">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_6551231d-a8b6-408b-bd32-db3baf2757f5" name="Term">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tAge" name="tAge">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="simple">
+      <semantic:text>&gt;=18</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tEmploymentStatus" name="tEmploymentStatus">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Employed","Self-employed","Retired","Unemployed"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tBorrower" name="tBorrower">
+    <semantic:itemComponent id="_5a33eba2-6aa1-45c3-be49-0de58aa83f87" name="Age">
+      <semantic:typeRef>tAge</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_2e15ef2b-996d-4fdd-b5f0-0a7c46846c45" name="EmploymentStatus">
+      <semantic:typeRef>tEmploymentStatus</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_eca12b05-b4ef-42e7-b249-16b13a382442" name="YearsAtCurrentEmployer">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_25938942-4d1b-459c-8d4f-59bef7d3aa6b" name="TotalAnnualIncome">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_b64ea699-b750-4507-9774-50358df5aee8" name="NonSalaryIncome">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_2c961ee9-90c9-4c56-8661-4a4adde6505e" name="MonthlyDebtPmtAmt">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_e5e7fef3-cc20-4627-8ec0-4ff7c2cd1d5a" name="LiquidAssetsAmt">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tIncomeRiskCategory" name="tIncomeRiskCategory">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"High","Medium","Low"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tCreditScore" name="tCreditScore">
+    <semantic:typeRef>feel:number</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="simple">
+      <semantic:text>[300..850]</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:decision id="_5c8ada46-a768-4569-9c96-4a8aab1872aa" name="Loan Recommendation" triso:displayName="Loan Recommendation">
+    <semantic:variable id="_a82db409-30d7-45f1-be88-3b2ec09e21de" name="Loan Recommendation" typeRef="tClassification"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_9b4a628a-4b97-40db-a9bd-102ecd1fa92b"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_189cab59-eb2d-4115-b06c-62395fbcf76a"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_ff9e77b7-c01b-4c33-926e-a72bda0b1e7e"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="PRIORITY" id="_0b77a8ef-0c39-4696-aec9-c68b29038b41" outputLabel="Loan Recommendation">
+      <semantic:input id="_c8925494-a154-493f-a339-270627722a9c">
+        <semantic:inputExpression typeRef="tCollateralRisk">
+          <semantic:text>Collateral Risk Category</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"High","Medium","Low"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_11b2f39c-f0d7-434d-825e-e0311d9ec215">
+        <semantic:inputExpression typeRef="tAffordability">
+          <semantic:text>Affordability Category</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"Not affordable","Marginal","Affordable"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_1b17a088-e052-4be6-9602-642022ab8e6c">
+        <semantic:inputExpression typeRef="tRisk3">
+          <semantic:text>Credit Risk Category</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"A","B","C","D","X"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_5f1f206a-b704-4e2a-890c-ab4d11fe9d6c">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"Approve","Decline"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_774081e2-e80d-4fd0-b60a-21caf0ec0501">
+        <semantic:inputEntry id="_bd53430f-e167-4608-abce-a0e46a8d8c67">
+          <semantic:text>"Medium"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e0bc78d2-727f-4f36-8261-c66a165e09c6">
+          <semantic:text>"Marginal"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_703fe2e6-1c41-4fff-9145-c618e26a9edb">
+          <semantic:text>"A"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_11b5863c-e03d-4f28-833e-ba10f8d5697e">
+          <semantic:text>"Approve"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_00ccb613-b639-4061-af67-db3ce7f3ccf3">
+        <semantic:inputEntry id="_bfee82a0-6f13-4bd6-8d96-4caaec913431">
+          <semantic:text>"Medium"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e8b4ea0f-32c8-4df5-a256-9d5e2090596f">
+          <semantic:text>"Affordable"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b24fa91e-239c-4495-81b1-aedfbdaa5c83">
+          <semantic:text>"A","B"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_f847aed8-24fd-4e69-9bff-649d750d1719">
+          <semantic:text>"Approve"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6d1a9893-ddab-4068-bfc7-748ee6b19665">
+        <semantic:inputEntry id="_b5363fe7-98e4-4149-b7c2-5178e7137e36">
+          <semantic:text>"Low"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_aacb21d0-c4f3-4f3c-9d89-bc908fd34b73">
+          <semantic:text>"Marginal"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_71c8c02e-28f7-45db-aa70-60abf9643aed">
+          <semantic:text>"A","B","C"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_8298623b-4047-4c7c-8bd9-de74c888dc57">
+          <semantic:text>"Approve"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a078fd8c-0d8f-47ab-b799-609b37573d35">
+        <semantic:inputEntry id="_243e7c88-7725-4ef3-a68d-5778f14aeedd">
+          <semantic:text>"Low"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a430e537-7a07-4019-968d-11fa289fae79">
+          <semantic:text>"Affordable"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_32d22042-42e1-4bb4-994d-931dafeba7ad">
+          <semantic:text>"A","B","C","D"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_56a5bf1b-1441-4bef-9de8-2d62cdba860e">
+          <semantic:text>"Approve"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_5aaa9978-e180-46b4-a346-c5768d9bd0b4">
+        <semantic:inputEntry id="_54ccdfa9-0002-464a-b2b1-744abbd57940">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a058249e-fd34-4c99-9dc8-bec14131a436">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9d595978-77f0-4cbe-9233-9c89896f2358">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_db765806-73c2-46cb-be33-e533e1f9fef2">
+          <semantic:text>"Decline"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_9b4a628a-4b97-40db-a9bd-102ecd1fa92b" name="Collateral Risk Category" triso:displayName="Collateral Risk Category">
+    <semantic:variable id="_ee27f5cd-3390-4838-8737-616a674f91eb" name="Collateral Risk Category" typeRef="tCollateralRisk"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_44045a51-3b75-453a-aa44-feccdaad7815"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_1960f4c3-0d36-42dd-a742-fd9ca2e39d81" outputLabel="Collateral Risk Category">
+      <semantic:input id="_12800e31-8291-4ff6-8691-cfe8a5c10364">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>LTV</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_8423d62a-c66d-4adf-9a3f-359da3287423">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"High","Medium","Low"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_0dbc4f4d-aea1-4926-8889-7a14e6c75839">
+        <semantic:inputEntry id="_5878cdf2-02ba-4bbe-b326-d992d55d1bed">
+          <semantic:text>&gt;0.80</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e8f5b48c-96f2-4325-84b2-5a6a090aad77">
+          <semantic:text>"High"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3fe8ace2-26dd-449b-95e0-36c7dbd02cbf">
+        <semantic:inputEntry id="_8f5382ad-c836-45ff-9286-24408fe5cf36">
+          <semantic:text>(0.75..0.80]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e35ffb8f-d7b7-4bd1-af84-038e791afdf8">
+          <semantic:text>"Medium"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_60370579-182c-4ebf-97d7-1ac852802197">
+        <semantic:inputEntry id="_a9da3807-a7ef-4f50-a48e-501f9bac8d57">
+          <semantic:text>&lt;=0.75</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3003e0b8-9999-4c79-a4df-ad29e9347531">
+          <semantic:text>"Low"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_189cab59-eb2d-4115-b06c-62395fbcf76a" name="Affordability Category" triso:displayName="Affordability Category">
+    <semantic:variable id="_5f2dbe1f-7786-4481-aff5-b78967f202d3" name="Affordability Category" typeRef="tAffordability"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_77b9425c-2efa-4a6d-b31c-c5a68bd9302c"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_89db3033-7012-4cb7-b6c1-e0f2d5ed286e"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="ANY" id="_b6463d5c-a39a-4252-8f27-0a46f975c4c0" outputLabel="Affordability Category">
+      <semantic:input id="_4018273c-8567-40e9-b877-c8ec878c45a4">
+        <semantic:inputExpression typeRef="tIncomeRiskCategory">
+          <semantic:text>Income Risk Category</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"High","Medium","Low"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_6294e5ea-b4d1-4215-8799-fb94a133e163">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>DTI</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_84b7088a-ad30-4629-9723-f299097ccbb6">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"Not affordable","Marginal","Affordable"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_600338f6-1d03-4db8-9257-01906dba7de5">
+        <semantic:inputEntry id="_d712daaf-7566-46b2-8c43-d5d9e24d2d4b">
+          <semantic:text>"High"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_791df42b-5dac-4e43-a031-0f8124b0c6c7">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a5037712-ed41-40d6-9f61-a3a0680235e1">
+          <semantic:text>"Not affordable"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_9642ae07-0b31-4a83-9721-caacdcb07ad1">
+        <semantic:inputEntry id="_69d43da5-3f86-4702-94b5-e54cc2be9f6c">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9428a8f3-8dfa-4238-9e2d-10ccda783b57">
+          <semantic:text>&gt;0.45</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_d753c386-a2db-4e55-bd20-a3b6fc0340e7">
+          <semantic:text>"Not affordable"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_84b546b4-a7cf-4eb6-a322-079eaecf7616">
+        <semantic:inputEntry id="_04f5e31b-34f7-449c-8648-0dc7bcf49adb">
+          <semantic:text>"Medium"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_75ee9e52-8008-4195-8405-d22e3d025b61">
+          <semantic:text>(0.36..0.45]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_10821eec-9944-43a1-9b17-ce0bd67f6568">
+          <semantic:text>"Not affordable"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_12e4d8b8-df60-4ac6-87c2-76bd159c73d1">
+        <semantic:inputEntry id="_a5391b44-3563-46dd-8641-b30e06a32d6d">
+          <semantic:text>"Low"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5e22d74a-e1dd-410b-85c0-443e80c6c8fe">
+          <semantic:text>(0.36..0.45]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_03f097fe-1325-4bbc-b85b-3636fd4bea73">
+          <semantic:text>"Marginal"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_8d8c05d6-4094-42c9-aed1-d5708b0ecb09">
+        <semantic:inputEntry id="_3edfd13b-0cad-4aea-b0ef-c5da48a1e309">
+          <semantic:text>"Medium"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7a8d8d4b-1f3b-42cf-8178-e5424b1e0c1e">
+          <semantic:text>&lt;=0.36</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_89ba15a8-02dd-487c-818d-422e39fa5395">
+          <semantic:text>"Marginal"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_45fb7ee6-84f3-4cac-81a0-c8bc9092cfa0">
+        <semantic:inputEntry id="_74e1e044-a1de-4f0b-9208-67b7dca08856">
+          <semantic:text>"Low"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_52accb16-4a11-482f-bdc7-a6681e014ab5">
+          <semantic:text>&lt;=0.36</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_725ea8bf-5b65-45e3-a3c0-7e47f9752db9">
+          <semantic:text>"Affordable"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_ff9e77b7-c01b-4c33-926e-a72bda0b1e7e" name="Credit Risk Category" triso:displayName="Credit Risk Category">
+    <semantic:variable id="_95cd126a-808d-4c58-92de-635f3a0806fc" name="Credit Risk Category" typeRef="tRisk3"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_ea540025-0255-4799-86ab-2ea4d6e958f9"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_198c6a34-838a-4d9b-9bc0-967bba0a8c8f"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_3c232867-aad6-4e35-a85b-bb32fb940502"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_0f54224c-caa5-48ea-af01-4bf89cc18db3"/>
+    </semantic:informationRequirement>
+    <semantic:context id="_1dc484cc-c1cf-4856-9e05-a6300d7b5b95">
+      <semantic:contextEntry>
+        <semantic:variable id="_74675865-f7d9-4e6c-a4bf-2e927ae99205" name="Reserves Months" typeRef="feel:number"/>
+        <semantic:literalExpression id="_0b919e93-fafe-4ad7-9f6c-85afa597fac4">
+          <semantic:text>(Borrower.liquidAssetsAmt - Down Payment Amount)/Loan Payment</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_9ba0d68e-ffe7-49f6-980f-834eecd32b84" name="category" typeRef="tRisk3"/>
+        <semantic:decisionTable hitPolicy="UNIQUE" id="_36b9337b-1763-4634-b159-8398cee25447" outputLabel="category">
+          <semantic:input id="_b3ae4e93-a11f-4820-93d1-29dc2e72efa7">
+            <semantic:inputExpression typeRef="tCreditScore">
+              <semantic:text>Credit Score</semantic:text>
+            </semantic:inputExpression>
+            <semantic:inputValues triso:constraintsType="simple">
+              <semantic:text>[300..850]</semantic:text>
+            </semantic:inputValues>
+          </semantic:input>
+          <semantic:input id="_02b3d26e-885d-4231-98f4-d347002fa232">
+            <semantic:inputExpression typeRef="feel:number">
+              <semantic:text>Reserves Months</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:output id="_ca912bad-40d4-4ce8-bfac-431fb7a013c5">
+            <semantic:outputValues triso:constraintsType="enumeration">
+              <semantic:text>"A","B","C","D","X"</semantic:text>
+            </semantic:outputValues>
+          </semantic:output>
+          <semantic:rule id="_e6d5e345-b0dc-4335-bf84-e3ff8d2ace32">
+            <semantic:inputEntry id="_04abf85a-b376-4beb-9d08-a181ccc6d4cb">
+              <semantic:text>&gt;700</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_1081be3c-6201-4e72-91ea-30ad0908e8c4">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_ce5ac2eb-9075-4fb5-be2e-40a858d3a287">
+              <semantic:text>"A"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_8aa9f662-c8ac-4509-8773-b68029eb9c1a">
+            <semantic:inputEntry id="_a34922f9-66f3-4dd0-88a0-a1b8d070452b">
+              <semantic:text>[680..700]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_f8b33f40-7d67-486a-a3d6-b17897530317">
+              <semantic:text>&gt;=2</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_913f5323-9976-46df-8078-7aba68600be6">
+              <semantic:text>"A"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_74f0f476-476c-4918-9116-b5ad96bdfaf6">
+            <semantic:inputEntry id="_143c51e3-697f-4258-b3ec-af8b39c7a93d">
+              <semantic:text>[680..700]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_002a3f69-3e4e-41a7-88cc-ee29a8ad3d1d">
+              <semantic:text>&lt;2</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_7e997b8d-1333-454c-9eec-b09c255889b1">
+              <semantic:text>"B"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_6285dda9-fee3-4717-9c2b-9b50ab735586">
+            <semantic:inputEntry id="_0d1cd5ab-d7dc-4f8e-88b0-3158bff9a48d">
+              <semantic:text>[660..680)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_aafde750-e81b-4698-b9df-97fcf0f9dc7e">
+              <semantic:text>&gt;=6</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_48c0cce9-534c-457c-842f-b199e5ce0ac9">
+              <semantic:text>"B"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_6ad019e8-4856-4db9-a54c-df1af30f9913">
+            <semantic:inputEntry id="_a7033157-7c9a-44ff-ab54-8b8723369a07">
+              <semantic:text>[660..680)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_b62ba0f0-24e1-4a75-bd4a-2433a54565fc">
+              <semantic:text>&lt;6</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_476609c2-6b46-4e3a-a7db-1bcd55c4b078">
+              <semantic:text>"C"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_15948bec-2086-4170-bcec-726feed1a21e">
+            <semantic:inputEntry id="_89a65623-8bd1-4564-a0f0-4e3dfc1878e6">
+              <semantic:text>[620..660)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_6c7aae00-e5c5-4db1-9029-810c895644b0">
+              <semantic:text>&gt;=2</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_03771ad6-36bf-4564-900b-c7e954438c15">
+              <semantic:text>"C"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_7d53da95-b91a-4079-8740-9cec1cc01bfc">
+            <semantic:inputEntry id="_88f25fdb-f9bb-4c45-ac5e-35802282c0fc">
+              <semantic:text>[620..660)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_3f44812c-c450-4a61-b9ae-4c4ea52e74c1">
+              <semantic:text>&lt;2</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_f23de5df-45db-436b-bffd-5c0077a68ccb">
+              <semantic:text>"D"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_827a3176-f244-47e4-abcc-b6f3a0a2a18b">
+            <semantic:inputEntry id="_2c5b47f2-43f0-4620-ada8-4e8c23e6859f">
+              <semantic:text>&lt;620</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_3a714e64-4fab-4ea1-a44f-44a3fd257725">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_1d8f66d5-c3d8-4257-b80b-8bccba422ff3">
+              <semantic:text>"X"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+        </semantic:decisionTable>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_347904d9-be43-4851-822f-809522b10449">
+          <semantic:text>category</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:decision id="_44045a51-3b75-453a-aa44-feccdaad7815" name="LTV" triso:displayName="LTV">
+    <semantic:variable id="_c96ab4c9-5137-447c-b66a-cdcc12e5c150" name="LTV" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_ca1ab596-355b-4710-9c26-373fc1b88923"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_533be955-db4a-46cf-9217-da1dc9a1ecef"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_755a5a7b-5eb9-40b4-bed6-1146a24b9440">
+      <semantic:text>Loan Amount/Appraised Value</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_ca1ab596-355b-4710-9c26-373fc1b88923" name="Appraised Value" triso:displayName="Appraised Value">
+    <semantic:variable id="_a32d073a-53e2-4641-b94b-66d6f7b2de87" name="Appraised Value" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:decision id="_77b9425c-2efa-4a6d-b31c-c5a68bd9302c" name="DTI" triso:displayName="DTI">
+    <semantic:variable id="_b49ef45f-bb4f-477c-9d66-8f4d64b90e2c" name="DTI" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_198c6a34-838a-4d9b-9bc0-967bba0a8c8f"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_3c232867-aad6-4e35-a85b-bb32fb940502"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_ebbefeaa-d7e1-43ad-8b2d-6b32cb6593c1">
+      <semantic:text>(Loan Payment + Borrower.MonthlyDebtPmtAmt)/(Borrower.TotalAnnualIncome/12)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_89db3033-7012-4cb7-b6c1-e0f2d5ed286e" name="Income Risk Category" triso:displayName="Income Risk Category">
+    <semantic:variable id="_7367a979-dba0-4efa-a94d-ec8c069fe24b" name="Income Risk Category" typeRef="tIncomeRiskCategory"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_3c232867-aad6-4e35-a85b-bb32fb940502"/>
+    </semantic:informationRequirement>
+    <semantic:context id="_882fb395-b2a0-4b19-892d-85c4fd0a8297">
+      <semantic:contextEntry>
+        <semantic:variable id="_a68e6887-fa3c-48f5-8409-e6bd2a117131" name="NonSalaryPct" typeRef="feel:number"/>
+        <semantic:literalExpression id="_516dc1c8-2647-4cec-8888-ce4079bd1c24">
+          <semantic:text>Borrower.NonSalaryIncome/Borrower.TotalAnnualIncome *100</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_6996290e-7efb-408d-8214-6f95a66158cb" name="Income Risk Score" typeRef="feel:number"/>
+        <semantic:decisionTable aggregation="SUM" hitPolicy="COLLECT" id="_55fc9be2-365f-4fa8-b032-5f9dbfe88f26" outputLabel="Income Risk Score">
+          <semantic:input id="_73801b4f-f5b3-4290-abc6-b2ecf056428e">
+            <semantic:inputExpression typeRef="tAge">
+              <semantic:text>Borrower.Age</semantic:text>
+            </semantic:inputExpression>
+            <semantic:inputValues triso:constraintsType="simple">
+              <semantic:text>&gt;=18</semantic:text>
+            </semantic:inputValues>
+          </semantic:input>
+          <semantic:input id="_9ee3af3f-fa60-4479-afd6-575628e05d7d">
+            <semantic:inputExpression typeRef="tEmploymentStatus">
+              <semantic:text>Borrower.EmploymentStatus</semantic:text>
+            </semantic:inputExpression>
+            <semantic:inputValues triso:constraintsType="enumeration">
+              <semantic:text>"Employed","Self-employed","Retired","Unemployed"</semantic:text>
+            </semantic:inputValues>
+          </semantic:input>
+          <semantic:input id="_a36423ba-c144-41d3-b70a-abb6d3768bfe">
+            <semantic:inputExpression typeRef="feel:number">
+              <semantic:text>Borrower.YearsAtCurrentEmployer</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:input id="_48340b83-c44b-4779-8a38-2525370d2169">
+            <semantic:inputExpression typeRef="feel:number">
+              <semantic:text>NonSalaryPct</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:output id="_87e5924a-01c9-45a6-bd24-685cd131a250"/>
+          <semantic:rule id="_b7959f3b-d89c-4358-8dfb-e5c65cdd4690">
+            <semantic:inputEntry id="_9cbb60cb-d458-44e8-8a3c-9903a86a1f05">
+              <semantic:text>[18..35]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_d21d5a40-6a11-487a-9713-224f314b7a5b">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_3d39a478-d9aa-4c78-8a8f-1826b9bc9f11">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_2271556e-5cc2-4136-a9ba-8f1d6bbcb188">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_60f99267-0afd-4ce6-9882-de232c9d2570">
+              <semantic:text>30</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_a338dcfb-275c-4e22-ad66-d3af842fffe1">
+            <semantic:inputEntry id="_aa19dcc3-d685-4801-be9d-f0d4c59f1391">
+              <semantic:text>(35..55]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_1c6ea593-d183-45b6-9ad4-df4a29b1bc18">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_9fb83f0b-5a7a-4796-b4a7-2849753bd08e">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_ed2682e2-a139-4552-8ab7-594c242cc547">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_6a299612-7d37-41a8-a2a7-68330377494e">
+              <semantic:text>50</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_a35dbdee-ab18-4393-b1e9-08a1c35ade02">
+            <semantic:inputEntry id="_38d497cd-4314-4914-be47-ff3446a2cee7">
+              <semantic:text>(55..65]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_0482c3bc-4362-4e58-9a41-c5b8da033410">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_5928ee8e-6556-48c3-b73a-59b9422b0178">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_cebf4d39-3ad5-4cd6-8da5-d39f72ac0e02">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_f19b0717-05a4-42a5-a099-857f8206797a">
+              <semantic:text>30</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_b4a64a8d-1659-4755-8a6f-7226512ec9a7">
+            <semantic:inputEntry id="_3b446619-d234-41ae-bdea-61ef5497c250">
+              <semantic:text>&gt;65</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_f004b529-dd4d-4581-ad42-f3d3ce3b5558">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_33b957ec-9715-45b9-bb1d-7de609669dae">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_eb1356e5-fc0b-4e48-8484-ccb5a18c8f95">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_e84d7f27-b8ed-48ed-8b82-50f4591083e6">
+              <semantic:text>0</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_db8d3d1e-f4dd-4b3e-b17c-86dbb922e8c2">
+            <semantic:inputEntry id="_3eb05239-4319-4b41-8dc5-1d2f145d261e">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_6ed20987-beb2-4116-981a-3a76c17e1ddd">
+              <semantic:text>"Employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_b9fa10be-7ae6-4c5d-87f1-5e6c21aaff71">
+              <semantic:text>&gt;3</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_eb20946b-5381-4c6e-9e29-9d437a557696">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_401a9394-ad84-4381-a529-2a8d3fc7f282">
+              <semantic:text>75</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_98ad5e6d-ebfc-4dae-bafb-bd38705acbf9">
+            <semantic:inputEntry id="_ea7e936d-57d7-494c-98f2-06fade582ffd">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_362aa5e1-15ab-447c-aa6c-c14488b3b663">
+              <semantic:text>"Employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_3ea2df53-e80f-469e-bf60-f6d54a99bfff">
+              <semantic:text>[1..3]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_8909cafd-51a9-4f9f-96e8-96173d6bb65b">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_4b8146c7-d72c-495c-a6d5-741905a71b96">
+              <semantic:text>40</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_57e3465f-ecbd-4a4a-b52b-a1e081c7df64">
+            <semantic:inputEntry id="_09c7f1fe-6c3d-4cdd-9007-da9d4bd01c16">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_25b33916-ff5b-42d2-b1cb-d5602e48d5e8">
+              <semantic:text>"Employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_d4486d0d-244f-4ae0-be78-e11953e56794">
+              <semantic:text>&lt;1</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_a5fc1947-589b-44e7-abf8-e21c1c11b5ea">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_139ace65-abe1-4b45-8dac-e7ca6cf76a49">
+              <semantic:text>10</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_299d33a2-a5df-48dd-bb5c-5316fa0c5d04">
+            <semantic:inputEntry id="_d38bc2dd-2e7f-485d-8c67-0ad6e3f42733">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_8e158a62-e4a1-4b16-bef2-9d0aa791a121">
+              <semantic:text>"Self-employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_9122b248-d0b3-46ed-9154-f472c8228fcc">
+              <semantic:text>&gt;3</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_b0b4ff38-7a50-427e-8199-7bfcf89465cb">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_9a8aabec-d116-4965-80db-20135d61ec98">
+              <semantic:text>50</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_a49b6297-057a-413a-bb86-4715ce2e1ff0">
+            <semantic:inputEntry id="_3188ff9d-d9a0-449e-ac61-c36837154f36">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_3944867b-d280-4127-b814-6c4eb86082e8">
+              <semantic:text>"Self-employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_da39f34c-b671-4297-90a0-8ae50af23c68">
+              <semantic:text>[1..3]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_7e5c15e9-c117-4e66-87de-19f28c0b0e2b">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_e74af20f-d050-4946-bf81-1efaaf144e15">
+              <semantic:text>20</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_9df8182c-2e5b-4a28-81c5-29edf9773dff">
+            <semantic:inputEntry id="_c577dcc0-afd2-43e4-a30c-646973b2acbc">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_7f8496cd-a744-4402-82e3-cf54cc0b127f">
+              <semantic:text>"Self-employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_04b198d3-ee13-4c44-8b5b-9476a125ab16">
+              <semantic:text>&lt;1</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_82c7e6a5-e60f-443a-918c-dfcd8cad88a9">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_b4d6716b-16b3-4e5f-9bb6-bcbd6f4b52de">
+              <semantic:text>10</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_3cc7d993-846f-49c1-b284-678a52cd3b5d">
+            <semantic:inputEntry id="_afd7e699-881b-48ff-999c-c637fa53ae1a">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_fa7ad3b3-e76f-46d6-843d-07210e5aa818">
+              <semantic:text>"Retired"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_6a9243c2-67d9-4c07-87fc-c673937df3b8">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_0cbe9014-3de5-4ea1-ba9d-ce23a58915cb">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_b67cf18f-db5c-4843-9491-adff4bbe6acc">
+              <semantic:text>10</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_7683e1bf-90f6-4249-80b6-aacc5e81dc69">
+            <semantic:inputEntry id="_474b013e-1c25-405a-90f6-c5453fd2a233">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_1ebf5b74-9edc-45c9-881a-8a9927f87e12">
+              <semantic:text>"Unemployed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_f0fb1b92-36a8-4d1c-8fed-58f9635ae12f">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_c83fea20-9d4a-4b92-9df1-c7f19f1ce1ac">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_58c2d381-bd06-4f1c-a81c-064b04f40b83">
+              <semantic:text>0</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_64fc0584-8e03-4178-acd9-9914473241fb">
+            <semantic:inputEntry id="_b31e43e0-7998-44fb-9ba1-a79fb9e0303e">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_5dfd342c-2645-44eb-b1f6-785878c15aa5">
+              <semantic:text>"Employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_09989659-124b-426f-89e1-0ba1c44802b6">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_367fded5-9440-4028-8fc4-77295029e6fe">
+              <semantic:text>&lt;20</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_373eae3b-1f78-4ce9-b33c-5e838d642110">
+              <semantic:text>20</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_22df9fdd-437c-4a9f-8b80-294503826fbc">
+            <semantic:inputEntry id="_34d3eabe-0c1a-40cc-bcc7-7b0d5c9cdcb5">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_ac282bc7-965e-42f6-83a7-c11e6e01fe27">
+              <semantic:text>"Employed"</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_bd1790f3-121a-4065-9001-00bb86e0868c">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_ef71e0cf-4223-4537-ae0f-1b4cb8c10368">
+              <semantic:text>&gt;40</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_a6636360-33bf-47a4-9003-b04c3859fa7a">
+              <semantic:text>-30</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+        </semantic:decisionTable>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_6084c2f6-dcc7-46a6-8af2-61be28eb46aa" name="category" typeRef="tIncomeRiskCategory"/>
+        <semantic:decisionTable hitPolicy="UNIQUE" id="_96a4318b-eb80-47a6-85e6-d5c405fff73c" outputLabel="category">
+          <semantic:input id="_0954e337-be7c-435c-b465-13d8e53406f2">
+            <semantic:inputExpression typeRef="feel:number">
+              <semantic:text>Income Risk Score</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:output id="_2707687b-0c34-4de3-93b8-0b565e9fd48e">
+            <semantic:outputValues triso:constraintsType="enumeration">
+              <semantic:text>"High","Medium","Low"</semantic:text>
+            </semantic:outputValues>
+          </semantic:output>
+          <semantic:rule id="_db50a735-4dc7-4d3c-989a-e12c649743c8">
+            <semantic:inputEntry id="_05c317ea-a1a4-4653-8ce2-ac19d24f8518">
+              <semantic:text>&gt;70</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_2a80535f-1461-4add-b78d-0ed234074cd8">
+              <semantic:text>"Low"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_4d6f2012-d178-439e-91d3-fb70c18f20db">
+            <semantic:inputEntry id="_263fa058-c3fa-4189-a855-614ca1f7a4ff">
+              <semantic:text>[10..70]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_dd291a16-5526-4f52-b958-6452dcf666e3">
+              <semantic:text>"Medium"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_23789a22-ae89-4c66-a315-469ab83b8ba8">
+            <semantic:inputEntry id="_b0da44d7-eb91-49b0-a1ec-31f1907aa22b">
+              <semantic:text>&lt;10</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_fa23c4a0-75ed-43ba-a86a-6d3dd2ea19cd">
+              <semantic:text>"High"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+        </semantic:decisionTable>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_f32a2ee5-0a22-4bb3-9f49-d3b281c7a400">
+          <semantic:text>category</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:inputData id="_3c232867-aad6-4e35-a85b-bb32fb940502" name="Borrower" triso:displayName="Borrower">
+    <semantic:variable id="_73262f23-985a-4c13-8520-57c41a7ec85d" name="Borrower" typeRef="tBorrower"/>
+  </semantic:inputData>
+  <semantic:decision id="_198c6a34-838a-4d9b-9bc0-967bba0a8c8f" name="Loan Payment" triso:displayName="Loan Payment">
+    <semantic:variable id="_8bde6030-2612-4e95-b090-31d820550d67" name="Loan Payment" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_ea540025-0255-4799-86ab-2ea4d6e958f9"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_44045a51-3b75-453a-aa44-feccdaad7815"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_60338b8c-7737-4f91-b56a-8ff9f78d9c8b"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_533be955-db4a-46cf-9217-da1dc9a1ecef"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_058d242f-64fb-42c7-813c-f97c9e2f071c"/>
+    </semantic:knowledgeRequirement>
+    <semantic:context id="_10a79169-6359-4f34-853a-b8a40442f5f9">
+      <semantic:contextEntry>
+        <semantic:variable id="_e2737d50-d23e-4886-9d03-5834d00d481d" name="LLPA" typeRef="feel:number"/>
+        <semantic:decisionTable hitPolicy="ANY" id="_5d8e7a34-11f0-48b6-83fd-2f014b198f37" outputLabel="LLPA">
+          <semantic:input id="_2ab1c7b9-9a95-461f-8839-e98baf7d8808">
+            <semantic:inputExpression typeRef="feel:number">
+              <semantic:text>LTV</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:input id="_23b4e1ce-432f-43cb-90e3-92440842ab53">
+            <semantic:inputExpression typeRef="tCreditScore">
+              <semantic:text>Credit Score</semantic:text>
+            </semantic:inputExpression>
+            <semantic:inputValues triso:constraintsType="simple">
+              <semantic:text>[300..850]</semantic:text>
+            </semantic:inputValues>
+          </semantic:input>
+          <semantic:output id="_a00ecb79-26a9-4a71-9d81-f5a3f7a8c43c"/>
+          <semantic:rule id="_08e87830-81d9-4ec8-aa4c-50f1f21673e0">
+            <semantic:inputEntry id="_5ec4e6ae-d2ea-4747-b4c0-93ecc2659e69">
+              <semantic:text>&lt;=0.60</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_8deff2a8-352a-4d4c-902f-ef2bd481c8c7">
+              <semantic:text>&gt;=660</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_88027890-1f90-4894-b9e3-3a1830ba5901">
+              <semantic:text>0</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_d050b98e-bc6b-4446-9826-ceae61f1e75b">
+            <semantic:inputEntry id="_0ab4afb8-d0a8-460e-8ec5-a7aee770d7f8">
+              <semantic:text>&lt;=0.60</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_10716375-de3f-4b46-b662-c54ed9738fc4">
+              <semantic:text>[620..660)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_8c3fc78b-e2e0-42e9-8959-2b5897e3df1f">
+              <semantic:text>0.5</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_2995c799-9fb2-4375-b959-ef6bb2ceb07d">
+            <semantic:inputEntry id="_031615b1-a97b-4222-b26d-a7ec4310d265">
+              <semantic:text>(0.60..0.70]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_0db0ed99-f10d-4d75-bf0e-eea91b48a806">
+              <semantic:text>&gt;=720</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_64e89c19-4a41-4b21-9690-a4a64ef78fae">
+              <semantic:text>0.25</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_29d2092a-d185-47b3-922c-13940f43ad8d">
+            <semantic:inputEntry id="_6a1fa77a-a1f7-4689-9b55-84bf61c8206b">
+              <semantic:text>(0.60..0.70]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_19b1d11a-0a50-4333-928e-2b4571a6f729">
+              <semantic:text>[680..720)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_944d9e67-0a82-445e-a6e4-3c2f9583b58e">
+              <semantic:text>0.5</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_804e2de8-3901-41dc-b18c-4ec381258da8">
+            <semantic:inputEntry id="_4df38dd1-6c01-44a8-bf0f-d28068f4a7cf">
+              <semantic:text>(0.60..0.70]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_b3a7b64d-981f-4fb1-818c-b30b0671f02e">
+              <semantic:text>[660..680)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_e8ebd7d3-518a-426f-8809-f39d68391260">
+              <semantic:text>1.0</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_1d701714-278c-4c07-a022-f790be26b99b">
+            <semantic:inputEntry id="_f8bb1e0d-5124-4455-b3d4-8775d62c3e57">
+              <semantic:text>(0.60..0.70]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_272490ad-b19a-447e-86a3-c30f733973ab">
+              <semantic:text>[640..660)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_1dd4ea5d-f0c8-475b-87db-2ac5e1686a6c">
+              <semantic:text>1.25</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_e0d4aaf8-b418-43c1-8022-3d1f2733c0a4">
+            <semantic:inputEntry id="_08297eb8-62b8-4d3c-b4f1-3b43be62430d">
+              <semantic:text>(0.60..0.70]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_ebc7c249-5bf2-48d2-a9e5-6575ed6020a5">
+              <semantic:text>[620..640)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_42e100dd-9264-4cdb-89bf-253ea67d0912">
+              <semantic:text>1.5</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_4e7b865d-3c40-4ca9-b95f-a4fc49e02551">
+            <semantic:inputEntry id="_ff3aa141-c70f-4e2c-800e-a31e9de93417">
+              <semantic:text>(0.70..0.75]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_48017c36-1a08-4b81-88b2-bb1008c27da4">
+              <semantic:text>&gt;=740</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_d0280b3d-b016-4738-a243-cd607724d87f">
+              <semantic:text>0.25</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_d895e8d3-83a9-472c-9548-9860b7d66c36">
+            <semantic:inputEntry id="_af4e79c5-9c81-4859-a89a-3b2ec7f71436">
+              <semantic:text>(0.70..0.75]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_6548bc7f-5884-43fb-adce-0690daa39c02">
+              <semantic:text>[720..740)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_bea7a7fb-6233-4ef2-804e-1befeee7a7e7">
+              <semantic:text>0.5</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_b55db0ff-3c21-492e-b14a-a58fe72b2a0c">
+            <semantic:inputEntry id="_3584ff2d-e537-43ee-bcf1-c6b747228ef2">
+              <semantic:text>(0.70..0.75]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_1dc941c8-cf2e-45ae-bab3-5cbfbaa5305b">
+              <semantic:text>[700..720)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_7fb9570d-51d7-44fa-b2fd-c1f26d30d549">
+              <semantic:text>1.0</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_296f7ff5-1438-4a16-a531-b40f92940927">
+            <semantic:inputEntry id="_c6eaed3e-149f-41bf-a8fe-309ee40ab98d">
+              <semantic:text>(0.70..0.75]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_932fbd59-42ac-40a5-adaf-0085ad294939">
+              <semantic:text>[680..700)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_b4e9b77f-69b0-4199-a8d4-ffe7cdef650a">
+              <semantic:text>1.25</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_f05bced0-2f6a-4ebf-bd9a-5a3c50954780">
+            <semantic:inputEntry id="_112dd65c-f950-4f36-9daa-da3c251d203d">
+              <semantic:text>(0.70..0.75]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_63034717-676f-4dc8-90d6-e0c16133e80e">
+              <semantic:text>[660..680)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_c31458d2-c6a7-4f57-97ac-853371426aa5">
+              <semantic:text>2.25</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_50302fe7-7c27-41ea-a5e5-2eae6c90018e">
+            <semantic:inputEntry id="_56467e74-fec2-4db2-8f57-90c66b416f66">
+              <semantic:text>(0.70..0.75]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_3b653e23-e168-4c24-a941-d798011b2ae4">
+              <semantic:text>[640..660)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_387bad39-2adb-4811-8de8-19a74ef23952">
+              <semantic:text>2.75</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_b7f1edac-8895-4344-9f4b-b168024d7636">
+            <semantic:inputEntry id="_7c31e549-40c0-4f97-90b6-d333366d24f6">
+              <semantic:text>(0.70..0.75]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_177096be-bba9-4647-87e0-55cfcf48898d">
+              <semantic:text>[620..640)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_3a931ec8-024a-4555-8660-1488947c9eb9">
+              <semantic:text>3.0</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_b6edf09e-ea69-431c-b6a4-4f02a1a65d70">
+            <semantic:inputEntry id="_ab6d8305-b8be-4607-bbe9-0e0779d82cde">
+              <semantic:text>(0.75..0.80]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_1359b543-901b-465b-8983-b1dd7bccbeca">
+              <semantic:text>&gt;=740</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_9ed748a3-50e7-41a0-9e48-8480ee5b9af3">
+              <semantic:text>0.5</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_021f0dff-668d-4c21-abfe-ee84a5d94189">
+            <semantic:inputEntry id="_bf2a7716-daa3-4e59-8bdf-a9d3a01038a8">
+              <semantic:text>(0.75..0.80]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_67129539-0643-4277-be24-d5a3aabe0819">
+              <semantic:text>[720..740)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_51b14f4d-1a53-4eb8-86e3-8aa019d3ebd6">
+              <semantic:text>0.75</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_9676195a-b66e-468c-b43f-de6e0271563a">
+            <semantic:inputEntry id="_443386e8-3016-4394-9b1b-948a195c50e9">
+              <semantic:text>(0.75..0.80]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_c030cccf-5bee-4460-a7e6-c3a4b8f3969f">
+              <semantic:text>[700..720)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_bee84ca3-12a2-42b4-831c-5e39c27bd4a5">
+              <semantic:text>1.25</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_a72be7db-ff46-4276-95e1-d08e50fc3c24">
+            <semantic:inputEntry id="_5da09d66-5fdb-4556-8bee-69f610b97237">
+              <semantic:text>(0.75..0.80]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_ee28991f-e39b-454c-9849-395831fe560b">
+              <semantic:text>[680..700)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_616a8e24-00cd-43bb-a556-3c194bfd6192">
+              <semantic:text>1.75</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_f967e7aa-d175-4017-a343-92970d1b9457">
+            <semantic:inputEntry id="_9712c2f3-262d-4348-a8f6-c30b4c9bd2c0">
+              <semantic:text>(0.75..0.80]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_4525ef69-97ab-4787-9849-ef7bb7c1b6d5">
+              <semantic:text>[660..680)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_f26dcbe0-3f0d-459c-a302-98ca53941c70">
+              <semantic:text>2.75</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_583e63da-ff00-439a-b5b2-37f149ef5a2a">
+            <semantic:inputEntry id="_ec3b022a-2c7c-4aed-90b5-5f1dd4ce6891">
+              <semantic:text>(0.75..0.80]</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_04bad939-ae36-498a-9669-1219829c0733">
+              <semantic:text>[620..660)</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_738643ca-1877-4451-994c-ad4c19a564c7">
+              <semantic:text>3.0</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_4ed45c5e-d636-4409-ae76-39ccf5b9e534">
+            <semantic:inputEntry id="_62fbbf83-e119-44ce-8794-f98bee4587aa">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_886fd116-9873-47f0-8e47-ed6f3ef4ba70">
+              <semantic:text>&lt;620</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_a5d27322-e7cc-421f-8e54-bcaa9d091c92">
+              <semantic:text>null</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_9f01c69e-a3d1-47e2-934d-3bf27416d7a5">
+            <semantic:inputEntry id="_2d4991ec-f9a8-4db8-b158-b39f96e8ee7d">
+              <semantic:text>&gt;0.80</semantic:text>
+            </semantic:inputEntry>
+            <semantic:inputEntry id="_89806b0b-8cad-4584-a95d-29aca697a546">
+              <semantic:text>-</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_939466de-300c-4e1c-b685-4ac8d8354d2b">
+              <semantic:text>null</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+        </semantic:decisionTable>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_8c0a2e10-0578-4b7b-ba8a-854272ce9f9f" name="Adjusted Rate" typeRef="feel:number"/>
+        <semantic:literalExpression id="_a92cf507-a305-46d8-8293-ab418e8c6ccd">
+          <semantic:text>0.00125*LLPA + Best rate</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_0553ad59-9dc6-4a1d-8906-96a665f46c52">
+          <semantic:text>payment(Loan Amount, Adjusted Rate, 360)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:inputData id="_ea540025-0255-4799-86ab-2ea4d6e958f9" name="Credit Score" triso:displayName="Credit Score">
+    <semantic:variable id="_e4ec689f-3c6a-498d-835d-931d34a19a79" name="Credit Score" typeRef="tCreditScore"/>
+  </semantic:inputData>
+  <semantic:inputData id="_533be955-db4a-46cf-9217-da1dc9a1ecef" name="Loan Amount" triso:displayName="Loan Amount">
+    <semantic:variable id="_8cb61d6c-33b2-49b0-a4a2-a8ff332fcba8" name="Loan Amount" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_60338b8c-7737-4f91-b56a-8ff9f78d9c8b" name="Best rate" triso:displayName="Best rate">
+    <semantic:variable id="_80e74ad6-41e3-49c6-8900-a5975e0495a8" name="Best rate" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_0f54224c-caa5-48ea-af01-4bf89cc18db3" name="Down Payment Amount" triso:displayName="Down Payment Amount">
+    <semantic:variable id="_74381022-caaa-4286-a19e-488da0ea3b9c" name="Down Payment Amount" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:businessKnowledgeModel id="_058d242f-64fb-42c7-813c-f97c9e2f071c" name="payment" triso:displayName="payment">
+    <semantic:encapsulatedLogic id="_5407ab6b-6c92-4b1c-a4c1-02e60528cd52">
+      <semantic:formalParameter id="_9cc96402-4029-47ed-9ff7-56cf1da943c4" name="principal" typeRef="feel:number"/>
+      <semantic:formalParameter id="_1da45034-988f-4ecc-a321-e3610c17d8be" name="rate" typeRef="feel:number"/>
+      <semantic:formalParameter id="_19e31377-a4a0-4567-92b3-22d698bf3f0d" name="term" typeRef="feel:number"/>
+      <semantic:literalExpression id="_e4fb9f23-997f-4311-b0c5-1cfa759debd3">
+        <semantic:text>principal*rate/12/(1-(1+rate/12)**-term)</semantic:text>
+      </semantic:literalExpression>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_c3024956-1085-45bd-9c1f-2b6ab1c5e836" name="payment" typeRef="feel:number"/>
+  </semantic:businessKnowledgeModel>
+</semantic:definitions>

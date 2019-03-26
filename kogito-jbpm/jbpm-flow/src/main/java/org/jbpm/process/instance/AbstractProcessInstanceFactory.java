@@ -24,7 +24,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 public abstract class AbstractProcessInstanceFactory implements ProcessInstanceFactory {
 	
@@ -37,10 +36,6 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
         
         if (correlationKey != null) {
         	processInstance.getMetaData().put("CorrelationKey", correlationKey);
-        }
-        InternalRuntimeManager manager = (InternalRuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
-        if (manager != null) {
-            processInstance.setDeploymentId(manager.getIdentifier());
         }
         
         ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager()

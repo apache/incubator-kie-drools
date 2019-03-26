@@ -15,6 +15,8 @@
 
 package org.drools.core.test.model;
 
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
@@ -33,8 +35,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.List;
 
 public class MockActivation<T extends ModedAssertion<T>>
         implements

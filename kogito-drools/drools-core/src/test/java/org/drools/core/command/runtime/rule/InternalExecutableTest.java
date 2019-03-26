@@ -15,6 +15,9 @@
 
 package org.drools.core.command.runtime.rule;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,9 +28,6 @@ import org.drools.core.fluent.impl.InternalExecutable;
 import org.junit.Test;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class InternalExecutableTest {
 

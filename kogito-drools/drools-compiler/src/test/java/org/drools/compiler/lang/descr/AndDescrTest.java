@@ -15,11 +15,9 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.NotDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.junit.Test;
 import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 public class AndDescrTest {
 

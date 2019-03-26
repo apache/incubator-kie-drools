@@ -15,6 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.*;
+
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -39,10 +43,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class SegmentCreationTest {
     

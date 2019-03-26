@@ -16,6 +16,10 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakFromNode.isAllowed;
+import static org.drools.core.phreak.PhreakFromNode.propagate;
+
 import java.util.Collection;
 
 import org.drools.core.common.BetaConstraints;
@@ -29,10 +33,6 @@ import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-
-import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;
-import static org.drools.core.phreak.PhreakFromNode.isAllowed;
-import static org.drools.core.phreak.PhreakFromNode.propagate;
 
 public class ReactiveObjectUtil {
 

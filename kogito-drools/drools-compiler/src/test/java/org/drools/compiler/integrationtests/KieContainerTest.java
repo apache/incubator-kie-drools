@@ -15,20 +15,31 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
+import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.impl.InternalKieContainer;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
+import org.drools.core.impl.InternalKieContainer;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -41,10 +52,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
-import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
-import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
-import static org.junit.Assert.*;
 
 public class KieContainerTest extends CommonTestMethodBase {
 
@@ -301,7 +308,7 @@ public class KieContainerTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testClassLoaderGetResources() throws IOException {
+    public void testClassLoaderGetResources() throws IOException, URISyntaxException {
         KieServices kieServices = KieServices.Factory.get();
         String drl1 = "package org.drools.testdrl;\n" +
                      "rule R1 when\n" +
@@ -344,7 +351,8 @@ public class KieContainerTest extends CommonTestMethodBase {
         assertEnumerationSize(1, classLoader.getResources("org/drools/testdrl/")); // trailing "/" to test both variants
         // make sure the package resource correctly lists all its child resources (files in this case)
         URL url = classLoader.getResources("org/drools/testdrl").nextElement();
-        List<String> lines = IOUtils.readLines(url.openStream());
+        
+        List<String> lines = read(url.openStream());
         Assertions.assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
 
         assertUrlEnumerationContainsMatch("^mfs\\:/$", classLoader.getResources(""));
@@ -410,5 +418,13 @@ public class KieContainerTest extends CommonTestMethodBase {
                "then\n" +
                "list.add( drools.getRule().getName() );\n" +
                "end\n";
+    }
+    
+    public static List<String> read(InputStream input) {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input, Charset.forName("UTF-8")))) {
+            return buffer.lines().collect(Collectors.toList());
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

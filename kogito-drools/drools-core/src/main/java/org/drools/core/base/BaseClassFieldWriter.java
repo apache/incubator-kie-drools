@@ -16,14 +16,14 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.WriteAccessor;
-import org.drools.core.util.asm.ClassFieldInspector;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.core.spi.WriteAccessor;
+import org.drools.core.util.asm.ClassFieldInspector;
 
 /**
  * This is the supertype for the ASM generated classes for writing values into fields.

@@ -15,6 +15,11 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.io.File;
+
 import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -31,11 +36,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.io.ResourceFactory;
-
-import java.io.File;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class KieLoggersTest {
 

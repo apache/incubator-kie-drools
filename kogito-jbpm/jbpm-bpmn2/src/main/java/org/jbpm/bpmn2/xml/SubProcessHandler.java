@@ -69,7 +69,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
     public Object end(final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
 		final Element element = parser.endElementBuilder();
-		Node node = (Node) parser.getCurrent();	
+		Node node = (Node) parser.getCurrent();
 		
 		// determine type of event definition, so the correct type of node can be generated
 		boolean found = false;		
@@ -82,7 +82,6 @@ public class SubProcessHandler extends AbstractNodeHandler {
 				ForEachNode forEachNode = new ForEachNode();
 				forEachNode.setId(node.getId());
 				forEachNode.setName(node.getName());
-				forEachNode.setSequential(Boolean.parseBoolean(((Element) xmlNode).getAttribute("isSequential")));
 				
 				forEachNode.setAutoComplete(((CompositeContextNode) node).isAutoComplete());
 				

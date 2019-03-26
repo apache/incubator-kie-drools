@@ -16,16 +16,16 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.spi.PropagationContext;
-import org.kie.api.definition.rule.Rule;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.spi.PropagationContext;
+import org.kie.api.definition.rule.Rule;
 
 public class MockRightTupleSink
     implements

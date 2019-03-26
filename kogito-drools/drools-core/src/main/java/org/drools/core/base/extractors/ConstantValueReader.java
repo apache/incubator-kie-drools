@@ -15,6 +15,8 @@
 
 package org.drools.core.base.extractors;
 
+import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
+
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,8 +24,6 @@ import java.math.BigInteger;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.InternalReadAccessor;
-
-import static org.drools.core.base.evaluators.PointInTimeEvaluator.getTimestampFromDate;
 
 public class ConstantValueReader implements InternalReadAccessor {
 

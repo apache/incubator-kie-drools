@@ -16,6 +16,9 @@
 
 package org.drools.compiler.simulation;
 
+import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
@@ -28,9 +31,6 @@ import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
-
-import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
-import static org.junit.Assert.assertEquals;
 
 public class BatchRunUnitFluentTest extends CommonTestMethodBase {
 

@@ -21,9 +21,6 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.logger.KieRuntimeLogger;
 
-import javax.inject.Singleton;
-
-@Singleton
 public class KnowledgeRuntimeLoggerProviderImpl
     implements
     KieLoggers {

@@ -16,13 +16,13 @@
 
 package org.drools.compiler.lang.api.impl;
 
+import org.drools.compiler.lang.api.AbstractClassTypeDeclarationBuilder;
+import org.drools.compiler.lang.api.AnnotationDescrBuilder;
 import org.drools.compiler.lang.api.EnumDeclarationDescrBuilder;
+import org.drools.compiler.lang.api.EnumLiteralDescrBuilder;
 import org.drools.compiler.lang.api.FieldDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
-import org.drools.compiler.lang.api.AbstractClassTypeDeclarationBuilder;
-import org.drools.compiler.lang.api.AnnotationDescrBuilder;
-import org.drools.compiler.lang.api.EnumLiteralDescrBuilder;
 
 public class EnumDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, EnumDeclarationDescr>
     implements

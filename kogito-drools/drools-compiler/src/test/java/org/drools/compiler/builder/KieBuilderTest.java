@@ -15,6 +15,11 @@
 
 package org.drools.compiler.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -22,13 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.addon.PomModel;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.appformer.maven.support.PomModel;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
@@ -47,11 +52,6 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class KieBuilderTest extends CommonTestMethodBase {
     protected FileManager fileManager;

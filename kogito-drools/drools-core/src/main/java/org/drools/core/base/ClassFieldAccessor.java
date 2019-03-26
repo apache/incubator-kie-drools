@@ -16,11 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.AcceptsWriteAccessor;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,6 +23,11 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.AcceptsWriteAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 
 /**
  * This is a wrapper for a ClassFieldExtractor that provides

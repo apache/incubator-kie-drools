@@ -15,15 +15,15 @@
 
 package org.drools.compiler.rule.builder.util;
 
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.drools.core.util.StringUtils.ucFirst;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.drools.core.util.StringUtils.ucFirst;
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.core.addon.TypeResolver;
 
 public class AnnotationFactory {
 

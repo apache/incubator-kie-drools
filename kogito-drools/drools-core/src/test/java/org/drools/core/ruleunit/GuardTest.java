@@ -16,6 +16,8 @@
 
 package org.drools.core.ruleunit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigDecimal;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -24,8 +26,6 @@ import org.drools.core.test.model.MockActivation;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class GuardTest {
 

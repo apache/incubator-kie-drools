@@ -1,17 +1,16 @@
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
-import org.drools.constraint.parser.ast.expr.TemporalChunkExpr;
-import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
-import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
+
+import org.drools.javaparser.ast.drlx.expr.PointFreeExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalChunkExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralChunkExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralExpr;
+import org.drools.javaparser.ast.drlx.expr.TemporalLiteralInfiniteChunkExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
 
 public class TemporalOperatorSpec implements OperatorSpec {
     public static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();

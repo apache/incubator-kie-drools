@@ -16,6 +16,10 @@
 
 package org.drools.core.rule;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
 import org.drools.core.base.evaluators.BeforeEvaluatorDefinition.BeforeEvaluator;
@@ -27,10 +31,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class VariableRestriction {
 

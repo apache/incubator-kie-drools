@@ -15,6 +15,9 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.compiler.io.File;
@@ -35,9 +38,6 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * This is a sample class to launch a rule.
@@ -87,7 +87,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
-        String drl1 = "package org.pkg1\n" +
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R11 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
@@ -98,7 +98,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.pkg2\n" +
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R21 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
@@ -159,7 +159,7 @@ public class KieCompilationCacheTest extends CommonTestMethodBase {
 
     @Test
     public void testCacheWigAccumulate() throws Exception {
-        String drl1 = "package org.pkg1\n" +
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
                 "rule R11 when\n" +
                 "   Number() from accumulate(String(), \n" +
                 "              init(int x = 0;)," +

@@ -16,9 +16,9 @@
 
 package org.drools.core.common;
 
-import org.kie.api.runtime.ObjectFilter;
-
 import java.util.Iterator;
+
+import org.kie.api.runtime.ObjectFilter;
 
 public interface ObjectStore {
 

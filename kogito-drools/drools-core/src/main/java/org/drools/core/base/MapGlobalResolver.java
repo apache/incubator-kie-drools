@@ -16,9 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.GlobalResolver;
-import org.kie.api.runtime.Globals;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,6 +27,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.drools.core.spi.GlobalResolver;
+import org.kie.api.runtime.Globals;
 
 public class MapGlobalResolver
     implements

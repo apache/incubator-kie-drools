@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns="http://www.trisotech.com/dmn/definitions/_dcc63ab0-3a53-4628-8bee-3ae1f1ad683b" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.5.201702091125" id="_dcc63ab0-3a53-4628-8bee-3ae1f1ad683b" name="Car Damage Responsibility" namespace="http://www.trisotech.com/dmn/definitions/_dcc63ab0-3a53-4628-8bee-3ae1f1ad683b" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <triso:ProjectCharter xmlns="http://www.trisotech.com/2015/triso/modeling">
+      <triso:projectGoals/>
+      <triso:projectChallenges/>
+      <triso:projectStakeholders/>
+    </triso:ProjectCharter>
+  </semantic:extensionElements>
+  <semantic:decision id="_5693fada-33cb-4a9e-bcfa-6fc343505538" name="Car Damage Responsibility">
+    <semantic:variable name="Car Damage Responsibility"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_46252761-a3a1-4628-ae06-4b3652116f61"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#inputData__b7372019-823a-4b8c-bce4-36ef71184397"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#inputData__f7d7509a-0548-45b4-a76e-f08fbffb95aa"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Car Damage Responsibility">
+      <semantic:input id="_46431f75-29fd-4562-8110-63f571b591b0" label="Membership Level">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Membership Level</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"Gold","Silver",None</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_b7372019-823a-4b8c-bce4-36ef71184397" label="Responsible">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Responsible</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>Driver,3rd Party</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_f7d7509a-0548-45b4-a76e-f08fbffb95aa" label="Damage Type">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Damage Type</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"Body","Engine","Tire","Glass"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_d2e8107a-c550-41d5-b9bd-4d4a5d050147" name="EU Rent" typeRef="feel:number">
+        <semantic:outputValues triso:constraintsType="simple">
+          <semantic:text>[0..100]</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:output id="_238524f7-4f68-4e07-aae7-a4e14457d1fc" name="Renter" typeRef="feel:number">
+        <semantic:outputValues triso:constraintsType="simple">
+          <semantic:text>[0..100]</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_7844015a-db0f-4c84-b80d-a6467dd16b6e">
+        <semantic:inputEntry id="_7844015a-db0f-4c84-b80d-a6467dd16b6e-0">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7844015a-db0f-4c84-b80d-a6467dd16b6e-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7844015a-db0f-4c84-b80d-a6467dd16b6e-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_7844015a-db0f-4c84-b80d-a6467dd16b6e-3">
+          <semantic:text>100</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_7844015a-db0f-4c84-b80d-a6467dd16b6e-4">
+          <semantic:text>0</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a5653c63-bbae-47f5-b80c-34f2efbca467">
+        <semantic:inputEntry id="_a5653c63-bbae-47f5-b80c-34f2efbca467-0">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a5653c63-bbae-47f5-b80c-34f2efbca467-1">
+          <semantic:text>3rd Party</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a5653c63-bbae-47f5-b80c-34f2efbca467-2">
+          <semantic:text>Tires</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a5653c63-bbae-47f5-b80c-34f2efbca467-3">
+          <semantic:text>50</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_a5653c63-bbae-47f5-b80c-34f2efbca467-4">
+          <semantic:text>50</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_90aab494-9458-4b43-bdf4-0a82c22761b3" name="Membership Level">
+    <semantic:variable name="Membership Level"/>
+  </semantic:inputData>
+  <semantic:knowledgeSource id="_48fa7a11-feea-4fbc-843d-ddba575cb43e" name="Membership Database">
+    <semantic:authorityRequirement>
+      <semantic:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3"/>
+    </semantic:authorityRequirement>
+  </semantic:knowledgeSource>
+  <semantic:inputData id="_46252761-a3a1-4628-ae06-4b3652116f61" name="Damage Types">
+    <semantic:variable name="Damage Types"/>
+  </semantic:inputData>
+  <semantic:knowledgeSource id="_08793113-0699-46bc-b9ea-101caafae621" name="Reservation System">
+    <semantic:authorityRequirement>
+      <semantic:requiredInput href="#_46252761-a3a1-4628-ae06-4b3652116f61"/>
+    </semantic:authorityRequirement>
+  </semantic:knowledgeSource>
+  <semantic:inputData id="inputData__b7372019-823a-4b8c-bce4-36ef71184397" name="Responsible">
+    <semantic:variable name="Responsible" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:inputData id="inputData__f7d7509a-0548-45b4-a76e-f08fbffb95aa" name="Damage Type">
+    <semantic:variable name="Damage Type" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:textAnnotation id="_2be598cb-09bc-43c4-af77-646ca21eae45">
+    <semantic:text>Question: Repair cost split
+Answers: Renter %, EU-Rent %</semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_dacfeefd-7fe2-4dfd-8d0c-d99d963a785c" label="">
+    <semantic:sourceRef href="#_5693fada-33cb-4a9e-bcfa-6fc343505538"/>
+    <semantic:targetRef href="#_2be598cb-09bc-43c4-af77-646ca21eae45"/>
+  </semantic:association>
+</semantic:definitions>

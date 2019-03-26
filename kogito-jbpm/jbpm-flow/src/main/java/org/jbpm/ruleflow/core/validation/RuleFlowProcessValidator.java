@@ -345,17 +345,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                         "SubProcess has no outgoing connection.");
                     }
                 }
-
-                if(subProcess.isCallActivity()) {
-                    if( (subProcess.getProcessId() == null || subProcess.getProcessId().isEmpty()) &&
-                            (subProcess.getProcessName() == null || subProcess.getProcessName().isEmpty()) ) {
-                        addErrorMessage(process,
-                                        node,
-                                        errors,
-                                        "Reusable Subprocess has no called element specified.");
-                    }
+                if (subProcess.getProcessId() == null && subProcess.getProcessName() == null) {
+                    addErrorMessage(process,
+                                    node,
+                                    errors,
+                                    "SubProcess has no process id.");
                 }
-
                 if (subProcess.getTimers() != null) {
                     for (Timer timer : subProcess.getTimers().keySet()) {
                         validateTimer(timer,

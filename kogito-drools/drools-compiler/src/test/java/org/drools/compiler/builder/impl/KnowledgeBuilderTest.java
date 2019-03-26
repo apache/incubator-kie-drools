@@ -16,6 +16,8 @@
 
 package org.drools.compiler.builder.impl;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -103,8 +105,6 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import static org.junit.Assert.*;
 
 public class KnowledgeBuilderTest extends DroolsTestCase {
     

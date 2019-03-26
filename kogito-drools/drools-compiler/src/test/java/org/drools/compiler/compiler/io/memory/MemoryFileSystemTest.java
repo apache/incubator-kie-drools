@@ -16,11 +16,11 @@
 
 package org.drools.compiler.compiler.io.memory;
 
+import static org.junit.Assert.*;
+
 import org.drools.compiler.compiler.io.File;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class MemoryFileSystemTest {
 

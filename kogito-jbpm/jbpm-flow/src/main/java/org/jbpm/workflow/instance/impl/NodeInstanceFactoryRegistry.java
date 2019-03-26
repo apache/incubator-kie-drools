@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -45,7 +44,6 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.impl.factory.CreateNewNodeFactory;
 import org.jbpm.workflow.instance.impl.factory.ReuseNodeFactory;
 import org.jbpm.workflow.instance.node.ActionNodeInstance;
-import org.jbpm.workflow.instance.node.AsyncEventNodeInstance;
 import org.jbpm.workflow.instance.node.BoundaryEventNodeInstance;
 import org.jbpm.workflow.instance.node.CatchLinkNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -128,10 +126,7 @@ public class NodeInstanceFactoryRegistry {
         register( DynamicNode.class,
                   new CreateNewNodeFactory( DynamicNodeInstance.class ) );
         register( BoundaryEventNode.class,
-                new CreateNewNodeFactory( BoundaryEventNodeInstance.class ) );
-        register( AsyncEventNode.class,
-                new CreateNewNodeFactory( AsyncEventNodeInstance.class ) );
-        
+                new CreateNewNodeFactory( BoundaryEventNodeInstance.class ) );       
         register(CatchLinkNode.class, new CreateNewNodeFactory(
 				CatchLinkNodeInstance.class));
 		register(ThrowLinkNode.class, new CreateNewNodeFactory(

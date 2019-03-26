@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import java.util.Map;
+
 import org.drools.compiler.rule.builder.ConsequenceBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
@@ -22,8 +24,6 @@ import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper;
 import org.drools.compiler.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.drools.core.rule.Declaration;
-
-import java.util.Map;
 
 public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilder {
     public void build(RuleBuildContext context, String consequenceName) {

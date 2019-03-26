@@ -16,6 +16,8 @@
 
 package org.drools.compiler.oopath;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +35,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertTrue;
 
 public class OOPathCastTest {
 

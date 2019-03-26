@@ -15,6 +15,8 @@
 
 package org.drools.core.beliefsystem.simple;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.common.EqualityKey;
@@ -28,8 +30,6 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 /**
  * Default implementation emulates classical Drools TMS behaviour.

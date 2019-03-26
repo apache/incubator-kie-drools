@@ -26,7 +26,6 @@ import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -208,47 +207,5 @@ public class RuleFlowProcessValidatorTest {
                      errors.length);
         assertEquals("Node 'CompositeNode' [3] Composite has no start node defined.",
                      errors[0].getMessage());
-    }
-
-    @Test
-    public void testSubprocessCallActivity() throws Exception {
-        RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.core.process.process");
-        process.setName("Process");
-
-        StartNode startNode = new StartNode();
-        startNode.setName("Start");
-        startNode.setId(1);
-        process.addNode(startNode);
-        EndNode endNode = new EndNode();
-        endNode.setName("EndNode");
-        endNode.setId(2);
-        process.addNode(endNode);
-        SubProcessNode subProcessNode = new SubProcessNode();
-        subProcessNode.setName("CallActivityNode");
-        subProcessNode.setId(3);
-        subProcessNode.setIsCallActivity(true);
-        // dont set processid or processname
-        process.addNode(subProcessNode);
-        new org.jbpm.workflow.core.impl.ConnectionImpl(
-                startNode,
-                Node.CONNECTION_DEFAULT_TYPE,
-                subProcessNode,
-                Node.CONNECTION_DEFAULT_TYPE
-        );
-        new org.jbpm.workflow.core.impl.ConnectionImpl(
-                subProcessNode,
-                Node.CONNECTION_DEFAULT_TYPE,
-                endNode,
-                Node.CONNECTION_DEFAULT_TYPE
-        );
-
-        ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
-        assertEquals(1,
-                     errors.length);
-        assertEquals("Node 'CallActivityNode' [3] Reusable Subprocess has no called element specified.",
-                     errors[0].getMessage());
-
     }
 }

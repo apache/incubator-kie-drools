@@ -16,14 +16,14 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
+import org.drools.core.common.EmptyBetaConstraints;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.junit.Test;
 
 public class BetaNodeTest {
 

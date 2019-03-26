@@ -16,6 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -33,8 +38,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -251,19 +254,14 @@ public abstract class LeftTupleSource extends BaseNode
         // if pattern is null (e.g. for eval or query nodes) we cannot calculate the mask, so we set it all
         if ( pattern != null && isPropertyReactive(context, objectClass) ) {
             Collection<String> leftListenedProperties = pattern.getListenedProperties();
-            List<String> accessibleProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
-            leftDeclaredMask = calculatePositiveMask( objectClass, leftListenedProperties, accessibleProperties );
-            leftDeclaredMask = setNodeConstraintsPropertyReactiveMask(leftDeclaredMask, objectClass, accessibleProperties);
-            leftNegativeMask = calculateNegativeMask( objectClass, leftListenedProperties, accessibleProperties );
+            List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
+            leftDeclaredMask = calculatePositiveMask( objectClass, leftListenedProperties, settableProperties );
+            leftNegativeMask = calculateNegativeMask( objectClass, leftListenedProperties, settableProperties );
             setLeftListenedProperties(leftListenedProperties);
         } else {
             // if property specific is not on, then accept all modification propagations
             leftDeclaredMask = AllSetBitMask.get();
         }
-    }
-
-    protected BitMask setNodeConstraintsPropertyReactiveMask(BitMask mask, Class objectClass, List<String> accessibleProperties) {
-        return mask;
     }
 
     protected Pattern getLeftInputPattern( BuildContext context ) {

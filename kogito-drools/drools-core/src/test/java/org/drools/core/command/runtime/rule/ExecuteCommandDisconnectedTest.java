@@ -15,8 +15,16 @@
  */
 package org.drools.core.command.runtime.rule;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.command.ExecuteCommand;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -25,13 +33,7 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.internal.command.CommandFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class ExecuteCommandDisconnectedTest {
 

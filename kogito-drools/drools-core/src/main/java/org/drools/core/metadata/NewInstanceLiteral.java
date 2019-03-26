@@ -15,10 +15,10 @@
 
 package org.drools.core.metadata;
 
-import org.drools.core.factmodel.traits.InstantiatorFactory;
-
 import java.net.URI;
 import java.util.UUID;
+
+import org.drools.core.factmodel.traits.InstantiatorFactory;
 
 public abstract class NewInstanceLiteral<T extends Metadatable> extends AbstractWMTask<T> implements NewInstance<T> {
     protected URI uri;

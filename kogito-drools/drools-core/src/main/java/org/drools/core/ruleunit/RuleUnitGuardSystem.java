@@ -16,10 +16,6 @@
 
 package org.drools.core.ruleunit;
 
-import org.drools.core.impl.RuleUnitExecutorSession;
-import org.drools.core.spi.Activation;
-import org.kie.api.runtime.rule.RuleUnit;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import org.drools.core.impl.RuleUnitExecutorSession;
+import org.drools.core.spi.Activation;
+import org.kie.api.runtime.rule.RuleUnit;
 
 public class RuleUnitGuardSystem {
 

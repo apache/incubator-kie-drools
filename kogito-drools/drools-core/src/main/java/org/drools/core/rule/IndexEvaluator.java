@@ -15,10 +15,10 @@
 
 package org.drools.core.rule;
 
+import java.io.Serializable;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.InternalReadAccessor;
-
-import java.io.Serializable;
 
 public interface IndexEvaluator extends Serializable {
     /**

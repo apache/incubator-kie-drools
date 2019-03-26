@@ -16,17 +16,17 @@
 
 package org.drools.core.base;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.HashSet;
+
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.FirstClass;
 import org.drools.core.test.model.SecondClass;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
-
-import java.util.HashSet;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class ClassTypeResolverTest {
 

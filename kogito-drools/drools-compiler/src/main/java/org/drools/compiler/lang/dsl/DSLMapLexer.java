@@ -16,17 +16,17 @@
 // $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g 2014-02-20 15:51:32
 
     package org.drools.compiler.lang.dsl;
-    import java.util.List;
     import java.util.ArrayList;
-    import org.drools.compiler.compiler.ParserError;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.drools.compiler.compiler.ParserError;
 
 @SuppressWarnings("all")
 public class DSLMapLexer extends Lexer {

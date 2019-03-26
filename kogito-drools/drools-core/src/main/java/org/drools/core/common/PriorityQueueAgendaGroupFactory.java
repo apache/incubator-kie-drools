@@ -16,12 +16,12 @@
 
 package org.drools.core.common;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.impl.InternalKnowledgeBase;
 
 
 public class PriorityQueueAgendaGroupFactory implements AgendaGroupFactory, Externalizable {

@@ -16,11 +16,6 @@
 package org.drools.core.factmodel.traits;
 
 
-import org.drools.core.util.Triple;
-import org.drools.core.util.TripleFactory;
-import org.drools.core.util.TripleStore;
-import org.kie.api.runtime.rule.Variable;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -32,6 +27,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.util.Triple;
+import org.drools.core.util.TripleFactory;
+import org.drools.core.util.TripleStore;
+import org.kie.api.runtime.rule.Variable;
 
 
 

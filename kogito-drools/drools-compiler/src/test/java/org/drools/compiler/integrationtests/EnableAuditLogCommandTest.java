@@ -1,5 +1,7 @@
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertTrue;
 
 public class EnableAuditLogCommandTest {
 

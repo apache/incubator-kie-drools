@@ -15,6 +15,11 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -58,11 +63,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class MVELTest extends CommonTestMethodBase {
 
@@ -1081,49 +1081,6 @@ public class MVELTest extends CommonTestMethodBase {
                 return false;
             }
             return age == ((Human) obj).age;
-        }
-    }
-
-    @Test
-    public void test2ndDashInMvelConsequnence() {
-        // DROOLS-3678
-        String str = "package com.sample\n" +
-                "import " + Fact.class.getCanonicalName() + ";\n" +
-                "dialect \"mvel\"\n" +
-                "rule \"testRule\"\n" +
-                "    when\n" +
-                "        $fact : Fact();\n" +
-                "    then\n" +
-                "        $fact.name = \"A#\";\n" +
-                "        $fact.value = \"B#\";\n" +
-                "        System.out.println( $fact );\n" +
-                "end";
-
-        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build( EqualityBehaviorOption.EQUALITY ).newKieSession();
-
-        Fact f = new Fact();
-        ksession.insert(f);
-        ksession.fireAllRules();
-        assertEquals( "A#", f.getName() );
-        assertEquals( "B#", f.getValue() );
-    }
-
-    public static class Fact {
-        private String name;
-        private String value;
-
-        public String getName() {
-            return name;
-        }
-        public void setName( String name ) {
-            this.name = name;
-        }
-
-        public String getValue() {
-            return value;
-        }
-        public void setValue( String value ) {
-            this.value = value;
         }
     }
 }

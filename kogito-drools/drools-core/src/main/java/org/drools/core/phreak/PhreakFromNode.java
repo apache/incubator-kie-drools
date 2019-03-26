@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,8 +39,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
-
-import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
 /**
 * Created with IntelliJ IDEA.

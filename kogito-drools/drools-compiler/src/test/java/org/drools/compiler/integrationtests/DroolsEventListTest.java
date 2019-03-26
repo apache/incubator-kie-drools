@@ -15,6 +15,9 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.Comparator;
 
 import org.drools.compiler.Cheese;
@@ -22,20 +25,16 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.Row;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.LiveQuery;
-import org.kie.api.runtime.rule.Row;
 
 import ca.odell.glazedlists.SortedList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class DroolsEventListTest extends CommonTestMethodBase {
 

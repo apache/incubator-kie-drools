@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jbpm.bpmn2.objects.Status;
-import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -44,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * This test takes time and resources, please only run it locally
  */
 @Ignore
-public class OneProcessPerThreadTest extends AbstractBaseTest {
+public class OneProcessPerThreadTest {
     
     private static final int THREAD_COUNT = 1000;
     private static volatile AtomicInteger started = new AtomicInteger(0);

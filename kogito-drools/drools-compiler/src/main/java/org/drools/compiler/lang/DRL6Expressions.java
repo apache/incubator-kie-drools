@@ -3,29 +3,28 @@
     package org.drools.compiler.lang;
 
     import java.util.LinkedList;
-    import org.drools.compiler.compiler.DroolsParserException;
-    import org.drools.compiler.lang.ParserHelper;
-    import org.drools.compiler.lang.DroolsParserExceptionFactory;
-    import org.drools.compiler.lang.Location;
-
-    import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
-    import org.drools.compiler.lang.api.AnnotationDescrBuilder;
-
-    import org.drools.compiler.lang.descr.AtomicExprDescr;
-    import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
-    import org.drools.compiler.lang.descr.AnnotationDescr;
-    import org.drools.compiler.lang.descr.BaseDescr;
-    import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-    import org.drools.compiler.lang.descr.RelationalExprDescr;
-    import org.drools.compiler.lang.descr.BindingDescr;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Stack;
+
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
+import org.drools.compiler.lang.api.AnnotationDescrBuilder;
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.AtomicExprDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
+import org.drools.compiler.lang.descr.RelationalExprDescr;
 
 @SuppressWarnings("all")
 public class DRL6Expressions extends DRLExpressions {

@@ -16,14 +16,14 @@
 
 package org.drools.core.base;
 
-import org.drools.core.base.evaluators.Operator;
-import org.drools.core.spi.Evaluator;
-import org.drools.core.time.Interval;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.spi.Evaluator;
+import org.drools.core.time.Interval;
 
 /**
  * BaseEvaluator is an Object Comparator that is operator aware

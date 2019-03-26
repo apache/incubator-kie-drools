@@ -15,7 +15,14 @@
 
 package org.drools.compiler.reteoo;
 
-import com.thoughtworks.xstream.XStream;
+import static org.junit.Assert.assertEquals;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -27,14 +34,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.junit.Test;
 import org.kie.api.KieBase;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-
-import static org.junit.Assert.assertEquals;
-import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
+import com.thoughtworks.xstream.XStream;
 
 public class ReteooBuilderTest {
 
@@ -62,7 +62,7 @@ public class ReteooBuilderTest {
 
     private void writeRuleBase(final InternalKnowledgeBase kBase,
                                final String fileName) throws IOException {
-        final XStream xstream = createTrustingXStream();
+        final XStream xstream = new XStream();
 
         final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( "src/test/resources/org/drools/reteoo/" + fileName ) ) );
 
@@ -83,7 +83,7 @@ public class ReteooBuilderTest {
                            name );
         }
 
-        final XStream xstream = createTrustingXStream();
+        final XStream xstream = new XStream();
 
         final InternalKnowledgeBase goodKBase = (InternalKnowledgeBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
 

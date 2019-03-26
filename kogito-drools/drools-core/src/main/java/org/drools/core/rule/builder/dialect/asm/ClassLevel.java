@@ -15,13 +15,13 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
-import org.kie.internal.utils.ChainedProperties;
-
 import static org.mvel2.asm.Opcodes.V1_5;
 import static org.mvel2.asm.Opcodes.V1_6;
 import static org.mvel2.asm.Opcodes.V1_7;
 import static org.mvel2.asm.Opcodes.V1_8;
 import static org.mvel2.asm.Opcodes.V9;
+
+import org.kie.internal.utils.ChainedProperties;
 
 public class ClassLevel {
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";

@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -22,8 +24,6 @@ import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.rule.EvalCondition;
-
-import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
 /**
 * Created with IntelliJ IDEA.

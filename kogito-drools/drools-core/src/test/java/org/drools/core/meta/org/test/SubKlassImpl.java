@@ -15,9 +15,9 @@
 
 package org.drools.core.meta.org.test;
 
-import org.drools.core.metadata.MetadataHolder;
-
 import java.util.List;
+
+import org.drools.core.metadata.MetadataHolder;
 
 public class SubKlassImpl
     extends KlassImpl

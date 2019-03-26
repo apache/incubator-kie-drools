@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler.constraints;
 
+import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
+
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,8 +32,6 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.Index;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
-
-import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
 
 public class UnificationConstraint extends MutableTypeConstraint implements IndexableConstraint {
 

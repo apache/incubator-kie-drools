@@ -15,15 +15,15 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.rule.ConditionalElement;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.RuleConditionElement;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.rule.ConditionalElement;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.RuleConditionElement;
 
 
 public abstract class BaseTimer extends ConditionalElement{

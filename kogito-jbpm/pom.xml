@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.19.0.Final</version>
+    <version>8.0.0-SNAPSHOT</version>
     <!-- relativePath causes out-of-date problems on hudson slaves -->
     <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
@@ -20,43 +20,6 @@
   <url>http://www.jboss.org/jbpm/</url>
 
   <properties>
-    <!--
-     These properties are used in the database profiles. Some of them must be initialized as empty strings
-     so that Maven applies them via filtering.
-     -->
-    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-    <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
-    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-    <maven.jdbc.db.name/>
-    <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>
-    <maven.jdbc.driver.jar/>
-    <maven.jdbc.username>sa</maven.jdbc.username>
-    <maven.jdbc.password>sasa</maven.jdbc.password>
-    <maven.jdbc.url>jdbc:h2:tcp://localhost/${project.basedir}/target/jbpm-test;MVCC=TRUE</maven.jdbc.url>
-    <maven.jdbc.schema>public</maven.jdbc.schema>
-
-    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
-    <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
-    <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
-    <checkstyle.header.template><![CDATA[
-^\/\*$\n^
-\* Copyright \d\d\d\d Red Hat, Inc\. and\/or its affiliates\.$\n^
-\*$\n^
-\* Licensed under the Apache License, Version 2\.0 \(the &quot;License&quot;\);$\n^
-\* you may not use this file except in compliance with the License\.$\n^
-\* You may obtain a copy of the License at$\n^
-\*$\n^
-\*     http:\/\/www\.apache\.org\/licenses\/LICENSE-2\.0$\n^
-\*$\n^
-\* Unless required by applicable law or agreed to in writing, software$\n^
-\* distributed under the License is distributed on an &quot;AS IS&quot; BASIS,$\n^
-\* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied\.$\n^
-\* See the License for the specific language governing permissions and$\n^
-\* limitations under the License\.$\n^
-\*\/$
-]]>
-    </checkstyle.header.template>
   </properties>
 
   <repositories>
@@ -77,79 +40,11 @@
     </repository>
   </repositories>
 
-  <scm>
-    <connection>scm:git:https://github.com:kiegroup/jbpm.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/jbpm.git</developerConnection>
-    <url>https://github.com/kiegroup/jbpm</url>
-  </scm>
-  <issueManagement>
-    <system>jira</system>
-    <url>https://issues.jboss.org/browse/JBPM</url>
-  </issueManagement>
-
   <modules>
-    <module>jbpm-test-util</module>
     <module>jbpm-flow</module>
     <module>jbpm-flow-builder</module>
-    <module>jbpm-persistence</module>
-    <module>jbpm-query-jpa</module>
-    <module>jbpm-audit</module>
     <module>jbpm-bpmn2</module>
-    <module>jbpm-bpmn2-emfextmodel</module>
-    <module>jbpm-workitems</module>
-    <module>jbpm-human-task</module>
-    <module>jbpm-runtime-manager</module>
-    <module>jbpm-services</module>
-    <module>jbpm-document</module>
-    <module>jbpm-test</module>
-    <module>jbpm-case-mgmt</module>
-    <module>jbpm-test-coverage</module>
-    <module>jbpm-examples</module>
-    <module>jbpm-installer</module>
-    <module>jbpm-container-test</module>
-    <module>jbpm-event-emitters</module>
-    <module>jbpm-xes</module>
   </modules>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <additionalClasspathElements>
-              <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
-            </additionalClasspathElements>
-          </configuration>
-        </plugin>
-        <!-- checkstyle plugin should only do header(copyright) check -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>validate</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <configuration>
-                <checkstyleRules>
-                  <module name="Checker">
-                    <module name="RegexpHeader">
-                      <property name="header" value="${checkstyle.header.template}"/>
-                      <property name="fileExtensions" value="${checkstyle.header.extensions}"/>
-                    </module>
-                  </module>
-                </checkstyleRules>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 
   <dependencyManagement>
     <dependencies>
@@ -161,20 +56,8 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-test-util</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -186,49 +69,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>simple-jndi</groupId>
-        <artifactId>simple-jndi</artifactId>
-        <version>0.11.4.1</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <profiles>
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>jbpm-distribution</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>mariadb</id>
-      <!-- Important: one still needs to specify the MariaDB JDBC driver jar!
-
-           Following are the default values for MariaDB started via Docker:
-           "docker run &#x002d;&#x002d;name mariadb-jbpm -e MYSQL_ROOT_PASSWORD="admin1234" -d -p 3306:3306 mariadb:latest"
-           (replace the "&#x002d;&#x002d;" with two "-"
-           More info at https://hub.docker.com/_/mariadb/-->
-      <properties>
-        <maven.hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</maven.hibernate.dialect>
-        <maven.datasource.classname>org.mariadb.jdbc.MySQLDataSource</maven.datasource.classname>
-        <maven.jdbc.driver.class>org.mariadb.jdbc.Driver</maven.jdbc.driver.class>
-        <maven.jdbc.db.name>mysql</maven.jdbc.db.name>
-        <maven.jdbc.db.port>3306</maven.jdbc.db.port>
-        <maven.jdbc.driver.jar/>
-        <maven.jdbc.username>root</maven.jdbc.username>
-        <maven.jdbc.password>admin1234</maven.jdbc.password>
-        <maven.jdbc.url>jdbc:mariadb://localhost:3306/mysql?pinGlobalTxToPhysicalConnection=true</maven.jdbc.url>
-        <maven.jdbc.schema>mysql</maven.jdbc.schema>
-      </properties>
-    </profile>
-
-  </profiles>
 
 </project>

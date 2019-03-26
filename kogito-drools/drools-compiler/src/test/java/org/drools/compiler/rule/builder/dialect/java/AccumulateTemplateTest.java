@@ -15,6 +15,11 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -32,11 +37,6 @@ import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.res.Node;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AccumulateTemplateTest {
 

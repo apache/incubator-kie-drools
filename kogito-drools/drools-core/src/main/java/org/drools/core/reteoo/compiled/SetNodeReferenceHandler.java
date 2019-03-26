@@ -17,7 +17,12 @@
 package org.drools.core.reteoo.compiled;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Sink;
+import org.drools.core.reteoo.WindowNode;
 
 /**
  * This handler is used to create the member variable assignment statements section of a generated subclass of a

@@ -16,6 +16,12 @@
 
 package org.drools.core.common;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.isAllSetPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertySetOnMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -33,8 +39,6 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 public class PhreakPropagationContext
         implements

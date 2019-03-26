@@ -16,9 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.QueryArgument;
@@ -27,9 +30,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.core.impl.KnowledgeBaseFactory;
-
-import static org.junit.Assert.assertEquals;
 
 public class QueryElementNodeTest extends DroolsTestCase {
     private PropagationContext  context;

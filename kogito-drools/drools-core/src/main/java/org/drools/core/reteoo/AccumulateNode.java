@@ -16,12 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +51,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.BitMask;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 /**
  * AccumulateNode

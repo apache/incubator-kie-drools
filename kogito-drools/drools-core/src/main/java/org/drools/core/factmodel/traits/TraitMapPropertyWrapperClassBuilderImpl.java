@@ -16,15 +16,7 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.factmodel.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.mvel2.asm.ClassVisitor;
-import org.mvel2.asm.ClassWriter;
-import org.mvel2.asm.FieldVisitor;
-import org.mvel2.asm.Label;
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.Type;
+import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -37,7 +29,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
+import org.drools.core.factmodel.BuildUtils;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.FieldDefinition;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Type;
 
 public class TraitMapPropertyWrapperClassBuilderImpl extends AbstractPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 	

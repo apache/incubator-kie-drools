@@ -15,23 +15,8 @@
 
 package org.drools.compiler.kproject.models;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.core.util.AbstractXStreamConverter;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.xml.sax.SAXException;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,8 +26,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.drools.core.util.AbstractXStreamConverter;
+import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.xml.sax.SAXException;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class KieModuleModelImpl implements KieModuleModel {
 
@@ -167,7 +168,7 @@ public class KieModuleModelImpl implements KieModuleModel {
     private static final kModuleMarshaller MARSHALLER = new kModuleMarshaller();
 
     private static class kModuleMarshaller {
-        private final XStream xStream = createTrustingXStream(new DomDriver());
+        private final XStream xStream = new XStream(new DomDriver());
 
         private kModuleMarshaller() {
             xStream.registerConverter(new kModuleConverter());

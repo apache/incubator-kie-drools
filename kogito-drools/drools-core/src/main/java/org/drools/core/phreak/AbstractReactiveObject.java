@@ -16,11 +16,11 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.spi.Tuple;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+
+import org.drools.core.spi.Tuple;
 
 public class AbstractReactiveObject implements ReactiveObject {
 

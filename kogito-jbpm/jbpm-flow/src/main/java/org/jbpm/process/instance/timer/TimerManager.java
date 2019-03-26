@@ -16,6 +16,13 @@
 
 package org.jbpm.process.instance.timer;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -35,7 +42,6 @@ import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
-import org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
@@ -44,13 +50,6 @@ import org.kie.api.time.SessionClock;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -178,10 +177,6 @@ public class TimerManager {
         // for ( TimerInstance timer : timers.values() ) {
         // timerService.removeJob( timer.getJobHandle() );
         // }
-        if (timerService instanceof RegisteredTimerServiceDelegate) {
-            timers.clear();
-            return;
-        }
         for (Iterator<TimerInstance> it = timers.values().iterator(); it.hasNext();) {
             TimerInstance timer = it.next();
             timerService.removeJob(timer.getJobHandle());

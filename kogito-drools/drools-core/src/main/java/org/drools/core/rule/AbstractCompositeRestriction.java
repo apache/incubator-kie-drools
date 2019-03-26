@@ -16,17 +16,17 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.Restriction;
-import org.drools.core.spi.Tuple;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.Restriction;
+import org.drools.core.spi.Tuple;
 
 public abstract class AbstractCompositeRestriction
     implements

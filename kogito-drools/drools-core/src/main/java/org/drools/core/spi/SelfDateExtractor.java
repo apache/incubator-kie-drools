@@ -16,14 +16,14 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.BaseDateClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseDateClassFieldReader;
+import org.drools.core.common.InternalWorkingMemory;
 
 public class SelfDateExtractor extends BaseDateClassFieldReader
     implements

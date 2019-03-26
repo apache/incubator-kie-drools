@@ -6,11 +6,11 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-api-parent</artifactId>
-    <version>7.19.0.Final</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-internal</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+  <packaging>jar</packaging>
 
   <name>KIE :: Internal</name>
   <description>The Drools and jBPM internal API which is NOT backwards compatible between releases.</description>
@@ -30,171 +30,27 @@
         <directory>src/main/filtered-resources</directory>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              com.sun.tools.xjc;resolution:=optional,
-              com.thoughtworks.xstream.*;resolution:=optional,
-              javax.enterprise.*;resolution:=optional,
-              javax.inject.*;resolution:=optional,
-              javax.xml.datatype;resolution:=optional,
-              javax.xml.bind;resolution:=optional,
-              javax.xml.bind.annotation;resolution:=optional,
-              javax.xml.bind.annotation.adapters;resolution:=optional,
-              org.drools.compiler.builder.impl,
-              org.drools.core.builder.conf.impl;resolution:=optional,
-              org.drools.core.command.impl,
-              org.drools.core.concurrent,
-              org.drools.core.impl,
-              org.drools.core.io.impl,
-              org.drools.core.marshalling.impl;resolution:=optional,
-              org.drools.core.util,
-              org.drools.decisiontable;resolution:=optional,
-              org.drools.workbench.models.guided.dtable.backend;resolution:=optional,
-              org.drools.persistence.api;resolution:=optional,
-              org.drools.persistence.jpa;resolution:=optional,
-              org.jbpm.bpmn2;resolution:=optional,
-              org.jbpm.marshalling.impl;resolution:=optional,
-              org.jbpm.process.builder;resolution:=optional,
-              org.jbpm.runtime.manager.impl;resolution:=optional,
-              org.jbpm.services.task.persistence;resolution:=optional,
-              org.appformer.maven.support,
-              org.kie.soup.project.datamodel,
-              org.kie.soup.project.datamodel.commons,
-              org.kie.api,
-              org.kie.api.builder,
-              org.kie.api.builder.model,
-              org.kie.api.command,
-              org.kie.api.concurrent,
-              org.kie.api.conf,
-              org.kie.api.definition,
-              org.kie.api.definition.process,
-              org.kie.api.definition.rule,
-              org.kie.api.definition.type,
-              org.kie.api.event,
-              org.kie.api.executor,
-              org.kie.api.internal.assembler,
-              org.kie.api.internal.io,
-              org.kie.api.internal.runtime,
-              org.kie.api.internal.weaver,
-              org.kie.api.internal.runtime.beliefs,
-              org.kie.api.internal.utils,
-              org.kie.api.io,
-              org.kie.api.logger,
-              org.kie.api.marshalling,
-              org.kie.api.persistence.jpa,
-              org.kie.api.runtime,
-              org.kie.api.runtime.conf,
-              org.kie.api.runtime.manager,
-              org.kie.api.runtime.manager.audit,
-              org.kie.api.runtime.process,
-              org.kie.api.runtime.rule,
-              org.kie.api.runtime.query,
-              org.kie.api.task,
-              org.kie.api.task.model,
-              org.kie.scanner;resolution:=optional,
-              org.osgi.framework,
-              org.osgi.util.tracker,
-              org.slf4j
-            </Import-Package>
-            <Export-Package>
-              org.kie.internal.*
-            </Export-Package>
-            <Bundle-Activator>org.kie.internal.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-          <executions>
-            <execution>
-              <!-- Run the javadoc plugin also as part of the standard build (for other modules, it is executed only when -Dfull is specified).
-                   Some downstream repositories (e.g. Drools) depend on this -javadoc artifact and need it even for non-full builds. -->
-              <phase>package</phase>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-            </execution>
-          </executions>
-      </plugin>
-    </plugins>
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
-      <exclusions>
-        <exclusion>
-          <groupId>javax.el</groupId>
-          <artifactId>javax.el-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.interceptor</groupId>
-          <artifactId>javax.interceptor-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
+    <!-- test -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

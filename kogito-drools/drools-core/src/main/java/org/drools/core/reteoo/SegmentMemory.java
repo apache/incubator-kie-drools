@@ -15,6 +15,8 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.core.phreak.SegmentUtilities.getQuerySegmentMemory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +33,6 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.phreak.SegmentUtilities.getQuerySegmentMemory;
 
 public class SegmentMemory extends LinkedList<SegmentMemory>
         implements

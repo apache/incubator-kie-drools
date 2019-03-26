@@ -16,14 +16,14 @@
 
 package org.drools.modelcompiler.attributes;
 
+import static org.drools.modelcompiler.consequence.LambdaConsequence.declarationsToFacts;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Enabled;
 import org.drools.core.spi.Tuple;
 import org.drools.model.DynamicValueSupplier;
-
-import static org.drools.modelcompiler.consequence.LambdaConsequence.declarationsToFacts;
 
 public class LambdaEnabled extends DynamicAttributeEvaluator<Boolean> implements Enabled {
 

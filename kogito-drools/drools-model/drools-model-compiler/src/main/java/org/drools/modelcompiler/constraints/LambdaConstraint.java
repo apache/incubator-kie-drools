@@ -1,5 +1,8 @@
 package org.drools.modelcompiler.constraints;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -22,9 +25,6 @@ import org.drools.core.util.index.IndexUtil;
 import org.drools.model.AlphaIndex;
 import org.drools.model.BetaIndex;
 import org.drools.model.Index;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
-import static org.drools.core.rule.constraint.MvelConstraint.INDEX_EVALUATOR;
 
 public class LambdaConstraint extends AbstractConstraint {
 

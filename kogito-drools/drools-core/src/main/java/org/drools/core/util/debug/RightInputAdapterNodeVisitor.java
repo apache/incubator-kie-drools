@@ -16,6 +16,8 @@
 
 package org.drools.core.util.debug;
 
+import java.util.Stack;
+
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -23,8 +25,6 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RightInputAdapterNode;
-
-import java.util.Stack;
 
 public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
     

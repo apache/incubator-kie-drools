@@ -26,12 +26,12 @@ import java.math.BigInteger;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MathUtils;
-import org.drools.core.util.StringUtils;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MathUtils;
+import org.drools.core.util.StringUtils;
 
 public class ArrayElementReader
     implements

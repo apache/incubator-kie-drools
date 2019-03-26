@@ -16,14 +16,14 @@
 
 package org.drools.core.util;
 
+import static org.junit.Assert.assertNull;
+
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.TupleList;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNull;
 
 public class RightTupleListTest {
     @Test

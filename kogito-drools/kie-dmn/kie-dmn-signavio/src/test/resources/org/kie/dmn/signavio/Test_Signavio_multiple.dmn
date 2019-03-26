@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.signavio.com/dmn/1.1/diagram/62984e77791743388113fbba77597fef.xml" exporterVersion="11.2.0" name="Prova multiple" id="id-7df64f5d54c94f15a5ffbe49e4622320" sigExt:revisionId="a6b352269b8649d9ac654705bae5930b" sigExt:revisionNumber="4" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/62984e77791743388113fbba77597fef.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+    <extensionElements/>
+    <itemDefinition isCollection="false" name="greeting" id="id-48335c6055a5bcf6e75ca290d66ac94d" label="Greeting">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="persons" id="id-0b4e1c074d216147ad9fb7d0c56b4aab" label="Persons">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="person" id="id-d5a3b128b37409735e95ba4d07ca5b93" label="Person">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="greetingForEachPersonInPersons" id="id-d6061afaa4df5cc3b15aaf6023c29338" label="Greeting for each Person in Persons">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <inputData name="person_iterator" id="id-707bbdf74438414623ac5d7067805b38" label="Person" sigExt:shapeId="sid-13601B69-CEE0-4706-94C2-D036B6FB6C0A" sigExt:diagramId="62984e77791743388113fbba77597fef">
+        <extensionElements/>
+        <variable typeRef="sig:person" name="person_iterator" id="id-707bbdf74438414623ac5d7067805b38_variable"/>
+    </inputData>
+    <inputData name="persons" id="id-eae24786b58ac89e3002cabc2b954552" label="Persons" sigExt:shapeId="sid-5C0178D7-195E-492C-A4C2-D3891F4297BE" sigExt:diagramId="62984e77791743388113fbba77597fef">
+        <extensionElements/>
+        <variable typeRef="sig:persons" name="persons" id="id-eae24786b58ac89e3002cabc2b954552_variable"/>
+    </inputData>
+    <decision name="greetingForEachPersonInPersons" id="id-6ada07d85e100b5777df4ea0de120e12" label="Greeting for each Person in Persons" sigExt:shapeId="sid-715DB385-2120-47B9-B232-6E9BE40A64E7" sigExt:diagramId="62984e77791743388113fbba77597fef">
+        <extensionElements>
+            <sigExt:MultiInstanceDecisionLogic>
+                <sigExt:iterationExpression>persons</sigExt:iterationExpression>
+                <sigExt:iteratorShapeId>id-707bbdf74438414623ac5d7067805b38</sigExt:iteratorShapeId>
+                <sigExt:aggregationFunction>COLLECT</sigExt:aggregationFunction>
+                <sigExt:topLevelDecisionId>id-7a23e2f201e3e0db3c991313cff5cd2b</sigExt:topLevelDecisionId>
+            </sigExt:MultiInstanceDecisionLogic>
+        </extensionElements>
+        <variable typeRef="sig:greetingForEachPersonInPersons" name="Greeting for each Person in Persons" id="id-6ada07d85e100b5777df4ea0de120e12_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-eae24786b58ac89e3002cabc2b954552"/>
+        </informationRequirement>
+    </decision>
+    <decision name="greeting" id="id-7a23e2f201e3e0db3c991313cff5cd2b" label="Greeting" sigExt:shapeId="sid-0A044C3D-6B11-434F-BF28-2077664E82E5" sigExt:diagramId="62984e77791743388113fbba77597fef">
+        <extensionElements/>
+        <!-- The variable name should be the same? -->
+        <variable typeRef="sig:greeting" name="Greeting" id="id-7a23e2f201e3e0db3c991313cff5cd2b_variable"/>
+        <informationRequirement>
+            <requiredInput href="#id-707bbdf74438414623ac5d7067805b38"/>
+        </informationRequirement>
+        <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <!-- replaced the editor concat(["Hello ", person_iterator]) -->
+            <text>"Hello " + person_iterator</text>
+        </literalExpression>
+    </decision>
+</definitions>

@@ -16,11 +16,11 @@
 package org.drools.core.util;
 
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class StringUtilsTest {
 

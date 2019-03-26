@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.0.201612161330" id="_0019_flight_rebooking"
+                      name="0019-flight-rebooking" namespace="http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:itemDefinition label="tFlight" name="tFlight">
+    <semantic:itemComponent id="_tFlight_Flight" name="Flight Number">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tFlight_From" name="From">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tFlight_To" name="To">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tFlight_Dep" name="Departure">
+      <semantic:typeRef>feel:dateTime</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tFlight_Arr" name="Arrival">
+      <semantic:typeRef>feel:dateTime</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tFlight_Capacity" name="Capacity">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tFlight_Status" name="Status">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tFlightTable" name="tFlightTable">
+    <semantic:typeRef>tFlight</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tPassenger" name="tPassenger">
+    <semantic:itemComponent id="_tPassenger_Name" name="Name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tPassenger_Status" name="Status">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tPassenger_Miles" name="Miles">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_tPassenger_Flight" name="Flight Number">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tPassengerTable" name="tPassengerTable">
+    <semantic:typeRef>tPassenger</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:inputData id="i_Flight_List" name="Flight List">
+    <semantic:variable id="_862d74ad-a21a-4785-a631-6cbbf733f658" name="Flight List" typeRef="tFlightTable"/>
+  </semantic:inputData>
+  <semantic:inputData id="i_Passenger_List" name="Passenger List">
+    <semantic:variable id="_1968486f-47f8-4a41-8374-297ab08c60d5" name="Passenger List" typeRef="tPassengerTable"/>
+  </semantic:inputData>
+  <semantic:decision id="d_RebookedPassengers" name="Rebooked Passengers">
+    <semantic:variable id="_7fb7eb92-a803-4685-856d-e729971eb268" name="Rebooked Passengers" typeRef="tPassengerTable"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#i_Passenger_List"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#i_Flight_List"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/DMN/uninterpreted/20140801">
+      <semantic:text>
+        {
+        // creating the status priority decision table:
+        status priority : decision table(
+        outputs: "status priority",
+        input expression list: ["Status"],
+        rule list: [
+        [ "gold", "1" ],
+        [ "silver", "2" ],
+        [ "bronze", "3" ] ],
+        hit policy: "U"
+        ),
+
+        // sorting the waiting list according to priorities
+        Cancelled Flights : Flight List[ Status = "cancelled" ].Flight Number,
+        Waiting List : Passenger List[ list contains( Cancelled Flights, Flight Number ) ],
+        passenger priority : function( Passenger1, Passenger2 )
+        status priority( Passenger1.Status ) &lt; status priority( Passenger2.Status ) or
+        ( status priority( Passenger1.Status ) = status priority( Passenger2.Status ) and
+        Passenger1.Miles &gt; Passenger2.Miles ) ,
+        Prioritized Waiting List : sort( Waiting List, passenger priority ),
+
+        // defining the functions to assign passengers to new flights
+        has capacity : function( flight, rebooked list ) flight.Capacity &gt; count( rebooked list[ Flight Number = flight.Flight Number ] ),
+
+        rebooked flights : function( Waiting, Rebooked, Flights ) {
+        Passenger : Waiting[1],
+        Original Flight : Flights[ Flight Number = Passenger.Flight Number ][1],
+        Best Alternate Flight : Flights[ From = Original Flight.From and
+        To = Original Flight.To and
+        Departure &gt; Original Flight.Departure and
+        Status = "scheduled" and
+        has capacity( item, Rebooked ) ][1] ,
+        New Flight : {
+        Name : Passenger.Name,
+        Status : Passenger.Status,
+        Miles : Passenger.Miles,
+        Flight Number : Best Alternate Flight.Flight Number
+        },
+        result : if count( Waiting ) &gt; 1 then
+        rebooked flights( remove( Waiting, 1 ),
+        append( Rebooked, New Flight ),
+        Flights )
+        else
+        append( Rebooked, New Flight )
+        }.result,
+
+        // assigning the passengers to new flights
+        result : rebooked flights( Prioritized Waiting List, [], Flight List )
+        }.result
+      </semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -33,8 +35,6 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertEquals;
 
 public class NodePositionInPathTest {
 

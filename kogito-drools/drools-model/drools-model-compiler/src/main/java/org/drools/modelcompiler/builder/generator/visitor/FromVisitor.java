@@ -1,27 +1,29 @@
 package org.drools.modelcompiler.builder.generator.visitor;
 
+import static java.util.Optional.of;
+import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.LiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaParser;
+import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
+import org.drools.javaparser.ast.expr.FieldAccessExpr;
+import org.drools.javaparser.ast.expr.LambdaExpr;
+import org.drools.javaparser.ast.expr.LiteralExpr;
+import org.drools.javaparser.ast.expr.MethodCallExpr;
+import org.drools.javaparser.ast.expr.NameExpr;
+import org.drools.javaparser.ast.expr.ObjectCreationExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithArguments;
+import org.drools.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -32,13 +34,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-
-import static java.util.Optional.of;
-import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.sanitizeDrlNameExpr;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
+import org.w3c.dom.NodeList;
 
 public class FromVisitor {
 
@@ -68,13 +64,12 @@ public class FromVisitor {
     private Optional<Expression> createSingleFrom( String expression ) {
         final Expression parsedExpression = DrlxParseUtil.parseExpression(expression).getExpr();
 
-        if (parsedExpression instanceof FieldAccessExpr || parsedExpression instanceof NameExpr || parsedExpression instanceof DrlNameExpr) {
+        if (parsedExpression instanceof FieldAccessExpr || parsedExpression instanceof NameExpr ) {
             return fromFieldOrName(expression);
         }
 
         if (parsedExpression instanceof MethodCallExpr ) {
-            MethodCallExpr sanitized = sanitizeDrlNameExpr((MethodCallExpr) parsedExpression);
-            return fromMethodExpr(expression, sanitized);
+            return fromMethodExpr(expression, (MethodCallExpr) parsedExpression);
         }
 
         if (parsedExpression instanceof ObjectCreationExpr ) {
@@ -119,8 +114,8 @@ public class FromVisitor {
         List<String> bindingIds = new ArrayList<>();
 
         for (Expression argument : parsedExpression.getArguments()) {
-            final String argumentName = PrintUtil.printConstraint(argument);
-            if (contextHasDeclaration(argumentName)) {
+            final String argumentName = argument.toString();
+            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
                 bindingIds.add(argumentName);
                 fromCall.addArgument( context.getVarExpr(argumentName));
             }
@@ -138,13 +133,13 @@ public class FromVisitor {
 
         final Expression parsedExpression = drlxExpression.getExpr();
         Optional<TypedExpression> staticField = parsedExpression instanceof FieldAccessExpr ?
-                ExpressionTyper.tryParseAsConstantField(context.getTypeResolver(), ((FieldAccessExpr) parsedExpression).getScope(), ((FieldAccessExpr) parsedExpression).getNameAsString()) :
+                ExpressionTyper.tryParseAsConstantField((FieldAccessExpr) parsedExpression, context.getTypeResolver()) :
                 Optional.empty();
 
         if (staticField.isPresent()) {
             return of( createSupplier(parsedExpression) );
         }
-        if (contextHasDeclaration(bindingId)) {
+        if ( context.hasDeclaration(bindingId) || packageModel.hasDeclaration(bindingId)) {
             return of( createFromCall(expression, bindingId, optContainsBinding.isPresent()) );
         }
         return of(createUnitDataCall(bindingId));
@@ -163,8 +158,8 @@ public class FromVisitor {
         String bindingId = null;
 
         for (Expression argument : methodCallExpr.getArguments()) {
-            final String argumentName = PrintUtil.printConstraint(argument);
-            if (contextHasDeclaration(argumentName)) {
+            final String argumentName = argument.toString();
+            if ( context.hasDeclaration(argumentName) || packageModel.hasDeclaration(argumentName)) {
                 if (bindingId == null) {
                     bindingId = argumentName;
                 }
@@ -178,19 +173,15 @@ public class FromVisitor {
     }
 
     private Optional<Expression> fromExpressionViaScope(String expression, Expression methodCallExpr) {
-        final Expression sanitizedMethodCallExpr = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(methodCallExpr);
-        return findViaScopeWithPredicate(sanitizedMethodCallExpr, e -> {
+        return findViaScopeWithPredicate(methodCallExpr, e -> {
             if (e instanceof NameExpr) {
-                return contextHasDeclaration(((NameExpr) e).getName().toString());
+                final String name = ((NameExpr) e).getName().toString();
+                return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
             }
             return false;
         })
         .filter( Expression::isNameExpr )
         .map( e -> createFromCall(expression, e.asNameExpr().toString(), true) );
-    }
-
-    private boolean contextHasDeclaration(String name) {
-        return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
     }
 
     private Expression createFromCall( String expression, String bindingId, boolean hasBinding ) {

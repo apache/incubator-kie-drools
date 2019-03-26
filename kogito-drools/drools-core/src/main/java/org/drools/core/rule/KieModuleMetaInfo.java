@@ -15,17 +15,15 @@
 
 package org.drools.core.rule;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class KieModuleMetaInfo implements Serializable{
-    private static final XStream xStream = createTrustingXStream(new DomDriver());
+    private static final XStream xStream = new XStream(new DomDriver());
 
     static {
         xStream.setClassLoader( KieModuleMetaInfo.class.getClassLoader() );

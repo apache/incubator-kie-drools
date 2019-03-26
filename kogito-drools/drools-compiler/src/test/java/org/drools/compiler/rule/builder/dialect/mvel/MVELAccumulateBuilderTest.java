@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -36,8 +38,6 @@ import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class MVELAccumulateBuilderTest {
 

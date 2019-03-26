@@ -16,16 +16,16 @@
 
 package org.drools.core.factmodel;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 @Traitable
 public class MapCore<K> implements TraitableMap {

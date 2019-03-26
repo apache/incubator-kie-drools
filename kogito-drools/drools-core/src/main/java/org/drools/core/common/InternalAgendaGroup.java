@@ -16,10 +16,10 @@
 
 package org.drools.core.common;
 
+import java.util.Map;
+
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
-
-import java.util.Map;
 
 public interface InternalAgendaGroup extends AgendaGroup {
 

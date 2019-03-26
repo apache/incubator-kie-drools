@@ -17,7 +17,6 @@
 package org.jbpm.process.workitem;
 
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,12 +26,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.util.ConfFileUtils;
-
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.util.WidMVELEvaluator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,19 +179,7 @@ public class WorkItemRepository {
 			}
 			return result;
 		} catch (Throwable t) {
-			logger.warn("Could not parse work definition as mvel. Trying as json.");
-			try {
-				List<Map<String, Object>> result = JsonWorkItemParser.parse(content);
-				for (Map<String, Object> wid: result) {
-					wid.put("path", parentPath + "/" + file);
-					wid.put("file", file + ".wid");
-					wid.put("widType", "json");
-				}
-				return result;
-			} catch( Throwable tt) {
-				logger.error("Error occured while loading work definitions " + path, tt);
-				throw new RuntimeException("Could not parse work definitions " + path + ": " + tt.getMessage());
-			}
+			throw new RuntimeException("Could not parse work definition as mvel.", t);
 		}
 	}
 

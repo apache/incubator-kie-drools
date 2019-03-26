@@ -16,11 +16,12 @@
 
 package org.drools.core.time.impl;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.util.Set;
+
+import org.junit.Test;
 
 public class Quartz601Test {
 

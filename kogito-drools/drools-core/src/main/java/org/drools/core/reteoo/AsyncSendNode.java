@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -43,8 +45,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.TupleList;
-
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends LeftTupleSource
     implements

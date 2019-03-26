@@ -15,6 +15,9 @@
 
 package org.drools.compiler.phreak;
 
+import static org.drools.compiler.phreak.A.a;
+import static org.drools.compiler.phreak.B.b;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -32,9 +35,6 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.junit.Test;
-
-import static org.drools.compiler.phreak.A.a;
-import static org.drools.compiler.phreak.B.b;
 
 public class PhreakNotNodeTest {
 

@@ -15,6 +15,24 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACC_VOLATILE;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.ATHROW;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.GOTO;
+import static org.mvel2.asm.Opcodes.IFNONNULL;
+import static org.mvel2.asm.Opcodes.INVOKESPECIAL;
+import static org.mvel2.asm.Opcodes.IRETURN;
+import static org.mvel2.asm.Opcodes.MONITORENTER;
+import static org.mvel2.asm.Opcodes.MONITOREXIT;
+import static org.mvel2.asm.Opcodes.NEW;
+import static org.mvel2.asm.Opcodes.RETURN;
+
 import java.util.Map;
 
 import org.drools.compiler.rule.builder.RuleBuildContext;
@@ -29,8 +47,6 @@ import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
-
-import static org.mvel2.asm.Opcodes.*;
 
 public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
 

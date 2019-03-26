@@ -16,6 +16,8 @@
 
 package org.drools.compiler.rule.builder;
 
+import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
+
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,8 +64,6 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.rule.Unit;
-
-import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
  * This builds the rule structure from an AST.

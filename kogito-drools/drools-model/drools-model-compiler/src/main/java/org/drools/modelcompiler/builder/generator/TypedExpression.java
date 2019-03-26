@@ -16,14 +16,11 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
-
-import com.github.javaparser.ast.expr.Expression;
-import org.drools.constraint.parser.printer.PrintUtil;
-
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class TypedExpression {
 
@@ -151,7 +148,7 @@ public class TypedExpression {
             return false;
         }
         TypedExpression that = (TypedExpression) o;
-        return Objects.equals(PrintUtil.printConstraint(expression), PrintUtil.printConstraint(that.expression)) &&
+        return Objects.equals(expression.toString(), that.expression.toString()) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(fieldName, that.fieldName) &&
                 Objects.equals(unificationVariable, that.unificationVariable) &&

@@ -15,6 +15,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -29,12 +35,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
 
 public class PassiveQueryTest {
 

@@ -18,9 +18,9 @@ package org.drools.core.common;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.LinkedList;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.LinkedList;
 
 public class TruthMaintenanceSystemHelper {
 

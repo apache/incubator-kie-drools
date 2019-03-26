@@ -16,13 +16,13 @@
 
 package org.drools.core.spi;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+
 import java.io.Externalizable;
 import java.util.List;
 
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.bitmask.BitMask;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public interface Constraint
     extends

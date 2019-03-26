@@ -1,20 +1,16 @@
 package org.drools.modelcompiler.builder;
 
+import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.Drools;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.printer.PrettyPrinter;
+import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
-
-import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
-import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
+import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 
 public class ModelWriter {
 
@@ -69,14 +65,6 @@ public class ModelWriter {
         return new Result(sourceFiles, modelFiles);
     }
 
-    public void writeModelFile( List<String> modelSources, MemoryFileSystem trgMfs) {
-        String pkgNames = MODEL_VERSION + Drools.getFullVersion() + "\n";
-        if(!modelSources.isEmpty()) {
-            pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
-        }
-        trgMfs.write( MODEL_FILE, pkgNames.getBytes() );
-    }
-
     public static class Result {
         private final List<String> sourceFiles;
         private final List<String> modelFiles;
@@ -86,8 +74,8 @@ public class ModelWriter {
             this.modelFiles = modelFiles;
         }
 
-        public String[] getSources() {
-            return sourceFiles.toArray( new String[sourceFiles.size()] );
+        public List<String> getSources() {
+            return sourceFiles;
         }
 
         public List<String> getSourceFiles() {

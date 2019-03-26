@@ -28,10 +28,10 @@
 //
 package org.drools.core.meta.org.test;
 
-import org.drools.core.metadata.MetadataHolder;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.core.metadata.MetadataHolder;
 
 public class AnotherKlassImpl implements AnotherKlass, MetadataHolder {
 

@@ -16,6 +16,14 @@
 
 package org.jbpm.bpmn2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +32,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
 
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
@@ -38,23 +43,19 @@ import org.jbpm.bpmn2.objects.HelloService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.test.RequirePersistence;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.test.listener.process.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.After;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -72,7 +73,6 @@ import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.NodeInstance;
@@ -82,26 +82,16 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.internal.command.RegistryContext;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { { false }};
         return Arrays.asList(data);
     };
 
@@ -111,18 +101,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     private KieSession ksession2;
 
     public ActivityTest(boolean persistence) throws Exception {
-        super(persistence);
+        
     }
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        setUpDataSource();
-    }
-
-    @After
+       @After
     public void dispose() {
-        if (ksession != null) {
-            abortProcessInstances(ksession);
+        if (ksession != null) {   
             ksession.dispose();
             ksession = null;
         }
@@ -265,34 +249,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @RequirePersistence
-    public void testScriptTaskWithHistoryLog() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ScriptTask.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
-        assertProcessInstanceCompleted(processInstance);
-
-        AuditLogService logService = new JPAAuditLogService(ksession.getEnvironment());
-
-        List<NodeInstanceLog> logs = logService.findNodeInstances(processInstance.getId());
-        assertNotNull(logs);
-        assertEquals(6, logs.size());
-
-        for (NodeInstanceLog log : logs) {
-            assertNotNull(log.getDate());
-        }
-
-        ProcessInstanceLog pilog = logService.findProcessInstance(processInstance.getId());
-        assertNotNull(pilog);
-        assertNotNull(pilog.getEnd());
-
-        List<ProcessInstanceLog> pilogs = logService.findActiveProcessInstances(processInstance.getProcessId());
-        assertNotNull(pilogs);
-        assertEquals(0, pilogs.size());
-        logService.dispose();
-    }
-
-    @Test
     public void testRuleTask() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask.bpmn2",
                 "BPMN2-RuleTask.drl");
@@ -317,29 +273,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("RuleTask",
                 params);
         assertTrue(list.size() == 0);
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    @RequirePersistence(true)
-    public void testRuleTaskSetVariable() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask2.bpmn2",
-                "BPMN2-RuleTaskSetVariable.drl");
-        ksession = createKnowledgeSession(kbase);
-
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "SomeString");
-        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        ProcessInstance processInstance = ksession.startProcess("RuleTask",
-                params);
-
-        ut.commit();
-        assertTrue(list.size() == 1);
-
-        assertProcessVarValue(processInstance, "x", "AnotherString");
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
@@ -409,38 +342,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         });
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "SomeString");
-        ProcessInstance processInstance = ksession.startProcess("RuleTask",
-                params);
-        assertProcessInstanceFinished(processInstance, ksession);
-
-        params = new HashMap<String, Object>();
-
-        try {
-            processInstance = ksession.startProcess("RuleTask", params);
-
-            fail("Should fail");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        params = new HashMap<String, Object>();
-        params.put("x", "SomeString");
-        processInstance = ksession.startProcess("RuleTask", params);
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
-    @Test
-    @RequirePersistence
-    public void testRuleTaskWithFactsWithPersistence() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithFact.bpmn2",
-                "BPMN2-RuleTask3.drl");
-        ksession = createKnowledgeSession(kbase);
-
-        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
-                                                                                                         .addEventListener(new TriggerRulesEventListener(ksession));
-        ksession.addEventListener(new DebugAgendaEventListener());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");
         ProcessInstance processInstance = ksession.startProcess("RuleTask",
@@ -553,37 +454,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
     }
-
-    @Test(timeout=10000)
-    @RequirePersistence
-    public void testProcesWithHumanTaskWithTimer() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer", 1);
-        KieBase kbase = createKnowledgeBase("BPMN2-SubProcessWithTimer.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-
-        Map<String, Object> params = new HashMap<String, Object>();
-        ProcessInstance processInstance = ksession.startProcess("subproc",
-                params);
-
-        ksession.getWorkItemManager().completeWorkItem(
-                workItemHandler.getWorkItem().getId(), null);
-
-        long sessionId = ksession.getIdentifier();
-        Environment env = ksession.getEnvironment();
-
-        ksession.dispose();
-
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
-                kbase, null, env);
-        ksession.addEventListener(countDownListener);
-        countDownListener.waitTillCompleted();
-        assertProcessInstanceFinished(processInstance, ksession);
-
-    }
+    
 
     @Test
     public void testCallActivityWithContantsAssignment() throws Exception {
@@ -701,53 +572,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("new value", listOut.get(0));
         assertEquals("new value", listOut.get(1));
     }
-    
-    @Test
-    public void testCallActivityMISequential() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityMISequential.bpmn2",
-                "BPMN2-UserTask.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        
-        final List<Long> subprocessStarted = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-
-            @Override
-            public void beforeProcessStarted(ProcessStartedEvent event) {
-                if (event.getProcessInstance().getProcessId().equals("UserTask")) {
-                    subprocessStarted.add(event.getProcessInstance().getId());
-                }
-            }
-
-        });
-
-        List<String> list = new ArrayList<String>();
-        list.add("first");
-        list.add("second");
-        List<String> listOut = new ArrayList<String>();
-
-        Map<String, Object> params = new HashMap<String, Object>();        
-        params.put("list", list);
-        params.put("listOut", listOut);
-
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
-        
-        List<WorkItem> tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);        
-        
-        tasks = workItemHandler.getWorkItems();
-        assertEquals("There should be only one task assigned", 1, tasks.size());
-        
-        ksession.getWorkItemManager().completeWorkItem(tasks.get(0).getId(), null);
-        
-        assertProcessInstanceCompleted(processInstance);
-
-        assertEquals(2, subprocessStarted.size());
-        
-    }
 
 	@Test
 	public void testCallActivity2() throws Exception {
@@ -788,67 +612,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("new value V2",
                 ((WorkflowProcessInstance) processInstance).getVariable("y"));
     }
-
-    @Test
-    @RequirePersistence
-    public void testCallActivityWithHistoryLog() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-CallActivity.bpmn2",
-                "BPMN2-CallActivitySubProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "oldValue");
-        ProcessInstance processInstance = ksession.startProcess(
-                "ParentProcess", params);
-        assertProcessInstanceCompleted(processInstance);
-        assertEquals("new value",
-                ((WorkflowProcessInstance) processInstance).getVariable("y"));
-
-        AuditLogService logService = new JPAAuditLogService(ksession.getEnvironment());
-        List<ProcessInstanceLog> subprocesses = logService.findSubProcessInstances(processInstance.getId());
-        assertNotNull(subprocesses);
-        assertEquals(1, subprocesses.size());
-
-        logService.dispose();
-    }
-
-    @Test(timeout=10000)
-    @RequirePersistence
-    public void testCallActivityWithTimer() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer", 1);
-        KieBase kbase = createKnowledgeBase("BPMN2-ParentProcess.bpmn2",
-                "BPMN2-SubProcessWithTimer.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-
-        Map<String, Object> params = new HashMap<String, Object>();
-        ProcessInstance processInstance = ksession.startProcess(
-                "ParentProcess", params);
-
-        ksession.getWorkItemManager().completeWorkItem(
-                workItemHandler.getWorkItem().getId(), null);
-
-        Map<String, Object> res = new HashMap<String, Object>();
-        res.put("sleep", "2s");
-        ksession.getWorkItemManager().completeWorkItem(
-                workItemHandler.getWorkItem().getId(), res);
-
-        long sessionId = ksession.getIdentifier();
-        Environment env = ksession.getEnvironment();
-
-        logger.info("dispose");
-        ksession.dispose();
-
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
-                kbase, null, env);
-        ksession.addEventListener(countDownListener);
-        countDownListener.waitTillCompleted();
-        assertProcessInstanceFinished(processInstance, ksession);
-
-    }
-
+  
     @Test
     public void testSubProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");
@@ -1452,28 +1216,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertTrue(list.size() == 1);
     }
 
-    @RequirePersistence
-    @Test(timeout=10000)
-    public void testNullVariableInScriptTaskProcess() throws Exception {
-        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Timer", 1, true);
-        KieBase kbase = createKnowledgeBase("BPMN2-NullVariableInScriptTaskProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        ProcessInstance processInstance = ksession
-                .startProcess("nullVariableInScriptAfterTimer");
-
-        assertProcessInstanceActive(processInstance);
-
-        countDownListener.waitTillCompleted();
-        ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
-        assertNotNull(pi);
-
-        assertProcessInstanceActive(processInstance);
-        ksession.abortProcessInstance(processInstance.getId());
-
-        assertProcessInstanceFinished(processInstance, ksession);
-    }
-
     @Test
     public void testScriptTaskWithVariableByName() throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -1935,6 +1677,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("Hello Genworth welcome to jBPMS!", ((WorkflowProcessInstance) processInstance).getVariable("message"));
     }
     
+    @Ignore
     @Test
     public void testDMNBusinessRuleTask()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -1971,6 +1714,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals(BigDecimal.valueOf(30), vacationDays);
     }
     
+    @Ignore
     @Test
     public void testDMNBusinessRuleTaskByDecisionName()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -1987,6 +1731,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals(BigDecimal.valueOf(5), vacationDays);
     }
     
+    @Ignore
     @Test
     public void testDMNBusinessRuleTaskMultipleDecisionsOutput()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -2005,6 +1750,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals(BigDecimal.valueOf(5), extraDays);
     }
     
+    @Ignore
     @Test
     public void testDMNBusinessRuleTaskInvalidExecution()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -2022,6 +1768,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         }
     }
     
+    @Ignore
     @Test
     public void testDMNBusinessRuleTaskModelById()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -2059,40 +1806,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
     
     @Test
-    @RequirePersistence
-    public void testCallActivitySkipAbortParent() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-CallActivitySkipAbortParent.bpmn2",
-                "BPMN2-UserTask.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "oldValue");        
-        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
-        assertProcessInstanceActive(processInstance);       
-
-        ksession = restoreSession(ksession, true);
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("john", workItem.getParameter("ActorId"));
-
-        long childPI = workItem.getProcessInstanceId();
-        assertNotEquals("Child process instance must be different", processInstance.getId(), childPI);
-        
-        ksession.abortProcessInstance(childPI);        
-        assertProcessInstanceFinished(processInstance, ksession);
-        
-        ProcessInstanceLog log = logService.findProcessInstance(childPI);
-        assertNotNull(log);
-        assertEquals(ProcessInstance.STATE_ABORTED, log.getStatus().intValue());
-        // parent process instance should not be aborted
-        log = logService.findProcessInstance(processInstance.getId());
-        assertNotNull(log);
-        assertEquals("Parent process should be completed and not aborted", ProcessInstance.STATE_COMPLETED, log.getStatus().intValue());
-    }
-    
-    @Test
     public void testBusinessRuleTaskFireLimit() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTaskLoop.bpmn2",
                 "BPMN2-BusinessRuleTaskInfiniteLoop.drl");
@@ -2120,6 +1833,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
     
     @Test
+    @Ignore
     public void testScriptTaskFEEL() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTaskFEEL.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -2159,32 +1873,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             assertTrue(re.getCause().getCause() instanceof RuntimeException);
         });        
     }
-    
-    @RequirePersistence
-    @Test
-    public void testCallActivityChain() throws Exception {
-        try {
-            System.setProperty("org.jbpm.correlationkey.length", "70");
-            KieBase kbase = createKnowledgeBase("correlationkey/Process1.bpmn2",
-                    "correlationkey/Process2.bpmn2",
-                    "correlationkey/Process3.bpmn2",
-                    "correlationkey/Process4.bpmn2",
-                    "correlationkey/Process5.bpmn2");
-            ksession = createKnowledgeSession(kbase);
-            Map<String, Object> params = new HashMap<String, Object>();        
-            ProcessInstance processInstance = ksession.startProcess(
-                    "src.Process1", params);
-            assertProcessInstanceCompleted(processInstance);
-            
-            ProcessInstanceLog log = logService.findProcessInstances("src.Process5").get(0);
-            assertNotNull(log);
-            assertNotNull(log.getCorrelationKey());
-            assertTrue(log.getCorrelationKey().startsWith(processInstance.getId() + ":src.Process2:"));
-            assertTrue(log.getCorrelationKey().contains(":src.Process4"));
-        } finally {
-            System.clearProperty("org.jbpm.correlationkey.length");
-        }
-    }
+
     
     @Test
     public void testXORWithSameTargetProcess() throws Exception {

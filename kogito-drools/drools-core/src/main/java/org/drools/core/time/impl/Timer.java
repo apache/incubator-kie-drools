@@ -16,6 +16,8 @@
 
 package org.drools.core.time.impl;
 
+import java.io.Serializable;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
@@ -23,8 +25,6 @@ import org.drools.core.spi.RuleComponent;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
-
-import java.io.Serializable;
 
 public interface Timer extends Serializable, RuleComponent, RuleConditionElement {
 

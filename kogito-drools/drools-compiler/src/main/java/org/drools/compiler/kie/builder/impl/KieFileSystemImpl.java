@@ -15,17 +15,9 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.util.IoUtils;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.io.ResourceTypeImpl;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.JAVA_ROOT;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,10 +27,17 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Properties;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.JAVA_ROOT;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.util.IoUtils;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.io.ResourceTypeImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KieFileSystemImpl
         implements

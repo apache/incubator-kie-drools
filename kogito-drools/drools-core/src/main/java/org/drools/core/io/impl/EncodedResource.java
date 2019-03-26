@@ -16,10 +16,6 @@
 
 package org.drools.core.io.impl;
 
-import org.drools.core.io.internal.InternalResource;
-import org.drools.core.util.IoUtils;
-import org.kie.api.io.Resource;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +25,10 @@ import java.io.ObjectOutput;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
+
+import org.drools.core.io.internal.InternalResource;
+import org.drools.core.util.IoUtils;
+import org.kie.api.io.Resource;
 
 public class EncodedResource  extends BaseResource implements InternalResource, Externalizable {
     private InternalResource resource;

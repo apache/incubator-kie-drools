@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -22,8 +24,6 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests for MessageImpl

@@ -17,11 +17,8 @@
 package org.kie.api.io;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class ResourceType
@@ -121,8 +118,8 @@ public class ResourceType
     public static final ResourceType BPMN2 = addResourceTypeToRegistry("BPMN2",
                                                                        "jBPM BPMN2 Language",
                                                                        "src/main/resources",
-                                                                       "bpmn", "bpmn2", "bpmn-cm");
-
+                                                                       "bpmn", "bpmn2");
+    
     /** jBPM CMMN Language */
     public static final ResourceType CMMN = addResourceTypeToRegistry("CMMN",
                                                                        "jBPM CMMN Language",
@@ -277,13 +274,6 @@ public class ResourceType
 
     public String getDefaultExtension() {
         return defaultExtension;
-    }
-
-    public List<String> getAllExtensions() {
-        final List<String> extensions = new LinkedList<>();
-        extensions.add(defaultExtension);
-        extensions.addAll(Arrays.asList(otherExtensions));
-        return Collections.unmodifiableList(extensions);
     }
 
     public String getDescription() {

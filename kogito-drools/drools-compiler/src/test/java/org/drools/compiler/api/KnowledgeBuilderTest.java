@@ -15,6 +15,10 @@
 
 package org.drools.compiler.api;
 
+import static org.junit.Assert.*;
+
+import java.util.Collection;
+
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -25,10 +29,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.Collection;
-
-import static org.junit.Assert.*;
 
 
 public class KnowledgeBuilderTest {

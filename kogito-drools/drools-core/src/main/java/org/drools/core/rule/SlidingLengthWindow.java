@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,8 +30,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.PropagationContext;
-
-import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
 /**
  * A length window behavior implementation

@@ -15,18 +15,17 @@
 
 package org.drools.compiler.integrationtests.eventgenerator;
 
-import java.io.IOException;
-
-import org.drools.compiler.compiler.DroolsParserException;
-import org.junit.Test;
-
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.integrationtests.eventgenerator.Event.EventType;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.integrationtests.eventgenerator.Event.EventType;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 
 public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 

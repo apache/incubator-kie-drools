@@ -16,6 +16,8 @@
 
 package org.drools.core.time.impl;
 
+import static org.drools.core.time.TimeUtils.evalDateExpression;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,8 +32,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
-
-import static org.drools.core.time.TimeUtils.evalDateExpression;
 
 public class    IntervalTimer extends BaseTimer
     implements

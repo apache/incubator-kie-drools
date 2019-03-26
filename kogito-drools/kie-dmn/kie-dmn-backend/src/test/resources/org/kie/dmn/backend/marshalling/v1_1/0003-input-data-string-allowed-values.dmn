@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="_0003-input-data-string-allowed-values" name="0003-input-data-string-allowed-values"
+	namespace="https://github.com/agilepro/dmn-tck"
+	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+	xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+	xmlns:tck="https://github.com/agilepro/dmn-tck">
+	<itemDefinition name="tEmploymentStatus">
+		<typeRef>feel:string</typeRef>
+		<allowedValues>
+			<text>"UNEMPLOYED","EMPLOYED","SELF-EMPLOYED","STUDENT"</text>
+		</allowedValues>
+	</itemDefinition>
+	<decision name="Employment Status Statement" id="d_EmploymentStatusStatement">
+		<variable name="Employment Status Statement" typeRef="feel:string"/>
+		<informationRequirement>
+			<requiredInput href="#i_EmploymentStatus"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>"You are " + Employment Status</text>
+		</literalExpression>
+	</decision>
+	<inputData name="Employment Status" id="i_EmploymentStatus">
+		<variable name="Employment Status" typeRef="tck:tEmploymentStatus"/>
+	</inputData>
+</definitions>
