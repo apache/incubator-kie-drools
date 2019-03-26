@@ -1112,6 +1112,75 @@ public class BRLRuleModelTest {
     }
 
     @Test
+    /**
+     * DROOLS-3795
+     */
+    public void testMakeSureHeaderDefinitionIsNotEdited() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName("x");
+        p1.setFactType("Context");
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        p1.getChildColumns().add(c);
+        dt.getConditions().add(p1);
+
+        BRLActionColumn brlAction1 = new BRLActionColumn();
+        ActionUpdateField auf1 = new ActionUpdateField("x");
+        auf1.addFieldValue(new ActionFieldValue("f1",
+                                                "$f1",
+                                                DataType.TYPE_STRING));
+        auf1.getFieldValues()[0].setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+
+        brlAction1.getDefinition().add(auf1);
+        brlAction1.getChildColumns().add(new BRLActionVariableColumn("$f1",
+                                                                     DataType.TYPE_STRING,
+                                                                     "Context",
+                                                                     "f1"));
+        dt.getActionCols().add(brlAction1);
+        ActionSetFieldCol52 set = new ActionSetFieldCol52();
+        set.setBoundName("x");
+        set.setFactField("f2");
+
+        dt.getActionCols().add(set);
+
+        dt.setData(DataUtilities.makeDataLists(new String[][]{
+                new String[]{"1", "desc", "x", "v1", "v2"},
+                new String[]{"2", "desc", "x", "v1", null}
+        }));
+        String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+        final String expected = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setF1( \"v1\" )\n" +
+                "}\n" +
+                "x.setF2( \"v2\" );\n" +
+                "end\n"+
+                "\n"+
+                "//from row number: 2\n" +
+                "//desc\n" +
+                "rule \"Row 2 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  modify( x ) {\n" +
+                "    setF1( \"v1\" )\n" +
+                "}\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace(expected,
+                                     drl);
+    }
+
+    @Test
     public void testLHSNonEmptyStringValues() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableFormat(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
