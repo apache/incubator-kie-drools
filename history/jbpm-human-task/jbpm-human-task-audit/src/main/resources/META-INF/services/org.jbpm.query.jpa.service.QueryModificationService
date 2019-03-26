@@ -1,2 +1,0 @@
-# providers of the QueryModificationService
-org.jbpm.services.task.audit.service.TaskAuditQueryModificationService
