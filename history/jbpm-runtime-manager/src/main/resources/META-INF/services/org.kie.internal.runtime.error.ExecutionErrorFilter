@@ -1,3 +1,0 @@
-org.jbpm.runtime.manager.impl.error.filters.ProcessExecutionErrorFilter
-org.jbpm.runtime.manager.impl.error.filters.TaskExecutionErrorFilter
-org.jbpm.runtime.manager.impl.error.filters.DBExecutionErrorFilter
