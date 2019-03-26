@@ -15,19 +15,15 @@
  */
 package org.optaplanner.core.impl.testdata.domain.lookup;
 
-import org.optaplanner.core.api.domain.lookup.PlanningId;
+public class TestdataObjectIntegerIdSubclass extends TestdataObjectIntegerId {
 
-public class TestdataObjectId {
-
-    @PlanningId
-    private final Integer id;
-
-    public TestdataObjectId(Integer id) {
-        this.id = id;
+    public TestdataObjectIntegerIdSubclass(Integer id) {
+        super(id);
     }
 
-    public Integer getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "id=" + getId();
     }
 
 }

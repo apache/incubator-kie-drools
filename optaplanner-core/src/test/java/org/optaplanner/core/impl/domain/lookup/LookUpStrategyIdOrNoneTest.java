@@ -23,10 +23,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectId;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectIdSubclass;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectIntegerId;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectIntegerIdSubclass;
 import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectMultipleIds;
 import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectNoId;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectPrimitiveIntId;
 
 import static org.junit.Assert.*;
 
@@ -44,8 +45,17 @@ public class LookUpStrategyIdOrNoneTest {
     }
 
     @Test
-    public void addRemoveWithId() {
-        TestdataObjectId object = new TestdataObjectId(0);
+    public void addRemoveWithIntegerId() {
+        TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
+        lookUpManager.addWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
+        // The removed object cannot be looked up
+        assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
+    }
+
+    @Test
+    public void addRemoveWithPrimitiveIntId() {
+        TestdataObjectPrimitiveIntId object = new TestdataObjectPrimitiveIntId(0);
         lookUpManager.addWorkingObject(object);
         lookUpManager.removeWorkingObject(object);
         // The removed object cannot be looked up
@@ -54,17 +64,17 @@ public class LookUpStrategyIdOrNoneTest {
 
     @Test
     public void addWithNullIdInSuperclass() {
-        TestdataObjectId object = new TestdataObjectIdSubclass(null);
+        TestdataObjectIntegerId object = new TestdataObjectIntegerIdSubclass(null);
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("must not be null");
-        expectedException.expectMessage(TestdataObjectIdSubclass.class.getCanonicalName());
+        expectedException.expectMessage(TestdataObjectIntegerIdSubclass.class.getCanonicalName());
         expectedException.expectMessage(object.toString());
         lookUpManager.addWorkingObject(object);
     }
 
     @Test
     public void removeWithNullId() {
-        TestdataObjectId object = new TestdataObjectId(null);
+        TestdataObjectIntegerId object = new TestdataObjectIntegerId(null);
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("must not be null");
         lookUpManager.removeWorkingObject(object);
@@ -84,17 +94,17 @@ public class LookUpStrategyIdOrNoneTest {
 
     @Test
     public void addSameIdTwice() {
-        TestdataObjectId object = new TestdataObjectId(2);
+        TestdataObjectIntegerId object = new TestdataObjectIntegerId(2);
         lookUpManager.addWorkingObject(object);
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage(" have the same planningId ");
         expectedException.expectMessage(object.toString());
-        lookUpManager.addWorkingObject(new TestdataObjectId(2));
+        lookUpManager.addWorkingObject(new TestdataObjectIntegerId(2));
     }
 
     @Test
     public void removeWithoutAdding() {
-        TestdataObjectId object = new TestdataObjectId(0);
+        TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("differ");
         lookUpManager.removeWorkingObject(object);
@@ -102,9 +112,9 @@ public class LookUpStrategyIdOrNoneTest {
 
     @Test
     public void lookUpWithId() {
-        TestdataObjectId object = new TestdataObjectId(1);
+        TestdataObjectIntegerId object = new TestdataObjectIntegerId(1);
         lookUpManager.addWorkingObject(object);
-        assertSame(object, lookUpManager.lookUpWorkingObject(new TestdataObjectId(1)));
+        assertSame(object, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1)));
     }
 
     @Test
@@ -118,7 +128,7 @@ public class LookUpStrategyIdOrNoneTest {
 
     @Test
     public void lookUpWithoutAdding() {
-        TestdataObjectId object = new TestdataObjectId(0);
+        TestdataObjectIntegerId object = new TestdataObjectIntegerId(0);
         assertNull(lookUpManager.lookUpWorkingObjectOrReturnNull(object));
     }
 

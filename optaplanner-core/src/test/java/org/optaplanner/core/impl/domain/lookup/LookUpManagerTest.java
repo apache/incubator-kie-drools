@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectId;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectIntegerId;
 
 import static org.junit.Assert.*;
 
@@ -45,13 +45,13 @@ public class LookUpManagerTest {
 
     @Test
     public void resetWorkingObjects() {
-        TestdataObjectId o = new TestdataObjectId(0);
-        TestdataObjectId p = new TestdataObjectId(1);
+        TestdataObjectIntegerId o = new TestdataObjectIntegerId(0);
+        TestdataObjectIntegerId p = new TestdataObjectIntegerId(1);
         // The objects should be added during the reset
         lookUpManager.resetWorkingObjects(Arrays.asList(o, p));
         // So it's possible to look up and remove them
-        Assert.assertSame(o, lookUpManager.lookUpWorkingObject(new TestdataObjectId(0)));
-        Assert.assertSame(p, lookUpManager.lookUpWorkingObject(new TestdataObjectId(1)));
+        Assert.assertSame(o, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(0)));
+        Assert.assertSame(p, lookUpManager.lookUpWorkingObject(new TestdataObjectIntegerId(1)));
         lookUpManager.removeWorkingObject(o);
         lookUpManager.removeWorkingObject(p);
     }

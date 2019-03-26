@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,19 @@
  */
 package org.optaplanner.core.impl.testdata.domain.lookup;
 
-public class TestdataObjectIdSubclass extends TestdataObjectId {
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
-    public TestdataObjectIdSubclass(Integer id) {
-        super(id);
+public class TestdataObjectPrimitiveIntId {
+
+    @PlanningId
+    private final int id;
+
+    public TestdataObjectPrimitiveIntId(int id) {
+        this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "id=" + getId();
+    public Integer getId() {
+        return id;
     }
 
 }

@@ -415,7 +415,7 @@ public class ConfigUtils {
         }
         Member member = memberList.get(0);
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class);
-        if (!Comparable.class.isAssignableFrom(memberAccessor.getType())) {
+        if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz
                     + ") has a member (" + member + ") with a " + PlanningId.class.getSimpleName()
                     + " annotation that returns a type (" + memberAccessor.getType()
