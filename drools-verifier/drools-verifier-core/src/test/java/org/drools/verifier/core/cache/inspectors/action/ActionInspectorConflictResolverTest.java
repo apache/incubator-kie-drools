@@ -18,7 +18,7 @@ package org.drools.verifier.core.cache.inspectors.action;
 
 import java.util.Date;
 
-import org.drools.verifier.core.checks.AnalyzerConfigurationMock;
+import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Action;

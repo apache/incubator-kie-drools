@@ -23,13 +23,16 @@ import org.drools.verifier.core.checks.base.JavaCheckRunner;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.configuration.CheckConfiguration;
 import org.drools.verifier.core.configuration.DateTimeFormatProvider;
-import org.drools.verifier.core.configuration.RunnerType;
 import org.drools.verifier.core.index.keys.UUIDKeyProvider;
 
 public class AnalyzerConfigurationMock
         extends AnalyzerConfiguration {
 
     public AnalyzerConfigurationMock() {
+        this(CheckConfiguration.newDefault());
+    }
+
+    public AnalyzerConfigurationMock(final CheckConfiguration checkConfiguration) {
         super("UUID",
               new DateTimeFormatProvider() {
                   @Override
@@ -55,7 +58,7 @@ public class AnalyzerConfigurationMock
                       return Long.toString(index--);
                   }
               },
-              CheckConfiguration.newDefault(),
+              checkConfiguration,
               new JavaCheckRunner());
     }
 }
