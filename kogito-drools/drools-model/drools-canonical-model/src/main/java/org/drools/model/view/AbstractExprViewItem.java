@@ -1,5 +1,6 @@
 package org.drools.model.view;
 
+import org.drools.model.Declaration;
 import org.drools.model.DomainClassMetadata;
 import org.drools.model.Variable;
 import org.drools.model.constraints.ReactivitySpecs;
@@ -31,12 +32,12 @@ public abstract class AbstractExprViewItem<T> implements ExprViewItem<T>  {
     }
 
     public AbstractExprViewItem<T> reactOn( String... props ) {
-        return reactOn(null, props);
+        this.reactivitySpecs = new ReactivitySpecs( getDomainClassMetadata(), props );
+        return this;
     }
 
-    public AbstractExprViewItem<T> reactOn( DomainClassMetadata metadata, String... props ) {
-        this.reactivitySpecs = new ReactivitySpecs( metadata, props );
-        return this;
+    private DomainClassMetadata getDomainClassMetadata() {
+        return var instanceof Declaration ? (( Declaration<T> ) var).getMetadata() : null;
     }
 
     public AbstractExprViewItem<T> watch(String... props) {

@@ -16,8 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -112,7 +110,7 @@ public class AccumulateNode extends BetaNode {
                 List<String> accessibleProperties = typeDeclaration.getAccessibleProperties();
                 for ( Declaration decl : accumulate.getRequiredDeclarations() ) {
                     if ( leftObjectType.equals( decl.getPattern().getObjectType() ) ) {
-                        leftMask = leftMask.setAll( calculatePositiveMask( typeDeclaration.getTypeClass(), decl.getPattern().getListenedProperties(), accessibleProperties ) );
+                        leftMask = leftMask.setAll( decl.getPattern().getPositiveWatchMask(accessibleProperties) );
                     }
                 }
             }

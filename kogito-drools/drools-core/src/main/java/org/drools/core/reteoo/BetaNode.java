@@ -16,14 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
-import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -64,6 +56,11 @@ import org.drools.core.util.bitmask.EmptyBitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
 
 public abstract class BetaNode extends LeftTupleSource
         implements
@@ -173,10 +170,10 @@ public abstract class BetaNode extends LeftTupleSource
                 Class objectClass = ((ClassObjectType) objectType).getClassType();
                 if (isPropertyReactive(context, objectClass)) {
                     rightListenedProperties = pattern.getListenedProperties();
-                    List<String> accessibleProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
-                    rightDeclaredMask = calculatePositiveMask(objectClass, rightListenedProperties, accessibleProperties);
+                    List<String> accessibleProperties = pattern.getAccessibleProperties( context.getKnowledgeBase() );
+                    rightDeclaredMask = pattern.getPositiveWatchMask(accessibleProperties);
                     rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(objectClass, accessibleProperties));
-                    rightNegativeMask = calculateNegativeMask(objectClass, rightListenedProperties, accessibleProperties);
+                    rightNegativeMask = pattern.getNegativeWatchMask(accessibleProperties);
                 } else {
                     // if property reactive is not on, then accept all modification propagations
                     rightDeclaredMask = AllSetBitMask.get();

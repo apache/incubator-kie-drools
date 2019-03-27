@@ -33,20 +33,32 @@ public class BitMaskUtil {
     public static final int CUSTOM_BITS_OFFSET = 1;
     public static final String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
 
-    public static BitMask calculatePatternMask( DomainClassMetadata metadata, String... listenedProperties ) {
-        BitMask mask = getEmptyPropertyReactiveMask(metadata.getPropertiesSize());
+    public static BitMask calculatePatternMask(DomainClassMetadata metadata, boolean isPositive, String... listenedProperties) {
+        if (listenedProperties == null) {
+            return EmptyBitMask.get();
+        }
+
+        BitMask mask = getEmptyPropertyReactiveMask( metadata.getPropertiesSize() );
         for (String propertyName : listenedProperties) {
-            if (propertyName.equals("*")) {
-                return AllSetBitMask.get();
+            if (propertyName.equals(isPositive ? "*" : "!*")) {
+                return isPositive ? AllSetBitMask.get() : AllSetBitMask.get();
+            }
+            if (propertyName.startsWith("!") ^ !isPositive) {
+                continue;
             }
             if (propertyName.equals( TRAITSET_FIELD_NAME )) {
-                mask = mask.set(TRAITABLE_BIT);
-            } else {
-                mask = setPropertyOnMask( mask, metadata.getPropertyIndex( propertyName ) );
+                mask = mask.set( TRAITABLE_BIT );
+                continue;
             }
+            if (!isPositive) {
+                propertyName = propertyName.substring(1);
+            }
+
+            mask = setPropertyOnMask(mask, metadata.getPropertyIndex( propertyName ));
         }
         return mask;
     }
+
 
     public static BitMask calculatePatternMask( Class<?> clazz, Collection<String> listenedProperties ) {
         List<String> accessibleProperties = getAccessibleProperties( clazz );

@@ -184,6 +184,38 @@ public class DSL {
         return new DeclarationImpl<T>( type, name ).setSource( source ).setWindow( window );
     }
 
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata ) {
+        return new DeclarationImpl<T>( type ).setMetadata( metadata );
+    }
+
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata, String name ) {
+        return new DeclarationImpl<T>( type, name ).setMetadata( metadata );
+    }
+
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata, DeclarationSource source ) {
+        return new DeclarationImpl<T>( type ).setMetadata( metadata ).setSource( source );
+    }
+
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata, String name, DeclarationSource source ) {
+        return new DeclarationImpl<T>( type, name ).setMetadata( metadata ).setSource( source );
+    }
+
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata, Window window ) {
+        return new DeclarationImpl<T>( type ).setMetadata( metadata ).setWindow( window );
+    }
+
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata, String name, Window window ) {
+        return new DeclarationImpl<T>( type, name ).setMetadata( metadata ).setWindow( window );
+    }
+
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata, DeclarationSource source, Window window ) {
+        return new DeclarationImpl<T>( type ).setMetadata( metadata ).setSource( source ).setWindow( window );
+    }
+
+    public static <T> Declaration<T> declarationOf( Class<T> type, DomainClassMetadata metadata, String name, DeclarationSource source, Window window ) {
+        return new DeclarationImpl<T>( type, name ).setMetadata( metadata ).setSource( source ).setWindow( window );
+    }
+
     public static <T> Global<T> globalOf( Class<T> type, String pkg ) {
         return new GlobalImpl<T>( type, pkg );
     }

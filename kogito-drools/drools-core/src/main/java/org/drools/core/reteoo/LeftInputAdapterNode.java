@@ -16,11 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -49,6 +44,9 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -116,8 +114,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         Class objectClass = ((ClassWireable) objectType).getClassType();
         return isPropertyReactive( context, objectClass ) ?
-               calculatePositiveMask( objectClass, pattern.getListenedProperties(),
-                                      getAccessibleProperties( context.getKnowledgeBase(), objectClass ) ) :
+               pattern.getPositiveWatchMask( pattern.getAccessibleProperties( context.getKnowledgeBase() ) ) :
                AllSetBitMask.get();
     }
 

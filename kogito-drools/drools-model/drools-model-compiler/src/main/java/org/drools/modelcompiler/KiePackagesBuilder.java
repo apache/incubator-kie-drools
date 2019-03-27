@@ -144,9 +144,11 @@ import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.entryPoint;
+import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.facttemplate.FactFactory.prototypeToFactTemplate;
+import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 import static org.drools.modelcompiler.util.MvelUtil.createMvelObjectExpression;
 import static org.drools.modelcompiler.util.TypeDeclarationUtil.createTypeDeclaration;
 
@@ -619,6 +621,13 @@ public class KiePackagesBuilder {
 
         addConstraintsToPattern( ctx, pattern, modelPattern.getConstraint() );
         addFieldsToPatternWatchlist( pattern, modelPattern.getWatchedProps() );
+
+        if (pattern.getListenedProperties() != null && modelPattern.getPatternClassMetadata() != null) {
+            String[] listenedProperties = pattern.getListenedProperties().toArray( new String[pattern.getListenedProperties().size()] );
+            pattern.setPositiveWatchMask( adaptBitMask( calculatePatternMask( modelPattern.getPatternClassMetadata(), true, listenedProperties ) ) );
+            pattern.setNegativeWatchMask( adaptBitMask( calculatePatternMask( modelPattern.getPatternClassMetadata(), false, listenedProperties ) ) );
+        }
+
         return pattern;
     }
 

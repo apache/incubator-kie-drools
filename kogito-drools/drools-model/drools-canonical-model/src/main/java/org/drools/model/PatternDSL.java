@@ -18,7 +18,6 @@ package org.drools.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.drools.model.consequences.ConditionalConsequenceBuilder;
@@ -100,10 +99,6 @@ public class PatternDSL extends DSL {
 
     public static ReactOn reactOn( String... reactOn ) {
         return new ReactOn( reactOn );
-    }
-
-    public static ReactOn reactOn( DomainClassMetadata metadata, String... reactOn ) {
-        return new ReactOn( metadata, reactOn );
     }
 
     public interface PatternDef<T> extends ViewItem<T> {
@@ -235,6 +230,10 @@ public class PatternDSL extends DSL {
         @Override
         public Variable<T> getFirstVariable() {
             return variable;
+        }
+
+        public DomainClassMetadata getDomainClassMetadata() {
+            return variable instanceof Declaration ? (( Declaration<T> ) variable).getMetadata() : null;
         }
 
         public List<PatternItem<T>> getItems() {
@@ -633,12 +632,8 @@ public class PatternDSL extends DSL {
             return reactOn != null ? reactOn.getStrings() : null;
         }
 
-        private DomainClassMetadata getMetadata() {
-            return reactOn != null ? reactOn.getMetadata() : null;
-        }
-
-        public ReactivitySpecs getReactivitySpecs() {
-            return reactOn != null ? reactOn.toReactivitySpecs() : ReactivitySpecs.EMPTY;
+        public ReactivitySpecs getReactivitySpecs(DomainClassMetadata metadata) {
+            return reactOn != null ? new ReactivitySpecs( metadata, reactOn.getStrings() ) : ReactivitySpecs.EMPTY;
         }
 
         public abstract Constraint asConstraint( PatternDefImpl patternDef );
@@ -660,9 +655,8 @@ public class PatternDSL extends DSL {
         }
 
         @Override
-        public ReactivitySpecs getReactivitySpecs() {
+        public ReactivitySpecs getReactivitySpecs(DomainClassMetadata metadata) {
             String[] strings = items.stream().map( PatternExprImpl.class::cast ).flatMap( e -> Stream.of( e.getReactOn() ) ).toArray( String[]::new );
-            DomainClassMetadata metadata = items.stream().map( PatternExprImpl.class::cast ).map( PatternExprImpl::getMetadata ).filter( Objects::nonNull ).findFirst().orElse( null );
             return new ReactivitySpecs(metadata, strings);
         }
 
@@ -701,7 +695,7 @@ public class PatternDSL extends DSL {
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint1 constraint = new SingleConstraint1( getExprId(), patternDef.getFirstVariable(), getPredicate() );
             constraint.setIndex( getIndex() );
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -735,7 +729,7 @@ public class PatternDSL extends DSL {
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint2 constraint = new SingleConstraint2( getExprId(), patternDef.getFirstVariable(), var2, getPredicate() );
             constraint.setIndex( getIndex() );
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -763,7 +757,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint3 constraint = new SingleConstraint3( getExprId(), patternDef.getFirstVariable(), var2, var3, getPredicate() );
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -793,7 +787,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint4 constraint = new SingleConstraint4( getExprId(), patternDef.getFirstVariable(), var2, var3, var4, getPredicate() );
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -825,7 +819,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint( PatternDefImpl patternDef ) {
             SingleConstraint5 constraint = new SingleConstraint5( getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, getPredicate() );
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -859,7 +853,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint6 constraint = new SingleConstraint6(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -895,7 +889,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint7 constraint = new SingleConstraint7(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -937,7 +931,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint8 constraint = new SingleConstraint8(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -981,7 +975,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint9 constraint = new SingleConstraint9(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -1027,7 +1021,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint10 constraint = new SingleConstraint10(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -1075,7 +1069,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint11 constraint = new SingleConstraint11(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -1125,7 +1119,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint12 constraint = new SingleConstraint12(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -1177,7 +1171,7 @@ public class PatternDSL extends DSL {
         @Override
         public Constraint asConstraint(PatternDefImpl patternDef) {
             SingleConstraint13 constraint = new SingleConstraint13(getExprId(), patternDef.getFirstVariable(), var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, getPredicate());
-            constraint.setReactivitySpecs( getReactivitySpecs() );
+            constraint.setReactivitySpecs( getReactivitySpecs( patternDef.getDomainClassMetadata() ) );
             return constraint;
         }
     }
@@ -1230,27 +1224,13 @@ public class PatternDSL extends DSL {
 
     public static class ReactOn {
         private final String[] strings;
-        private final DomainClassMetadata metadata;
 
         public ReactOn( String... strings ) {
-            this(null, strings);
-        }
-
-        public ReactOn( DomainClassMetadata metadata, String... strings ) {
             this.strings = strings;
-            this.metadata = metadata;
-        }
-
-        public ReactivitySpecs toReactivitySpecs() {
-            return new ReactivitySpecs( metadata, strings );
         }
 
         private String[] getStrings() {
             return strings;
-        }
-
-        private DomainClassMetadata getMetadata() {
-            return metadata;
         }
     }
 

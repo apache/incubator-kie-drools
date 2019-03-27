@@ -10,6 +10,8 @@ import java.util.Set;
 import org.drools.model.Binding;
 import org.drools.model.Condition;
 import org.drools.model.Constraint;
+import org.drools.model.Declaration;
+import org.drools.model.DomainClassMetadata;
 import org.drools.model.Pattern;
 import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
@@ -107,6 +109,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         }
     }
 
+    @Override
     public String[] getWatchedProps() {
         return watchedProps != null ? watchedProps.toArray( new String[watchedProps.size()] ) : new String[0];
     }

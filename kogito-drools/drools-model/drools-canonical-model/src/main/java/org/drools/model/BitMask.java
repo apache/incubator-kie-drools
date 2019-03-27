@@ -51,7 +51,7 @@ public interface BitMask extends Serializable, Cloneable {
     }
 
     static BitMask getPatternMask( DomainClassMetadata metadata, String... listenedProperties ) {
-        BitMask bitMask = BitMaskUtil.calculatePatternMask( metadata, listenedProperties );
+        BitMask bitMask = BitMaskUtil.calculatePatternMask( metadata, true, listenedProperties );
         bitMask.setPatternClass( metadata.getDomainClass() );
         return bitMask;
     }

@@ -71,6 +71,8 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -84,6 +86,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.SUPPLY_C
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
+import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
@@ -417,14 +420,14 @@ public class ModelGenerator {
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getAllDeclarations()) {
-            packageModel.registerDomainClass( decl.getDeclarationClass() );
+            boolean domainClass = packageModel.registerDomainClass( decl.getDeclarationClass() );
             if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
-                addVariable(kbuilder, block, decl, context);
+                addVariable(kbuilder, block, decl, context, domainClass);
             }
         }
     }
 
-    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec decl, RuleContext context) {
+    private static void addVariable(KnowledgeBuilderImpl kbuilder, BlockStmt ruleBlock, DeclarationSpec decl, RuleContext context, boolean domainClass) {
         if (decl.getDeclarationClass() == null) {
             kbuilder.addBuilderResult( new UnknownDeclarationError( decl.getBindingId() ) );
             return;
@@ -437,7 +440,13 @@ public class ModelGenerator {
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
 
-        declarationOfCall.addArgument(new ClassExpr(decl.getType() ));
+        declarationOfCall.addArgument(new ClassExpr( decl.getType() ));
+
+        if (domainClass) {
+            String domainClassSourceName = asJavaSourceName( decl.getDeclarationClass() );
+            declarationOfCall.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + context.getPackageModel().getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
+        }
+
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getVariableName().orElse(decl.getBindingId())));
 
         decl.getDeclarationSource().ifPresent(declarationOfCall::addArgument);

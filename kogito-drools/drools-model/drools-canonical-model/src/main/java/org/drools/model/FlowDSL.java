@@ -94,7 +94,6 @@ public class FlowDSL extends DSL {
         private Variable inputVariable1;
         private Variable inputVariable2;
         private String[] reactOn;
-        private DomainClassMetadata metadata;
         private String[] watchedProps;
 
         private BindViewItemBuilder( Variable<T> boundVariable) {
@@ -115,11 +114,6 @@ public class FlowDSL extends DSL {
         }
 
         public BindViewItemBuilder<T> reactOn( String... reactOn ) {
-            return reactOn(null, reactOn);
-        }
-
-        public BindViewItemBuilder<T> reactOn( DomainClassMetadata metadata, String... reactOn ) {
-            this.metadata = metadata;
             this.reactOn = reactOn;
             return this;
         }
