@@ -24,6 +24,7 @@ import java.util.Set;
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
+import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.cache.RuleInspectorCache;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.checks.base.Check;
