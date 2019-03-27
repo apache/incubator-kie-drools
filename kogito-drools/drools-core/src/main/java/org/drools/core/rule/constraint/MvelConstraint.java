@@ -15,16 +15,6 @@
 
 package org.drools.core.rule.constraint;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
-import static org.drools.core.util.Drools.isJmxAvailable;
-import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.skipBlanks;
-import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
-import static org.drools.reflective.util.ClassUtils.getter2property;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -82,6 +72,17 @@ import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.Drools.isJmxAvailable;
+import static org.drools.core.util.StringUtils.codeAwareIndexOf;
+import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
+import static org.drools.core.util.StringUtils.extractFirstIdentifier;
+import static org.drools.core.util.StringUtils.skipBlanks;
+import static org.drools.reflective.util.ClassUtils.areNullSafeEquals;
+import static org.drools.reflective.util.ClassUtils.getter2property;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
     protected static final boolean TEST_JITTING = false;
@@ -595,7 +596,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private String getLeftInExpression(IndexUtil.ConstraintType constraint) {
-        return expression.substring(0, expression.indexOf(constraint.getOperator())).trim();
+        return expression.substring(0, codeAwareIndexOf(expression, constraint.getOperator())).trim();
     }
 
     private boolean isAlphaHashable() {
