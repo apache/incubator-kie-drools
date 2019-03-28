@@ -21,7 +21,7 @@ import org.kie.pmml.pmml_4_2.ModelMarker;
 
 import java.util.*;
 
-
+/*
 declare FieldMarker
     name : String   @key
     dataType : DATATYPE
@@ -45,7 +45,7 @@ declare QueryMarker
     name : String
     context : String
 end
-
+*/
 
 declare FunctionResult
     expr            : String
