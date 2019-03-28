@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.StringTokenizer;
 
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
@@ -323,12 +322,30 @@ public class GuidedDTDRLPersistence {
     private void addAction(IAction action,
                            List<LabelledAction> actions) {
         String binding = null;
+        boolean isUpdate = false;
         if (action instanceof ActionInsertFact) {
-            final ActionInsertFact af = (ActionInsertFact) action;
-            binding = af.getBoundName();
+            final ActionInsertFact original = (ActionInsertFact) action;
+
+            final ActionInsertFact af = new ActionInsertFact(original.getFactType());
+            af.setBoundName(original.getBoundName());
+            af.setFieldValues(original.getFieldValues());
+
+            action = af;
+            binding = original.getBoundName();
         } else if (action instanceof ActionSetField) {
-            final ActionSetField af = (ActionSetField) action;
-            binding = af.getVariable();
+            final ActionSetField original = (ActionSetField) action;
+
+            ActionSetField asf = null;
+            if (original instanceof ActionUpdateField) {
+                asf = new ActionUpdateField(original.getVariable());
+                isUpdate = true;
+            } else {
+                asf = new ActionSetField(original.getVariable());
+            }
+            asf.setFieldValues(original.getFieldValues());
+
+            action = asf;
+            binding = original.getVariable();
         }
 
         //Binding is used to group related field setters together. It is essential for
@@ -343,6 +360,7 @@ public class GuidedDTDRLPersistence {
         final LabelledAction a = new LabelledAction();
         a.boundName = binding;
         a.action = action;
+        a.isUpdate = isUpdate;
         actions.add(a);
     }
 
