@@ -43,6 +43,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     protected RuleFlowProcessFactory(String id) {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId(id);
+        process.setAutoComplete(true);
         setNodeContainer(process);
     }
     
@@ -62,6 +63,9 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
 
     public RuleFlowProcessFactory dynamic(boolean dynamic) {
         getRuleFlowProcess().setDynamic(dynamic);
+        if (dynamic) {
+            getRuleFlowProcess().setAutoComplete(false);
+        }
         return this;
     }
 

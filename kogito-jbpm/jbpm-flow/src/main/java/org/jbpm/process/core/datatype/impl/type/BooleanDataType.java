@@ -53,6 +53,6 @@ public final class BooleanDataType
     }
 
     public String getStringType() {
-        return "Boolean";
+        return "java.lang.Boolean";
     }
 }

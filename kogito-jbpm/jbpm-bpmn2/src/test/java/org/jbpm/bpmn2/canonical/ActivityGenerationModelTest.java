@@ -24,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -38,6 +38,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
+import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -147,6 +148,123 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
         ProcessInstance processInstance = ksession.startProcess("SubProcess");
         assertProcessInstanceCompleted(processInstance);
+    }
+    
+    @Test
+    public void testExclusiveSplit() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
+        
+        String content = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+        assertThat(content).isNotNull();
+        log(content);
+        
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.TestProcess", content);
+        
+        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "First");
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertProcessInstanceCompleted(processInstance);
+
+    }
+    
+    @Test
+    public void testInclusiveSplit() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
+        String content = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+        assertThat(content).isNotNull();
+        log(content);
+        
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.TestProcess", content);
+        
+        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", 15);
+        ProcessInstance processInstance = ksession.startProcess(
+                "com.sample.test", params);
+        assertProcessInstanceCompleted(processInstance);
+
+    }
+    
+    @Test
+    public void testInclusiveSplitDefaultConnection() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-InclusiveGatewayWithDefault.bpmn2");
+        String content = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("InclusiveGatewayWithDefault"));        
+        assertThat(content).isNotNull();
+        log(content);
+        
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.InclusiveGatewayWithDefaultProcess", content);
+        
+        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("test", "c");
+        ProcessInstance processInstance = ksession.startProcess("InclusiveGatewayWithDefault", params);
+        assertProcessInstanceCompleted(processInstance);
+
+    }
+    
+    @Test
+    public void testParallelGateway() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ParallelSplit.bpmn2");
+        String content = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+        assertThat(content).isNotNull();
+        log(content);
+        
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.TestProcess", content);
+        
+        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+        assertProcessInstanceCompleted(processInstance);
+        
+    }
+    
+    @Test
+    public void testInclusiveSplitAndJoinNested() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinNested.bpmn2");
+        String content = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+        assertThat(content).isNotNull();
+        log(content);
+        
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.TestProcess", content);
+        
+        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", 15);
+        ProcessInstance processInstance = ksession.startProcess(
+                "com.sample.test", params);
+
+        List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
+
+        assertEquals(2, activeWorkItems.size());
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+
+        for (WorkItem wi : activeWorkItems) {
+            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        }
+
+        activeWorkItems = workItemHandler.getWorkItems();
+        assertEquals(2, activeWorkItems.size());
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+
+        for (WorkItem wi : activeWorkItems) {
+            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        }
+        assertProcessInstanceFinished(processInstance, ksession);
+
     }
     
     /*

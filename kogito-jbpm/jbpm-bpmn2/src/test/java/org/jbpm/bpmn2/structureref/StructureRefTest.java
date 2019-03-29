@@ -253,7 +253,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 	        params.put("test", "invalid boolean");
 	        ksession.startProcess("StructureRef", params);
         } catch (IllegalArgumentException e) {
-        	assertEquals("Variable 'test' has incorrect data type expected:Boolean actual:java.lang.String", e.getMessage());
+        	assertEquals("Variable 'test' has incorrect data type expected:java.lang.Boolean actual:java.lang.String", e.getMessage());
         }
 
     }

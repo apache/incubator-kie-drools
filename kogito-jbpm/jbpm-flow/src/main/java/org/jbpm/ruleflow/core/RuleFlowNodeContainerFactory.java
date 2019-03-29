@@ -117,12 +117,17 @@ public abstract class RuleFlowNodeContainerFactory {
     	return new WorkItemNodeFactory(this, nodeContainer, id);
     }
 
-    public RuleFlowNodeContainerFactory connection(long fromId, long toId) {
+    public RuleFlowNodeContainerFactory connection(long fromId, long toId) {        
+        return connection(fromId, toId, "");
+    }
+    
+    public RuleFlowNodeContainerFactory connection(long fromId, long toId, String uniqueId) {
         Node from = nodeContainer.getNode(fromId);
         Node to = nodeContainer.getNode(toId);
-        new ConnectionImpl(
+        ConnectionImpl connection = new ConnectionImpl(
             from, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
             to, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        connection.setMetaData("UniqueId", uniqueId);
         return this;
     }
     

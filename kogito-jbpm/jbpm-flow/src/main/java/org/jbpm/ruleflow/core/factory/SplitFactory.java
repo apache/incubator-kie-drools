@@ -16,6 +16,8 @@
 
 package org.jbpm.ruleflow.core.factory;
 
+import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -67,4 +69,16 @@ public class SplitFactory extends NodeFactory {
     }
 
 
+    public SplitFactory constraint(long toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {
+        ReturnValueConstraintEvaluator constraintImpl = new ReturnValueConstraintEvaluator();
+        constraintImpl.setName(name);
+        constraintImpl.setType(type); 
+        constraintImpl.setDialect(dialect);        
+        constraintImpl.setPriority(priority);
+        constraintImpl.setEvaluator(evaluator);
+        constraintImpl.setConstraint("expression already given as evaluator");
+        getSplit().addConstraint(
+            new ConnectionRef(name, toNodeId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
+        return this;
+    }
 }

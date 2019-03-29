@@ -54,6 +54,6 @@ public class StringDataType implements DataType {
     }
 
     public String getStringType() {
-        return "String";
+        return "java.lang.String";
     }
 }

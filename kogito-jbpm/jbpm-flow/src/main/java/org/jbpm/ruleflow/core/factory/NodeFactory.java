@@ -42,6 +42,11 @@ public abstract class NodeFactory {
         nodeContainer.addNode(node);
         return this.nodeContainerFactory;
     }
+    
+    public NodeFactory metaData(String name, Object value) {
+        getNode().setMetaData(name, value);
+        return this;
+    }
 
     protected Node getNode() {
         return node;

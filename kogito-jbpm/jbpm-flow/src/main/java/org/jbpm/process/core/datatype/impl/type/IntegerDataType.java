@@ -57,7 +57,7 @@ public class IntegerDataType
     }
 
     public String getStringType() {
-        return "Integer";
+        return "java.lang.Integer";
     }
 
 }

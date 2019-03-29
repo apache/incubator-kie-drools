@@ -49,6 +49,6 @@ public class CustomDataType implements DataType {
     }
 
     public String getStringType() {
-        return "String";
+        return "java.lang.String";
     }
 }
