@@ -123,16 +123,18 @@ For example, to change the running time based on user input, before building the
         SolverFactory<NQueens> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMinutesSpentLimit(userInput);
-        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
+        solverFactory.getSolverConfig()
+                .withTerminationConfig(new TerminationConfig()
+                        .withMinutesSpentLimit(userInput));
 
         Solver<NQueens> solver = solverFactory.buildSolver();
 ----
 
-Every element in the solver configuration XML is available as a `$$*$$Config` class or a property on a `$$*$$Config` class in the package namespace ``org.optaplanner.core.config``.
+Every element in the solver configuration XML is available as a `$$*$$Config` class
+or a property on a `$$*$$Config` class in the package namespace ``org.optaplanner.core.config``.
 These `$$*$$Config` classes are the Java representation of the XML format.
-They build the runtime components (of the package namespace ``org.optaplanner.core.impl``) and assemble them into an efficient ``Solver``.
+They build the runtime components (of the package namespace ``org.optaplanner.core.impl``)
+and assemble them into an efficient ``Solver``.
 
 [IMPORTANT]
 ====

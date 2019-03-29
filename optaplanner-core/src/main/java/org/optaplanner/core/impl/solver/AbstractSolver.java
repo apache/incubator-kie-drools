@@ -100,6 +100,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
         termination.solvingEnded(solverScope);
         bestSolutionRecaller.solvingEnded(solverScope);
+        solverScope.endingNow();
     }
 
     // ************************************************************************

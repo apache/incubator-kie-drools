@@ -278,7 +278,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return this;
     }
 
-    public SolverConfig withTermination(TerminationConfig terminationConfig) {
+    public SolverConfig withTerminationConfig(TerminationConfig terminationConfig) {
         this.terminationConfig = terminationConfig;
         return this;
     }
