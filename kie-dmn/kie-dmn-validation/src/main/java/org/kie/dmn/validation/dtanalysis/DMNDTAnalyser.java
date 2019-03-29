@@ -289,7 +289,7 @@ public class DMNDTAnalyser {
         }
     }
 
-    private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Integer> activeRules) {
+    private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
         LOG.debug("findOverlaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
@@ -347,7 +347,7 @@ public class DMNDTAnalyser {
         }
     }
 
-    private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Integer> activeRules) {
+    private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
         LOG.debug("findGaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
