@@ -16,7 +16,7 @@
 
 package org.drools.verifier.core.cache.inspectors.condition;
 
-import org.drools.verifier.core.checks.AnalyzerConfigurationMock;
+import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;

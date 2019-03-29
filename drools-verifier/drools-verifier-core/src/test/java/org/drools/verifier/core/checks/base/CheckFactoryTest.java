@@ -16,7 +16,7 @@
 package org.drools.verifier.core.checks.base;
 
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.verifier.core.checks.AnalyzerConfigurationMock;
+import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.CheckConfiguration;
 import org.junit.Test;
 

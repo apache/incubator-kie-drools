@@ -19,7 +19,7 @@ package org.drools.verifier.core.cache.inspectors;
 import org.drools.verifier.core.cache.inspectors.condition.ComparableConditionInspector;
 import org.drools.verifier.core.cache.inspectors.condition.ConditionInspector;
 import org.drools.verifier.core.cache.inspectors.condition.ConditionsInspectorMultiMap;
-import org.drools.verifier.core.checks.AnalyzerConfigurationMock;
+import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;

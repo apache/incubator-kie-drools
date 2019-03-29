@@ -27,7 +27,7 @@ public class FieldCondition<T extends Comparable>
         extends Condition {
 
     private final Field field;
-    private final String operator;
+    private String operator;
 
     public FieldCondition(final Field field,
                           final Column column,
@@ -51,6 +51,10 @@ public class FieldCondition<T extends Comparable>
 
     public String getOperator() {
         return operator;
+    }
+
+    public void setOperator(final String operator) {
+        this.operator = operator;
     }
 
     @Override
