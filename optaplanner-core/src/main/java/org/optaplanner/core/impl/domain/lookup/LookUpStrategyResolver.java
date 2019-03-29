@@ -19,9 +19,21 @@ package org.optaplanner.core.impl.domain.lookup;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -53,9 +65,20 @@ public class LookUpStrategyResolver {
         decisionCache.put(BigDecimal.class, new ImmutableLookUpStrategy());
         decisionCache.put(Character.class, new ImmutableLookUpStrategy());
         decisionCache.put(String.class, new ImmutableLookUpStrategy());
-        decisionCache.put(LocalDate.class, new ImmutableLookUpStrategy());
-        decisionCache.put(LocalTime.class, new ImmutableLookUpStrategy());
+
+        decisionCache.put(Instant.class, new ImmutableLookUpStrategy());
         decisionCache.put(LocalDateTime.class, new ImmutableLookUpStrategy());
+        decisionCache.put(LocalTime.class, new ImmutableLookUpStrategy());
+        decisionCache.put(LocalDate.class, new ImmutableLookUpStrategy());
+        decisionCache.put(MonthDay.class, new ImmutableLookUpStrategy());
+        decisionCache.put(YearMonth.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Year.class, new ImmutableLookUpStrategy());
+        decisionCache.put(OffsetDateTime.class, new ImmutableLookUpStrategy());
+        decisionCache.put(OffsetTime.class, new ImmutableLookUpStrategy());
+        decisionCache.put(ZonedDateTime.class, new ImmutableLookUpStrategy());
+        decisionCache.put(ZoneOffset.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Duration.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Period.class, new ImmutableLookUpStrategy());
     }
 
     /**

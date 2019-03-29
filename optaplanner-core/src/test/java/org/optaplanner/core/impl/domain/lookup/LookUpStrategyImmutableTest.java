@@ -17,9 +17,24 @@ package org.optaplanner.core.impl.domain.lookup;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 
 import org.junit.Before;
@@ -45,20 +60,33 @@ public class LookUpStrategyImmutableTest {
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Object[] data() {
         return new Object[][]{
-            {true, new Boolean(true)},
-            {(byte) 1, new Byte((byte) 1)},
-            {(short) 1, new Short((short) 1)},
-            {1, new Integer(1)},
-            {1L, new Long(1)},
-            {0.5f, new Float(0.5f)},
-            {0.1d, new Double(0.1d)},
-            {BigInteger.ONE, new BigInteger("1")},
-            {BigDecimal.ONE, new BigDecimal("1")},
-            {'!', new Character((char) 33)},
-            {"", new String()},
-            {LocalDate.of(1, 2, 3), LocalDate.of(1, 2, 3)},
-            {LocalTime.of(1, 2), LocalTime.of(1, 2)},
-            {LocalDateTime.of(1, 2, 3, 4, 5), LocalDateTime.of(1, 2, 3, 4, 5)}
+                {true, new Boolean(true)},
+                {(byte) 1, new Byte((byte) 1)},
+                {(short) 1, new Short((short) 1)},
+                {1, new Integer(1)},
+                {1L, new Long(1)},
+                {0.5f, new Float(0.5f)},
+                {0.1d, new Double(0.1d)},
+                {BigInteger.ONE, new BigInteger("1")},
+                {BigDecimal.ONE, new BigDecimal("1")},
+                {'!', new Character((char) 33)},
+                {"", new String()},
+
+                {Instant.ofEpochMilli(12345L), Instant.ofEpochMilli(12345L)},
+                {LocalDateTime.of(1, 2, 3, 4, 5), LocalDateTime.of(1, 2, 3, 4, 5)},
+                {LocalTime.of(1, 2), LocalTime.of(1, 2)},
+                {LocalDate.of(1, 2, 3), LocalDate.of(1, 2, 3)},
+                {MonthDay.of(12, 31), MonthDay.of(12, 31)},
+                {DayOfWeek.MONDAY, DayOfWeek.MONDAY},
+                {Month.DECEMBER, Month.DECEMBER},
+                {YearMonth.of(1999, 12), YearMonth.of(1999, 12)},
+                {Year.of(1999), Year.of(1999)},
+                {OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC), OffsetDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)},
+                {OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC), OffsetTime.of(1, 2, 3, 4, ZoneOffset.UTC)},
+                {ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC), ZonedDateTime.of(1, 2, 3, 4, 5, 6, 7, ZoneOffset.UTC)},
+                {ZoneOffset.UTC, ZoneOffset.UTC},
+                {Duration.of(5, ChronoUnit.DAYS), Duration.of(5, ChronoUnit.DAYS)},
+                {Period.of(1 ,2, 3), Period.of(1 ,2, 3)}
         };
     }
 
@@ -80,9 +108,6 @@ public class LookUpStrategyImmutableTest {
 
     @Test
     public void lookUpImmutable() {
-        // make sure we are working with different instances
-        assertNotSame(internalObject, externalObject);
-        // since they are immutable we don't care about which instance is looked up
         assertEquals(internalObject, lookUpManager.lookUpWorkingObject(externalObject));
     }
 
