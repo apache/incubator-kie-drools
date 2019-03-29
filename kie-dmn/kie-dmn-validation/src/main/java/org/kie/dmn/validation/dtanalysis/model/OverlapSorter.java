@@ -20,6 +20,10 @@ import java.util.Comparator;
 
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 
+/**
+ * @deprecated unified into Bounds sort.
+ */
+@Deprecated()
 public class OverlapSorter implements Comparator<Bound<?>> {
 
     @Override

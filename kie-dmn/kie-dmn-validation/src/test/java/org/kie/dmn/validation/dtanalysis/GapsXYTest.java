@@ -37,8 +37,18 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 public class GapsXYTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
+    public void test_GapsXY() {
         List<DMNMessage> validate = validator.validate(getReader("GapsXY.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        checkAnalysis(validate);
+    }
+
+    @Test
+    public void test_GapsXYv2() {
+        List<DMNMessage> validate = validator.validate(getReader("GapsXYv2.dmn"), VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        checkAnalysis(validate);
+    }
+
+    private void checkAnalysis(List<DMNMessage> validate) {
         DTAnalysis analysis = getAnalysis(validate, "_ce297a95-b16c-4631-8da5-e739dac9e3c4");
 
         assertThat(analysis.getGaps(), hasSize(3));
@@ -87,5 +97,8 @@ public class GapsXYTest extends AbstractDTAnalysisTest {
 
         // Assert GAPS
         assertThat(analysis.getGaps(), contains(gaps.toArray()));
+
+        // assert OVERLAPs count.
+        assertThat(analysis.getOverlaps(), hasSize(0));
     }
 }

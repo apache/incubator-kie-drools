@@ -33,40 +33,44 @@ public class Bound<V extends Comparable<V>> implements Comparable<Bound<V>> {
 
     @Override
     public int compareTo(Bound<V> o) {
-        if (this.parent == o.parent && parent != null && o.parent != null) {
-            // never swap lower/upper bounds of the same interval
-            if (this.isLowerBound()) {
-                return -1;
-            } else {
-                return 1;
-            }
-        }
-
         int valueCompare = BoundValueComparator.compareValueDispatchingToInf(this, o);
         if (valueCompare != 0) {
             return valueCompare;
         }
 
         if (parent != null && o.parent != null) {
-            if (this.isUpperBound() && o.isLowerBound()) {
+            if (this.isLowerBound() && o.isLowerBound() && this.boundaryType == o.boundaryType) {
+                return 0;
+            } 
+            if (this.isUpperBound() && o.isUpperBound() && this.boundaryType == o.boundaryType) {
+                return 0;
+            }
+            if (this.isUpperBound() && this.boundaryType == RangeBoundary.OPEN) {
                 return -1;
-            } else if (this.isLowerBound() && o.isUpperBound()) {
+            }
+            if (this.isLowerBound() && this.boundaryType == RangeBoundary.OPEN) {
                 return 1;
-            } else if (this.isLowerBound() && o.isLowerBound()) {
-                if (this.boundaryType == o.boundaryType) {
-                    return 0;
-                } else if (this.boundaryType == RangeBoundary.OPEN) {
-                    return 1;
+            }
+            if (this.isUpperBound() && this.boundaryType == RangeBoundary.CLOSED) {
+                if (o.isLowerBound()) {
+                    if (o.boundaryType == RangeBoundary.CLOSED) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
                 } else {
-                    return -1;
+                    return 1;
                 }
-            } else if (this.isUpperBound() && o.isUpperBound()) {
-                if (this.boundaryType == o.boundaryType) {
-                    return 0;
-                } else if (this.boundaryType == RangeBoundary.OPEN) {
-                    return -1;
+            }
+            if (this.isLowerBound() && this.boundaryType == RangeBoundary.CLOSED) {
+                if (o.isUpperBound()) {
+                    if (o.boundaryType == RangeBoundary.CLOSED) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
                 } else {
-                    return 1;
+                    return -1;
                 }
             }
         }
