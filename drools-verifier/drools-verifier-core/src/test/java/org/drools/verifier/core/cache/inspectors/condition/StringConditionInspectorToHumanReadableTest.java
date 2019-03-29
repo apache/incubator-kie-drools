@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.verifier.core.checks.AnalyzerConfigurationMock;
+import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
