@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -422,7 +423,7 @@ public class DMNDTAnalyser {
         LOG.debug(".");
     }
 
-    private static List<Integer> activeIntervalsToRules(List<Interval> activeIntervals) {
+    private static Collection<Integer> activeIntervalsToRules(List<Interval> activeIntervals) {
         return activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList());
     }
 
