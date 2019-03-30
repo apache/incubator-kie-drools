@@ -103,7 +103,7 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
         solverFactory.getSolverConfig()
                 .withEnvironmentMode(environmentMode)
-                .withTermination(new TerminationConfig()
+                .withTerminationConfig(new TerminationConfig()
                         .withBestScoreLimit(bestScoreLimitString))
                 .withMoveThreadCount(moveThreadCount);
         return solverFactory;
