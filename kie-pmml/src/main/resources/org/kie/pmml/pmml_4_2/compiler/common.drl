@@ -22,31 +22,6 @@ import org.kie.pmml.pmml_4_2.ModelMarker;
 import java.util.*;
 
 
-declare FieldMarker
-    name : String   @key
-    dataType : DATATYPE
-end
-
-declare FieldScope
-    name          : String   @key
-    functionLocal : boolean
-end
-
-declare TypeOfField
-    name : String     @key
-    dataType : DATATYPE
-end
-
-declare ModelStat
-    neuralNetwork : boolean
-end
-
-declare QueryMarker
-    name : String
-    context : String
-end
-
-
 declare FunctionResult
     expr            : String
     father          : Apply
