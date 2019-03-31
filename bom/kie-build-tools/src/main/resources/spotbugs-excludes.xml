@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <!-- CDI requires non-private zero-arg constructor to exist. -->
+    <Bug pattern="NP_NULL_PARAM_DEREF_NONVIRTUAL"/>
+  </Match>
+</FindBugsFilter>

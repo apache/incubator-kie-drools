@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-parent</artifactId>
+    <version>7.19.0.Final</version>
+  </parent>
+
+  <artifactId>kie-platform-bom</artifactId>
+  <packaging>pom</packaging>
+
+  <name>KIE (Drools, jBPM, OptaPlanner) Platform BOM</name>
+  <description>
+    The BOM declares all (internal + 3rd party) dependency versions in dependencyManagement.
+    KIE modules should _not_ directly import this BOM and instead use kie-parent and import specific KIE user BOMs.
+    That is to avoid unnecessary dependencies on UberFire, Dashbuilder or Guvnor for non-UI repositories like
+    Drools, jBPM or OptaPlanner.
+    Platform BOM can be used in cases when one needs to easily inherit all the different versions KIE is using.
+  </description>
+
+  <!-- IMPORTANT: Do not declare any build configuration here! Declare it in kie-parent. -->
+  <build/>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Dependency management should import only the user BOMs. Rest of the 3rp party versions are coming directly
+           from kie-parent.
+           When adding new 3rd dependencies, do it in the kie-parent and not here! -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.kie}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.kie}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.kie}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.kie}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.uberfire</groupId>
+        <artifactId>kie-uberfire-extensions-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.kie}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.soup</groupId>
+        <artifactId>kie-soup-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.kie}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.kie}</version>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.uberfire}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai.bom</groupId>
+        <artifactId>errai-internal-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.jboss.errai}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctorj-pdf</artifactId>
+        <version>${version.org.asciidoctor.pdf}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository/>
+  <interactiveMode/>
+  <usePluginRegistry/>
+  <offline/>
+  <pluginGroups/>
+  <servers/>
+  <mirrors/>
+  <proxies/>
+  <profiles>
+    <profile>
+      <!-- Additional repositories are needed in case dependencies are not cached locally. -->
+      <id>additional-repos</id>
+      <repositories>
+        <repository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+          <id>kie-internal-staging-repository-group</id>
+          <name>KIE Internal Staging Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/kie-internal-group/</url>
+        </repository>
+        <repository>
+          <id>kie-repository-group</id>
+          <name>KIE Repositories</name>
+          <url>https://repository.jboss.org/nexus/content/repositories/kie</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>jboss-public-repository-group</id>
+          <name>JBoss Public Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+        </pluginRepository>
+        <pluginRepository>
+          <id>kie-internal-staging-repository-group</id>
+          <name>KIE Internal Staging Repository Group</name>
+          <url>https://repository.jboss.org/nexus/content/groups/kie-internal-group/</url>
+        </pluginRepository>
+        <pluginRepository>
+          <id>kie-repository-group</id>
+          <name>KIE Repositories</name>
+          <url>https://repository.jboss.org/nexus/content/repositories/kie</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>additional-repos</activeProfile>
+  </activeProfiles>
+
+</settings>
