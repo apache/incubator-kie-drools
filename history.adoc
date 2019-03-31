@@ -1,0 +1,6 @@
+Creating initial commit
+Merged drools from git history, moved onto /drools
+Merged jbpm from git history, moved onto /jbpm
+Merged knowledge from git history, moved onto /api
+Merged droolsjbpm-build-bootstrap from git history, moved onto /bom
+
