@@ -18,6 +18,7 @@ package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Overlap {
     private final List<Integer> rules = new ArrayList<>();
     private final Hyperrectangle overlap;
 
-    public Overlap(List<Integer> rules, Hyperrectangle overlap) {
+    public Overlap(Collection<Integer> rules, Hyperrectangle overlap) {
         this.rules.addAll(rules);
         this.overlap = overlap;
     }

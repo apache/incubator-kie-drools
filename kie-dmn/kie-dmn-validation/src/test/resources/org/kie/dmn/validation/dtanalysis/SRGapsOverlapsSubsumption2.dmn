@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50" id="_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50" namespace="http://www.trisotech.com/definitions/_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50"          exporter="DMN Modeler" exporterVersion="6.1.23.201903252223" name="gaps overlaps subsumption2" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tDTI" label="tDTI" isCollection="false">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Good","Fair","Bad"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:decisionService id="_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_d7cee2ba-85d1-475a-b1fb-6441bb217267" typeRef="Any"/>
+        <semantic:outputDecision href="#_2571d9e0-0a71-489c-8331-ad5b5661baac"/>
+        <semantic:inputData href="#_c8c04898-a727-404e-84c5-a7bd1dadbf24"/>
+        <semantic:inputData href="#_97e3454a-3f7e-4869-b1e2-d0015e58c6cf"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_3fe54155-e130-469a-8522-71b8b5d0ce83_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_5b68c707-9f8f-466c-8cee-23cbaab8195b" typeRef="Any"/>
+        <semantic:outputDecision href="#_2571d9e0-0a71-489c-8331-ad5b5661baac"/>
+        <semantic:inputData href="#_c8c04898-a727-404e-84c5-a7bd1dadbf24"/>
+        <semantic:inputData href="#_97e3454a-3f7e-4869-b1e2-d0015e58c6cf"/>
+    </semantic:decisionService>
+    <semantic:decision id="_2571d9e0-0a71-489c-8331-ad5b5661baac" name="Loan Approval">
+        <semantic:variable name="Loan Approval" id="_2bae08fe-6706-4c6b-b07c-c60e793c9410" typeRef="string"/>
+        <semantic:informationRequirement id="_0c513980-e836-4ca3-8730-4c7c1e67944a">
+            <semantic:requiredInput href="#_c8c04898-a727-404e-84c5-a7bd1dadbf24"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_fc90ab42-a3db-4eb9-81fe-ea72d753c879">
+            <semantic:requiredInput href="#_97e3454a-3f7e-4869-b1e2-d0015e58c6cf"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_ccd87aa2-7081-4338-bafa-3a2cbf27c44c" hitPolicy="UNIQUE" outputLabel="Loan Approval" typeRef="string" triso:expressionId="_5ed42d06-d1ab-40e3-9575-fada6541ebfc">
+            <semantic:input id="_1b53ca54-a3ad-4a47-b69b-79763a53229e">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>Credit score</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_9d0fc11b-cea9-47d6-a092-9722209b04c0">
+                <semantic:inputExpression typeRef="tDTI">
+                    <semantic:text>DTI</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Good","Fair","Bad"</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_43895b77-4634-4c28-9501-469c8b205db7">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"Approved","Declined"</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_715300e0-7087-40be-ada3-668bd79c333a">
+                <semantic:inputEntry id="_c1fbea2c-a2c9-4f16-9013-64d780880dcb">
+                    <semantic:text>&gt;660</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e102e133-076f-4a43-ab0f-be0c54847230">
+                    <semantic:text>"Good"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_f2909e42-5c32-47ab-8907-74cebd9bd8a5">
+                    <semantic:text>"Approved"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b0991691-2287-457a-8515-e992a00a64d7">
+                <semantic:inputEntry id="_82c305e5-4e33-4e10-bec1-2cd3057ad074">
+                    <semantic:text>&gt;=660</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0f9e0800-862a-4c03-a9bc-2b0f2d199a0e">
+                    <semantic:text>"Bad"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_cbc2831d-7303-4527-9e58-930d47f30495">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b120b228-3589-44d7-a93b-3c26b6b1ebba">
+                <semantic:inputEntry id="_50857e84-9761-4830-b846-ba3522487d4f">
+                    <semantic:text>[600..660]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_e04b64d9-c57e-4f4d-8404-cbdfacda17e4">
+                    <semantic:text>"Good"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_4fc9e8e3-18dd-479d-9dcf-6e801b15b39a">
+                    <semantic:text>"Approved"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_76804d1b-8501-4f5d-b7ac-76237e8c47ed">
+                <semantic:inputEntry id="_533a85da-3140-4aa1-9de6-cbbaa0b56de6">
+                    <semantic:text>[600..660]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_f377fadf-6a52-4fa6-baea-e3d88ee7babf">
+                    <semantic:text>"Fair", "Bad"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_69d4aeb7-f447-4816-bd5e-ad8f5538f6bb">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_267831bc-ff93-4c93-8905-85736654e766">
+                <semantic:inputEntry id="_ebbbcfe3-a386-4d57-8d42-15edf930ab85">
+                    <semantic:text>&lt;600</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_c57cc845-417d-4302-a7b7-d0b45282874c">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_d934ae07-8e16-4685-9163-577ada95a3db">
+                    <semantic:text>"Declined"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:inputData id="_c8c04898-a727-404e-84c5-a7bd1dadbf24" name="Credit score">
+        <semantic:variable name="Credit score" id="_a72edb32-8310-4e93-abce-dbaee4c6c6a4" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:inputData id="_97e3454a-3f7e-4869-b1e2-d0015e58c6cf" name="DTI">
+        <semantic:variable name="DTI" id="_c9d1be49-d245-40b7-9c18-7a5d9a4a0f63" typeRef="tDTI"/>
+    </semantic:inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_3fe54155-e130-469a-8522-71b8b5d0ce83" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_ba865a8a-2538-49f3-b234-f90b030e0906" dmnElementRef="_2571d9e0-0a71-489c-8331-ad5b5661baac">
+                <dc:Bounds x="563" y="314" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12.000000000000004" width="146" x="565.5064935064935" y="337.5081967213115"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_c1ce8d3a-6e8d-4b8c-bbfc-3a632ce2e0e7" dmnElementRef="_c8c04898-a727-404e-84c5-a7bd1dadbf24">
+                <dc:Bounds x="483.7588291168213" y="425.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="93.99999999999999" x="503.17174174738864" y="448.99999987284343"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_48586735-97db-434f-86ab-963f01f5296e" dmnElementRef="_97e3454a-3f7e-4869-b1e2-d0015e58c6cf">
+                <dc:Bounds x="652.7588291168213" y="425.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="93.99999999999999" x="672.1717417473886" y="448.99999987284343"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_d584e0b5-3057-4ab9-97ef-591cd1d89bd5" dmnElementRef="_0c513980-e836-4ca3-8730-4c7c1e67944a">
+                <di:waypoint x="551.5" y="425.99999618530273"/>
+                <di:waypoint x="619.5" y="374"/>
+                <dmndi:DMNLabel sharedStyle="LS_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_c0bace0c-39b1-46f0-bc82-42d7e255f251" dmnElementRef="_fc90ab42-a3db-4eb9-81fe-ea72d753c879">
+                <di:waypoint x="720.5" y="425.99999618530273"/>
+                <di:waypoint x="659.5" y="374"/>
+                <dmndi:DMNLabel sharedStyle="LS_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_f672c38f-0b38-48c1-9e1c-c2fb9a5e8c50_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

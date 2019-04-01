@@ -16,11 +16,12 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,6 +44,8 @@ import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
+import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
+import org.kie.dmn.feel.lang.ast.SignedUnaryNode.Sign;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
@@ -71,7 +74,6 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
-import org.kie.dmn.validation.dtanalysis.model.OverlapSorter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -287,7 +289,7 @@ public class DMNDTAnalyser {
         }
     }
 
-    private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Integer> activeRules) {
+    private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
         LOG.debug("findOverlaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
@@ -296,13 +298,13 @@ public class DMNDTAnalyser {
             }
             LOG.debug("intervals {}", intervals);
             List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
-            Collections.sort(bounds, (Comparator) new OverlapSorter());
+            Collections.sort(bounds);
             LOG.debug("bounds (sorted) {}", bounds);
 
             List<Interval> activeIntervals = new ArrayList<>();
             Bound<?> lastBound = bounds.get(0);
             for (Bound<?> currentBound : bounds) {
-                LOG.debug("lastBound {} currentBound {}      activeIntervals {}", lastBound, currentBound, activeIntervals);
+                LOG.debug("lastBound {} currentBound {}      activeIntervals {} == rules {}", lastBound, currentBound, activeIntervals, activeIntervalsToRules(activeIntervals));
                 if (activeIntervals.size() > 1 && canBeNewCurrIntervalForOverlaps(lastBound, currentBound)) {
                     Interval analysisInterval = new Interval(lastBound.isUpperBound() ? invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
                                                              lastBound.getValue(),
@@ -310,7 +312,7 @@ public class DMNDTAnalyser {
                                                              currentBound.isLowerBound() ? invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
                                                              0, 0);
                     currentIntervals[jColIdx] = analysisInterval;
-                    findOverlaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList()));
+                    findOverlaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervalsToRules(activeIntervals));
                 }
                 if (currentBound.isLowerBound()) {
                     activeIntervals.add(currentBound.getParent());
@@ -334,10 +336,18 @@ public class DMNDTAnalyser {
 
     private static boolean canBeNewCurrIntervalForOverlaps(Bound<?> lastBound, Bound<?> currentBound) {
         int vCompare = BoundValueComparator.compareValueDispatchingToInf(lastBound, currentBound);
-        return vCompare < 0 || (vCompare == 0 && lastBound.getBoundaryType() == RangeBoundary.CLOSED && currentBound.getBoundaryType() == RangeBoundary.CLOSED);
+        if (vCompare != 0) {
+            return true;
+        } else {
+            if (lastBound.getBoundaryType() == RangeBoundary.CLOSED && currentBound.getBoundaryType() == RangeBoundary.CLOSED) {
+                return true; // by Bound order, if they have same value x, interested in only the case [x x]
+            } else {
+                return false;
+            }
+        }
     }
 
-    private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, List<Integer> activeRules) {
+    private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
         LOG.debug("findGaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
             List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
@@ -367,7 +377,7 @@ public class DMNDTAnalyser {
             List<Interval> activeIntervals = new ArrayList<>();
             Bound<?> lastBound = null;
             for (Bound<?> currentBound : bounds) {
-                LOG.debug("lastBound {} currentBound {}      activeIntervals {}", lastBound, currentBound, activeIntervals);
+                LOG.debug("lastBound {} currentBound {}      activeIntervals {} == rules {}", lastBound, currentBound, activeIntervals, activeIntervalsToRules(activeIntervals));
                 if (activeIntervals.isEmpty() && lastBound != null && !Bound.adOrOver(lastBound, currentBound)) {
                     Interval missingInterval = lastDimensionUncoveredInterval(lastBound, currentBound, domainRange);
                     currentIntervals[jColIdx] = missingInterval;
@@ -381,13 +391,13 @@ public class DMNDTAnalyser {
                     analysis.addGap(gap);
                 }
                 if (!activeIntervals.isEmpty() && canBeNewCurrInterval(lastBound, currentBound)) {
-                    Interval missingInterval = new Interval(lastBound.getBoundaryType(),
+                    Interval missingInterval = new Interval(lastBound.isUpperBound() ? invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
                                                             lastBound.getValue(),
                                                             currentBound.getValue(),
                                                             currentBound.isLowerBound() ? invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
                                                             0, 0);
                     currentIntervals[jColIdx] = missingInterval;
-                    findGaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList()));
+                    findGaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervalsToRules(activeIntervals));
                 }
                 if (currentBound.isLowerBound()) {
                     activeIntervals.add(currentBound.getParent());
@@ -413,16 +423,32 @@ public class DMNDTAnalyser {
         LOG.debug(".");
     }
 
+    private static Collection<Integer> activeIntervalsToRules(List<Interval> activeIntervals) {
+        return activeIntervals.stream().map(Interval::getRule).collect(Collectors.toList());
+    }
+
     /**
      * Avoid a situation to "open" a new currentInterval for pair of same-side equals bounds like: x], x]
      */
     private static boolean canBeNewCurrInterval(Bound<?> lastBound, Bound<?> currentBound) {
-        return !currentBound.equals(lastBound) || !(lastBound.isLowerBound() == currentBound.isLowerBound());
+        int vCompare = BoundValueComparator.compareValueDispatchingToInf(lastBound, currentBound);
+        if (vCompare != 0) {
+            return true;
+        } else {
+            if (lastBound.isLowerBound() && currentBound.isUpperBound()) {
+                return true;
+            } else if (lastBound.isUpperBound() && lastBound.getBoundaryType() == RangeBoundary.OPEN 
+                && currentBound.isLowerBound() && currentBound.getBoundaryType() == RangeBoundary.OPEN) {
+                return true; // the case x) (x
+            } else {
+                return false;
+            }
+        }
     }
 
     private static Interval lastDimensionUncoveredInterval(Bound<?> l, Bound<?> r, Interval domain) {
-        boolean isLmin = l.equals(domain.getLowerBound());
-        boolean isRmax = r.equals(domain.getUpperBound());
+        boolean isLmin = l.isLowerBound() && l.equals(domain.getLowerBound());
+        boolean isRmax = r.isUpperBound() && r.equals(domain.getUpperBound());
         return new Interval(isLmin ? domain.getLowerBound().getBoundaryType() : invertBoundary(l.getBoundaryType()),
                             l.getValue(),
                             r.getValue(),
@@ -559,6 +585,20 @@ public class DMNDTAnalyser {
         } else if (node instanceof StringNode) {
             StringNode stringNode = (StringNode) node;
             return EvalHelper.unescapeString(stringNode.getText());
+        } else if (node instanceof SignedUnaryNode) {
+            SignedUnaryNode signedUnaryNode = (SignedUnaryNode) node;
+            BaseNode signedExpr = signedUnaryNode.getExpression();
+            if (signedExpr instanceof NumberNode) {
+                BigDecimal valueFromNode = (BigDecimal) valueFromNode(signedExpr);
+                if (signedUnaryNode.getSign() == Sign.NEGATIVE) {
+                    return BigDecimal.valueOf(-1).multiply(valueFromNode);
+                } else {
+                    return valueFromNode;
+                }
+
+            } else {
+                throw new UnsupportedOperationException("valueFromNode: " + node);
+            }
         } else {
             throw new UnsupportedOperationException("valueFromNode: " + node);
         }

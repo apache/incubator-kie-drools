@@ -99,15 +99,26 @@ public class DTAnalysis {
         List<Overlap> overlapsProcessing = new ArrayList<>();
         overlapsProcessing.addAll(overlaps);
         while (!overlapsProcessing.isEmpty()) {
+            List<Overlap> toBeRemoved = new ArrayList<>();
+            List<Overlap> toBeAdded = new ArrayList<>();
             Overlap curOverlap = overlapsProcessing.remove(0);
             for (Overlap otherOverlap : overlapsProcessing) {
+                if (curOverlap == null) {
+                    break;
+                }
                 int x = curOverlap.contigousOnDimension(otherOverlap);
                 if (x > 0) {
                     Overlap mergedOverlap = Overlap.newByMergeOnDimension(curOverlap, otherOverlap, x);
                     curOverlap = null;
-                    overlapsProcessing.remove(otherOverlap);
-                    overlapsProcessing.add(0, mergedOverlap);
+                    toBeRemoved.add(otherOverlap);
+                    toBeAdded.add(mergedOverlap);
                 }
+            }
+            for (Overlap x : toBeRemoved) {
+                overlapsProcessing.remove(x);
+            }
+            for (Overlap x : toBeAdded) {
+                overlapsProcessing.add(0, x);
             }
             if (curOverlap != null) {
                 newOverlaps.add(curOverlap);

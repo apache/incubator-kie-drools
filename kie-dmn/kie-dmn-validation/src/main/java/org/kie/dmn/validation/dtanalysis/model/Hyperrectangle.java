@@ -95,7 +95,7 @@ public class Hyperrectangle {
                     List<?> dValues = ddtaTable.getInputs().get(i).getDiscreteValues();
                     int posL = dValues.indexOf(interval.getLowerBound().getValue());
                     if (posL < dValues.size() - 1
-                            && dValues.get(posL+1).equals(interval.getUpperBound())
+                        && dValues.get(posL + 1).equals(interval.getUpperBound().getValue())
                             && interval.getLowerBound().getBoundaryType() == RangeBoundary.CLOSED 
                             && interval.getUpperBound().getBoundaryType() == RangeBoundary.OPEN) {
                         valuesAsH.add(Bound.boundValueToString(interval.getLowerBound().getValue()));
