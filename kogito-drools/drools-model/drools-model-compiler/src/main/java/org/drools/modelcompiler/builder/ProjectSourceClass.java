@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.model.Model;
+import org.drools.modelcompiler.builder.generator.CdiContainers;
 import org.kie.api.KieBase;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieSession;
@@ -24,7 +25,7 @@ public class ProjectSourceClass {
                         "import " + KieBaseModel.class.getCanonicalName()  + ";\n" +
                         "import " + KieSession.class.getCanonicalName()  + ";\n" +
                         "\n" +
-                        ( hasCdi() ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
+                        ( CdiContainers.isRunningInContainer() ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
                         "public class ProjectRuntime implements org.drools.modelcompiler.KieRuntimeBuilder {\n" +
                         "\n");
         sb.append(modelMethod.getConstructor());
@@ -36,10 +37,6 @@ public class ProjectSourceClass {
         sb.append(modelMethod.toKieSessionConfMethod());
         sb.append("\n}" );
         return sb.toString();
-    }
-
-    private boolean hasCdi() {
-        return true;
     }
 
     public void write(MemoryFileSystem srcMfs) {

@@ -119,8 +119,10 @@ public class RuleUnitSourceClass {
     public ClassOrInterfaceDeclaration classDeclaration() {
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
                 .setName(targetTypeName)
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .addAnnotation("javax.enterprise.context.ApplicationScoped");
+                .setModifiers(Modifier.Keyword.PUBLIC);
+        if (CdiContainers.isRunningInContainer()) {
+            cls.addAnnotation("javax.enterprise.context.ApplicationScoped");
+        }
         String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);
 
         MethodDeclaration methodDeclaration = createInstanceMethod(ruleUnitInstanceFQCN);
