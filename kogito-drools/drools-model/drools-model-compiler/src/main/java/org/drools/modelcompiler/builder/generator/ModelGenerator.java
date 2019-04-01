@@ -66,6 +66,7 @@ import org.drools.modelcompiler.builder.errors.UnknownDeclarationError;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
+import org.kie.api.runtime.rule.RuleUnit;
 
 import static java.util.stream.Collectors.toList;
 
@@ -148,6 +149,8 @@ public class ModelGenerator {
             }
         }
 
+        HashSet<RuleUnitDescription> ruleUnitDescriptions = new HashSet<>();
+
         for (RuleDescr descr : packageDescr.getRules()) {
             RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, isPattern);
             context.setDialectFromAttributes(packageDescr.getAttributes());
@@ -155,8 +158,26 @@ public class ModelGenerator {
                 QueryGenerator.processQuery(kbuilder, packageModel, (QueryDescr) descr);
             } else {
                 processRule(kbuilder, packageModel, packageDescr, descr, context);
+                RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
+                if (ruleUnitDescr != null) ruleUnitDescriptions.add(ruleUnitDescr);
             }
         }
+
+        ModuleSourceClass m = new ModuleSourceClass();
+
+        for (RuleUnitDescription rud : ruleUnitDescriptions) {
+            Class<? extends RuleUnit> ruc = rud.getRuleUnitClass();
+
+            RuleUnitSourceClass rusc = new RuleUnitSourceClass(
+                    ruc.getPackage().getName(), ruc.getSimpleName(), packageModel.getRulesFileName());
+            RuleUnitInstanceSourceClass ruisc = new RuleUnitInstanceSourceClass(
+                    ruc.getPackage().getName(), ruc.getSimpleName());
+
+            m.addRuleUnit(rusc);
+            m.addRuleUnitInstance(ruisc);
+        }
+
+        packageModel.setModuleGenerator(m);
     }
 
 
@@ -188,9 +209,10 @@ public class ModelGenerator {
         }
         ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
 
-        MethodCallExpr buildCallScope = ruleUnitDescr != null ?
-                new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(ruleUnitDescr.getRuleUnitClass()) ) ) :
-                ruleCall;
+        MethodCallExpr buildCallScope = ruleCall;
+//        ruleUnitDescr != null ?
+//                new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( classToReferenceType(ruleUnitDescr.getRuleUnitClass()) ) ) :
+//                ruleCall;
 
         for (MethodCallExpr attributeExpr : ruleAttributes(context, ruleDescr)) {
             attributeExpr.setScope( buildCallScope );

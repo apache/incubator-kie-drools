@@ -60,6 +60,7 @@ import org.drools.model.Rule;
 import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.ModuleSourceClass;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -72,6 +73,7 @@ import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.javaparser.ast.Modifier.finalModifier;
 import static org.drools.javaparser.ast.Modifier.publicModifier;
 import static org.drools.javaparser.ast.Modifier.staticModifier;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.returnTypeOfMethodCallExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
@@ -129,6 +131,7 @@ public class PackageModel {
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
+    private ModuleSourceClass moduleGenerator;
 
     private final String pkgUUID = generateUUID();
 
@@ -323,6 +326,14 @@ public class PackageModel {
 
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
+    }
+
+    public void setModuleGenerator(ModuleSourceClass m) {
+        this.moduleGenerator = m;
+    }
+
+    public ModuleSourceClass getModuleGenerator() {
+        return moduleGenerator;
     }
 
     public static class RuleSourceResult {
