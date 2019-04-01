@@ -226,7 +226,7 @@ public class DefaultSolverScope<Solution_> {
         childThreadSolverScope.workingRandom = new Random(workingRandom.nextLong());
         childThreadSolverScope.scoreDirector = scoreDirector.createChildThreadScoreDirector(childThreadType);
         childThreadSolverScope.startingSystemTimeMillis = startingSystemTimeMillis;
-        childThreadSolverScope.endingSystemTimeMillis = endingSystemTimeMillis;
+        childThreadSolverScope.endingSystemTimeMillis = null;
         childThreadSolverScope.startingInitializedScore = null;
         childThreadSolverScope.bestSolution = null;
         childThreadSolverScope.bestScore = null;
