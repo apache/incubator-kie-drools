@@ -61,7 +61,7 @@ public class DefaultTimerJobInstance
     }    
 
     public Void call() throws Exception {
-        try { 
+        try {
             this.trigger.nextFireTime(); // need to pop
             if ( handle.isCancel() ) {
                 return null;

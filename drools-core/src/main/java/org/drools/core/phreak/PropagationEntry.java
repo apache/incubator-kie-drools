@@ -192,7 +192,7 @@ public interface PropagationEntry {
                 JobHandle jobHandle = wm.getTimerService()
                                         .scheduleJob( job,
                                                       jobctx,
-                                                      new PointInTimeTrigger( nextTimestamp, null, null ) );
+                                                      PointInTimeTrigger.createPointInTimeTrigger( nextTimestamp, null ) );
                 jobctx.setJobHandle( jobHandle );
                 eventFactHandle.addJob( jobHandle );
             }
