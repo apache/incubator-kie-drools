@@ -257,8 +257,8 @@ public class DrlxParserTest {
     }
 
     @Test
-    public void testMapInitializationLiteral() {
-        String expr = "[123 : 456, 789 : 1011]";
+    public void testMapInitializationLiteralAsArgument() {
+        String expr = "countItems([123 : 456, 789 : 1011])";
         DrlxExpression drlx = parseExpression( parser, expr );
         assertEquals(expr, printConstraint(drlx));
     }

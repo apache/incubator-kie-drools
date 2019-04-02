@@ -1182,6 +1182,9 @@ Expression UnaryExpression():
 	  }
 	|
 	  ret = HalfBinaryExpression()
+	|
+      LOOKAHEAD(MapCreationLiteralExpression())
+        ret = MapCreationLiteralExpression()
   )
   { return ret; }
 }
@@ -1254,9 +1257,6 @@ Expression DrlxExpressionSwitch():
   |
   LOOKAHEAD(PointFreeExpr())
     ret = PointFreeExpr()
-  |
-  LOOKAHEAD(MapCreationLiteralExpression())
-    ret = MapCreationLiteralExpression()
   |
   LOOKAHEAD( HalfPointFreeExpr(), { (isPointFreeOperator(getToken(1).image) || isPointFreeOperator(getToken(2).image) )})
     ret = HalfPointFreeExpr()
@@ -1999,20 +1999,20 @@ Expression MapCreationLiteralExpression():
 }
 {
     (
-        <LBRACKET>
         (
+            <LBRACKET>
             first = MapCreationLiteralExpressionKeyValuePair() { begin=token(); all.add(first); }
             (
                           <COMMA>
                           other = MapCreationLiteralExpressionKeyValuePair() { all.add(other); }
             )*
+            <RBRACKET>
             {
                 begin = token();
                 return new MapCreationLiteralExpression(range(begin, token()), all);
             }
 
         )
-        <RBRACKET>
     )
 }
 
