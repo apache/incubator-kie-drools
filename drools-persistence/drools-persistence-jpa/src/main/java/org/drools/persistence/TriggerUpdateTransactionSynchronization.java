@@ -29,6 +29,7 @@ public class TriggerUpdateTransactionSynchronization implements TransactionSynch
 
     private TransactionManager txm;
     private Environment environment;
+    private boolean rollbackRequested = false;
 
     public TriggerUpdateTransactionSynchronization(TransactionManager txm, Environment environment) {
         this.txm = txm;
@@ -39,7 +40,7 @@ public class TriggerUpdateTransactionSynchronization implements TransactionSynch
     public void beforeCompletion() {
         Set<Transformable> toBeUpdated = TransactionManagerHelper.getUpdateableSet(txm);
         // does the work only if it's valid for jpa persistence
-        if ( !isValid() || toBeUpdated == null || toBeUpdated.isEmpty()) {
+        if ( !isValid() || toBeUpdated == null || toBeUpdated.isEmpty() || rollbackRequested) {
             return;
         }
 
@@ -56,34 +57,41 @@ public class TriggerUpdateTransactionSynchronization implements TransactionSynch
         boolean flushApp = false;
         boolean flushCmd = false;
 
-        for (Transformable transformable : toBeUpdated) {
-            if (transformable != null) {
-                transformable.transform();
-                if (appScopedEM != null && appScopedEM.contains(transformable)) {
-
-                    appScopedEM.merge(transformable);
-                    TransactionManagerHelper.removeFromUpdatableSet(txm, transformable);
-                    flushApp = true;
-                } else if (cmdScopedEM != null &&cmdScopedEM.contains(transformable)) {
-
-                    cmdScopedEM.merge(transformable);
-                    TransactionManagerHelper.removeFromUpdatableSet(txm, transformable);
-                    flushCmd = true;
+        try {
+            for (Transformable transformable : toBeUpdated) {
+                if (transformable != null) {
+                    transformable.transform();
+                    if (appScopedEM != null && appScopedEM.contains(transformable)) {
+    
+                        appScopedEM.merge(transformable);
+                        TransactionManagerHelper.removeFromUpdatableSet(txm, transformable);
+                        flushApp = true;
+                    } else if (cmdScopedEM != null &&cmdScopedEM.contains(transformable)) {
+    
+                        cmdScopedEM.merge(transformable);
+                        TransactionManagerHelper.removeFromUpdatableSet(txm, transformable);
+                        flushCmd = true;
+                    }
                 }
             }
-        }
-        if (flushApp) {
-            appScopedEM.flush();
-        }
-
-        if (flushCmd) {
-            cmdScopedEM.flush();
+            if (flushApp) {
+                appScopedEM.flush();
+            }
+    
+            if (flushCmd) {
+                cmdScopedEM.flush();
+            }
+        } catch (Throwable e) {
+            // mark it as rollback requested to avoid repeated calls as rollback calls beforeCompletion as well
+            rollbackRequested = true;           
+            txm.rollback(true);
+            throw new RuntimeException("Transaction rolled back due to " + e.getMessage(), e);
         }
     }
 
     @Override
     public void afterCompletion(int status) {
-
+        
     }
 
     private boolean isValid() {
