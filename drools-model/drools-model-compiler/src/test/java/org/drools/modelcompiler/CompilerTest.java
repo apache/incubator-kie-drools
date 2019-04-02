@@ -1330,7 +1330,7 @@ public class CompilerTest extends BaseModelTest {
                 "import java.util.Map;\n" +
                 "import static " + Person.class.getName() + ".countItems;\n" +
                 "rule R1 when\n" +
-                "   Person( numberOfItems == countItems([123 : 456, 789 : 1011]))" +
+                "   Person( numberOfItems == countItems([123 : 456, 789 : name]))" +
                 "then\n" +
                 "end\n";
 

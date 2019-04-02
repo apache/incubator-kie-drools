@@ -782,11 +782,11 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Node transformDrlNameExprToNameExpr(Node e) {
+    public static <T extends Node> T transformDrlNameExprToNameExpr(T e) {
         e.findAll(DrlNameExpr.class)
                 .forEach(n -> n.replace(new NameExpr(n.getName())));
         if(e instanceof DrlNameExpr) {
-            return new NameExpr(((DrlNameExpr) e).getName());
+            return (T) new NameExpr(((DrlNameExpr) e).getName());
         } else {
             return e;
         }
