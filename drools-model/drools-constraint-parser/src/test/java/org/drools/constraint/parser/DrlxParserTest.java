@@ -257,6 +257,13 @@ public class DrlxParserTest {
     }
 
     @Test
+    public void testMapInitializationLiteral() {
+        String expr = "[123 : 456, 789 : 1011]";
+        DrlxExpression drlx = parseExpression( parser, expr );
+        assertEquals(expr, printConstraint(drlx));
+    }
+
+    @Test
     public void testParseTemporalLiteral() {
         String expr = "5s";
         TemporalLiteralExpr drlx = DrlxParser.parseTemporalLiteral(expr);
