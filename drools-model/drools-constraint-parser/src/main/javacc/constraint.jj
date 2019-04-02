@@ -1255,6 +1255,9 @@ Expression DrlxExpressionSwitch():
   LOOKAHEAD(PointFreeExpr())
     ret = PointFreeExpr()
   |
+  LOOKAHEAD(MapCreationLiteralExpression())
+    ret = MapCreationLiteralExpression()
+  |
   LOOKAHEAD( HalfPointFreeExpr(), { (isPointFreeOperator(getToken(1).image) || isPointFreeOperator(getToken(2).image) )})
     ret = HalfPointFreeExpr()
   |
@@ -1984,6 +1987,50 @@ Expression CommaSeparatedMethodCallExpr():
             }
 
         )
+    )
+}
+
+Expression MapCreationLiteralExpression():
+{
+    JavaToken begin = null;
+    Expression first = null;
+    Expression other = null;
+    NodeList<Expression> all = emptyList();
+}
+{
+    (
+        <LBRACKET>
+        (
+            first = MapCreationLiteralExpressionKeyValuePair() { begin=token(); all.add(first); }
+            (
+                          <COMMA>
+                          other = MapCreationLiteralExpressionKeyValuePair() { all.add(other); }
+            )*
+            {
+                begin = token();
+                return new MapCreationLiteralExpression(range(begin, token()), all);
+            }
+
+        )
+        <RBRACKET>
+    )
+}
+
+Expression MapCreationLiteralExpressionKeyValuePair():
+{
+        JavaToken begin;
+        Expression key = null;
+        Expression value = null;
+}
+{
+    (
+        key = PrimaryPrefix()
+        <COLON>
+        value = PrimaryPrefix()
+        {
+            begin = token();
+            return new MapCreationLiteralExpressionKeyValuePair(range(begin, token()), key, value);
+        }
     )
 }
 
