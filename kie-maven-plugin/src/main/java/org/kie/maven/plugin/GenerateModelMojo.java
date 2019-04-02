@@ -246,6 +246,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                     getInternalKieModule().getReleaseId(), modelMethod, generatedSourceFiles)
                     .write(srcMfs);
             new ProjectSourceClass(modelMethod)
+                    .withCdi()
                     .write(srcMfs);
 
             srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("."));

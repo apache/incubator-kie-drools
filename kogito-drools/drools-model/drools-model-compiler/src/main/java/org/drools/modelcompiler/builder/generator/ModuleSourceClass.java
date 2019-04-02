@@ -23,6 +23,7 @@ public class ModuleSourceClass {
     private final List<RuleUnitSourceClass> ruleUnits;
     private final List<RuleUnitInstanceSourceClass> ruleUnitInstances;
     private String targetTypeName;
+    private boolean hasCdi;
 
     public ModuleSourceClass() {
         this.packageName = "org.drools.project.model";
@@ -43,7 +44,7 @@ public class ModuleSourceClass {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        ruleUnits.forEach(r -> r.write(srcMfs));
+        ruleUnits.forEach(r -> r.withCdi(hasCdi).write(srcMfs));
         ruleUnitInstances.forEach(r -> r.write(srcMfs));
         srcMfs.write(completePath, generate().getBytes());
     }
@@ -77,5 +78,10 @@ public class ModuleSourceClass {
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {
         return new ClassOrInterfaceType(null, RuleUnit.class.getCanonicalName())
                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName));
+    }
+
+    public ModuleSourceClass withCdi(boolean hasCdi) {
+        this.hasCdi = hasCdi;
+        return this;
     }
 }

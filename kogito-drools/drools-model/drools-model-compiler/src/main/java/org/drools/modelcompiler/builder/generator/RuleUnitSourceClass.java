@@ -27,6 +27,7 @@ public class RuleUnitSourceClass {
     private final String canonicalName;
     private final String targetCanonicalName;
     private String targetTypeName;
+    private boolean hasCdi = false;
 
     public RuleUnitSourceClass(String packageName, String typeName, String generatedSourceFile) {
         this.packageName = packageName;
@@ -120,7 +121,7 @@ public class RuleUnitSourceClass {
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
                 .setName(targetTypeName)
                 .setModifiers(Modifier.Keyword.PUBLIC);
-        if (CdiContainers.isRunningInContainer()) {
+        if (hasCdi) {
             cls.addAnnotation("javax.enterprise.context.ApplicationScoped");
         }
         String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);
@@ -129,5 +130,10 @@ public class RuleUnitSourceClass {
         cls.addExtendedType(abstractRuleUnitType(canonicalName))
                 .addMember(methodDeclaration);
         return cls;
+    }
+
+    public RuleUnitSourceClass withCdi(boolean hasCdi) {
+        this.hasCdi = true;
+        return this;
     }
 }
