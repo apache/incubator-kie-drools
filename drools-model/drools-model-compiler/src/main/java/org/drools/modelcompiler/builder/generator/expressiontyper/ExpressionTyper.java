@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
@@ -31,12 +33,16 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
 import org.drools.constraint.parser.ast.expr.PointFreeExpr;
@@ -60,6 +66,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static org.drools.constraint.parser.DrlConstraintParser.parseType;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
@@ -531,6 +538,8 @@ public class ExpressionTyper {
 
             result = arrayAccessExpr((ArrayAccessExpr) firstNode, type, scope);
 
+        } else if (firstNode instanceof MapCreationLiteralExpression) {
+            result = mapCreationLiteral((MapCreationLiteralExpression) firstNode);
         } else {
             result = of(new TypedExpressionCursor( (Expression)firstNode, getExpressionType( ruleContext, ruleContext.getTypeResolver(), (Expression)firstNode, context.getUsedDeclarations() ) ));
         }
@@ -650,6 +659,26 @@ public class ExpressionTyper {
             methodCallExpr.setArgument( i, typedExpr.getExpression() );
         }
         return argsType;
+    }
+
+    private Optional<TypedExpressionCursor> mapCreationLiteral(MapCreationLiteralExpression mapCreationLiteralExpression) {
+
+        ClassOrInterfaceType hashMapType = (ClassOrInterfaceType) parseType(HashMap.class.getCanonicalName());
+        ObjectCreationExpr newHashMapExpr = new ObjectCreationExpr(null, hashMapType, NodeList.nodeList());
+
+        InitializerDeclaration body = new InitializerDeclaration();
+        newHashMapExpr.addAnonymousClassBody(body);
+
+        BlockStmt initializationStmt = new BlockStmt();
+
+        body.setBody(initializationStmt);
+
+        for(Expression e : mapCreationLiteralExpression.getExpressions()) {
+            MapCreationLiteralExpressionKeyValuePair expr = (MapCreationLiteralExpressionKeyValuePair)e;
+            initializationStmt.addStatement(new MethodCallExpr(null, "put", NodeList.nodeList(expr.getKey(), expr.getValue())));
+        }
+
+        return of(new TypedExpressionCursor(newHashMapExpr, HashMap.class));
     }
 
     private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
