@@ -39,17 +39,22 @@ public class MaskedRule {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         MaskedRule other = (MaskedRule) obj;
-        if (maskedBy != other.maskedBy)
+        if (maskedBy != other.maskedBy) {
             return false;
-        if (maskedRule != other.maskedRule)
+        }
+        if (maskedRule != other.maskedRule) {
             return false;
+        }
         return true;
     }
 

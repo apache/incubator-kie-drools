@@ -65,20 +65,26 @@ public class Hyperrectangle {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Hyperrectangle other = (Hyperrectangle) obj;
-        if (dimensions != other.dimensions)
+        if (dimensions != other.dimensions) {
             return false;
+        }
         if (edges == null) {
-            if (other.edges != null)
+            if (other.edges != null) {
                 return false;
-        } else if (!edges.equals(other.edges))
+            }
+        } else if (!edges.equals(other.edges)) {
             return false;
+        }
         return true;
     }
 
