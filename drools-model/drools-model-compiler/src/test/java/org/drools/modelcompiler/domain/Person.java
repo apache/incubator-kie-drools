@@ -33,6 +33,10 @@ public class Person extends AbstractReactiveObject {
         return items.size();
     }
 
+    public static boolean evaluate(Map<Integer, Integer> items) {
+        return items.size() > 0;
+    }
+
     private int numberOfItems;
 
     public int getNumberOfItems() {
