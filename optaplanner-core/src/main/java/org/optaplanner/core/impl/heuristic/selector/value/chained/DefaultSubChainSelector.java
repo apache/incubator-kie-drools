@@ -135,8 +135,9 @@ public class DefaultSubChainSelector extends AbstractSelector
                 anchorList.add(value);
             }
         }
-        anchorTrailingChainList = new ArrayList<>(anchorList.size());
-        int anchorChainInitialCapacity = ((int) valueSize / anchorList.size()) + 1;
+        int anchorListSize = Math.max(anchorList.size(), 1);
+        anchorTrailingChainList = new ArrayList<>(anchorListSize);
+        int anchorChainInitialCapacity = ((int) valueSize / anchorListSize) + 1;
         for (Object anchor : anchorList) {
             List<Object> anchorChain = new ArrayList<>(anchorChainInitialCapacity);
             Object trailingEntity = inverseVariableSupply.getInverseSingleton(anchor);
