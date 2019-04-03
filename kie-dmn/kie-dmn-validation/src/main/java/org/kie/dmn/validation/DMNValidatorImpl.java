@@ -209,7 +209,7 @@ public class DMNValidatorImpl implements DMNValidator {
                     results.addAll(validator.validateSchema(reader));
                 }
             }
-            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION)) {
+            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
                 if (results.hasErrors()) {
                     MsgUtil.reportMessage(LOG,
                                           DMNMessage.Severity.ERROR,
@@ -238,7 +238,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                       null,
                                       Msg.FAILED_NO_XML_SOURCE);
             }
-            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION)) {
+            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
                 if (results.hasErrors()) {
                     MsgUtil.reportMessage(LOG,
                                           DMNMessage.Severity.ERROR,
@@ -273,12 +273,17 @@ public class DMNValidatorImpl implements DMNValidator {
                         results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
                         otherModel_Definitions.add(dmnModel);
                     }
-                    if (flags.contains(VALIDATE_COMPILATION)) {
+                    if (flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
                         DMNCompiler compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
                         DMNModel model = compiler.compile(dmnModel, otherModel_DMNModels);
                         if (model != null) {
                             results.addAll(model.getMessages());
                             otherModel_DMNModels.add(model);
+                            if (flags.contains(ANALYZE_DECISION_TABLE)) {
+                                List<DTAnalysis> vs = validator.dmnDTValidator.analyse(model);
+                                List<DMNMessage> dtAnalysisResults = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
+                                results.addAll(dtAnalysisResults);
+                            }
                         } else {
                             throw new IllegalStateException("Compiled model is null!");
                         }
