@@ -10,9 +10,9 @@ import org.kie.api.runtime.KieSession;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-public class Regression3800Test extends BaseModelTest {
+public class MapInitializationDrools3800Test extends BaseModelTest {
 
-    public Regression3800Test(BaseModelTest.RUN_TYPE testRunType) {
+    public MapInitializationDrools3800Test(BaseModelTest.RUN_TYPE testRunType) {
         super(testRunType);
     }
 
