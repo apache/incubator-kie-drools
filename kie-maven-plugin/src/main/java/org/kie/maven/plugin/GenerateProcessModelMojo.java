@@ -113,6 +113,12 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
     private static final String RESOURCE_CLASS_SUFFIX = "Resource";
     private static final String BOOTSTRAP_PACKAGE = "org.kie.bootstrap.process";
     private static final String BOOTSTRAP_CLASS = BOOTSTRAP_PACKAGE + ".ProcessRuntimeProvider";
+    private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
+    static {
+        BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNSemanticModule());
+        BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNExtensionsSemanticModule());
+        BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNDISemanticModule());
+    }
 
     @Parameter(required = true, defaultValue = "${project.basedir}/src")
     private File sourceDir;
@@ -213,14 +219,9 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
     }
 
     private Collection<? extends Process> parseProcessFile(Resource r) throws IOException, MojoExecutionException {
-        SemanticModules semanticModules = new SemanticModules();
-        semanticModules.addSemanticModule(new BPMNSemanticModule());
-        semanticModules.addSemanticModule(new BPMNExtensionsSemanticModule());
-        semanticModules.addSemanticModule(new BPMNDISemanticModule());
-
         try {
             XmlProcessReader xmlReader = new XmlProcessReader(
-                    semanticModules,
+                    BPMN_SEMANTIC_MODULES,
                     Thread.currentThread().getContextClassLoader());
             return xmlReader.read(r.getReader());
         } catch (SAXException e) {
