@@ -74,6 +74,7 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
 
     @Test
     @Ignore
+    // https://issues.jboss.org/browse/DROOLS-3849
     // This is hanging using executable model because of reactivity default
     public void testPropertyReactivityHanging() {
         StringBuilder r = new StringBuilder();
