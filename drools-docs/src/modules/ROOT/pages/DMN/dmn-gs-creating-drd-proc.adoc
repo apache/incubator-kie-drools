@@ -6,7 +6,7 @@ A decision requirements diagram (DRD) is a visual representation of your DMN mod
 .DRD for the Traffic Violations example
 image::dmn/dmn-traffic-violations-drd.png[]
 
-.Prerequisite
+.Prerequisites
 * You have created the traffic violations project in {CENTRAL}.
 
 .Procedure
