@@ -3,7 +3,7 @@
 
 After you create the DMN custom data types, assign them to the appropriate *DMN Input Data* and *DMN Decision* nodes in the traffic violations DRD.
 
-.Prerequisite
+.Prerequisites
 * You have created the traffic violations DMN custom data types in {CENTRAL}.
 
 .Procedure

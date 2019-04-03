@@ -9,7 +9,7 @@ image::dmn/dmn-gs-fine-decision-table.png[]
 .Should the driver be suspended? context boxed expression
 image::dmn/dmn-gs-context-table.png[]
 
-.Prerequisite
+.Prerequisites
 * You have assigned the DMN custom data types to the appropriate decision and input nodes in the traffic violations DRD in {CENTRAL}.
 
 .Procedure

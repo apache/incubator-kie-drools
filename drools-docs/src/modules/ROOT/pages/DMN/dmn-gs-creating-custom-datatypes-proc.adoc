@@ -49,7 +49,7 @@ The following tables list the `Violation`, `Driver`, and `Fine` custom data type
 |Points |number
 |===
 
-.Prerequisite
+.Prerequisites
 * You have created the traffic violations DMN decision requirements diagram (DRDs) in {CENTRAL}.
 
 .Procedure
