@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -834,13 +835,19 @@ public class ProtobufOutputMarshaller {
                     .setInterval( _interval.build() )
                     .build();
         } else if ( trigger instanceof PointInTimeTrigger ) {
-            PointInTimeTrigger pinTrigger = (PointInTimeTrigger) trigger;
-            return ProtobufMessages.Trigger.newBuilder()
-                    .setType( ProtobufMessages.Trigger.TriggerType.POINT_IN_TIME )
-                    .setPit( ProtobufMessages.Trigger.PointInTimeTrigger.newBuilder()
-                            .setNextFireTime( pinTrigger.hasNextFireTime().getTime() )
-                            .build() )
-                    .build();
+            PointInTimeTrigger pitTrigger = (PointInTimeTrigger) trigger;
+            Date nextFireTime = pitTrigger.hasNextFireTime();
+            // There is no reason to serialize a timer when it has no future execution time.
+            if (nextFireTime != null) {
+                return ProtobufMessages.Trigger.newBuilder()
+                        .setType( ProtobufMessages.Trigger.TriggerType.POINT_IN_TIME )
+                        .setPit( ProtobufMessages.Trigger.PointInTimeTrigger.newBuilder()
+                                         .setNextFireTime( nextFireTime.getTime() )
+                                         .build() )
+                        .build();
+            } else {
+                return null;
+            }
         } else if ( trigger instanceof CompositeMaxDurationTrigger ) {
             CompositeMaxDurationTrigger cmdTrigger = (CompositeMaxDurationTrigger) trigger;
             ProtobufMessages.Trigger.CompositeMaxDurationTrigger.Builder _cmdt = ProtobufMessages.Trigger.CompositeMaxDurationTrigger.newBuilder();
@@ -851,7 +858,10 @@ public class ProtobufOutputMarshaller {
                 _cmdt.setTimerCurrentDate( cmdTrigger.getTimerCurrentDate().getTime() );
             }
             if ( cmdTrigger.getTimerTrigger() != null ) {
-                _cmdt.setTimerTrigger( writeTrigger(cmdTrigger.getTimerTrigger(), outCtx) );
+                ProtobufMessages.Trigger timerTrigger = writeTrigger(cmdTrigger.getTimerTrigger(), outCtx);
+                if (timerTrigger != null) {
+                    _cmdt.setTimerTrigger(timerTrigger);
+                }
             }
             return ProtobufMessages.Trigger.newBuilder()
                                            .setType( ProtobufMessages.Trigger.TriggerType.COMPOSITE_MAX_DURATION )

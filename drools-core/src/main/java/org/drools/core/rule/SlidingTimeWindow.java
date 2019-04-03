@@ -210,7 +210,7 @@ public class SlidingTimeWindow
                 JobContext jobctx = new BehaviorJobContext( nodeId, workingMemory, this, context);
                 JobHandle handle = clock.scheduleJob( job,
                                                       jobctx,
-                                                      new PointInTimeTrigger( nextTimestamp, null, null ) );
+                                                      PointInTimeTrigger.createPointInTimeTrigger( nextTimestamp, null ) );
                 jobctx.setJobHandle( handle );
             }
         }

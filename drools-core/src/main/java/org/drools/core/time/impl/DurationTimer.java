@@ -16,6 +16,15 @@
 
 package org.drools.core.time.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.ConditionalElement;
@@ -25,12 +34,7 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.drools.core.util.NumberUtils;
 import org.kie.api.runtime.Calendars;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
+import org.kie.api.time.Calendar;
 
 public class DurationTimer extends BaseTimer
     implements
@@ -101,15 +105,11 @@ public class DurationTimer extends BaseTimer
                                  String[] calendarNames,
                                  Calendars calendars) {
         long offset = timestamp + duration;
-        if( NumberUtils.isAddOverflow( timestamp, duration, offset ) ) {
+        if (NumberUtils.isAddOverflow(timestamp, duration, offset)) {
             // this should not happen, but possible in some odd simulation scenarios, so creating a trigger for immediate execution instead
-            return new PointInTimeTrigger( timestamp,
-                                           calendarNames,
-                                           calendars );
+            return PointInTimeTrigger.createPointInTimeTrigger(timestamp, getCalendars(calendarNames, calendars));
         } else {
-            return new PointInTimeTrigger( offset,
-                                           calendarNames,
-                                           calendars );
+            return PointInTimeTrigger.createPointInTimeTrigger(offset, getCalendars(calendarNames, calendars));
         }
     }
 
@@ -147,5 +147,15 @@ public class DurationTimer extends BaseTimer
 
     public Declaration getEventFactHandleDeclaration() {
         return eventFactHandle;
+    }
+
+    private Collection<Calendar> getCalendars(final String[] calendarNames, final Calendars calendars) {
+        final List<Calendar> result = new ArrayList<>();
+        if (calendars != null && calendarNames != null && calendarNames.length > 0) {
+            for (final String calName : calendarNames) {
+                result.add(calendars.get(calName));
+            }
+        }
+        return result;
     }
 }

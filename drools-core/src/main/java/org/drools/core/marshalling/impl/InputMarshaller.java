@@ -241,7 +241,7 @@ public class InputMarshaller {
             case PersisterEnums.POINT_IN_TIME_TRIGGER: {
                 long startTime = inCtx.readLong();
 
-                PointInTimeTrigger trigger = new PointInTimeTrigger( startTime, null, null );
+                PointInTimeTrigger trigger = PointInTimeTrigger.createPointInTimeTrigger( startTime, null );
                 return trigger;
             }
         }

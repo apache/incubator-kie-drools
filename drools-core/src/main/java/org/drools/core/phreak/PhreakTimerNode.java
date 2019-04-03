@@ -546,16 +546,19 @@ public class PhreakTimerNode {
                                                        MarshallerWriteContext outputCtx) {
             // TimerNodeJobContext   
             TimerNodeJobContext tnJobCtx = (TimerNodeJobContext) jobCtx;
-
-            return ProtobufMessages.Timers.Timer.newBuilder()
-                                          .setType( ProtobufMessages.Timers.TimerType.TIMER_NODE )
-                                          .setTimerNode( ProtobufMessages.Timers.TimerNodeTimer.newBuilder()
-                                                                                .setNodeId( tnJobCtx.getTimerNodeId() )
-                                                                                .setTuple( PersisterHelper.createTuple( tnJobCtx.getTuple() ) )
-                                                                                .setTrigger( ProtobufOutputMarshaller.writeTrigger( tnJobCtx.getTrigger(),
-                                                                                                                                    outputCtx ) )
-                                                                                .build() )
-                                          .build();
+            ProtobufMessages.Trigger trigger = ProtobufOutputMarshaller.writeTrigger( tnJobCtx.getTrigger(), outputCtx );
+            if (trigger != null) {
+                return ProtobufMessages.Timers.Timer.newBuilder()
+                        .setType( ProtobufMessages.Timers.TimerType.TIMER_NODE )
+                        .setTimerNode( ProtobufMessages.Timers.TimerNodeTimer.newBuilder()
+                                               .setNodeId( tnJobCtx.getTimerNodeId() )
+                                               .setTuple( PersisterHelper.createTuple( tnJobCtx.getTuple() ) )
+                                               .setTrigger( trigger )
+                                               .build() )
+                        .build();
+            } else {
+                return null;
+            }
         }
     }
 

@@ -735,7 +735,7 @@ public class ProtobufInputMarshaller {
                 return trigger;
             }
             case POINT_IN_TIME : {
-                PointInTimeTrigger trigger = new PointInTimeTrigger( _trigger.getPit().getNextFireTime(), null, null );
+                PointInTimeTrigger trigger = PointInTimeTrigger.createPointInTimeTrigger( _trigger.getPit().getNextFireTime(), null );
                 return trigger;
             }
             case COMPOSITE_MAX_DURATION : {
