@@ -192,8 +192,8 @@ public class DMNDTAnalyser {
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {
-                    checkMultipleConstraintsOnColumn(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
+                    verifyUnaryTestsAllEQ(utln, dt);
+                    List<Comparable<?>> discreteValues = getDiscreteValuesSorted(utln);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
                     DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues);
                     ddtaTable.getInputs().add(ic);
@@ -231,8 +231,8 @@ public class DMNDTAnalyser {
                 UnaryTestInterpretedExecutableExpression interpreted = compileUnaryTests.getInterpreted();
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {
-                    checkMultipleConstraintsOnColumn(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
+                    verifyUnaryTestsAllEQ(utln, dt);
+                    List<Comparable<?>> discreteValues = getDiscreteValuesSorted(utln);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
                     DDTAOutputClause ic = new DDTAOutputClause(discreteDomainMinMax, discreteValues);
                     ddtaTable.getOutputs().add(ic);
@@ -251,13 +251,13 @@ public class DMNDTAnalyser {
         }
     }
 
-    private void checkMultipleConstraintsOnColumn(UnaryTestListNode utln, DecisionTable dt) {
+    private void verifyUnaryTestsAllEQ(UnaryTestListNode utln, DecisionTable dt) {
         if (!utln.getElements().stream().allMatch(e -> e instanceof UnaryTestNode && ((UnaryTestNode) e).getOperator() == UnaryOperator.EQ)) {
             throw new DMNDTAnalysisException("Multiple constraint on column: " + utln, dt);
         }
     }
 
-    private List<Comparable<?>> getDiscreteValues(UnaryTestListNode utln) {
+    private List<Comparable<?>> getDiscreteValuesSorted(UnaryTestListNode utln) {
         List<Comparable<?>> discreteValues = new ArrayList<>();
         for (BaseNode e : utln.getElements()) {
             Comparable<?> v = valueFromNode(((UnaryTestNode) e).getValue());
@@ -287,7 +287,7 @@ public class DMNDTAnalyser {
     private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
         LOG.debug("findOverlaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
-            List<Bound> bounds = findBounds(ddtaTable, jColIdx, activeRules);
+            List<Bound> bounds = findBoundsSorted(ddtaTable, jColIdx, activeRules);
             List<Interval> activeIntervals = new ArrayList<>();
             Bound<?> lastBound = bounds.get(0);
             for (Bound<?> currentBound : bounds) {
@@ -337,14 +337,14 @@ public class DMNDTAnalyser {
     private static void findGaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
         LOG.debug("findGaps jColIdx {}, currentIntervals {}, activeRules {}", jColIdx, currentIntervals, activeRules);
         if (jColIdx < ddtaTable.inputCols()) {
-            findBounds(ddtaTable, jColIdx, activeRules);
-            List<Bound> bounds = findBounds(ddtaTable, jColIdx, activeRules);
+            findBoundsSorted(ddtaTable, jColIdx, activeRules);
+            List<Bound> bounds = findBoundsSorted(ddtaTable, jColIdx, activeRules);
             Interval domainRange = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
 
             // from domain start to the 1st bound
             if (!domainRange.getLowerBound().equals(bounds.get(0))) {
                 currentIntervals[jColIdx] = lastDimensionUncoveredInterval(domainRange.getLowerBound(), bounds.get(0), domainRange);
-                Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), getEdgesFromIntervals(currentIntervals, jColIdx));
+                Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), buildEdgesForHyperrectangleFromIntervals(currentIntervals, jColIdx));
                 analysis.addGap(gap);
                 LOG.debug("STARTLEFT GAP DETECTED {}", gap);
             }
@@ -355,7 +355,7 @@ public class DMNDTAnalyser {
                 LOG.debug("lastBound {} currentBound {}      activeIntervals {} == rules {}", lastBound, currentBound, activeIntervals, activeIntervalsToRules(activeIntervals));
                 if (activeIntervals.isEmpty() && lastBound != null && !Bound.adOrOver(lastBound, currentBound)) {
                     currentIntervals[jColIdx] = lastDimensionUncoveredInterval(lastBound, currentBound, domainRange);
-                    Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), getEdgesFromIntervals(currentIntervals, jColIdx));
+                    Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), buildEdgesForHyperrectangleFromIntervals(currentIntervals, jColIdx));
                     LOG.debug("GAP DETECTED {}", gap);
                     analysis.addGap(gap);
                 }
@@ -378,7 +378,7 @@ public class DMNDTAnalyser {
             // from last Nth bound, to domain end.
             if (!lastBound.equals(domainRange.getUpperBound())) {
                 currentIntervals[jColIdx] = lastDimensionUncoveredInterval(lastBound, domainRange.getUpperBound(), domainRange);
-                Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), getEdgesFromIntervals(currentIntervals, jColIdx));
+                Hyperrectangle gap = new Hyperrectangle(ddtaTable.inputCols(), buildEdgesForHyperrectangleFromIntervals(currentIntervals, jColIdx));
                 LOG.debug("ENDRIGHT GAP DETECTED {}", gap);
                 analysis.addGap(gap);
             }
@@ -387,7 +387,7 @@ public class DMNDTAnalyser {
         LOG.debug(".");
     }
 
-    private static List<Bound> findBounds(DDTATable ddtaTable, int jColIdx, Collection<Integer> activeRules) {
+    private static List<Bound> findBoundsSorted(DDTATable ddtaTable, int jColIdx, Collection<Integer> activeRules) {
         List<Interval> intervals = ddtaTable.projectOnColumnIdx(jColIdx);
         if (!activeRules.isEmpty()) {
             intervals = intervals.stream().filter(i -> activeRules.contains(i.getRule())).collect(Collectors.toList());
@@ -399,7 +399,7 @@ public class DMNDTAnalyser {
         return bounds;
     }
 
-    private static List<Interval> getEdgesFromIntervals(Interval[] currentIntervals, int intervalsIndex) {
+    private static List<Interval> buildEdgesForHyperrectangleFromIntervals(Interval[] currentIntervals, int intervalsIndex) {
         List<Interval> edges = new ArrayList<>();
         for (int p = 0; p <= intervalsIndex; p++) {
             edges.add(currentIntervals[p]);
@@ -475,12 +475,12 @@ public class DMNDTAnalyser {
                     }
                 } else {
                     if (lowerBoundIdx >= 0 && upperBoundIdx >=0) {
-                        results.add(createInterval(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
+                        results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
                     }
                 }
             }
             if (lowerBoundIdx >= 0 && upperBoundIdx >= 0) {
-                results.add(createInterval(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
+                results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
             }
         } else {
             for (BaseNode n : elements) {
@@ -495,7 +495,7 @@ public class DMNDTAnalyser {
         return results;
     }
 
-    private static Interval createInterval(List discreteValues, int rule, int col, int lowerBoundIdx, int upperBoundIdx) {
+    private static Interval createIntervalOfRule(List discreteValues, int rule, int col, int lowerBoundIdx, int upperBoundIdx) {
         Comparable<?> lowValue = (Comparable<?>) discreteValues.get(lowerBoundIdx);
         Comparable<?> highValue = (Comparable<?>) discreteValues.get(upperBoundIdx);
         if (upperBoundIdx + 1 == discreteValues.size()) {
