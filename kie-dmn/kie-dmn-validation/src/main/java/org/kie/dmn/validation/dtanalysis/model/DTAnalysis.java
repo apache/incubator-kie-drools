@@ -17,7 +17,6 @@
 package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -87,14 +86,14 @@ public class DTAnalysis {
 
     public void normalize() {
         int prevSize = this.overlaps.size();
-        internal_normalize();
+        internalNormalize();
         int curSize = this.overlaps.size();
         if (curSize != prevSize) {
             normalize();
         }
     }
 
-    private void internal_normalize() {
+    private void internalNormalize() {
         List<Overlap> newOverlaps = new ArrayList<>();
         List<Overlap> overlapsProcessing = new ArrayList<>();
         overlapsProcessing.addAll(overlaps);
@@ -128,8 +127,8 @@ public class DTAnalysis {
         this.overlaps.addAll(newOverlaps);
     }
 
-    public List<? extends DMNMessage> asDMNMessages() {
-        List<? extends DMNMessage> results = new ArrayList<>();
+    public List<DMNMessage> asDMNMessages() {
+        List<DMNMessage> results = new ArrayList<>();
         if (isError()) {
             DMNMessage m = new DMNDTAnalysisMessage(this,
                                                     Severity.WARN,
@@ -137,14 +136,13 @@ public class DTAnalysis {
                                                                           sourceDT.getOutputLabel(),
                                                                           error.getMessage()),
                                                     Msg.DTANALYSIS_ERROR_ANALYSIS_SKIPPED.getType());
-            results.addAll((Collection) Arrays.asList(m));
+            results.add(m);
             return results;
         }
         results.addAll(passThruMessages());
-
         results.addAll(gapsAsMessages());
         results.addAll(overlapsAsMessages());
-        results.addAll(warnAboutHitPolicyFirst());
+        warnAboutHitPolicyFirst(results);
 
         // keep last.
         if (results.isEmpty()) {
@@ -153,21 +151,19 @@ public class DTAnalysis {
                                                     MsgUtil.createMessage(Msg.DTANALYSIS_EMPTY,
                                                                           sourceDT.getOutputLabel()),
                                                     Msg.DTANALYSIS_EMPTY.getType());
-            results.addAll((Collection) Arrays.asList(m));
+            results.add(m);
             return results;
         }
         return results;
     }
 
-    private Collection warnAboutHitPolicyFirst() {
+    private void warnAboutHitPolicyFirst(final List<DMNMessage> results) {
         if (sourceDT.getHitPolicy() == HitPolicy.FIRST) {
-            return Arrays.asList(new DMNDTAnalysisMessage(this,
-                                                          Severity.WARN,
-                                                          MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_FIRST,
-                                                                                sourceDT.getOutputLabel()),
-                                                          Msg.DTANALYSIS_HITPOLICY_FIRST.getType()));
-        } else {
-            return Collections.emptyList();
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_FIRST,
+                                                                       sourceDT.getOutputLabel()),
+                                                 Msg.DTANALYSIS_HITPOLICY_FIRST.getType()));
         }
     }
 
@@ -254,13 +250,16 @@ public class DTAnalysis {
     private void analyseOverlapForMappedRules(Overlap overlap) {
         for (Integer ruleId : overlap.getRules()) {
             List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+
             for (int jOutputIdx = 0; jOutputIdx < ddtaTable.outputCols(); jOutputIdx++) {
                 DDTAOutputClause curOutputClause = ddtaTable.getOutputs().get(jOutputIdx);
                 if (curOutputClause.isDiscreteDomain()) {
                     int curOutputIdx = curOutputClause.getDiscreteValues().indexOf(curValues.get(jOutputIdx));
+
                     List<Integer> otherRules = new ArrayList<>(overlap.getRules());
                     otherRules.remove(ruleId);
-                    for (Integer otherRuleID : overlap.getRules()) {
+
+                    for (Integer otherRuleID : otherRules) {
                         List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
                         int otherOutputIdx = curOutputClause.getDiscreteValues().indexOf(otherRuleValues.get(jOutputIdx));
                         if (curOutputIdx > otherOutputIdx) {

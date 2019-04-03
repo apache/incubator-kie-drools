@@ -220,42 +220,8 @@ public class DMNValidatorImpl implements DMNValidator {
                                           Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
-                List<Definitions> models = new ArrayList<>();
-                for (Reader reader : readers) {
-                    Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(validator.dmnCompilerConfig.getRegisteredExtensions()).unmarshal(reader);
-                    dmndefs.normalize();
-                    models.add(dmndefs);
-                }
-                models = internalValidatorSortModels(models);
-                List<Definitions> otherModel_Definitions = new ArrayList<>();
-                List<DMNModel> otherModel_DMNModels = new ArrayList<>();
-                for (Definitions dmnModel : models) {
-                    try {
-                        if (flags.contains(VALIDATE_MODEL)) {
-                            results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
-                            otherModel_Definitions.add(dmnModel);
-                        }
-                        if (flags.contains(VALIDATE_COMPILATION)) {
-                            DMNCompiler compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
-                            DMNModel model = compiler.compile(dmnModel, otherModel_DMNModels);
-                            if (model != null) {
-                                results.addAll(model.getMessages());
-                                otherModel_DMNModels.add(model);
-                            } else {
-                                throw new IllegalStateException("Compiled model is null!");
-                            }
-                        }
-                    } catch (Throwable t) {
-                        MsgUtil.reportMessage(LOG,
-                                              DMNMessage.Severity.ERROR,
-                                              null,
-                                              results,
-                                              t,
-                                              null,
-                                              Msg.VALIDATION_RUNTIME_PROBLEM,
-                                              t.getMessage());
-                    }
-                }
+                List<Definitions> models = unmarshallReaders(readers);
+                validateDefinitions(internalValidatorSortModels(models), results);
             }
             return results.getMessages();
         }
@@ -283,38 +249,51 @@ public class DMNValidatorImpl implements DMNValidator {
                                           Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
-                List<Definitions> ms = internalValidatorSortModels(Arrays.asList(models));
-                List<Definitions> otherModel_Definitions = new ArrayList<>();
-                List<DMNModel> otherModel_DMNModels = new ArrayList<>();
-                for (Definitions dmnModel : ms) {
-                    try {
-                        if (flags.contains(VALIDATE_MODEL)) {
-                            results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
-                            otherModel_Definitions.add(dmnModel);
-                        }
-                        if (flags.contains(VALIDATE_COMPILATION)) {
-                            DMNCompiler compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
-                            DMNModel model = compiler.compile(dmnModel, otherModel_DMNModels);
-                            if (model != null) {
-                                results.addAll(model.getMessages());
-                                otherModel_DMNModels.add(model);
-                            } else {
-                                throw new IllegalStateException("Compiled model is null!");
-                            }
-                        }
-                    } catch (Throwable t) {
-                        MsgUtil.reportMessage(LOG,
-                                              DMNMessage.Severity.ERROR,
-                                              null,
-                                              results,
-                                              t,
-                                              null,
-                                              Msg.VALIDATION_RUNTIME_PROBLEM,
-                                              t.getMessage());
-                    }
-                }
+                validateDefinitions(internalValidatorSortModels(Arrays.asList(models)), results);
             }
             return results.getMessages();
+        }
+
+        private List<Definitions> unmarshallReaders(Reader... readers) {
+            List<Definitions> models = new ArrayList<>();
+            for (Reader reader : readers) {
+                Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(validator.dmnCompilerConfig.getRegisteredExtensions()).unmarshal(reader);
+                dmndefs.normalize();
+                models.add(dmndefs);
+            }
+            return models;
+        }
+
+        private void validateDefinitions(List<Definitions> definitions, DMNMessageManager results) {
+            List<Definitions> otherModel_Definitions = new ArrayList<>();
+            List<DMNModel> otherModel_DMNModels = new ArrayList<>();
+            for (Definitions dmnModel : definitions) {
+                try {
+                    if (flags.contains(VALIDATE_MODEL)) {
+                        results.addAll(validator.validateModel(dmnModel, otherModel_Definitions));
+                        otherModel_Definitions.add(dmnModel);
+                    }
+                    if (flags.contains(VALIDATE_COMPILATION)) {
+                        DMNCompiler compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
+                        DMNModel model = compiler.compile(dmnModel, otherModel_DMNModels);
+                        if (model != null) {
+                            results.addAll(model.getMessages());
+                            otherModel_DMNModels.add(model);
+                        } else {
+                            throw new IllegalStateException("Compiled model is null!");
+                        }
+                    }
+                } catch (Throwable t) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          results,
+                                          t,
+                                          null,
+                                          Msg.VALIDATION_RUNTIME_PROBLEM,
+                                          t.getMessage());
+                }
+            }
         }
 
         private List<Definitions> internalValidatorSortModels(List<Definitions> ms) {
@@ -455,7 +434,7 @@ public class DMNValidatorImpl implements DMNValidator {
         try {
             DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new FileReader(xmlFile));
             Source s = new StreamSource(xmlFile);
-            return (inferDMNVersion == DMN_VERSION.DMN_v1_1) ? validateSchemaV1_1(s) : validateSchemaV1_2(s);
+            return (inferDMNVersion == DMN_VERSION.DMN_v1_1) ? validateSchema(s, schemav1_1) : validateSchema(s, schemav1_2);
         } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
         }
@@ -468,28 +447,17 @@ public class DMNValidatorImpl implements DMNValidator {
             String xml = buffer.lines().collect(Collectors.joining("\n"));
             DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new StringReader(xml));
             Source s = new StreamSource(new StringReader(xml));
-            return (inferDMNVersion == DMN_VERSION.DMN_v1_1) ? validateSchemaV1_1(s) : validateSchemaV1_2(s);
+            return (inferDMNVersion == DMN_VERSION.DMN_v1_1) ? validateSchema(s, schemav1_1) : validateSchema(s, schemav1_2);
         } catch (Exception e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
         }
         return problems;
     }
 
-    private List<DMNMessage> validateSchemaV1_1(Source s) {
+    private List<DMNMessage> validateSchema(Source s, Schema schema) {
         List<DMNMessage> problems = new ArrayList<>();
         try {
-            schemav1_1.newValidator().validate(s);
-        } catch (SAXException | IOException e) {
-            problems.add(new DMNMessageImpl( DMNMessage.Severity.ERROR, MsgUtil.createMessage( Msg.FAILED_XML_VALIDATION, e.getMessage() ), Msg.FAILED_XML_VALIDATION.getType(), null, e));
-            logDebugMessages( problems );
-        }
-        return problems;
-    }
-
-    private List<DMNMessage> validateSchemaV1_2(Source s) {
-        List<DMNMessage> problems = new ArrayList<>();
-        try {
-            schemav1_2.newValidator().validate(s);
+            schema.newValidator().validate(s);
         } catch (SAXException | IOException e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
             logDebugMessages(problems);

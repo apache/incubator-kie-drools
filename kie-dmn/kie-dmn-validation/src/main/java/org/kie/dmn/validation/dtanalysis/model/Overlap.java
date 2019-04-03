@@ -108,23 +108,30 @@ public class Overlap {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Overlap other = (Overlap) obj;
         if (overlap == null) {
-            if (other.overlap != null)
+            if (other.overlap != null) {
                 return false;
-        } else if (!overlap.equals(other.overlap))
+            }
+        } else if (!overlap.equals(other.overlap)) {
             return false;
+        }
         if (rules == null) {
-            if (other.rules != null)
+            if (other.rules != null) {
                 return false;
-        } else if (!rules.equals(other.rules))
+            }
+        } else if (!rules.equals(other.rules)) {
             return false;
+        }
         return true;
     }
 

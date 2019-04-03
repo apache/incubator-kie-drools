@@ -104,23 +104,30 @@ public class Interval {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Interval other = (Interval) obj;
         if (lowerBound == null) {
-            if (other.lowerBound != null)
+            if (other.lowerBound != null) {
                 return false;
-        } else if (!lowerBound.equals(other.lowerBound))
+            }
+        } else if (!lowerBound.equals(other.lowerBound)) {
             return false;
+        }
         if (upperBound == null) {
-            if (other.upperBound != null)
+            if (other.upperBound != null) {
                 return false;
-        } else if (!upperBound.equals(other.upperBound))
+            }
+        } else if (!upperBound.equals(other.upperBound)) {
             return false;
+        }
         return true;
     }
 
