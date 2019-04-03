@@ -2001,7 +2001,7 @@ Expression MapCreationLiteralExpression():
     (
         (
             <LBRACKET>
-            first = MapCreationLiteralExpressionKeyValuePair() { begin=token(); all.add(first); }
+            (first = MapCreationLiteralExpressionKeyValuePair() { begin=token(); all.add(first); })*
             (
                           <COMMA>
                           other = MapCreationLiteralExpressionKeyValuePair() { all.add(other); }
