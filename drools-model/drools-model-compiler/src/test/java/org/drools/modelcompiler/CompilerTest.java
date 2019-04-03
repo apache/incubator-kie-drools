@@ -1348,6 +1348,7 @@ public class CompilerTest extends BaseModelTest {
 
 
     @Test
+    @Ignore
     public void testErrorTwoPatterns() {
         final String drl1 =
                 "import " + Person.class.getCanonicalName() + ";\n" +
