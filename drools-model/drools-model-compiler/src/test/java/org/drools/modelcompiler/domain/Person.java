@@ -47,6 +47,8 @@ public class Person extends AbstractReactiveObject {
         this.numberOfItems = numberOfItems;
     }
 
+    private Person ParentP;
+
     public Person() { }
 
     public Person(String name) {
@@ -159,6 +161,14 @@ public class Person extends AbstractReactiveObject {
         this.addresses = addresses;
     }
 
+    public Person getParentP() {
+        return ParentP;
+    }
+
+    public Person setParentP(Person parentP) {
+        ParentP = parentP;
+        return this;
+    }
 
     @Override
     public boolean equals(Object o) {
