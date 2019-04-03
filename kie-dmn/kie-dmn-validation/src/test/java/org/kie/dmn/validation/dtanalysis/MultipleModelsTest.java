@@ -37,7 +37,7 @@ import static org.junit.Assert.assertThat;
 public class MultipleModelsTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void testMultiple_ReaderInput() throws IOException {
+    public void testMultipleFromReaderInput() throws IOException {
         try (final Reader reader0 = getReader("MyDecisionTable.dmn");
                 final Reader reader1 = getReader("tVowelDefinition.dmn");) {
             final List<DMNMessage> messages = validator.validateUsing(Validation.ANALYZE_DECISION_TABLE)
@@ -47,7 +47,7 @@ public class MultipleModelsTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testMultiple_FileInput() {
+    public void testMultipleFromFileInput() {
         final List<DMNMessage> messages = validator.validateUsing(Validation.ANALYZE_DECISION_TABLE)
                                                    .theseModels(getFile("MyDecisionTable.dmn"),
                                                                 getFile("tVowelDefinition.dmn"));
@@ -55,7 +55,7 @@ public class MultipleModelsTest extends AbstractDTAnalysisTest {
     }
 
     @Test
-    public void testMultiple_DefinitionsInput() throws IOException {
+    public void testMultipleFromDefinitionsInput() throws IOException {
         final List<DMNMessage> messages = validator.validateUsing(Validation.ANALYZE_DECISION_TABLE)
                                                    .theseModels(getDefinitions("MyDecisionTable.dmn",
                                                                                "http://www.trisotech.com/definitions/_6b77f7ac-d61a-4fb0-9e24-7ebf04444f59",

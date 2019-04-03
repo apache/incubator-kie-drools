@@ -49,7 +49,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
 
     @Ignore
     @Test
-    public void testBaseModel_OK() {
+    public void testBaseModelOK() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("import/Base-model.dmn", this.getClass(), "import/Import-base-model.dmn");
         DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b33fa7d9-f501-423b-afa8-15ded7e7f493", "Import base model");
         assertThat(dmnModel, notNullValue());
@@ -63,7 +63,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBaseModel_OK__ReaderInput() throws IOException {
+    public void testBaseModelOKFromReaderInput() throws IOException {
         try (final Reader reader0 = getReader("import/Base-model.dmn");
                 final Reader reader1 = getReader("import/Import-base-model.dmn");) {
             final List<DMNMessage> messages = validator.validateUsing(// VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
@@ -75,7 +75,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBaseModel_OK__FileInput() throws IOException {
+    public void testBaseModelOKFromFileInput() throws IOException {
         final List<DMNMessage> messages = validator.validateUsing(// VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
                                                                   Validation.VALIDATE_MODEL,
                                                                   Validation.VALIDATE_COMPILATION)
@@ -85,7 +85,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBaseModel_ImportModelName__FileInput() throws IOException {
+    public void testBaseModelImportModelNameFromFileInput() throws IOException {
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
                                                    .theseModels(getFile("import/Import-base-model-modelnameattribute.dmn"), // DROOLS-2938
                                                                 getFile("import/Base-model.dmn"));
@@ -93,7 +93,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBaseModel_OK__DefinitionsInput() throws IOException {
+    public void testBaseModelOKFromDefinitionsInput() throws IOException {
         final List<DMNMessage> messages = validator.validateUsing(// VALIDATE_SCHEMA, disabled, due to QName use not compliant. 
                                                                   Validation.VALIDATE_MODEL,
                                                                   Validation.VALIDATE_COMPILATION)
@@ -107,7 +107,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testWrongImportBaseModel__ReaderInput() throws IOException {
+    public void testWrongImportBaseModelFromReaderInput() throws IOException {
         try (final Reader reader0 = getReader("import/Base-model.dmn");
                 final Reader reader1 = getReader("import/Wrong-Import-base-model.dmn");) {
             final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
@@ -121,7 +121,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
     
     @Test
-    public void testWrongImportBaseModel__FileInput() throws IOException {
+    public void testWrongImportBaseModelFromFileInput() throws IOException {
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
                                                    .theseModels(getFile("import/Base-model.dmn"),
                                                                 getFile("import/Wrong-Import-base-model.dmn"));
@@ -133,7 +133,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testWrongImportBaseModel__DefinitionsInput() throws IOException {
+    public void testWrongImportBaseModelFromDefinitionsInput() throws IOException {
         final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
                                                    .theseModels(getDefinitions(Arrays.asList("import/Base-model.dmn", "import/Wrong-Import-base-model.dmn"),
                                                                                "http://www.trisotech.com/definitions/_70df1ad5-2a33-4ede-b8b2-869988ac1d30",
@@ -148,7 +148,7 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testOnlyImportBaseModel_ReaderInput() throws IOException {
+    public void testOnlyImportBaseModelFromReaderInput() throws IOException {
         try (final Reader reader1 = getReader("import/Only-Import-base-model.dmn");) {
             final List<DMNMessage> messages = validator.validate(reader1, Validation.VALIDATE_MODEL);
             assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND)));
@@ -156,13 +156,13 @@ public class ValidatorImportTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testOnlyImportBaseModel_FileInput() throws IOException {
+    public void testOnlyImportBaseModelFromFileInput() throws IOException {
         final List<DMNMessage> messages = validator.validate(getFile("import/Only-Import-base-model.dmn"), Validation.VALIDATE_MODEL);
         assertTrue(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.IMPORT_NOT_FOUND)));
     }
 
     @Test
-    public void testOnlyImportBaseModel_DefinitionsInput() throws IOException {
+    public void testOnlyImportBaseModelFromDefinitionsInput() throws IOException {
         final List<DMNMessage> messages = validator.validate(getDefinitions("import/Only-Import-base-model.dmn",
                                                                             "http://www.trisotech.com/dmn/definitions/_a9bfa4de-cf5c-4b2f-9011-ab576e00b162",
                                                                             "Only Import base model"),
