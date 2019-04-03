@@ -149,9 +149,6 @@
     </profile>
 
     <profile>
-      <!--
-        See .travis.yml for how to run the coverage report
-      -->
       <id>report-code-coverage</id>
       <properties>
         <jacoco.master.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.master.exec.file>
