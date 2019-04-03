@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_d9beb8dd-2578-4f32-8231-cd27c199f098" id="_d9beb8dd-2578-4f32-8231-cd27c199f098" namespace="http://www.trisotech.com/definitions/_d9beb8dd-2578-4f32-8231-cd27c199f098"          exporter="DMN Modeler" exporterVersion="6.1.22.4" name="tVowelDefinition" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tVowel" label="tVowel">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"a","e","i","o","u"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_722273b4-65bd-47c5-9a7c-fa1c31ef38c9" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</semantic:definitions>
