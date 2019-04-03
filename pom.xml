@@ -115,6 +115,68 @@
         <module>drools-distribution</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>run-code-coverage</id>
+      <properties>
+        <jacoco.exec.file>${project.build.directory}/jacoco.exec</jacoco.exec.file>
+        <jacoco.excludes>*Lexer</jacoco.excludes>
+        <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.jacoco.plugin}/org.jacoco.agent-${version.jacoco.plugin}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
+        <surefire.argLine>
+          -Dfile.encoding=${project.build.sourceEncoding}
+          ${jacoco.agent.line}
+        </surefire.argLine>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>${surefire.argLine}</argLine>
+              </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.jacoco</groupId>
+                  <artifactId>org.jacoco.agent</artifactId>
+                  <version>${version.jacoco.plugin}</version>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <id>report-code-coverage</id>
+      <properties>
+        <jacoco.master.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.master.exec.file>
+        <sonar.jacoco.reportPaths>${jacoco.master.exec.file}</sonar.jacoco.reportPaths>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>${version.jacoco.plugin}</version>
+              <configuration>
+                <fileSets>
+                  <fileSet>
+                    <directory>${project.build.directory}</directory>
+                    <includes>
+                      <include>*.exec</include>
+                    </includes>
+                  </fileSet>
+                </fileSets>
+                <destFile>${jacoco.master.exec.file}</destFile>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
   </profiles>
 
 </project>
