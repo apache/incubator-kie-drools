@@ -4,8 +4,8 @@
 
 You can embed an executable rule model programmatically within your Java application to compile your rule assets more efficiently at build time.
 
-.Prerequisite
-You have a Java application that contains {PRODUCT} business assets.
+.Prerequisites
+* You have a Java application that contains {PRODUCT} business assets.
 
 .Procedure
 . Add the following dependencies to the relevant classpath for your Java project:

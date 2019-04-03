@@ -4,8 +4,8 @@
 
 You can embed an executable rule model in your Maven project to compile your rule assets more efficiently at build time.
 
-.Prerequisite
-You have a Mavenized project that contains {PRODUCT} business assets.
+.Prerequisites
+* You have a Mavenized project that contains {PRODUCT} business assets.
 
 .Procedure
 . In the `pom.xml` file of your Maven project, ensure that the packaging type is set to `kjar` and add the `kie-maven-plugin` build component:
