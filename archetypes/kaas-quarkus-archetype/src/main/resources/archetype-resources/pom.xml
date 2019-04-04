@@ -11,7 +11,7 @@
   <properties>
     <quarkus.version>0.11.0</quarkus.version>
     <submarine.version>8.0.0-SNAPSHOT</submarine.version>
-    <swagger.version>1.5.9</swagger.version>
+    <swagger.version>1.5.21</swagger.version>
     
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -73,26 +73,31 @@
         <extensions>true</extensions>
       </plugin>
       <plugin>
-        <groupId>io.openapitools.swagger</groupId>
+        <groupId>com.github.kongchen</groupId>
         <artifactId>swagger-maven-plugin</artifactId>
-        <version>2.0.3</version>
+        <version>3.1.8</version>
         <configuration>
-          <resourcePackages>
-            <resourcePackage>${groupId}</resourcePackage>
-          </resourcePackages>
-          <outputDirectory>${basedir}/target/classes/META-INF/resources/docs/</outputDirectory>
-          <outputFilename>swagger</outputFilename>
-          <outputFormats>JSON</outputFormats>
-          <prettyPrint>true</prettyPrint>
-          <swaggerConfig>
-            <info>
-              <title>${project.description}</title>
-              <version>${project.version}</version>
-            </info>
-          </swaggerConfig>
+          <apiSources>
+            <apiSource>
+              <springmvc>false</springmvc>
+              <locations>
+                <location>${groupId}</location>
+              </locations>
+              <schemes>http,https</schemes>
+              <info>
+                <title>${project.description}</title>
+                <version>${project.version}</version>
+              </info>
+              <outputPath>${basedir}/target/classes/META-INF/resources/docs/</outputPath>
+              <outputFormats>json,yaml</outputFormats>
+              <swaggerDirectory>${basedir}/target/classes/META-INF/resources/docs/</swaggerDirectory>
+              <swaggerFileName>swagger</swaggerFileName>
+            </apiSource>
+          </apiSources>
         </configuration>
         <executions>
           <execution>
+            <phase>compile</phase>
             <goals>
               <goal>generate</goal>
             </goals>
