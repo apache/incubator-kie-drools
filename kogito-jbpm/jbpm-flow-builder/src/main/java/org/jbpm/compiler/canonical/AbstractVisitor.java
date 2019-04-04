@@ -45,7 +45,7 @@ public abstract class AbstractVisitor {
 
     protected static final String FACTORY_FIELD_NAME = "factory";
     
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope) {
+    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         
     }
 

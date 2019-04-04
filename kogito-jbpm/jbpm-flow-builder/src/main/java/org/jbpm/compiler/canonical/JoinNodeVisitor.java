@@ -29,7 +29,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class JoinNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope) {
+    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         Join joinNode = (Join) node;
         addFactoryMethodWithArgsWithAssignment(body, JoinFactory.class, "joinNode" + node.getId(), "joinNode", new LongLiteralExpr(joinNode.getId()));
         addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(joinNode.getName(), "Split")));

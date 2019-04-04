@@ -27,6 +27,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,8 @@ public class BuildMojo extends AbstractKieMojo {
      */
     @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
     private File outputDirectory;
+    @Parameter(required = true, defaultValue = "${project.build.directory}")
+    private File targetDirectory;
 
     /**
      * Project resources folder.
@@ -113,6 +116,13 @@ public class BuildMojo extends AbstractKieMojo {
         if(!ExecModelMode.shouldGenerateModel(generateModel)) {
             buildDrl();
         }
+        
+        Map<String, String> labels = new HashMap<>();
+        labels.put(LABEL_PREFIX + "organization", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("not set"));
+        labels.put(LABEL_PREFIX + "organization-url", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("not set"));
+        
+        writeLabelsImageMetadata(targetDirectory.getPath(), labels);
+
     }
 
     private void buildDrl() throws MojoFailureException {

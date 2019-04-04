@@ -29,7 +29,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class EndNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope) {
+    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         EndNode endNode = (EndNode) node;
         
         addFactoryMethodWithArgsWithAssignment(body, EndNodeFactory.class, "endNode" + node.getId(), "endNode", new LongLiteralExpr(endNode.getId()));

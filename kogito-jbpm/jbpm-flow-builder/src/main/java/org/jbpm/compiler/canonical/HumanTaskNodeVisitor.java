@@ -29,7 +29,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class HumanTaskNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope) {
+    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         HumanTaskNode humanTaskNode = (HumanTaskNode) node;
         Work work = humanTaskNode.getWork();
         
@@ -40,5 +40,6 @@ public class HumanTaskNodeVisitor extends AbstractVisitor {
         
         addFactoryMethodWithArgs(body, "humanTaskNode" + node.getId(), "done");
         
+        metadata.getWorkItems().add(work.getName());
     }
 }

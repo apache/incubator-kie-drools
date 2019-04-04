@@ -15,12 +15,23 @@
 
 package org.kie.maven.plugin;
 
-import org.apache.maven.plugin.AbstractMojo;
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.kie.maven.plugin.metadata.ImageMetaData;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 
+    protected final static String LABEL_PREFIX = "org.kie.";
+    
+    private ObjectMapper mapper = new ObjectMapper();
+    
     protected void setSystemProperties(Map<String, String> properties) {
 
         if (properties != null) {
@@ -30,6 +41,26 @@ public abstract class AbstractKieMojo extends AbstractMojo {
             }
             getLog().debug("Configured system properties were successfully set.");
         }
+    }
+        
+    protected void writeLabelsImageMetadata(String target, Map<String, String> labels) {
+     
+        try {
+            Path imageMetaDataFile = Paths.get(target, "image_metadata.json");
+            ImageMetaData imageMetadata = null;
+            if (Files.exists(imageMetaDataFile)) {
+                // read the file to merge the content
+                imageMetadata =  mapper.readValue(imageMetaDataFile.toFile(), ImageMetaData.class);
+            } else {
+                imageMetadata = new ImageMetaData();            
+            }
+            imageMetadata.add(labels);
+            
+            Files.write(imageMetaDataFile, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(imageMetadata).getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+               
     }
 
 }

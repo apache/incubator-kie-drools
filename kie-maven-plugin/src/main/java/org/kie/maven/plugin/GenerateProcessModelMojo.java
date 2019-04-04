@@ -21,9 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,41 +35,23 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.SemanticModules;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
-import org.drools.modelcompiler.builder.KieModuleModelMethod;
-import org.drools.modelcompiler.builder.ModelBuilderImpl;
-import org.drools.modelcompiler.builder.ModelWriter;
-import org.drools.modelcompiler.builder.ProjectSourceClass;
-import org.jbpm.assembler.BPMN2AssemblerService;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
-import org.jbpm.compiler.ProcessBuilderImpl;
+import org.jbpm.compiler.canonical.ModelMetaData;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.api.KieServices;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
-import org.kie.api.io.ResourceWithConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceWithConfigurationImpl;
+import org.xml.sax.SAXException;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -102,7 +83,6 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
-import org.xml.sax.SAXException;
 
 @Mojo(name = "generateProcessModel",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
@@ -153,6 +133,7 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
 
             final List<String> compiledClassNames = new ArrayList<>();
             List<File> processFiles = getBPMNFiles();
+            Map<String, String> labels = new HashMap<>();
 
             getLog().debug("Process Files to process: " + processFiles);
             List<Process> processes = new ArrayList<>();
@@ -162,53 +143,56 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
                 FileSystemResource r = new FileSystemResource(bpmnFile);
                 processes.addAll(parseProcessFile(r));
             }
-
+            
             final String additionalCompilerPath = "/generated-sources/process/main/java";
             addNewCompileRoot(additionalCompilerPath);
-
+            List<String> publicProcesses = new ArrayList<>();
+            
             for (Process process : processes) {
                 WorkflowProcess workFlowProcess = (WorkflowProcess) process;
 
-                String classPrefix = StringUtils.capitalize(ProcessToExecModelGenerator.INSTANCE.exctactProcessId(process.getId()));
-                String packageName = process.getPackageName().replaceAll("\\.", "/");
-
-                String sourceContent = ProcessToExecModelGenerator.INSTANCE.generate(workFlowProcess);
+                ProcessMetaData processMetaData = ProcessToExecModelGenerator.INSTANCE.generate(workFlowProcess);
+                
                 // create class with executable model for the process
-                String processClazzName = classPrefix + "Process";
-                final Path processFileNameRelative = transformPathToMavenPath( packageName + "/" + processClazzName + ".java");
+                String processClazzName = processMetaData.getProcessClassName();
+                final Path processFileNameRelative = transformPathToMavenPath(processClazzName, ".java");
 
                 compiledClassNames.add(getCompiledClassName(processFileNameRelative));
 
-                final Path processFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, processFileNameRelative.toString());
-                createSourceFile(processFileName, sourceContent);
-
+                final Path processFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, processFileNameRelative.toString());                
+                createSourceFile(processFileName, processMetaData.getGeneratedClassModel());
+                
                 if (WorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(workFlowProcess.getVisibility())) {
-
-                    // create model class for all variables
-                    String modelClazzName = classPrefix + "Model";
-                    String modelDataClazz = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
-
-                    final Path modelFileNameRelative = transformPathToMavenPath( packageName + "/" + modelClazzName + ".java");
+                
+                    // create model class for all variables                    
+                    ModelMetaData modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
+                    
+                    final Path modelFileNameRelative = transformPathToMavenPath(  modelMetaData.getModelClassName(), ".java");
                     final Path modelFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, modelFileNameRelative.toString());
-                    createSourceFile(modelFileName, modelDataClazz);
-
-
+                    createSourceFile(modelFileName, modelMetaData.getGeneratedClassModel());
+                    
+                
                     // create REST resource class for process
-                    String resourceClazzName = classPrefix + "Resource";
-                    String resourceClazz = generateResourceClass(workFlowProcess, process.getId(), modelClazzName, compiledClassNames);
-
-                    final Path resourceFileNameRelative = transformPathToMavenPath( packageName + "/" + resourceClazzName + ".java");
+                    String resourceClazzName = StringUtils.capitalize(processMetaData.getExtractedProcessId()) + "Resource";
+                    String resourceClazz = generateResourceClass(workFlowProcess, processMetaData.getProcessId(), modelMetaData.getModelClassSimpleName(), modelMetaData.getModelClassName(), compiledClassNames);
+                    
+                    final Path resourceFileNameRelative = transformPathToMavenPath( project.getGroupId() + "." + resourceClazzName, ".java");
                     final Path resourceFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, resourceFileNameRelative.toString());
                     createSourceFile(resourceFileName, resourceClazz);
+                    
+                    labels.put(LABEL_PREFIX + processMetaData.getExtractedProcessId(), Optional.ofNullable(workFlowProcess.getMetaData().get("Description")).map(d -> d.toString()).orElse("Executes " + process.getName()));
+                    publicProcesses.add(processMetaData.getExtractedProcessId());
                 }
             }
             if (!compiledClassNames.isEmpty()) {
                 String boostrapClass = generateProcessRuntimeBootstrap(compiledClassNames);
-                final Path bootstrapFileNameRelative = transformPathToMavenPath(BOOTSTRAP_CLASS.replaceAll("\\.", File.separator) + ".java");
+                final Path bootstrapFileNameRelative = transformPathToMavenPath(BOOTSTRAP_CLASS, ".java");
                 final Path rbootstrapFileName = Paths.get(targetDirectory.getPath(), additionalCompilerPath, bootstrapFileNameRelative.toString());
                 createSourceFile(rbootstrapFileName, boostrapClass);
             }
             getLog().info("Process Model successfully generated");
+            labels.put(LABEL_PREFIX + "processes", publicProcesses.stream().collect(Collectors.joining(",")));
+            writeLabelsImageMetadata(targetDirectory.getPath(), labels);
         } catch (Exception e) {
             throw new MojoExecutionException("An error was caught during process generation", e);
         } finally {
@@ -236,18 +220,6 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
                 .collect(Collectors.toList());
     }
 
-    private void compileBPMNFile(InternalKieModule kieModule, BPMN2AssemblerService assemblerService, KnowledgeBuilder knowledgeBuilder, String dmnFile) throws Exception {
-        Resource resource = kieModule.getResource(dmnFile);
-        ResourceConfiguration resourceConfiguration = kieModule.getResourceConfiguration(dmnFile);
-
-        ResourceWithConfiguration resourceWithConfiguration =
-                new ResourceWithConfigurationImpl(resource, resourceConfiguration, a -> {
-                }, b -> {
-                });
-
-        assemblerService.addResources(knowledgeBuilder, Collections.singletonList(resourceWithConfiguration), ResourceType.BPMN2);
-    }
-
     private void createSourceFile(Path newFile, String sourceContent) {
         try {
             Files.deleteIfExists(newFile);
@@ -266,8 +238,8 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
                                 .replace(".java", "");
     }
 
-    private Path transformPathToMavenPath(String generatedFile) {
-        Path fileName = Paths.get(generatedFile);
+    private Path transformPathToMavenPath(String generatedFile, String ext) {
+        Path fileName = Paths.get(generatedFile.replaceAll("\\.", "/") + ext);
         Path originalFilePath = Paths.get("src/main/java");
         final Path fileNameRelative;
         if(fileName.startsWith(originalFilePath)) {
@@ -282,12 +254,13 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
         final String newCompileSourceRoot = targetDirectory.getPath() + droolsModelCompilerPath;
         project.addCompileSourceRoot(newCompileSourceRoot);
     }
-
-
-    public String generateResourceClass(WorkflowProcess process, String processId, String dataClazzName, List<String> compiledClassNames) {
-
+    
+    
+    public String generateResourceClass(WorkflowProcess process, String processId, String dataClazzName, String modelfqcn, List<String> compiledClassNames) {
+       
         CompilationUnit clazz = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/RestResourceTemplate.java"));
         clazz.setPackageDeclaration(process.getPackageName());
+        clazz.addImport(modelfqcn);
         Optional<ClassOrInterfaceDeclaration> resourceClassOptional = clazz.findFirst(ClassOrInterfaceDeclaration.class, sl -> true);
 
         if (resourceClassOptional.isPresent()) {

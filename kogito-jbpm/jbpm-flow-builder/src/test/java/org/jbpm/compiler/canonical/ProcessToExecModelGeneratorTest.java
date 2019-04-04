@@ -16,6 +16,7 @@
 
 package org.jbpm.compiler.canonical;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -62,10 +63,18 @@ public class ProcessToExecModelGeneratorTest {
         
         Process process = factory.validate().getProcess();
         
-        String classContent = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process);
-        assertNotNull("Dumper should return non null class for process", classContent);
+        ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process);
+        assertNotNull("Dumper should return non null class for process", processMetadata);
         
-        logger.info(classContent);
+        logger.debug(processMetadata.getGeneratedClassModel());
+        
+        assertEquals("orders", processMetadata.getExtractedProcessId());
+        assertEquals("demo.orders", processMetadata.getProcessId());
+        assertEquals("orders", processMetadata.getProcessName());
+        assertEquals("1.0", processMetadata.getProcessVersion());
+        assertEquals("com.myspace.demo.OrdersProcess", processMetadata.getProcessClassName());
+        assertNotNull(processMetadata.getGeneratedClassModel());
+        assertEquals(1, processMetadata.getWorkItems().size());
     }
     
     @Test
@@ -100,9 +109,10 @@ public class ProcessToExecModelGeneratorTest {
         
         Process process = factory.validate().getProcess();
         
-        String classContent = ProcessToExecModelGenerator.INSTANCE.generateModel((WorkflowProcess) process);
-        assertNotNull("Dumper should return non null class for process", classContent);
+        ModelMetaData modelMetadata = ProcessToExecModelGenerator.INSTANCE.generateModel((WorkflowProcess) process);
+        assertNotNull("Dumper should return non null class for process", modelMetadata);
         
-        logger.info(classContent);
+        logger.debug(modelMetadata.getGeneratedClassModel());
+        assertEquals("com.myspace.demo.OrdersModel", modelMetadata.getModelClassName());
     }
 }

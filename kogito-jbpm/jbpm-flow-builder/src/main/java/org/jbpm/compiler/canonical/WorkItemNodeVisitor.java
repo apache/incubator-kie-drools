@@ -29,7 +29,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class WorkItemNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope) {
+    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         WorkItemNode workItemNode = (WorkItemNode) node;
         Work work = workItemNode.getWork();
         
@@ -40,5 +40,7 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
         addWorkItemParameters(work, body, "workItemNode" + node.getId());
         
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "done");
+        
+        metadata.getWorkItems().add(work.getName());
     }
 }

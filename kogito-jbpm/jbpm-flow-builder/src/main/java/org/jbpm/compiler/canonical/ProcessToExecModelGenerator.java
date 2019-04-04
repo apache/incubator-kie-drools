@@ -90,102 +90,115 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 	    this.nodesVisitors.put(Join.class, new JoinNodeVisitor());
     }
 
-    public String generate(WorkflowProcess process) {
+    public ProcessMetaData generate(WorkflowProcess process) {
         
         CompilationUnit clazz = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));                
         clazz.setPackageDeclaration(process.getPackageName());
         Optional<ClassOrInterfaceDeclaration> processMethod = clazz.findFirst(ClassOrInterfaceDeclaration.class, sl -> true);
-
-        if (processMethod.isPresent()) {
-            processMethod.get().setName(StringUtils.capitalize(exctactProcessId(process.getId()) + PROCESS_CLASS_SUFFIX));
-        }
-                
-        visitProcess(process, clazz);
         
-        return clazz.toString();
+        String extractedProcessId = exctactProcessId(process.getId());
+        
+        if (!processMethod.isPresent()) {
+            throw new RuntimeException("Cannot find class declaration in the template");
+        }
+        ClassOrInterfaceDeclaration processClazz = processMethod.get(); 
+        processClazz.setName(StringUtils.capitalize(extractedProcessId + PROCESS_CLASS_SUFFIX));
+        ProcessMetaData metadata = new ProcessMetaData(process.getId(), 
+                                                       extractedProcessId, 
+                                                       process.getName(), 
+                                                       process.getVersion(),
+                                                       (clazz.getPackageDeclaration().isPresent() ? clazz.getPackageDeclaration().get().getNameAsString() + "." : "") + processClazz.getNameAsString());
+              
+        visitProcess(process, clazz, metadata);
+        
+        metadata.setGeneratedClassModel(clazz.toString());
+        return metadata;
     }
     
-    public String generateModel(WorkflowProcess process) {
+    public ModelMetaData generateModel(WorkflowProcess process) {
         CompilationUnit clazz = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/ModelTemplate.java"));                
         clazz.setPackageDeclaration(process.getPackageName());
         Optional<ClassOrInterfaceDeclaration> processMethod = clazz.findFirst(ClassOrInterfaceDeclaration.class, sl -> true);
 
-        if (processMethod.isPresent()) {
-            ClassOrInterfaceDeclaration modelClass = processMethod.get();
-            
-            modelClass.setName(StringUtils.capitalize(exctactProcessId(process.getId()) + MODEL_CLASS_SUFFIX));
+        if (!processMethod.isPresent()) {
+            throw new RuntimeException("Cannot find class declaration in the template");
+        }
+        ClassOrInterfaceDeclaration modelClass = processMethod.get();
         
-            // setup of the toMap method body
-            BlockStmt toMapBody = new BlockStmt();
-            ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(null, Object.class.getSimpleName())));            
-            VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, "params");                                  
-            toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
-            
-            // setup of fromMap method body
-            ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, modelClass.getNameAsString());
-            BlockStmt fromMapBody = new BlockStmt();
-            VariableDeclarationExpr itemField = new VariableDeclarationExpr(modelType, "item");
-            fromMapBody.addStatement(new AssignExpr(itemField, new ObjectCreationExpr(null, modelType, NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
-            NameExpr item = new NameExpr("item");
-            FieldAccessExpr idField = new FieldAccessExpr(item, "id");
-            fromMapBody.addStatement(new AssignExpr(idField, new NameExpr("id"), Operator.ASSIGN));
-            
-            VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
-            
-            if (variableScope != null && !variableScope.getVariables().isEmpty()) {
-                for (Variable variable: variableScope.getVariables()) {
-                    ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(variable.getType().getStringType());
-                    
-                    modelClass.addField(variable.getType().getStringType(), variable.getName(), Keyword.PRIVATE);
-                    // getter
-                    modelClass
-                    .addMethod("get" + StringUtils.capitalize(variable.getName()), Keyword.PUBLIC)
-                    .setType(type)
-                    .createBody().addStatement(new ReturnStmt(new FieldAccessExpr(new ThisExpr(), variable.getName())));
-                    
-                    // setter
-                    modelClass
-                    .addMethod("set" + StringUtils.capitalize(variable.getName()), Keyword.PUBLIC)
-                    .addParameter(variable.getType().getStringType(), variable.getName())
-                    .createBody().addStatement( new AssignExpr(new FieldAccessExpr(new ThisExpr(), variable.getName()), new NameExpr(variable.getName()), Operator.ASSIGN));
-                    
-                    // toMap method body
-                    MethodCallExpr putVariable = new MethodCallExpr(new NameExpr("params"), "put");
-                    putVariable.addArgument(new StringLiteralExpr(variable.getName()));
-                    putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), variable.getName()));
-                    toMapBody.addStatement(putVariable);
-                    
-                    // fromMap method body                    
-                    FieldAccessExpr field = new FieldAccessExpr(item, variable.getName());
-                    
-                    fromMapBody.addStatement(new AssignExpr(field, new CastExpr(
-                                                                                type,
-                                                                                new MethodCallExpr(
-                                                                                        new NameExpr("params"),
-                                                                                        "get")
-                                                                                        .addArgument(new StringLiteralExpr(variable.getName()))), AssignExpr.Operator.ASSIGN));
-                }
-            }
-            
-            Optional<MethodDeclaration> toMapMethod = clazz.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
-            if (processMethod.isPresent()) {
+        modelClass.setName(StringUtils.capitalize(exctactProcessId(process.getId()) + MODEL_CLASS_SUFFIX));
+    
+        // setup of the toMap method body
+        BlockStmt toMapBody = new BlockStmt();
+        ClassOrInterfaceType toMap = new ClassOrInterfaceType(null, new SimpleName(Map.class.getSimpleName()), NodeList.nodeList(new ClassOrInterfaceType(null, String.class.getSimpleName()), new ClassOrInterfaceType(null, Object.class.getSimpleName())));            
+        VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, "params");                                  
+        toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
+        
+        // setup of fromMap method body
+        ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, modelClass.getNameAsString());
+        BlockStmt fromMapBody = new BlockStmt();
+        VariableDeclarationExpr itemField = new VariableDeclarationExpr(modelType, "item");
+        fromMapBody.addStatement(new AssignExpr(itemField, new ObjectCreationExpr(null, modelType, NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
+        NameExpr item = new NameExpr("item");
+        FieldAccessExpr idField = new FieldAccessExpr(item, "id");
+        fromMapBody.addStatement(new AssignExpr(idField, new NameExpr("id"), Operator.ASSIGN));
+        
+        VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        
+        if (variableScope != null && !variableScope.getVariables().isEmpty()) {
+            for (Variable variable: variableScope.getVariables()) {
+                ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(variable.getType().getStringType());
                 
-                toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
-                toMapMethod.get().setBody(toMapBody);
-            }
-            
-            Optional<MethodDeclaration> fromMapMethod = clazz.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap"));
-            if (fromMapMethod.isPresent()) {
-                MethodDeclaration fromMap = fromMapMethod.get();
-                fromMap.setType(modelClass.getNameAsString());
-                fromMapBody.addStatement(new ReturnStmt(new NameExpr("item")));
-                fromMap.setBody(fromMapBody);
+                modelClass.addField(variable.getType().getStringType(), variable.getName(), Keyword.PRIVATE);
+                // getter
+                modelClass
+                .addMethod("get" + StringUtils.capitalize(variable.getName()), Keyword.PUBLIC)
+                .setType(type)
+                .createBody().addStatement(new ReturnStmt(new FieldAccessExpr(new ThisExpr(), variable.getName())));
+                
+                // setter
+                modelClass
+                .addMethod("set" + StringUtils.capitalize(variable.getName()), Keyword.PUBLIC)
+                .addParameter(variable.getType().getStringType(), variable.getName())
+                .createBody().addStatement( new AssignExpr(new FieldAccessExpr(new ThisExpr(), variable.getName()), new NameExpr(variable.getName()), Operator.ASSIGN));
+                
+                // toMap method body
+                MethodCallExpr putVariable = new MethodCallExpr(new NameExpr("params"), "put");
+                putVariable.addArgument(new StringLiteralExpr(variable.getName()));
+                putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), variable.getName()));
+                toMapBody.addStatement(putVariable);
+                
+                // fromMap method body                    
+                FieldAccessExpr field = new FieldAccessExpr(item, variable.getName());
+                
+                fromMapBody.addStatement(new AssignExpr(field, new CastExpr(
+                                                                            type,
+                                                                            new MethodCallExpr(
+                                                                                    new NameExpr("params"),
+                                                                                    "get")
+                                                                                    .addArgument(new StringLiteralExpr(variable.getName()))), AssignExpr.Operator.ASSIGN));
             }
         }
-        return clazz.toString();
+        
+        Optional<MethodDeclaration> toMapMethod = clazz.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
+        if (processMethod.isPresent()) {
+            
+            toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
+            toMapMethod.get().setBody(toMapBody);
+        }
+        
+        Optional<MethodDeclaration> fromMapMethod = clazz.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap"));
+        if (fromMapMethod.isPresent()) {
+            MethodDeclaration fromMap = fromMapMethod.get();
+            fromMap.setType(modelClass.getNameAsString());
+            fromMapBody.addStatement(new ReturnStmt(new NameExpr("item")));
+            fromMap.setBody(fromMapBody);
+        }
+        String fqcn = clazz.getPackageDeclaration().map(p -> p.getNameAsString() + "." + modelClass.getNameAsString()).orElse(modelClass.getNameAsString());
+        
+        return new ModelMetaData(modelClass.getNameAsString(), fqcn, clazz.toString());
     }	
 
-	protected void visitProcess(WorkflowProcess process, CompilationUnit clazz) {
+	protected void visitProcess(WorkflowProcess process, CompilationUnit clazz, ProcessMetaData metadata) {
         BlockStmt body = new BlockStmt();
         
         ClassOrInterfaceType processFactoryType = new ClassOrInterfaceType(null, RuleFlowProcessFactory.class.getSimpleName());
@@ -220,7 +233,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         for( Node procNode : process.getNodes()) { 
             processNodes.add((org.jbpm.workflow.core.Node) procNode);
         }
-        visitNodes(processNodes, body, variableScope);
+        visitNodes(processNodes, body, variableScope, metadata);
         visitConnections(process.getNodes(), body);
         
 
@@ -307,7 +320,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         }
     }
 
-    public void visitNodes(List<org.jbpm.workflow.core.Node> nodes, BlockStmt body, VariableScope variableScope) {
+    public void visitNodes(List<org.jbpm.workflow.core.Node> nodes, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
     	
         for (Node node: nodes) {
             AbstractVisitor visitor = nodesVisitors.get(node.getClass());
@@ -316,7 +329,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
                 throw new IllegalStateException("No visitor found for node " + node.getClass().getName());
             }
             
-            visitor.visitNode(node, body, variableScope);
+            visitor.visitNode(node, body, variableScope, metadata);
         }
         
     }

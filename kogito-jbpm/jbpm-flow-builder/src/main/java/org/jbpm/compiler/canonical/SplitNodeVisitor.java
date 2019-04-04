@@ -37,7 +37,7 @@ import com.github.javaparser.ast.type.UnknownType;
 public class SplitNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope) {
+    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         Split splitNode = (Split) node;
         addFactoryMethodWithArgsWithAssignment(body, SplitFactory.class, "splitNode" + node.getId(), "splitNode", new LongLiteralExpr(splitNode.getId()));
         addFactoryMethodWithArgs(body, "splitNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(splitNode.getName(), "Split")));
