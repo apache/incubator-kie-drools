@@ -779,32 +779,30 @@ public class ExpressionTyper {
             typeCursor = originalTypeCursor;
         }
 
-        Class<?> classCursor = toRawClass(typeCursor);
-        if (Character.isLowerCase(firstName.charAt(0))) {
-            Method firstAccessor = DrlxParseUtil.getAccessor( !isInLineCast ? classCursor : patternType, firstName );
-            if ( firstAccessor != null ) {
-                if ( !"".equals( firstName ) ) {
-                    context.addReactOnProperties( firstName );
-                }
+        try {
+            Class<?> resolvedType = ruleContext.getTypeResolver().resolveType( firstName );
+            return of( new TypedExpressionCursor( new NameExpr(firstName), resolvedType ));
+        } catch (ClassNotFoundException e) {
+            // ignore
+        }
 
-                java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
-                NameExpr thisAccessor = new NameExpr( "_this" );
-                NameExpr scope = backReference.map( d -> new NameExpr( d.getBindingId() ) ).orElse( thisAccessor );
-                return of( new TypedExpressionCursor( new MethodCallExpr( scope, firstAccessor.getName() ), typeOfFirstAccessor ) );
+        Class<?> classCursor = toRawClass(typeCursor);
+        Method firstAccessor = DrlxParseUtil.getAccessor(!isInLineCast ? classCursor : patternType, firstName);
+        if (firstAccessor != null) {
+            if (!"".equals(firstName)) {
+                context.addReactOnProperties(firstName);
             }
+
+            java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
+            NameExpr thisAccessor = new NameExpr("_this");
+            NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
+            return of(new TypedExpressionCursor(new MethodCallExpr(scope, firstAccessor.getName()), typeOfFirstAccessor));
         }
 
         Field field = DrlxParseUtil.getField( classCursor, firstName );
         if ( field != null ) {
             NameExpr scope = new NameExpr( Modifier.isStatic( field.getModifiers() ) ? classCursor.getCanonicalName() : "_this" );
             return of( new TypedExpressionCursor( new FieldAccessExpr( scope, field.getName() ), field.getType() ) );
-        }
-
-        try {
-            Class<?> resolvedType = ruleContext.getTypeResolver().resolveType( firstName );
-            return of( new TypedExpressionCursor( new NameExpr(firstName), resolvedType ));
-        } catch (ClassNotFoundException e) {
-            // ignore
         }
 
         final Optional<Node> rootNode = findRootNodeViaParent(drlxExpr);
