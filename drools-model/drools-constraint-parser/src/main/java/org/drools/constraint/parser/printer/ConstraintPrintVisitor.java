@@ -26,31 +26,33 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.OOPathChunk;
-import org.drools.constraint.parser.ast.expr.OOPathExpr;
-import org.drools.constraint.parser.ast.expr.RuleBody;
-import org.drools.constraint.parser.ast.expr.RuleDeclaration;
+import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.constraint.parser.ast.expr.CommaSeparatedMethodCallExpr;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
+import org.drools.constraint.parser.ast.expr.OOPathChunk;
+import org.drools.constraint.parser.ast.expr.OOPathExpr;
 import org.drools.constraint.parser.ast.expr.PointFreeExpr;
+import org.drools.constraint.parser.ast.expr.RuleBody;
+import org.drools.constraint.parser.ast.expr.RuleDeclaration;
 import org.drools.constraint.parser.ast.expr.TemporalChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
 import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 
 import static com.github.javaparser.utils.Utils.isNullOrEmpty;
@@ -346,5 +348,26 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
         printComment(n.getComment(), arg);
         java.util.stream.IntStream.range(0, n.getBackReferencesCount()).forEach(s -> printer.print("../"));
         n.getName().accept(this, arg);
+    }
+
+    @Override
+    public void visit(MapCreationLiteralExpression n, Void arg) {
+        printer.print("[");
+
+        Iterator<Expression> expressions = n.getExpressions().iterator();
+        while(expressions.hasNext()) {
+            expressions.next().accept(this, arg);
+            if(expressions.hasNext()) {
+                printer.print(", ");
+            }
+        }
+        printer.print("]");
+    }
+
+    @Override
+    public void visit(MapCreationLiteralExpressionKeyValuePair n, Void arg) {
+        n.getKey().accept(this, arg);
+        printer.print(" : ");
+        n.getValue().accept(this, arg);
     }
 }

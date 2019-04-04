@@ -1182,6 +1182,9 @@ Expression UnaryExpression():
 	  }
 	|
 	  ret = HalfBinaryExpression()
+	|
+      LOOKAHEAD(MapCreationLiteralExpression())
+        ret = MapCreationLiteralExpression()
   )
   { return ret; }
 }
@@ -1984,6 +1987,50 @@ Expression CommaSeparatedMethodCallExpr():
             }
 
         )
+    )
+}
+
+Expression MapCreationLiteralExpression():
+{
+    JavaToken begin = null;
+    Expression first = null;
+    Expression other = null;
+    NodeList<Expression> all = emptyList();
+}
+{
+    (
+        (
+            <LBRACKET>
+            (first = MapCreationLiteralExpressionKeyValuePair() { begin=token(); all.add(first); })*
+            (
+                          <COMMA>
+                          other = MapCreationLiteralExpressionKeyValuePair() { all.add(other); }
+            )*
+            <RBRACKET>
+            {
+                begin = token();
+                return new MapCreationLiteralExpression(range(begin, token()), all);
+            }
+
+        )
+    )
+}
+
+Expression MapCreationLiteralExpressionKeyValuePair():
+{
+        JavaToken begin;
+        Expression key = null;
+        Expression value = null;
+}
+{
+    (
+        key = PrimaryPrefix()
+        <COLON>
+        value = PrimaryPrefix()
+        {
+            begin = token();
+            return new MapCreationLiteralExpressionKeyValuePair(range(begin, token()), key, value);
+        }
     )
 }
 

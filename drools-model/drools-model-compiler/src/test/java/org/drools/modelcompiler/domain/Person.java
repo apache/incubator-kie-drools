@@ -29,6 +29,24 @@ public class Person extends AbstractReactiveObject {
 
     private Map<Integer, Integer> items = new HashMap<>();
 
+    public static int countItems(Map<Integer, Integer> items) {
+        return items.size();
+    }
+
+    public static boolean evaluate(Map<Integer, Integer> items) {
+        return items.size() > 0;
+    }
+
+    private int numberOfItems;
+
+    public int getNumberOfItems() {
+        return numberOfItems;
+    }
+
+    public void setNumberOfItems(int numberOfItems) {
+        this.numberOfItems = numberOfItems;
+    }
+
     public Person() { }
 
     public Person(String name) {

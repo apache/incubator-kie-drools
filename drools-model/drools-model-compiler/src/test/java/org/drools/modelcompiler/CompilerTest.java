@@ -1323,6 +1323,56 @@ public class CompilerTest extends BaseModelTest {
         assertEquals( 1, ksession.fireAllRules() );
     }
 
+    @Test
+    public void testMapInitialization() {
+        final String drl1 =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                        "import java.util.Map;\n" +
+                        "import static " + Person.class.getName() + ".countItems;\n" +
+                        "rule R1 when\n" +
+                        "   Person( numberOfItems == countItems([123 : 456, 789 : name]))" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Person luca = new Person("Luca");
+        luca.setNumberOfItems(2);
+        ksession.insert(luca);
+
+        final Person mario = new Person("Mario");
+        ksession.insert(mario);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+
+    @Test
+    @Ignore
+    // https://issues.jboss.org/browse/DROOLS-3850
+    public void testErrorTwoPatterns() {
+        final String drl1 =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import java.util.Map;\n" +
+                "import static " + Person.class.getName() + ".countItems;\n" +
+                "import static " + Person.class.getName() + ".evaluate;\n" +
+                "rule R1 when\n" +
+                "   Person( evaluate([123 : 456, 789 : name]), numberOfItems == countItems([123 : 456, 789 : name]))" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Person luca = new Person("Luca");
+        luca.setNumberOfItems(2);
+        ksession.insert(luca);
+
+        final Person mario = new Person("Mario");
+        ksession.insert(mario);
+
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
 
     @Test
     public void testMapWithBinding() {

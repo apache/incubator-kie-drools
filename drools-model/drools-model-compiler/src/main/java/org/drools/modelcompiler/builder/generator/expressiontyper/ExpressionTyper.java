@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
@@ -31,12 +33,16 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
 import org.drools.constraint.parser.ast.expr.PointFreeExpr;
@@ -58,8 +64,10 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static org.drools.constraint.parser.DrlConstraintParser.parseType;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
@@ -71,6 +79,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.nameExprT
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.replaceAllHalfBinaryChildren;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.transformDrlNameExprToNameExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -459,7 +468,7 @@ public class ExpressionTyper {
         }
 
         if(staticValue != null) {
-            final Expression sanitizedScope = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(scope);
+            final Expression sanitizedScope = transformDrlNameExprToNameExpr(scope);
             return of(new TypedExpression(new FieldAccessExpr(sanitizedScope, name), clazz));
         } else {
             return empty();
@@ -531,6 +540,8 @@ public class ExpressionTyper {
 
             result = arrayAccessExpr((ArrayAccessExpr) firstNode, type, scope);
 
+        } else if (firstNode instanceof MapCreationLiteralExpression) {
+            result = mapCreationLiteral((MapCreationLiteralExpression) firstNode, originalTypeCursor);
         } else {
             result = of(new TypedExpressionCursor( (Expression)firstNode, getExpressionType( ruleContext, ruleContext.getTypeResolver(), (Expression)firstNode, context.getUsedDeclarations() ) ));
         }
@@ -650,6 +661,36 @@ public class ExpressionTyper {
             methodCallExpr.setArgument( i, typedExpr.getExpression() );
         }
         return argsType;
+    }
+
+    private Optional<TypedExpressionCursor> mapCreationLiteral(MapCreationLiteralExpression mapCreationLiteralExpression, java.lang.reflect.Type originalTypeCursor) {
+        ClassOrInterfaceType hashMapType = (ClassOrInterfaceType) parseType(HashMap.class.getCanonicalName());
+
+        BlockStmt initializationStmt = new BlockStmt();
+
+        InitializerDeclaration body = new InitializerDeclaration(false, initializationStmt);
+        ObjectCreationExpr newHashMapExpr = new ObjectCreationExpr(null, hashMapType, nodeList(), nodeList(), nodeList(body));
+
+        for(Expression e : mapCreationLiteralExpression.getExpressions()) {
+            MapCreationLiteralExpressionKeyValuePair expr = (MapCreationLiteralExpressionKeyValuePair)e;
+
+            Expression key = mapCreationLiteralNameExpr(originalTypeCursor, expr.getKey());
+            Expression value = mapCreationLiteralNameExpr(originalTypeCursor, expr.getValue());
+
+            initializationStmt.addStatement(new MethodCallExpr(null, "put", nodeList(key, value)));
+        }
+
+        return of(new TypedExpressionCursor(newHashMapExpr, HashMap.class));
+    }
+
+    private Expression mapCreationLiteralNameExpr(java.lang.reflect.Type originalTypeCursor, Expression expression) {
+        Expression result = expression;
+        if (result instanceof DrlNameExpr) {
+            TypedExpressionCursor typedExpressionCursor = drlNameExpr(null, (DrlNameExpr) result, false, originalTypeCursor)
+                    .orElseThrow(() -> new RuntimeException("Cannot find field: " + expression));
+            result = typedExpressionCursor.expressionCursor;
+        }
+        return result;
     }
 
     private Optional<TypedExpressionCursor> arrayAccessExpr(ArrayAccessExpr arrayAccessExpr, java.lang.reflect.Type originalTypeCursor, Expression scope) {
