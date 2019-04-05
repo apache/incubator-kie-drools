@@ -3,10 +3,11 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.Collections;
 import java.util.List;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import com.github.javaparser.ast.CompilationUnit;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.UnaryTestCompiledExecutableExpression;
@@ -22,12 +23,10 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
     private final BaseNode ast;
     private DirectCompilerResult compiledExpression;
 
-    public ProcessedUnaryTest(
-            String expressions,
-            CompilerContext ctx) {
-
+    public ProcessedUnaryTest(String expressions,
+                              CompilerContext ctx, List<FEELProfile> profiles) {
         super(expressions, ctx, Collections.emptyList());
-        ParseTree tree = parser.unaryTestsRoot();
+        ParseTree tree = getFEELParser(expression, ctx, profiles).unaryTestsRoot();
         BaseNode initialAst = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes()));
         ast = initialAst.accept(new ASTUnaryTestTransform()).node();
     }

@@ -11,8 +11,6 @@ import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 
 public abstract class ProcessedFEELUnit implements CompiledFEELExpression {
 
-    protected final FEEL_1_1Parser parser;
-
     public enum DefaultMode {
         Compiled,
         Interpreted;
@@ -36,13 +34,16 @@ public abstract class ProcessedFEELUnit implements CompiledFEELExpression {
 
         this.expression = expression;
         this.packageName = generateRandomPackage();
+    }
+
+    protected FEEL_1_1Parser getFEELParser(String expression, CompilerContext ctx, List<FEELProfile> profiles) {
         FEELEventListenersManager eventsManager =
                 new FEELEventListenersManager();
 
         eventsManager.addListeners(ctx.getListeners());
         eventsManager.addListener(errorListener);
 
-        this.parser = FEELParser.parse(
+        return FEELParser.parse(
                 eventsManager,
                 expression,
                 ctx.getInputVariableTypes(),
