@@ -47,7 +47,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -81,6 +80,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
     protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
     protected static final XSSFColor MEDIUM_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_3);
     protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
+    protected static final XSSFColor PLANNING_VARIABLE_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
     protected static final XSSFColor REPUBLISHED_COLOR = new XSSFColor(TangoColorFactory.MAGENTA);
 
     @Override
@@ -364,6 +364,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         protected XSSFCellStyle mediumPenaltyStyle;
         protected XSSFCellStyle softPenaltyStyle;
         protected XSSFCellStyle wrappedStyle;
+        protected XSSFCellStyle planningVariableStyle;
         protected XSSFCellStyle republishedStyle;
 
         protected XSSFSheet currentSheet;
@@ -411,6 +412,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             mediumPenaltyStyle = createStyle(MEDIUM_PENALTY_COLOR);
             softPenaltyStyle = createStyle(SOFT_PENALTY_COLOR);
             wrappedStyle = createStyle(null);
+            planningVariableStyle = createStyle(PLANNING_VARIABLE_COLOR);
             republishedStyle = createStyle(REPUBLISHED_COLOR);
         }
 

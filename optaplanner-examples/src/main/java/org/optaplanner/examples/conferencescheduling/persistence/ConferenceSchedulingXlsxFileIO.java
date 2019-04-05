@@ -1055,12 +1055,19 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 nextCell().setCellValue(talk.getFavoriteCount());
                 nextCell().setCellValue(talk.getCrowdControlRisk());
                 nextCell(talk.isPinnedByUser() ? pinnedStyle : defaultStyle).setCellValue(talk.isPinnedByUser());
-                XSSFCellStyle timeslotStyle = (talk.getPublishedTimeslot() == null || talk.getTimeslot() == talk.getPublishedTimeslot()) ? defaultStyle : republishedStyle;
+                XSSFCellStyle timeslotStyle;
+                XSSFCellStyle roomStyle;
+                if (talk.isPinnedByUser()) {
+                    timeslotStyle = (talk.getTimeslot() == null) ? hardPenaltyStyle : defaultStyle;
+                    roomStyle = (talk.getRoom() == null) ? hardPenaltyStyle : defaultStyle;
+                } else {
+                    timeslotStyle = (talk.getPublishedTimeslot() == null || talk.getTimeslot() == talk.getPublishedTimeslot()) ? planningVariableStyle : republishedStyle;
+                    roomStyle = (talk.getPublishedRoom() == null || talk.getRoom() == talk.getPublishedRoom()) ? planningVariableStyle : republishedStyle;
+                }
                 nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getTimeslot().getDate()));
                 nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getStartDateTime()));
                 nextCell(timeslotStyle).setCellValue(talk.getTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getTimeslot().getEndDateTime()));
-                nextCell((talk.getPublishedRoom() == null || talk.getRoom() == talk.getPublishedRoom()) ? defaultStyle : republishedStyle)
-                        .setCellValue(talk.getRoom() == null ? "" : talk.getRoom().getName());
+                nextCell(roomStyle).setCellValue(talk.getRoom() == null ? "" : talk.getRoom().getName());
                 nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : DAY_FORMATTER.format(talk.getPublishedTimeslot().getDate()));
                 nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getStartDateTime()));
                 nextCell().setCellValue(talk.getPublishedTimeslot() == null ? "" : TIME_FORMATTER.format(talk.getPublishedTimeslot().getEndDateTime()));
@@ -1398,8 +1405,11 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             nextRow();
             nextHeaderCell(DAY_FORMATTER.format(day));
             writeTimeslotHoursVertically(timeslotList);
-            List<Room> dayRoomList = talkList.stream().map(Talk::getRoom).distinct().collect(toList());
-            dayRoomList.sort(Comparator.comparing(Room::getName));
+            List<Room> dayRoomList = talkList.stream().map(Talk::getRoom)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .sorted(Comparator.comparing(Room::getName))
+                    .collect(toList());
             for (Room room : dayRoomList) {
                 currentColumnNumber++;
                 currentRowNumber = -1;
