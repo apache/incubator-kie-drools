@@ -18,6 +18,7 @@ package org.drools.modelcompiler.drlx;
 
 import java.lang.reflect.Constructor;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -25,6 +26,7 @@ import org.kie.api.runtime.rule.RuleUnitExecutor;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class UnitCompilationTest {
 
     @Test

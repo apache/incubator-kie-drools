@@ -3,12 +3,14 @@ package org.drools.modelcompiler.builder.generator.expressiontyper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.javaparser.ast.Node;
-import org.drools.javaparser.ast.drlx.expr.InlineCastExpr;
-import org.drools.javaparser.ast.expr.ArrayAccessExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
 
 public class FlattenScope {
 
@@ -18,8 +20,18 @@ public class FlattenScope {
             FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) expressionWithScope;
             res.addAll(flattenScope(fieldAccessExpr.getScope()));
             res.add(fieldAccessExpr.getName());
+        } else if (expressionWithScope instanceof NullSafeFieldAccessExpr) {
+            NullSafeFieldAccessExpr fieldAccessExpr = (NullSafeFieldAccessExpr) expressionWithScope;
+            res.addAll(flattenScope(fieldAccessExpr.getScope()));
+            res.add(fieldAccessExpr.getName());
         } else if (expressionWithScope instanceof MethodCallExpr) {
             MethodCallExpr methodCallExpr = (MethodCallExpr) expressionWithScope;
+            if (methodCallExpr.getScope().isPresent()) {
+                res.addAll(flattenScope(methodCallExpr.getScope().get()));
+            }
+            res.add(methodCallExpr);
+        } else if (expressionWithScope instanceof NullSafeMethodCallExpr) {
+            NullSafeMethodCallExpr methodCallExpr = (NullSafeMethodCallExpr) expressionWithScope;
             if (methodCallExpr.getScope().isPresent()) {
                 res.addAll(flattenScope(methodCallExpr.getScope().get()));
             }

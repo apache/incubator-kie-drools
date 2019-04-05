@@ -1,21 +1,21 @@
 package org.drools.modelcompiler.builder.generator;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.ast.body.MethodDeclaration;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.ObjectCreationExpr;
-import org.drools.javaparser.ast.expr.ThisExpr;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.stmt.ReturnStmt;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.submarine.rules.RuleUnit;
 import org.kie.submarine.rules.impl.AbstractRuleUnit;
 
-import static org.drools.javaparser.ast.NodeList.nodeList;
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class RuleUnitSourceClass {
 
@@ -62,7 +62,7 @@ public class RuleUnitSourceClass {
         return compilationUnit;
     }
 
-    private MethodDeclaration createInstanceMethod(String ruleUnitInstanceFQCN) {
+    private MethodDeclaration createInstanceMethod( String ruleUnitInstanceFQCN) {
         MethodDeclaration methodDeclaration = new MethodDeclaration();
 
         ReturnStmt returnStmt = new ReturnStmt(
@@ -74,7 +74,7 @@ public class RuleUnitSourceClass {
                                 newKieSession())));
 
         methodDeclaration.setName("createInstance")
-                .addModifier(Modifier.Keyword.PUBLIC)
+                .addModifier( Modifier.Keyword.PUBLIC)
                 .addParameter(canonicalName, "value")
                 .setType(ruleUnitInstanceFQCN)
                 .setBody(new BlockStmt()
@@ -107,7 +107,7 @@ public class RuleUnitSourceClass {
                 "singletonList").addArgument(new ObjectCreationExpr().setType(generatedSourceFile));
     }
 
-    public static ClassOrInterfaceType ruleUnitType(String canonicalName) {
+    public static ClassOrInterfaceType ruleUnitType( String canonicalName) {
         return new ClassOrInterfaceType(null, RuleUnit.class.getCanonicalName())
                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName));
     }

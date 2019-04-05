@@ -1,13 +1,13 @@
 package org.drools.modelcompiler.builder.generator;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.submarine.rules.impl.AbstractRuleUnitInstance;
 
@@ -52,7 +52,7 @@ public class RuleUnitInstanceSourceClass {
     public ClassOrInterfaceDeclaration classDeclaration() {
         ClassOrInterfaceDeclaration classDecl = new ClassOrInterfaceDeclaration()
                 .setName(targetTypeName)
-                .addModifier(Modifier.Keyword.PUBLIC);
+                .addModifier( Modifier.Keyword.PUBLIC);
         classDecl
                 .addExtendedType(
                         new ClassOrInterfaceType(null, AbstractRuleUnitInstance.class.getCanonicalName())

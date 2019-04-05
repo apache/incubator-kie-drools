@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
 public class TypedExpressionResult {

@@ -3,15 +3,15 @@ package org.drools.modelcompiler.builder.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.ast.body.MethodDeclaration;
-import org.drools.javaparser.ast.expr.ObjectCreationExpr;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.stmt.ReturnStmt;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.submarine.rules.RuleUnit;
 
 public class ModuleSourceClass {
@@ -65,9 +65,9 @@ public class ModuleSourceClass {
         return compilationUnit;
     }
 
-    public static MethodDeclaration ruleUnitFactoryMethod(RuleUnitSourceClass r) {
+    public static MethodDeclaration ruleUnitFactoryMethod( RuleUnitSourceClass r) {
         return new MethodDeclaration()
-                .addModifier(Modifier.Keyword.PUBLIC)
+                .addModifier( Modifier.Keyword.PUBLIC)
                 .setName("create" + r.targetTypeName())
                 .setType(r.targetCanonicalName())
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(
@@ -75,7 +75,7 @@ public class ModuleSourceClass {
                                 .setType(r.targetCanonicalName()))));
     }
 
-    public static ClassOrInterfaceType ruleUnitType(String canonicalName) {
+    public static ClassOrInterfaceType ruleUnitType( String canonicalName) {
         return new ClassOrInterfaceType(null, RuleUnit.class.getCanonicalName())
                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName));
     }

@@ -3,24 +3,24 @@ package org.drools.modelcompiler.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.body.MethodDeclaration;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.BooleanLiteralExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 
-import static org.drools.javaparser.ast.Modifier.publicModifier;
-import static org.drools.javaparser.ast.NodeList.nodeList;
+import static com.github.javaparser.ast.Modifier.publicModifier;
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class KieModuleModelMethod {
 
@@ -238,7 +238,7 @@ public class KieModuleModelMethod {
         return new NameExpr(KMODULE_MODEL_NAME);
     }
 
-    private AssignExpr newInstance(String type, String variableName, NameExpr scope, String methodName, String parameter) {
+    private AssignExpr newInstance( String type, String variableName, NameExpr scope, String methodName, String parameter) {
         MethodCallExpr initMethod = new MethodCallExpr(scope, methodName, nodeList(new StringLiteralExpr(parameter)));
         VariableDeclarationExpr var = new VariableDeclarationExpr(new ClassOrInterfaceType(null, type), variableName);
         return new AssignExpr(var, initMethod, AssignExpr.Operator.ASSIGN);

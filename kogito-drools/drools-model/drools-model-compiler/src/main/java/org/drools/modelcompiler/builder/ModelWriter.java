@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.printer.PrettyPrinter;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;

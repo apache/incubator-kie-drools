@@ -30,29 +30,29 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.CompilationUnit;
-import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.body.BodyDeclaration;
-import org.drools.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.drools.javaparser.ast.body.FieldDeclaration;
-import org.drools.javaparser.ast.body.InitializerDeclaration;
-import org.drools.javaparser.ast.body.MethodDeclaration;
-import org.drools.javaparser.ast.body.VariableDeclarator;
-import org.drools.javaparser.ast.comments.JavadocComment;
-import org.drools.javaparser.ast.expr.ClassExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.SimpleName;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.javaparser.ast.type.Type;
 import org.drools.model.DomainClassMetadata;
 import org.drools.model.Global;
 import org.drools.model.Model;
@@ -69,11 +69,10 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.joining;
 
+import static com.github.javaparser.ast.Modifier.finalModifier;
+import static com.github.javaparser.ast.Modifier.publicModifier;
+import static com.github.javaparser.ast.Modifier.staticModifier;
 import static org.drools.core.util.StringUtils.generateUUID;
-import static org.drools.javaparser.ast.Modifier.finalModifier;
-import static org.drools.javaparser.ast.Modifier.publicModifier;
-import static org.drools.javaparser.ast.Modifier.staticModifier;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.returnTypeOfMethodCallExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
@@ -495,7 +494,12 @@ public class PackageModel {
             addRulesList( rulesListInitializerBody, "rulesList" );
         }
 
-        int maxLength = ruleMethods.values().parallelStream().map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
+        ruleMethods.values().parallelStream().forEach(DrlxParseUtil::transformDrlNameExprToNameExpr);
+
+        int maxLength = ruleMethods
+                .values()
+                .parallelStream()
+                .map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
         int rulesPerClass = Math.max( 50000 / maxLength, 1 );
 
         // each method per Drlx parser result

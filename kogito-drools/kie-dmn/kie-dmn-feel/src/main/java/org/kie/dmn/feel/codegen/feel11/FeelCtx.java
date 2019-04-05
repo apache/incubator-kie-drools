@@ -18,12 +18,12 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 public class FeelCtx {
 

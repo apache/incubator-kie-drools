@@ -22,19 +22,19 @@ import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.NodeList;
-import org.drools.javaparser.ast.body.FieldDeclaration;
-import org.drools.javaparser.ast.body.VariableDeclarator;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.FieldAccessExpr;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.ObjectCreationExpr;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.javaparser.ast.type.Type;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -44,7 +44,7 @@ public class Constants {
     public static final Expression DECIMAL_128 = JavaParser.parseExpression("java.math.MathContext.DECIMAL128");
     public static final ClassOrInterfaceType BigDecimalT = new ClassOrInterfaceType(BigDecimal.class.getCanonicalName());
     public static final ClassOrInterfaceType BooleanT = new ClassOrInterfaceType(Boolean.class.getCanonicalName());
-    private static final org.drools.javaparser.ast.type.Type ListT =
+    private static final com.github.javaparser.ast.type.Type ListT =
             JavaParser.parseType(List.class.getCanonicalName());
     public static final ClassOrInterfaceType UnaryTestT = JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName());
     public static final String RangeBoundary =

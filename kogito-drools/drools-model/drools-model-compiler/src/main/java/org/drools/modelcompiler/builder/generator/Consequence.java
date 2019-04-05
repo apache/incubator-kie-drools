@@ -12,28 +12,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.constraint.parser.ast.expr.CommaSeparatedMethodCallExpr;
+import org.drools.constraint.parser.ast.expr.DrlxExpression;
+import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.util.StringUtils;
-import org.drools.javaparser.JavaParser;
-import org.drools.javaparser.ParseProblemException;
-import org.drools.javaparser.ast.Modifier;
-import org.drools.javaparser.ast.body.Parameter;
-import org.drools.javaparser.ast.body.VariableDeclarator;
-import org.drools.javaparser.ast.drlx.expr.CommaSeparatedMethodCallExpr;
-import org.drools.javaparser.ast.drlx.expr.DrlxExpression;
-import org.drools.javaparser.ast.expr.AssignExpr;
-import org.drools.javaparser.ast.expr.CastExpr;
-import org.drools.javaparser.ast.expr.EnclosedExpr;
-import org.drools.javaparser.ast.expr.Expression;
-import org.drools.javaparser.ast.expr.LambdaExpr;
-import org.drools.javaparser.ast.expr.MethodCallExpr;
-import org.drools.javaparser.ast.expr.NameExpr;
-import org.drools.javaparser.ast.expr.ObjectCreationExpr;
-import org.drools.javaparser.ast.expr.SimpleName;
-import org.drools.javaparser.ast.expr.StringLiteralExpr;
-import org.drools.javaparser.ast.expr.VariableDeclarationExpr;
-import org.drools.javaparser.ast.stmt.BlockStmt;
-import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -42,9 +43,9 @@ import org.drools.modelcompiler.consequence.DroolsImpl;
 
 import static java.util.stream.Collectors.toSet;
 
+import static com.github.javaparser.JavaParser.parseExpression;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
-import static org.drools.javaparser.JavaParser.parseExpression;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
@@ -90,7 +91,7 @@ public class Consequence {
         this.packageModel = context.getPackageModel();
     }
 
-    public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
+    public MethodCallExpr createCall( RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
             // mvel consequences will be treated as a ScriptBlock
@@ -259,7 +260,7 @@ public class Consequence {
                 DrlxExpression modifyBlock = DrlxParseUtil.parseExpression(originalBlock);
                 Expression expr = modifyBlock.getExpr();
                 List<Expression> originalMethodCalls;
-                if (expr instanceof CommaSeparatedMethodCallExpr) {
+                if (expr instanceof CommaSeparatedMethodCallExpr ) {
                     originalMethodCalls = ((CommaSeparatedMethodCallExpr) expr).getExpressions();
                 } else {
                     originalMethodCalls = Collections.singletonList(expr);
@@ -268,7 +269,7 @@ public class Consequence {
                     MethodCallExpr mc = (MethodCallExpr) e;
                     Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
                     modifyBlock.replace(mc, mcWithScope);
-                    sb.append(mc.toString());
+                    sb.append(PrintUtil.printConstraint(mc));
                     sb.append(";\n");
                 }
             }
