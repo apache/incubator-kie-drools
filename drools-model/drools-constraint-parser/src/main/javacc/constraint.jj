@@ -3021,33 +3021,6 @@ DrlxExpression DrlxExpression():
   { return new DrlxExpression(decl, expr); }
 }
 
-Expression ModifyExpr():
-{
-    JavaToken begin;
-    Expression first = null;
-    Expression other = null;
-    NodeList<Expression> all = emptyList();
-    SimpleName modifyObject = null;
-}
-{
-    (
-        (
-            <MODIFY><LPAREN> (modifyObject = SimpleName())<RPAREN> <LBRACE>
-            first = Expression() { begin=token(); all.add(first); }
-            (
-                          <COMMA>
-                          other = Expression() { all.add(other); }
-            )*
-            <RBRACE>
-            <SEMICOLON>
-            {
-                return new ModifyExpression(range(begin, token()), modifyObject, all);
-            }
-
-        )
-    )
-}
-
 Expression MapCreationLiteralExpression():
 {
     JavaToken begin = null;
