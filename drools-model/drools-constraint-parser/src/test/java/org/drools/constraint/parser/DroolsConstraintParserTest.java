@@ -538,7 +538,7 @@ public class DroolsConstraintParserTest {
 
     }
 
-1    @Test
+    @Test
     @Ignore
     public void testWithoutSemicolonMethod() {
         String expr = "{             " +
