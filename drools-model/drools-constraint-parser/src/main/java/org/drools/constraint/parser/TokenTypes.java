@@ -220,7 +220,7 @@ public class TokenTypes {
             case MVEL_ENDS_WITH:
             case MVEL_LENGTH:
             case NOT:
-            case 76:
+            case 75:
             case 151:
             case 152:
             case 153:

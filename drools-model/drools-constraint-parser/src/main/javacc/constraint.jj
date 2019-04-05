@@ -122,7 +122,6 @@ SPECIAL_TOKEN :
   <SPACE: [" ", "\t", "\f", "\u0085", "\u00A0", "\u1680", "\u180e", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005",
       "\u2006", "\u2007", "\u2008", "\u2009", "\u200a", "\u200b", "\u200c", "\u200d", "\u2028", "\u2029", "\u202f", "\u205f", "\u2060", "\u3000", "\ufeff"]>
 | <WINDOWS_EOL : "\r\n">
-| <UNIX_EOL: "\n">
 | <OLD_MAC_EOL: "\r">
 }
 
@@ -296,6 +295,7 @@ TOKEN :
 | < MVEL_STARTS_WITH: "str[startsWith]" >
 | < MVEL_ENDS_WITH: "str[endsWith]" >
 | < MVEL_LENGTH: "str[length]" >
+| <UNIX_EOL: "\n">
 }
 
 /* LITERALS */
@@ -2287,7 +2287,7 @@ ExpressionStmt StatementExpression():
             op = AssignmentOperator() value = Expression() { expr = new AssignExpr(range(expr, token()), expr, value, op); }
         ]
     )
-    ";"
+    (";"|<UNIX_EOL>)
     { return new ExpressionStmt(range(expr, token()), expr); }
 }
 
