@@ -15,6 +15,11 @@
 
 package org.kie.scanner.embedder;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
@@ -29,16 +34,18 @@ import org.kie.scanner.MavenRepository;
 import org.kie.scanner.MavenRepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.sonatype.plexus.components.cipher.DefaultPlexusCipher;
+import org.sonatype.plexus.components.cipher.PlexusCipherException;
+import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcherException;
 
 public class MavenSettings {
 
     private static final Logger log = LoggerFactory.getLogger(MavenSettings.class);
 
     public static final String CUSTOM_SETTINGS_PROPERTY = "kie.maven.settings.custom";
+
 
     private static class SettingsHolder {
         private static SettingsSource userSettingsSource = initUserSettingsSource();
@@ -120,6 +127,34 @@ public class MavenSettings {
             } else {
                 log.error("Cannot find maven local repository");
             }
+        }
+
+        return decryptPasswords(settings);
+    }
+
+    static class CustomDefaultSecDispatcher extends DefaultSecDispatcher {
+
+        CustomDefaultSecDispatcher() {
+            try {
+                this._cipher = new DefaultPlexusCipher();
+                String userHome = System.getProperty("user.home");
+                final String DEFAULT_SETTINGS_SECURITY_PATH = userHome == null ? ".settings-security.xml" : userHome.concat("/.m2/settings-security.xml").replace('/', File.separatorChar);
+                this.setConfigurationFile(DEFAULT_SETTINGS_SECURITY_PATH);
+            } catch (PlexusCipherException e) {
+            }
+        }
+
+    }
+    private static Settings decryptPasswords(Settings settings) {
+        try {
+            SecDispatcher securityDispatcher = new CustomDefaultSecDispatcher();
+            for (Server server : settings.getServers()) {
+                if (server.getPassword() != null) {
+                    server.setPassword(securityDispatcher.decrypt(server.getPassword()));
+                }
+            }
+        } catch (SecDispatcherException e) {
+            return settings;
         }
 
         return settings;
