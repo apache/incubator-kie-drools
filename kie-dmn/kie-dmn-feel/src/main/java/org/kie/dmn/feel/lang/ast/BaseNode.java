@@ -54,6 +54,17 @@ public class BaseNode
         this.setText( ParserHelper.getOriginalText( ctx ) );
     }
 
+    public BaseNode copyLocationAttributesFrom(BaseNode from) {
+        this.setStartChar(from.getStartChar());
+        this.setStartLine(from.getStartLine());
+        this.setStartColumn(from.getStartColumn());
+        this.setEndChar(from.getEndChar());
+        this.setEndLine(from.getEndLine());
+        this.setEndColumn(from.getEndColumn());
+        this.setText(from.getText());
+        return this;
+    }
+
     @Override
     public int getStartChar() {
         return startChar;

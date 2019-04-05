@@ -59,18 +59,18 @@ public class ASTUnaryTestTransform extends DefaultedVisitor<ASTUnaryTestTransfor
                 collect.add(accept.node);
             }
         }
-        return new TopLevel(new UnaryTestListNode(collect, n.getState()));
+        return new TopLevel(new UnaryTestListNode(collect, n.getState()).copyLocationAttributesFrom(n));
     }
 
     private BaseNode rewriteToUnaryTestExpr(BaseNode node) {
-        return new UnaryTestNode("test", node);
+        return new UnaryTestNode("test", node).copyLocationAttributesFrom(node);
     }
 
     public BaseNode rewriteToUnaryEqInExpr(BaseNode node) {
         if (node instanceof ListNode || node instanceof RangeNode) {
-            return new UnaryTestNode("in", node);
+            return new UnaryTestNode("in", node).copyLocationAttributesFrom(node);
         } else {
-            return new UnaryTestNode("=", node);
+            return new UnaryTestNode("=", node).copyLocationAttributesFrom(node);
         }
     }
 
