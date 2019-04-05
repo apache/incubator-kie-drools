@@ -54,6 +54,15 @@ public class UnaryTestListNode
         }
     }
 
+    public UnaryTestListNode(List<BaseNode> elements, State state) {
+        super();
+        this.elements = elements;
+        this.state = state;
+        if (isNegated()) {
+            notNode = new UnaryTestNode("not", new ListNode(elements));
+        }
+    }
+
     public boolean isNegated() {
         return state == State.Negated;
     }

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.kie.dmn.feel.lang.ast.ASTBuilderFactory;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
@@ -60,22 +59,18 @@ public class ASTUnaryTestTransform extends DefaultedVisitor<ASTUnaryTestTransfor
                 collect.add(accept.node);
             }
         }
-        return new TopLevel(
-                ASTBuilderFactory.newUnaryTestListNode(n.getParserRuleContext(), collect, n.getState()));
+        return new TopLevel(new UnaryTestListNode(collect, n.getState()).copyLocationAttributesFrom(n));
     }
 
     private BaseNode rewriteToUnaryTestExpr(BaseNode node) {
-        return ASTBuilderFactory.newUnaryTestNode(
-                node.getParserRuleContext(), "test", node);
+        return new UnaryTestNode("test", node).copyLocationAttributesFrom(node);
     }
 
     public BaseNode rewriteToUnaryEqInExpr(BaseNode node) {
         if (node instanceof ListNode || node instanceof RangeNode) {
-            return ASTBuilderFactory.newUnaryTestNode(
-                    node.getParserRuleContext(), "in", node);
+            return new UnaryTestNode("in", node).copyLocationAttributesFrom(node);
         } else {
-            return ASTBuilderFactory.newUnaryTestNode(
-                    node.getParserRuleContext(), "=", node);
+            return new UnaryTestNode("=", node).copyLocationAttributesFrom(node);
         }
     }
 

@@ -119,7 +119,7 @@ public class FEELImpl
 
     @Override
     public ProcessedUnaryTest compileUnaryTests(String expressions, CompilerContext ctx) {
-        return new ProcessedUnaryTest(expressions, ctx);
+        return new ProcessedUnaryTest(expressions, ctx, profiles);
     }
 
     @Override

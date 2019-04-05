@@ -2,8 +2,8 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.List;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import com.github.javaparser.ast.CompilationUnit;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -36,7 +36,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
 
         super(expression, ctx, profiles);
         this.defaultBackend = defaultBackend;
-        ParseTree tree = parser.compilation_unit();
+        ParseTree tree = getFEELParser(expression, ctx, profiles).compilation_unit();
         ast = tree.accept(new ASTBuilderVisitor(ctx.getInputVariableTypes()));
     }
 

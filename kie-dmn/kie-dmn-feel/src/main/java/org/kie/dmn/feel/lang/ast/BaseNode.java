@@ -16,8 +16,6 @@
 
 package org.kie.dmn.feel.lang.ast;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -33,7 +31,6 @@ import org.kie.dmn.feel.util.Msg;
 public class BaseNode
         implements ASTNode {
     protected final ASTNode[] EMPTY_CHILDREN = new ASTNode[0];
-    private ParserRuleContext ctx;
     private int startChar;
     private int endChar;
     private int startLine;
@@ -47,7 +44,7 @@ public class BaseNode
     }
 
     public BaseNode( ParserRuleContext ctx ) {
-        this.ctx = ctx;
+        // DO NOT keep the reference to `ParserRuleContext` to avoid unneeded retention of lexer structures.
         this.setStartChar( ctx.getStart().getStartIndex() );
         this.setStartLine( ctx.getStart().getLine() );
         this.setStartColumn( ctx.getStart().getCharPositionInLine() );
@@ -57,12 +54,15 @@ public class BaseNode
         this.setText( ParserHelper.getOriginalText( ctx ) );
     }
 
-    public void setCtx(ParserRuleContext ctx) {
-        this.ctx = ctx;
-    }
-
-    public ParserRuleContext getParserRuleContext() {
-        return ctx;
+    public BaseNode copyLocationAttributesFrom(BaseNode from) {
+        this.setStartChar(from.getStartChar());
+        this.setStartLine(from.getStartLine());
+        this.setStartColumn(from.getStartColumn());
+        this.setEndChar(from.getEndChar());
+        this.setEndLine(from.getEndLine());
+        this.setEndColumn(from.getEndColumn());
+        this.setText(from.getText());
+        return this;
     }
 
     @Override
