@@ -531,9 +531,9 @@ public class DroolsConstraintParserTest {
                         "}";
 
         BlockStmt expression = DrlConstraintParser.parseBlock(expr);
-        assertEquals("{             " +
-                             "a;\n" +
-                             "b;\n" +
+        assertEquals("{\n" +
+                             "    a;\n" +
+                             "    b;\n" +
                              "}", printConstraint(expression));
 
     }
