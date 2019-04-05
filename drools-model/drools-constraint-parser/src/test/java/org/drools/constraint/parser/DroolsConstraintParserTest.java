@@ -554,6 +554,22 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    @Ignore
+    public void testWithoutSemicolonMethodComment() {
+        String expr = "{             " +
+                "delete($person) // comment\n" +
+                "delete($pet) // comment \n" +
+                "}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    delete($person); // comment\n" +
+                             "    delete($pet); // comment\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
     public void testNewExpression() {
         String expr = "money == new BigInteger(\"3\")";
 
