@@ -236,6 +236,14 @@ public interface KieServices {
     KieBuilder newKieBuilder(File rootFolder);
 
     /**
+     * Creates a new KieBuilder to build the KieModule contained in the given folder
+     * and using the given class loader
+     * @param rootFolder rootFolder
+     * @return new kie builder
+     */
+    KieBuilder newKieBuilder(File rootFolder, ClassLoader classLoader);
+
+    /**
      * Creates a new KieBuilder to build the KieModule contained in the given KieFileSystem
      * @return new kie builder
      */

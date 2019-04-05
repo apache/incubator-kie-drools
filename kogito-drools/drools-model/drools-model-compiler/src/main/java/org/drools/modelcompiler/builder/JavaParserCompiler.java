@@ -47,24 +47,31 @@ public class JavaParserCompiler {
 
     private static final Logger logger          = LoggerFactory.getLogger(JavaParserCompiler.class);
 
-    private static final JavaDialectConfiguration.CompilerType COMPILER_TYPE = isJboss() ?
-            JavaDialectConfiguration.CompilerType.ECLIPSE :
-            JavaDialectConfiguration.CompilerType.NATIVE;
-
-    private static final JavaCompiler JAVA_COMPILER = createCompiler();
+    private static final JavaCompiler NATIVE_JAVA_COMPILER = createNativeCompiler();
+    private static final JavaCompiler ECLIPSE_JAVA_COMPILER = createEclipseCompiler();
 
     private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
 
-    private static JavaCompiler createCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.getInstance().loadCompiler( COMPILER_TYPE, "1.8" );
-        if (COMPILER_TYPE == JavaDialectConfiguration.CompilerType.ECLIPSE) {
-            ((EclipseJavaCompiler )javaCompiler).setPrefix( "src/main/java/" );
-        }
+    private static JavaCompiler createNativeCompiler() {
+        return JavaCompilerFactory.getInstance().loadCompiler( JavaDialectConfiguration.CompilerType.NATIVE, "1.8" );
+    }
+
+    private static JavaCompiler createEclipseCompiler() {
+        JavaCompiler javaCompiler = JavaCompilerFactory.getInstance().loadCompiler( JavaDialectConfiguration.CompilerType.ECLIPSE, "1.8" );
+        ((EclipseJavaCompiler )javaCompiler).setPrefix( "src/main/java/" );
         return javaCompiler;
     }
 
     public static JavaCompiler getCompiler() {
-        return JAVA_COMPILER;
+        return isJboss() ? ECLIPSE_JAVA_COMPILER : NATIVE_JAVA_COMPILER;
+    }
+
+    public static JavaCompiler getCompiler( JavaDialectConfiguration.CompilerType compilerType ) {
+        switch ( compilerType ) {
+            case ECLIPSE: return ECLIPSE_JAVA_COMPILER;
+            case NATIVE: return NATIVE_JAVA_COMPILER;
+        }
+        throw new RuntimeException( "Unknown compiler: " + compilerType );
     }
 
     private static PrettyPrinter createPrettyPrinter() {

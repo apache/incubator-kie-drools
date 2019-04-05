@@ -15,9 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
-import static org.drools.reflective.classloader.ProjectClassLoader.findParentClassLoader;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Properties;
@@ -55,6 +52,9 @@ import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
+
+import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
+import static org.drools.reflective.classloader.ProjectClassLoader.findParentClassLoader;
 
 public class KieServicesImpl implements InternalKieServices {
     private volatile KieContainer classpathKContainer;
@@ -217,6 +217,10 @@ public class KieServicesImpl implements InternalKieServices {
         return file.isDirectory() ? new KieBuilderImpl(file) : newKieBuilder(new KieFileSystemImpl(readFromJar(file)));
     }
     
+    public KieBuilder newKieBuilder(File file, ClassLoader classLoader) {
+        return file.isDirectory() ? new KieBuilderImpl(file, classLoader) : newKieBuilder(new KieFileSystemImpl(readFromJar(file)), classLoader);
+    }
+
     public KieBuilder newKieBuilder(KieFileSystem kieFileSystem) {
         return new KieBuilderImpl(kieFileSystem);
     }    

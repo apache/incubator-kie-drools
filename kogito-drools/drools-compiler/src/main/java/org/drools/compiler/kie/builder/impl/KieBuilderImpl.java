@@ -102,12 +102,17 @@ public class KieBuilderImpl
 
     private KieBuilderSetImpl kieBuilderSet;
 
-    private ClassLoader classLoader;
+    private final ClassLoader classLoader;
 
     private PomModel pomModel;
 
-    
     public KieBuilderImpl( File file ) {
+        this( file, null );
+    }
+
+    public KieBuilderImpl( File file,
+                           ClassLoader classLoader ) {
+        this.classLoader = classLoader;
         this.srcMfs = new DiskResourceReader( file );
     }
 
@@ -188,10 +193,14 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilder buildAll( Class<? extends ProjectType> projectClass ) {
+        return buildAll( projectClass, o -> true );
+    }
+
+    public KieBuilder buildAll( Class<? extends ProjectType> projectClass, Predicate<String> classFilter ) {
         try {
             BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier =
                     (BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject>) projectClass.getField( "SUPPLIER" ).get( null );
-            return buildAll( kprojectSupplier );
+            return buildAll( kprojectSupplier, classFilter );
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException( e );
         }
