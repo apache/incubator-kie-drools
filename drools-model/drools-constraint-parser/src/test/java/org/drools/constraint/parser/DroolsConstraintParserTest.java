@@ -539,7 +539,6 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
-    @Ignore
     public void testWithoutSemicolonMethod() {
         String expr = "{             " +
                 "delete($person)\n" +
