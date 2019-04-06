@@ -24,11 +24,19 @@ under the License.
   name="${artifactId}">
 
   <fileSets>
-    <fileSet filtered="true" packaged="true">
-      <directory>src/main/java</directory>
+    <fileSet encoding="UTF-8" filtered="true">
+      <directory/>
+      <includes>
+        <include>README.md</include>
+      </includes>
     </fileSet>
-    <fileSet filtered="true" packaged="false">
+    <fileSet filtered="true" packaged="false" encoding="UTF-8">
       <directory>src/main/resources</directory>
+      <includes>
+        <include>**/*.bpmn2</include>
+        <include>**/*.md</include>
+        <include>**/*.xml</include>
+      </includes>
     </fileSet>
   </fileSets>
 </archetype-descriptor>

@@ -1,9 +1,11 @@
+# ${groupId}.${artifactId} - ${version} #
+
 # Running
 
 - Compile and Run
 
     ```
-     mvn clean package quarkus:dev    
+    mvn clean package spring-boot:run    
     ```
 
 # Test your application
