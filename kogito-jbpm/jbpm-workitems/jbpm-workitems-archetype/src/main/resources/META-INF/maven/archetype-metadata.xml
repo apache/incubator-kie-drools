@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="${artifactId}">
+
+  <requiredProperties>
+    <requiredProperty key="classPrefix"/>
+    <requiredProperty key="archetypeVersion"/>
+  </requiredProperties>
+
+  <fileSets>
+    <fileSet filtered="true" packaged="true" encoding="UTF-8">
+      <directory>src/main/java</directory>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="false" packaged="false" encoding="UTF-8">
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>**/*.st</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>src/main/repository</directory>
+      <includes>
+        <include>**/*.conf</include>
+        <include>**/*.wid</include>
+        <include>**/*.png</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>assembly</directory>
+      <includes>
+        <include>**/*.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="true" encoding="UTF-8">
+      <directory>src/test/java</directory>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="true" encoding="UTF-8">
+      <directory>src/test/resources</directory>
+    </fileSet>
+  </fileSets>
+
+</archetype-descriptor>

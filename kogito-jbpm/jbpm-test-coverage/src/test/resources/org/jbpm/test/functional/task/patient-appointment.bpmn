@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_medicalRecordItem" structureRef="org.jbpm.test.persistence.objects.MedicalRecord"/>
+  <bpmn2:process id="org.jbpm.PatientAppointment" tns:version="1" tns:packageName="Test" tns:adHoc="false" name="patientAppointment" isExecutable="true" processType="Private">
+    <bpmn2:property id="medicalRecord" itemSubjectRef="_medicalRecordItem"/>
+    <bpmn2:startEvent id="_FEE56066-587B-49C2-AB70-81BB771B5DAC" name="">
+      <bpmn2:outgoing>_FEE56066-587B-49C2-AB70-81BB771B5DAC-_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3" name="Write Patient History">
+      <bpmn2:incoming>_FEE56066-587B-49C2-AB70-81BB771B5DAC-_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3</bpmn2:incoming>
+      <bpmn2:outgoing>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3-_DF39D7C7-E168-4E08-9A5A-EB68A693E82E</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_1">
+        <bpmn2:dataInput id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_ContentInput" name="Content"/>
+        <bpmn2:dataInput id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_CommentInput" name="Comment"/>
+        <bpmn2:dataInput id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_SkippableInput" name="Skippable"/>
+        <bpmn2:dataInput id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_GroupIdInput" name="GroupId"/>
+        <bpmn2:dataInput id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_PriorityInput" name="Priority"/>
+        <bpmn2:dataOutput id="DataOutput_1" name="output1"/>
+        <bpmn2:inputSet id="InputSet_1">
+          <bpmn2:dataInputRefs>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_ContentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_CommentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_SkippableInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_GroupIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_PriorityInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_1">
+          <bpmn2:dataOutputRefs>DataOutput_1</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:sourceRef>medicalRecord</bpmn2:sourceRef>
+        <bpmn2:targetRef>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_ContentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+        <bpmn2:targetRef>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_CommentInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_1">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">Write Patient History</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2">_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_CommentInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_3">
+        <bpmn2:targetRef>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_SkippableInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_2">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3">false</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4">_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_SkippableInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_4">
+        <bpmn2:targetRef>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_3">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5">User Task</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_6">_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5">
+        <bpmn2:targetRef>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_ContentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_6">
+        <bpmn2:targetRef>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_GroupIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_7">
+        <bpmn2:targetRef>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3_PriorityInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn2:sourceRef>DataOutput_1</bpmn2:sourceRef>
+        <bpmn2:targetRef>medicalRecord</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_1">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <bpmn2:formalExpression id="FormalExpression_13">frontDesk</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="_2E34C4ED-6C32-49D0-9B9E-72AC761D4983" name="">
+      <bpmn2:incoming>_D9520E51-7562-4F37-9DFD-A96BC2C254EA-_2E34C4ED-6C32-49D0-9B9E-72AC761D4983</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:userTask id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E" name="Define Patient Priority">
+      <bpmn2:incoming>_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3-_DF39D7C7-E168-4E08-9A5A-EB68A693E82E</bpmn2:incoming>
+      <bpmn2:outgoing>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E-_D9520E51-7562-4F37-9DFD-A96BC2C254EA</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_2">
+        <bpmn2:dataInput id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_ContentInput" name="Content"/>
+        <bpmn2:dataInput id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_CommentInput" name="Comment"/>
+        <bpmn2:dataInput id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_SkippableInput" name="Skippable"/>
+        <bpmn2:dataInput id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_GroupIdInput" name="GroupId"/>
+        <bpmn2:dataInput id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_PriorityInput" name="Priority"/>
+        <bpmn2:dataOutput id="DataOutput_2" itemSubjectRef="_medicalRecordItem" name="output2"/>
+        <bpmn2:inputSet id="InputSet_2">
+          <bpmn2:dataInputRefs>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_ContentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_CommentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_SkippableInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_GroupIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_PriorityInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_2">
+          <bpmn2:dataOutputRefs>DataOutput_2</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_8">
+        <bpmn2:sourceRef>medicalRecord</bpmn2:sourceRef>
+        <bpmn2:targetRef>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_ContentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_9">
+        <bpmn2:targetRef>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_CommentInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_7">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_14">Define Patient Priority</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_15">_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_CommentInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_10">
+        <bpmn2:targetRef>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_SkippableInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_8">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_16">false</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_17">_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_SkippableInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_11">
+        <bpmn2:targetRef>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_9">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_18">User Task</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_19">_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_12">
+        <bpmn2:targetRef>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_ContentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_13">
+        <bpmn2:targetRef>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_GroupIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_14">
+        <bpmn2:targetRef>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E_PriorityInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
+        <bpmn2:sourceRef>DataOutput_2</bpmn2:sourceRef>
+        <bpmn2:targetRef>medicalRecord</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_2">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_2">
+          <bpmn2:formalExpression id="FormalExpression_26">doctor</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA" name="Schedule Appointment">
+      <bpmn2:incoming>_DF39D7C7-E168-4E08-9A5A-EB68A693E82E-_D9520E51-7562-4F37-9DFD-A96BC2C254EA</bpmn2:incoming>
+      <bpmn2:outgoing>_D9520E51-7562-4F37-9DFD-A96BC2C254EA-_2E34C4ED-6C32-49D0-9B9E-72AC761D4983</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_3">
+        <bpmn2:dataInput id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA_ContentInput" name="Content"/>
+        <bpmn2:dataInput id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA_CommentInput" name="Comment"/>
+        <bpmn2:dataInput id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA_SkippableInput" name="Skippable"/>
+        <bpmn2:dataInput id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA_GroupIdInput" name="GroupId"/>
+        <bpmn2:dataInput id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA_PriorityInput" name="Priority"/>
+        <bpmn2:dataOutput id="DataOutput_3" itemSubjectRef="_medicalRecordItem" name="output3"/>
+        <bpmn2:inputSet id="InputSet_3">
+          <bpmn2:dataInputRefs>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_ContentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_CommentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_SkippableInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_GroupIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_PriorityInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_3">
+          <bpmn2:dataOutputRefs>DataOutput_3</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_15">
+        <bpmn2:sourceRef>medicalRecord</bpmn2:sourceRef>
+        <bpmn2:targetRef>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_ContentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_16">
+        <bpmn2:targetRef>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_CommentInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_13">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_27">Schedule Appointment</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_28">_D9520E51-7562-4F37-9DFD-A96BC2C254EA_CommentInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_17">
+        <bpmn2:targetRef>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_SkippableInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_14">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_29">false</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_30">_D9520E51-7562-4F37-9DFD-A96BC2C254EA_SkippableInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_18">
+        <bpmn2:targetRef>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_15">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_31">User Task</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_32">_D9520E51-7562-4F37-9DFD-A96BC2C254EA_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_19">
+        <bpmn2:targetRef>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_ContentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_20">
+        <bpmn2:targetRef>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_GroupIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_21">
+        <bpmn2:targetRef>_D9520E51-7562-4F37-9DFD-A96BC2C254EA_PriorityInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_4">
+        <bpmn2:sourceRef>DataOutput_3</bpmn2:sourceRef>
+        <bpmn2:targetRef>medicalRecord</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_3">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_3">
+          <bpmn2:formalExpression id="FormalExpression_39">manager</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_FEE56066-587B-49C2-AB70-81BB771B5DAC-_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3" tns:priority="1" name="" sourceRef="_FEE56066-587B-49C2-AB70-81BB771B5DAC" targetRef="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3"/>
+    <bpmn2:sequenceFlow id="_D9520E51-7562-4F37-9DFD-A96BC2C254EA-_2E34C4ED-6C32-49D0-9B9E-72AC761D4983" tns:priority="1" name="" sourceRef="_D9520E51-7562-4F37-9DFD-A96BC2C254EA" targetRef="_2E34C4ED-6C32-49D0-9B9E-72AC761D4983"/>
+    <bpmn2:sequenceFlow id="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3-_DF39D7C7-E168-4E08-9A5A-EB68A693E82E" tns:priority="1" name="" sourceRef="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3" targetRef="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E"/>
+    <bpmn2:sequenceFlow id="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E-_D9520E51-7562-4F37-9DFD-A96BC2C254EA" tns:priority="1" name="" sourceRef="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E" targetRef="_D9520E51-7562-4F37-9DFD-A96BC2C254EA"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="org.jbpm.PatientAppointment">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_FEE56066-587B-49C2-AB70-81BB771B5DAC">
+        <dc:Bounds height="48.0" width="48.0" x="16.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3">
+        <dc:Bounds height="48.0" width="100.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_2E34C4ED-6C32-49D0-9B9E-72AC761D4983">
+        <dc:Bounds height="48.0" width="48.0" x="492.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_2" bpmnElement="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E">
+        <dc:Bounds height="48.0" width="100.0" x="228.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_3" bpmnElement="_D9520E51-7562-4F37-9DFD-A96BC2C254EA">
+        <dc:Bounds height="48.0" width="100.0" x="360.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_FEE56066-587B-49C2-AB70-81BB771B5DAC-_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_UserTask_1">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="146.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_D9520E51-7562-4F37-9DFD-A96BC2C254EA-_2E34C4ED-6C32-49D0-9B9E-72AC761D4983" sourceElement="BPMNShape_UserTask_3" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="410.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="516.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_56E86B19-CFBF-4D26-9B14-5B55C71FFBA3-_DF39D7C7-E168-4E08-9A5A-EB68A693E82E" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_UserTask_2">
+        <di:waypoint xsi:type="dc:Point" x="146.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="278.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_DF39D7C7-E168-4E08-9A5A-EB68A693E82E-_D9520E51-7562-4F37-9DFD-A96BC2C254EA" sourceElement="BPMNShape_UserTask_2" targetElement="BPMNShape_UserTask_3">
+        <di:waypoint xsi:type="dc:Point" x="278.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="410.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

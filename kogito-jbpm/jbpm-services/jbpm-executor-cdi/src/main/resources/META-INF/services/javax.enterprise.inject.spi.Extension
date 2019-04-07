@@ -1,0 +1,2 @@
+org.jbpm.executor.cdi.impl.ExcludeNonCDIImplExtension
+org.kie.internal.runtime.cdi.ActivateExtension

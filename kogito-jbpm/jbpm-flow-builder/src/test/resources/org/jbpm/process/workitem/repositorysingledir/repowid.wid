@@ -1,0 +1,25 @@
+[
+    [
+        "name" : "RepoSingleDir",
+        "description" : "RepoSingleDir",
+        "parameters" : [
+            "param1" : new StringDataType(),
+            "param2" : new StringDataType(),
+            "param3" : new StringDataType()
+        ],
+        "parameterValues" : [
+            "param1" : new EnumDataType("org.jbpm.process.workitem.enums.AnimalsEnum"),
+            "param3" : new EnumDataType("org.jbpm.process.workitem.enums.CarsEnum")
+        ],
+        "results" : [
+            "result1" : new StringDataType(),
+            "result2" : new StringDataType()
+        ],
+        "displayName" : "RepoSingleDir",
+        "icon" : "RepoSingleDir.png",
+        "category": "RepoSingleDir",
+	    "dependencies" : [
+        ]
+    ]
+]
+

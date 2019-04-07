@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools"
+             targetNamespace="">
+
+  <itemDefinition id="_listItem" structureRef="java.util.List" />
+
+  <itemDefinition id="_2_multiInstanceItemType" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="com.sample.multipleinstance" name="Multiple instances sub-process" tns:packageName="com.sample" >
+
+    <!-- process variables -->
+    <property id="list" itemSubjectRef="_listItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <subProcess id="_2" name="Multiple Instances"  >
+      <ioSpecification>
+        <dataInput id="_2_input" name="MultiInstanceInput" />
+        <inputSet/>
+        <outputSet/>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>list</sourceRef>
+        <targetRef>_2_input</targetRef>
+      </dataInputAssociation>
+      <multiInstanceLoopCharacteristics>
+        <loopDataInputRef>_2_input</loopDataInputRef>
+        <inputDataItem id="item" itemSubjectRef="_2_multiInstanceItemType"/>
+      </multiInstanceLoopCharacteristics>
+    <!-- nodes -->
+    <startEvent id="_2-2-1" name="Start" />
+    <userTask id="_2-2-2" name="User Task" >
+      <ioSpecification>
+        <dataInput id="_2-2-2_CommentInput" name="Comment" />
+        <dataInput id="_2-2-2_TaskNameInput" name="TaskName" />
+        <inputSet>
+          <dataInputRefs>_2-2-2_CommentInput</dataInputRefs>
+          <dataInputRefs>_2-2-2_TaskNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_2-2-2_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">You need to check user #{item}</from>
+          <to xsi:type="tFormalExpression">_2-2-2_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2-2-2_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">User Check</from>
+          <to xsi:type="tFormalExpression">_2-2-2_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>sales-rep</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_2-2-3" name="End" />
+    <!-- connections -->
+    <sequenceFlow id="_2-2-1-_2-2-2" sourceRef="_2-2-1" targetRef="_2-2-2" />
+    <sequenceFlow id="_2-2-2-_2-2-3" sourceRef="_2-2-2" targetRef="_2-2-3" />
+    </subProcess>
+    <scriptTask id="_3" name="Script" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("Process completed");</script>
+    </scriptTask>
+    <endEvent id="_4" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="com.sample.multipleinstance" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="65" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="317" height="147" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-2-1" >
+        <dc:Bounds x="121" y="66" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-2-2" >
+        <dc:Bounds x="188" y="66" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-2-3" >
+        <dc:Bounds x="309" y="65" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="445" y="65" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="557" y="65" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_2-2-1-_2-2-2" >
+        <di:waypoint x="49" y="74" />
+        <di:waypoint x="142" y="74" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-2-2-_2-2-3" >
+        <di:waypoint x="142" y="74" />
+        <di:waypoint x="237" y="73" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="89" />
+        <di:waypoint x="254" y="89" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="254" y="89" />
+        <di:waypoint x="485" y="89" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="485" y="89" />
+        <di:waypoint x="581" y="89" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

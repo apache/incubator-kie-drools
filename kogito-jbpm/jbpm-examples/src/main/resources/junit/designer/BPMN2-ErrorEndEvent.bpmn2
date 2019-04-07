@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_23vOIEcIEeG-Z8AhuVIXaA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" structureRef="String"/>
+  <bpmn2:error id="error" errorCode="error"/>
+  <bpmn2:process id="ErrorEndEvent" drools:packageName="com.sample" name="Error End Event Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="org.jbpm.examples.junit.Person"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="x" itemSubjectRef="_xItem"/>
+    <bpmn2:startEvent id="_41608576-270F-4F3A-B031-D9CDDFD09A25" name="StartProcess">
+      <bpmn2:outgoing>_92DE63E5-F33D-4EBC-9425-C0FAD418F02D</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="_019A6D51-D1C7-44C0-9645-199AECBA0B9D" name="ErrorEvent">
+      <bpmn2:incoming>_92DE63E5-F33D-4EBC-9425-C0FAD418F02D</bpmn2:incoming>
+      <bpmn2:errorEventDefinition id="_23vOIUcIEeG-Z8AhuVIXaA" drools:erefname="error" errorRef="error"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_92DE63E5-F33D-4EBC-9425-C0FAD418F02D" sourceRef="_41608576-270F-4F3A-B031-D9CDDFD09A25" targetRef="_019A6D51-D1C7-44C0-9645-199AECBA0B9D"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_23vOIkcIEeG-Z8AhuVIXaA">
+    <bpmndi:BPMNPlane id="_23vOI0cIEeG-Z8AhuVIXaA" bpmnElement="ErrorEndEvent">
+      <bpmndi:BPMNShape id="_23vOJEcIEeG-Z8AhuVIXaA" bpmnElement="_41608576-270F-4F3A-B031-D9CDDFD09A25">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_23vOJUcIEeG-Z8AhuVIXaA" bpmnElement="_019A6D51-D1C7-44C0-9645-199AECBA0B9D">
+        <dc:Bounds height="28.0" width="28.0" x="105.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_23vOJkcIEeG-Z8AhuVIXaA" bpmnElement="_92DE63E5-F33D-4EBC-9425-C0FAD418F02D">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="119.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

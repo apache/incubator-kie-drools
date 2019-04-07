@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_jLB2IEcMEeG-Z8AhuVIXaA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_2_MessageType" structureRef="String"/>
+  <bpmn2:message id="_2_Message" itemRef="_2_MessageType"/>
+  <bpmn2:process id="MessageEndEvent" drools:packageName="com.sample" name="Message End Event Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="java.util.List"/>
+      <drools:import name="java.util.ArrayList"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="x" itemSubjectRef="_xItem"/>
+    <bpmn2:startEvent id="_A67704F4-BACC-4795-BFF8-9C496A7F83FF" name="StartProcess">
+      <bpmn2:outgoing>_4ED7EA5F-9099-432E-B65F-E3905B6D55A6</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="_02DD880D-66B2-4C60-B34B-A9E33E8142FC" name="MessageEvent">
+      <bpmn2:incoming>_4ED7EA5F-9099-432E-B65F-E3905B6D55A6</bpmn2:incoming>
+      <bpmn2:dataInput id="_02DD880D-66B2-4C60-B34B-A9E33E8142FC_null" name="null"/>
+      <bpmn2:dataInputAssociation id="_jLB2IkcMEeG-Z8AhuVIXaA">
+        <bpmn2:sourceRef>x</bpmn2:sourceRef>
+        <bpmn2:targetRef>_02DD880D-66B2-4C60-B34B-A9E33E8142FC_null</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:inputSet id="_jLB2IUcMEeG-Z8AhuVIXaA">
+        <bpmn2:dataInputRefs>_02DD880D-66B2-4C60-B34B-A9E33E8142FC_null</bpmn2:dataInputRefs>
+      </bpmn2:inputSet>
+      <bpmn2:messageEventDefinition id="_jLB2I0cMEeG-Z8AhuVIXaA" drools:msgref="_2_Message" messageRef="_2_Message"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_4ED7EA5F-9099-432E-B65F-E3905B6D55A6" sourceRef="_A67704F4-BACC-4795-BFF8-9C496A7F83FF" targetRef="_02DD880D-66B2-4C60-B34B-A9E33E8142FC"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_jLB2JEcMEeG-Z8AhuVIXaA">
+    <bpmndi:BPMNPlane id="_jLB2JUcMEeG-Z8AhuVIXaA" bpmnElement="MessageEndEvent">
+      <bpmndi:BPMNShape id="_jLB2JkcMEeG-Z8AhuVIXaA" bpmnElement="_A67704F4-BACC-4795-BFF8-9C496A7F83FF">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_jLB2J0cMEeG-Z8AhuVIXaA" bpmnElement="_02DD880D-66B2-4C60-B34B-A9E33E8142FC">
+        <dc:Bounds height="28.0" width="28.0" x="105.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_jLB2KEcMEeG-Z8AhuVIXaA" bpmnElement="_4ED7EA5F-9099-432E-B65F-E3905B6D55A6">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="119.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

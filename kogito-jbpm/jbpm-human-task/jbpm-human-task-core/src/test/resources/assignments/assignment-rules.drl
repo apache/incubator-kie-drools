@@ -1,0 +1,52 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package rules
+
+
+import org.kie.internal.task.api.assignment.Assignment;
+import org.kie.api.task.model.Task;
+
+rule "Always assign to Bobba Fet"
+    when
+        Task(name=="Bobbas tasks")
+    then
+        System.out.println("Always selecting Bobba Fet");
+        insert(new Assignment("Bobba Fet"));
+end
+
+rule "High priority to Darth Vader"
+    when
+        Task(priority > 6, priority < 50)
+    then
+        System.out.println("Darth Vader gets high priority tasks");
+        insert(new Assignment("Darth Vader"));
+end
+
+rule "Low priority to Luke Cage"
+    when
+        Task(priority <= 6)
+    then
+        System.out.println("Luke gets low priority tasks");
+        insert(new Assignment("Luke Cage"));
+end
+
+query "loadDarthAssignments"()
+    assignment : Assignment(user == "Darth Vader")
+end
+
+query "loadBobbaAssignments"()
+    assignment : Assignment(user == "Bobba Fet")
+end

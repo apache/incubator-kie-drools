@@ -1,0 +1,37 @@
+[
+  [
+    "name" : "MyFirstWorkItem",
+    "parameters" : [
+      "One" : new StringDataType(),
+      "Two" : new BooleanDataType(),
+      "Three" : new FloatDataType(),
+      "Four" : new IntegerDataType(),
+      "Five" : new ListDataType(),
+      "Six" : new UndefinedDataType()
+    ],
+    "parameterValues" : [
+        "One" : new EnumDataType("org.jbpm.util.CarsEnum")
+    ],
+    "Result" : new ObjectDataType(),
+    "displayName" : "MyFirstWorkItem",
+    "icon" : "defaultemailicon.gif"
+  ],
+
+  [
+      "name" : "MySecondWorkItem",
+      "parameters" : [
+        "One" : new StringDataType(),
+        "Two" : new BooleanDataType(),
+        "Three" : new FloatDataType(),
+        "Four" : new IntegerDataType(),
+        "Five" : new ListDataType(),
+        "Six" : new UndefinedDataType()
+      ],
+      "parameterValues" : [
+          "One" : new EnumDataType("org.jbpm.util.CarsEnum")
+      ],
+      "Result" : new ObjectDataType(),
+      "displayName" : "MySecondWorkItem",
+      "icon" : "defaultemailicon.gif"
+    ],
+]

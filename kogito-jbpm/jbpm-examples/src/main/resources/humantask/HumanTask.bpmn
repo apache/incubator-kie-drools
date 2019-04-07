@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_userIdItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="_descriptionItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="_dateItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="_resultItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="_commentItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="_resultUserItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="_resultManagerItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="ItemDefinition_8" isCollection="false" structureRef="Object"/>
+  <bpmn2:itemDefinition id="ItemDefinition_14" isCollection="false" structureRef="Object"/>
+  <bpmn2:process id="com.sample.humantask" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="HumanTask" isExecutable="true" processType="Private">
+    <bpmn2:property id="userId" itemSubjectRef="_userIdItem"/>
+    <bpmn2:property id="description" itemSubjectRef="_descriptionItem"/>
+    <bpmn2:property id="date" itemSubjectRef="_dateItem"/>
+    <bpmn2:property id="result" itemSubjectRef="_resultItem"/>
+    <bpmn2:property id="comment" itemSubjectRef="_commentItem"/>
+    <bpmn2:property id="resultUser" itemSubjectRef="_resultUserItem"/>
+    <bpmn2:property id="resultManager" itemSubjectRef="_resultManagerItem"/>
+    <bpmn2:laneSet id="LaneSet_1">
+      <bpmn2:lane id="Lane_1" name="sales-rep">
+        <bpmn2:flowNodeRef>_2</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>_5</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>_11</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+    </bpmn2:laneSet>
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_14</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_2" name="Review">
+      <bpmn2:incoming>_14-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_10</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_1">
+        <bpmn2:dataInput id="_2_descriptionInput" name="description"/>
+        <bpmn2:dataInput id="_2_userIdInput" name="userId"/>
+        <bpmn2:dataInput id="_2_dateInput" name="date"/>
+        <bpmn2:dataInput id="_2_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="_2_GroupIdInput" name="GroupId"/>
+        <bpmn2:dataOutput id="_2_commentOutput" name="comment"/>
+        <bpmn2:dataOutput id="_2_outcomeOutput" name="outcome"/>
+        <bpmn2:inputSet id="InputSet_1">
+          <bpmn2:dataInputRefs>_2_descriptionInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_userIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_dateInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2_GroupIdInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_1">
+          <bpmn2:dataOutputRefs>_2_commentOutput</bpmn2:dataOutputRefs>
+          <bpmn2:dataOutputRefs>_2_outcomeOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:sourceRef>description</bpmn2:sourceRef>
+        <bpmn2:targetRef>_2_descriptionInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+        <bpmn2:sourceRef>userId</bpmn2:sourceRef>
+        <bpmn2:targetRef>_2_userIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_3">
+        <bpmn2:sourceRef>date</bpmn2:sourceRef>
+        <bpmn2:targetRef>_2_dateInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_4">
+        <bpmn2:targetRef>_2_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_1">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">Request Review</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2">_2_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5">
+        <bpmn2:targetRef>_2_GroupIdInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_2">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3">sales</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4">_2_GroupIdInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn2:sourceRef>_2_commentOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>comment</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
+        <bpmn2:sourceRef>_2_outcomeOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>result</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:userTask>
+    <bpmn2:intermediateCatchEvent id="_4" name="Timer">
+      <bpmn2:incoming>_10-_4</bpmn2:incoming>
+      <bpmn2:outgoing>_4-_5</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="TimerEventDefinition_1">
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="FormalExpression_6">1m###1m</bpmn2:timeCycle>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:userTask id="_5" name="Reminder">
+      <bpmn2:incoming>_4-_5</bpmn2:incoming>
+      <bpmn2:outgoing>_5-_6</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_2">
+        <bpmn2:dataInput id="_5_resultInput" name="result"/>
+        <bpmn2:dataInput id="_5_descriptionInput" name="description"/>
+        <bpmn2:dataInput id="_5_userIdInput" name="userId"/>
+        <bpmn2:dataInput id="_5_commentInput" name="comment"/>
+        <bpmn2:dataInput id="_5_dateInput" name="date"/>
+        <bpmn2:dataInput id="_5_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="DataInput_8" itemSubjectRef="ItemDefinition_8" name="GroupId"/>
+        <bpmn2:inputSet id="InputSet_2">
+          <bpmn2:dataInputRefs>_5_resultInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_descriptionInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_userIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_commentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_dateInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_5_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>DataInput_8</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_2"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_6">
+        <bpmn2:sourceRef>result</bpmn2:sourceRef>
+        <bpmn2:targetRef>_5_resultInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_7">
+        <bpmn2:sourceRef>description</bpmn2:sourceRef>
+        <bpmn2:targetRef>_5_descriptionInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_8">
+        <bpmn2:sourceRef>userId</bpmn2:sourceRef>
+        <bpmn2:targetRef>_5_userIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_9">
+        <bpmn2:sourceRef>comment</bpmn2:sourceRef>
+        <bpmn2:targetRef>_5_commentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_10">
+        <bpmn2:sourceRef>date</bpmn2:sourceRef>
+        <bpmn2:targetRef>_5_dateInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_11">
+        <bpmn2:targetRef>_5_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_3">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_7">Request Reminder</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_8">_5_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_40">
+        <bpmn2:targetRef>DataInput_8</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_15">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_34">sales</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_33">DataInput_8</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="_6" name="End">
+      <bpmn2:incoming>_5-_6</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:parallelGateway id="_8" name="Gateway" gatewayDirection="Converging">
+      <bpmn2:incoming>_9-_8</bpmn2:incoming>
+      <bpmn2:incoming>_13-_8</bpmn2:incoming>
+      <bpmn2:outgoing>_8-_11</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:parallelGateway id="_10" name="Gateway" gatewayDirection="Diverging">
+      <bpmn2:incoming>_2-_10</bpmn2:incoming>
+      <bpmn2:outgoing>_10-_4</bpmn2:outgoing>
+      <bpmn2:outgoing>_10-_9</bpmn2:outgoing>
+      <bpmn2:outgoing>_10-_13</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+    <bpmn2:userTask id="_11" name="Notification">
+      <bpmn2:incoming>_8-_11</bpmn2:incoming>
+      <bpmn2:outgoing>_11-_12</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_4">
+        <bpmn2:dataInput id="_11_resultInput" name="result"/>
+        <bpmn2:dataInput id="_11_resultUserInput" name="resultUser"/>
+        <bpmn2:dataInput id="_11_resultManagerInput" name="resultManager"/>
+        <bpmn2:dataInput id="_11_descriptionInput" name="description"/>
+        <bpmn2:dataInput id="_11_userIdInput" name="userId"/>
+        <bpmn2:dataInput id="_11_commentInput" name="comment"/>
+        <bpmn2:dataInput id="_11_dateInput" name="date"/>
+        <bpmn2:dataInput id="_11_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="DataInput_14" itemSubjectRef="ItemDefinition_14" name="GroupId"/>
+        <bpmn2:inputSet id="InputSet_4">
+          <bpmn2:dataInputRefs>_11_resultInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_11_resultUserInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_11_resultManagerInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_11_descriptionInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_11_userIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_11_commentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_11_dateInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_11_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>DataInput_14</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_4"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_19">
+        <bpmn2:sourceRef>result</bpmn2:sourceRef>
+        <bpmn2:targetRef>_11_resultInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_20">
+        <bpmn2:sourceRef>resultUser</bpmn2:sourceRef>
+        <bpmn2:targetRef>_11_resultUserInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_21">
+        <bpmn2:sourceRef>resultManager</bpmn2:sourceRef>
+        <bpmn2:targetRef>_11_resultManagerInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_22">
+        <bpmn2:sourceRef>description</bpmn2:sourceRef>
+        <bpmn2:targetRef>_11_descriptionInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_23">
+        <bpmn2:sourceRef>userId</bpmn2:sourceRef>
+        <bpmn2:targetRef>_11_userIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_24">
+        <bpmn2:sourceRef>comment</bpmn2:sourceRef>
+        <bpmn2:targetRef>_11_commentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_25">
+        <bpmn2:sourceRef>date</bpmn2:sourceRef>
+        <bpmn2:targetRef>_11_dateInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_26">
+        <bpmn2:targetRef>_11_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_6">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_14">Request Notification</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_15">_11_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_46">
+        <bpmn2:targetRef>DataInput_14</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_21">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_46">sales</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_45">DataInput_14</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="_12" name="End">
+      <bpmn2:incoming>_11-_12</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:scriptTask id="_14" name="Time">
+      <bpmn2:incoming>_1-_14</bpmn2:incoming>
+      <bpmn2:outgoing>_14-_2</bpmn2:outgoing>
+      <bpmn2:script>kcontext.setVariable(&quot;date&quot;, new java.util.Date());</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_14-_2" tns:priority="1" name="" sourceRef="_14" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_10-_4" tns:priority="1" name="" sourceRef="_10" targetRef="_4"/>
+    <bpmn2:sequenceFlow id="_4-_5" tns:priority="1" name="" sourceRef="_4" targetRef="_5"/>
+    <bpmn2:sequenceFlow id="_5-_6" tns:priority="1" name="" sourceRef="_5" targetRef="_6"/>
+    <bpmn2:sequenceFlow id="_10-_9" tns:priority="1" name="" sourceRef="_10" targetRef="_9"/>
+    <bpmn2:sequenceFlow id="_2-_10" tns:priority="1" name="" sourceRef="_2" targetRef="_10"/>
+    <bpmn2:sequenceFlow id="_8-_11" tns:priority="1" name="" sourceRef="_8" targetRef="_11"/>
+    <bpmn2:sequenceFlow id="_11-_12" tns:priority="1" name="" sourceRef="_11" targetRef="_12"/>
+    <bpmn2:sequenceFlow id="_10-_13" tns:priority="1" name="" sourceRef="_10" targetRef="_13"/>
+    <bpmn2:sequenceFlow id="_1-_14" tns:priority="1" name="" sourceRef="_1" targetRef="_14"/>
+    <bpmn2:userTask id="_9" name="Manager Approval">
+      <bpmn2:incoming>_10-_9</bpmn2:incoming>
+      <bpmn2:outgoing>_9-_8</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_3">
+        <bpmn2:dataInput id="_9_resultInput" name="result"/>
+        <bpmn2:dataInput id="_9_descriptionInput" name="description"/>
+        <bpmn2:dataInput id="_9_userIdInput" name="userId"/>
+        <bpmn2:dataInput id="_9_commentInput" name="comment"/>
+        <bpmn2:dataInput id="_9_dateInput" name="date"/>
+        <bpmn2:dataInput id="_9_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="_9_GroupIdInput" name="GroupId"/>
+        <bpmn2:dataOutput id="_9_outcomeOutput" name="outcome"/>
+        <bpmn2:inputSet id="InputSet_3">
+          <bpmn2:dataInputRefs>_9_resultInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_9_descriptionInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_9_userIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_9_commentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_9_dateInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_9_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_9_GroupIdInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_3">
+          <bpmn2:dataOutputRefs>_9_outcomeOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_12">
+        <bpmn2:sourceRef>result</bpmn2:sourceRef>
+        <bpmn2:targetRef>_9_resultInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_13">
+        <bpmn2:sourceRef>description</bpmn2:sourceRef>
+        <bpmn2:targetRef>_9_descriptionInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_14">
+        <bpmn2:sourceRef>userId</bpmn2:sourceRef>
+        <bpmn2:targetRef>_9_userIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_15">
+        <bpmn2:sourceRef>comment</bpmn2:sourceRef>
+        <bpmn2:targetRef>_9_commentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_16">
+        <bpmn2:sourceRef>date</bpmn2:sourceRef>
+        <bpmn2:targetRef>_9_dateInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_17">
+        <bpmn2:targetRef>_9_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_4">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_9">Request Approval</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_10">_9_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_18">
+        <bpmn2:targetRef>_9_GroupIdInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_5">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_11">PM</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_12">_9_GroupIdInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
+        <bpmn2:sourceRef>_9_outcomeOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>resultManager</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_9-_8" tns:priority="1" name="" sourceRef="_9" targetRef="_8"/>
+    <bpmn2:userTask id="_13" name="User Approval">
+      <bpmn2:incoming>_10-_13</bpmn2:incoming>
+      <bpmn2:outgoing>_13-_8</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_5">
+        <bpmn2:dataInput id="_13_resultInput" name="result"/>
+        <bpmn2:dataInput id="_13_descriptionInput" name="description"/>
+        <bpmn2:dataInput id="_13_userIdInput" name="userId"/>
+        <bpmn2:dataInput id="_13_commentInput" name="comment"/>
+        <bpmn2:dataInput id="_13_dateInput" name="date"/>
+        <bpmn2:dataInput id="_13_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataOutput id="_13_outcomeOutput" name="outcome"/>
+        <bpmn2:inputSet id="InputSet_5">
+          <bpmn2:dataInputRefs>_13_resultInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_13_descriptionInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_13_userIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_13_commentInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_13_dateInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_13_TaskNameInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_5">
+          <bpmn2:dataOutputRefs>_13_outcomeOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_27">
+        <bpmn2:sourceRef>result</bpmn2:sourceRef>
+        <bpmn2:targetRef>_13_resultInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_28">
+        <bpmn2:sourceRef>description</bpmn2:sourceRef>
+        <bpmn2:targetRef>_13_descriptionInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_29">
+        <bpmn2:sourceRef>userId</bpmn2:sourceRef>
+        <bpmn2:targetRef>_13_userIdInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_30">
+        <bpmn2:sourceRef>comment</bpmn2:sourceRef>
+        <bpmn2:targetRef>_13_commentInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_31">
+        <bpmn2:sourceRef>date</bpmn2:sourceRef>
+        <bpmn2:targetRef>_13_dateInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_32">
+        <bpmn2:targetRef>_13_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_7">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_16">Request Approval</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_17">_13_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_4">
+        <bpmn2:sourceRef>_13_outcomeOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>resultUser</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:potentialOwner id="PotentialOwner_3">
+        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_3">
+          <bpmn2:formalExpression id="FormalExpression_18">#{userId}</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_13-_8" tns:priority="1" name="" sourceRef="_13" targetRef="_8"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.sample.humantask">
+      <bpmndi:BPMNShape id="BPMNShape_Lane_1" bpmnElement="Lane_1" isHorizontal="true">
+        <dc:Bounds height="243.0" width="630.0" x="160.0" y="153.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="7.0" y="167.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_2">
+        <dc:Bounds height="48.0" width="79.0" x="170.0" y="166.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="_4">
+        <dc:Bounds height="48.0" width="48.0" x="310.0" y="340.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_2" bpmnElement="_5">
+        <dc:Bounds height="48.0" width="100.0" x="390.0" y="341.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_6">
+        <dc:Bounds height="48.0" width="48.0" x="519.0" y="340.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_1" bpmnElement="_8">
+        <dc:Bounds height="48.0" width="48.0" x="583.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_2" bpmnElement="_10">
+        <dc:Bounds height="48.0" width="48.0" x="265.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_4" bpmnElement="_11">
+        <dc:Bounds height="48.0" width="118.0" x="662.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="_12">
+        <dc:Bounds height="48.0" width="48.0" x="805.0" y="162.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_14">
+        <dc:Bounds height="48.0" width="69.0" x="76.0" y="166.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_3" bpmnElement="_9">
+        <dc:Bounds height="48.0" width="182.0" x="357.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_5" bpmnElement="_13">
+        <dc:Bounds height="48.0" width="146.0" x="375.0" y="82.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_14-_2" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_UserTask_1">
+        <di:waypoint xsi:type="dc:Point" x="110.0" y="190.0"/>
+        <di:waypoint xsi:type="dc:Point" x="209.0" y="190.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_10-_4" sourceElement="BPMNShape_ParallelGateway_2" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="289.0" y="189.0"/>
+        <di:waypoint xsi:type="dc:Point" x="289.0" y="364.0"/>
+        <di:waypoint xsi:type="dc:Point" x="334.0" y="364.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_4-_5" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_UserTask_2">
+        <di:waypoint xsi:type="dc:Point" x="334.0" y="364.0"/>
+        <di:waypoint xsi:type="dc:Point" x="440.0" y="365.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_5-_6" sourceElement="BPMNShape_UserTask_2" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="440.0" y="365.0"/>
+        <di:waypoint xsi:type="dc:Point" x="543.0" y="364.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="_9-_8" sourceElement="BPMNShape_UserTask_3" targetElement="BPMNShape_ParallelGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="539.0" y="24.0"/>
+        <di:waypoint xsi:type="dc:Point" x="607.0" y="24.0"/>
+        <di:waypoint xsi:type="dc:Point" x="607.0" y="163.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="_13-_8" sourceElement="BPMNShape_UserTask_5" targetElement="BPMNShape_ParallelGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="521.0" y="106.0"/>
+        <di:waypoint xsi:type="dc:Point" x="607.0" y="106.0"/>
+        <di:waypoint xsi:type="dc:Point" x="607.0" y="163.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="_10-_9" sourceElement="BPMNShape_ParallelGateway_2" targetElement="BPMNShape_UserTask_3">
+        <di:waypoint xsi:type="dc:Point" x="289.0" y="165.0"/>
+        <di:waypoint xsi:type="dc:Point" x="289.0" y="24.0"/>
+        <di:waypoint xsi:type="dc:Point" x="357.0" y="24.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="_2-_10" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_ParallelGateway_2">
+        <di:waypoint xsi:type="dc:Point" x="209.0" y="190.0"/>
+        <di:waypoint xsi:type="dc:Point" x="289.0" y="189.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="_8-_11" sourceElement="BPMNShape_ParallelGateway_1" targetElement="BPMNShape_UserTask_4">
+        <di:waypoint xsi:type="dc:Point" x="607.0" y="187.0"/>
+        <di:waypoint xsi:type="dc:Point" x="721.0" y="187.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="_11-_12" sourceElement="BPMNShape_UserTask_4" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="721.0" y="187.0"/>
+        <di:waypoint xsi:type="dc:Point" x="829.0" y="186.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="_10-_13" sourceElement="BPMNShape_ParallelGateway_2" targetElement="BPMNShape_UserTask_5">
+        <di:waypoint xsi:type="dc:Point" x="289.0" y="165.0"/>
+        <di:waypoint xsi:type="dc:Point" x="289.0" y="106.0"/>
+        <di:waypoint xsi:type="dc:Point" x="375.0" y="106.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="_1-_14" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="31.0" y="191.0"/>
+        <di:waypoint xsi:type="dc:Point" x="110.0" y="190.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

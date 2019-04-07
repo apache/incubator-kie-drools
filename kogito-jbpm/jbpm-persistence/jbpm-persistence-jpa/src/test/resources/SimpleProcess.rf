@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="ruleflow" id="org.jbpm.persistence.TestProcess" package-name="org.jbpm.persistence" >
+
+  <header>
+    <imports>
+      <import name="java.util.List" />
+    </imports>
+    <variables>
+      <variable name="persistVar" >
+        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" />
+      </variable>
+      <variable name="logger" >
+        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" />
+      </variable>
+    </variables>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" width="48" height="48" />
+    <state id="2" name="State" width="80" height="48" >
+      <metaData name="UniqueId">
+        <value>_jbpm-unique-1</value>
+      </metaData>
+      <constraints>
+        <constraint toNodeId="3" name="constraint" priority="1" >List()</constraint>
+      </constraints>
+    </state>
+    <end id="3" name="End" width="48" height="48" />
+  </nodes>
+
+  <connections>
+    <connection from="1" to="2" />
+    <connection from="2" to="3" />
+  </connections>
+
+</process>

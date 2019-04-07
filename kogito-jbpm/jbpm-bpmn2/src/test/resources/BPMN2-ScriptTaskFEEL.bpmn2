@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  <itemDefinition id="_yItem" structureRef="String" />
+  <itemDefinition id="_nameItem" structureRef="String" />
+  <itemDefinition id="_personItem" structureRef="org.jbpm.bpmn2.objects.Person" />
+
+  <process processType="Private" isExecutable="true" id="ScriptTask" name="ScriptTask Process" tns:packageName="com.sample" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_xItem"/>
+    <property id="y" itemSubjectRef="_yItem"/>
+    <property id="name" itemSubjectRef="_nameItem"/>
+    <property id="person" itemSubjectRef="_personItem"/>
+    
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <scriptTask id="_2" name="Hello" scriptFormat="http://www.javascript.com/javascript" >
+      <script>
+        kcontext.setVariable('surname', "tester");
+  
+      </script>
+    </scriptTask>
+    <userTask id="_3" name="Hello" >
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="http://www.javascript.com/javascript">
+          <tns:script>kcontext.setVariable('x', 'Entry')</tns:script>
+        </tns:onEntry-script>
+        <tns:onExit-script scriptFormat="http://www.javascript.com/javascript">
+          <tns:script>kcontext.setVariable('y', 'Exit')</tns:script>
+        </tns:onExit-script>
+      </extensionElements>
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <exclusiveGateway id="_4" name="Split" gatewayDirection="Diverging" />
+    <scriptTask id="_5" name="Script1" scriptFormat="http://www.javascript.com/javascript">
+      <script>print('x=' + kcontext.getVariable('x') + '\n')</script>
+    </scriptTask>
+    <scriptTask id="_6" name="Script2" scriptFormat="http://www.javascript.com/javascript">
+      <script>print('y=' + kcontext.getVariable('y') + '\n')</script>
+    </scriptTask>
+    <exclusiveGateway id="_7" name="Join" gatewayDirection="Converging" />
+    <userTask id="_8" name="Hello" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_9" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" name="First" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.omg.org/spec/FEEL/20140401">x = "Entry"</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_4-_6" sourceRef="_4" targetRef="_6" name="Second" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.omg.org/spec/FEEL/20140401">x = "Exit"</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_5-_7" sourceRef="_5" targetRef="_7" />
+    <sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" />
+    <sequenceFlow id="_7-_8" sourceRef="_7" targetRef="_8" />
+    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="ScriptTask" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="136" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="136" y="40" />
+        <di:waypoint x="232" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

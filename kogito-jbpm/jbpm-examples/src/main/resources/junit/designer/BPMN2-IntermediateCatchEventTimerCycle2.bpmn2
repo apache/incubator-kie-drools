@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_stqfcEcLEeG-Z8AhuVIXaA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" structureRef="String"/>
+  <bpmn2:process id="IntermediateCatchEvent" drools:packageName="com.sample" name="IntermediateCatchEvent Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="java.util.List"/>
+      <drools:import name="java.util.ArrayList"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="x" itemSubjectRef="_xItem"/>
+    <bpmn2:startEvent id="_8FAE64C3-5F05-4F28-A8B1-B9A1434A3444" name="StartProcess">
+      <bpmn2:outgoing>_83323AA1-2D20-4F4F-B608-366B510C5C22</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:intermediateCatchEvent id="_FC094CD1-F7DA-4244-BAD2-5580E73CED02" name="timer">
+      <bpmn2:incoming>_83323AA1-2D20-4F4F-B608-366B510C5C22</bpmn2:incoming>
+      <bpmn2:outgoing>_29BE5B00-87CD-4E2B-BAA7-FC45706A4D9D</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_stqfcUcLEeG-Z8AhuVIXaA">
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_stqfckcLEeG-Z8AhuVIXaA">500ms###1s</bpmn2:timeCycle>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:scriptTask id="_8481D132-0E5D-4A30-BBC1-7F0712DB7C5F" name="Event" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_29BE5B00-87CD-4E2B-BAA7-FC45706A4D9D</bpmn2:incoming>
+      <bpmn2:outgoing>_E6323872-6EDC-4221-8507-72F084808B27</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Timer triggered&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_AB6DE066-8EC7-41A3-AC2C-571B13DADC92" name="EndProcess">
+      <bpmn2:incoming>_E6323872-6EDC-4221-8507-72F084808B27</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_83323AA1-2D20-4F4F-B608-366B510C5C22" sourceRef="_8FAE64C3-5F05-4F28-A8B1-B9A1434A3444" targetRef="_FC094CD1-F7DA-4244-BAD2-5580E73CED02"/>
+    <bpmn2:sequenceFlow id="_29BE5B00-87CD-4E2B-BAA7-FC45706A4D9D" sourceRef="_FC094CD1-F7DA-4244-BAD2-5580E73CED02" targetRef="_8481D132-0E5D-4A30-BBC1-7F0712DB7C5F"/>
+    <bpmn2:sequenceFlow id="_E6323872-6EDC-4221-8507-72F084808B27" sourceRef="_8481D132-0E5D-4A30-BBC1-7F0712DB7C5F" targetRef="_AB6DE066-8EC7-41A3-AC2C-571B13DADC92"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_stqfc0cLEeG-Z8AhuVIXaA">
+    <bpmndi:BPMNPlane id="_stqfdEcLEeG-Z8AhuVIXaA" bpmnElement="IntermediateCatchEvent">
+      <bpmndi:BPMNShape id="_stqfdUcLEeG-Z8AhuVIXaA" bpmnElement="_8FAE64C3-5F05-4F28-A8B1-B9A1434A3444">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_stqfdkcLEeG-Z8AhuVIXaA" bpmnElement="_FC094CD1-F7DA-4244-BAD2-5580E73CED02">
+        <dc:Bounds height="30.0" width="30.0" x="105.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_stqfd0cLEeG-Z8AhuVIXaA" bpmnElement="_8481D132-0E5D-4A30-BBC1-7F0712DB7C5F">
+        <dc:Bounds height="48.0" width="80.0" x="176.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_stqfeEcLEeG-Z8AhuVIXaA" bpmnElement="_AB6DE066-8EC7-41A3-AC2C-571B13DADC92">
+        <dc:Bounds height="28.0" width="28.0" x="297.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_stqfeUcLEeG-Z8AhuVIXaA" bpmnElement="_83323AA1-2D20-4F4F-B608-366B510C5C22">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_stqfekcLEeG-Z8AhuVIXaA" bpmnElement="_29BE5B00-87CD-4E2B-BAA7-FC45706A4D9D">
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="216.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_stqfe0cLEeG-Z8AhuVIXaA" bpmnElement="_E6323872-6EDC-4221-8507-72F084808B27">
+        <di:waypoint xsi:type="dc:Point" x="216.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="311.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

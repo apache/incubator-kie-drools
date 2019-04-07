@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_G3IAgBA0EeisPMthHh_L6Q" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:signal id="_3b677877-9be0-3fe7-bfc4-94a862fdc919" name="MySignal"/>
+  <bpmn2:itemDefinition id="__ADDE617B-D1F4-4E57-9C62-D6612A9036A9_TaskNameInputXItem" structureRef="String"/>
+  <bpmn2:process id="org.jbpm.boundarysignal" drools:packageName="defaultPackage" drools:version="1.0" name="boundarysignal" isExecutable="true">
+    <bpmn2:startEvent id="_527EAB78-7B26-4D0C-A935-9E9122EF0B52" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="start">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[start]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_ADF9E4BF-FCAB-42A3-91CE-10056744F872</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_ADDE617B-D1F4-4E57-9C62-D6612A9036A9" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="usertask">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[usertask]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_ADF9E4BF-FCAB-42A3-91CE-10056744F872</bpmn2:incoming>
+      <bpmn2:outgoing>_D315675B-ECC0-42C8-97CD-CE5C9D0B065C</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_G3InkBA0EeisPMthHh_L6Q">
+        <bpmn2:dataInput id="_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_TaskNameInputX" drools:dtype="String" itemSubjectRef="__ADDE617B-D1F4-4E57-9C62-D6612A9036A9_TaskNameInputXItem" name="TaskName"/>
+        <bpmn2:dataInput id="_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_SkippableInputX" name="Skippable"/>
+        <bpmn2:inputSet id="_G3InkRA0EeisPMthHh_L6Q">
+          <bpmn2:dataInputRefs>_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_TaskNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_SkippableInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_G3InkhA0EeisPMthHh_L6Q"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_G3InkxA0EeisPMthHh_L6Q">
+        <bpmn2:targetRef>_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_G3InlBA0EeisPMthHh_L6Q">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_G3InlRA0EeisPMthHh_L6Q"><![CDATA[mytask]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_G3InlhA0EeisPMthHh_L6Q">_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_TaskNameInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_G3InlxA0EeisPMthHh_L6Q">
+        <bpmn2:targetRef>_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_SkippableInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_G3InmBA0EeisPMthHh_L6Q">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_G3InmRA0EeisPMthHh_L6Q">true</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_G3InmhA0EeisPMthHh_L6Q">_ADDE617B-D1F4-4E57-9C62-D6612A9036A9_SkippableInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_ADF9E4BF-FCAB-42A3-91CE-10056744F872" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_527EAB78-7B26-4D0C-A935-9E9122EF0B52" targetRef="_ADDE617B-D1F4-4E57-9C62-D6612A9036A9"/>
+    <bpmn2:endEvent id="_8CA24BFF-699D-4543-ADBB-8290265530D4" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="end">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[end]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_D315675B-ECC0-42C8-97CD-CE5C9D0B065C</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_D315675B-ECC0-42C8-97CD-CE5C9D0B065C" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_ADDE617B-D1F4-4E57-9C62-D6612A9036A9" targetRef="_8CA24BFF-699D-4543-ADBB-8290265530D4"/>
+    <bpmn2:endEvent id="_C2AE4335-F6CC-4D37-B05E-00345743968C" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_60ED325B-B52B-435C-8980-458ED66FC36D</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_60ED325B-B52B-435C-8980-458ED66FC36D" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_E2C75D69-A1E8-465F-86A4-ABA4510A8130" targetRef="_C2AE4335-F6CC-4D37-B05E-00345743968C"/>
+    <bpmn2:boundaryEvent id="_E2C75D69-A1E8-465F-86A4-ABA4510A8130" drools:selectable="true" drools:boundaryca="true" drools:dockerinfo="63.0^79.0|" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="signal" attachedToRef="_ADDE617B-D1F4-4E57-9C62-D6612A9036A9">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[signal]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_60ED325B-B52B-435C-8980-458ED66FC36D</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="_G3InmxA0EeisPMthHh_L6Q" signalRef="_3b677877-9be0-3fe7-bfc4-94a862fdc919"/>
+    </bpmn2:boundaryEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_G3InnBA0EeisPMthHh_L6Q">
+    <bpmndi:BPMNPlane id="_G3InnRA0EeisPMthHh_L6Q" bpmnElement="org.jbpm.boundarysignal">
+      <bpmndi:BPMNShape id="_G3InnhA0EeisPMthHh_L6Q" bpmnElement="_527EAB78-7B26-4D0C-A935-9E9122EF0B52">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_G3InnxA0EeisPMthHh_L6Q" bpmnElement="_ADDE617B-D1F4-4E57-9C62-D6612A9036A9">
+        <dc:Bounds height="80.0" width="100.0" x="195.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_G3InoBA0EeisPMthHh_L6Q" bpmnElement="_8CA24BFF-699D-4543-ADBB-8290265530D4">
+        <dc:Bounds height="28.0" width="28.0" x="340.0" y="166.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_G3InoRA0EeisPMthHh_L6Q" bpmnElement="_C2AE4335-F6CC-4D37-B05E-00345743968C">
+        <dc:Bounds height="28.0" width="28.0" x="340.0" y="300.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_G3InohA0EeisPMthHh_L6Q" bpmnElement="_E2C75D69-A1E8-465F-86A4-ABA4510A8130">
+        <dc:Bounds height="30.0" width="30.0" x="243.0" y="205.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_G3InoxA0EeisPMthHh_L6Q" bpmnElement="_ADF9E4BF-FCAB-42A3-91CE-10056744F872" sourceElement="_G3InnhA0EeisPMthHh_L6Q" targetElement="_G3InnxA0EeisPMthHh_L6Q">
+        <di:waypoint xsi:type="dc:Point" x="135.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_G3InpBA0EeisPMthHh_L6Q" bpmnElement="_D315675B-ECC0-42C8-97CD-CE5C9D0B065C" sourceElement="_G3InnxA0EeisPMthHh_L6Q" targetElement="_G3InoBA0EeisPMthHh_L6Q">
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="354.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_G3InpRA0EeisPMthHh_L6Q" bpmnElement="_60ED325B-B52B-435C-8980-458ED66FC36D" sourceElement="_G3InohA0EeisPMthHh_L6Q" targetElement="_G3InoRA0EeisPMthHh_L6Q">
+        <di:waypoint xsi:type="dc:Point" x="258.0" y="220.0"/>
+        <di:waypoint xsi:type="dc:Point" x="258.0" y="314.0"/>
+        <di:waypoint xsi:type="dc:Point" x="354.0" y="314.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

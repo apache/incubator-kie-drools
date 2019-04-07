@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <process processType="Private" isExecutable="true" id="TimerBoundaryEvent" name="Timer Boundary Event Process" >
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <subProcess id="_2" name="Hello"  >
+    <!-- nodes -->
+    <startEvent id="_2-1" name="StartSubProcess" />
+    <task id="_2-2" name="Task" tns:taskName="MyTask" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
+    <endEvent id="_2-3" name="EscalationEvent" />
+    <!-- connections -->
+    <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+    <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
+    </subProcess>
+    <endEvent id="_3" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <boundaryEvent id="_4" name="TimerEvent" attachedToRef="_2" cancelActivity="false" >
+      <timerEventDefinition>
+        <timeCycle xsi:type="tFormalExpression">500ms###1s</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <scriptTask id="_5" name="Goodbye" >
+      <script>System.out.println("Timer handled");</script>
+    </scriptTask>
+    <endEvent id="_6" name="EndProcess" />
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="TimerBoundaryEvent" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="24" y="89" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="101" y="18" width="223" height="187" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-1" >
+        <dc:Bounds x="120" y="64" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-2" >
+        <dc:Bounds x="192" y="63" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-3" >
+        <dc:Bounds x="219" y="135" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="357" y="89" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="273" y="185" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="247" y="257" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="385" y="257" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_2-1-_2-2" >
+        <di:waypoint x="43" y="70" />
+        <di:waypoint x="141" y="69" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-2-_2-3" >
+        <di:waypoint x="141" y="69" />
+        <di:waypoint x="142" y="141" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="48" y="113" />
+        <di:waypoint x="212" y="111" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="212" y="111" />
+        <di:waypoint x="381" y="113" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_5" >
+        <di:waypoint x="297" y="209" />
+        <di:waypoint x="297" y="281" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_6" >
+        <di:waypoint x="297" y="281" />
+        <di:waypoint x="409" y="281" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

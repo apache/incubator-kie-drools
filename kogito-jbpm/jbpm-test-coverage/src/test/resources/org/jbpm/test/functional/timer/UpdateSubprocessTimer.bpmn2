@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.3.3.Final-v20170221-1647-B60" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:process id="UpdateSubProcessTimer" tns:packageName="defaultPackage" name="UpdateSubProcessTimer" isExecutable="true" processType="Private">
+    <bpmn2:startEvent id="_1">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="_3">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:subProcess id="SubProcess_1" name="i-have-one-timer-inside-me&#xA;">
+      <bpmn2:extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[i-have-one-timer-inside-me
+]]></tns:metaValue>
+        </tns:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      <bpmn2:startEvent id="StartEvent_1">
+        <bpmn2:extensionElements>
+          <tns:metaData name="elementname">
+            <tns:metaValue><![CDATA[]]></tns:metaValue>
+          </tns:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_1" name="Timer">
+        <bpmn2:extensionElements>
+          <tns:metaData name="elementname">
+            <tns:metaValue><![CDATA[Timer]]></tns:metaValue>
+          </tns:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+        <bpmn2:timerEventDefinition id="TimerEventDefinition_1">
+          <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="FormalExpression_7">5s</bpmn2:timeDuration>
+        </bpmn2:timerEventDefinition>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="StartEvent_1" targetRef="IntermediateCatchEvent_1"/>
+      <bpmn2:endEvent id="EndEvent_1" name="End Event 1">
+        <bpmn2:extensionElements>
+          <tns:metaData name="elementname">
+            <tns:metaValue><![CDATA[End Event 1]]></tns:metaValue>
+          </tns:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="IntermediateCatchEvent_1" targetRef="EndEvent_1"/>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="_1" targetRef="SubProcess_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="SubProcess_1" targetRef="_3"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="UpdateSubProcessTimer">
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="150.0" width="300.0" x="100.0" y="115.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="108.0" x="106.0" y="118.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="36.0" width="36.0" x="90.0" y="57.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3">
+        <dc:Bounds height="36.0" width="36.0" x="360.0" y="22.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="160.0" y="170.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="IntermediateCatchEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="222.0" y="167.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="22.0" width="62.0" x="209.0" y="203.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="326.0" y="167.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="51.0" x="319.0" y="203.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="126.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="200.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="200.0" y="115.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="300.0" y="115.0"/>
+        <di:waypoint xsi:type="dc:Point" x="300.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="360.0" y="40.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="196.0" y="188.0"/>
+        <di:waypoint xsi:type="dc:Point" x="209.0" y="188.0"/>
+        <di:waypoint xsi:type="dc:Point" x="209.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="222.0" y="185.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="258.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="292.0" y="185.0"/>
+        <di:waypoint xsi:type="dc:Point" x="326.0" y="185.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

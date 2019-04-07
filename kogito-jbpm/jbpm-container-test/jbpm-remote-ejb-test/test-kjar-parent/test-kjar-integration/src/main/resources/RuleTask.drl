@@ -1,0 +1,12 @@
+package defaultPackage;
+
+import org.jboss.qa.bpms.remote.ejb.domain.Request;
+import org.jboss.qa.bpms.remote.ejb.domain.Person;
+
+rule "Check Amount Customer" ruleflow-group "Validation"
+    when
+        r: Request();
+        Person(id == r.personId, r.amount < 1000);
+    then
+        r.setInvalid("Poor customer");
+end

@@ -1,0 +1,25 @@
+[
+    [
+        "name" : "TestServiceWithParamValuesThree",
+        "description" : "TestServiceWithParamValuesThree",
+        "parameters" : [
+            "param1" : new StringDataType(),
+            "param2" : new StringDataType(),
+            "param3" : new StringDataType()
+        ],
+        "parameterValues" : [
+            "param1" : new EnumDataType("org.jbpm.process.workitem.enums.AnimalsEnum"),
+            "param3" : "one,two,three"
+        ],
+        "results" : [
+            "result1" : new StringDataType(),
+            "result2" : new StringDataType()
+        ],
+        "displayName" : "TestServiceWithParamValuesThree",
+        "icon" : "testservicewithparamvaluesthree.png",
+        "category": "MyTestServices",
+	    "dependencies" : [
+        ]
+    ]
+]
+

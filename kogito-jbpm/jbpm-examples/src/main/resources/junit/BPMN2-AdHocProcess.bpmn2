@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <process processType="Private" isExecutable="true" id="AdHocProcess" name="AdHoc" tns:adHoc="true">
+
+    <!-- nodes -->
+    <scriptTask id="_2" name="Task1" >
+      <script>System.out.println("Task1");</script>
+    </scriptTask>
+    <scriptTask id="_3" name="Task2" >
+      <script>System.out.println("Task2");</script>
+    </scriptTask>
+    <scriptTask id="_4" name="Task3" >
+      <script>System.out.println("Task3");</script>
+    </scriptTask>
+    <scriptTask id="_5" name="Task4" >
+      <script>System.out.println("Task4");</script>
+    </scriptTask>
+    <endEvent id="_6" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <exclusiveGateway id="_7" name="Gateway" gatewayDirection="Diverging" />
+    <userTask id="_8" name="User1" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </userTask>
+
+    <!-- connections -->
+    <sequenceFlow id="_7-_5" sourceRef="_7" targetRef="_5" name="default" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >not org.jbpm.examples.junit.Person()</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_7-_6" sourceRef="_7" targetRef="_6" name="Person" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.examples.junit.Person()</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_4-_7" sourceRef="_4" targetRef="_7" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="AdHocProcess" >
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="96" y="90" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="97" y="162" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="297" y="257" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="309" y="76" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" >
+        <dc:Bounds x="213" y="161" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_8" >
+        <dc:Bounds x="99" y="312" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_7-_5" >
+        <di:waypoint x="237" y="185" />
+        <di:waypoint x="337" y="281" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_7-_6" >
+        <di:waypoint x="237" y="185" />
+        <di:waypoint x="333" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_7" >
+        <di:waypoint x="137" y="186" />
+        <di:waypoint x="237" y="185" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:bpsim="http://www.bpsim.org/schemas/1.0"
+           targetNamespace="http://www.bpsim.org/schemas/1.0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:element name="BPSimData">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="Scenario" type="bpsim:Scenario"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="Scenario">
+        <xs:sequence minOccurs="0">
+            <xs:element name="ScenarioParameters" minOccurs="0" type="bpsim:ScenarioParameters"/>
+            <xs:element name="ElementParameters" minOccurs="0" maxOccurs="unbounded" type="bpsim:ElementParameters"/>
+            <xs:element name="Calendar" type="bpsim:Calendar" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="VendorExtension" type="bpsim:VendorExtension" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="description" type="xs:string"/>
+        <xs:attribute name="author" type="xs:string"/>
+        <xs:attribute name="vendor" type="xs:string"/>
+        <xs:attribute name="version" type="xs:string"/>
+        <xs:attribute name="inherits" type="xs:IDREF"/>
+        <xs:attribute name="result" type="xs:IDREF"/>
+        <xs:attribute name="created" type="xs:dateTime"/>
+        <xs:attribute name="modified" type="xs:dateTime"/>
+    </xs:complexType>
+    <xs:complexType name="ScenarioParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="Start" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="Duration" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="PropertyParameters" type="bpsim:PropertyParameters" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="replication" type="xs:int"/>
+        <xs:attribute name="seed" type="xs:long"/>
+        <xs:attribute name="baseTimeUnit" type="bpsim:TimeUnit"/>
+        <xs:attribute name="baseCurrencyUnit" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="VendorExtension">
+        <xs:sequence minOccurs="0">
+            <xs:any namespace="##other"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:anyAttribute namespace="##other"/>
+    </xs:complexType>
+    <xs:complexType name="ElementParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="TimeParameters" type="bpsim:TimeParameters" minOccurs="0"/>
+            <xs:element name="ControlParameters" type="bpsim:ControlParameters" minOccurs="0"/>
+            <xs:element name="ResourceParameters" type="bpsim:ResourceParameters" minOccurs="0"/>
+            <xs:element name="PriorityParameters" type="bpsim:PriorityParameters" minOccurs="0"/>
+            <xs:element name="CostParameters" type="bpsim:CostParameters" minOccurs="0"/>
+            <xs:element name="PropertyParameters" type="bpsim:PropertyParameters" minOccurs="0"/>
+            <xs:element name="VendorExtension" type="bpsim:VendorExtension" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID"/>
+        <xs:attribute name="elementRef" type="xs:string"/>
+    </xs:complexType>
+    <xs:complexType name="TimeParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="TransferTime" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="QueueTime" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="WaitTime" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="SetUpTime" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="ProcessingTime" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="ValidationTime" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="ReworkTime" type="bpsim:Parameter" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ControlParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="Probability" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="Condition" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="InterTriggerTimer" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="TriggerCount" type="bpsim:Parameter" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CostParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="FixedCost" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="UnitCost" type="bpsim:Parameter" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ResourceParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="Selection" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="Availability" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="Quantity" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="Role" type="bpsim:Parameter" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PriorityParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="Interruptible" type="bpsim:Parameter" minOccurs="0"/>
+            <xs:element name="Priority" type="bpsim:Parameter" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PropertyParameters">
+        <xs:sequence minOccurs="0">
+            <xs:element name="Property" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="bpsim:Parameter">
+                            <xs:attribute name="name" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Parameter">
+        <xs:sequence minOccurs="0">
+            <xs:element name="ResultRequest" type="bpsim:ResultType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="bpsim:ParameterValue" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="kpi" type="xs:boolean" default="false"/>
+        <xs:attribute name="sla" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="Calendar">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="id" type="xs:ID"/>
+                <xs:attribute name="name" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="ParameterValue" type="bpsim:ParameterValue"/>
+    <xs:complexType name="ParameterValue">
+        <xs:attribute name="validFor" type="xs:IDREF"/>
+        <xs:attribute name="instance" type="xs:string"/>
+        <xs:attribute name="result" type="bpsim:ResultType"/>
+    </xs:complexType>
+    <xs:element name="EnumParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ParameterValue">
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>Even if here we reference a list of Parameter Values, only Constant Parameters are valid here. There is just no real way of expressing it in xsd.</xs:documentation>
+                        </xs:annotation>
+                        <xs:element ref="bpsim:ParameterValue"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ExpressionParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ParameterValue">
+                    <xs:attribute name="value" type="xs:string"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="ConstantParameter">
+        <xs:complexContent>
+            <xs:extension base="bpsim:ParameterValue"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="StringParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ConstantParameter">
+                    <xs:attribute name="value" type="xs:string"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="NumericParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ConstantParameter">
+                    <xs:attribute name="value" type="xs:long"/>
+                    <xs:attribute name="timeUnit" type="bpsim:TimeUnit"/>
+                    <xs:attribute name="currencyUnit" type="xs:string"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="FloatingParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ConstantParameter">
+                    <xs:attribute name="value" type="xs:double"/>
+                    <xs:attribute name="timeUnit" type="bpsim:TimeUnit"/>
+                    <xs:attribute name="currencyUnit" type="xs:string"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="BooleanParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ConstantParameter">
+                    <xs:attribute name="value" type="xs:boolean"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DurationParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ConstantParameter">
+                    <xs:attribute name="value" type="xs:duration"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DateTimeParameter" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:ConstantParameter">
+                    <xs:attribute name="value" type="xs:dateTime"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="DistributionParameter">
+        <xs:complexContent>
+            <xs:extension base="bpsim:ParameterValue">
+                <xs:attribute name="timeUnit" type="bpsim:TimeUnit"/>
+                <xs:attribute name="currencyUnit" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="LogNormalDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="mean" type="xs:double"/>
+                    <xs:attribute name="standardDeviation" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="PoissonDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="mean" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="WeibullDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="shape" type="xs:double"/>
+                    <xs:attribute name="scale" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UniformDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="min" type="xs:double"/>
+                    <xs:attribute name="max" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="NormalDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="mean" type="xs:double"/>
+                    <xs:attribute name="standardDeviation" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="BetaDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="shape" type="xs:double"/>
+                    <xs:attribute name="scale" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="NegativeExponentialDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="mean" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="BinomialDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="probability" type="xs:double"/>
+                    <xs:attribute name="trials" type="xs:long"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="TruncatedNormalDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="mean" type="xs:double"/>
+                    <xs:attribute name="standardDeviation" type="xs:double"/>
+                    <xs:attribute name="min" type="xs:double"/>
+                    <xs:attribute name="max" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ErlangDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="mean" type="xs:double"/>
+                    <xs:attribute name="k" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="TriangularDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="mode" type="xs:double"/>
+                    <xs:attribute name="min" type="xs:double"/>
+                    <xs:attribute name="max" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GammaDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:attribute name="shape" type="xs:double"/>
+                    <xs:attribute name="scale" type="xs:double"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UserDistribution" substitutionGroup="bpsim:ParameterValue">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="bpsim:DistributionParameter">
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element ref="bpsim:UserDistributionDataPoint"/>
+                    </xs:sequence>
+                    <xs:attribute name="discrete" type="xs:boolean" default="false"/>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UserDistributionDataPoint">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="bpsim:ParameterValue"/>
+            </xs:sequence>
+            <xs:attribute name="probability" type="xs:float"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="TimeUnit">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ms"/>
+            <xs:enumeration value="s"/>
+            <xs:enumeration value="min"/>
+            <xs:enumeration value="hour"/>
+            <xs:enumeration value="day"/>
+            <xs:enumeration value="year"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="ResultType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="min"/>
+            <xs:enumeration value="max"/>
+            <xs:enumeration value="mean"/>
+            <xs:enumeration value="count"/>
+            <xs:enumeration value="sum"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

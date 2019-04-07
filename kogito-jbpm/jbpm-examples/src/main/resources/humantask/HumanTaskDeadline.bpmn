@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_sItem" structureRef="String"/>
+
+  <process processType="Private" isExecutable="true" id="UserTask" name="User Task" >
+
+    <!-- process variables -->
+    <property id="s" itemSubjectRef="_sItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <userTask id="_2" name="Hello" >
+      <ioSpecification>
+        <dataInput id="_2_NotCompletedNotifyInput" name="NotCompletedNotify" />
+        <dataInput id="_2_NotStartedNotifyInput" name="NotStartedNotify" />
+        <dataInput id="_2_CommentInput" name="Comment" />
+        <dataInput id="_2_NotCompletedReassignInput" name="NotCompletedReassign" />
+        <dataInput id="_2_SkippableInput" name="Skippable" />
+        <dataInput id="_2_NotStartedReassignInput" name="NotStartedReassign" />
+        <dataInput id="_2_TaskNameInput" name="TaskName" />
+        <dataInput id="_2_GroupIdInput" name="GroupId" />
+        <dataInput id="_2_PriorityInput" name="Priority" />
+        <inputSet>
+          <dataInputRefs>_2_NotCompletedNotifyInput</dataInputRefs>
+          <dataInputRefs>_2_NotStartedNotifyInput</dataInputRefs>
+          <dataInputRefs>_2_CommentInput</dataInputRefs>
+          <dataInputRefs>_2_NotCompletedReassignInput</dataInputRefs>
+          <dataInputRefs>_2_SkippableInput</dataInputRefs>
+          <dataInputRefs>_2_NotStartedReassignInput</dataInputRefs>
+          <dataInputRefs>_2_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_2_GroupIdInput</dataInputRefs>
+          <dataInputRefs>_2_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_2_NotCompletedNotifyInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">[tousers:mike|subject:Not completedTask is ready for ${owners[0].id}|body:#{s}]@[8s]</from>
+          <to xsi:type="tFormalExpression">_2_NotCompletedNotifyInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_NotStartedNotifyInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">[tousers:mike|subject:Task is ready for ${owners[0].id}|body:&lt;html&gt;
+                    &lt;body&gt;
+                    Reason #{s}&lt;br/&gt;
+                    body of notification &lt;br/&gt;
+                    work item id - ${workItemId}&lt;br/&gt;
+                    process instanced  id - ${processInstanceId}&lt;br/&gt;
+                    task id - ${taskId}&lt;br/&gt;
+                    &lt;/body&gt;
+                  &lt;/html&gt;]@[2s,4s]</from>
+          <to xsi:type="tFormalExpression">_2_NotStartedNotifyInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_NotCompletedReassignInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_NotCompletedReassignInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_2_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_NotStartedReassignInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">[users:mike]@[2s]</from>
+          <to xsi:type="tFormalExpression">_2_NotStartedReassignInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_PriorityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_3" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="UserTask" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="228" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="146" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="146" y="40" />
+        <di:waypoint x="252" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_NzMPEUd-EeGMqoyw1fe44A" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="__C264E6A6-D1A6-4950-9F84-8C5976F7B945Item" structureRef="String"/>
+  <bpmn2:process id="Evaluation" drools:packageName="defaultPackage" name="Evaluation Process" isExecutable="true">
+    <bpmn2:startEvent id="_ED8825F5-12DC-4692-BA84-2BE658AFC224" name="StartProcess">
+      <bpmn2:outgoing>_496D035D-789F-4CCC-AE36-CF0AAFBD2CDD</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_C4D433E2-808D-40FE-B2B9-7D994F9D4BC6" name="Log" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_496D035D-789F-4CCC-AE36-CF0AAFBD2CDD</bpmn2:incoming>
+      <bpmn2:outgoing>_ECDEDAEA-24A4-4C49-A786-FD2EDADE48D9</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Processing evaluation for employee &quot; + employee);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_4B4AC771-51D7-4BA9-9FC4-2447005FD772" name="EndProcess">
+      <bpmn2:incoming>_ECDEDAEA-24A4-4C49-A786-FD2EDADE48D9</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_NzNdMEd-EeGMqoyw1fe44A"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_496D035D-789F-4CCC-AE36-CF0AAFBD2CDD" sourceRef="_ED8825F5-12DC-4692-BA84-2BE658AFC224" targetRef="_C4D433E2-808D-40FE-B2B9-7D994F9D4BC6"/>
+    <bpmn2:sequenceFlow id="_ECDEDAEA-24A4-4C49-A786-FD2EDADE48D9" sourceRef="_C4D433E2-808D-40FE-B2B9-7D994F9D4BC6" targetRef="_4B4AC771-51D7-4BA9-9FC4-2447005FD772"/>
+    <bpmn2:dataObject id="employee" drools:bgcolor="#ffffff" drools:datype="None" name="employee" itemSubjectRef="__C264E6A6-D1A6-4950-9F84-8C5976F7B945Item"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_NzOEQEd-EeGMqoyw1fe44A">
+    <bpmndi:BPMNPlane id="_NzOEQUd-EeGMqoyw1fe44A" bpmnElement="Evaluation">
+      <bpmndi:BPMNShape id="_NzOEQkd-EeGMqoyw1fe44A" bpmnElement="_ED8825F5-12DC-4692-BA84-2BE658AFC224">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_NzOEQ0d-EeGMqoyw1fe44A" bpmnElement="_C4D433E2-808D-40FE-B2B9-7D994F9D4BC6">
+        <dc:Bounds height="48.0" width="80.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_NzOEREd-EeGMqoyw1fe44A" bpmnElement="_4B4AC771-51D7-4BA9-9FC4-2447005FD772">
+        <dc:Bounds height="28.0" width="28.0" x="217.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_NzOERUd-EeGMqoyw1fe44A" bpmnElement="_496D035D-789F-4CCC-AE36-CF0AAFBD2CDD">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_NzOERkd-EeGMqoyw1fe44A" bpmnElement="_ECDEDAEA-24A4-4C49-A786-FD2EDADE48D9">
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="231.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_NzOrUEd-EeGMqoyw1fe44A" bpmnElement="employee">
+        <dc:Bounds height="97.0" width="88.0" x="121.0" y="151.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

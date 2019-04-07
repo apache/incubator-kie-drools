@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+  <engine>
+    <property name="deploymentExportPath">target/arquillian</property>
+  </engine>
+
+  <container qualifier="remote-container" default="true">
+    <configuration>
+      <property name="host">localhost</property>
+      <property name="httpPort">${container.port}</property>
+      <property name="user">ewsAdmin</property>
+      <property name="pass">ewsAdmin</property>
+    </configuration>
+  </container>
+
+</arquillian>

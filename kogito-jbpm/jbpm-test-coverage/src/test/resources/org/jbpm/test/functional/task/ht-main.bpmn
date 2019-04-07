@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+    <!-- item definitions -->
+    
+
+    <process processType="Private"
+             isExecutable="true"
+             id="com.mycompany.sample"
+             name="Sample"
+             tns:packageName="defaultPackage" >
+
+    <!-- properties -->
+    
+
+    <!-- nodes -->
+    <startEvent id="_688f9334-6a19-2132-b187-53fbcba8c031" name="Start" />
+<endEvent id="_6a9d0141-ded8-d4aa-c423-481cafbfcbf5" name="End" >
+    
+        <terminateEventDefinition />
+    
+</endEvent>
+<callActivity id="_70d0b9f6-1449-8ee8-90cb-602cdccb6447" name="Sub-Process" calledElement="com.mycompany.sample.subprocess" tns:independent="false">
+    <ioSpecification>
+        
+        
+        <inputSet>
+            
+        </inputSet>
+        <outputSet>
+            
+        </outputSet>
+    </ioSpecification>
+    
+    
+</callActivity>
+<userTask id="_91773511-586d-cbd7-08fb-2a8b35e6d1fe" name="User Task">
+    <ioSpecification>
+        
+            <dataInput id="_91773511-586d-cbd7-08fb-2a8b35e6d1fe_Param3Input" name="Param3" />
+        
+        
+        <inputSet>
+            
+                <dataInputRefs>_91773511-586d-cbd7-08fb-2a8b35e6d1fe_Param3Input</dataInputRefs>
+            
+        </inputSet>
+        <outputSet>
+            
+        </outputSet>
+    </ioSpecification>
+    
+    
+        <dataInputAssociation>
+            <targetRef>_91773511-586d-cbd7-08fb-2a8b35e6d1fe_Param3Input</targetRef>
+            <assignment>
+              <from xsi:type="tFormalExpression">testForm</from>
+              <to xsi:type="tFormalExpression">_91773511-586d-cbd7-08fb-2a8b35e6d1fe_Param3Input</to>
+            </assignment>
+        </dataInputAssociation>
+    
+    
+    <potentialOwner>
+        <resourceAssignmentExpression>
+            <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+    </potentialOwner>
+</userTask>
+
+
+    <!-- connections -->
+    <sequenceFlow id="_688f9334-6a19-2132-b187-53fbcba8c031__91773511-586d-cbd7-08fb-2a8b35e6d1fe" sourceRef="_688f9334-6a19-2132-b187-53fbcba8c031" targetRef="_91773511-586d-cbd7-08fb-2a8b35e6d1fe" name=""   /> 
+<sequenceFlow id="_70d0b9f6-1449-8ee8-90cb-602cdccb6447__6a9d0141-ded8-d4aa-c423-481cafbfcbf5" sourceRef="_70d0b9f6-1449-8ee8-90cb-602cdccb6447" targetRef="_6a9d0141-ded8-d4aa-c423-481cafbfcbf5" name=""   /> 
+<sequenceFlow id="_91773511-586d-cbd7-08fb-2a8b35e6d1fe__70d0b9f6-1449-8ee8-90cb-602cdccb6447" sourceRef="_91773511-586d-cbd7-08fb-2a8b35e6d1fe" targetRef="_70d0b9f6-1449-8ee8-90cb-602cdccb6447" name=""   /> 
+
+
+    </process>
+
+    <bpmndi:BPMNDiagram>
+        <bpmndi:BPMNPlane bpmnElement="com.mycompany.sample" >
+            <bpmndi:BPMNShape bpmnElement="_688f9334-6a19-2132-b187-53fbcba8c031">
+    <dc:Bounds x="56" y="82" width="38" height="38" />
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="_6a9d0141-ded8-d4aa-c423-481cafbfcbf5">
+    <dc:Bounds x="632" y="82" width="38" height="38" />
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="_70d0b9f6-1449-8ee8-90cb-602cdccb6447">
+    <dc:Bounds x="406" y="82" width="122" height="40" />
+</bpmndi:BPMNShape>
+<bpmndi:BPMNShape bpmnElement="_91773511-586d-cbd7-08fb-2a8b35e6d1fe">
+    <dc:Bounds x="180" y="82" width="102" height="40" />
+</bpmndi:BPMNShape>
+<bpmndi:BPMNEdge bpmnElement="_688f9334-6a19-2132-b187-53fbcba8c031__91773511-586d-cbd7-08fb-2a8b35e6d1fe" >
+    <di:waypoint x="19" y="36" />
+    
+    <di:waypoint x="51" y="38" />
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge bpmnElement="_70d0b9f6-1449-8ee8-90cb-602cdccb6447__6a9d0141-ded8-d4aa-c423-481cafbfcbf5" >
+    <di:waypoint x="61" y="38" />
+    
+    <di:waypoint x="19" y="2" />
+</bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge bpmnElement="_91773511-586d-cbd7-08fb-2a8b35e6d1fe__70d0b9f6-1449-8ee8-90cb-602cdccb6447" >
+    <di:waypoint x="51" y="38" />
+    
+    <di:waypoint x="61" y="38" />
+</bpmndi:BPMNEdge>
+
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+
+</definitions>

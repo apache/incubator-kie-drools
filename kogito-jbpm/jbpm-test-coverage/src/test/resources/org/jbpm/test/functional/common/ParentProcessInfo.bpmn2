@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_-ZDNcDj_EeSCYPP1j_wAag" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:process id="org.jbpm.test.functional.common.ParentProcessInfo" drools:version="1.0" drools:packageName="org.jbpm.test.functional.common" drools:adHoc="false" name="ParentProcessInfo" isExecutable="true">
+    <bpmn2:extensionElements/>
+    <bpmn2:startEvent id="processStartEvent" drools:bgcolor="#9acd32" drools:selectable="true" name="Start">
+      <bpmn2:outgoing>_53C28B63-0536-47F9-8C48-A93B80EB1024</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_BFA89A60-AE6B-4DA2-AA55-D75671580EF9" drools:selectable="true" name="Get Parent Process Info" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_53C28B63-0536-47F9-8C48-A93B80EB1024</bpmn2:incoming>
+      <bpmn2:outgoing>_AA96716C-BFA5-478A-9E24-B719D534067B</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Loading information about parent process ...&quot;);
+
+org.jbpm.process.instance.ProcessInstance processInstance = (org.jbpm.process.instance.ProcessInstance) kcontext.getProcessInstance();
+java.util.Map&lt;String, Object> metaData = processInstance.getMetaData();
+
+kcontext.setVariable(&quot;parentProcessInstanceId&quot;, metaData.get(&quot;ParentProcessInstanceId&quot;));
+kcontext.setVariable(&quot;parentNodeInstanceId&quot;, metaData.get(&quot;ParentNodeInstanceId&quot;));
+kcontext.setVariable(&quot;parentNodeId&quot;, metaData.get(&quot;ParentNodeId&quot;));
+  
+System.out.println(&quot;\tParentProcessInstanceId=&quot; + metaData.get(&quot;ParentProcessInstanceId&quot;));
+System.out.println(&quot;\tParentNodeInstanceId=&quot; + metaData.get(&quot;ParentNodeInstanceId&quot;));
+System.out.println(&quot;\tParentNodeId=&quot; + metaData.get(&quot;ParentNodeId&quot;));</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_53C28B63-0536-47F9-8C48-A93B80EB1024" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" name="" sourceRef="processStartEvent" targetRef="_BFA89A60-AE6B-4DA2-AA55-D75671580EF9"/>
+    <bpmn2:sequenceFlow id="_AA96716C-BFA5-478A-9E24-B719D534067B" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" name="" sourceRef="_BFA89A60-AE6B-4DA2-AA55-D75671580EF9" targetRef="_BB854556-152C-4F20-A8A8-50808174821E"/>
+    <bpmn2:endEvent id="_BB854556-152C-4F20-A8A8-50808174821E" drools:bgcolor="#ff6347" drools:selectable="true" name="End">
+      <bpmn2:incoming>_AA96716C-BFA5-478A-9E24-B719D534067B</bpmn2:incoming>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_-ZDNcTj_EeSCYPP1j_wAag">
+    <bpmndi:BPMNPlane id="_-ZDNcjj_EeSCYPP1j_wAag" bpmnElement="org.jbpm.test.functional.common.ParentProcessInfo">
+      <bpmndi:BPMNShape id="_-ZDNczj_EeSCYPP1j_wAag" bpmnElement="processStartEvent">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_-ZDNdDj_EeSCYPP1j_wAag" bpmnElement="_BFA89A60-AE6B-4DA2-AA55-D75671580EF9">
+        <dc:Bounds height="80.0" width="100.0" x="195.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_-ZDNdjj_EeSCYPP1j_wAag" bpmnElement="_BB854556-152C-4F20-A8A8-50808174821E">
+        <dc:Bounds height="28.0" width="28.0" x="331.0" y="166.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_-ZDNdTj_EeSCYPP1j_wAag" bpmnElement="_53C28B63-0536-47F9-8C48-A93B80EB1024" sourceElement="_-ZDNczj_EeSCYPP1j_wAag" targetElement="_-ZDNdDj_EeSCYPP1j_wAag">
+        <di:waypoint xsi:type="dc:Point" x="135.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_-ZDNdzj_EeSCYPP1j_wAag" bpmnElement="_AA96716C-BFA5-478A-9E24-B719D534067B" sourceElement="_-ZDNdDj_EeSCYPP1j_wAag" targetElement="_-ZDNdjj_EeSCYPP1j_wAag">
+        <di:waypoint xsi:type="dc:Point" x="295.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="311.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="311.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="331.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

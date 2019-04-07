@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools"
+             targetNamespace="">
+
+  <itemDefinition id="_employeeItem" structureRef="String" />
+  <itemDefinition id="_reasonItem" structureRef="String" />
+  <itemDefinition id="_performanceItem" structureRef="String" />
+  <itemDefinition id="_contentItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="com.sample.evaluation" name="Evaluation" tns:packageName="defaultPackage" >
+
+    <!-- process variables -->
+    <property id="employee" itemSubjectRef="_employeeItem"/>
+    <property id="reason" itemSubjectRef="_reasonItem"/>
+    <property id="performance" itemSubjectRef="_performanceItem"/>
+    <property id="content" itemSubjectRef="_contentItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <userTask id="_2" name="Self Evaluation" >
+      <ioSpecification>
+        <dataInput id="_2_reasonInput" name="reason" />
+        <dataInput id="_2_CommentInput" name="Comment" />
+        <dataInput id="_2_SkippableInput" name="Skippable" />
+        <dataInput id="_2_TaskNameInput" name="TaskName" />
+        <dataOutput id="_2_performanceOutput" name="performance" />
+        <inputSet>
+          <dataInputRefs>_2_reasonInput</dataInputRefs>
+          <dataInputRefs>_2_CommentInput</dataInputRefs>
+          <dataInputRefs>_2_SkippableInput</dataInputRefs>
+          <dataInputRefs>_2_TaskNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_performanceOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>reason</sourceRef>
+        <targetRef>_2_reasonInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Please perform a self-evalutation.</from>
+          <to xsi:type="tFormalExpression">_2_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_2_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_2_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Performance Evaluation</from>
+          <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_performanceOutput</sourceRef>
+        <targetRef>performance</targetRef>
+      </dataOutputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>#{employee}</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <userTask id="_3" name="PM Evaluation" >
+      <ioSpecification>
+        <dataInput id="_3_reasonInput" name="reason" />
+        <dataInput id="_3_performanceInput" name="performance" />
+        <dataInput id="_3_CommentInput" name="Comment" />
+        <dataInput id="_3_SkippableInput" name="Skippable" />
+        <dataInput id="_3_TaskNameInput" name="TaskName" />
+        <dataInput id="_3_GroupIdInput" name="GroupId" />
+        <inputSet>
+          <dataInputRefs>_3_reasonInput</dataInputRefs>
+          <dataInputRefs>_3_performanceInput</dataInputRefs>
+          <dataInputRefs>_3_CommentInput</dataInputRefs>
+          <dataInputRefs>_3_SkippableInput</dataInputRefs>
+          <dataInputRefs>_3_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_3_GroupIdInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>reason</sourceRef>
+        <targetRef>_3_reasonInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>performance</sourceRef>
+        <targetRef>_3_performanceInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_3_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">You need to evaluate #{employee}.</from>
+          <to xsi:type="tFormalExpression">_3_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_3_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_3_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_3_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Performance Evaluation</from>
+          <to xsi:type="tFormalExpression">_3_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_3_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">PM</from>
+          <to xsi:type="tFormalExpression">_3_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
+    </userTask>
+    <userTask id="_4" name="HR Evaluation" >
+      <ioSpecification>
+        <dataInput id="_4_reasonInput" name="reason" />
+        <dataInput id="_4_performanceInput" name="performance" />
+        <dataInput id="_4_CommentInput" name="Comment" />
+        <dataInput id="_4_SkippableInput" name="Skippable" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_GroupIdInput" name="GroupId" />
+        <inputSet>
+          <dataInputRefs>_4_reasonInput</dataInputRefs>
+          <dataInputRefs>_4_performanceInput</dataInputRefs>
+          <dataInputRefs>_4_CommentInput</dataInputRefs>
+          <dataInputRefs>_4_SkippableInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_GroupIdInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>reason</sourceRef>
+        <targetRef>_4_reasonInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>performance</sourceRef>
+        <targetRef>_4_performanceInput</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">You need to evaluate #{employee}.</from>
+          <to xsi:type="tFormalExpression">_4_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_4_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Performance Evaluation</from>
+          <to xsi:type="tFormalExpression">_4_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">HR</from>
+          <to xsi:type="tFormalExpression">_4_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
+    </userTask>
+    <parallelGateway id="_5" name="Gateway" gatewayDirection="Diverging" />
+    <parallelGateway id="_6" name="Gateway" gatewayDirection="Converging" />
+    <endEvent id="_7" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_5-_3" sourceRef="_5" targetRef="_3" />
+    <sequenceFlow id="_5-_4" sourceRef="_5" targetRef="_4" />
+    <sequenceFlow id="_2-_5" sourceRef="_2" targetRef="_5" />
+    <sequenceFlow id="_4-_6" sourceRef="_4" targetRef="_6" />
+    <sequenceFlow id="_3-_6" sourceRef="_3" targetRef="_6" />
+    <sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="com.sample.evaluation" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="56" width="135" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="344" y="96" width="136" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="344" y="16" width="136" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="263" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="512" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" >
+        <dc:Bounds x="597" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="80" />
+        <di:waypoint x="163" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_3" >
+        <di:waypoint x="287" y="80" />
+        <di:waypoint x="287" y="120" />
+        <di:waypoint x="412" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_4" >
+        <di:waypoint x="287" y="80" />
+        <di:waypoint x="287" y="40" />
+        <di:waypoint x="412" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_5" >
+        <di:waypoint x="163" y="80" />
+        <di:waypoint x="287" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_6" >
+        <di:waypoint x="412" y="40" />
+        <di:waypoint x="536" y="40" />
+        <di:waypoint x="536" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_6" >
+        <di:waypoint x="412" y="120" />
+        <di:waypoint x="537" y="120" />
+        <di:waypoint x="536" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6-_7" >
+        <di:waypoint x="536" y="80" />
+        <di:waypoint x="621" y="80" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

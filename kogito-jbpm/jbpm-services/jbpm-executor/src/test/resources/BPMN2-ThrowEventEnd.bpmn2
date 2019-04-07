@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_eAHLwOgNEeS3ScoFLk_wFg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:signal id="MySignal" name="MySignal"/>
+  <bpmn2:process id="SendEvent" drools:packageName="org.jbpm" drools:version="1.0" name="sendsignal" isExecutable="true">
+    <bpmn2:startEvent id="processStartEvent" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:outgoing>_CA5D5FC1-5ED6-4CFC-95ED-682F43F9343F</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_6CF7F8F0-848C-4D02-B9C8-457C907E80AA" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="About to signal" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_CA5D5FC1-5ED6-4CFC-95ED-682F43F9343F</bpmn2:incoming>
+      <bpmn2:outgoing>_5011783E-EB48-4457-81E8-753F2C3C4651</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("Sending signal");]]></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_CA5D5FC1-5ED6-4CFC-95ED-682F43F9343F" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="processStartEvent" targetRef="_6CF7F8F0-848C-4D02-B9C8-457C907E80AA"/>
+    <bpmn2:sequenceFlow id="_5011783E-EB48-4457-81E8-753F2C3C4651" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_6CF7F8F0-848C-4D02-B9C8-457C907E80AA" targetRef="_F836E663-AEED-4B43-A8DC-36499D5D185E"/>
+    <bpmn2:endEvent id="_F836E663-AEED-4B43-A8DC-36499D5D185E" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:incoming>_5011783E-EB48-4457-81E8-753F2C3C4651</bpmn2:incoming>
+      <bpmn2:dataInput id="_F836E663-AEED-4B43-A8DC-36499D5D185E_asyncInputX" drools:dtype="Object" name="async"/>
+      <bpmn2:inputSet id="_eAHLwegNEeS3ScoFLk_wFg">
+        <bpmn2:dataInputRefs>_F836E663-AEED-4B43-A8DC-36499D5D185E_asyncInputX</bpmn2:dataInputRefs>
+      </bpmn2:inputSet>
+      <bpmn2:signalEventDefinition id="_eAHLwugNEeS3ScoFLk_wFg" signalRef="MySignal"/>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_eAHLw-gNEeS3ScoFLk_wFg">
+    <bpmndi:BPMNPlane id="_eAHLxOgNEeS3ScoFLk_wFg" bpmnElement="SendEvent">
+      <bpmndi:BPMNShape id="_eAHLxegNEeS3ScoFLk_wFg" bpmnElement="processStartEvent">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_eAHLxugNEeS3ScoFLk_wFg" bpmnElement="_6CF7F8F0-848C-4D02-B9C8-457C907E80AA">
+        <dc:Bounds height="80.0" width="100.0" x="195.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_eAHLx-gNEeS3ScoFLk_wFg" bpmnElement="_CA5D5FC1-5ED6-4CFC-95ED-682F43F9343F">
+        <di:waypoint xsi:type="dc:Point" x="135.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_eAHy0OgNEeS3ScoFLk_wFg" bpmnElement="_5011783E-EB48-4457-81E8-753F2C3C4651">
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="354.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_eAHy0egNEeS3ScoFLk_wFg" bpmnElement="_F836E663-AEED-4B43-A8DC-36499D5D185E">
+        <dc:Bounds height="28.0" width="28.0" x="340.0" y="166.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

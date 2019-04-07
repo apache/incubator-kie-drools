@@ -1,0 +1,4 @@
+org.jbpm.services.task.assignment.impl.strategy.PotentialOwnerBusynessAssignmentStrategy
+org.jbpm.services.task.assignment.impl.strategy.BusinessRuleAssignmentStrategy
+org.jbpm.services.task.assignment.impl.strategy.RoundRobinAssignmentStrategy
+org.jbpm.services.task.assignment.impl.strategy.LoadBalanceAssignmentStrategy

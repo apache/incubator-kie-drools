@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_sItem" structureRef="String" />
+
+  <itemDefinition id="_2_InMessageType" structureRef="java.lang.String"/>
+  <message id="_2_InMessage" itemRef="_2_InMessageType" />
+  <interface id="_2_ServiceInterface" name="org.jbpm.executor.objects.HelloService">
+    <operation id="_2_ServiceOperation" name="hello">
+      <inMessageRef>_2_InMessage</inMessageRef>
+    </operation>
+  </interface>
+
+  <process processType="Private" isExecutable="true" id="AsyncServiceProcess" name="Service Process" >
+
+    <!-- process variables -->
+    <property id="s" itemSubjectRef="_sItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <serviceTask id="_2" name="Hello" operationRef="_2_ServiceOperation" implementation="Other" >
+      <extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
+      <ioSpecification>        
+        <dataInput id="_2_param" name="Parameter" />
+        <dataOutput id="_2_result" name="Result" />
+        <inputSet>
+          <dataInputRefs>_2_param</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_result</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>s</sourceRef>
+        <targetRef>_2_param</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_result</sourceRef>
+        <targetRef>s</targetRef>
+      </dataOutputAssociation>
+    </serviceTask>
+    <endEvent id="_3" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="AsyncServiceProcess" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="228" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="146" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="146" y="40" />
+        <di:waypoint x="252" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

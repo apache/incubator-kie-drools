@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_gkgssMocEeOsIItR3g2uqw" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_reportItem" structureRef="org.jbpm.test.iodata.SignalObjectReport"/>
+  <bpmn2:itemDefinition id="ItemDefinition_1" structureRef="org.jbpm.test.iodata.SignalObjectReport"/>
+  <bpmn2:signal id="SignalObjectReport" name="SignalObjectReport"/>
+  <bpmn2:process id="org.jbpm.test.regression.event.StartEvent-signalOutputType" drools:version="1.0" drools:packageName="org.jbpm.test.regression.event" drools:adHoc="false" name="StartEvent-signalOutputType" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="org.jbpm.test.iodata.SignalObjectReport"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="report" itemSubjectRef="ItemDefinition_1"/>
+    <bpmn2:startEvent id="_50B69251-5433-40A8-A709-6951AB0543AA" drools:bgcolor="#9acd32" drools:selectable="true" name="Signal object report">
+      <bpmn2:outgoing>bpmn20:_3435E834-627C-42CF-82FB-79B465283BE5</bpmn2:outgoing>
+      <bpmn2:dataOutput id="_50B69251-5433-40A8-A709-6951AB0543AA_report" drools:dtype="Object" itemSubjectRef="ItemDefinition_1" name="report"/>
+      <bpmn2:dataOutputAssociation id="_gkgsssocEeOsIItR3g2uqw">
+        <bpmn2:sourceRef>_50B69251-5433-40A8-A709-6951AB0543AA_report</bpmn2:sourceRef>
+        <bpmn2:targetRef>report</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:outputSet id="OutputSet_1" name="Output Set 1">
+        <bpmn2:dataOutputRefs>_50B69251-5433-40A8-A709-6951AB0543AA_report</bpmn2:dataOutputRefs>
+      </bpmn2:outputSet>
+      <bpmn2:signalEventDefinition id="_gkgss8ocEeOsIItR3g2uqw" signalRef="SignalObjectReport"/>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_0EFAE106-A571-43F3-9598-29683B946940" drools:selectable="true" name="Request to do something" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>bpmn20:_3435E834-627C-42CF-82FB-79B465283BE5</bpmn2:incoming>
+      <bpmn2:outgoing>bpmn20:_C377F4F6-F084-45FF-8033-635DD45E3685</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Received a signal with request. &quot; + report);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_3435E834-627C-42CF-82FB-79B465283BE5" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" name="" sourceRef="_50B69251-5433-40A8-A709-6951AB0543AA" targetRef="_0EFAE106-A571-43F3-9598-29683B946940"/>
+    <bpmn2:endEvent id="_FF0E95A3-889C-4309-9E6B-D28D555DFCD2" drools:bgcolor="#ff6347" drools:selectable="true" name="">
+      <bpmn2:incoming>bpmn20:_C377F4F6-F084-45FF-8033-635DD45E3685</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_C377F4F6-F084-45FF-8033-635DD45E3685" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" name="" sourceRef="_0EFAE106-A571-43F3-9598-29683B946940" targetRef="_FF0E95A3-889C-4309-9E6B-D28D555DFCD2"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_gkgstMocEeOsIItR3g2uqw">
+    <bpmndi:BPMNPlane id="_gkgstcocEeOsIItR3g2uqw" bpmnElement="org.jbpm.test.regression.event.StartEvent-signalOutputType">
+      <bpmndi:BPMNShape id="_gkhTwMocEeOsIItR3g2uqw" bpmnElement="_50B69251-5433-40A8-A709-6951AB0543AA">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_gkhTwcocEeOsIItR3g2uqw" bpmnElement="_0EFAE106-A571-43F3-9598-29683B946940">
+        <dc:Bounds height="80.0" width="100.0" x="195.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_gkhTw8ocEeOsIItR3g2uqw" bpmnElement="_FF0E95A3-889C-4309-9E6B-D28D555DFCD2">
+        <dc:Bounds height="28.0" width="28.0" x="340.0" y="166.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_gkhTwsocEeOsIItR3g2uqw" bpmnElement="_3435E834-627C-42CF-82FB-79B465283BE5" sourceElement="_gkhTwMocEeOsIItR3g2uqw" targetElement="_gkhTwcocEeOsIItR3g2uqw">
+        <di:waypoint xsi:type="dc:Point" x="135.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_gkhTxMocEeOsIItR3g2uqw" bpmnElement="_C377F4F6-F084-45FF-8033-635DD45E3685" sourceElement="_gkhTwcocEeOsIItR3g2uqw" targetElement="_gkhTw8ocEeOsIItR3g2uqw">
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="354.0" y="180.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

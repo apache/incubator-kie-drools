@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  <itemDefinition id="_yItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="ParentProcess" name="Parent Process" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_xItem"/>
+    <property id="y" itemSubjectRef="_yItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess"  isInterrupting="true"/>
+    <callActivity id="_2" name="CallActivity" calledElement="SubProcess" >
+      <ioSpecification>
+        <dataInput id="_2_subXInput" name="subX" />
+        <dataOutput id="_2_subYOutput" name="subY" />
+        <inputSet>
+          <dataInputRefs>_2_subXInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_subYOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>x</sourceRef>
+        <targetRef>_2_subXInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_subYOutput</sourceRef>
+        <targetRef>y</targetRef>
+      </dataOutputAssociation>
+    </callActivity>
+    <endEvent id="_3" name="EndProcess" >
+        <terminateEventDefinition />
+    </endEvent>
+    <userTask id="_4" name="User Task" >
+      <ioSpecification>
+        <dataInput id="_4_CreatedByInput" name="CreatedBy" />
+        <dataInput id="_4_CommentInput" name="Comment" />
+        <dataInput id="_4_SkippableInput" name="Skippable" />
+        <dataInput id="_4_LocaleInput" name="Locale" />
+        <dataInput id="_4_TaskNameInput" name="TaskName" />
+        <dataInput id="_4_GroupIdInput" name="GroupId" />
+        <dataInput id="_4_PriorityInput" name="Priority" />
+        <inputSet>
+          <dataInputRefs>_4_CreatedByInput</dataInputRefs>
+          <dataInputRefs>_4_CommentInput</dataInputRefs>
+          <dataInputRefs>_4_SkippableInput</dataInputRefs>
+          <dataInputRefs>_4_LocaleInput</dataInputRefs>
+          <dataInputRefs>_4_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_4_GroupIdInput</dataInputRefs>
+          <dataInputRefs>_4_PriorityInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_4_CreatedByInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_CreatedByInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_CommentInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_CommentInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_4_SkippableInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_LocaleInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">en-UK</from>
+          <to xsi:type="tFormalExpression">_4_LocaleInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">MyTask</from>
+          <to xsi:type="tFormalExpression">_4_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_4_PriorityInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>krisv</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_4-_3" sourceRef="_4" targetRef="_3" />
+    <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="ParentProcess" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="110" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="382" y="17" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="242" y="16" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="151" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_3" >
+        <di:waypoint x="292" y="40" />
+        <di:waypoint x="406" y="41" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_4" >
+        <di:waypoint x="151" y="40" />
+        <di:waypoint x="292" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

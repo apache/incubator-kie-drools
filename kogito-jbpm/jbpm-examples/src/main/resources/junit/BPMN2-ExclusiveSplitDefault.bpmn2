@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  <itemDefinition id="_yItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="com.sample.test" name="Test" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_xItem"/>
+    <property id="y" itemSubjectRef="_yItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <exclusiveGateway id="_2" name="Split" default="_2-_4" gatewayDirection="Diverging" />
+    <scriptTask id="_3" name="Script1" >
+      <script>System.out.println("x=" + x);</script>
+    </scriptTask>
+    <scriptTask id="_4" name="Script2" >
+      <script>System.out.println("y=" + y);</script>
+    </scriptTask>
+    <exclusiveGateway id="_5" name="Join" gatewayDirection="Converging" />
+    <task id="_6" name="Email" tns:taskName="Email" >
+      <ioSpecification>
+        <dataInput id="_6_BodyInput" name="Body" />
+        <dataInput id="_6_SubjectInput" name="Subject" />
+        <dataInput id="_6_ToInput" name="To" />
+        <dataInput id="_6_FromInput" name="From" />
+        <inputSet>
+          <dataInputRefs>_6_BodyInput</dataInputRefs>
+          <dataInputRefs>_6_SubjectInput</dataInputRefs>
+          <dataInputRefs>_6_ToInput</dataInputRefs>
+          <dataInputRefs>_6_FromInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_6_BodyInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">This is an urgent email #{x}</from>
+          <to xsi:type="tFormalExpression">_6_BodyInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_SubjectInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Urgent email !</from>
+          <to xsi:type="tFormalExpression">_6_SubjectInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_ToInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">you@mail.com</from>
+          <to xsi:type="tFormalExpression">_6_ToInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_6_FromInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">me@mail.com</from>
+          <to xsi:type="tFormalExpression">_6_FromInput</to>
+        </assignment>
+      </dataInputAssociation>
+    </task>
+    <endEvent id="_7" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" >
+      <conditionExpression xsi:type="tFormalExpression" >return x == "First";</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" >
+      <conditionExpression xsi:type="tFormalExpression" ></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+    <sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="com.sample.test" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="177" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="177" y="96" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="289" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="370" y="56" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" >
+        <dc:Bounds x="502" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="80" />
+        <di:waypoint x="120" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="120" y="80" />
+        <di:waypoint x="120" y="40" />
+        <di:waypoint x="217" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_4" >
+        <di:waypoint x="120" y="80" />
+        <di:waypoint x="120" y="120" />
+        <di:waypoint x="217" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_5" >
+        <di:waypoint x="217" y="40" />
+        <di:waypoint x="313" y="40" />
+        <di:waypoint x="313" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_5" >
+        <di:waypoint x="217" y="120" />
+        <di:waypoint x="314" y="119" />
+        <di:waypoint x="313" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_6" >
+        <di:waypoint x="313" y="80" />
+        <di:waypoint x="420" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6-_7" >
+        <di:waypoint x="420" y="80" />
+        <di:waypoint x="526" y="80" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<weblogic-web-app xmlns="http://www.bea.com/ns/weblogic/90" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+     <security-role-assignment>
+         <role-name>admin</role-name>
+         <principal-name>admin</principal-name>
+     </security-role-assignment>
+
+     <container-descriptor>
+         <prefer-application-packages>
+             <package-name>com.sun.jersey.*</package-name>
+             <package-name>com.sun.research.ws.wadl.*</package-name>
+             <package-name>com.sun.ws.rs.ext.*</package-name>
+
+             <!-- Jackson-*.jar -->
+             <package-name>org.codehaus.jackson.*</package-name>
+
+             <!-- jettison-*.jar -->
+             <package-name>org.codehaus.jettison.*</package-name>
+
+             <!-- jsr311*.jar -->
+             <package-name>javax.ws.rs.*</package-name>
+
+             <!-- asm.jar -->
+             <package-name>org.objectweb.asm.*</package-name>
+       </prefer-application-packages>
+     </container-descriptor>
+</weblogic-web-app>

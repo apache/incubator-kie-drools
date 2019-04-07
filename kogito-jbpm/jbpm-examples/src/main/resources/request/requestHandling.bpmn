@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_String" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="ItemDefinition_2" isCollection="false" structureRef="org.jbpm.examples.request.Request"/>
+  <bpmn2:signal id="Failure" name="Failure"/>
+  <bpmn2:process id="com.sample.requestHandling" tns:version="1" tns:packageName="com.sample" tns:adHoc="false" name="Request Handling" isExecutable="true" processType="Private">
+    <bpmn2:property id="request" itemSubjectRef="ItemDefinition_2" name="request"/>
+    <bpmn2:startEvent id="_1" name="StartProcess">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:businessRuleTask id="_2" tns:ruleFlowGroup="" g:ruleFlowGroup="Validation" name="Validate">
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_9</bpmn2:outgoing>
+    </bpmn2:businessRuleTask>
+    <bpmn2:exclusiveGateway id="_9" name="Gateway" gatewayDirection="Diverging">
+      <bpmn2:incoming>_2-_9</bpmn2:incoming>
+      <bpmn2:outgoing>_9-_10</bpmn2:outgoing>
+      <bpmn2:outgoing>_9-_14</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:task id="_10" tns:taskName="Email" name="Email Invalid">
+      <bpmn2:incoming>_9-_10</bpmn2:incoming>
+      <bpmn2:outgoing>_10-_11</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_2">
+        <bpmn2:inputSet id="InputSet_2"/>
+        <bpmn2:outputSet id="OutputSet_2"/>
+      </bpmn2:ioSpecification>
+    </bpmn2:task>
+    <bpmn2:endEvent id="_11" name="End">
+      <bpmn2:incoming>_10-_11</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_2"/>
+    </bpmn2:endEvent>
+    <bpmn2:adHocSubProcess id="_14" name="Ad-Hoc Sub-Process">
+      <bpmn2:incoming>_9-_14</bpmn2:incoming>
+      <bpmn2:outgoing>_14-_7</bpmn2:outgoing>
+      <bpmn2:userTask id="_14-1" name="Review">
+        <bpmn2:ioSpecification id="InputOutputSpecification_4">
+          <bpmn2:dataInput id="_14-1_CommentInput" name="Comment"/>
+          <bpmn2:dataInput id="_14-1_SkippableInput" name="Skippable"/>
+          <bpmn2:dataInput id="_14-1_TaskNameInput" name="TaskName"/>
+          <bpmn2:dataInput id="_14-1_ContentInput" name="Content"/>
+          <bpmn2:dataInput id="_14-1_PriorityInput" name="Priority"/>
+          <bpmn2:inputSet id="InputSet_4">
+            <bpmn2:dataInputRefs>_14-1_CommentInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-1_SkippableInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-1_TaskNameInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-1_ContentInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-1_PriorityInput</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="OutputSet_4"/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+          <bpmn2:targetRef>_14-1_CommentInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+          <bpmn2:targetRef>_14-1_SkippableInput</bpmn2:targetRef>
+          <bpmn2:assignment id="Assignment_2">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4">false</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_5">_14-1_SkippableInput</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_3">
+          <bpmn2:targetRef>_14-1_TaskNameInput</bpmn2:targetRef>
+          <bpmn2:assignment id="Assignment_3">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_6">Review</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_7">_14-1_TaskNameInput</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_4">
+          <bpmn2:targetRef>_14-1_ContentInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_5">
+          <bpmn2:targetRef>_14-1_PriorityInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+      </bpmn2:userTask>
+      <bpmn2:userTask id="_14-2" name="Investigate">
+        <bpmn2:outgoing>_14-2-_14-4</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="InputOutputSpecification_5">
+          <bpmn2:dataInput id="_14-2_CommentInput" name="Comment"/>
+          <bpmn2:dataInput id="_14-2_SkippableInput" name="Skippable"/>
+          <bpmn2:dataInput id="_14-2_TaskNameInput" name="TaskName"/>
+          <bpmn2:dataInput id="_14-2_ContentInput" name="Content"/>
+          <bpmn2:dataInput id="_14-2_PriorityInput" name="Priority"/>
+          <bpmn2:inputSet id="InputSet_5">
+            <bpmn2:dataInputRefs>_14-2_CommentInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-2_SkippableInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-2_TaskNameInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-2_ContentInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-2_PriorityInput</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="OutputSet_5"/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_6">
+          <bpmn2:targetRef>_14-2_CommentInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_7">
+          <bpmn2:targetRef>_14-2_SkippableInput</bpmn2:targetRef>
+          <bpmn2:assignment id="Assignment_7">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_15">false</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_16">_14-2_SkippableInput</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_8">
+          <bpmn2:targetRef>_14-2_TaskNameInput</bpmn2:targetRef>
+          <bpmn2:assignment id="Assignment_8">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_17">Investigate</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_18">_14-2_TaskNameInput</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_9">
+          <bpmn2:targetRef>_14-2_ContentInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_10">
+          <bpmn2:targetRef>_14-2_PriorityInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+      </bpmn2:userTask>
+      <bpmn2:userTask id="_14-4" name="Approve">
+        <bpmn2:incoming>_14-2-_14-4</bpmn2:incoming>
+        <bpmn2:ioSpecification id="InputOutputSpecification_6">
+          <bpmn2:dataInput id="_14-4_CommentInput" name="Comment"/>
+          <bpmn2:dataInput id="_14-4_SkippableInput" name="Skippable"/>
+          <bpmn2:dataInput id="_14-4_ContentInput" name="Content"/>
+          <bpmn2:dataInput id="_14-4_TaskNameInput" name="TaskName"/>
+          <bpmn2:dataInput id="_14-4_PriorityInput" name="Priority"/>
+          <bpmn2:inputSet id="InputSet_6">
+            <bpmn2:dataInputRefs>_14-4_CommentInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-4_SkippableInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-4_ContentInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-4_TaskNameInput</bpmn2:dataInputRefs>
+            <bpmn2:dataInputRefs>_14-4_PriorityInput</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="OutputSet_6"/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_11">
+          <bpmn2:targetRef>_14-4_CommentInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_12">
+          <bpmn2:targetRef>_14-4_SkippableInput</bpmn2:targetRef>
+          <bpmn2:assignment id="Assignment_12">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_26">false</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_27">_14-4_SkippableInput</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_13">
+          <bpmn2:targetRef>_14-4_ContentInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_14">
+          <bpmn2:targetRef>_14-4_TaskNameInput</bpmn2:targetRef>
+          <bpmn2:assignment id="Assignment_14">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_30">Approve</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_31">_14-4_TaskNameInput</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_15">
+          <bpmn2:targetRef>_14-4_PriorityInput</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+      </bpmn2:userTask>
+      <bpmn2:scriptTask id="_14-5" name="Auto-Process">
+        <bpmn2:script></bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:sequenceFlow id="_14-2-_14-4" tns:priority="1" name="" sourceRef="_14-2" targetRef="_14-4"/>
+    </bpmn2:adHocSubProcess>
+    <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" name="" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_14-_7" tns:priority="1" name="" sourceRef="_14" targetRef="_7"/>
+    <bpmn2:sequenceFlow id="_2-_9" tns:priority="1" name="" sourceRef="_2" targetRef="_9"/>
+    <bpmn2:sequenceFlow id="_9-_10" tns:priority="2" name="invalid" sourceRef="_9" targetRef="_10">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_35" language="http://www.java.com/java">return !request.isValid();</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="_10-_11" tns:priority="1" name="" sourceRef="_10" targetRef="_11"/>
+    <bpmn2:sequenceFlow id="_9-_14" tns:priority="1" name="valid" sourceRef="_9" targetRef="_14">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_36" language="http://www.java.com/java">return request.isValid();</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:scriptTask id="_7" name="Log">
+      <bpmn2:incoming>_14-_7</bpmn2:incoming>
+      <bpmn2:outgoing>_7-_8</bpmn2:outgoing>
+      <bpmn2:script></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_7-_8" tns:priority="1" name="" sourceRef="_7" targetRef="_8"/>
+    <bpmn2:endEvent id="_8" name="End">
+      <bpmn2:incoming>_7-_8</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:boundaryEvent id="_12" name="Timer" attachedToRef="_14">
+      <bpmn2:outgoing>_12-_13</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="TimerEventDefinition_1">
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">1d###1d</bpmn2:timeCycle>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="_12-_13" tns:priority="1" name="" sourceRef="_12" targetRef="_13"/>
+    <bpmn2:userTask id="_13" name="Escalation">
+      <bpmn2:incoming>_12-_13</bpmn2:incoming>
+      <bpmn2:outgoing>_13-_15</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_3">
+        <bpmn2:inputSet id="InputSet_3"/>
+        <bpmn2:outputSet id="OutputSet_3"/>
+      </bpmn2:ioSpecification>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_13-_15" tns:priority="1" name="" sourceRef="_13" targetRef="_15"/>
+    <bpmn2:endEvent id="_15" name="End">
+      <bpmn2:incoming>_13-_15</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:subProcess id="SubProcess_1" name="Sub Process 1" triggeredByEvent="true">
+      <bpmn2:startEvent id="StartEvent_1" name="Failure">
+        <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+        <bpmn2:signalEventDefinition id="SignalEventDefinition_2" signalRef="Failure"/>
+      </bpmn2:startEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="_5"/>
+      <bpmn2:endEvent id="EndEvent_1" name="">
+        <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:task id="_5" tns:taskName="Email" name="Email Canceled">
+        <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="InputOutputSpecification_1">
+          <bpmn2:inputSet id="InputSet_1"/>
+          <bpmn2:outputSet id="OutputSet_1"/>
+        </bpmn2:ioSpecification>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="_5" targetRef="EndEvent_1"/>
+    </bpmn2:subProcess>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.sample.requestHandling">
+      <bpmndi:BPMNShape id="BPMNShape_AdHocSubProcess_1" bpmnElement="_14" isExpanded="true">
+        <dc:Bounds height="219.0" width="283.0" x="262.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="156.0" width="465.0" x="62.0" y="480.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="48.0" width="48.0" x="28.0" y="165.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BusinessRuleTask_1" bpmnElement="_2">
+        <dc:Bounds height="48.0" width="80.0" x="98.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="_8">
+        <dc:Bounds height="48.0" width="48.0" x="760.0" y="86.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="_9">
+        <dc:Bounds height="48.0" width="48.0" x="204.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_2" bpmnElement="_10">
+        <dc:Bounds height="48.0" width="100.0" x="179.0" y="276.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_3" bpmnElement="_11">
+        <dc:Bounds height="48.0" width="48.0" x="206.0" y="363.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_2" bpmnElement="_14-1">
+        <dc:Bounds height="48.0" width="100.0" x="283.0" y="20.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_3" bpmnElement="_14-2">
+        <dc:Bounds height="48.0" width="110.0" x="282.0" y="151.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_4" bpmnElement="_14-4">
+        <dc:Bounds height="48.0" width="100.0" x="425.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="_14-5">
+        <dc:Bounds height="48.0" width="110.0" x="283.0" y="85.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_4" bpmnElement="_15">
+        <dc:Bounds height="48.0" width="48.0" x="489.0" y="386.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_7">
+        <dc:Bounds height="48.0" width="80.0" x="642.0" y="86.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="_12">
+        <dc:Bounds height="48.0" width="48.0" x="487.0" y="195.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_13">
+        <dc:Bounds height="48.0" width="100.0" x="462.0" y="297.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="110.0" y="541.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_5" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="350.0" y="541.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_1" bpmnElement="_5">
+        <dc:Bounds height="48.0" width="100.0" x="195.0" y="535.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_14-2-_14-4" sourceElement="BPMNShape_UserTask_3" targetElement="BPMNShape_UserTask_4">
+        <di:waypoint xsi:type="dc:Point" x="392.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="418.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="418.0" y="174.0"/>
+        <di:waypoint xsi:type="dc:Point" x="425.0" y="174.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_BusinessRuleTask_1">
+        <di:waypoint xsi:type="dc:Point" x="52.0" y="189.0"/>
+        <di:waypoint xsi:type="dc:Point" x="138.0" y="188.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="_14-_7" sourceElement="BPMNShape_AdHocSubProcess_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="545.0" y="109.0"/>
+        <di:waypoint xsi:type="dc:Point" x="624.0" y="109.0"/>
+        <di:waypoint xsi:type="dc:Point" x="624.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="642.0" y="110.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="_7-_8" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="722.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="760.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="760.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="760.0" y="110.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="_2-_9" sourceElement="BPMNShape_BusinessRuleTask_1" targetElement="BPMNShape_ExclusiveGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="138.0" y="188.0"/>
+        <di:waypoint xsi:type="dc:Point" x="228.0" y="187.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="_9-_10" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_Task_2">
+        <di:waypoint xsi:type="dc:Point" x="228.0" y="187.0"/>
+        <di:waypoint xsi:type="dc:Point" x="229.0" y="300.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="_10-_11" sourceElement="BPMNShape_Task_2" targetElement="BPMNShape_EndEvent_3">
+        <di:waypoint xsi:type="dc:Point" x="229.0" y="300.0"/>
+        <di:waypoint xsi:type="dc:Point" x="230.0" y="387.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="_12-_13" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_UserTask_1">
+        <di:waypoint xsi:type="dc:Point" x="511.0" y="243.0"/>
+        <di:waypoint xsi:type="dc:Point" x="511.0" y="277.0"/>
+        <di:waypoint xsi:type="dc:Point" x="512.0" y="277.0"/>
+        <di:waypoint xsi:type="dc:Point" x="512.0" y="297.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="_9-_14" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_AdHocSubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="228.0" y="163.0"/>
+        <di:waypoint xsi:type="dc:Point" x="228.0" y="109.0"/>
+        <di:waypoint xsi:type="dc:Point" x="262.0" y="109.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="_13-_15" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_EndEvent_4">
+        <di:waypoint xsi:type="dc:Point" x="512.0" y="345.0"/>
+        <di:waypoint xsi:type="dc:Point" x="512.0" y="366.0"/>
+        <di:waypoint xsi:type="dc:Point" x="513.0" y="366.0"/>
+        <di:waypoint xsi:type="dc:Point" x="513.0" y="386.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_Task_1">
+        <di:waypoint xsi:type="dc:Point" x="146.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="176.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="176.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="195.0" y="559.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_14" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_Task_1" targetElement="BPMNShape_EndEvent_5">
+        <di:waypoint xsi:type="dc:Point" x="295.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="559.0"/>
+        <di:waypoint xsi:type="dc:Point" x="350.0" y="559.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

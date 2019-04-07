@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_CRTUEEfdEeGNe9vXj6mmDg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_sItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_InMessageType" structureRef="String"/>
+  <bpmn2:message id="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_InMessage" itemRef="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_InMessageType"/>
+  <bpmn2:interface id="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ServiceInterface" name="org.jbpm.examples.junit.HelloService">
+    <bpmn2:operation id="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ServiceOperation" name="hello">
+      <bpmn2:inMessageRef>_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_InMessage</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:process id="ServiceProcess" drools:packageName="defaultPackage" name="Service Process" isExecutable="true">
+    <bpmn2:property id="s" itemSubjectRef="_sItem"/>
+    <bpmn2:startEvent id="_13DC1227-087E-4F1A-B187-EAB8BABDFB7A" name="StartProcess">
+      <bpmn2:outgoing>_D5F609C6-AA0A-4E89-85D3-A4F7645738D5</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:serviceTask id="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC" drools:servicetaskinterface="org.jbpm.examples.junit.HelloService" drools:servicetaskoperation="hello" name="Hello" implementation="Other" operationRef="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ServiceOperation">
+      <bpmn2:incoming>_D5F609C6-AA0A-4E89-85D3-A4F7645738D5</bpmn2:incoming>
+      <bpmn2:outgoing>_73CCCC33-E9C4-4383-A282-E39BA516D9E9</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_CRTUEUfdEeGNe9vXj6mmDg">
+        <bpmn2:dataInput id="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ParameterInput" name="Parameter"/>
+        <bpmn2:dataOutput id="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ResultOutput" name="Result"/>
+        <bpmn2:inputSet id="_CRT7IEfdEeGNe9vXj6mmDg">
+          <bpmn2:dataInputRefs>_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ParameterInput</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_CRT7IUfdEeGNe9vXj6mmDg">
+          <bpmn2:dataOutputRefs>_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ResultOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_CRT7IkfdEeGNe9vXj6mmDg">
+        <bpmn2:sourceRef>s</bpmn2:sourceRef>
+        <bpmn2:targetRef>_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ParameterInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="_CRT7I0fdEeGNe9vXj6mmDg">
+        <bpmn2:sourceRef>_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC_ResultOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>s</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="_6BBA684A-4E8B-4A78-A0AC-6D029255EA71" name="EndProcess">
+      <bpmn2:incoming>_73CCCC33-E9C4-4383-A282-E39BA516D9E9</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_CRT7JEfdEeGNe9vXj6mmDg"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_D5F609C6-AA0A-4E89-85D3-A4F7645738D5" sourceRef="_13DC1227-087E-4F1A-B187-EAB8BABDFB7A" targetRef="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC"/>
+    <bpmn2:sequenceFlow id="_73CCCC33-E9C4-4383-A282-E39BA516D9E9" sourceRef="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC" targetRef="_6BBA684A-4E8B-4A78-A0AC-6D029255EA71"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_CRT7JUfdEeGNe9vXj6mmDg">
+    <bpmndi:BPMNPlane id="_CRT7JkfdEeGNe9vXj6mmDg" bpmnElement="ServiceProcess">
+      <bpmndi:BPMNShape id="_CRT7J0fdEeGNe9vXj6mmDg" bpmnElement="_13DC1227-087E-4F1A-B187-EAB8BABDFB7A">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_CRT7KEfdEeGNe9vXj6mmDg" bpmnElement="_AE7C7296-5672-45AE-9DDD-D80B6F01A3FC">
+        <dc:Bounds height="48.0" width="100.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_CRT7KUfdEeGNe9vXj6mmDg" bpmnElement="_6BBA684A-4E8B-4A78-A0AC-6D029255EA71">
+        <dc:Bounds height="28.0" width="28.0" x="237.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_CRT7KkfdEeGNe9vXj6mmDg" bpmnElement="_D5F609C6-AA0A-4E89-85D3-A4F7645738D5">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="146.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_CRT7K0fdEeGNe9vXj6mmDg" bpmnElement="_73CCCC33-E9C4-4383-A282-E39BA516D9E9">
+        <di:waypoint xsi:type="dc:Point" x="146.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="251.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

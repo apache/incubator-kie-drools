@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes" expressionLanguage="http://www.mvel.org/2.0"              xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools">
+  <bpmn2:itemDefinition id="_registrationCountItem" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_canceledItem" structureRef="Boolean"/>
+  <bpmn2:signal id="Continue" name="Continue"/>
+  <bpmn2:error id="Cancel" errorCode="Cancel"/>
+  <bpmn2:process id="boundary-event-transactions" drools:packageName="org.jbpm" drools:version="1.0" name="BPMN2-SubprocessCompensation" isExecutable="true">
+    <bpmn2:property id="registrationCount" itemSubjectRef="_registrationCountItem"/>
+    <bpmn2:property id="canceled" itemSubjectRef="_canceledItem"/>
+    <bpmn2:startEvent id="_9CAC5826-8271-48AC-B437-EE377D3B0255" drools:bgcolor="#9acd32" drools:selectable="true" name="Start">
+      <bpmn2:outgoing>_E2A63090-C942-4969-8812-4ABF125BDE7C</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="_E2A63090-C942-4969-8812-4ABF125BDE7C" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_9CAC5826-8271-48AC-B437-EE377D3B0255" targetRef="_36509933-79B6-4128-BB1A-71DA5D4FBECE"/>
+    <bpmn2:subProcess id="_36509933-79B6-4128-BB1A-71DA5D4FBECE" drools:selectable="true" name="">
+      <bpmn2:incoming>_E2A63090-C942-4969-8812-4ABF125BDE7C</bpmn2:incoming>
+      <bpmn2:outgoing>_BCF776D0-51C2-497E-8B82-C46765C301E9</bpmn2:outgoing>
+      <bpmn2:startEvent id="_24609D68-9D6A-4366-94EB-303645BC5880" drools:bgcolor="#9acd32" drools:selectable="true" name="Start">
+        <bpmn2:outgoing>_82EFF4E7-4628-4340-9C39-2E1CC08BE9C1</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:scriptTask id="_3ECD0872-784E-4B81-8CA0-5917284047CF" drools:selectable="true" name="Sending invitations" scriptFormat="http://www.java.com/java">
+        <bpmn2:incoming>_82EFF4E7-4628-4340-9C39-2E1CC08BE9C1</bpmn2:incoming>
+        <bpmn2:outgoing>_332517DD-9CF0-42A8-818A-B0AA75E7543E</bpmn2:outgoing>
+        <bpmn2:script><![CDATA[System.out.println("### Sending invitations");\nkcontext.setVariable("registrationCount", 0);]]></bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:scriptTask id="_6FB302FD-D2F7-47C6-A895-38939821AB3F" drools:selectable="true" name="Accepting registrations" scriptFormat="http://www.java.com/java">
+        <bpmn2:incoming>_332517DD-9CF0-42A8-818A-B0AA75E7543E</bpmn2:incoming>
+        <bpmn2:outgoing>_7A5CB577-F540-4F62-ADD0-56DB8C94474B</bpmn2:outgoing>
+        <bpmn2:script><![CDATA[System.out.println("### Accepting registrations");\nkcontext.setVariable("registrationCount", 4);]]></bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:exclusiveGateway id="_F2CC2F8E-E145-47CB-ACBB-5FF9D4D05960" drools:bgcolor="#f0e68c" drools:selectable="true" drools:bordercolor="#a67f00" drools:dg="" name="" gatewayDirection="Diverging">
+        <bpmn2:incoming>_7A5CB577-F540-4F62-ADD0-56DB8C94474B</bpmn2:incoming>
+        <bpmn2:outgoing>_53F740E1-1AD8-4E9B-9F1D-7361A2889CDF</bpmn2:outgoing>
+        <bpmn2:outgoing>_C5117E86-08E7-45A3-978B-3CD751DB57A9</bpmn2:outgoing>
+      </bpmn2:exclusiveGateway>
+      <bpmn2:endEvent id="_E2D4ED53-A3EE-4656-A89D-923FB592CC86" drools:bgcolor="#ff6347" drools:selectable="true" name="End">
+        <bpmn2:incoming>_53F740E1-1AD8-4E9B-9F1D-7361A2889CDF</bpmn2:incoming>
+        <bpmn2:terminateEventDefinition id="_8opL4QDkEeOT-cb8TeWX4A"/>
+      </bpmn2:endEvent>
+      <bpmn2:intermediateCatchEvent id="_3E14A29B-E1E3-451E-A636-94D5F94AB52E" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="Test Wait">
+        <bpmn2:incoming>_C5117E86-08E7-45A3-978B-3CD751DB57A9</bpmn2:incoming>
+        <bpmn2:outgoing>_D0CC74C3-1779-4CD6-BD58-592E83654638</bpmn2:outgoing>
+        <bpmn2:signalEventDefinition id="_8opL4gDkEeOT-cb8TeWX4A" signalRef="Continue"/>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:endEvent id="_2D4D04E3-E499-463A-8617-AC5E394C2E2E" drools:bgcolor="#ff6347" drools:selectable="true" name="Cancel">
+        <bpmn2:incoming>_D0CC74C3-1779-4CD6-BD58-592E83654638</bpmn2:incoming>
+        <bpmn2:errorEventDefinition id="_8opy8ADkEeOT-cb8TeWX4A" drools:erefname="Cancel" errorRef="Cancel"/>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="_82EFF4E7-4628-4340-9C39-2E1CC08BE9C1" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_24609D68-9D6A-4366-94EB-303645BC5880" targetRef="_3ECD0872-784E-4B81-8CA0-5917284047CF"/>
+      <bpmn2:sequenceFlow id="_332517DD-9CF0-42A8-818A-B0AA75E7543E" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_3ECD0872-784E-4B81-8CA0-5917284047CF" targetRef="_6FB302FD-D2F7-47C6-A895-38939821AB3F"/>
+      <bpmn2:sequenceFlow id="_7A5CB577-F540-4F62-ADD0-56DB8C94474B" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_6FB302FD-D2F7-47C6-A895-38939821AB3F" targetRef="_F2CC2F8E-E145-47CB-ACBB-5FF9D4D05960"/>
+      <bpmn2:sequenceFlow id="_53F740E1-1AD8-4E9B-9F1D-7361A2889CDF" drools:bgcolor="#000000" drools:selectable="true" name="&gt;=5" sourceRef="_F2CC2F8E-E145-47CB-ACBB-5FF9D4D05960" targetRef="_E2D4ED53-A3EE-4656-A89D-923FB592CC86">
+        <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="_8opy8QDkEeOT-cb8TeWX4A" language="http://www.java.com/java"><![CDATA[return Integer.valueOf(registrationCount) >= 5;]]></bpmn2:conditionExpression>
+      </bpmn2:sequenceFlow>
+      <bpmn2:sequenceFlow id="_C5117E86-08E7-45A3-978B-3CD751DB57A9" drools:bgcolor="#000000" drools:selectable="true" name="&lt;5" sourceRef="_F2CC2F8E-E145-47CB-ACBB-5FF9D4D05960" targetRef="_3E14A29B-E1E3-451E-A636-94D5F94AB52E">
+        <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="_8opy8gDkEeOT-cb8TeWX4A" language="http://www.java.com/java"><![CDATA[return Integer.valueOf(registrationCount) < 5;]]></bpmn2:conditionExpression>
+      </bpmn2:sequenceFlow>
+      <bpmn2:sequenceFlow id="_D0CC74C3-1779-4CD6-BD58-592E83654638" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_3E14A29B-E1E3-451E-A636-94D5F94AB52E" targetRef="_2D4D04E3-E499-463A-8617-AC5E394C2E2E"/>
+    </bpmn2:subProcess>
+    <bpmn2:scriptTask id="_DB000006-BB0F-4D52-80DF-2334125F2FB6" drools:selectable="true" name="Performing seminar" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_BCF776D0-51C2-497E-8B82-C46765C301E9</bpmn2:incoming>
+      <bpmn2:outgoing>_1F4D366A-A25B-4F40-BB97-F8FB8B673044</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("### Peforming seminar");\nkcontext.setVariable("canceled", false);]]></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_BCF776D0-51C2-497E-8B82-C46765C301E9" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_36509933-79B6-4128-BB1A-71DA5D4FBECE" targetRef="_DB000006-BB0F-4D52-80DF-2334125F2FB6"/>
+    <bpmn2:endEvent id="_FD08AC42-54D2-4D15-A93A-C0501243F6A7" drools:bgcolor="#ff6347" drools:selectable="true" name="End">
+      <bpmn2:incoming>_1F4D366A-A25B-4F40-BB97-F8FB8B673044</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1F4D366A-A25B-4F40-BB97-F8FB8B673044" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_DB000006-BB0F-4D52-80DF-2334125F2FB6" targetRef="_FD08AC42-54D2-4D15-A93A-C0501243F6A7"/>
+    <bpmn2:scriptTask id="_33C212AB-661B-47CE-B1EB-D6A7FC92B5B3" drools:selectable="true" name="Informing about canceling" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_3C07A1C5-4D2F-406F-A1DE-5AF213FEE613</bpmn2:incoming>
+      <bpmn2:outgoing>_FF1FCF46-69DD-4F43-A77B-5658650A9058</bpmn2:outgoing>
+      <bpmn2:script><![CDATA[System.out.println("### Informing about canceling");\nkcontext.setVariable("canceled", true);]]></bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_3C07A1C5-4D2F-406F-A1DE-5AF213FEE613" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_0A0A1570-C6C7-40C2-9EA5-5CCD71B7D524" targetRef="_33C212AB-661B-47CE-B1EB-D6A7FC92B5B3"/>
+    <bpmn2:endEvent id="_3B832CEC-839F-44E1-9754-17D61C21EC93" drools:bgcolor="#ff6347" drools:selectable="true" name="End">
+      <bpmn2:incoming>_FF1FCF46-69DD-4F43-A77B-5658650A9058</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_FF1FCF46-69DD-4F43-A77B-5658650A9058" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_33C212AB-661B-47CE-B1EB-D6A7FC92B5B3" targetRef="_3B832CEC-839F-44E1-9754-17D61C21EC93"/>
+    <bpmn2:boundaryEvent id="_0A0A1570-C6C7-40C2-9EA5-5CCD71B7D524" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="Cancel" attachedToRef="_36509933-79B6-4128-BB1A-71DA5D4FBECE" cancelActivity="false">
+      <bpmn2:outgoing>_3C07A1C5-4D2F-406F-A1DE-5AF213FEE613</bpmn2:outgoing>
+      <bpmn2:errorEventDefinition id="_8opy8wDkEeOT-cb8TeWX4A" drools:erefname="Cancel" errorRef="Cancel"/>
+    </bpmn2:boundaryEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_8opy9ADkEeOT-cb8TeWX4A">
+    <bpmndi:BPMNPlane id="_8opy9QDkEeOT-cb8TeWX4A" bpmnElement="boundary-event-transactions">
+      <bpmndi:BPMNShape id="_8opy9gDkEeOT-cb8TeWX4A" bpmnElement="_9CAC5826-8271-48AC-B437-EE377D3B0255">
+        <dc:Bounds height="30.0" width="30.0" x="62.0" y="268.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8opy9wDkEeOT-cb8TeWX4A" bpmnElement="_E2A63090-C942-4969-8812-4ABF125BDE7C">
+        <di:waypoint xsi:type="dc:Point" x="77.0" y="283.0"/>
+        <di:waypoint xsi:type="dc:Point" x="399.0" y="282.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_8opy-ADkEeOT-cb8TeWX4A" bpmnElement="_36509933-79B6-4128-BB1A-71DA5D4FBECE">
+        <dc:Bounds height="287.0" width="544.0" x="127.0" y="139.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8opy-QDkEeOT-cb8TeWX4A" bpmnElement="_24609D68-9D6A-4366-94EB-303645BC5880">
+        <dc:Bounds height="30.0" width="30.0" x="33.0" y="128.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8opy-gDkEeOT-cb8TeWX4A" bpmnElement="_3ECD0872-784E-4B81-8CA0-5917284047CF">
+        <dc:Bounds height="80.0" width="100.0" x="98.0" y="104.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8opy-wDkEeOT-cb8TeWX4A" bpmnElement="_6FB302FD-D2F7-47C6-A895-38939821AB3F">
+        <dc:Bounds height="80.0" width="100.0" x="222.0" y="103.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8opy_ADkEeOT-cb8TeWX4A" bpmnElement="_F2CC2F8E-E145-47CB-ACBB-5FF9D4D05960">
+        <dc:Bounds height="40.0" width="40.0" x="367.0" y="123.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8opy_QDkEeOT-cb8TeWX4A" bpmnElement="_E2D4ED53-A3EE-4656-A89D-923FB592CC86">
+        <dc:Bounds height="28.0" width="28.0" x="487.0" y="67.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8opy_gDkEeOT-cb8TeWX4A" bpmnElement="_3E14A29B-E1E3-451E-A636-94D5F94AB52E">
+        <dc:Bounds height="30.0" width="30.0" x="424.0" y="188.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8opy_wDkEeOT-cb8TeWX4A" bpmnElement="_2D4D04E3-E499-463A-8617-AC5E394C2E2E">
+        <dc:Bounds height="28.0" width="28.0" x="487.0" y="188.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8opzAADkEeOT-cb8TeWX4A" bpmnElement="_82EFF4E7-4628-4340-9C39-2E1CC08BE9C1">
+        <di:waypoint xsi:type="dc:Point" x="48.0" y="143.0"/>
+        <di:waypoint xsi:type="dc:Point" x="148.0" y="144.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_8opzAQDkEeOT-cb8TeWX4A" bpmnElement="_332517DD-9CF0-42A8-818A-B0AA75E7543E">
+        <di:waypoint xsi:type="dc:Point" x="148.0" y="144.0"/>
+        <di:waypoint xsi:type="dc:Point" x="272.0" y="143.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_8opzAgDkEeOT-cb8TeWX4A" bpmnElement="_7A5CB577-F540-4F62-ADD0-56DB8C94474B">
+        <di:waypoint xsi:type="dc:Point" x="272.0" y="143.0"/>
+        <di:waypoint xsi:type="dc:Point" x="387.0" y="143.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_8opzAwDkEeOT-cb8TeWX4A" bpmnElement="_53F740E1-1AD8-4E9B-9F1D-7361A2889CDF">
+        <di:waypoint xsi:type="dc:Point" x="387.0" y="143.0"/>
+        <di:waypoint xsi:type="dc:Point" x="514.0" y="221.0"/>
+        <di:waypoint xsi:type="dc:Point" x="501.0" y="81.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_8opzBADkEeOT-cb8TeWX4A" bpmnElement="_C5117E86-08E7-45A3-978B-3CD751DB57A9">
+        <di:waypoint xsi:type="dc:Point" x="387.0" y="143.0"/>
+        <di:waypoint xsi:type="dc:Point" x="514.0" y="342.0"/>
+        <di:waypoint xsi:type="dc:Point" x="439.0" y="203.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_8opzBQDkEeOT-cb8TeWX4A" bpmnElement="_D0CC74C3-1779-4CD6-BD58-592E83654638">
+        <di:waypoint xsi:type="dc:Point" x="439.0" y="203.0"/>
+        <di:waypoint xsi:type="dc:Point" x="501.0" y="202.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_8opzBgDkEeOT-cb8TeWX4A" bpmnElement="_DB000006-BB0F-4D52-80DF-2334125F2FB6">
+        <dc:Bounds height="80.0" width="100.0" x="720.0" y="243.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8opzBwDkEeOT-cb8TeWX4A" bpmnElement="_BCF776D0-51C2-497E-8B82-C46765C301E9">
+        <di:waypoint xsi:type="dc:Point" x="399.0" y="282.5"/>
+        <di:waypoint xsi:type="dc:Point" x="770.0" y="283.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_8opzCADkEeOT-cb8TeWX4A" bpmnElement="_FD08AC42-54D2-4D15-A93A-C0501243F6A7">
+        <dc:Bounds height="28.0" width="28.0" x="874.0" y="269.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8opzCQDkEeOT-cb8TeWX4A" bpmnElement="_1F4D366A-A25B-4F40-BB97-F8FB8B673044">
+        <di:waypoint xsi:type="dc:Point" x="770.0" y="283.0"/>
+        <di:waypoint xsi:type="dc:Point" x="888.0" y="283.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_8opzCgDkEeOT-cb8TeWX4A" bpmnElement="_33C212AB-661B-47CE-B1EB-D6A7FC92B5B3">
+        <dc:Bounds height="80.0" width="100.0" x="720.0" y="379.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8opzCwDkEeOT-cb8TeWX4A" bpmnElement="_3C07A1C5-4D2F-406F-A1DE-5AF213FEE613">
+        <di:waypoint xsi:type="dc:Point" x="671.0" y="419.0"/>
+        <di:waypoint xsi:type="dc:Point" x="770.0" y="419.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_8opzDADkEeOT-cb8TeWX4A" bpmnElement="_3B832CEC-839F-44E1-9754-17D61C21EC93">
+        <dc:Bounds height="28.0" width="28.0" x="874.0" y="405.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8opzDQDkEeOT-cb8TeWX4A" bpmnElement="_FF1FCF46-69DD-4F43-A77B-5658650A9058">
+        <di:waypoint xsi:type="dc:Point" x="770.0" y="419.0"/>
+        <di:waypoint xsi:type="dc:Point" x="888.0" y="419.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_8opzDgDkEeOT-cb8TeWX4A" bpmnElement="_0A0A1570-C6C7-40C2-9EA5-5CCD71B7D524">
+        <dc:Bounds height="30.0" width="30.0" x="656.0" y="404.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8opzDwDkEeOT-cb8TeWX4A" bpmnElement="_0A0A1570-C6C7-40C2-9EA5-5CCD71B7D524">
+        <di:waypoint xsi:type="dc:Point" x="535.0" y="276.0"/>
+        <di:waypoint xsi:type="dc:Point" x="535.0" y="276.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

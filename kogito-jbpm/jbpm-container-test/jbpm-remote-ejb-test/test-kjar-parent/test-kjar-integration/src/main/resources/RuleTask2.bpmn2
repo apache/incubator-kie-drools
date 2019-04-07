@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_9HMqcAmHEeOk7vpahsjGLw" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="ItemDefinition_1" structureRef="java.util.List"/>
+  <bpmn2:itemDefinition id="_initiatorItem" structureRef="String"/>
+  <bpmn2:signal id="Continue" name="Continue"/>
+  <bpmn2:process id="org.jboss.qa.bpms.RuleTask2" drools:version="1.0" drools:packageName="defaultPackage" drools:adHoc="false" name="BusinessRuleTask2" isExecutable="true">
+    <bpmn2:property id="results" itemSubjectRef="ItemDefinition_1"/>
+    <bpmn2:property id="initiator" itemSubjectRef="_initiatorItem"/>
+    <bpmn2:startEvent id="_1FC80904-C04C-4B26-84E1-E5B1C093874B" drools:bgcolor="#9acd32" drools:selectable="true" name="Start">
+      <bpmn2:outgoing>bpmn20:SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" drools:priority="1" name="" sourceRef="_1FC80904-C04C-4B26-84E1-E5B1C093874B" targetRef="_3FF3EA19-7FD7-442F-84D0-0EA042C902D1"/>
+    <bpmn2:scriptTask id="_3FF3EA19-7FD7-442F-84D0-0EA042C902D1" drools:selectable="true" name="Initialization Script Task 1" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>bpmn20:SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>bpmn20:_82DCC4B7-5D33-4D90-B499-2E1351FE935F</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Before RuleTask&quot;);
+kcontext.setVariable(&quot;results&quot;, new java.util.ArrayList());
+kcontext.getKnowledgeRuntime().insert(kcontext.getProcessInstance());</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_82DCC4B7-5D33-4D90-B499-2E1351FE935F" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" name="" sourceRef="_3FF3EA19-7FD7-442F-84D0-0EA042C902D1" targetRef="_AD6D5E4A-477B-410B-BE82-2DC5438EC0D1"/>
+    <bpmn2:businessRuleTask id="_AD6D5E4A-477B-410B-BE82-2DC5438EC0D1" drools:ruleFlowGroup="MyRuleFlow" drools:selectable="true" name="Business Rule Task">
+      <bpmn2:extensionElements>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script></drools:script>
+        </drools:onEntry-script>
+        <drools:onExit-script scriptFormat="http://www.java.com/java">
+          <drools:script></drools:script>
+        </drools:onExit-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>bpmn20:_82DCC4B7-5D33-4D90-B499-2E1351FE935F</bpmn2:incoming>
+      <bpmn2:outgoing>bpmn20:_9234D088-A8D9-4F3A-A471-844E41461331</bpmn2:outgoing>
+    </bpmn2:businessRuleTask>
+    <bpmn2:sequenceFlow id="_9234D088-A8D9-4F3A-A471-844E41461331" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" name="" sourceRef="_AD6D5E4A-477B-410B-BE82-2DC5438EC0D1" targetRef="_F1F0A09C-40A4-422D-A247-3D1ECA152E43"/>
+    <bpmn2:scriptTask id="_F1F0A09C-40A4-422D-A247-3D1ECA152E43" drools:selectable="true" name="Debug Script Task 2" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>bpmn20:_9234D088-A8D9-4F3A-A471-844E41461331</bpmn2:incoming>
+      <bpmn2:outgoing>bpmn20:_C14E3F7C-F39C-4A28-9E1D-2AA5AE4C0D2D</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;After RuleTask &quot;);
+System.out.println(kcontext.getVariable(&quot;results&quot;));</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_C14E3F7C-F39C-4A28-9E1D-2AA5AE4C0D2D" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" name="" sourceRef="_F1F0A09C-40A4-422D-A247-3D1ECA152E43" targetRef="_CFB9FCEA-5702-4EAB-82C6-D1CE6EDDB3ED"/>
+    <bpmn2:endEvent id="_CFB9FCEA-5702-4EAB-82C6-D1CE6EDDB3ED" drools:bgcolor="#ff6347" drools:selectable="true" name="End">
+      <bpmn2:incoming>bpmn20:_C14E3F7C-F39C-4A28-9E1D-2AA5AE4C0D2D</bpmn2:incoming>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="BusinessRuleTask2">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="org.jboss.qa.bpms.RuleTask2">
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_CFB9FCEA-5702-4EAB-82C6-D1CE6EDDB3ED">
+        <dc:Bounds height="36.0" width="36.0" x="616.0" y="57.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1FC80904-C04C-4B26-84E1-E5B1C093874B">
+        <dc:Bounds height="36.0" width="36.0" x="50.0" y="57.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="_3FF3EA19-7FD7-442F-84D0-0EA042C902D1">
+        <dc:Bounds height="50.0" width="110.0" x="136.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BusinessRuleTask_1" bpmnElement="_AD6D5E4A-477B-410B-BE82-2DC5438EC0D1">
+        <dc:Bounds height="50.0" width="110.0" x="296.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_F1F0A09C-40A4-422D-A247-3D1ECA152E43">
+        <dc:Bounds height="50.0" width="110.0" x="456.0" y="50.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_82DCC4B7-5D33-4D90-B499-2E1351FE935F" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_BusinessRuleTask_1">
+        <di:waypoint xsi:type="dc:Point" x="246.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="296.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_9234D088-A8D9-4F3A-A471-844E41461331" sourceElement="BPMNShape_BusinessRuleTask_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="406.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="428.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="428.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="456.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_C14E3F7C-F39C-4A28-9E1D-2AA5AE4C0D2D" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="566.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="616.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="86.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="108.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="108.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="75.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

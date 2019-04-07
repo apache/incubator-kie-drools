@@ -1,0 +1,46 @@
+
+<form id="1180805808">
+<property name="name" value="CreateProposal-taskform"/>
+<property name="displayMode" value="aligned"/>
+<property name="labelMode" value="undefined"/>
+<property name="status" value="0"/>
+<field position="0" name="techscore" type="InputText" id="536191789">
+<property name="fieldRequired" value="false"/>
+<property name="groupWithPrevious" value="false"/>
+<property name="label" value="quot;enquot;,quot;Technical Scorequot;quot;esquot;,quot;quot;"/>
+<property name="errorMessage" value="quot;enquot;,quot;quot;quot;esquot;,quot;quot;"/>
+<property name="title" value="quot;enquot;,quot;quot;quot;esquot;,quot;quot;"/>
+<property name="readonly" value="true"/>
+<property name="rangeFormula" value="{1,1 - Poor;2,2;3,3 - Well;4,4;5,5 - Excellent}"/>
+<property name="isHTML" value="true"/>
+<property name="hideContent" value="false"/>
+<property name="inputBinding" value="in_tech_score"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<field position="1" name="hrscore" type="InputText" id="1396079384">
+<property name="fieldRequired" value="false"/>
+<property name="groupWithPrevious" value="false"/>
+<property name="label" value="quot;enquot;,quot;HR Scorequot;quot;esquot;,quot;quot;"/>
+<property name="errorMessage" value="quot;enquot;,quot;quot;quot;esquot;,quot;quot;"/>
+<property name="title" value="quot;enquot;,quot;quot;quot;esquot;,quot;quot;"/>
+<property name="readonly" value="true"/>
+<property name="rangeFormula" value="{1,1 - Poor;2,2;3,3 - Well;4,4;5,5 - Excellent}"/>
+<property name="isHTML" value="true"/>
+<property name="hideContent" value="false"/>
+<property name="inputBinding" value="in_hr_score"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<field position="2" name="offering" type="InputTextInteger" id="438070247">
+<property name="fieldRequired" value="false"/>
+<property name="groupWithPrevious" value="false"/>
+<property name="label" value="quot;enquot;,quot;Offerquot;quot;esquot;,quot;quot;"/>
+<property name="errorMessage" value="quot;enquot;,quot;quot;quot;esquot;,quot;quot;"/>
+<property name="title" value="quot;enquot;,quot;quot;quot;esquot;,quot;quot;"/>
+<property name="readonly" value="false"/>
+<property name="outputBinding" value="out_offering"/>
+<property name="fieldClass" value="java.lang.Integer"/>
+</field>
+<dataHolder inputId="in_hr_score" name="#FF8881" type="basicType" outId="" value="java.lang.Integer" id="hr_score"/>
+<dataHolder inputId="" name="#9BCAFA" type="basicType" outId="out_offering" value="java.lang.Integer" id="offering"/>
+<dataHolder inputId="in_tech_score" name="#A7E690" type="basicType" outId="" value="java.lang.Integer" id="tech_score"/>
+</form>

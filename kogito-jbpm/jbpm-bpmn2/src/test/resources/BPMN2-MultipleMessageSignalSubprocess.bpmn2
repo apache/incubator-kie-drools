@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_String" structureRef="String"/>
+  <bpmn2:message id="Message_1" itemRef="_String" name="Message 1"/>
+  <bpmn2:process id="com.sample.bpmn.Multiple_MessageSignal_Subprocess" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Sample Process" isExecutable="true" processType="Private">
+    <bpmn2:property id="result" itemSubjectRef="_String"/>
+    <bpmn2:startEvent id="_1" name="">
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:subProcess id="SubProcess_1" name="Sub Process 1">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      <bpmn2:scriptTask id="ScriptTask_3" name="ScriptTask 3" scriptFormat="http://www.java.com/java">
+        <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+        <bpmn2:script>System.out.println(&quot;Entered SubProcess1 and calling this message from 'ScriptTask3' , the subsequent Message activities will be called shortly...  &quot;);</bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" sourceRef="ScriptTask_3" targetRef="IntermediateCatchEvent_3"/>
+      <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_3" name="MessageEvent1">
+        <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+        <bpmn2:dataOutput id="DataOutput_3" itemSubjectRef="_String" name="Message_3_Output"/>
+        <bpmn2:dataOutputAssociation id="DataOutputAssociation_3">
+          <bpmn2:sourceRef>DataOutput_3</bpmn2:sourceRef>
+          <bpmn2:targetRef>result</bpmn2:targetRef>
+        </bpmn2:dataOutputAssociation>
+        <bpmn2:outputSet id="OutputSet_3" name="Output Set 3">
+          <bpmn2:dataOutputRefs>DataOutput_3</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+        <bpmn2:messageEventDefinition id="MessageEventDefinition_3" messageRef="Message_1"/>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" sourceRef="IntermediateCatchEvent_3" targetRef="ScriptTask_4"/>
+      <bpmn2:scriptTask id="ScriptTask_4" name="ScriptTask4" scriptFormat="http://www.java.com/java">
+        <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
+        <bpmn2:script>System.out.println(&quot;Exited 'MessageEvent1' and calling this message from 'ScriptTask4' &quot;);</bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" sourceRef="ScriptTask_4" targetRef="IntermediateCatchEvent_4"/>
+      <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_4" name="MessageEvent2">
+        <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+        <bpmn2:dataOutput id="DataOutput_2" itemSubjectRef="_String" name="Message_4_Output"/>
+        <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
+          <bpmn2:sourceRef>DataOutput_2</bpmn2:sourceRef>
+          <bpmn2:targetRef>result</bpmn2:targetRef>
+        </bpmn2:dataOutputAssociation>
+        <bpmn2:outputSet id="OutputSet_2" name="Output Set 2">
+          <bpmn2:dataOutputRefs>DataOutput_2</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+        <bpmn2:messageEventDefinition id="MessageEventDefinition_4" messageRef="Message_1"/>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_9" tns:priority="1" sourceRef="IntermediateCatchEvent_4" targetRef="ScriptTask_5"/>
+      <bpmn2:scriptTask id="ScriptTask_5" name="ScriptTask5" scriptFormat="http://www.java.com/java">
+        <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+        <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
+        <bpmn2:script>System.out.println(&quot;Exited 'MessageEvent2' and calling this message from 'ScriptTask5' &quot;);</bpmn2:script>
+      </bpmn2:scriptTask>
+      <bpmn2:sequenceFlow id="SequenceFlow_10" tns:priority="1" sourceRef="ScriptTask_5" targetRef="EndEvent_2"/>
+      <bpmn2:endEvent id="EndEvent_2" name="EndSub">
+        <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:startEvent id="StartEvent_1" name="StartSub">
+        <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="StartEvent_1" targetRef="ScriptTask_3"/>
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="_1" targetRef="SubProcess_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="SubProcess_1" targetRef="ScriptTask_1"/>
+    <bpmn2:scriptTask id="ScriptTask_1" name="ScriptTask1" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Exited 'Sub Process 1' and calling this message from 'ScriptTask1' &quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="ScriptTask_1" targetRef="EndEvent_1"/>
+    <bpmn2:endEvent id="EndEvent_1" name="End">
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.sample.bpmn.Multiple_MessageSignal_Subprocess">
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="245.0" width="734.0" x="180.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
+        <dc:Bounds height="36.0" width="36.0" x="45.0" y="109.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="1100.0" y="106.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="200.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_3" bpmnElement="IntermediateCatchEvent_3">
+        <dc:Bounds height="36.0" width="36.0" x="410.0" y="92.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_4" bpmnElement="ScriptTask_3">
+        <dc:Bounds height="50.0" width="110.0" x="270.0" y="85.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_5" bpmnElement="ScriptTask_4">
+        <dc:Bounds height="50.0" width="110.0" x="479.0" y="85.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_4" bpmnElement="IntermediateCatchEvent_4">
+        <dc:Bounds height="36.0" width="36.0" x="610.0" y="92.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_6" bpmnElement="ScriptTask_5">
+        <dc:Bounds height="50.0" width="110.0" x="680.0" y="85.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="800.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="938.0" y="97.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="81.0" y="127.0"/>
+        <di:waypoint xsi:type="dc:Point" x="125.0" y="127.0"/>
+        <di:waypoint xsi:type="dc:Point" x="125.0" y="122.0"/>
+        <di:waypoint xsi:type="dc:Point" x="180.0" y="122.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="914.0" y="122.0"/>
+        <di:waypoint xsi:type="dc:Point" x="926.0" y="122.0"/>
+        <di:waypoint xsi:type="dc:Point" x="926.0" y="122.0"/>
+        <di:waypoint xsi:type="dc:Point" x="938.0" y="122.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="1048.0" y="122.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1087.0" y="122.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1087.0" y="124.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1100.0" y="124.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_ScriptTask_4">
+        <di:waypoint xsi:type="dc:Point" x="218.0" y="164.0"/>
+        <di:waypoint xsi:type="dc:Point" x="218.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="270.0" y="110.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_IntermediateCatchEvent_3">
+        <di:waypoint xsi:type="dc:Point" x="380.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="393.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="393.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="410.0" y="110.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="BPMNShape_IntermediateCatchEvent_3" targetElement="BPMNShape_ScriptTask_5">
+        <di:waypoint xsi:type="dc:Point" x="446.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="460.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="460.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="479.0" y="110.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_ScriptTask_5" targetElement="BPMNShape_IntermediateCatchEvent_4">
+        <di:waypoint xsi:type="dc:Point" x="589.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="598.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="598.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="610.0" y="110.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_IntermediateCatchEvent_4" targetElement="BPMNShape_ScriptTask_6">
+        <di:waypoint xsi:type="dc:Point" x="646.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="674.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="674.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="680.0" y="110.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_10" sourceElement="BPMNShape_ScriptTask_6" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="790.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="818.0" y="110.0"/>
+        <di:waypoint xsi:type="dc:Point" x="818.0" y="164.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

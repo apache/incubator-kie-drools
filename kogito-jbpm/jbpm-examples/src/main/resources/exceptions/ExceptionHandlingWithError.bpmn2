@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_stringItem" isCollection="false" structureRef="java.lang.String"/>
+  <bpmn2:itemDefinition id="_exceptionItem" isCollection="false" structureRef="org.kie.api.runtime.process.WorkItem"/>
+  <bpmn2:error id="_exception" errorCode="code" structureRef="_exceptionItem"/>
+  <bpmn2:message id="_message" itemRef="_stringItem"/>
+  <bpmn2:message id="_exceptionMessage" itemRef="_exceptionItem"/>
+  <bpmn2:interface id="_serviceInterface" name="org.jbpm.examples.exceptions.service.ExceptionService">
+    <bpmn2:operation id="_serviceOperation" name="throwException">
+      <bpmn2:inMessageRef>_message</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:interface id="_handlingServiceInterface" name="org.jbpm.examples.exceptions.service.ExceptionService">
+    <bpmn2:operation id="_handlingServiceOperation" name="handleException">
+      <bpmn2:inMessageRef>_exceptionMessage</bpmn2:inMessageRef>
+    </bpmn2:operation>
+  </bpmn2:interface>
+  <bpmn2:process id="ProcessWithExceptionHandlingError" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Service Process" isExecutable="true" processType="Private">
+    <bpmn2:property id="serviceInputItem" itemSubjectRef="_stringItem"/>
+    <bpmn2:property id="exceptionInputItem" itemSubjectRef="_exceptionItem"/>
+    <bpmn2:startEvent id="_1" name="Start">
+      <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:serviceTask id="_2" name="Throw Exception" implementation="Other" operationRef="_serviceOperation">
+      <bpmn2:incoming>_1-_2</bpmn2:incoming>
+      <bpmn2:outgoing>_2-_3</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="InputOutputSpecification_1">
+        <bpmn2:dataInput id="_2_input" name="Parameter"/>
+        <bpmn2:dataOutput id="_2_result" name="Result"/>
+        <bpmn2:inputSet id="InputSet_1">
+          <bpmn2:dataInputRefs>_2_input</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="OutputSet_1">
+          <bpmn2:dataOutputRefs>_2_result</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn2:sourceRef>serviceInputItem</bpmn2:sourceRef>
+        <bpmn2:targetRef>_2_input</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn2:sourceRef>_2_result</bpmn2:sourceRef>
+        <bpmn2:targetRef>serviceInputItem</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="_3" name="End">
+      <bpmn2:incoming>_2-_3</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" name="" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="_2-_3" tns:priority="1" name="" sourceRef="_2" targetRef="_3"/>
+    <bpmn2:subProcess id="_X" name="Exception Handler" triggeredByEvent="true">
+      <bpmn2:startEvent id="_X-1" name="subStart ">
+        <bpmn2:outgoing>_X-1-_X_2</bpmn2:outgoing>
+        <bpmn2:dataOutput id="_X-1_Output" name="event"/>
+        <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
+          <bpmn2:sourceRef>_X-1_Output</bpmn2:sourceRef>
+          <bpmn2:targetRef>exceptionInputItem</bpmn2:targetRef>
+        </bpmn2:dataOutputAssociation>
+        <bpmn2:outputSet id="OutputSet_2">
+          <bpmn2:dataOutputRefs>_X-1_Output</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+        <bpmn2:errorEventDefinition id="_X-1_ED_1" errorRef="_exception"/>
+      </bpmn2:startEvent>
+      <bpmn2:sequenceFlow id="_X-1-_X_2" tns:priority="1" name="" sourceRef="_X-1" targetRef="_X-2"/>
+      <bpmn2:serviceTask id="_X-2" name="Handle Exception " implementation="Other" operationRef="_handlingServiceOperation">
+        <bpmn2:incoming>_X-1-_X_2</bpmn2:incoming>
+        <bpmn2:outgoing>_X-2-_X_3</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="InputOutputSpecification_2">
+          <bpmn2:dataInput id="_X-2_input" name="Parameter"/>
+          <bpmn2:inputSet id="InputSet_2">
+            <bpmn2:dataInputRefs>_X-2_input</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="OutputSet_3"/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+          <bpmn2:sourceRef>exceptionInputItem</bpmn2:sourceRef>
+          <bpmn2:targetRef>_X-2_input</bpmn2:targetRef>
+        </bpmn2:dataInputAssociation>
+      </bpmn2:serviceTask>
+      <bpmn2:sequenceFlow id="_X-2-_X_3" tns:priority="1" name="" sourceRef="_X-2" targetRef="_X-3"/>
+      <bpmn2:endEvent id="_X-3" name="subEnd ">
+        <bpmn2:incoming>_X-2-_X_3</bpmn2:incoming>
+      </bpmn2:endEvent>
+    </bpmn2:subProcess>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane id="BPMNPlane_BaseElement_1" bpmnElement="ProcessWithExceptionHandlingError">
+      <bpmndi:BPMNShape id="di-_X" bpmnElement="_X" isExpanded="true">
+        <dc:Bounds height="115.0" width="280.0" x="330.0" y="30.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
+          <dc:Bounds height="115.0" width="280.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="di-_3" bpmnElement="_3">
+        <dc:Bounds height="32.0" width="32.0" x="265.0" y="71.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_2">
+          <dc:Bounds height="32.0" width="32.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="di-_2" bpmnElement="_2">
+        <dc:Bounds height="55.0" width="101.0" x="120.0" y="59.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_3">
+          <dc:Bounds height="55.0" width="85.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="di-_1" bpmnElement="_1">
+        <dc:Bounds height="32.0" width="32.0" x="28.0" y="71.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4">
+          <dc:Bounds height="32.0" width="32.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="di-_X-3" bpmnElement="_X-3">
+        <dc:Bounds height="32.0" width="32.0" x="560.0" y="75.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5">
+          <dc:Bounds height="32.0" width="32.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="di-_X-2" bpmnElement="_X-2">
+        <dc:Bounds height="55.0" width="85.0" x="428.0" y="63.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_6">
+          <dc:Bounds height="55.0" width="85.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="di-_X-1" bpmnElement="_X-1">
+        <dc:Bounds height="32.0" width="32.0" x="345.0" y="75.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_7">
+          <dc:Bounds height="32.0" width="32.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="di-_X-2-_X_3" bpmnElement="_X-2-_X_3" sourceElement="di-_X-2" targetElement="di-_X-3">
+        <di:waypoint xsi:type="dc:Point" x="513.0" y="90.0"/>
+        <di:waypoint xsi:type="dc:Point" x="548.0" y="90.0"/>
+        <di:waypoint xsi:type="dc:Point" x="548.0" y="91.0"/>
+        <di:waypoint xsi:type="dc:Point" x="560.0" y="91.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_8">
+          <dc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="di-_2-_3" bpmnElement="_2-_3" sourceElement="di-_2" targetElement="di-_3">
+        <di:waypoint xsi:type="dc:Point" x="221.0" y="86.0"/>
+        <di:waypoint xsi:type="dc:Point" x="265.0" y="87.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_9">
+          <dc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="di-_1-_2" bpmnElement="_1-_2" sourceElement="di-_1" targetElement="di-_2">
+        <di:waypoint xsi:type="dc:Point" x="60.0" y="87.0"/>
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="86.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_10">
+          <dc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="di-_X-1-_X_2" bpmnElement="_X-1-_X_2" sourceElement="di-_X-1" targetElement="di-_X-2">
+        <di:waypoint xsi:type="dc:Point" x="377.0" y="91.0"/>
+        <di:waypoint xsi:type="dc:Point" x="428.0" y="90.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_11">
+          <dc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -1,0 +1,103 @@
+<semantic:definitions xmlns:ns1="http://www.trisotech.com/definitions/_0020_vacation_days" xmlns:semantic="http://www.omg.org/spec/CMMN/20151109/MODEL"    xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI"  xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI"  xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC"  xmlns:trisocmmn="http://www.trisotech.com/2014/triso/cmmn"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:rss="http://purl.org/rss/2.0/" xmlns="http://www.trisotech.com/cmmn/definitions/_56462878-c4d8-4f5f-9477-efd7158c564b" id="_56462878-c4d8-4f5f-9477-efd7158c564b" name="case" targetNamespace="http://www.trisotech.com/cmmn/definitions/_56462878-c4d8-4f5f-9477-efd7158c564b" exporter="CMMN Modeler" exporterVersion="6.0.9.201806121905">
+    <semantic:caseFileItemDefinition id="_a8b43288-0e67-4508-a335-ee6b842c6950" name="age" structureRef="feel:number" definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType"/>
+    <semantic:caseFileItemDefinition id="_44b9913a-ae3b-47c5-935e-a8b6e273670a" name="yearsOfService" structureRef="feel:number" definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType"/>
+    <semantic:caseFileItemDefinition id="_92992a38-181a-4cb7-b04f-c76f7e9d4e66" name="vacationDays" structureRef="java.math.BigDecimal" definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType"/>
+    <semantic:case id="CMMN-DecisionTaskWithDMNCase" name="decision task case">
+        <semantic:caseFileModel>
+            <semantic:caseFileItem id="_f267978f-7b72-4612-8c78-d385043536be" name="age" definitionRef="_a8b43288-0e67-4508-a335-ee6b842c6950"/>
+            <semantic:caseFileItem id="_aa6159fc-0a55-4965-85b7-46fcfa7297dc" name="yearsOfService" definitionRef="_44b9913a-ae3b-47c5-935e-a8b6e273670a"/>
+            <semantic:caseFileItem id="_946d392d-28c7-4a99-a938-1a8ebc3cca7a" name="vacationDays" definitionRef="_92992a38-181a-4cb7-b04f-c76f7e9d4e66"/>
+        </semantic:caseFileModel>
+        <semantic:casePlanModel id="_636d4bea-4d52-46fb-b1ad-9ceeddf1be69" name="decision task case">
+            <semantic:planItem id="_37b292f2-acbe-4641-8500-e6c0cb9a4d00" definitionRef="PID__37b292f2-acbe-4641-8500-e6c0cb9a4d00">
+                <semantic:entryCriterion id="_91ff15e0-859d-416f-8e5a-2decb7017a3e" sentryRef="_54425656-5781-4aca-a30c-487c8a752065"/>
+            </semantic:planItem>
+            <semantic:sentry id="_54425656-5781-4aca-a30c-487c8a752065">
+                <semantic:ifPart id="_a52f7ed7-ebe7-4ee6-af42-61131e0f34c3">
+                    <semantic:condition>autostart</semantic:condition>
+                </semantic:ifPart>
+            </semantic:sentry>
+            <semantic:decisionTask id="PID__37b292f2-acbe-4641-8500-e6c0cb9a4d00" name="call my decision" decisionRef="_17cd72b5bfc76a73ad31c4c3a5d88a98">
+                <semantic:extensionElements>
+                    <triso:interrelationship fileId="eyJmIjp7InNrdSI6IjU0ZGE1ZDk4LWZmYTEtNDgzZi1hN2M4LWUwZTNiNGIyMWUwMCIsIm5hbWUiOiIwMDIwLXZhY2F0aW9uLWRheXMiLCJtaW1ldHlwZSI6ImFwcGxpY2F0aW9uL3ZuZC50cmlzby1kbW4ranNvbiJ9fQ==" pageId="_0020_vacation_days_D1" elementId="_0020_vacation_days_s4" uri="http://www.trisotech.com/definitions/_0020_vacation_days#_0020_vacation_days_s4" name="Extra days case 1" mimeType="application/vnd.triso-dmn+json"/>
+                </semantic:extensionElements>
+                <semantic:input id="_03e9a8dd-d3be-4962-b387-d560238320db" name="Age" bindingRef="_f267978f-7b72-4612-8c78-d385043536be"/>
+                <semantic:input id="_d17b6fc0-2a68-42b7-b62f-a9360a8bb82b" name="Years of Service" bindingRef="_aa6159fc-0a55-4965-85b7-46fcfa7297dc"/>
+                <semantic:output id="_d590abe6-6579-425f-9683-54b00a08e3e9" name="Extra days case 1" bindingRef="_946d392d-28c7-4a99-a938-1a8ebc3cca7a"/>
+            </semantic:decisionTask>
+        </semantic:casePlanModel>
+    </semantic:case>
+    <semantic:decision id="_17cd72b5bfc76a73ad31c4c3a5d88a98" externalRef="ns1:_0020_vacation_days" implementationType="http://www.omg.org/spec/CMMN/DecisionType/DMN1" name="Extra days case 1"/>
+    <semantic:extensionElements>
+        <triso:itemDefinitions>
+            <triso:itemDefinition name="java.math.BigDecimal" label="java.math.BigDecimal">
+                <triso:typeRef>string</triso:typeRef>
+            </triso:itemDefinition>
+        </triso:itemDefinitions>
+    </semantic:extensionElements>
+    <cmmndi:CMMNDI>
+        <cmmndi:CMMNDiagram id="_0e5b1684-4235-4d65-a966-54441a08271b" name="Page 1" cmmnElementRef="_a7c8ba0c-a3e7-47d0-8253-9f866b162a25">
+            <cmmndi:Size width="1485" height="1050"/>
+            <cmmndi:CMMNShape id="_a7c8ba0c-a3e7-47d0-8253-9f866b162a25" cmmnElementRef="_636d4bea-4d52-46fb-b1ad-9ceeddf1be69">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="77.5" y="49" width="800" height="600"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="201" x="89.5" y="54.172413793103445"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_46d0321c-fa10-4ea2-b896-24699cdfc071" cmmnElementRef="_37b292f2-acbe-4641-8500-e6c0cb9a4d00">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="363" y="183" width="97" height="76"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="26.59375" width="68" x="378" y="207.703125"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_2a6d97f4-a41c-4db6-b8e1-f35ed487890a" cmmnElementRef="_f267978f-7b72-4612-8c78-d385043536be">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="142.5" y="467" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="18.375" x="150.3125" y="511"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_3ad3759f-57b1-4ad7-9d3e-8772a330c36c" cmmnElementRef="_aa6159fc-0a55-4965-85b7-46fcfa7297dc">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="220.5" y="467" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="75.21875" x="199.890625" y="511"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_fa94f9bf-a23a-4bcb-843c-cb7273753a08" cmmnElementRef="_946d392d-28c7-4a99-a938-1a8ebc3cca7a">
+                <cmmndi:CMMNStyle fontFamily="arial,helvetica,sans-serif">
+                    <cmmndi:FillColor red="255" green="255" blue="255"/>
+                    <cmmndi:StrokeColor red="0" green="0" blue="0"/>
+                    <cmmndi:FontColor red="0" green="0" blue="0"/>
+                </cmmndi:CMMNStyle>
+                <dc:Bounds x="310.5" y="467" width="34" height="40"/>
+                <cmmndi:CMMNLabel triso:defaultBounds="true">
+                    <dc:Bounds height="12.3125" width="66.0625" x="294.46875" y="511"/>
+                </cmmndi:CMMNLabel>
+            </cmmndi:CMMNShape>
+            <cmmndi:CMMNShape id="_3432f75c-27cc-46cf-bdfa-151281823df7" cmmnElementRef="_91ff15e0-859d-416f-8e5a-2decb7017a3e">
+                <cmmndi:CMMNStyle fontFamily=""/>
+                <dc:Bounds x="353.2063903808594" y="207" width="20" height="28"/>
+                <cmmndi:CMMNLabel/>
+            </cmmndi:CMMNShape>
+        </cmmndi:CMMNDiagram>
+    </cmmndi:CMMNDI>
+</semantic:definitions>

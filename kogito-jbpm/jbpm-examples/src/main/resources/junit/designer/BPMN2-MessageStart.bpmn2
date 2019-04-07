@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_uvzg4EcMEeG-Z8AhuVIXaA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="HelloMessageType" structureRef="String"/>
+  <bpmn2:message id="HelloMessage" itemRef="HelloMessageType"/>
+  <bpmn2:process id="Minimal" drools:packageName="com.sample" name="Minimal Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="java.util.List"/>
+      <drools:import name="java.util.ArrayList"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="x" itemSubjectRef="_xItem"/>
+    <bpmn2:startEvent id="_C731F03C-28B3-499D-948B-BB1868DCC515" name="StartProcess">
+      <bpmn2:outgoing>_AB76AD44-E82C-4174-B77F-3365601EDF89</bpmn2:outgoing>
+      <bpmn2:dataOutput id="_C731F03C-28B3-499D-948B-BB1868DCC515_null" name="null"/>
+      <bpmn2:dataOutputAssociation id="_uv0H8EcMEeG-Z8AhuVIXaA">
+        <bpmn2:sourceRef>_C731F03C-28B3-499D-948B-BB1868DCC515_null</bpmn2:sourceRef>
+        <bpmn2:targetRef>x</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:outputSet id="_uvzg4UcMEeG-Z8AhuVIXaA">
+        <bpmn2:dataOutputRefs>_C731F03C-28B3-499D-948B-BB1868DCC515_null</bpmn2:dataOutputRefs>
+      </bpmn2:outputSet>
+      <bpmn2:messageEventDefinition id="_uv0H8UcMEeG-Z8AhuVIXaA" drools:msgref="HelloMessage" messageRef="HelloMessage"/>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_B0C3B425-116C-47C6-BD1C-1CB366E64FB2" name="Hello" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_AB76AD44-E82C-4174-B77F-3365601EDF89</bpmn2:incoming>
+      <bpmn2:outgoing>_97F8695B-B328-4063-8828-EF9A019F480E</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;x = &quot; + x);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_4BDDEDC4-5D9E-4B35-B48C-E180C74C7187" name="EndProcess">
+      <bpmn2:incoming>_97F8695B-B328-4063-8828-EF9A019F480E</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_uv0H8kcMEeG-Z8AhuVIXaA"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_AB76AD44-E82C-4174-B77F-3365601EDF89" sourceRef="_C731F03C-28B3-499D-948B-BB1868DCC515" targetRef="_B0C3B425-116C-47C6-BD1C-1CB366E64FB2"/>
+    <bpmn2:sequenceFlow id="_97F8695B-B328-4063-8828-EF9A019F480E" sourceRef="_B0C3B425-116C-47C6-BD1C-1CB366E64FB2" targetRef="_4BDDEDC4-5D9E-4B35-B48C-E180C74C7187"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_uv0H80cMEeG-Z8AhuVIXaA">
+    <bpmndi:BPMNPlane id="_uv0H9EcMEeG-Z8AhuVIXaA" bpmnElement="Minimal">
+      <bpmndi:BPMNShape id="_uv0H9UcMEeG-Z8AhuVIXaA" bpmnElement="_C731F03C-28B3-499D-948B-BB1868DCC515">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_uv0H9kcMEeG-Z8AhuVIXaA" bpmnElement="_B0C3B425-116C-47C6-BD1C-1CB366E64FB2">
+        <dc:Bounds height="48.0" width="80.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_uv0H90cMEeG-Z8AhuVIXaA" bpmnElement="_4BDDEDC4-5D9E-4B35-B48C-E180C74C7187">
+        <dc:Bounds height="28.0" width="28.0" x="217.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_uv0H-EcMEeG-Z8AhuVIXaA" bpmnElement="_AB76AD44-E82C-4174-B77F-3365601EDF89">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_uv0H-UcMEeG-Z8AhuVIXaA" bpmnElement="_97F8695B-B328-4063-8828-EF9A019F480E">
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="231.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -1,0 +1,25 @@
+[
+    [
+        "name" : "TestServiceWithParamValuesTwo",
+        "description" : "TestServiceWithParamValuesTwo",
+        "parameters" : [
+            "param1" : new StringDataType(),
+            "param2" : new StringDataType(),
+            "param3" : new StringDataType()
+        ],
+        "parameterValues" : [
+            "param1" : "one,two,three",
+            "param3" : "four,five,six"
+        ],
+        "results" : [
+            "result1" : new StringDataType(),
+            "result2" : new StringDataType()
+        ],
+        "displayName" : "TestServiceWithParamValuesTwo",
+        "icon" : "testservicewithparamvaluestwo.png",
+        "category": "MyTestServices",
+	    "dependencies" : [
+        ]
+    ]
+]
+

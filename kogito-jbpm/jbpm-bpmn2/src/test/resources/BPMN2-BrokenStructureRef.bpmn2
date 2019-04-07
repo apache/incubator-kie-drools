@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_testItem" structureRef="org.jbpm.bpmn2.objects.Person" />
+
+  <process processType="Private" isExecutable="true" id="BrokenStructureRef" name="BrokenStructureRef" tns:packageName="defaultPackage" >
+
+    <!-- process variables -->
+    <property id="test" itemSubjectRef="_testItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <userTask id="_2" name="User Task" >
+      <ioSpecification>
+        <dataOutput id="_2_testHTOutput" itemSubjectRef="broken_reference.bpmn#test" name="testHT" />
+        <inputSet>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_2_testHTOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataOutputAssociation>
+        <sourceRef>_2_testHTOutput</sourceRef>
+        <targetRef>test</targetRef>
+      </dataOutputAssociation>
+    </userTask>
+    <scriptTask id="_3" name="Script" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("Result "+test);</script>
+    </scriptTask>
+    <endEvent id="_4" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="BrokenStructureRef" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="45" y="45" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="135" y="45" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="297" y="43" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="446" y="44" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="69" y="69" />
+        <di:waypoint x="185" y="69" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="185" y="69" />
+        <di:waypoint x="337" y="67" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="337" y="67" />
+        <di:waypoint x="470" y="68" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Subprocess test" id="org.jbpm.processinstance.subprocess" package-name="org.jbpm.processinstance" >
+
+  <header>
+    <variables>
+      <variable name="var" >
+        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <value></value>
+      </variable>
+      <variable name="type" >
+        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <value></value>
+      </variable>
+    </variables>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="12" y="108" width="48" height="48" />
+    <split id="2" name="Gateway" x="108" y="108" width="49" height="49" type="2" >
+      <constraints>
+        <constraint toNodeId="5" toType="DROOLS_DEFAULT" name="default" priority="10" type="rule" dialect="mvel" >eval(true)</constraint>
+        <constraint toNodeId="4" toType="DROOLS_DEFAULT" name="script" priority="1" type="code" dialect="java" >return "script".equals(type);</constraint>
+        <constraint toNodeId="3" toType="DROOLS_DEFAULT" name="event" priority="1" type="code" dialect="java" >return "event".equals(type);</constraint>
+      </constraints>
+    </split>
+    <join id="3" name="event" x="252" y="12" width="49" height="49" type="1" />
+    <actionNode id="4" name="Change variable" x="204" y="204" width="145" height="49" >
+        <action type="expression" dialect="java" >kcontext.setVariable("var", "Somebody");</action>
+    </actionNode>
+    <join id="5" name="Gateway" x="396" y="108" width="49" height="49" type="2" />
+    <subProcess id="6" name="Sub-Process" x="492" y="108" width="110" height="48" processId="org.jbpm.processinstance.helloworld" >
+      <mapping type="in" from="var" to="name" />
+    </subProcess>
+    <end id="7" name="End" x="648" y="108" width="48" height="48" />
+    <eventNode id="8" name="Signal" x="108" y="12" width="48" height="48" variableName="var" scope="external" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="pass" />
+      </eventFilters>
+    </eventNode>
+  </nodes>
+
+  <connections>
+    <connection from="1" to="2" />
+    <connection from="2" to="3" />
+    <connection from="8" to="3" />
+    <connection from="2" to="4" />
+    <connection from="2" to="5" />
+    <connection from="3" to="5" />
+    <connection from="4" to="5" />
+    <connection from="5" to="6" />
+    <connection from="6" to="7" />
+  </connections>
+
+</process>

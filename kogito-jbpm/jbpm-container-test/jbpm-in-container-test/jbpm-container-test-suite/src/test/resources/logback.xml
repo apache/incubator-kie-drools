@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!-- APPENDERS LIST -->
+  <!-- show log entries on console -->
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <encoder>
+      <pattern>[%d] %-5p- %m%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="asyncConsoleAppender" class="ch.qos.logback.classic.AsyncAppender">
+    <queueSize>300</queueSize>
+    <appender-ref ref="consoleAppender" />
+  </appender>
+
+  <!-- show only WARN messages on console, used for loggers that want to print 
+	   info or debug messages to file, but only WARN (and higher) messages to console -->
+  <appender name="warnConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>WARN</level>
+    </filter>
+    <encoder>
+      <pattern>[%d] %-5p- %m%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="asyncWarnConsoleAppender" class="ch.qos.logback.classic.AsyncAppender">
+    <queueSize>300</queueSize>
+    <appender-ref ref="warnConsoleAppender" />
+  </appender>
+
+  <appender name="frameworkFileAppender" class="ch.qos.logback.core.FileAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+    <file>${log.dir}/framework.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%d %-5p [%c] - %m%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="asyncFrameworkFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+    <queueSize>300</queueSize>
+    <appender-ref ref="frameworkFileAppender" />
+  </appender>
+
+  <appender name="serverFileAppender" class="ch.qos.logback.core.FileAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+    <file>${log.dir}/server.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%d %-5p [%c] - %m%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="asyncServerFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+    <queueSize>300</queueSize>
+    <appender-ref ref="serverFileAppender" />
+  </appender>
+
+  <!-- LOGGER LIST -->
+  <!-- log all classes in org.jbpm.test package -->
+  <logger name="org.jbpm.test">
+    <level value="debug" />
+    <appender-ref ref="asyncFrameworkFileAppender" />
+    <appender-ref ref="asyncConsoleAppender" />
+  </logger>
+
+  <!-- Other classes -->
+  <logger name="org.jboss.security">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="org.jnp.interfaces">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="org.jboss.remoting">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="org.jboss.profileservice">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="org.apache.commons.httpclient">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="httpclient">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="Sisu">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="com.arjuna">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="org.jboss.jbossas">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+
+  <logger name="org.hibernate">
+    <level value="debug" />
+    <appender-ref ref="asyncServerFileAppender" />
+  </logger>
+</configuration>

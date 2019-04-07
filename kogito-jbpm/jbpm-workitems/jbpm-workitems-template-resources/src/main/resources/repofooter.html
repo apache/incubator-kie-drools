@@ -1,0 +1,287 @@
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="installToWorkbenchModal" tabindex="-1" role="dialog" aria-labelledby="installToWorkbenchModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="installToWorkbenchModalLabel">KIE Workbench Install - <span id="workitemname"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Remember! To install this workitem you need: </strong> <br/>
+                    <ul>
+                        <li>Running KIE Workbench instance</li>
+                        <li>At least one Workbench project created</li>
+                    </ul>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form id="installToWorkbenchForm" method="GET" action="">
+                    <div class="form-group row">
+                        <label for="workbenchURL" class="col-sm-2 col-form-label"><strong>URL: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="url" class="form-control" id="workbenchURL" value="http://localhost:8080/kie-wb" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workbenchUserName" class="col-sm-2 col-form-label"><strong>Username: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="workbenchUserName" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workbenchPassword" class="col-sm-2 col-form-label"><strong>Password: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="workbenchPassword" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workbenchSpaceName" class="col-sm-2 col-form-label"><strong>Space Name: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="workbenchSpaceName" value="MySpace" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workbenchProjectGroupID" class="col-sm-2 col-form-label"><strong>Project Group ID: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="workbenchProjectGroupID" value="com.myspace" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workbenchProjectArtifactID" class="col-sm-2 col-form-label"><strong>Project Artifact ID: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="workbenchProjectArtifactID" value="myproject" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workitemNameInput" class="col-sm-2 col-form-label"><strong>Workitem Name: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" id="workitemNameInput" value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workitemGroupInput" class="col-sm-2 col-form-label"><strong>Workitem Group: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" id="workitemGroupInput" value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="workitemHandlersInput" class="col-sm-2 col-form-label"><strong>Workitem Handlers: </strong></label>
+                        <div class="col-sm-10">
+                            <input type="text" readonly class="form-control-plaintext" id="workitemHandlersInput" value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">Install</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="installToWorkbenchCompleted" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">Workitems Successfully installed!</h4>
+                    <p>Go to your your KIE Workbench project to start using the installed workitems.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="installToWorkbenchFailed" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">There were errors during workitem Installation!</h4>
+                    <p>Check your KIE Workbench logs to see details on possible failures.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var options = {
+        shouldSort: true,
+        tokenize: true,
+        matchAllTokens: true,
+        findAllMatches: true,
+        threshold: 0.1,
+        location: 0,
+        distance: 50,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: [
+            "keywords"
+        ]
+    };
+
+    var repourl = window.location.protocol + "//" + window.location.host + "/repository";
+    var isRepoHosted = repourl.startsWith("file:") ? false : true;
+
+    var fuse = new Fuse(serviceinfo, options);
+
+    $(document).ready(function() {
+        $(function(){
+            $('#repoinfo').hide();
+        });
+
+        $('#repoFuncSearchButton').click(function() {
+            var keywordsearchresult = fuse.search($('#repoFuncSearch').val());
+
+            $("#repoTable > tr").each(function (i, row) {
+                var found = false;
+                for(var i = 0; i < keywordsearchresult.length; i++) {
+                    if(row.innerText.toLowerCase().indexOf(keywordsearchresult[i].description.toLowerCase()) > -1) {
+                        found = true;
+                    }
+                }
+                if(!found) {
+                    if(row.getAttribute("id") == null || !row.getAttribute("id").endsWith("-exptr")) {
+                        $(this).toggle(false);
+                    }
+                }
+            });
+        });
+
+        $("#repoFuncSearch").focus(function() {
+            $("#repoFuncSearch").val("");
+        });
+
+        $('#repoFuncSearchClearButton').click(function() {
+            $("#repoTable tr").each(function (i, row) {
+                $(this).toggle(true);
+            });
+        });
+
+        $(function(){
+            $("[data-load]").each(function(){
+                $(this).load($(this).data("load"), function(){
+                });
+            });
+        });
+
+        $.ajax({
+            url: 'rest/services/count',
+            timeout:2000
+        }).done(function(data){
+            $('#widcountp').text( " " + data + " workitems found");
+            $('#repoinfo').show();
+        }).fail(function(jqXHR, textStatus){
+            // repo is running on file only mode. do nothing
+        });
+
+        if(!isRepoHosted) {
+            // hide install (only possible in hosted mode)
+            $('#repoworkitemstable td:nth-child(5),#repoworkitemstable th:nth-child(5)').hide();
+        }
+
+        $('#installToWorkbenchModal').on('show.bs.modal', function(e) {
+            var workitemGroup = $(e.relatedTarget).data('workitem-group');
+            var workitemName = $(e.relatedTarget).data('workitem-name');
+            var workitemHandlers = $(e.relatedTarget).data('workitem-handlers');
+
+            $(e.currentTarget).find('span[id="workitemname"]').text(workitemName);
+            $(e.currentTarget).find('input[id="workitemGroupInput"]').val(workitemGroup);
+            $(e.currentTarget).find('input[id="workitemNameInput"]').val(workitemName);
+            $(e.currentTarget).find('input[id="workitemHandlersInput"]').val(workitemHandlers);
+        });
+
+        $("#installToWorkbenchForm").validate();
+
+        $("#installToWorkbenchForm").bind('ajax:complete', function() {
+
+            alert("SUBMIT DONE!!");
+
+
+        });
+
+        $('#installToWorkbenchForm').submit(function(e) {
+            var $inputs = $('#installToWorkbenchForm :input');
+
+            var values = {};
+            $inputs.each(function() {
+                values[this.id] = this.value;
+            });
+
+            var wburl = values['workbenchURL'].endsWith("/") ? values['workbenchURL'] + "repo/jbpmservicerepo" : values['workbenchURL'] + "/repo/jbpmservicerepo";
+            var basicAuthCredentials =  btoa(values['workbenchUserName'] + ':' + values['workbenchPassword']);
+            var thisRepoLocation = window.location.protocol + "//" + window.location.host + "/repository";
+            var installAction = "install";
+            var profile = "jbpm";
+            var workitemAssetName = values['workitemNameInput'];
+            var toPathProjectGroupId = values['workbenchProjectGroupID'].replace(/\./g, '/');
+            var tmpRepoAsset = "default://master@" + values['workbenchSpaceName'] + "/" + values['workbenchProjectArtifactID'] +
+                            "/src/main/resources/" +  toPathProjectGroupId + "/" + values['workbenchProjectArtifactID'] +
+                            "/tmpasset.bpmn2";
+
+            var handlerNamesArray = values['workitemHandlersInput'].split(',');
+
+            try {
+                for (var i = 0; i < handlerNamesArray.length; i++) {
+                    $.ajax({
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Authorization', 'Basic ' + basicAuthCredentials);
+                        },
+                        url: wburl,
+                        data: {
+                            "action": installAction,
+                            "profile": profile,
+                            "uuid": window.btoa(encodeURI(tmpRepoAsset)),
+                            "asset": handlerNamesArray[i],
+                            "category": "",
+                            "repourl": thisRepoLocation
+                        },
+                        crossDomain: true,
+                        cache: false,
+                        type: "GET",
+                        async: false
+                    });
+                }
+
+                $('#installToWorkbenchModal').modal('hide');
+                $('#installToWorkbenchCompleted').modal();
+            } catch(err) {
+                $('#installToWorkbenchModal').modal('hide');
+                $('#installToWorkbenchFailed').modal();
+            }
+
+            e.preventDefault();
+        });
+    });
+
+</script>
+
+</body>
+</html>

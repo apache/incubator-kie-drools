@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Hello World process" id="org.jbpm.processinstance.helloworld" package-name="org.jbpm.processinstance" >
+
+  <header>
+    <variables>
+      <variable name="name" >
+        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <value></value>
+      </variable>
+      <variable name="var" >
+        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+      </variable>
+    </variables>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="16" y="16" width="48" height="48" />
+    <end id="2" name="End" x="208" y="16" width="48" height="48" />
+    <actionNode id="3" name="Script" x="96" y="16" width="80" height="48" >
+        <action type="expression" dialect="java" >System.out.println("Hello world from " + name + "!");</action>
+    </actionNode>
+  </nodes>
+
+  <connections>
+    <connection from="3" to="2" />
+    <connection from="1" to="3" />
+  </connections>
+
+</process>

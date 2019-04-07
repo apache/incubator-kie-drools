@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="defs" targetNamespace="http://www.jboss.org/drools" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:drools="http://www.jboss.org/drools"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <process id="org.jbpm.test.functional.task.RuleTask">
+        <startEvent id="start" name="start" />
+        <businessRuleTask id="rules" name="rules" drools:ruleFlowGroup="rule-task-group" /> 
+        <endEvent id="end" name="end"/>
+        <sequenceFlow id="sf1" sourceRef="start" targetRef="rules"/>
+        <sequenceFlow id="sf2" sourceRef="rules" targetRef="end"/>
+    </process>
+</definitions>

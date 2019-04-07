@@ -1,0 +1,20 @@
+[
+    [
+        "name" : "TestServiceTwo",
+        "description" : "TestServiceTwo",
+        "parameters" : [
+            "param1" : new StringDataType(),
+            "param2" : new StringDataType()
+        ],
+        "results" : [
+            "result1" : new StringDataType(),
+            "result2" : new StringDataType()
+        ],
+        "displayName" : "TestServiceTwo",
+        "icon" : "testservicetwo.png",
+        "category": "MyTestServices",
+	    "dependencies" : [
+        ]
+    ]
+]
+

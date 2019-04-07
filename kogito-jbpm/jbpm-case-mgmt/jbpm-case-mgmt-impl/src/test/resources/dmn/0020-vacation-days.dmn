@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_0020_vacation_days" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.9.201806121905" id="_0020_vacation_days" name="0020-vacation-days" namespace="http://www.trisotech.com/definitions/_0020_vacation_days" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:inputData id="i_Age" name="Age">
+    <dmn11:variable id="_84d47ed8-df98-4af2-bd20-e79853bb27ce" name="Age" typeRef="feel:number"/>
+  </dmn11:inputData>
+  <dmn11:inputData id="i_Years_of_Service" name="Years of Service">
+    <dmn11:variable id="_f8695953-a58f-4e6a-a31f-6a1ca6961f1e" name="Years of Service" typeRef="feel:number"/>
+  </dmn11:inputData>
+  <dmn11:decision id="d_Total_Vacation_Days" name="Total Vacation Days">
+    <dmn11:variable id="_3dddbe71-fb8b-4e79-8ca0-62849b8a85f5" name="Total Vacation Days" typeRef="feel:number"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#d_Base_Vacation_Days"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#d_Extra_days_case_1"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#d_Extra_days_case_2"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredDecision href="#d_Extra_days_case_3"/>
+    </dmn11:informationRequirement>
+    <dmn11:literalExpression id="_9fef54c6-b9ef-40cd-83b3-d776f5c19a6d">
+      <dmn11:text>Base Vacation Days +
+        max( Extra days case 1, Extra days case 3 ) +
+        Extra days case 2</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:decision id="d_Extra_days_case_1" name="Extra days case 1">
+    <dmn11:variable id="_479ad7c9-f330-4092-a1a6-f53b88209c8b" name="Extra days case 1" typeRef="feel:number"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#i_Age"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#i_Years_of_Service"/>
+    </dmn11:informationRequirement>
+    <dmn11:decisionTable aggregation="MAX" hitPolicy="COLLECT" id="_7e6b35e4-b805-4906-993f-e200171401ac" outputLabel="Extra days case 1">
+      <dmn11:input id="d_Extra_days_case_1_dt_i_age">
+        <dmn11:inputExpression typeRef="feel:number">
+          <dmn11:text>Age</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:input id="d_Extra_days_case_1_dt_i_years">
+        <dmn11:inputExpression typeRef="feel:number">
+          <dmn11:text>Years of Service</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:output id="d_Extra_days_case_1_dt_o">
+        <dmn11:defaultOutputEntry>
+          <dmn11:text>0</dmn11:text>
+        </dmn11:defaultOutputEntry>
+      </dmn11:output>
+      <dmn11:rule id="d_Extra_days_case_1_dt_r1">
+        <dmn11:inputEntry id="d_Extra_days_case_1_dt_r1_i1">
+          <dmn11:text>&lt;18,&gt;=60</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="d_Extra_days_case_1_dt_r1_i2">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="d_Extra_days_case_1_dt_r1_o1">
+          <dmn11:text>5</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="d_Extra_days_case_1_dt_r2">
+        <dmn11:inputEntry id="d_Extra_days_case_1_dt_r2_i1">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="d_Extra_days_case_1_dt_r2_i2">
+          <dmn11:text>&gt;=30</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="d_Extra_days_case_1_dt_r2_o1">
+          <dmn11:text>5</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+    </dmn11:decisionTable>
+  </dmn11:decision>
+  <dmn11:decision id="d_Extra_days_case_2" name="Extra days case 2">
+    <dmn11:variable id="_2f25919e-2942-4668-abf9-5ddeb5bd03c4" name="Extra days case 2" typeRef="feel:number"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#i_Age"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#i_Years_of_Service"/>
+    </dmn11:informationRequirement>
+    <dmn11:decisionTable aggregation="MAX" hitPolicy="COLLECT" id="_be60d5c2-fee2-461d-86ee-829b03b61616" outputLabel="Extra days case 2">
+      <dmn11:input id="d_Extra_days_case_2_dt_i_age">
+        <dmn11:inputExpression typeRef="feel:number">
+          <dmn11:text>Age</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:input id="d_Extra_days_case_2_dt_i_years">
+        <dmn11:inputExpression typeRef="feel:number">
+          <dmn11:text>Years of Service</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:output id="d_Extra_days_case_2_dt_o">
+        <dmn11:defaultOutputEntry>
+          <dmn11:text>0</dmn11:text>
+        </dmn11:defaultOutputEntry>
+      </dmn11:output>
+      <dmn11:rule id="d_Extra_days_case_2_dt_r1">
+        <dmn11:inputEntry id="d_Extra_days_case_2_dt_r1_i1">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="d_Extra_days_case_2_dt_r1_i2">
+          <dmn11:text>&gt;=30</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="d_Extra_days_case_2_dt_r1_o1">
+          <dmn11:text>3</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="d_Extra_days_case_2_dt_r2">
+        <dmn11:inputEntry id="d_Extra_days_case_2_dt_r2_i1">
+          <dmn11:text>&gt;=60</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="d_Extra_days_case_2_dt_r2_i2">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="d_Extra_days_case_2_dt_r2_o1">
+          <dmn11:text>3</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+    </dmn11:decisionTable>
+  </dmn11:decision>
+  <dmn11:decision id="d_Extra_days_case_3" name="Extra days case 3">
+    <dmn11:variable id="_92b9e0cf-2fa2-4ab2-adfa-c0925938c775" name="Extra days case 3" typeRef="feel:number"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#i_Age"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#i_Years_of_Service"/>
+    </dmn11:informationRequirement>
+    <dmn11:decisionTable aggregation="MAX" hitPolicy="COLLECT" id="_74e7d9fa-f20c-410c-82be-d7ebfa482e79" outputLabel="Extra days case 3">
+      <dmn11:input id="d_Extra_days_case_3_dt_i_age">
+        <dmn11:inputExpression typeRef="feel:number">
+          <dmn11:text>Age</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:input id="d_Extra_days_case_3_dt_i_years">
+        <dmn11:inputExpression typeRef="feel:number">
+          <dmn11:text>Years of Service</dmn11:text>
+        </dmn11:inputExpression>
+      </dmn11:input>
+      <dmn11:output id="d_Extra_days_case_3_dt_o">
+        <dmn11:defaultOutputEntry>
+          <dmn11:text>0</dmn11:text>
+        </dmn11:defaultOutputEntry>
+      </dmn11:output>
+      <dmn11:rule id="d_Extra_days_case_3_dt_r1">
+        <dmn11:inputEntry id="d_Extra_days_case_3_dt_r1_i1">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="d_Extra_days_case_3_dt_r1_i2">
+          <dmn11:text>[15..30)</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="d_Extra_days_case_3_dt_r1_o1">
+          <dmn11:text>2</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+      <dmn11:rule id="d_Extra_days_case_3_dt_r2">
+        <dmn11:inputEntry id="d_Extra_days_case_3_dt_r2_i1">
+          <dmn11:text>&gt;=45</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:inputEntry id="d_Extra_days_case_3_dt_r2_i2">
+          <dmn11:text>-</dmn11:text>
+        </dmn11:inputEntry>
+        <dmn11:outputEntry id="d_Extra_days_case_3_dt_r2_o1">
+          <dmn11:text>2</dmn11:text>
+        </dmn11:outputEntry>
+      </dmn11:rule>
+    </dmn11:decisionTable>
+  </dmn11:decision>
+  <dmn11:decision id="d_Base_Vacation_Days" name="Base Vacation Days">
+    <dmn11:variable id="_da653e60-bb50-4501-be52-8b32a2916429" name="Base Vacation Days" typeRef="feel:number"/>
+    <dmn11:literalExpression id="_d66e4cf0-08af-4fc8-b0e7-d997b22c21a1">
+      <dmn11:text>22</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

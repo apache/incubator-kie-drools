@@ -1,0 +1,8 @@
+usersgroups = [ 
+                new User('ibek') : [new Group( "admin" )],
+                new User('john') : [new Group( "engineering" ),  new Group( "admin" ),  new Group( "analyst" )],
+                new User('mary') : [new Group( "engineering" ),  new Group( "admin" ),  new Group( "analyst" )],
+                new User('guest') : [new Group( "guest" ),  new Group( "analyst" )],
+                new User('Administrator') : [new Group( "Administrators" )],
+              ];
+return usersgroups;

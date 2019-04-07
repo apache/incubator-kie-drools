@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_2-xItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="SubProcess" name="Minimal SubProcess" >
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <subProcess id="_2" name="Hello"  >
+    <!-- variables -->
+    <property id="x" itemSubjectRef="_2-xItem"/>
+    <!-- nodes -->
+    <startEvent id="_2-1" name="StartSubProcess" />
+    <scriptTask id="_2-2" name="Hello1" >
+      <script>System.out.println("x = " + x);</script>
+    </scriptTask>
+    <scriptTask id="_2-3" name="Hello2" >
+      <script>kcontext.setVariable("x", "Hello");</script>
+    </scriptTask>
+    <scriptTask id="_2-4" name="Hello3" >
+      <script>System.out.println("x = " + x);</script>
+    </scriptTask>
+    <endEvent id="_2-5" name="EndSubProcess" />
+    <!-- connections -->
+    <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+    <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
+    <sequenceFlow id="_2-3-_2-4" sourceRef="_2-3" targetRef="_2-4" />
+    <sequenceFlow id="_2-4-_2-5" sourceRef="_2-4" targetRef="_2-5" />
+    </subProcess>
+    <scriptTask id="_3" name="Goodbye" >
+      <script>System.out.println("Goodbye World");</script>
+    </scriptTask>
+    <endEvent id="_4" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="SubProcess" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="11" y="115" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="20" width="266" height="233" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-1" >
+        <dc:Bounds x="107" y="46" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-2" >
+        <dc:Bounds x="193" y="47" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-3" >
+        <dc:Bounds x="193" y="112" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-4" >
+        <dc:Bounds x="193" y="178" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-5" >
+        <dc:Bounds x="300" y="179" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="396" y="114" width="91" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="511" y="115" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_2-1-_2-2" >
+        <di:waypoint x="35" y="50" />
+        <di:waypoint x="137" y="51" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-2-_2-3" >
+        <di:waypoint x="137" y="51" />
+        <di:waypoint x="137" y="116" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-3-_2-4" >
+        <di:waypoint x="137" y="116" />
+        <di:waypoint x="137" y="182" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-4-_2-5" >
+        <di:waypoint x="137" y="182" />
+        <di:waypoint x="228" y="183" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="35" y="139" />
+        <di:waypoint x="229" y="136" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="229" y="136" />
+        <di:waypoint x="441" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="441" y="138" />
+        <di:waypoint x="535" y="139" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

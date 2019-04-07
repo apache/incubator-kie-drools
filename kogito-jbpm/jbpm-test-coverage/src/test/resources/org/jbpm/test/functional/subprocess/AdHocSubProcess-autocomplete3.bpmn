@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="defs" targetNamespace="http://www.jboss.org/drools" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:drools="http://www.jboss.org/drools"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <process id="org.jbpm.test.functional.subprocess.AdHocSubProcess-autocomplete3">
+        <startEvent id="start1" name="start"/>
+        <adHocSubProcess id="adhoc1" name="adhoc">
+            <userTask id="task1" name="task1" drools:taskName="task1" />
+            <userTask id="task2" name="task2" drools:taskName="task2" />
+            <userTask id="task3" name="task3" drools:taskName="task3" />
+            <completionCondition xsi:type="tFormalExpression">getActivityInstanceAttribute("numberOfActiveInstances") == 0</completionCondition>
+        </adHocSubProcess>
+        <endEvent id="end1" name="end"/>
+        <sequenceFlow id="sf1" sourceRef="start1" targetRef="adhoc1"/>
+        <sequenceFlow id="sf2" sourceRef="adhoc1" targetRef="end1" />
+    </process>
+</definitions>

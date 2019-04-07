@@ -1,0 +1,59 @@
+package org.jbpm.casemgmt.demo.insurance;
+
+import java.util.Map;
+import java.util.HashMap;
+import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
+import org.jbpm.casemgmt.demo.insurance.ClaimReport;
+import org.jbpm.services.api.service.ServiceRegistry;
+import org.jbpm.casemgmt.api.CaseService;
+
+rule "classify-claim" ruleflow-group "claims"
+
+when 
+    $caseData : CaseFileInstance()
+    $claim : ClaimReport( accidentDescription != null) from $caseData.getData("claimReport")      
+then 
+    System.out.println("Classified claim " + $claim);
+end
+
+rule "classify-claim-invalid" ruleflow-group "claims"
+
+when 
+    $caseData : CaseFileInstance()
+    $claim : ClaimReport( accidentDescription == null ) from $caseData.getData("claimReport")      
+then 
+    System.out.println("About to close case  " + $caseData.getCaseId() + " because it's invalid");
+    CaseService caseService = (CaseService) ServiceRegistry.get().service(ServiceRegistry.CASE_SERVICE);   
+    caseService.closeCase($caseData.getCaseId(), "Invalid case data");
+end
+
+
+rule "ask user for details"
+
+when 
+    $caseData : CaseFileInstance()
+    String(this == "AskForDetails") from $caseData.getData("decision")
+          
+then 
+    $caseData.remove("decision");
+    System.out.println("About to ask for details on case  " + $caseData.getCaseId());
+    CaseService caseService = (CaseService) ServiceRegistry.get().service(ServiceRegistry.CASE_SERVICE);
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("reason", "How did it happen?");
+    caseService.addDynamicTask($caseData.getCaseId(), caseService.newHumanTaskSpec("Please provide additional details", "Action", "insured", null, parameters));
+    
+end
+
+rule "Close case via case action"
+
+when 
+    $caseData : CaseFileInstance()
+    String(this == "Close") from $caseData.getData("CaseAction")
+          
+then 
+    
+    System.out.println("About to close case  " + $caseData.getCaseId());
+    CaseService caseService = (CaseService) ServiceRegistry.get().service(ServiceRegistry.CASE_SERVICE);   
+    caseService.closeCase($caseData.getCaseId(), "Closing case from rules");
+    
+end

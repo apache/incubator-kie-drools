@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_falseBoolItem" structureRef="java.lang.Boolean" />
+
+  <process processType="Private" isExecutable="true" id="com.sample.test" name="Test" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_falseBoolItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <sequenceFlow id="_1-_9" sourceRef="_1" targetRef="_9" />
+
+    <scriptTask id="_9" name="boolean-set" >
+      <script>kcontext.setVariable("x", false);</script>
+    </scriptTask>
+    <sequenceFlow id="_9-_2" sourceRef="_9" targetRef="_2" />
+
+    <exclusiveGateway id="_2" name="Split" default="_2-_4" gatewayDirection="Diverging" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" >
+      <conditionExpression xsi:type="tFormalExpression" >return x</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" />
+
+    <scriptTask id="_3" name="Script1" >
+      <script>System.out.println("problem");</script>
+    </scriptTask>
+    <sequenceFlow id="_3-_6" sourceRef="_3" targetRef="_6" />
+    <endEvent id="_6" name="End" />
+
+    <scriptTask id="_4" name="Script2" >
+      <script>System.out.println("default");</script>
+    </scriptTask>
+    <sequenceFlow id="_4-_7" sourceRef="_4" targetRef="_7" />
+    <endEvent id="_7" name="End" />
+  </process>
+
+</definitions>

@@ -1,0 +1,14 @@
+[
+  {
+    "query-name": "jbpmXESTraces",
+    "query-source": "${org.kie.server.persistence.ds}",
+    "query-expression": "select log.id, log.processInstanceId, log.processId, log.start_date, log.end_date, log.status, log.parentProcessInstanceId, log.user_identity, log.processVersion, log.processName, log.correlationKey, log.processInstanceDescription, log.sla_due_date, log.slaCompliance from ProcessInstanceLog log",
+    "query-target": "CUSTOM"
+  },
+  {
+    "query-name": "jbpmXESEvents",
+    "query-source": "${org.kie.server.persistence.ds}",
+    "query-expression": "select log.id, log.nodeInstanceId, log.nodeId, log.nodeName, log.processInstanceId, log.nodeType, log.log_date, log.type, log.workItemId, log.sla_due_date, log.slaCompliance, task.actualOwner, task.createdBy from NodeInstanceLog log left join AuditTaskImpl task on log.workItemId = task.workItemId",
+    "query-target": "CUSTOM"
+  }
+]

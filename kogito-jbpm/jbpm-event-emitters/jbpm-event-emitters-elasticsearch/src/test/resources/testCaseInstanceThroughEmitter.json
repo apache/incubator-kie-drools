@@ -1,0 +1,2 @@
+{ "index" : { "_index" : "cases", "_type" : "case", "_id" : "_99" } }
+{"compositeId":"_99","id":99,"caseDefinitionId":"myprocess","caseDefinitionName":"MyProcess","caseStatus":1,"containerId":"test","owner":null,"date":"2018-10-23","caseDescription":"","caseId":"key","parentId":-1,"variables":{"initiator":"john","variable":123},"caseVariables":{"caseDetail":"my test case","age":55},"milestones":[],"stages":[],"participants":[]}

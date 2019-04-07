@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_A-7_kJZDEeidRsTCIdrx_g" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="1.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_typeItem" structureRef="String"/>
+  <bpmn2:process id="multiplestages" drools:adHoc="true" drools:version="1.0" name="multiplestages" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:metaData name="customCaseIdPrefix">
+        <drools:metaValue><![CDATA[CASE]]></drools:metaValue>
+      </drools:metaData>
+    </bpmn2:extensionElements>
+    <bpmn2:adHocSubProcess id="_15538089-0E2D-4232-96BE-0714F590B2B4" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Stage #{type}" ordering="Sequential">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Stage #{type}]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:ioSpecification id="_A-7_kZZDEeidRsTCIdrx_g">
+        <bpmn2:inputSet id="_A-7_kpZDEeidRsTCIdrx_g"/>
+        <bpmn2:outputSet id="_A-7_k5ZDEeidRsTCIdrx_g"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:property id="type" itemSubjectRef="_typeItem"/>
+      <bpmn2:userTask id="_4B364FE0-FFE7-41FE-874A-062F2A1E2F55" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Simple task">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Simple task]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:ioSpecification id="_A-7_lJZDEeidRsTCIdrx_g">
+          <bpmn2:dataInput id="_4B364FE0-FFE7-41FE-874A-062F2A1E2F55_SkippableInputX" name="Skippable"/>
+          <bpmn2:inputSet id="_A-7_lZZDEeidRsTCIdrx_g">
+            <bpmn2:dataInputRefs>_4B364FE0-FFE7-41FE-874A-062F2A1E2F55_SkippableInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="_A-7_lpZDEeidRsTCIdrx_g"/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="_A-7_l5ZDEeidRsTCIdrx_g">
+          <bpmn2:targetRef>_4B364FE0-FFE7-41FE-874A-062F2A1E2F55_SkippableInputX</bpmn2:targetRef>
+          <bpmn2:assignment id="_A-7_mJZDEeidRsTCIdrx_g">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_A-7_mZZDEeidRsTCIdrx_g">true</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_A-7_mpZDEeidRsTCIdrx_g">_4B364FE0-FFE7-41FE-874A-062F2A1E2F55_SkippableInputX</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:potentialOwner id="_A-7_m5ZDEeidRsTCIdrx_g">
+          <bpmn2:resourceAssignmentExpression id="_A-7_nJZDEeidRsTCIdrx_g">
+            <bpmn2:formalExpression id="_A-7_nZZDEeidRsTCIdrx_g">john</bpmn2:formalExpression>
+          </bpmn2:resourceAssignmentExpression>
+        </bpmn2:potentialOwner>
+      </bpmn2:userTask>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_A-7_npZDEeidRsTCIdrx_g" language="http://www.mvel.org/2.0"><![CDATA[autocomplete]]></bpmn2:completionCondition>
+    </bpmn2:adHocSubProcess>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_A-7_n5ZDEeidRsTCIdrx_g">
+    <bpmndi:BPMNPlane id="_A-7_oJZDEeidRsTCIdrx_g" bpmnElement="multiplestages">
+      <bpmndi:BPMNShape id="_A-7_oZZDEeidRsTCIdrx_g" bpmnElement="_15538089-0E2D-4232-96BE-0714F590B2B4">
+        <dc:Bounds height="260.0" width="521.0" x="213.0" y="154.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_A-7_opZDEeidRsTCIdrx_g" bpmnElement="_4B364FE0-FFE7-41FE-874A-062F2A1E2F55">
+        <dc:Bounds height="80.0" width="100.0" x="324.0" y="217.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

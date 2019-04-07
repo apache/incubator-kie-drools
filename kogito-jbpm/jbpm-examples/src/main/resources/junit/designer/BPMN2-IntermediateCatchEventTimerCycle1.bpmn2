@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_oTcD4EfcEeGNe9vXj6mmDg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" structureRef="String"/>
+  <bpmn2:process id="IntermediateCatchEvent" drools:packageName="defaultPackage" name="IntermediateCatchEvent Process" isExecutable="true">
+    <bpmn2:property id="x" itemSubjectRef="_xItem"/>
+    <bpmn2:startEvent id="_9ADAA127-F162-46E6-8F5E-8AFD1000F4FC" name="StartProcess">
+      <bpmn2:outgoing>_BB4F9BCA-6B1B-4899-9650-F3A355B2F048</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:intermediateCatchEvent id="_D2D32A8C-B201-49EC-B239-0DFE0112BEC6" drools:boundaryca="false" name="timer">
+      <bpmn2:incoming>_BB4F9BCA-6B1B-4899-9650-F3A355B2F048</bpmn2:incoming>
+      <bpmn2:outgoing>_35AD59E4-4BC6-4BC1-B957-A4D26E9B5C38</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_oTcD4UfcEeGNe9vXj6mmDg">
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_oTcq8EfcEeGNe9vXj6mmDg">500ms</bpmn2:timeCycle>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:scriptTask id="_BF453442-95F0-4143-BD7F-1C725A848024" name="Event" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_35AD59E4-4BC6-4BC1-B957-A4D26E9B5C38</bpmn2:incoming>
+      <bpmn2:outgoing>_3D61B5B8-3824-41A4-B581-0873906515D3</bpmn2:outgoing>
+      <bpmn2:script>System.out.println("Timer triggered");</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_A0E58D48-E20D-4EF4-A465-19917C8DED44" name="EndProcess">
+      <bpmn2:incoming>_3D61B5B8-3824-41A4-B581-0873906515D3</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_oTcq8UfcEeGNe9vXj6mmDg"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_BB4F9BCA-6B1B-4899-9650-F3A355B2F048" sourceRef="_9ADAA127-F162-46E6-8F5E-8AFD1000F4FC" targetRef="_D2D32A8C-B201-49EC-B239-0DFE0112BEC6"/>
+    <bpmn2:sequenceFlow id="_35AD59E4-4BC6-4BC1-B957-A4D26E9B5C38" sourceRef="_D2D32A8C-B201-49EC-B239-0DFE0112BEC6" targetRef="_BF453442-95F0-4143-BD7F-1C725A848024"/>
+    <bpmn2:sequenceFlow id="_3D61B5B8-3824-41A4-B581-0873906515D3" sourceRef="_BF453442-95F0-4143-BD7F-1C725A848024" targetRef="_A0E58D48-E20D-4EF4-A465-19917C8DED44"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_oTcq8kfcEeGNe9vXj6mmDg">
+    <bpmndi:BPMNPlane id="_oTcq80fcEeGNe9vXj6mmDg" bpmnElement="IntermediateCatchEvent">
+      <bpmndi:BPMNShape id="_oTcq9EfcEeGNe9vXj6mmDg" bpmnElement="_9ADAA127-F162-46E6-8F5E-8AFD1000F4FC">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_oTcq9UfcEeGNe9vXj6mmDg" bpmnElement="_D2D32A8C-B201-49EC-B239-0DFE0112BEC6">
+        <dc:Bounds height="30.0" width="30.0" x="105.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_oTcq9kfcEeGNe9vXj6mmDg" bpmnElement="_BF453442-95F0-4143-BD7F-1C725A848024">
+        <dc:Bounds height="48.0" width="80.0" x="176.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_oTg8YEfcEeGNe9vXj6mmDg" bpmnElement="_A0E58D48-E20D-4EF4-A465-19917C8DED44">
+        <dc:Bounds height="28.0" width="28.0" x="297.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_oTg8YUfcEeGNe9vXj6mmDg" bpmnElement="_BB4F9BCA-6B1B-4899-9650-F3A355B2F048">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_oTg8YkfcEeGNe9vXj6mmDg" bpmnElement="_35AD59E4-4BC6-4BC1-B957-A4D26E9B5C38">
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="216.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_oTg8Y0fcEeGNe9vXj6mmDg" bpmnElement="_3D61B5B8-3824-41A4-B581-0873906515D3">
+        <di:waypoint xsi:type="dc:Point" x="216.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="311.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

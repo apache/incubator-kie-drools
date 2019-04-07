@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/schema/arquillian"
+  xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+  <engine>
+    <property name="deploymentExportPath">target/arquillian</property>
+  </engine>
+  
+  <defaultProtocol type="Servlet 2.5" />
+ 
+  <group qualifier="containers" default="true">
+    <container qualifier="remote-container" default="true">
+      <configuration>
+        <property name="remoteServerAddress">localhost</property>
+        <property name="remoteServerSoapPort">8880</property>
+        <property name="securityEnabled">true</property>
+        <property name="username">websphere</property>
+        <!--Parent last strategy-->
+        <property name="deploymentClassLoadingMode">1</property>
+        <!--Single policy-->
+        <property name="deploymentClassLoaderPolicy">1</property>
+
+        <!-- security settings -->
+        <property name="password">websphere</property>
+        <property name="sslTrustStore">${container.profile.dir}/etc/DummyClientTrustFile.jks</property>
+        <property name="sslTrustStorePassword">WebAS</property>
+        <!-- SSL configuration -->
+        <property name="sslKeyStore">${container.profile.dir}/etc/DummyClientKeyFile.jks</property>
+        <property name="sslKeyStorePassword">WebAS</property>
+      </configuration>
+    </container>
+  </group>
+
+</arquillian>

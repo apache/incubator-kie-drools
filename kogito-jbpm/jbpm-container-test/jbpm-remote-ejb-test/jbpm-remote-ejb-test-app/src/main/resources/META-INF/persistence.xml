@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd
+http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
+	<persistence-unit name="org.jbpm.domain" transaction-type="JTA">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<jta-data-source>${org.jbpm.persistence.ds}</jta-data-source>
+		<mapping-file>META-INF/Taskorm.xml</mapping-file>
+		<mapping-file>META-INF/JBPMorm.xml</mapping-file>
+		<mapping-file>META-INF/Executor-orm.xml</mapping-file>
+		<mapping-file>META-INF/Servicesorm.xml</mapping-file>
+		<mapping-file>META-INF/TaskAuditorm.xml</mapping-file>
+		<class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
+		<class>org.jbpm.services.task.impl.model.ContentImpl</class>
+		<class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
+		<class>org.jbpm.services.task.impl.model.CommentImpl</class>
+		<class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
+		<class>org.jbpm.services.task.impl.model.DelegationImpl</class>
+		<class>org.jbpm.services.task.impl.model.EscalationImpl</class>
+		<class>org.jbpm.services.task.impl.model.GroupImpl</class>
+		<class>org.jbpm.services.task.impl.model.I18NTextImpl</class>
+		<class>org.jbpm.services.task.impl.model.NotificationImpl</class>
+		<class>org.jbpm.services.task.impl.model.EmailNotificationImpl</class>
+		<class>org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl</class>
+		<class>org.jbpm.services.task.impl.model.PeopleAssignmentsImpl</class>
+		<class>org.jbpm.services.task.impl.model.ReassignmentImpl</class>
+		<class>org.jbpm.services.task.impl.model.TaskImpl</class>
+		<class>org.jbpm.services.task.impl.model.TaskDefImpl</class>
+		<class>org.jbpm.services.task.impl.model.TaskDataImpl</class>
+		<class>org.jbpm.services.task.impl.model.UserImpl</class>
+		<class>org.jbpm.executor.entities.ErrorInfo</class>
+		<class>org.jbpm.executor.entities.RequestInfo</class>
+		<class>org.drools.persistence.info.SessionInfo</class>
+		<class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
+		<class>org.drools.persistence.info.WorkItemInfo</class>
+		<class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+		<class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
+		<!-- manager -->
+		<class>org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo</class>
+		<!-- bam -->
+		<class>org.jbpm.process.audit.ProcessInstanceLog</class>
+		<class>org.jbpm.process.audit.NodeInstanceLog</class>
+		<class>org.jbpm.process.audit.VariableInstanceLog</class>
+		<!--BAM for task service -->
+		<class>org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl</class>
+		<!-- Event Classes -->
+		<class>org.jbpm.services.task.audit.impl.model.TaskEventImpl</class>
+		<!-- Task Audit Classes -->
+		<class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
+		<class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
+		<!-- deployment store -->
+		<class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
+		<!-- queries -->
+		<class>org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity</class>
+        <!-- error handling -->
+        <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
+		<properties>
+			<property name="hibernate.dialect" value="${org.jbpm.persistence.dialect}" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="false" />
+			<!-- default schema must be specified for IBM DB2 -->
+			<property name="hibernate.default_schema" value="${org.jbpm.persistence.schema}" />
+			<property name="hibernate.transaction.jta.platform"
+				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+			<!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem 
+				to cause problems -->
+			<property name="hibernate.id.new_generator_mappings" value="false" />
+		</properties>
+	</persistence-unit>
+</persistence>

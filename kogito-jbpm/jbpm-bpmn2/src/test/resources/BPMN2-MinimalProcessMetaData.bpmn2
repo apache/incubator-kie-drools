@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  <process id="Minimal" name="Minimal Process" tns:packageName="com.sample">
+    <extensionElements>
+      <tns:metaData name="customTagProcess">
+        <tns:metaValue>process</tns:metaValue>
+      </tns:metaData>
+    </extensionElements>
+    <property id="x" itemSubjectRef="_xItem">
+      <extensionElements>
+        <tns:metaData name="customTagVar">
+          <tns:metaValue>variable</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
+    </property>
+    <startEvent id="_1" name="StartProcess">
+      <extensionElements>
+        <tns:metaData name="customTag">
+          <tns:metaValue>first</tns:metaValue>
+        </tns:metaData>
+        <tns:metaData name="customTag2">
+          <tns:metaValue>A</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <scriptTask id="_2" name="Hello">
+      <extensionElements>
+        <tns:metaData name="customTag">
+          <tns:metaValue>second</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
+      <script>System.out.println("Hello World");</script>
+    </scriptTask>
+    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    <endEvent id="_3" name="EndProcess">
+      <extensionElements>
+        <tns:metaData name="customTag">
+          <tns:metaValue>third</tns:metaValue>
+        </tns:metaData>
+        <tns:metaData name="customTag2">
+          <tns:metaValue>B</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
+      <terminateEventDefinition/>
+    </endEvent>
+  </process>
+</definitions>

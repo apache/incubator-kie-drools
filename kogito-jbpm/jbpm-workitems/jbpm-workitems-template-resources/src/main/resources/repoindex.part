@@ -1,0 +1,66 @@
+<tr class="accordion-toggle" id="\$$openbracket$artifactId$closebracket$-maintr">
+    <td><a href="#\$$openbracket$artifactId$closebracket$-expdiv" data-toggle="collapse"><img src="\$$openbracket$artifactId$closebracket$/icon.png" width="40" height="40">&nbsp;<b>\$$openbracket$project.name$closebracket$</b></a></td>
+    <td><button type="button" class="btn btn-primary"><span class="badge">$length(widInfo)$</span></button></td>
+    <td>\$$openbracket$project.description$closebracket$</td>
+    <td>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton-\$$openbracket$artifactId$closebracket$" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="fa fa-download">&nbsp;Select</span>
+      </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton-\$$openbracket$artifactId$closebracket$">
+            <a class="dropdown-item" href="\$$openbracket$artifactId$closebracket$/\$$openbracket$artifactId$closebracket$.wid"><span class="fa fa-file">&nbsp;Workitem Definition MVEL</span></a>
+            <a class="dropdown-item" href="\$$openbracket$artifactId$closebracket$/kie-deployment-descriptor.xml"><span class="fa fa-file">&nbsp;Kie Deployment Descriptor</span></a>
+            <a class="dropdown-item" href="\$$openbracket$artifactId$closebracket$/\$$openbracket$artifactId$closebracket$-\$$openbracket$version$closebracket$.jar"><span class="fa fa-file">&nbsp;Workitem Jar</span></a>
+            <a class="dropdown-item" href="\$$openbracket$artifactId$closebracket$/\$$openbracket$artifactId$closebracket$.bpmn2"><span class="fa fa-file">&nbsp;Sample BPMN2 Process</span></a>
+        </div>
+    </div>
+    </td>
+    <td>
+    <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownInstallButton-\$$openbracket$artifactId$closebracket$" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="fa fa-cogs">&nbsp;Select</span>
+          </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownInstallButton-\$$openbracket$artifactId$closebracket$">
+                <a class="dropdown-item" data-toggle="modal" data-target="#installToWorkbenchModal" data-workitem-group="\$$openbracket$artifactId$closebracket$" data-workitem-name="\$$openbracket$project.name$closebracket$"
+                data-workitem-handlers="$widInfo:{k| $widInfo.(k).name$}; separator=","$"><span class="fa fa-file">&nbsp;KIE Workbench</span></a>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr id="\$$openbracket$artifactId$closebracket$-exptr">
+    <td colspan="12" class="hiddenRow"><div id="\$$openbracket$artifactId$closebracket$-expdiv" class="accordian-body collapse">
+       <table class="table table-sm">
+       <tbody>
+       <tr><td>
+
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Handler</th>
+                  <th scope="col">Wid</th>
+                  <th scope="col">Auth Required</th>
+                  <th scope="col">Docs</th>
+                </tr>
+              </thead>
+              <tbody>
+           $widInfo:{k|
+
+                <tr>
+                      <th scope="row">$i$</th>
+                      <td>$widInfo.(k).name$</td>
+                      <td>$widInfo.(k).defaultHandlerUnEscaped$</td>
+                      <td><a href="\$$openbracket$artifactId$closebracket$/$widInfo.(k).name$.wid">$widInfo.(k).name$.wid</a></td>
+                      <td>$widInfo.(k).serviceInfo.authInfo.required$</td>
+                      <td><a href="\$$openbracket$artifactId$closebracket$/index.html#$widInfo.(k).name$" class="btn btn-secondary btn-sm" role="button" aria-disabled="true"><span class="fa fa-eye">&nbsp;View</span></a></td>
+                    </tr>
+               }$
+               </tbody>
+               </table>
+
+       </td></tr>
+        </tbody>
+       </table></div>
+    </td>
+</tr>

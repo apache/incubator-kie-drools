@@ -1,0 +1,28 @@
+<assembly
+  xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <id>ejb-app</id>
+  <formats>
+    <format>war</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <files>
+    <file>
+      <source>${project.basedir}/src/test/resources/META-INF/persistence.xml</source>
+      <outputDirectory>WEB-INF/classes/META-INF</outputDirectory>
+    </file>
+    <file>
+      <source>${project.basedir}/src/test/resources/META-INF/beans.xml</source>
+      <outputDirectory>WEB-INF/classes/META-INF</outputDirectory>
+    </file>
+  </files>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+      <useProjectArtifact>true</useProjectArtifact>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+</assembly>

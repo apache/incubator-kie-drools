@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_8VKG0EcNEeG-Z8AhuVIXaA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_sItem" structureRef="String"/>
+  <bpmn2:process id="ScriptTask" drools:packageName="com.sample" name="ScriptTask Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="java.util.List"/>
+      <drools:import name="java.util.ArrayList"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="s" itemSubjectRef="_sItem"/>
+    <bpmn2:startEvent id="_8D17F807-AE33-4B8E-9B43-7FA5FDDC34DD" name="StartProcess">
+      <bpmn2:outgoing>_2EC6E5C0-3F20-4F07-853F-E4AC75465E74</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_D4DC8B3D-4D27-4684-B5A3-9C38002AFC90" name="Hello" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_2EC6E5C0-3F20-4F07-853F-E4AC75465E74</bpmn2:incoming>
+      <bpmn2:outgoing>_71993BC6-2327-4140-89D6-F65A484212F3</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Hello World&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_7EB1BF70-8C97-4E18-859C-49FE8E33FD69" name="EndProcess">
+      <bpmn2:incoming>_71993BC6-2327-4140-89D6-F65A484212F3</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_8VKG0UcNEeG-Z8AhuVIXaA"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_2EC6E5C0-3F20-4F07-853F-E4AC75465E74" sourceRef="_8D17F807-AE33-4B8E-9B43-7FA5FDDC34DD" targetRef="_D4DC8B3D-4D27-4684-B5A3-9C38002AFC90"/>
+    <bpmn2:sequenceFlow id="_71993BC6-2327-4140-89D6-F65A484212F3" sourceRef="_D4DC8B3D-4D27-4684-B5A3-9C38002AFC90" targetRef="_7EB1BF70-8C97-4E18-859C-49FE8E33FD69"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_8VKG0kcNEeG-Z8AhuVIXaA">
+    <bpmndi:BPMNPlane id="_8VKG00cNEeG-Z8AhuVIXaA" bpmnElement="ScriptTask">
+      <bpmndi:BPMNShape id="_8VKG1EcNEeG-Z8AhuVIXaA" bpmnElement="_8D17F807-AE33-4B8E-9B43-7FA5FDDC34DD">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8VKG1UcNEeG-Z8AhuVIXaA" bpmnElement="_D4DC8B3D-4D27-4684-B5A3-9C38002AFC90">
+        <dc:Bounds height="48.0" width="80.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_8VKG1kcNEeG-Z8AhuVIXaA" bpmnElement="_7EB1BF70-8C97-4E18-859C-49FE8E33FD69">
+        <dc:Bounds height="28.0" width="28.0" x="217.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_8VKG10cNEeG-Z8AhuVIXaA" bpmnElement="_2EC6E5C0-3F20-4F07-853F-E4AC75465E74">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_8VKG2EcNEeG-Z8AhuVIXaA" bpmnElement="_71993BC6-2327-4140-89D6-F65A484212F3">
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="231.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

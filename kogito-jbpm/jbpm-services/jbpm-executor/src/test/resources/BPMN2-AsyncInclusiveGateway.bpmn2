@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xmlns:java="http://www.java.com/javaTypes" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_9SXX4HDhEeewe93HRWlBCQ" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.2.4.Final-v20160330-1625-B110" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_TaskNameInputXItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UrlInputXItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_MethodInputXItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UsernameInputXItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ReadTimeoutInputXItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_PasswordInputXItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ConnectTimeoutInputXItem" isCollection="false" structureRef="String"/>
+  <bpmn2:itemDefinition id="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ResultOutputXItem" isCollection="false" structureRef="java.lang.Object"/>
+  <bpmn2:process id="TestProject.DemoProcess" drools:packageName="org.jbpm" drools:version="1.0" name="DemoProcess" isExecutable="true">
+    <bpmn2:property id="Var1" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ConnectTimeoutInputXItem" name="Var1"/>
+    <bpmn2:startEvent id="processStartEvent" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_2A48F6B9-0A07-4727-A916-1258BBFB552B</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_2CA5D05F-D11A-44E9-9C17-BA85DA75005F" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="ScriptTask-1" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[ScriptTask-1]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_2A48F6B9-0A07-4727-A916-1258BBFB552B</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Script Task-1&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_2A48F6B9-0A07-4727-A916-1258BBFB552B" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="processStartEvent" targetRef="_2CA5D05F-D11A-44E9-9C17-BA85DA75005F"/>
+    <bpmn2:scriptTask id="_149A68A7-2D6B-4927-9406-944FC6C1D28C" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="ScriptTask-2" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[ScriptTask-2]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Script Task-2&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:task id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74" drools:selectable="true" drools:taskName="Rest" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="REST">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[REST]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="customAsync">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_9SXX4XDhEeewe93HRWlBCQ">
+        <bpmn2:dataInput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_TaskNameInputX" drools:dtype="String" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_TaskNameInputXItem" name="TaskName"/>
+        <bpmn2:dataInput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UrlInputX" drools:dtype="String" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UrlInputXItem" name="Url"/>
+        <bpmn2:dataInput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_MethodInputX" drools:dtype="String" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_MethodInputXItem" name="Method"/>
+        <bpmn2:dataInput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UsernameInputX" drools:dtype="String" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UsernameInputXItem" name="Username"/>
+        <bpmn2:dataInput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ReadTimeoutInputX" drools:dtype="String" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ReadTimeoutInputXItem" name="ReadTimeout"/>
+        <bpmn2:dataInput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_PasswordInputX" drools:dtype="String" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_PasswordInputXItem" name="Password"/>
+        <bpmn2:dataInput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ConnectTimeoutInputX" drools:dtype="String" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ConnectTimeoutInputXItem" name="ConnectTimeout"/>
+        <bpmn2:dataOutput id="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ResultOutputX" drools:dtype="java.lang.Object" itemSubjectRef="__97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ResultOutputXItem" name="Result"/>
+        <bpmn2:inputSet id="_9SXX4nDhEeewe93HRWlBCQ">
+          <bpmn2:dataInputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UrlInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_MethodInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UsernameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ReadTimeoutInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_PasswordInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ConnectTimeoutInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_TaskNameInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_9SXX43DhEeewe93HRWlBCQ">
+          <bpmn2:dataOutputRefs>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_ResultOutputX</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_9SXX5HDhEeewe93HRWlBCQ">
+        <bpmn2:targetRef>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_9SXX5XDhEeewe93HRWlBCQ">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_9SXX5nDhEeewe93HRWlBCQ">Rest</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_9SXX53DhEeewe93HRWlBCQ">_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_TaskNameInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_9SXX6HDhEeewe93HRWlBCQ">
+        <bpmn2:targetRef>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UrlInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_9SXX6XDhEeewe93HRWlBCQ">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_9SXX6nDhEeewe93HRWlBCQ"><![CDATA[https://www.google.com]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_9SXX63DhEeewe93HRWlBCQ">_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_UrlInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_9SXX7HDhEeewe93HRWlBCQ">
+        <bpmn2:targetRef>_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_MethodInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_9SXX7XDhEeewe93HRWlBCQ">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_9SXX7nDhEeewe93HRWlBCQ"><![CDATA[GET]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_9SXX73DhEeewe93HRWlBCQ">_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74_MethodInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:scriptTask id="_70C7B0F2-6230-46C8-BCEC-1EE18CC6B1F1" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="ScriptTask-4" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[ScriptTask-4]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:outgoing>_589C12B3-5AFD-4B1A-872B-0167B0773C29</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Script Task-4&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_E790D682-2B19-427D-9E00-FD2BFF3C1A34" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="EndProcess">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[EndProcess]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_589C12B3-5AFD-4B1A-872B-0167B0773C29</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_589C12B3-5AFD-4B1A-872B-0167B0773C29" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_70C7B0F2-6230-46C8-BCEC-1EE18CC6B1F1" targetRef="_E790D682-2B19-427D-9E00-FD2BFF3C1A34"/>
+    <bpmn2:inclusiveGateway id="InclusiveGateway_1" name="Inclusive Gateway 1" gatewayDirection="Diverging">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:inclusiveGateway id="InclusiveGateway_2" name="Inclusive Gateway 2" gatewayDirection="Converging">
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+    </bpmn2:inclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" drools:priority="1" sourceRef="_2CA5D05F-D11A-44E9-9C17-BA85DA75005F" targetRef="InclusiveGateway_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_2" drools:priority="1" sourceRef="InclusiveGateway_1" targetRef="_149A68A7-2D6B-4927-9406-944FC6C1D28C">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1" language="http://www.java.com/java">return Var1.equals(&quot;AAA&quot;);</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_3" drools:priority="1" sourceRef="InclusiveGateway_1" targetRef="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2" language="http://www.java.com/java">return Var1.equals(&quot;AAA&quot;);</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" drools:priority="1" sourceRef="_149A68A7-2D6B-4927-9406-944FC6C1D28C" targetRef="InclusiveGateway_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" drools:priority="1" sourceRef="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74" targetRef="InclusiveGateway_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" drools:priority="1" sourceRef="InclusiveGateway_2" targetRef="_70C7B0F2-6230-46C8-BCEC-1EE18CC6B1F1"/>
+    <bpmn2:scriptTask id="ScriptTask_1" name="ScriptTask-3" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[ScriptTask-3]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Script Task-3: should not be called&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_7" drools:priority="1" sourceRef="InclusiveGateway_1" targetRef="ScriptTask_1">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_3" language="http://www.java.com/java">return Var1.equals(&quot;BBB&quot;);</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" drools:priority="1" sourceRef="ScriptTask_1" targetRef="InclusiveGateway_2"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_9SXX8HDhEeewe93HRWlBCQ">
+    <bpmndi:BPMNPlane id="_9SXX8XDhEeewe93HRWlBCQ" bpmnElement="TestProject.DemoProcess">
+      <bpmndi:BPMNShape id="_9SXX8nDhEeewe93HRWlBCQ" bpmnElement="processStartEvent">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9SXX83DhEeewe93HRWlBCQ" bpmnElement="_2CA5D05F-D11A-44E9-9C17-BA85DA75005F">
+        <dc:Bounds height="80.0" width="100.0" x="195.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="68.0" x="211.0" y="168.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9SXX9XDhEeewe93HRWlBCQ" bpmnElement="_149A68A7-2D6B-4927-9406-944FC6C1D28C">
+        <dc:Bounds height="80.0" width="100.0" x="479.0" y="15.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="68.0" x="495.0" y="48.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9SX-8XDhEeewe93HRWlBCQ" bpmnElement="_97157FF6-CA5C-4E41-A7FD-9DACD1C59F74">
+        <dc:Bounds height="80.0" width="100.0" x="494.0" y="310.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="32.0" x="528.0" y="343.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9SX-8nDhEeewe93HRWlBCQ" bpmnElement="_70C7B0F2-6230-46C8-BCEC-1EE18CC6B1F1">
+        <dc:Bounds height="80.0" width="100.0" x="810.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="68.0" x="826.0" y="168.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_9SX-83DhEeewe93HRWlBCQ" bpmnElement="_E790D682-2B19-427D-9E00-FD2BFF3C1A34">
+        <dc:Bounds height="28.0" width="28.0" x="960.0" y="166.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="68.0" x="940.0" y="194.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_InclusiveGateway_1" bpmnElement="InclusiveGateway_1" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="350.0" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="28.0" width="57.0" x="347.0" y="200.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_InclusiveGateway_2" bpmnElement="InclusiveGateway_2" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="710.0" y="150.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="28.0" width="57.0" x="707.0" y="200.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="78.0" width="110.0" x="489.0" y="140.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="68.0" x="510.0" y="172.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_9SX-9HDhEeewe93HRWlBCQ" bpmnElement="_2A48F6B9-0A07-4727-A916-1258BBFB552B" sourceElement="_9SXX8nDhEeewe93HRWlBCQ" targetElement="_9SXX83DhEeewe93HRWlBCQ">
+        <di:waypoint xsi:type="dc:Point" x="135.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="175.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_9SX--3DhEeewe93HRWlBCQ" bpmnElement="_589C12B3-5AFD-4B1A-872B-0167B0773C29" sourceElement="_9SX-8nDhEeewe93HRWlBCQ" targetElement="_9SX-83DhEeewe93HRWlBCQ">
+        <di:waypoint xsi:type="dc:Point" x="910.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="935.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="935.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="960.0" y="180.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="_9SXX83DhEeewe93HRWlBCQ" targetElement="BPMNShape_InclusiveGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="295.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="322.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="350.0" y="175.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_InclusiveGateway_1" targetElement="_9SXX9XDhEeewe93HRWlBCQ">
+        <di:waypoint xsi:type="dc:Point" x="375.0" y="150.0"/>
+        <di:waypoint xsi:type="dc:Point" x="375.0" y="55.0"/>
+        <di:waypoint xsi:type="dc:Point" x="479.0" y="55.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_InclusiveGateway_1" targetElement="_9SX-8XDhEeewe93HRWlBCQ">
+        <di:waypoint xsi:type="dc:Point" x="375.0" y="200.0"/>
+        <di:waypoint xsi:type="dc:Point" x="375.0" y="350.0"/>
+        <di:waypoint xsi:type="dc:Point" x="494.0" y="350.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="_9SXX9XDhEeewe93HRWlBCQ" targetElement="BPMNShape_InclusiveGateway_2">
+        <di:waypoint xsi:type="dc:Point" x="579.0" y="55.0"/>
+        <di:waypoint xsi:type="dc:Point" x="735.0" y="55.0"/>
+        <di:waypoint xsi:type="dc:Point" x="735.0" y="150.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="_9SX-8XDhEeewe93HRWlBCQ" targetElement="BPMNShape_InclusiveGateway_2">
+        <di:waypoint xsi:type="dc:Point" x="594.0" y="350.0"/>
+        <di:waypoint xsi:type="dc:Point" x="735.0" y="350.0"/>
+        <di:waypoint xsi:type="dc:Point" x="735.0" y="200.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_InclusiveGateway_2" targetElement="_9SX-8nDhEeewe93HRWlBCQ">
+        <di:waypoint xsi:type="dc:Point" x="760.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="770.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="770.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="810.0" y="175.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="BPMNShape_InclusiveGateway_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="400.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="410.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="410.0" y="179.0"/>
+        <di:waypoint xsi:type="dc:Point" x="489.0" y="179.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_InclusiveGateway_2">
+        <di:waypoint xsi:type="dc:Point" x="599.0" y="179.0"/>
+        <di:waypoint xsi:type="dc:Point" x="654.0" y="179.0"/>
+        <di:waypoint xsi:type="dc:Point" x="654.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="710.0" y="175.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

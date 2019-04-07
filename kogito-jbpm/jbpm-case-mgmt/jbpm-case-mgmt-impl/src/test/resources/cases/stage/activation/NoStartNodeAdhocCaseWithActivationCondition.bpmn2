@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xmlns:java="http://www.java.com/javaTypes" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_al6HYGU5Eeavbo3IsNuQ1g" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.2.3.CR2-v20160209-2002" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_readyItem" structureRef="Boolean"/>
+  <bpmn2:process id="NoStartNodeAdhocCaseWithActivationCondition" drools:adHoc="true" drools:packageName="cases" drools:version="1.0" name="UserStageAdhocCase" isExecutable="true">
+    <bpmn2:adHocSubProcess id="_8272A034-9185-46C5-891B-4391D473E8A5" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="stage" ordering="Sequential">
+      <bpmn2:property id="ready" itemSubjectRef="_readyItem"/>
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[stage]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="customActivationCondition">
+          <drools:metaValue><![CDATA[
+          $file : CaseData()
+          $ready : Boolean(this == true) from $file.getData("readyToActivate")
+          ]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_B5F3E96C-5E1C-42AE-9132-6E96E65089EE</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_al7ViWU5Eeavbo3IsNuQ1g">
+        <bpmn2:inputSet id="_al7VimU5Eeavbo3IsNuQ1g"/>
+        <bpmn2:outputSet id="_al7Vi2U5Eeavbo3IsNuQ1g"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:userTask id="_509321A0-2DF7-4171-9FD9-3C8BEE781A9F" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="First">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[First]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:ioSpecification id="_al78kGU5Eeavbo3IsNuQ1g">
+          <bpmn2:dataInput id="_509321A0-2DF7-4171-9FD9-3C8BEE781A9F_SkippableInputX" name="Skippable"/>
+          <bpmn2:inputSet id="_al78kWU5Eeavbo3IsNuQ1g">
+            <bpmn2:dataInputRefs>_509321A0-2DF7-4171-9FD9-3C8BEE781A9F_SkippableInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="_al78kmU5Eeavbo3IsNuQ1g">
+          <bpmn2:targetRef>_509321A0-2DF7-4171-9FD9-3C8BEE781A9F_SkippableInputX</bpmn2:targetRef>
+          <bpmn2:assignment id="_al78k2U5Eeavbo3IsNuQ1g">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_al78lGU5Eeavbo3IsNuQ1g">true</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_al78lWU5Eeavbo3IsNuQ1g">_509321A0-2DF7-4171-9FD9-3C8BEE781A9F_SkippableInputX</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:potentialOwner id="_al78lmU5Eeavbo3IsNuQ1g">
+          <bpmn2:resourceAssignmentExpression id="_al78l2U5Eeavbo3IsNuQ1g">
+            <bpmn2:formalExpression id="_al78mGU5Eeavbo3IsNuQ1g">john</bpmn2:formalExpression>
+          </bpmn2:resourceAssignmentExpression>
+        </bpmn2:potentialOwner>
+      </bpmn2:userTask>
+      <bpmn2:userTask id="_E31E7C8E-2AD1-4C96-9D5D-A1452E7453E0" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Second">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Second]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>_E5F867A9-66A2-4547-BBD0-1C9016701461</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="_al78mWU5Eeavbo3IsNuQ1g">
+          <bpmn2:dataInput id="_E31E7C8E-2AD1-4C96-9D5D-A1452E7453E0_SkippableInputX" name="Skippable"/>
+          <bpmn2:inputSet id="_al78mmU5Eeavbo3IsNuQ1g">
+            <bpmn2:dataInputRefs>_E31E7C8E-2AD1-4C96-9D5D-A1452E7453E0_SkippableInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="_al78m2U5Eeavbo3IsNuQ1g">
+          <bpmn2:targetRef>_E31E7C8E-2AD1-4C96-9D5D-A1452E7453E0_SkippableInputX</bpmn2:targetRef>
+          <bpmn2:assignment id="_al78nGU5Eeavbo3IsNuQ1g">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_al78nWU5Eeavbo3IsNuQ1g">true</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_al78nmU5Eeavbo3IsNuQ1g">_E31E7C8E-2AD1-4C96-9D5D-A1452E7453E0_SkippableInputX</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:potentialOwner id="_al78n2U5Eeavbo3IsNuQ1g">
+          <bpmn2:resourceAssignmentExpression id="_al78oGU5Eeavbo3IsNuQ1g">
+            <bpmn2:formalExpression id="_al78oWU5Eeavbo3IsNuQ1g">john</bpmn2:formalExpression>
+          </bpmn2:resourceAssignmentExpression>
+        </bpmn2:potentialOwner>
+      </bpmn2:userTask>
+      <bpmn2:userTask id="_9DAB7DE8-EE33-45DB-983C-FA65D9558D6D" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Last">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Last]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_E5F867A9-66A2-4547-BBD0-1C9016701461</bpmn2:incoming>
+        <bpmn2:ioSpecification id="_al78omU5Eeavbo3IsNuQ1g">
+          <bpmn2:dataInput id="_9DAB7DE8-EE33-45DB-983C-FA65D9558D6D_SkippableInputX" name="Skippable"/>
+          <bpmn2:inputSet id="_al78o2U5Eeavbo3IsNuQ1g">
+            <bpmn2:dataInputRefs>_9DAB7DE8-EE33-45DB-983C-FA65D9558D6D_SkippableInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet/>
+        </bpmn2:ioSpecification>
+        <bpmn2:dataInputAssociation id="_al78pGU5Eeavbo3IsNuQ1g">
+          <bpmn2:targetRef>_9DAB7DE8-EE33-45DB-983C-FA65D9558D6D_SkippableInputX</bpmn2:targetRef>
+          <bpmn2:assignment id="_al78pWU5Eeavbo3IsNuQ1g">
+            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_al78pmU5Eeavbo3IsNuQ1g">true</bpmn2:from>
+            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_al78p2U5Eeavbo3IsNuQ1g">_9DAB7DE8-EE33-45DB-983C-FA65D9558D6D_SkippableInputX</bpmn2:to>
+          </bpmn2:assignment>
+        </bpmn2:dataInputAssociation>
+        <bpmn2:potentialOwner id="_al78qGU5Eeavbo3IsNuQ1g">
+          <bpmn2:resourceAssignmentExpression id="_al78qWU5Eeavbo3IsNuQ1g">
+            <bpmn2:formalExpression id="_al78qmU5Eeavbo3IsNuQ1g">john</bpmn2:formalExpression>
+          </bpmn2:resourceAssignmentExpression>
+        </bpmn2:potentialOwner>
+      </bpmn2:userTask>
+      <bpmn2:sequenceFlow id="_E5F867A9-66A2-4547-BBD0-1C9016701461" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_E31E7C8E-2AD1-4C96-9D5D-A1452E7453E0" targetRef="_9DAB7DE8-EE33-45DB-983C-FA65D9558D6D"/>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_al78q2U5Eeavbo3IsNuQ1g" language="http://www.jboss.org/drools/rule"><![CDATA[CaseData(data.get("readyToComplete") == true)]]></bpmn2:completionCondition>
+    </bpmn2:adHocSubProcess>
+    <bpmn2:endEvent id="_5654F923-EC6D-4D65-8855-0FDF860934B8" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[]]></drools:metaValue>
+        </drools:metaData>        
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_B5F3E96C-5E1C-42AE-9132-6E96E65089EE</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_WpO30kRnEeeSxP1_nretag"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_B5F3E96C-5E1C-42AE-9132-6E96E65089EE" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_8272A034-9185-46C5-891B-4391D473E8A5" targetRef="_5654F923-EC6D-4D65-8855-0FDF860934B8"/>
+    <bpmn2:userTask id="_165B16E7-5EEE-4CD6-9999-D22E86C3F3D7" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Adhoc 1">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Adhoc 1]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:ioSpecification id="_al8joGU5Eeavbo3IsNuQ1g">
+        <bpmn2:dataInput id="_165B16E7-5EEE-4CD6-9999-D22E86C3F3D7_SkippableInputX" name="Skippable"/>
+        <bpmn2:inputSet id="_al8joWU5Eeavbo3IsNuQ1g">
+          <bpmn2:dataInputRefs>_165B16E7-5EEE-4CD6-9999-D22E86C3F3D7_SkippableInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_al8jomU5Eeavbo3IsNuQ1g">
+        <bpmn2:targetRef>_165B16E7-5EEE-4CD6-9999-D22E86C3F3D7_SkippableInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_al8jo2U5Eeavbo3IsNuQ1g">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_al8jpGU5Eeavbo3IsNuQ1g">true</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_al8jpWU5Eeavbo3IsNuQ1g">_165B16E7-5EEE-4CD6-9999-D22E86C3F3D7_SkippableInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="_al8jpmU5Eeavbo3IsNuQ1g">
+        <bpmn2:resourceAssignmentExpression id="_al8jp2U5Eeavbo3IsNuQ1g">
+          <bpmn2:formalExpression id="_al8jqGU5Eeavbo3IsNuQ1g">john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="_1102D898-F4FD-4498-B937-C843FAC0D24B" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Adhoc 2">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Adhoc 2]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:ioSpecification id="_al8jqWU5Eeavbo3IsNuQ1g">
+        <bpmn2:dataInput id="_1102D898-F4FD-4498-B937-C843FAC0D24B_SkippableInputX" name="Skippable"/>
+        <bpmn2:inputSet id="_al8jqmU5Eeavbo3IsNuQ1g">
+          <bpmn2:dataInputRefs>_1102D898-F4FD-4498-B937-C843FAC0D24B_SkippableInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_al8jq2U5Eeavbo3IsNuQ1g">
+        <bpmn2:targetRef>_1102D898-F4FD-4498-B937-C843FAC0D24B_SkippableInputX</bpmn2:targetRef>
+        <bpmn2:assignment id="_al8jrGU5Eeavbo3IsNuQ1g">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_al8jrWU5Eeavbo3IsNuQ1g">true</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_al8jrmU5Eeavbo3IsNuQ1g">_1102D898-F4FD-4498-B937-C843FAC0D24B_SkippableInputX</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="_al8jr2U5Eeavbo3IsNuQ1g">
+        <bpmn2:resourceAssignmentExpression id="_al8jsGU5Eeavbo3IsNuQ1g">
+          <bpmn2:formalExpression id="_al8jsWU5Eeavbo3IsNuQ1g">john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_al8jsmU5Eeavbo3IsNuQ1g">
+    <bpmndi:BPMNPlane id="_al8js2U5Eeavbo3IsNuQ1g" bpmnElement="NoStartNodeAdhocCaseWithActivationCondition">
+      <bpmndi:BPMNShape id="_al8jt2U5Eeavbo3IsNuQ1g" bpmnElement="_8272A034-9185-46C5-891B-4391D473E8A5" isExpanded="true">
+        <dc:Bounds height="312.0" width="387.0" x="375.0" y="30.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1">
+          <dc:Bounds height="11.0" width="23.0" x="381.0" y="33.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_al8juGU5Eeavbo3IsNuQ1g" bpmnElement="_509321A0-2DF7-4171-9FD9-3C8BEE781A9F">
+        <dc:Bounds height="80.0" width="100.0" x="435.0" y="60.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_3">
+          <dc:Bounds height="11.0" width="18.0" x="476.0" y="94.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_al8juWU5Eeavbo3IsNuQ1g" bpmnElement="_E31E7C8E-2AD1-4C96-9D5D-A1452E7453E0">
+        <dc:Bounds height="80.0" width="100.0" x="435.0" y="210.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4">
+          <dc:Bounds height="11.0" width="31.0" x="469.0" y="244.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_al8jumU5Eeavbo3IsNuQ1g" bpmnElement="_9DAB7DE8-EE33-45DB-983C-FA65D9558D6D">
+        <dc:Bounds height="80.0" width="100.0" x="580.0" y="210.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5">
+          <dc:Bounds height="11.0" width="18.0" x="621.0" y="244.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_al9KsWU5Eeavbo3IsNuQ1g" bpmnElement="_5654F923-EC6D-4D65-8855-0FDF860934B8">
+        <dc:Bounds height="28.0" width="28.0" x="807.0" y="172.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_6"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_al9KtGU5Eeavbo3IsNuQ1g" bpmnElement="_165B16E7-5EEE-4CD6-9999-D22E86C3F3D7">
+        <dc:Bounds height="80.0" width="100.0" x="193.0" y="398.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_7">
+          <dc:Bounds height="11.0" width="34.0" x="226.0" y="432.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_al9KtWU5Eeavbo3IsNuQ1g" bpmnElement="_1102D898-F4FD-4498-B937-C843FAC0D24B">
+        <dc:Bounds height="80.0" width="100.0" x="193.0" y="510.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_8">
+          <dc:Bounds height="11.0" width="34.0" x="226.0" y="544.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_al9KsGU5Eeavbo3IsNuQ1g" bpmnElement="_E5F867A9-66A2-4547-BBD0-1C9016701461" sourceElement="_al8juWU5Eeavbo3IsNuQ1g" targetElement="_al8jumU5Eeavbo3IsNuQ1g">
+        <di:waypoint xsi:type="dc:Point" x="535.0" y="250.0"/>
+        <di:waypoint xsi:type="dc:Point" x="580.0" y="250.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_9"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_al9KsmU5Eeavbo3IsNuQ1g" bpmnElement="_B5F3E96C-5E1C-42AE-9132-6E96E65089EE" sourceElement="_al8jt2U5Eeavbo3IsNuQ1g" targetElement="_al9KsWU5Eeavbo3IsNuQ1g">
+        <di:waypoint xsi:type="dc:Point" x="568.5" y="186.0"/>
+        <di:waypoint xsi:type="dc:Point" x="821.0" y="186.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_10"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

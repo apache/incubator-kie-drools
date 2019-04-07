@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cmmn:definitions id="_d7e7cad4-86f1-4c04-9dff-a9aace3afb61"
+  targetNamespace="http://cmmn.org" xmlns:cmmn="http://www.omg.org/spec/CMMN/20151109/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.omg.org/spec/CMMN/20151109/MODEL CMMN11.xsd">
+  <cmmn:case id="loan_application" name="Loan Application">
+    <cmmn:casePlanModel autoComplete="false"
+      name="Loan Application" id="CasePlanModel">
+      <!-- Plan Items -->
+      <cmmn:planItem definitionRef="HumanTask_1" id="PI_HumanTask_1" />
+      <cmmn:planItem definitionRef="HumanTask_2" id="PI_HumanTask_2" />
+
+      <!-- Plan Item Definitions -->
+      <cmmn:humanTask isBlocking="true" name="Check Application"
+        id="HumanTask_1" performerRef="role_1">
+      </cmmn:humanTask>
+      <cmmn:humanTask isBlocking="true"
+        name="Provide Customer Rating" id="HumanTask_2" performerRef="role_2">
+      </cmmn:humanTask>
+    </cmmn:casePlanModel>
+    <cmmn:caseRoles>
+      <cmmn:role id="role_1" name="owner"></cmmn:role>
+      <cmmn:role id="role_2" name="manager"></cmmn:role>
+    </cmmn:caseRoles>
+  </cmmn:case>
+</cmmn:definitions>

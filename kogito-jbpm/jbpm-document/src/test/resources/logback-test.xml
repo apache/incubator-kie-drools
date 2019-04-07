@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %l lowers performance -->
+      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
+      <pattern>%d [%t|%C] %-5p %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="com.arjuna" level="error"/>
+  <logger name="org.hibernate" level="warn"/>
+  <logger name="org.hibernate.tool.hbm2ddl" level="error"/>
+  <logger name="org.hibernate.ejb.internal" level="error"/>
+   
+  <!-- set to debug to see queries --> 
+  <logger name="org.jbpm.process.audit" level="info"/>
+  <logger name="org.jbpm.query.jpa" level="info"/>
+ 
+  <!--  set to debug to see query coverage test output --> 
+  <logger name="org.jbpm.query" level="info" />  
+  
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
+  <root level="info">
+    <appender-ref ref="consoleAppender" />
+  </root>
+
+</configuration>

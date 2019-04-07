@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_sItem" structureRef="String" />
+  <itemDefinition id="_caseFile_CaseIdItem" structureRef="String"/>
+  <itemDefinition id="_caseFile_outcomeItem" structureRef="String"/>
+  <process processType="Private" isExecutable="true" id="EmptyCase" name="New Case" tns:adHoc="true">
+    <extensionElements>
+      <tns:metaData name="customDescription">
+        <tns:metaValue>#{name}</tns:metaValue>
+      </tns:metaData>
+    </extensionElements>
+    <property id="name" itemSubjectRef="_sItem"/>
+    <property id="caseFile_CaseId" itemSubjectRef="_caseFile_CaseIdItem"/>
+    <property id="caseFile_s" itemSubjectRef="_caseFile_outcomeItem"/>
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <endEvent id="_2" name="EndProcess" />
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+  </process>
+</definitions>

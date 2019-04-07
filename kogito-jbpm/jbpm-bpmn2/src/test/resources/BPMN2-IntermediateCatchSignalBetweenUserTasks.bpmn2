@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace=""
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <process processType="Private" isExecutable="true" id="BPMN2-IntermediateCatchSignalBetweenUserTasks" name="Default Process" tns:packageName="defaultPackage" tns:version="1" >
+
+    <!-- nodes -->
+    <startEvent id="StartEvent_1" name="StartProcess"  isInterrupting="true"/>
+    <userTask id="UserTask_1" name="User Task 1" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <intermediateCatchEvent id="IntermediateCatchEvent_1" name="Catch" >
+      <signalEventDefinition signalRef="MySignal"/>
+    </intermediateCatchEvent>
+    <endEvent id="EndEvent_1" name="EndProcess" />
+    <userTask id="_6" name="User Task 2" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+
+    <!-- connections -->
+    <sequenceFlow id="StartEvent_1-UserTask_1" sourceRef="StartEvent_1" targetRef="UserTask_1" />
+    <sequenceFlow id="UserTask_1-IntermediateCatchEvent_1" sourceRef="UserTask_1" targetRef="IntermediateCatchEvent_1" />
+    <sequenceFlow id="_6-EndEvent_1" sourceRef="_6" targetRef="EndEvent_1" />
+    <sequenceFlow id="IntermediateCatchEvent_1-_6" sourceRef="IntermediateCatchEvent_1" targetRef="_6" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="BPMN2-IntermediateCatchSignalBetweenUserTasks" >
+      <bpmndi:BPMNShape bpmnElement="StartEvent_1" >
+        <dc:Bounds x="94" y="94" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserTask_1" >
+        <dc:Bounds x="168" y="93" width="110" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="IntermediateCatchEvent_1" >
+        <dc:Bounds x="318" y="94" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndEvent_1" >
+        <dc:Bounds x="566" y="90" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="413" y="90" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="StartEvent_1-UserTask_1" >
+        <di:waypoint x="118" y="118" />
+        <di:waypoint x="223" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="UserTask_1-IntermediateCatchEvent_1" >
+        <di:waypoint x="223" y="118" />
+        <di:waypoint x="342" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6-EndEvent_1" >
+        <di:waypoint x="463" y="114" />
+        <di:waypoint x="590" y="114" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="IntermediateCatchEvent_1-_6" >
+        <di:waypoint x="342" y="118" />
+        <di:waypoint x="463" y="114" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

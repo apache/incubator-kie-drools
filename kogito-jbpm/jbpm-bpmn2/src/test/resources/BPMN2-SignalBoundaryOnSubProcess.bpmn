@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <process id="jbpm.testing.signal" drools:version="1" drools:packageName="jbpm.testing" drools:adHoc="false" name="signal" isExecutable="true" processType="Private">
+    <startEvent id="StartEvent_1" name="StartProcess">
+      <outgoing>SequenceFlow_11</outgoing>
+    </startEvent>
+    <endEvent id="EndEvent_1" name="EndProcess">
+      <incoming>SequenceFlow_16</incoming>
+    </endEvent>
+    <subProcess id="SubProcess_1" name="Sub Process 1">
+      <incoming>SequenceFlow_11</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+      <startEvent id="StartEvent_2" name="">
+        <outgoing>SequenceFlow_21</outgoing>
+      </startEvent>
+      <endEvent id="EndEvent_2" name="">
+        <incoming>SequenceFlow_20</incoming>
+      </endEvent>
+      <intermediateCatchEvent id="IntermediateCatchEvent_1" name="Wait for &quot;continue&quot;">
+        <incoming>SequenceFlow_21</incoming>
+        <outgoing>SequenceFlow_20</outgoing>
+        <signalEventDefinition id="SignalEventDefinition_1" signalRef="continue"/>
+      </intermediateCatchEvent>
+      <sequenceFlow id="SequenceFlow_20" drools:priority="1" name="" sourceRef="IntermediateCatchEvent_1" targetRef="EndEvent_2"/>
+      <sequenceFlow id="SequenceFlow_21" drools:priority="1" name="" sourceRef="StartEvent_2" targetRef="IntermediateCatchEvent_1"/>
+    </subProcess>
+    <sequenceFlow id="SequenceFlow_11" drools:priority="1" name="" sourceRef="StartEvent_1" targetRef="SubProcess_1"/>
+    <boundaryEvent id="BoundaryEvent_1" name="Wait for &quot;forward&quot;" attachedToRef="SubProcess_1">
+      <outgoing>SequenceFlow_4</outgoing>
+      <signalEventDefinition id="SignalEventDefinition_2" signalRef="forward"/>
+    </boundaryEvent>
+    <exclusiveGateway id="ExclusiveGateway_1" name="" gatewayDirection="Converging">
+      <incoming>SequenceFlow_2</incoming>
+      <incoming>SequenceFlow_5</incoming>
+      <outgoing>SequenceFlow_16</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_16" drools:priority="1" name="" sourceRef="ExclusiveGateway_1" targetRef="EndEvent_1"/>
+    <scriptTask id="ScriptTask_3" name="After Execution" scriptFormat="http://www.java.com/java">
+      <incoming>SequenceFlow_1</incoming>
+      <outgoing>SequenceFlow_2</outgoing>
+      <script>System.out.println();</script>
+    </scriptTask>
+    <sequenceFlow id="SequenceFlow_1" drools:priority="1" sourceRef="SubProcess_1" targetRef="ScriptTask_3"/>
+    <sequenceFlow id="SequenceFlow_2" drools:priority="1" name="" sourceRef="ScriptTask_3" targetRef="ExclusiveGateway_1"/>
+    <scriptTask id="ScriptTask_1" name="After Boundary" scriptFormat="http://www.java.com/java">
+      <incoming>SequenceFlow_4</incoming>
+      <outgoing>SequenceFlow_5</outgoing>
+      <script>System.out.println();</script>
+    </scriptTask>
+    <sequenceFlow id="SequenceFlow_4" drools:priority="1" name="" sourceRef="BoundaryEvent_1" targetRef="ScriptTask_1"/>
+    <sequenceFlow id="SequenceFlow_5" drools:priority="1" name="" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
+  </process>
+  <itemDefinition id="ItemDefinition_620" itemKind="Physical" structureRef="String"/>
+  <signal id="continue" name="Continue Signal"/>
+  <signal id="forward" name="Forward Signal"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="signal">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="jbpm.testing.signal">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="30.0" y="155.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="760.0" y="157.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="130.0" width="305.0" x="120.0" y="109.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="66.0" y="173.0"/>
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="174.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1" bpmnElement="BoundaryEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="407.0" y="91.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="ExclusiveGateway_1" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="650.0" y="148.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="140.0" y="129.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_2">
+        <dc:Bounds height="36.0" width="36.0" x="363.0" y="129.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="SequenceFlow_16" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="701.0" y="173.0"/>
+        <di:waypoint xsi:type="dc:Point" x="760.0" y="175.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_3">
+        <dc:Bounds height="50.0" width="110.0" x="480.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_15" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_ScriptTask_3">
+        <di:waypoint xsi:type="dc:Point" x="425.0" y="174.0"/>
+        <di:waypoint xsi:type="dc:Point" x="480.0" y="175.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_ExclusiveGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="590.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="650.0" y="173.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="480.0" y="84.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_BoundaryEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="443.0" y="109.0"/>
+        <di:waypoint xsi:type="dc:Point" x="480.0" y="109.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_ExclusiveGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="590.0" y="109.0"/>
+        <di:waypoint xsi:type="dc:Point" x="650.0" y="173.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="IntermediateCatchEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="244.0" y="129.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_20" bpmnElement="SequenceFlow_20" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="280.0" y="147.0"/>
+        <di:waypoint xsi:type="dc:Point" x="363.0" y="147.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_21" bpmnElement="SequenceFlow_21" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="176.0" y="147.0"/>
+        <di:waypoint xsi:type="dc:Point" x="244.0" y="147.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

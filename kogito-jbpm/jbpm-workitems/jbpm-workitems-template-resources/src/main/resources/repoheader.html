@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>jBPM WorkItem Repository - ${project.version}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="http://fusejs.io/assets/js/fuse.min.js"></script>
+    <script src="serviceinfo.js"></script>
+    <style>
+        .hiddenRow {
+            padding: 0 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card border-success mb-3" id="repoinfo">
+        <div class="card-body text-success">
+            <button type="button" class="close" data-target="#repoinfo" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+
+            </button>
+            <p class="card-text"><span class="fa fa-check"></span>&nbsp;Repository health check completed successfully</p>
+            <p class="card-text"><span class="fa fa-check"></span><label id="widcountp"></label></p>
+        </div>
+    </div>
+
+    <div class="pb-2 mt-4 mb-2 border-bottom">
+        <h1>jBPM WorkItem Repository <small>version ${project.version}</small></h1>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Search workitems by functionality (e.g download, jira, translate, detect, message, etc):</div>
+        <div class="card-body">
+            <form class="form-inline">
+
+                <div id="search" class="form-group">
+                    <input class="form-control" id="repoFuncSearch" type="text" placeholder="Functionality...">
+                </div>
+                <div class="form-group">
+                    <button id="repoFuncSearchButton" type="button" class="btn btn-primary">Search</button>
+                </div>
+                <div class="form-group">
+                    <button id="repoFuncSearchClearButton" type="button" class="btn btn-info">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <p/>
+    <div class="card">
+        <div class="card-header">Click on Workitem icon/name to expand Handler info</div>
+        <div class="card-body">
+            <table class="table" style="border-collapse:collapse;" id="repoworkitemstable">
+                <thead>
+                <tr>
+                    <th>Workitem</th>
+                    <th>Handlers</th>
+                    <th>Description</th>
+                    <th>Download</th>
+                    <th>Install</th>
+                </tr>
+                </thead>
+                <tbody id="repoTable">
