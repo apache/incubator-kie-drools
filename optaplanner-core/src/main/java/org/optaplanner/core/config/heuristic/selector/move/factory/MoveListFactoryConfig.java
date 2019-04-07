@@ -16,11 +16,15 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.factory;
 
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactoryToMoveSelectorBridge;
@@ -29,6 +33,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory
 public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryConfig> {
 
     protected Class<? extends MoveListFactory> moveListFactoryClass = null;
+    @XStreamConverter(KeyAsElementMapConverter.class)
+    protected Map<String, String> moveListFactoryCustomProperties = null;
 
     public Class<? extends MoveListFactory> getMoveListFactoryClass() {
         return moveListFactoryClass;
@@ -36,6 +42,14 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
 
     public void setMoveListFactoryClass(Class<? extends MoveListFactory> moveListFactoryClass) {
         this.moveListFactoryClass = moveListFactoryClass;
+    }
+
+    public Map<String, String> getMoveListFactoryCustomProperties() {
+        return moveListFactoryCustomProperties;
+    }
+
+    public void setMoveListFactoryCustomProperties(Map<String, String> moveListFactoryCustomProperties) {
+        this.moveListFactoryCustomProperties = moveListFactoryCustomProperties;
     }
 
     // ************************************************************************
@@ -56,6 +70,8 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
         }
         MoveListFactory moveListFactory = ConfigUtils.newInstance(this,
                 "moveListFactoryClass", moveListFactoryClass);
+        ConfigUtils.applyCustomProperties(moveListFactory, "moveListFactoryClass",
+                moveListFactoryCustomProperties, "moveListFactoryCustomProperties");
         // MoveListFactoryToMoveSelectorBridge caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {
             // cacheType upgrades to SelectionCacheType.STEP (without shuffling) because JIT is not supported
@@ -69,6 +85,8 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
         super.inherit(inheritedConfig);
         moveListFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 moveListFactoryClass, inheritedConfig.getMoveListFactoryClass());
+        moveListFactoryCustomProperties = ConfigUtils.inheritMergeableMapProperty(
+                moveListFactoryCustomProperties, inheritedConfig.getMoveListFactoryCustomProperties());
     }
 
     @Override

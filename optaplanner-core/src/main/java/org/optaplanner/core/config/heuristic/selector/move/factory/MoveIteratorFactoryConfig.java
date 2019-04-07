@@ -16,11 +16,15 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.factory;
 
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactoryToMoveSelectorBridge;
@@ -29,6 +33,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFac
 public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFactoryConfig> {
 
     protected Class<? extends MoveIteratorFactory> moveIteratorFactoryClass = null;
+    @XStreamConverter(KeyAsElementMapConverter.class)
+    protected Map<String, String> moveIteratorFactoryCustomProperties = null;
 
     public Class<? extends MoveIteratorFactory> getMoveIteratorFactoryClass() {
         return moveIteratorFactoryClass;
@@ -36,6 +42,14 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
 
     public void setMoveIteratorFactoryClass(Class<? extends MoveIteratorFactory> moveIteratorFactoryClass) {
         this.moveIteratorFactoryClass = moveIteratorFactoryClass;
+    }
+
+    public Map<String, String> getMoveIteratorFactoryCustomProperties() {
+        return moveIteratorFactoryCustomProperties;
+    }
+
+    public void setMoveIteratorFactoryCustomProperties(Map<String, String> moveIteratorFactoryCustomProperties) {
+        this.moveIteratorFactoryCustomProperties = moveIteratorFactoryCustomProperties;
     }
 
     // ************************************************************************
@@ -51,6 +65,8 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
         }
         MoveIteratorFactory moveIteratorFactory = ConfigUtils.newInstance(this,
                 "moveIteratorFactoryClass", moveIteratorFactoryClass);
+        ConfigUtils.applyCustomProperties(moveIteratorFactory, "moveIteratorFactoryClass",
+                moveIteratorFactoryCustomProperties, "moveIteratorFactoryCustomProperties");
         return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory, randomSelection);
     }
 
@@ -59,6 +75,8 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
         super.inherit(inheritedConfig);
         moveIteratorFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 moveIteratorFactoryClass, inheritedConfig.getMoveIteratorFactoryClass());
+        moveIteratorFactoryCustomProperties = ConfigUtils.inheritMergeableMapProperty(
+                moveIteratorFactoryCustomProperties, inheritedConfig.getMoveIteratorFactoryCustomProperties());
     }
 
     @Override
