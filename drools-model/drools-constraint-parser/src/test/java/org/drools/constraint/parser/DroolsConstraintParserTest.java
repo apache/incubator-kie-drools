@@ -585,9 +585,8 @@ public class DroolsConstraintParserTest {
 
 
     @Test
-    @Ignore
     public void singleLineBlock() {
-        String expr = "{ delete($person); // comment }";
+        String expr = "{ delete($person); } // comment ";
 
         BlockStmt expression = DrlConstraintParser.parseBlock(expr);
         assertEquals("{\n" +
@@ -597,9 +596,8 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
-    @Ignore
     public void singleLineBlockWithoutsemicolon() {
-        String expr = "{ delete($person) // comment }";
+        String expr = "{ delete($person) } // comment";
 
         BlockStmt expression = DrlConstraintParser.parseBlock(expr);
         assertEquals("{\n" +
