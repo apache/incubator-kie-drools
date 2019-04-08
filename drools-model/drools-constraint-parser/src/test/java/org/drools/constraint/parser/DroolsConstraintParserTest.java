@@ -47,7 +47,6 @@ import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
@@ -607,14 +606,19 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
-    @Ignore
-    public void comments2() {
-        String expr = "{ // modify ; something\n" +
-                "    /* modify ; something */\n" +
-                "    setAge(47) }";
+    public void commentsWithEmptyStatements() {
+        String expr = "{" +
+                "// modify ; something\n" +
+                "/* modify ; something */\n" +
+                "setAge(47)\n" +
+                "}";
 
         BlockStmt expression = DrlConstraintParser.parseBlock(expr);
-        assertEquals("setAge(47);", printConstraint(expression));
+        assertEquals("{\n" +
+                             "    ;\n" +
+                             "    ;\n" +
+                             "    setAge(47);\n" +
+                             "}", printConstraint(expression));
 
     }
 
