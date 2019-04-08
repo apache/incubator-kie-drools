@@ -1180,6 +1180,10 @@ public class ConditionAnalyzer {
             return this != CONTAINS && this != INSTANCEOF;
         }
 
+        public boolean allowNullOnRight() {
+            return this == CONTAINS;
+        }
+
         public boolean isComparison() {
             return this == GT || this == GE || this == LT || this == LE;
         }

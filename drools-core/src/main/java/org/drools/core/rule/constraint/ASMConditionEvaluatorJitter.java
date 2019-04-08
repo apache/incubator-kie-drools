@@ -439,7 +439,7 @@ public class ASMConditionEvaluatorJitter {
             Label shortcutEvaluation = new Label();
             BooleanOperator operation = singleCondition.getOperation();
             prepareLeftOperand(operation, type, leftType, rightType, shortcutEvaluation);
-            prepareRightOperand(right, type, rightType, shortcutEvaluation);
+            prepareRightOperand(right, type, rightType, shortcutEvaluation, operation);
 
             load(LEFT_OPERAND);
             load(RIGHT_OPERAND);
@@ -556,7 +556,7 @@ public class ASMConditionEvaluatorJitter {
             mv.visitLabel(notNullLabel);
         }
 
-        private void prepareRightOperand(Expression right, Class<?> type, Class<?> rightType, Label shortcutEvaluation) {
+        private void prepareRightOperand(Expression right, Class<?> type, Class<?> rightType, Label shortcutEvaluation, BooleanOperator operation) {
             if (rightType.isPrimitive()) {
                 if (type != null) {
                     castOrCoercePrimitive(RIGHT_OPERAND, rightType, type);
@@ -565,17 +565,23 @@ public class ASMConditionEvaluatorJitter {
             }
 
             Label nullLabel = new Label();
-            Label notNullLabel = new Label();
             load(RIGHT_OPERAND);
-            mv.visitJumpInsn(IFNULL, nullLabel);
-            if (type != null && !isFixed(right) && rightType != type) {
-                castOrCoerceTo(RIGHT_OPERAND, rightType, type, nullLabel);
+
+            mv.visitJumpInsn( IFNULL, nullLabel );
+            if ( type != null && !isFixed( right ) && rightType != type ) {
+                castOrCoerceTo( RIGHT_OPERAND, rightType, type, nullLabel );
             }
-            mv.visitJumpInsn(GOTO, notNullLabel);
-            mv.visitLabel(nullLabel);
-            mv.visitInsn(ICONST_0);
-            mv.visitJumpInsn(GOTO, shortcutEvaluation);
-            mv.visitLabel(notNullLabel);
+
+            if (operation.allowNullOnRight()) {
+                mv.visitLabel( nullLabel );
+            } else {
+                Label notNullLabel = new Label();
+                mv.visitJumpInsn( GOTO, notNullLabel );
+                mv.visitLabel( nullLabel );
+                mv.visitInsn( ICONST_0 );
+                mv.visitJumpInsn( GOTO, shortcutEvaluation );
+                mv.visitLabel( notNullLabel );
+            }
         }
 
         private void checkNullEquality() {

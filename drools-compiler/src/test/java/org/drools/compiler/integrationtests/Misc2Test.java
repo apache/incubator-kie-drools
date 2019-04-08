@@ -9113,7 +9113,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, fired);
     }
 
-
     @Test
     public void testMvelJitDivision() {
         // DROOLS-2928
@@ -9133,5 +9132,44 @@ public class Misc2Test extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
         assertEquals(1, fired);
+    }
+
+    @Test
+    public void testJitMemberOf() {
+        // DROOLS-3794
+        String drl =
+                "import java.util.ArrayList;\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "declare Foo\n" +
+                "  barNames : List\n" +
+                "end\n" +
+                "\n" +
+                "declare Bar\n" +
+                "  name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "  when\n" +
+                "    not (Foo ())\n" +
+                "  then\n" +
+                "    List list = new ArrayList<String>();" +
+                "    list.add(null);" +
+                "    insert(new Foo(list));\n" +
+                "    insert(new Bar(null));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Add name\"\n" +
+                "  when\n" +
+                "    foo : Foo()\n" +
+                "    bar : Bar(name memberOf foo.barNames)\n" +
+                "  then\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+
+        int fired = ksession.fireAllRules();
+
+        assertEquals(2, fired);
     }
 }

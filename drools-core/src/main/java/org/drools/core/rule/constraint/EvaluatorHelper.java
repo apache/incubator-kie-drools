@@ -92,6 +92,8 @@ public class EvaluatorHelper {
             return ((Collection)list).contains(item);
         } else if (list instanceof Object[]) {
             return arrayContains( ( Object[] ) list, item );
+        } else if (item == null) {
+            return false;
         } else if (list instanceof int[]) {
             return contains((int[]) list, ((Integer)item).intValue());
         } else if (list instanceof long[]) {
