@@ -98,6 +98,7 @@ public class ModifyPreprocessPhase {
 
         List<Statement> statements = modifyStatement.getExpressions()
                 .stream()
+                .filter(Statement::isExpressionStmt)
                 .map(s -> s.asExpressionStmt().getExpression())
                 .map(ExpressionStmt::new).collect(Collectors.toList());
         return result.addStatements(statements);
