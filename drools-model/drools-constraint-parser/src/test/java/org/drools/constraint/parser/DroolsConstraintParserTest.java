@@ -623,6 +623,29 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    public void commentsWithEmptyStatements2() {
+        String expr = "{" +
+                "  globalA.add(\"A\");\n" +
+                "  modify( $p ) {\n" +
+                "    // modify ; something\n" +
+                "    /* modify ; something */\n" +
+                "    setAge(47)\n" +
+                "  }\n" +
+                "  globalB.add(\"B\");\n" +
+                "  // modify ; something\n" +
+                "  /* modify ; something */" +
+                "}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    globalA.add(\"A\");\n" +
+                             "    modify ($p) { setAge(47) };\n" +
+                             "    globalB.add(\"B\");\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
     public void testNewExpression() {
         String expr = "money == new BigInteger(\"3\")";
 
