@@ -293,7 +293,8 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
 
         String expressionWithComma = modifyExpression.getExpressions()
                 .stream()
-                .map(n -> printConstraint(n))
+                .filter(s -> s.isExpressionStmt())
+                .map(n -> printConstraint(n.asExpressionStmt().getExpression()))
                 .collect(Collectors.joining(", "));
 
         printer.print(expressionWithComma);

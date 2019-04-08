@@ -2548,22 +2548,22 @@ TryStmt TryStatement():
 ModifyStatement ModifyStatement():
 {
     JavaToken begin;
-    Expression first = null;
-    Expression other = null;
-    NodeList<Expression> all = emptyList();
+    Statement first = null;
+    Statement other = null;
+    NodeList<Statement> all = emptyList();
     SimpleName modifyObject = null;
 }
 {
     (
         (
             <MODIFY><LPAREN> (modifyObject = SimpleName())<RPAREN> <LBRACE>
-            first = Expression()(<SEMICOLON>)? { begin=token(); all.add(first); }
+            first = Statement()(<SEMICOLON>|<UNIX_EOL>)? { begin=token(); all.add(first); }
             (
-                          <COMMA>
-                          other = Expression() { all.add(other); }
+                          (<COMMA>|<UNIX_EOL>)
+                          other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            <SEMICOLON>
+            (<SEMICOLON>|<UNIX_EOL>)
             {
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
