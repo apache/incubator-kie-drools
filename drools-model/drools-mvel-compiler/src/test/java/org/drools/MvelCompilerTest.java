@@ -11,7 +11,6 @@ import java.util.function.Function;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.ParsingResult;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
@@ -88,7 +87,6 @@ public class MvelCompilerTest {
     }
 
     @Test
-    @Ignore
     public void withoutSemicolonAndComment() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{             " +
@@ -96,8 +94,8 @@ public class MvelCompilerTest {
                      "delete($pet) // another comment\n" +
                      "}",
              "{             " +
-                     "delete($person); // some comment\n" +
-                     "delete($pet); // another comment\n" +
+                     "delete($person);\n" +
+                     "delete($pet);\n" +
                      "}");
     }
 
