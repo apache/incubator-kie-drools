@@ -221,8 +221,8 @@ public class KieContainerTest extends CommonTestMethodBase {
     }
 
 
-    @Test(timeout = 10000)
-    public void testIncrementalCompilationSynchronization() throws Exception {
+    @Test(timeout = 20000)
+    public void testIncrementalCompilationSynchronization() {
         final KieServices kieServices = KieServices.Factory.get();
 
         ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0.0");
@@ -231,20 +231,17 @@ public class KieContainerTest extends CommonTestMethodBase {
         final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
         KieSession kieSession = kieContainer.newKieSession();
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         kieSession.setGlobal("list", list);
         kieSession.fireAllRules();
         kieSession.dispose();
         assertEquals(1, list.size());
 
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 1; i < 10; i++) {
-                    ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
-                    createAndDeployJar( kieServices, releaseId, createDRL("rule" + i) );
-                    kieContainer.updateToVersion(releaseId);
-                }
+        Thread t = new Thread(() -> {
+            for (int i = 1; i < 10; i++) {
+                ReleaseId releaseId1 = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
+                createAndDeployJar(kieServices, releaseId1, createDRL("rule" + i) );
+                kieContainer.updateToVersion(releaseId1);
             }
         });
 
@@ -253,7 +250,7 @@ public class KieContainerTest extends CommonTestMethodBase {
 
         while (true) {
             kieSession = kieContainer.newKieSession();
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             kieSession.setGlobal("list", list);
             kieSession.fireAllRules();
             kieSession.dispose();
