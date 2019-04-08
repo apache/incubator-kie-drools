@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -290,8 +291,11 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
             .setType(type)
             .addAnnotation("POST")
             .addAnnotation(new SingleMemberAnnotationExpr(new Name("Produces"), new NameExpr("MediaType.APPLICATION_JSON")))
-            .addAnnotation(new SingleMemberAnnotationExpr(new Name("Consumes"), new NameExpr("MediaType.APPLICATION_JSON")))
-            .addAnnotation(new SingleMemberAnnotationExpr(new Name("ApiOperation"), new StringLiteralExpr("Creates new instance of " + extractedProcessId)));
+            .addAnnotation(new SingleMemberAnnotationExpr(new Name("Consumes"), new NameExpr("MediaType.APPLICATION_JSON")));
+            NormalAnnotationExpr createOperationExpression = new NormalAnnotationExpr(new Name("ApiOperation"), new NodeList<>());
+            createOperationExpression.addPair("value", "\"Creates new instance of " + extractedProcessId + "\"");
+            createOperationExpression.addPair("tags", "{\"" + dataClazzName + "\"}");
+            create = create.addAnnotation(createOperationExpression);
 
             create.addParameter(type, "resource");
             BlockStmt bodyCreate = create.createBody();
@@ -334,21 +338,26 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
                     mapBody
             );
 
+            NormalAnnotationExpr collectOperationExpression = new NormalAnnotationExpr(new Name("ApiOperation"), new NodeList<>());
+            collectOperationExpression.addPair("value", "\"Returns a list of " + extractedProcessId + "\"");
+            collectOperationExpression.addPair("tags", "{\"" + dataClazzName + "\"}");
             MethodCallExpr mapInstances = new MethodCallExpr(filterInstances, "map").addArgument(mapLambda);
             MethodCallExpr collectInstances = new MethodCallExpr(mapInstances, "collect").addArgument(new MethodCallExpr(new NameExpr(JavaParser.parseClassOrInterfaceType(Collectors.class.getSimpleName()).getName()), "toList"));
             resourceClass.addMethod("getResources", Keyword.PUBLIC).setType("List<" + dataClazzName + ">")
             .addAnnotation("GET")
             .addAnnotation(new SingleMemberAnnotationExpr(new Name("Produces"), new NameExpr("MediaType.APPLICATION_JSON")))
-            .addAnnotation(new SingleMemberAnnotationExpr(new Name("ApiOperation"), new StringLiteralExpr("Returns a list of " + extractedProcessId)))
+            .addAnnotation(collectOperationExpression)
             .createBody().addStatement(new ReturnStmt(collectInstances));
 
             // get given resource            
             MethodDeclaration get = resourceClass.addMethod("getResource", Keyword.PUBLIC).setType(dataClazzName)
             .addAnnotation("GET")
             .addAnnotation(new SingleMemberAnnotationExpr(new Name("Path"), new StringLiteralExpr("/{id}")))
-            .addAnnotation(new SingleMemberAnnotationExpr(new Name("Produces"), new NameExpr("MediaType.APPLICATION_JSON")))
-            .addAnnotation(new SingleMemberAnnotationExpr(new Name("ApiOperation"), new StringLiteralExpr("Returns information about specified " + extractedProcessId)));
-
+            .addAnnotation(new SingleMemberAnnotationExpr(new Name("Produces"), new NameExpr("MediaType.APPLICATION_JSON")));
+            NormalAnnotationExpr getOperationExpression = new NormalAnnotationExpr(new Name("ApiOperation"), new NodeList<>());
+            getOperationExpression.addPair("value", "\"Returns information about specified " + extractedProcessId + "\"") ;
+            getOperationExpression.addPair("tags", "{\"" + dataClazzName + "\"}");
+            get = get.addAnnotation(getOperationExpression);
 
             MethodCallExpr getInstance = new MethodCallExpr(new FieldAccessExpr(new ThisExpr(), "processRuntime"), "getProcessInstance").addArgument(new NameExpr("id")).addArgument(new BooleanLiteralExpr(true));
             MethodCallExpr ofNullable = new MethodCallExpr(new NameExpr(optionalType.getName()), "ofNullable").addArgument(getInstance);
@@ -362,8 +371,11 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
             MethodDeclaration delete = resourceClass.addMethod("deleteResource", Keyword.PUBLIC).setType(dataClazzName)
             .addAnnotation("DELETE")
             .addAnnotation(new SingleMemberAnnotationExpr(new Name("Path"), new StringLiteralExpr("/{id}")))
-            .addAnnotation(new SingleMemberAnnotationExpr(new Name("Produces"), new NameExpr("MediaType.APPLICATION_JSON")))
-            .addAnnotation(new SingleMemberAnnotationExpr(new Name("ApiOperation"), new StringLiteralExpr("Cancels specified " + extractedProcessId)));
+            .addAnnotation(new SingleMemberAnnotationExpr(new Name("Produces"), new NameExpr("MediaType.APPLICATION_JSON")));
+            NormalAnnotationExpr deleteOperationExpression = new NormalAnnotationExpr(new Name("ApiOperation"), new NodeList<>());
+            deleteOperationExpression.addPair("value", "\"Cancels specified " + extractedProcessId + "\"");
+            deleteOperationExpression.addPair("tags", "{\"" + dataClazzName + "\"}");
+            delete = delete.addAnnotation(deleteOperationExpression);
 
             delete.addAndGetParameter(Long.class, "id").addAnnotation(new SingleMemberAnnotationExpr(new Name("PathParam"), new StringLiteralExpr("id")));
             BlockStmt deleteBody = delete.createBody();
