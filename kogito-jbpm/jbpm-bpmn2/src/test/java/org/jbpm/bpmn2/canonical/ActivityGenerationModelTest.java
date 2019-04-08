@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -275,6 +276,36 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         }
         assertProcessInstanceFinished(processInstance, ksession);
 
+    }
+    
+    @Test
+    public void testWorkItemProcessWithVariableMapping() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
+                
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("ServiceProcess"));        
+        String content = metaData.getGeneratedClassModel();
+        assertThat(content).isNotNull();
+        log(content);
+        
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.ServiceProcessProcess", content);
+        
+        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", workItemHandler);
+        
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("s", "john");
+        ProcessInstance processInstance = ksession.startProcess("ServiceProcess", parameters);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        
+        assertEquals("john", workItem.getParameter("Parameter"));
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), Collections.singletonMap("Result", "john doe"));
+        
+        assertProcessInstanceCompleted(processInstance);
     }
     
     /*

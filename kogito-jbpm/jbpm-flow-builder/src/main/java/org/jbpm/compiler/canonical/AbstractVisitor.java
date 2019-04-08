@@ -23,6 +23,7 @@ import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.JavaParser;
@@ -117,6 +118,16 @@ public abstract class AbstractVisitor {
 
         for (ParameterDefinition parameter : work.getParameterDefinitions()) {
             addFactoryMethodWithArgs(body, variableName, "workParameterDefinition", new StringLiteralExpr(parameter.getName()), new StringLiteralExpr(parameter.getType().getStringType()));
+        }
+    }
+    
+    protected void addWorkItemMappings(WorkItemNode workItemNode, BlockStmt body, String variableName) {
+        
+        for (Entry<String, String> entry : workItemNode.getInMappings().entrySet()) {
+            addFactoryMethodWithArgs(body, variableName, "inMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
+        }
+        for (Entry<String, String> entry : workItemNode.getOutMappings().entrySet()) {
+            addFactoryMethodWithArgs(body, variableName, "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
     }
 

@@ -11,6 +11,7 @@ import org.jbpm.process.core.dummy.DummyWorkingMemory;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.kie.api.definition.process.Process;
+import org.kie.api.runtime.process.WorkItemHandler;
 
 public class ProcessRuntimeProvider {
     
@@ -37,12 +38,23 @@ public class ProcessRuntimeProvider {
         processRuntime.getWorkItemManager().registerWorkItemHandler("Log", new DoNothingWorkItemHandler());
         processRuntime.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         
+        List<WorkItemHandler> handlers = getWorkItemHandlers();
+        if (handlers != null) {
+            for (WorkItemHandler handler : handlers) {
+                processRuntime.getWorkItemManager().registerWorkItemHandler(handler.getName(), handler); 
+            }
+        }
+        
         runtime = processRuntime;        
         
         return processRuntime;
     }
     
     public static List<Process> getProcesses() {
+        return null;
+    }
+    
+    public static List<WorkItemHandler> getWorkItemHandlers() {
         return null;
     }
  }

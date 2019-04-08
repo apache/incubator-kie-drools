@@ -19,8 +19,8 @@ package org.jbpm.compiler.canonical;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -38,6 +38,7 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "workName", new StringLiteralExpr(work.getName()));
 
         addWorkItemParameters(work, body, "workItemNode" + node.getId());
+        addWorkItemMappings(workItemNode, body, "workItemNode" + node.getId());
         
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "done");
         

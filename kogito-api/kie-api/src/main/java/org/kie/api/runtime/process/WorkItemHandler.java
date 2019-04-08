@@ -58,5 +58,13 @@ public interface WorkItemHandler {
      */
     void abortWorkItem(WorkItem workItem,
                        WorkItemManager manager);
+    
+    /**
+     * Returns name that it should be registered with, by default simple class name;
+     * @return name that should this handler be registered with
+     */
+    default String getName() {
+        return getClass().getSimpleName();
+    };
 
 }
