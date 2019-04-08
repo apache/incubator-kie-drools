@@ -194,7 +194,7 @@ TOKEN_MGR_DECLS :
 
 SPECIAL_TOKEN :
 {
-  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+  <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* >
 }
 
 MORE :
@@ -2287,7 +2287,8 @@ ExpressionStmt StatementExpression():
             op = AssignmentOperator() value = Expression() { expr = new AssignExpr(range(expr, token()), expr, value, op); }
         ]
     )
-    (";"|<UNIX_EOL>)
+    (";")*
+    (<UNIX_EOL>)* // TODO: should support also windows EOL
     { return new ExpressionStmt(range(expr, token()), expr); }
 }
 

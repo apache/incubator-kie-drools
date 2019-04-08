@@ -47,7 +47,6 @@ import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
@@ -554,7 +553,6 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
-    @Ignore
     public void testWithoutSemicolonMethodComment() {
         String expr = "{             " +
                 "delete($person) // comment\n" +
@@ -563,8 +561,23 @@ public class DroolsConstraintParserTest {
 
         BlockStmt expression = DrlConstraintParser.parseBlock(expr);
         assertEquals("{\n" +
-                             "    delete($person); // comment\n" +
-                             "    delete($pet); // comment\n" +
+                             "    delete($person);\n" +
+                             "    delete($pet);\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
+    public void statementsWithComments() {
+        String expr = "{             " +
+                "delete($person); // comment\n" +
+                "delete($pet); // comment \n" +
+                "}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    delete($person);\n" +
+                             "    delete($pet);\n" +
                              "}", printConstraint(expression));
 
     }
