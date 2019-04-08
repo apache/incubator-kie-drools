@@ -47,6 +47,7 @@ import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
@@ -579,6 +580,43 @@ public class DroolsConstraintParserTest {
                              "    delete($person);\n" +
                              "    delete($pet);\n" +
                              "}", printConstraint(expression));
+
+    }
+
+
+    @Test
+    @Ignore
+    public void singleLineBlock() {
+        String expr = "{ delete($person); // comment }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    delete($person);\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
+    @Ignore
+    public void singleLineBlockWithoutsemicolon() {
+        String expr = "{ delete($person) // comment }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    delete($person);\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
+    @Ignore
+    public void comments2() {
+        String expr = "{ // modify ; something\n" +
+                "    /* modify ; something */\n" +
+                "    setAge(47) }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("setAge(47);", printConstraint(expression));
 
     }
 
