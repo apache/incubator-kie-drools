@@ -15,6 +15,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 
 import static org.kie.dmn.feel.codegen.feel11.ProcessedFEELUnit.DefaultMode.Compiled;
+import static org.kie.dmn.feel.util.ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD;;
 
 public class ProcessedExpression extends ProcessedFEELUnit {
 
@@ -42,7 +43,11 @@ public class ProcessedExpression extends ProcessedFEELUnit {
 
     public CompiledFEELExpression getResult() {
         if (defaultBackend == Compiled) {
-            defaultResult = getCompiled();
+            if (CAN_PLATFORM_CLASSLOAD) {
+                defaultResult = getCompiled();
+            } else {
+                throw new UnsupportedOperationException("Cannot jit classload on this platform.");
+            }
         } else { // "legacy" interpreted AST compilation:
             defaultResult = getInterpreted();
         }
