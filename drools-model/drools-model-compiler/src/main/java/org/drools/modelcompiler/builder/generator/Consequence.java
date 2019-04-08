@@ -43,6 +43,7 @@ import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.drools.mvelcompiler.ModifyCompiler;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
@@ -296,6 +297,8 @@ public class Consequence {
         if (modifyPos < 0) {
             return consequence;
         }
+
+        ParsingResult compile = new ModifyCompiler(new MvelCompilerContext(context.getTypeResolver())).compile("{" + consequence + "}");
 
         int lastCopiedEnd = 0;
         StringBuilder sb = new StringBuilder();
