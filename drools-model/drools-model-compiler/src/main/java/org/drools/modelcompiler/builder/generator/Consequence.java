@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -21,7 +20,6 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -34,7 +32,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -300,57 +297,13 @@ public class Consequence {
 
         ParsingResult compile = new ModifyCompiler(new MvelCompilerContext(context.getTypeResolver())).compile("{" + consequence + "}");
 
-        int lastCopiedEnd = 0;
-        StringBuilder sb = new StringBuilder();
-        sb.append(consequence.substring(lastCopiedEnd, modifyPos));
-        lastCopiedEnd = modifyPos + 1;
+        BlockStmt statements = compile.statementResults();
 
-        for (; modifyPos >= 0; modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify", modifyPos+6)) {
-            int declStart = consequence.indexOf('(', modifyPos + 6);
-            int declEnd = declStart > 0 && consequence.indexOf(')', declStart + 1) >= 0 ? StringUtils.findEndOfMethodArgsIndex(consequence, declStart) : -1;
-            if (declEnd < 0) {
-                continue;
-            }
-            String decl = consequence.substring(declStart + 1, declEnd).trim();
-            int blockStart = consequence.indexOf('{', declEnd + 1);
-            int blockEnd = consequence.indexOf('}', blockStart + 1);
-            if (blockEnd < 0) {
-                continue;
-            }
-
-            if (lastCopiedEnd < modifyPos) {
-                sb.append(consequence.substring(lastCopiedEnd, modifyPos));
-            }
-
-            Expression declAsExpr = parseExpression(decl );
-            if (decl.indexOf( '(' ) >= 0) {
-                declAsExpr = new EnclosedExpr( declAsExpr );
-            }
-            String originalBlock = consequence.substring(blockStart + 1, blockEnd).trim();
-            if(!"".equals(originalBlock)) {
-                DrlxExpression modifyBlock = DrlxParseUtil.parseExpression(originalBlock);
-                Expression expr = modifyBlock.getExpr();
-                List<Expression> originalMethodCalls;
-                originalMethodCalls = Collections.singletonList(expr);
-                for (Expression e : originalMethodCalls) {
-                    MethodCallExpr mc = (MethodCallExpr) e;
-                    Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
-                    modifyBlock.replace(mc, mcWithScope);
-                    sb.append(printConstraint(mc));
-                    sb.append(";\n");
-                }
-            }
-
-            sb.append("update(").append(decl).append(");\n");
-            lastCopiedEnd = blockEnd + 1;
-            modifyPos = lastCopiedEnd - 6;
+        for(String p : compile.getModifyProperties().keySet()) {
+            statements.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(p))));
         }
 
-        if (lastCopiedEnd < consequence.length()) {
-            sb.append(consequence.substring(lastCopiedEnd));
-        }
-
-        return sb.toString();
+        return printConstraint(statements);
     }
 
     private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs, Map<String, Set<String>> modifyProperties) {
