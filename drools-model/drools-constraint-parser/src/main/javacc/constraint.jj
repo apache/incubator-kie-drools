@@ -2567,7 +2567,7 @@ ModifyStatement ModifyStatement():
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|<UNIX_EOL>)
+            (<SEMICOLON>|<UNIX_EOL>)*
             {
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
