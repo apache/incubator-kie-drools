@@ -27,7 +27,7 @@ options {
   JDK_VERSION = "1.8";
   TOKEN_EXTENDS ="TokenBase";
   JAVA_TEMPLATE_TYPE = "modern";
-  DEBUG_PARSER=true;
+  // DEBUG_PARSER=true;
 }
 
 PARSER_BEGIN(GeneratedDrlConstraintParser)
