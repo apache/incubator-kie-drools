@@ -89,7 +89,7 @@ public class ModifyPreprocessPhase {
         modifyStatement
                 .getExpressions()
                 .replaceAll(e -> {
-                    if(e.isExpressionStmt()) {
+                    if(e != null && e.isExpressionStmt()) {
                         Expression expression = e.asExpressionStmt().getExpression();
                         if(expression.isMethodCallExpr()) {
                             MethodCallExpr mcExpr = expression.asMethodCallExpr();
