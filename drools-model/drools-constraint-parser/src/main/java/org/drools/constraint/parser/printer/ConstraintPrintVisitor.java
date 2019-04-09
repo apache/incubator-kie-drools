@@ -20,6 +20,7 @@ package org.drools.constraint.parser.printer;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.nodeTypes.NodeWithTypeArguments;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
@@ -293,7 +295,8 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
 
         String expressionWithComma = modifyExpression.getExpressions()
                 .stream()
-                .filter(s -> s.isExpressionStmt())
+                .filter(Objects::nonNull)
+                .filter(Statement::isExpressionStmt)
                 .map(n -> printConstraint(n.asExpressionStmt().getExpression()))
                 .collect(Collectors.joining(", "));
 

@@ -2561,7 +2561,7 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = SimpleName())<RPAREN> <LBRACE>
-            first = Statement()(<SEMICOLON>|<UNIX_EOL>)? { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>|<UNIX_EOL>)?)* { begin=token(); all.add(first); }
             (
                           (<COMMA>|<UNIX_EOL>)
                           other = Statement() { all.add(other); }

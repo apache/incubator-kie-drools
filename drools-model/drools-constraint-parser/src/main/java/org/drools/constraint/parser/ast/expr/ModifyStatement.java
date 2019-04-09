@@ -44,8 +44,10 @@ public class ModifyStatement extends Statement {
     @Override
     public List<Node> getChildNodes() {
         NodeList nodeList = NodeList.nodeList();
-        for(Statement e : expressions) {
-            nodeList.add(e);
+        for (Statement e : expressions) {
+            if (e != null) {
+                nodeList.add(e);
+            }
         }
         return nodeList;
     }
