@@ -647,7 +647,7 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
-    public void commentsWithEmptyStatements3() {
+    public void newLineInFunctionCall() {
         String expr = "{" +
                 "func(x \n" +
                 ")\n" +
@@ -658,6 +658,18 @@ public class DroolsConstraintParserTest {
                              "    func(x);\n" +
                              "}", printConstraint(expression));
 
+    }
+
+    @Test
+    public void newLineInFunctionCall2() {
+        Expression expression = DrlConstraintParser.parseExpression("func(x,\n 2)");
+        assertEquals("func(x, 2)", printConstraint(expression));
+    }
+
+    @Test
+    public void newLineInFunctionCall3() {
+        Expression expression = DrlConstraintParser.parseExpression("func(x\n, 2)");
+        assertEquals("func(x, 2)", printConstraint(expression));
     }
 
     @Test
