@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.games.wumpus;
+package org.drools.games.wumpus.server;
 
 import org.drools.games.Run;
 import org.drools.games.wumpus.view.GameUI;

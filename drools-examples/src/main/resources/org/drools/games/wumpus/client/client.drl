@@ -13,7 +13,9 @@
  * limitations under the License.
 */
 
-package org.drools.games.wumpus
+package org.drools.games.wumpus.client
+
+import org.drools.games.wumpus.*
 
 dialect "mvel"
 

@@ -15,7 +15,7 @@
  */
 
 //created on: 25/03/2006
-package benchmarks.waltz
+package org.drools.benchmark.waltz
 
 import org.drools.benchmark.waltz.Stage
 import org.drools.benchmark.waltz.Line
