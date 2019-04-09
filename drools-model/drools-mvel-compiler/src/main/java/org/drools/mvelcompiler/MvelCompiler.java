@@ -31,7 +31,7 @@ public class MvelCompiler {
                 mvelExpression
                         .getStatements()
                         .stream()
-                        .filter(Statement::isExpressionStmt)
+                        .filter(statement -> !statement.isEmptyStmt())
                 .collect(Collectors.toList());
 
         List<Statement> preProcessedModifyStatements = new ArrayList<>();
