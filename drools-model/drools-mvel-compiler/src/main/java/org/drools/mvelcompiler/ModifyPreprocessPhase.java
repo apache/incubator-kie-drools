@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -83,18 +84,26 @@ public class ModifyPreprocessPhase {
                     return assignExpr;
                 });
 
+
+        // Do not use findAll as we should only process top level expressions
         modifyStatement
-                .findAll(MethodCallExpr.class)
-                .replaceAll(mcExpr -> {
+                .getExpressions()
+                .replaceAll(e -> {
+                    if(e.isExpressionStmt()) {
+                        Expression expression = e.asExpressionStmt().getExpression();
+                        if(expression.isMethodCallExpr()) {
+                            MethodCallExpr mcExpr = expression.asMethodCallExpr();
+                            SimpleName scope = modifyStatement.getModifyObject();
+                            DrlNameExpr newScope = new DrlNameExpr(scope);
+                            mcExpr.setScope(newScope);
 
-                    SimpleName scope = modifyStatement.getModifyObject();
-                    DrlNameExpr newScope = new DrlNameExpr(scope);
-                    mcExpr.setScope(newScope);
+                            final String methodName = mcExpr.getName().asString();
+                            result.addModifyProperties(scope.asString(), lcFirst(methodName.replace("set", "")));
 
-                    final String methodName = mcExpr.getName().asString();
-                    result.addModifyProperties(scope.asString(), lcFirst(methodName.replace("set", "")));
-
-                    return mcExpr;
+                            return new ExpressionStmt(mcExpr);
+                        }
+                    }
+                    return e;
                 });
 
         List<Statement> statements = modifyStatement.getExpressions()
