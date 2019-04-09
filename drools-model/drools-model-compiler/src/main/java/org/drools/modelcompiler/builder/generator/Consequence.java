@@ -44,7 +44,6 @@ import org.drools.mvelcompiler.ModifyCompiler;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.mvelcompiler.ParsingResult;
-import org.drools.mvelcompiler.SemicolonSanitizer;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.JavaParser.parseExpression;
@@ -130,8 +129,7 @@ public class Consequence {
             executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptyMap());
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
 
-            String consequence = ruleDescr.getConsequence().toString();
-            String mvelBlock = SemicolonSanitizer.sanitizeMvelScript(consequence);
+            String mvelBlock = String.format("{%s}", ruleDescr.getConsequence().toString());
             MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
             for(DeclarationSpec d : context.getAllDeclarations()) {

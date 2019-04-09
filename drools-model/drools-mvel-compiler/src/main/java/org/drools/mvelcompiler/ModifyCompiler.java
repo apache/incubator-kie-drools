@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -25,11 +26,20 @@ public class ModifyCompiler {
 
         BlockStmt mvelExpression = DrlConstraintParser.parseBlock(mvelBlock);
 
+
+        // TODO: remove duplication in MvelCompiler and ModifyCompiler
+        List<Statement> withoutEmptyStatements =
+                mvelExpression
+                        .getStatements()
+                        .stream()
+                        .filter(Statement::isExpressionStmt)
+                        .collect(Collectors.toList());
+
         List<Statement> preProcessedStatements = new ArrayList<>();
         // TODO: This preprocessing will change the order of the modify statments
         // Write a test for that
         Map<String, Set<String>> modifiedProperties = new HashMap<>();
-        for(Statement t : mvelExpression.getStatements()) {
+        for(Statement t : withoutEmptyStatements) {
             ModifyPreprocessPhase.ModifyPreprocessPhaseResult invoke = modifyPreprocessPhase.invoke(t);
             modifiedProperties.putAll(invoke.getModifyProperties());
             preProcessedStatements.addAll(invoke.getStatements());
