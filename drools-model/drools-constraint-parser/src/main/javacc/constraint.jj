@@ -27,7 +27,7 @@ options {
   JDK_VERSION = "1.8";
   TOKEN_EXTENDS ="TokenBase";
   JAVA_TEMPLATE_TYPE = "modern";
-  // DEBUG_PARSER=true;
+//  DEBUG_PARSER=true;
 }
 
 PARSER_BEGIN(GeneratedDrlConstraintParser)
@@ -2047,8 +2047,7 @@ NodeList<Expression> ArgumentList():
   (<UNIX_EOL>)*
   expr = Expression() { ret.add(expr); }
   (<UNIX_EOL>)*
-  ( "," expr = Expression() { ret.add(expr); } )*
-  (<UNIX_EOL>)*
+  ( "," (<UNIX_EOL>)* expr = Expression() { ret.add(expr); } )*
   { return ret; }
 }
 
