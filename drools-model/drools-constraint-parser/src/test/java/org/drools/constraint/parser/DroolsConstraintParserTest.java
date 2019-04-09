@@ -522,6 +522,17 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    public void testModifyEmptyBlock() {
+        String expr = "{ modify( $s ) { } }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    modify ($s) {  };\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
     public void testModifyWithoutSemicolon() {
         String expr = "{modify($p) { setAge($p.getAge()+1) } }";
 
