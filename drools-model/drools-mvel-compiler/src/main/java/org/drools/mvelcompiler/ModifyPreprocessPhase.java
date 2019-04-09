@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -98,9 +99,11 @@ public class ModifyPreprocessPhase {
 
         List<Statement> statements = modifyStatement.getExpressions()
                 .stream()
+                .filter(Objects::nonNull)
                 .filter(Statement::isExpressionStmt)
                 .map(s -> s.asExpressionStmt().getExpression())
-                .map(ExpressionStmt::new).collect(Collectors.toList());
+                .map(ExpressionStmt::new)
+                .collect(Collectors.toList());
         return result.addStatements(statements);
     }
 }
