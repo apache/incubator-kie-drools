@@ -623,6 +623,20 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    public void commentsWithEmptyStatements3() {
+        String expr = "{" +
+                "func(x \n" +
+                ")\n" +
+                "}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    func(x);\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
     public void commentsWithEmptyStatements2() {
         String expr = "{" +
                 "  globalA.add(\"A\");\n" +
