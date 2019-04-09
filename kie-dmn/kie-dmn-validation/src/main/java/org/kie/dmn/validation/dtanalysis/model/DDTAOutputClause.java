@@ -23,15 +23,18 @@ public class DDTAOutputClause {
 
     private final Interval domainMinMax;
     private final List discreteValues;
+    private final List outputOrder;
 
     public DDTAOutputClause(Interval domainMinMax) {
         this.domainMinMax = domainMinMax;
         this.discreteValues = Collections.emptyList();
+        this.outputOrder = Collections.emptyList();
     }
 
-    public DDTAOutputClause(Interval domainMinMax, List discreteValues) {
+    public DDTAOutputClause(Interval domainMinMax, List discreteValues, List outputOrder) {
         this.domainMinMax = domainMinMax;
         this.discreteValues = discreteValues;
+        this.outputOrder = outputOrder;
     }
 
     public Bound<?> getMin() {
@@ -54,4 +57,7 @@ public class DDTAOutputClause {
         return discreteValues != null && !discreteValues.isEmpty();
     }
 
+    public List getOutputOrder() {
+        return Collections.unmodifiableList(outputOrder);
+    }
 }

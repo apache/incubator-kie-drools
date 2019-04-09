@@ -120,6 +120,8 @@ public class DMNDTAnalyser {
         findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
         LOG.debug("computeMaskedRules");
         analysis.computeMaskedRules();
+        LOG.debug("computeMisleadingRules");
+        analysis.computeMisleadingRules();
         LOG.debug("normalize");
         analysis.normalize();
         return analysis;
@@ -194,6 +196,7 @@ public class DMNDTAnalyser {
                 if (utln.getElements().size() != 1) {
                     verifyUnaryTestsAllEQ(utln, dt);
                     List<Comparable<?>> discreteValues = getDiscreteValuesSorted(utln);
+                    Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
                     DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues);
                     ddtaTable.getInputs().add(ic);
@@ -233,8 +236,10 @@ public class DMNDTAnalyser {
                 if (utln.getElements().size() != 1) {
                     verifyUnaryTestsAllEQ(utln, dt);
                     List<Comparable<?>> discreteValues = getDiscreteValuesSorted(utln);
+                    List<Comparable<?>> outputOrder = new ArrayList<>(discreteValues);
+                    Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
-                    DDTAOutputClause ic = new DDTAOutputClause(discreteDomainMinMax, discreteValues);
+                    DDTAOutputClause ic = new DDTAOutputClause(discreteDomainMinMax, discreteValues, outputOrder);
                     ddtaTable.getOutputs().add(ic);
                 } else if (utln.getElements().size() == 1) {
                     UnaryTestNode utn0 = (UnaryTestNode) utln.getElements().get(0);
@@ -263,7 +268,6 @@ public class DMNDTAnalyser {
             Comparable<?> v = valueFromNode(((UnaryTestNode) e).getValue());
             discreteValues.add(v);
         }
-        Collections.sort((List) discreteValues);
         return discreteValues;
     }
 

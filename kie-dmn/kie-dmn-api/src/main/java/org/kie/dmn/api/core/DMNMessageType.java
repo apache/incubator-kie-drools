@@ -45,7 +45,8 @@ public enum DMNMessageType {
     DECISION_TABLE_OVERLAP_HITPOLICY_UNIQUE("DMN Validation, Decision Table Analysis, Overlap Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
     DECISION_TABLE_OVERLAP_HITPOLICY_ANY("DMN Validation, Decision Table Analysis, Overlap Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
     DECISION_TABLE_HITPOLICY_FIRST("DMN Validation, Decision Table Analysis, Hit Policy First considered bad practice", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
-    DECISION_TABLE_MASKED_RULE("DMN Validation, Decision Table Analysis, Masked Rule Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR);
+    DECISION_TABLE_MASKED_RULE("DMN Validation, Decision Table Analysis, Masked Rule Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
+    DECISION_TABLE_MISLEADING_RULE("DMN Validation, Decision Table Analysis, Misleading Rule Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR);
 
     private final Tag[]  tags;
     private final String description;
