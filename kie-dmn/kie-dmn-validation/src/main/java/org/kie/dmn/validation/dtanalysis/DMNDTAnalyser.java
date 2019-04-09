@@ -195,7 +195,7 @@ public class DMNDTAnalyser {
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {
                     verifyUnaryTestsAllEQ(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValuesSorted(utln);
+                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
                     DDTAInputClause ic = new DDTAInputClause(discreteDomainMinMax, discreteValues);
@@ -235,7 +235,7 @@ public class DMNDTAnalyser {
                 UnaryTestListNode utln = (UnaryTestListNode) interpreted.getASTNode();
                 if (utln.getElements().size() != 1) {
                     verifyUnaryTestsAllEQ(utln, dt);
-                    List<Comparable<?>> discreteValues = getDiscreteValuesSorted(utln);
+                    List<Comparable<?>> discreteValues = getDiscreteValues(utln);
                     List<Comparable<?>> outputOrder = new ArrayList<>(discreteValues);
                     Collections.sort((List) discreteValues);
                     Interval discreteDomainMinMax = new Interval(RangeBoundary.CLOSED, discreteValues.get(0), discreteValues.get(discreteValues.size() - 1), RangeBoundary.CLOSED, 0, jColIdx + 1);
@@ -262,7 +262,7 @@ public class DMNDTAnalyser {
         }
     }
 
-    private List<Comparable<?>> getDiscreteValuesSorted(UnaryTestListNode utln) {
+    private List<Comparable<?>> getDiscreteValues(UnaryTestListNode utln) {
         List<Comparable<?>> discreteValues = new ArrayList<>();
         for (BaseNode e : utln.getElements()) {
             Comparable<?> v = valueFromNode(((UnaryTestNode) e).getValue());
