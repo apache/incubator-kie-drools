@@ -57,7 +57,6 @@ import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Rule;
 import org.drools.model.WindowReference;
-import org.drools.modelcompiler.builder.generator.ConsequenceValidation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -121,7 +120,6 @@ public class PackageModel {
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
-    private List<ConsequenceValidation> consequenceValidations = new ArrayList<>();
 
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this.name = name;
@@ -311,12 +309,6 @@ public class PackageModel {
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
     }
-
-    public void addConsequenceValidation(ConsequenceValidation consequenceValidation) {
-        consequenceValidations.add(consequenceValidation);
-        consequenceValidation.setClassName(getName() + "." + rulesFileName);
-    }
-
     public static class RuleSourceResult {
 
         private final CompilationUnit mainRuleClass;
