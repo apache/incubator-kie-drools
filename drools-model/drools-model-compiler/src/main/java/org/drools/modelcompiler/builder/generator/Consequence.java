@@ -156,17 +156,6 @@ public class Consequence {
                                   onCall,
                                   compile.getModifyProperties());
     }
-
-    private String addImports(String consequenceString) {
-        for (String i : packageModel.getImports()) {
-            if (i.equals(packageModel.getName() + ".*")) {
-                continue; // skip same-package star import.
-            }
-            consequenceString = String.format("import %s; %s", i, consequenceString);
-        }
-        return consequenceString;
-    }
-
     private BlockStmt rewriteConsequence(String consequence) {
         String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
         try {
