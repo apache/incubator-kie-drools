@@ -98,7 +98,10 @@ public class ModifyPreprocessPhase {
                             mcExpr.setScope(newScope);
 
                             final String methodName = mcExpr.getName().asString();
-                            result.addModifyProperties(scope.asString(), lcFirst(methodName.replace("set", "")));
+                            String set = methodName.replace("set", "");
+                            if(!"".equals(set)) { // some classes such "AtomicInteger" have a setter called "set"
+                                result.addModifyProperties(scope.asString(), lcFirst(set));
+                            }
 
                             return new ExpressionStmt(mcExpr);
                         }
