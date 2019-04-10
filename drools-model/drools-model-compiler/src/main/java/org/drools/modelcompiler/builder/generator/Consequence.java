@@ -130,10 +130,6 @@ public class Consequence {
             executeCall = createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
         }
 
-        if(context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            validateMvelConsequence(ruleDescr, consequenceString);
-        }
-
         return executeCall;
     }
 
@@ -169,16 +165,6 @@ public class Consequence {
             consequenceString = String.format("import %s; %s", i, consequenceString);
         }
         return consequenceString;
-    }
-
-
-    private void validateMvelConsequence(RuleDescr ruleDescr, String consequenceWithoutImports) {
-        final String consequenceString = addImports(consequenceWithoutImports);
-        ConsequenceValidation consequenceValidation = new ConsequenceValidation(context.getPackageModel().getName(), consequenceString, ruleDescr);
-        for (DeclarationSpec d : context.getAllDeclarations()) {
-            consequenceValidation.addVariable(d);
-        }
-        packageModel.addConsequenceValidation(consequenceValidation);
     }
 
     private BlockStmt rewriteConsequence(String consequence) {
