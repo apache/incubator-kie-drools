@@ -19,7 +19,6 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -436,7 +435,7 @@ public class ModelGenerator {
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
 
-        declarationOfCall.addArgument(new ClassExpr(decl.getType() ));
+        declarationOfCall.addArgument(new ClassExpr(decl.getBoxedType() ));
         declarationOfCall.addArgument(new StringLiteralExpr(decl.getVariableName().orElse(decl.getBindingId())));
 
         decl.getDeclarationSource().ifPresent(declarationOfCall::addArgument);

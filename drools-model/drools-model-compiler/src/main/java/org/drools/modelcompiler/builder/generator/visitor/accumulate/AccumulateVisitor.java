@@ -431,7 +431,7 @@ public abstract class AccumulateVisitor {
         if (allNamesInActionBlock.size() == 1) {
             String nameExpr = allNamesInActionBlock.iterator().next();
             accumulateMethod.getParameter(1).setName(nameExpr);
-            singleAccumulateType = context2.getDeclarationById(nameExpr).get().getType();
+            singleAccumulateType = context2.getDeclarationById(nameExpr).get().getBoxedType();
         } else {
             allNamesInActionBlock.removeIf( name -> !externalDeclrs.contains( name ) );
             usedExtDeclrs.addAll( allNamesInActionBlock );
