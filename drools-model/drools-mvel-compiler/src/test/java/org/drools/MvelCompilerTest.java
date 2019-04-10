@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -175,6 +176,13 @@ public class MvelCompilerTest {
              result -> assertThat(allModifiedProperties(result), containsInAnyOrder("age")));
     }
 
+    @Test
+    public void testVariableDeclarationUntyped() {
+        test(ctx -> ctx.addDeclaration("$map", Map.class),
+             " { Map pMap = map.get( $r.getName() ); }",
+             " { java.util.Map pMap = map.get($r.getName()); }" );
+    }
+
     private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
                       String actualExpression,
                       String expectedResult,
@@ -183,6 +191,7 @@ public class MvelCompilerTest {
         // TODO: find which are the mvel implicit imports
         imports.add("java.util.ArrayList");
         imports.add("java.util.HashMap");
+        imports.add("java.util.Map");
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.apply(mvelCompilerContext);
