@@ -130,8 +130,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     public TypedExpression visit(ExpressionStmt n, Context arg) {
         logger.debug("ExpressionStmt:\t\t" + printConstraint(n));
 
-        TypedExpression expression = n.getExpression().accept(this, arg);
-        return new ExpressionStmtT(expression);
+        Optional<TypedExpression> expression = Optional.ofNullable(n.getExpression().accept(this, arg));
+        return new ExpressionStmtT(expression.orElse(rhs));
     }
 
     @Override
