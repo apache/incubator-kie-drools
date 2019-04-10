@@ -65,6 +65,8 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static java.util.stream.Collectors.toList;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
@@ -133,7 +135,7 @@ public abstract class AccumulateVisitor {
                 visitAccInlineCustomCode(context, descr, accumulateDSL, basePattern, (PatternDescr) input, externalDeclrs);
             } else if (input instanceof AndDescr) {
 
-                BlockStmt actionBlock = parseBlock(descr.getActionCode());
+                BlockStmt actionBlock = parseBlockAddSemicolon(descr.getActionCode());
                 Collection<String> allNamesInActionBlock = collectNamesInBlock(context, actionBlock);
 
                 final Optional<BaseDescr> bindingUsedInAccumulate = ((AndDescr) input).getDescrs().stream().filter(b -> {
@@ -424,7 +426,7 @@ public abstract class AccumulateVisitor {
         boolean useLegacyAccumulate = false;
         Type singleAccumulateType = null;
         MethodDeclaration accumulateMethod = templateClass.getMethodsByName("accumulate").get(0);
-        BlockStmt actionBlock = parseBlock(descr.getActionCode());
+        BlockStmt actionBlock = parseBlockAddSemicolon(descr.getActionCode());
         Collection<String> allNamesInActionBlock = collectNamesInBlock(context2, actionBlock);
         if (allNamesInActionBlock.size() == 1) {
             String nameExpr = allNamesInActionBlock.iterator().next();
@@ -438,7 +440,7 @@ public abstract class AccumulateVisitor {
 
         Optional<MethodDeclaration> optReverseMethod = Optional.empty();
         if(descr.getReverseCode() != null) {
-            BlockStmt reverseBlock = parseBlock(descr.getReverseCode());
+            BlockStmt reverseBlock = parseBlockAddSemicolon(descr.getReverseCode());
             Collection<String> allNamesInReverseBlock = collectNamesInBlock(context2, reverseBlock);
             if (allNamesInReverseBlock.size() == 1) {
                 MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
@@ -478,7 +480,7 @@ public abstract class AccumulateVisitor {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
             supportsReverseMethod.getBody().get().addStatement(parseStatement("return true;"));
 
-            BlockStmt reverseBlock = parseBlock(descr.getReverseCode());
+            BlockStmt reverseBlock = parseBlockAddSemicolon(descr.getReverseCode());
             writeAccumulateMethod(contextFieldNames, singleAccumulateType, optReverseMethod.get(), reverseBlock);
         } else {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
@@ -557,7 +559,7 @@ public abstract class AccumulateVisitor {
         return externalDeclrs;
     }
 
-    private BlockStmt parseBlock(String block) {
+    private BlockStmt parseBlockAddSemicolon(String block) {
         final String withTerminator = block.endsWith(";") ? block : block + ";";
         return StaticJavaParser.parseBlock("{" + withTerminator + "}");
     }

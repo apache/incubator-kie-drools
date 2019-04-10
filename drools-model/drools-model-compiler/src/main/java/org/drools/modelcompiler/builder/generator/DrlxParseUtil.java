@@ -814,4 +814,8 @@ public class DrlxParseUtil {
         }
         return sanitized;
     }
+
+    public static String addCurlyBracesToBlock(String blockString) {
+        return String.format("{%s}", blockString);
+    }
 }
