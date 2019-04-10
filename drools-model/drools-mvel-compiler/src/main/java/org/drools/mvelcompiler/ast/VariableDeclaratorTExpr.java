@@ -6,6 +6,8 @@ import java.util.Optional;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 
@@ -30,11 +32,16 @@ public class VariableDeclaratorTExpr implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        final Type ieType = initExpression.flatMap(TypedExpression::getType).orElse(type);
+        Optional<Type> optInitType = initExpression.flatMap(TypedExpression::getType);
+        final Type ieType = optInitType.orElse(this.type);
 
         return initExpression.map(ie -> {
             com.github.javaparser.ast.type.Type initializationExpressionType = JavaParser.parseType(ieType.getTypeName());
-            return (Node) new VariableDeclarationExpr(new VariableDeclarator(initializationExpressionType, name, (Expression) ie.toJavaExpression()));
+            Expression initializer = (Expression) ie.toJavaExpression();
+            if(!optInitType.isPresent()) {
+                initializer = new CastExpr(initializationExpressionType, new EnclosedExpr(initializer));
+            }
+            return (Node) new VariableDeclarationExpr(new VariableDeclarator(initializationExpressionType, name, initializer));
         }).orElse(originalNode);
     }
 
