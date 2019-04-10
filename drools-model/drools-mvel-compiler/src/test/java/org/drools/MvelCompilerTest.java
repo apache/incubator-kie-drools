@@ -180,7 +180,7 @@ public class MvelCompilerTest {
     public void testVariableDeclarationUntyped() {
         test(ctx -> ctx.addDeclaration("$map", Map.class),
              " { Map pMap = map.get( $r.getName() ); }",
-             " { java.util.Map pMap = map.get($r.getName()); }" );
+             " { java.util.Map pMap = (java.util.Map) (map.get($r.getName())); }" );
     }
 
     private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
