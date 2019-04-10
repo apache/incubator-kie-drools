@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
@@ -118,8 +119,11 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         Optional<TypedExpression> initExpression = Optional.of(rhs);
 
         String variableName = n.getName().asString();
-        mvelCompilerContext.addDeclaration(variableName, getRHSType());
-        return new VariableDeclaratorTExpr(n, variableName, getRHSType(), initExpression);
+        Class<?> type = getRHSorLHSType(n);
+
+        mvelCompilerContext.addDeclaration(variableName, type);
+
+        return new VariableDeclaratorTExpr(n, variableName, type, initExpression);
     }
 
     @Override
@@ -153,6 +157,11 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
 
     private Class<?> getRHSType() {
         return (Class<?>) rhs.getType().orElseThrow(() -> new MvelCompilerException("RHS doesn't have a type"));
+    }
+
+    private Class<?> getRHSorLHSType(VariableDeclarator n) {
+        return (Class<?>) rhs.getType()
+                .orElseGet(() -> mvelCompilerContext.resolveType(((NodeWithType) n).getType().asString()));
     }
 }
 

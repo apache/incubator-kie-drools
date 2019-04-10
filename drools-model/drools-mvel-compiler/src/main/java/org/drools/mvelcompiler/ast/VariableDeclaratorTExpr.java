@@ -9,8 +9,6 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 
-import static org.drools.mvelcompiler.util.OptionalUtils.map2;
-
 public class VariableDeclaratorTExpr implements TypedExpression {
 
     private final Node originalNode;
@@ -32,10 +30,10 @@ public class VariableDeclaratorTExpr implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        final Optional<Type> ieType = initExpression.flatMap(TypedExpression::getType);
+        final Type ieType = initExpression.flatMap(TypedExpression::getType).orElse(type);
 
-        return map2(initExpression, ieType, (ie, type) -> {
-            com.github.javaparser.ast.type.Type initializationExpressionType = JavaParser.parseType(type.getTypeName());
+        return initExpression.map(ie -> {
+            com.github.javaparser.ast.type.Type initializationExpressionType = JavaParser.parseType(ieType.getTypeName());
             return (Node) new VariableDeclarationExpr(new VariableDeclarator(initializationExpressionType, name, (Expression) ie.toJavaExpression()));
         }).orElse(originalNode);
     }
