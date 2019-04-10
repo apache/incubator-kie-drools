@@ -138,7 +138,7 @@ public class Consequence {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
         for(DeclarationSpec d : context.getAllDeclarations()) {
-            Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getType());
+            Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getRawType());
             mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
         }
 
