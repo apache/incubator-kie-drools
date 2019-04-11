@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.DrlConstraintParser;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
+
+import static java.util.Optional.ofNullable;
 
 public class MvelCompiler {
 
@@ -47,7 +50,7 @@ public class MvelCompiler {
         List<Statement> statements = new ArrayList<>();
         for (Statement s : preProcessedModifyStatements) {
             TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
-            TypedExpression lhs = new LHSPhase(mvelCompilerContext, rhs).invoke(s);
+            TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
             Statement expression = (Statement) lhs.toJavaExpression();
             statements.add(expression);
         }

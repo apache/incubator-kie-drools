@@ -34,15 +34,16 @@ public class VariableDeclaratorTExpr implements TypedExpression {
     public Node toJavaExpression() {
         Optional<Type> optInitType = initExpression.flatMap(TypedExpression::getType);
         final Type ieType = optInitType.orElse(this.type);
+        com.github.javaparser.ast.type.Type jpType = JavaParser.parseType(ieType.getTypeName());
 
         return initExpression.map(ie -> {
-            com.github.javaparser.ast.type.Type initializationExpressionType = JavaParser.parseType(ieType.getTypeName());
+
             Expression initializer = (Expression) ie.toJavaExpression();
             if(!optInitType.isPresent()) {
-                initializer = new CastExpr(initializationExpressionType, new EnclosedExpr(initializer));
+                initializer = new CastExpr(jpType, new EnclosedExpr(initializer));
             }
-            return (Node) new VariableDeclarationExpr(new VariableDeclarator(initializationExpressionType, name, initializer));
-        }).orElse(originalNode);
+            return (Node) new VariableDeclarationExpr(new VariableDeclarator(jpType, name, initializer));
+        }).orElse(new VariableDeclarationExpr(jpType, name));
     }
 
     @Override
