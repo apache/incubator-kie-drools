@@ -74,7 +74,12 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Test -->
+    <!--  test -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-dynamic</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

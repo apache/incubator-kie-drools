@@ -92,6 +92,12 @@
       <artifactId>antlr4-runtime</artifactId>
     </dependency>
 
+    <!-- test -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-dynamic</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

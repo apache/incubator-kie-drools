@@ -47,6 +47,11 @@
       <version>${submarine.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-static</artifactId>
+      <version>${submarine.version}</version>
+    </dependency>
+    <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>${swagger.version}</version>

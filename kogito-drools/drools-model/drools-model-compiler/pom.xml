@@ -70,6 +70,12 @@
       <artifactId>drools-constraint-parser</artifactId>
     </dependency>
 
+    <!-- test -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core-dynamic</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-core</artifactId>

@@ -45,13 +45,20 @@ public class StaticServiceRegistry implements ServiceRegistry {
         serviceMap.put( org.kie.api.KieServices.class, instance("org.drools.compiler.kie.builder.impl.KieServicesImpl") );
         serviceMap.put( org.kie.internal.builder.KnowledgeBuilderFactoryService.class, instance("org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl") );
 
-        try {
-            serviceMap.put( Class.forName( "org.drools.compiler.kie.builder.impl.InternalKieModuleProvider" ), instance("org.drools.modelcompiler.CanonicalKieModuleProvider") );
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
-        }
+        registerService("org.drools.compiler.kie.builder.impl.InternalKieModuleProvider", "org.drools.modelcompiler.CanonicalKieModuleProvider", true);
+        registerService("org.drools.compiler.compiler.DecisionTableProvider", "org.drools.decisiontable.DecisionTableProviderImpl", false);
 
         constructorMap.put( "TimerService", constructor("org.kie.services.time.impl.JDKTimerService") );
+    }
+
+    private void registerService(String service, String implementation, boolean mandatory) {
+        try {
+            serviceMap.put( Class.forName( service ), instance( implementation ) );
+        } catch (Exception e) {
+            if (mandatory) {
+                throw e instanceof RuntimeException ? (RuntimeException)e : new RuntimeException( e );
+            }
+        }
     }
 
     @Override

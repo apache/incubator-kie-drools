@@ -41,10 +41,22 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     private String worksheetName;
 
     private Set<RuleTemplateConfiguration> templates = new HashSet<RuleTemplateConfiguration>();
+
+    private boolean trimCell = true;
     
     public DecisionTableConfigurationImpl() {
     }
-    
+
+    @Override
+    public boolean isTrimCell() {
+        return trimCell;
+    }
+
+    @Override
+    public void setTrimCell( boolean trimCell ) {
+        this.trimCell = trimCell;
+    }
+
     public void setInputType(DecisionTableInputType inputType) {
         this.inputType = inputType;
     }
