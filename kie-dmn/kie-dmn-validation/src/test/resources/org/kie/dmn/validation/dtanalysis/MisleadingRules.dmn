@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_FFBCC220-576F-497A-B710-46782B97B020" id="_FFBCC220-576F-497A-B710-46782B97B020" namespace="http://www.trisotech.com/definitions/_FFBCC220-576F-497A-B710-46782B97B020"          exporter="DMN Modeler" exporterVersion="6.1.22.4" name="MisleadingRules" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition isCollection="false" name="tApproval" label="tApproval">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues xmlns:kie="http://www.drools.org/kie/dmn/1.2" kie:constraintType="enumeration" id="_30E8CDFC-768F-4627-ACEA-3E88CD1B9AF6" triso:constraintsType="enumeration">
+            <semantic:text>"OK","NO","CHECK"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition isCollection="false" name="tRisk" label="tRisk">
+        <semantic:typeRef>string</semantic:typeRef>
+        <semantic:allowedValues xmlns:kie="http://www.drools.org/kie/dmn/1.2" kie:constraintType="enumeration" id="_61CDD8FB-A3B7-413C-B0A2-172CFA6CF894" triso:constraintsType="enumeration">
+            <semantic:text>"H", "M", "L"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:inputData id="_513EBE25-73FA-4A2F-8569-A4922CDE2C92" name="Risk">
+        <semantic:variable name="Risk" id="_4BD66574-1E53-4C9A-9455-2D07DE852A51" typeRef="tRisk"/>
+    </semantic:inputData>
+    <semantic:decision id="_EBF4E4EE-CC07-4E8A-84A7-D652B1AFB3F2" name="Decision-1">
+        <semantic:variable name="Decision-1" id="_A3CF0304-2263-43D7-BBB9-90814FD9A151" typeRef="tApproval"/>
+        <semantic:informationRequirement id="_35298692-112D-478A-9255-8144DA9E8398">
+            <semantic:requiredInput href="#_513EBE25-73FA-4A2F-8569-A4922CDE2C92"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_9E19661B-252A-41C2-949C-A9D12DBE989D">
+            <semantic:requiredInput href="#_29C83CA5-53C6-4B47-9322-C1F35D852A54"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_BA703D04-803A-44AA-8A31-F5EEDD4FD54E" hitPolicy="PRIORITY" outputLabel="Decision-1" typeRef="tApproval" triso:expressionId="_2a462ce5-6aef-4327-9abe-932ea77a0e80">
+            <semantic:input id="_ACA7B163-98AB-4045-865D-C42EAE9D13E5">
+                <semantic:inputExpression typeRef="boolean">
+                    <semantic:text>is Mitigated</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_5D436375-41AE-447C-A422-8BD5D8826C0E">
+                <semantic:inputExpression typeRef="tRisk">
+                    <semantic:text>Risk</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"H", "M", "L"</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_996A8F6D-1FFF-4C46-9D31-9931BE43A15C">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"OK","NO","CHECK"</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation/>
+            <semantic:rule id="_2FC5E463-8DD0-47F2-A08C-B509E2DDF961">
+                <semantic:inputEntry id="_BF8713FB-3284-4878-8DD8-D631AF225863">
+                    <semantic:text>true</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_40CAD444-2976-4C53-B174-19E7B317B5C5">
+                    <semantic:text>"L"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_0932BA08-3BCF-45B2-8065-9DFA13CB6798">
+                    <semantic:text>"OK"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_F514C4AA-F578-4F17-810A-0E045CE16936">
+                <semantic:inputEntry id="_F6447FAD-CB5C-4995-951E-70A6C0FE0B20">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_12FAA613-4C61-495A-9D70-9DDED14F324D">
+                    <semantic:text>"M"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_E092F3A4-88A0-4C5B-AD0F-B273D5795A85">
+                    <semantic:text>"CHECK"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_3e4cd4c0-ca82-4dcd-a400-fa6334dca9d8">
+                <semantic:inputEntry id="_cbee075d-b6e2-4e37-a7f6-34a734481167">
+                    <semantic:text>true</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_515a75a4-0989-49cd-b2c4-63bb79737e16">
+                    <semantic:text>"H"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_ab5e4771-2709-4b42-a2fa-63afa06cab8e">
+                    <semantic:text>"NO"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_dc6a9953-90d0-4d8f-8fa2-68e9f305e6ee">
+                <semantic:inputEntry id="_72245cbd-b352-450f-aaa8-b2d08b304cfa">
+                    <semantic:text>false</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_0bd0d8c6-c4ac-4fe1-9d55-af76d89a226b">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_9b0412cb-005f-43fa-a2b7-44b39154c914">
+                    <semantic:text>"NO"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:inputData id="_29C83CA5-53C6-4B47-9322-C1F35D852A54" name="is Mitigated">
+        <semantic:variable name="is Mitigated" id="_521DA551-1FD6-49EB-8AE8-DEB9EDC06493" typeRef="boolean"/>
+    </semantic:inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_c59dc6aa-7ef2-4976-ac93-f2efe3d8aaed" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="dmnshape-_29C83CA5-53C6-4B47-9322-C1F35D852A54" dmnElementRef="_29C83CA5-53C6-4B47-9322-C1F35D852A54">
+                <dc:Bounds x="208" y="350" width="100" height="50"/>
+                <dmndi:DMNLabel sharedStyle="LS_FFBCC220-576F-497A-B710-46782B97B020_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="dmnshape-_513EBE25-73FA-4A2F-8569-A4922CDE2C92" dmnElementRef="_513EBE25-73FA-4A2F-8569-A4922CDE2C92">
+                <dc:Bounds x="208" y="278" width="100" height="50"/>
+                <dmndi:DMNLabel sharedStyle="LS_FFBCC220-576F-497A-B710-46782B97B020_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="dmnshape-_EBF4E4EE-CC07-4E8A-84A7-D652B1AFB3F2" dmnElementRef="_EBF4E4EE-CC07-4E8A-84A7-D652B1AFB3F2">
+                <dc:Bounds x="388" y="201" width="100" height="50"/>
+                <dmndi:DMNLabel sharedStyle="LS_FFBCC220-576F-497A-B710-46782B97B020_0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="dmnedge-_35298692-112D-478A-9255-8144DA9E8398" dmnElementRef="_35298692-112D-478A-9255-8144DA9E8398">
+                <di:waypoint x="308" y="303"/>
+                <di:waypoint x="388" y="226"/>
+                <dmndi:DMNLabel sharedStyle="LS_FFBCC220-576F-497A-B710-46782B97B020_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="dmnedge-_9E19661B-252A-41C2-949C-A9D12DBE989D" dmnElementRef="_9E19661B-252A-41C2-949C-A9D12DBE989D">
+                <di:waypoint x="308" y="375"/>
+                <di:waypoint x="388" y="226"/>
+                <dmndi:DMNLabel sharedStyle="LS_FFBCC220-576F-497A-B710-46782B97B020_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_FFBCC220-576F-497A-B710-46782B97B020_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

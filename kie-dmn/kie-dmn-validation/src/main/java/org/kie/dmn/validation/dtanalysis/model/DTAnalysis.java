@@ -25,6 +25,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.HitPolicy;
@@ -35,10 +36,12 @@ public class DTAnalysis {
     private final List<Hyperrectangle> gaps = new ArrayList<>();
     private final List<Overlap> overlaps = new ArrayList<>();
     private final List<MaskedRule> maskedRules = new ArrayList<>();
+    private final List<MisleadingRule> misleadingRules = new ArrayList<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
     private final Collection passThruMessages = new ArrayList<>();
+
 
     public DTAnalysis(DecisionTable sourceDT, DDTATable ddtaTable) {
         this.sourceDT = sourceDT;
@@ -192,6 +195,14 @@ public class DTAnalysis {
                                                              Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
                     }
                     results.add(overlapToStandardDMNMessage(overlap));
+                    for (MisleadingRule misleading : misleadingRules) {
+                        results.add(new DMNDTAnalysisMessage(this,
+                                                             Severity.WARN,
+                                                             MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
+                                                                                   misleading.misleadingRule,
+                                                                                   misleading.misleadRule),
+                                                             Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType()));
+                    }
                     break;
                 case ANY:
                     List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0) - 1).getOutputEntry();
@@ -243,25 +254,25 @@ public class DTAnalysis {
             return;
         }
         for (Overlap overlap : overlaps) {
-            analyseOverlapForMappedRules(overlap);
+            analyseOverlapForMaskedRules(overlap);
         }
     }
 
-    private void analyseOverlapForMappedRules(Overlap overlap) {
+    private void analyseOverlapForMaskedRules(Overlap overlap) {
         for (Integer ruleId : overlap.getRules()) {
             List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
 
             for (int jOutputIdx = 0; jOutputIdx < ddtaTable.outputCols(); jOutputIdx++) {
                 DDTAOutputClause curOutputClause = ddtaTable.getOutputs().get(jOutputIdx);
                 if (curOutputClause.isDiscreteDomain()) {
-                    int curOutputIdx = curOutputClause.getDiscreteValues().indexOf(curValues.get(jOutputIdx));
+                    int curOutputIdx = curOutputClause.getOutputOrder().indexOf(curValues.get(jOutputIdx));
 
                     List<Integer> otherRules = new ArrayList<>(overlap.getRules());
                     otherRules.remove(ruleId);
 
                     for (Integer otherRuleID : otherRules) {
                         List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
-                        int otherOutputIdx = curOutputClause.getDiscreteValues().indexOf(otherRuleValues.get(jOutputIdx));
+                        int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
                         if (curOutputIdx > otherOutputIdx) {
                             try {
                                 boolean isOtherRuleWider = comparingRulesIsRightWider(ruleId, otherRuleID);
@@ -311,4 +322,45 @@ public class DTAnalysis {
         return Collections.unmodifiableList(maskedRules);
     }
 
+    public void computeMisleadingRules() {
+        if (sourceDT.getHitPolicy() != HitPolicy.PRIORITY) {
+            return;
+        }
+        for (Overlap overlap : overlaps) {
+            analyseOverlapForMisleadingRules(overlap);
+        }
+    }
+
+    private void analyseOverlapForMisleadingRules(Overlap overlap) {
+        for (Integer ruleId : overlap.getRules()) {
+            List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+
+            for (int jOutputIdx = 0; jOutputIdx < ddtaTable.outputCols(); jOutputIdx++) {
+                DDTAOutputClause curOutputClause = ddtaTable.getOutputs().get(jOutputIdx);
+                if (curOutputClause.isDiscreteDomain()) {
+                    int curOutputIdx = curOutputClause.getOutputOrder().indexOf(curValues.get(jOutputIdx));
+                    boolean isOutputLowestPriority = curOutputIdx == curOutputClause.getOutputOrder().size() - 1;
+                    if (!isOutputLowestPriority) {
+                        List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
+                        boolean isRuleContainsHypen = inputEntry.stream().flatMap(ie -> ie.getUts().stream()).anyMatch(DashNode.class::isInstance);
+                        if (isRuleContainsHypen) {
+                            List<Integer> otherRules = new ArrayList<>(overlap.getRules());
+                            otherRules.remove(ruleId);
+                            for (Integer otherRuleID : otherRules) {
+                                List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
+                                int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
+                                if (otherOutputIdx > curOutputIdx) {
+                                    misleadingRules.add(new MisleadingRule(ruleId, otherRuleID));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public List<MisleadingRule> getMisleadingRules() {
+        return Collections.unmodifiableList(misleadingRules);
+    }
 }
