@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
@@ -14,10 +14,10 @@ import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 
 public class ModifyStatement extends Statement {
 
-    private final SimpleName modifyObject;
+    private final Expression modifyObject;
     private final NodeList<Statement> expressions;
 
-    public ModifyStatement(TokenRange tokenRange, SimpleName modifyObject, NodeList<Statement> expressions) {
+    public ModifyStatement(TokenRange tokenRange, Expression modifyObject, NodeList<Statement> expressions) {
         super(tokenRange);
         this.modifyObject = modifyObject;
         this.expressions = expressions;
@@ -37,7 +37,7 @@ public class ModifyStatement extends Statement {
         return expressions;
     }
 
-    public SimpleName getModifyObject() {
+    public Expression getModifyObject() {
         return modifyObject;
     }
 
