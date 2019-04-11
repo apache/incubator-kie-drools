@@ -46,7 +46,6 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.OptionalUtils;
 
 import static java.util.stream.Stream.of;
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
@@ -73,11 +72,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
     public TypedExpression invoke(Statement statement) {
         Context ctx = new Context(null);
 
-        TypedExpression typedExpression = statement.accept(this, ctx);
-        if (typedExpression == null) {
-            throw new MvelCompilerException("Type check of " + printConstraint(statement) + " failed.");
-        }
-        return typedExpression;
+        return statement.accept(this, ctx);
     }
 
     @Override
