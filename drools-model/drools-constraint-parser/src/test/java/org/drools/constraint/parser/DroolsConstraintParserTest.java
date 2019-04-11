@@ -569,6 +569,19 @@ public class DroolsConstraintParserTest {
 
 
     @Test
+    public void testModifyWithCast() {
+        String expr = "{modify( (BooleanEvent)$toEdit.get(0) ){  }}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals(
+                             "{\n" +
+                                     "    modify ((BooleanEvent) $toEdit.get(0)) {  };\n" +
+                                     "}"
+                             , printConstraint(expression));
+
+    }
+
+    @Test
     public void testWithoutSemicolon() {
         String expr = "{             " +
                         "a\n" +
