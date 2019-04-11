@@ -183,6 +183,12 @@ public class MvelCompilerTest {
              " { java.util.Map pMap = (java.util.Map) (map.get($r.getName())); }" );
     }
 
+    @Test
+    public void testSimpleVariableDeclaration() {
+        test(" { int i; }",
+             " { int i; }" );
+    }
+
     private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
                       String actualExpression,
                       String expectedResult,
