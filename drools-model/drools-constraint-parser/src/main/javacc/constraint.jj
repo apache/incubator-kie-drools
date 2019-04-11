@@ -27,7 +27,7 @@ options {
   JDK_VERSION = "1.8";
   TOKEN_EXTENDS ="TokenBase";
   JAVA_TEMPLATE_TYPE = "modern";
-   DEBUG_PARSER=true;
+  // DEBUG_PARSER=true;
 }
 
 PARSER_BEGIN(GeneratedDrlConstraintParser)
@@ -1466,7 +1466,8 @@ Expression ConditionalOrExpression():
 	Expression right;
 }
 {
-  ret = ConditionalAndExpression() ( "||" (<UNIX_EOL>)* right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
+  ret = ConditionalAndExpression()
+  ( "||" (<UNIX_EOL>)* right = ConditionalAndExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.OR); } )*
   { return ret; }
 }
 
