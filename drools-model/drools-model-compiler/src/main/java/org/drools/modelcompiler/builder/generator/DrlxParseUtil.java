@@ -731,8 +731,10 @@ public class DrlxParseUtil {
         }
     }
 
-    public static boolean hasScope( MethodCallExpr mce, String scope ) {
-        return mce.getScope().map( s -> isNameExprWithName(s, scope)).orElse(false );
+    public static boolean hasScopeWithName(MethodCallExpr expression, String name ) {
+        return findRootNodeViaScope(expression)
+                .filter(s -> isNameExprWithName(s, name))
+                .isPresent();
     }
 
     public static boolean isNameExprWithName(Node expression, String name) {
