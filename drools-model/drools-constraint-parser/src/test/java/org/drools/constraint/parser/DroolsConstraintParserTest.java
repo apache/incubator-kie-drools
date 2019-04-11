@@ -47,6 +47,7 @@ import org.drools.constraint.parser.ast.expr.PointFreeExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.constraint.parser.DrlxParser.parseExpression;
@@ -83,12 +84,17 @@ public class DroolsConstraintParserTest {
 
         Expression and = parseExpression(parser, "(addresses == 2 &&\naddresses == 3  )").getExpr();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
+    }
 
-//        Expression and2 = parseExpression(parser, "(addresses == 2\n&& addresses == 3  )").getExpr();
-//        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
-//
-//        Expression or2 = parseExpression(parser, "(addresses == 2\n|| addresses == 3  )").getExpr();
-//        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
+
+    @Test
+    @Ignore
+    public void testBinaryWithNewLineBeforeOperator() {
+        Expression and2 = parseExpression(parser, "(addresses == 2\n&& addresses == 3  )").getExpr();
+        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
+
+        Expression or2 = parseExpression(parser, "(addresses == 2\n|| addresses == 3  )").getExpr();
+        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
     }
 
     @Test
