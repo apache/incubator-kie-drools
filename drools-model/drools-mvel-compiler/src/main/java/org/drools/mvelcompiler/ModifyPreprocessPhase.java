@@ -69,12 +69,12 @@ public class ModifyPreprocessPhase {
 
         ModifyStatement modifyStatement = (ModifyStatement) statement;
 
+        final Expression scope = modifyStatement.getModifyObject();
         modifyStatement
                 .findAll(AssignExpr.class)
                 .replaceAll(assignExpr -> {
 
                     DrlNameExpr originalFieldAccess = (DrlNameExpr) assignExpr.getTarget();
-                    Expression scope = new EnclosedExpr(modifyStatement.getModifyObject());
                     String propertyName = originalFieldAccess.getName().asString();
                     result.addModifyProperties(printConstraint(scope), propertyName);
 
@@ -93,13 +93,13 @@ public class ModifyPreprocessPhase {
                         Expression expression = e.asExpressionStmt().getExpression();
                         if(expression.isMethodCallExpr()) {
                             MethodCallExpr mcExpr = expression.asMethodCallExpr();
-                            Expression scope = new EnclosedExpr(modifyStatement.getModifyObject());
-                            mcExpr.setScope(scope);
+                            Expression enclosed = new EnclosedExpr(scope);
+                            mcExpr.setScope(enclosed);
 
                             final String methodName = mcExpr.getName().asString();
                             String set = methodName.replace("set", "");
-                            if(!"".equals(set) && scope.isNameExpr()) { // some classes such "AtomicInteger" have a setter called "set"
-                                result.addModifyProperties(printConstraint(scope), lcFirst(set));
+                            if(scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
+                                result.addModifyProperties(printConstraint(scope), "".equals(set) ? "" : lcFirst(set));
                             }
 
                             return new ExpressionStmt(mcExpr);
