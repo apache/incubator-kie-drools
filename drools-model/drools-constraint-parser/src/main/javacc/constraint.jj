@@ -2556,12 +2556,12 @@ ModifyStatement ModifyStatement():
     Statement first = null;
     Statement other = null;
     NodeList<Statement> all = emptyList();
-    SimpleName modifyObject = null;
+    Expression modifyObject = null;
 }
 {
     (
         (
-            <MODIFY><LPAREN> (modifyObject = SimpleName())<RPAREN> <LBRACE>
+            <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
             (first = Statement()(<SEMICOLON>|<UNIX_EOL>)?)* { begin=token(); all.add(first); }
             (
                           (<COMMA>|<UNIX_EOL>)

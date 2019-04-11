@@ -1,26 +1,14 @@
-package org.drools;
+package org.drools.mvelcompiler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
-import org.drools.mvelcompiler.MvelCompiler;
-import org.drools.mvelcompiler.ParsingResult;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
+import org.drools.Person;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.*;
 
-public class MvelCompilerTest {
+public class MvelCompilerTest implements AbstractCompilerTest {
 
     @Test
     public void testConvertPropertyToAccessor() {
@@ -187,42 +175,5 @@ public class MvelCompilerTest {
     public void testSimpleVariableDeclaration() {
         test(" { int i; }",
              " { int i; }" );
-    }
-
-    private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
-                      String actualExpression,
-                      String expectedResult,
-                      Consumer<ParsingResult> resultAssert) {
-        Set<String> imports = new HashSet<>();
-        // TODO: find which are the mvel implicit imports
-        imports.add("java.util.ArrayList");
-        imports.add("java.util.HashMap");
-        imports.add("java.util.Map");
-        TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
-        testFunction.apply(mvelCompilerContext);
-        ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
-        assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
-        resultAssert.accept(compiled);
-    }
-
-    private void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
-                      String actualExpression,
-                      String expectedResult) {
-        test(testFunction, actualExpression, expectedResult, t -> {});
-    }
-
-    private void test(String actualExpression,
-                      String expectedResult) {
-        test(d -> d, actualExpression, expectedResult, t -> {});
-    }
-
-    private Collection<String> allModifiedProperties(ParsingResult result) {
-        List<String> results = new ArrayList<>();
-        for(Set<String> values : result.getModifyProperties().values()) {
-            results.addAll(values);
-        }
-        return results;
-
     }
 }

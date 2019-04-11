@@ -11,15 +11,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.ModifyStatement;
 
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.StringUtils.lcFirst;
 
 public class ModifyPreprocessPhase {
@@ -73,12 +74,11 @@ public class ModifyPreprocessPhase {
                 .replaceAll(assignExpr -> {
 
                     DrlNameExpr originalFieldAccess = (DrlNameExpr) assignExpr.getTarget();
-                    SimpleName scope = modifyStatement.getModifyObject();
-                    DrlNameExpr newScope = new DrlNameExpr(scope);
+                    Expression scope = new EnclosedExpr(modifyStatement.getModifyObject());
                     String propertyName = originalFieldAccess.getName().asString();
-                    result.addModifyProperties(scope.asString(), propertyName);
+                    result.addModifyProperties(printConstraint(scope), propertyName);
 
-                    FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(newScope, propertyName);
+                    FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
                     assignExpr.setTarget(fieldAccessWithScope);
 
                     return assignExpr;
@@ -93,14 +93,13 @@ public class ModifyPreprocessPhase {
                         Expression expression = e.asExpressionStmt().getExpression();
                         if(expression.isMethodCallExpr()) {
                             MethodCallExpr mcExpr = expression.asMethodCallExpr();
-                            SimpleName scope = modifyStatement.getModifyObject();
-                            DrlNameExpr newScope = new DrlNameExpr(scope);
-                            mcExpr.setScope(newScope);
+                            Expression scope = new EnclosedExpr(modifyStatement.getModifyObject());
+                            mcExpr.setScope(scope);
 
                             final String methodName = mcExpr.getName().asString();
                             String set = methodName.replace("set", "");
-                            if(!"".equals(set)) { // some classes such "AtomicInteger" have a setter called "set"
-                                result.addModifyProperties(scope.asString(), lcFirst(set));
+                            if(!"".equals(set) && scope.isNameExpr()) { // some classes such "AtomicInteger" have a setter called "set"
+                                result.addModifyProperties(printConstraint(scope), lcFirst(set));
                             }
 
                             return new ExpressionStmt(mcExpr);
