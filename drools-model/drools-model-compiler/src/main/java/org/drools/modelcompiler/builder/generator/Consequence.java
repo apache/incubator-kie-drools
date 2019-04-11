@@ -33,7 +33,6 @@ import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
-import org.drools.model.Rule;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
@@ -55,7 +54,7 @@ import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScopeWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -320,7 +319,7 @@ public class Consequence {
     private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
         Set<String> modifiedProps = new HashSet<>();
         for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
-            if (methodCall.getScope().isPresent() && hasScope(methodCall, updatedVar)) {
+            if (methodCall.getScope().isPresent() && hasScopeWithName(methodCall, updatedVar)) {
                 String propName = methodToProperty(methodCall);
                 if (propName != null) {
                     modifiedProps.add(propName);
@@ -346,7 +345,7 @@ public class Consequence {
     }
 
     private static boolean isDroolsMethod(MethodCallExpr mce) {
-        final boolean hasDroolsScope = hasScope(mce, "drools");
+        final boolean hasDroolsScope = hasScopeWithName(mce, "drools");
         final boolean isImplicitDroolsMethod = !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
         final boolean hasDroolsAsParameter = findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
         return hasDroolsScope || isImplicitDroolsMethod || hasDroolsAsParameter;
