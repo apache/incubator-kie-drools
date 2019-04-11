@@ -951,7 +951,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 "rule go1 when \n" +
                 "    String( this == 'go1') \n" +
                 "then\n" +
-                "        list.add( rule.getName() ); \n" +
+                "        list.add( drools.getRule().getName() ); \n" +
                 "        insert( new Location('lamp', 'desk') );\n" +
                 "end\n" +
                 "\n" +
@@ -959,14 +959,14 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 "    String( this == 'go2') \n" +
                 "    $l : Location('lamp', 'desk'; )\n" +
                 "then\n" +
-                "    list.add( rule.getName() ); \n" +
+                "    list.add( drools.getRule().getName() ); \n" +
                 "    retract( $l );\n" +
                 "end\n" +
                 "\n" +
                 "rule go3 when \n" +
                 "    String( this == 'go3') \n" +
                 "then\n" +
-                "        list.add( rule.getName() ); \n" +
+                "        list.add( drools.getRule().getName() ); \n" +
                 "        insert( new Location('lamp', 'desk') );\n" +
                 "end\n" +
                 "\n" +
@@ -974,7 +974,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 "    String( this == 'go4') \n" +
                 "    $l : Location('lamp', 'desk'; )\n" +
                 "then\n" +
-                "        list.add( rule.getName() ); \n" +
+                "        list.add( drools.getRule().getName() ); \n" +
                 "    modify( $l ) { thing = 'book' };\n" +
                 "end\n" +
                 "\n" +
@@ -982,7 +982,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 "    String( this == 'go5') \n" +
                 "    $l : Location('book', 'desk'; )\n" +
                 "then\n" +
-                "    list.add( rule.getName() ); \n" +
+                "    list.add( drools.getRule().getName() ); \n" +
                 "    modify( $l ) { thing = 'lamp' };\n" +
                 "end\n" +
                 "\n" +
@@ -990,7 +990,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 "    String( this == 'go6') \n" +
                 "    $l : Location( 'lamp', 'desk'; )\n" +
                 "then\n" +
-                "    list.add( rule.getName() ); \n" +
+                "    list.add( drools.getRule().getName() ); \n" +
                 "    modify( $l ) { thing = 'book' };\n" +
                 "end\n" +
                 "\n" +
@@ -998,7 +998,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                 "    String( this == 'go7') \n" +
                 "    $p : Person( likes == 'lamp' ) \n" +
                 "then\n" +
-                "    list.add( rule.getName() ); \n" +
+                "    list.add( drools.getRule().getName() ); \n" +
                 "    modify( $p ) { likes = 'key' };\n" +
                 "end\n" +
                 "\n";
