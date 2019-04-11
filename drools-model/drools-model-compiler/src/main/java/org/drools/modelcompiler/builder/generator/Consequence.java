@@ -298,8 +298,8 @@ public class Consequence {
 
     private MethodCallExpr createBitMaskInitialization(Map<String, String> newDeclarations, String updatedVar, Set<String> modifiedProps) {
         MethodCallExpr bitMaskCreation;
-        if (modifiedProps != null) {
-            String declarationVar = newDeclarations.containsKey(updatedVar) ? newDeclarations.get(updatedVar) : updatedVar;
+        if (modifiedProps != null && !modifiedProps.isEmpty()) {
+            String declarationVar = newDeclarations.getOrDefault(updatedVar, updatedVar);
             Class<?> updatedClass = context.getDeclarationById(declarationVar).map(DeclarationSpec::getDeclarationClass).orElseThrow(RuntimeException::new);
 
             bitMaskCreation = new MethodCallExpr(new NameExpr(BitMask.class.getCanonicalName()), "getPatternMask");
