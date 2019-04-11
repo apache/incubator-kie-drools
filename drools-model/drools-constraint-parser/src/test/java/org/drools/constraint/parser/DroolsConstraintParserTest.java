@@ -76,9 +76,27 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    @Ignore
+    public void testBinaryWithNewLine() {
+        Expression or = parseExpression(parser, "(addresses == 2 ||\n" +
+                "                   addresses == 3  )").getExpr();
+        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
+
+
+//        Expression and = parseExpression(parser, "(addresses == 2 &&\naddresses == 3  )").getExpr();
+//        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
+
+//        Expression and2 = parseExpression(parser, "(addresses == 2\n&& addresses == 3  )").getExpr();
+//        assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and2));
+
+        Expression or2 = parseExpression(parser, "(addresses == 2\n|| addresses == 3  )").getExpr();
+        assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or2));
+    }
+
+    @Test
     public void testParseSafeCastExpr() {
         String expr = "this instanceof Person && ((Person)this).name == \"Mark\"";
-        Expression expression = parseExpression( parser, expr ).getExpr();
+        Expression exssion = parseExpression( parser, expr ).getExpr();
 
     }
 
