@@ -1,8 +1,12 @@
-def submarineBomScm = null
+@Library('jenkins-pipeline-shared-libraries')_
+
+def submarineBomScmCustom = null
+def submarineExamplesScmCustom = null
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem8g'
+//        label 'kie-rhel7'
+        label 'submarine-static'
     }
     tools {
         maven 'kie-maven-3.5.4'
@@ -12,72 +16,80 @@ pipeline {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
     }
     stages {
-        stage ('Initialize') {
+        stage('Initialize') {
             steps {
-                echo "PATH = ${PATH}"
-                echo "M2_HOME = ${M2_HOME}"
-                echo "Original branch: $CHANGE_BRANCH"
-                echo "Target branch: $CHANGE_TARGET"
-                echo "PR author: $CHANGE_AUTHOR_EMAIL"
+                sh 'printenv'
                 script {
-                    submarineBomScm = resolveScm(source: github(
-                            credentialsId: 'kie-ci',
-                            repoOwner: "$CHANGE_AUTHOR",
-                            repository: 'submarine-bom',
-                            traits: [gitHubBranchDiscovery(1),
-                                     [$class: 'org.jenkinsci.plugins.github_branch_source.OriginPullRequestDiscoveryTrait', strategyId: 1],
-                                     gitHubForkDiscovery(strategyId: 1, trust: gitHubTrustPermissions())]),
-                            ignoreErrors: true,
-                            targets: ["$CHANGE_BRANCH"])
+                    try {
+                        submarineBomScmCustom = githubscm.resolveRepository('submarine-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", true)
+                    } catch (Exception ex) {
+                        echo "Branch $CHANGE_BRANCH from repository submarine-bom not found in $CHANGE_AUTHOR organisation."
+                    }
+
+                    try {
+                        submarineExamplesScmCustom = githubscm.resolveRepository('submarine-examples', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", true)
+                    } catch (Exception ex) {
+                        echo "Branch $CHANGE_BRANCH from repository submarine-examples not found in $CHANGE_AUTHOR organisation."
+                    }
                 }
             }
         }
-        stage ('Build submarine-bom') {
+        stage('Build submarine-bom') {
             when {
-                not {
-                    equals expected: null, actual: submarineBomScm
+                expression {
+                    return submarineBomScmCustom != null
                 }
             }
             steps {
-                dir("submarine-bom") {
-                    checkout submarineBomScm
-                    sh 'mvn clean install -DskipTests'
+                timeout(15) {
+                    dir("submarine-bom") {
+                        checkout submarineBomScmCustom
+                        sh 'mvn clean install -DskipTests'
+                    }
                 }
             }
         }
         stage('Build submarine-runtimes') {
             steps {
-                sh 'mvn clean install'
-            }
-        }
-        stage('Build submarine-examples') {
-            steps {
-                dir("submarine-examples") {
-                    checkout(resolveScm(source: github(
-                            credentialsId: 'kie-ci',
-                            repoOwner: 'kiegroup',
-                            repository: 'submarine-examples',
-                            traits: [gitHubBranchDiscovery(1),
-                                     [$class: 'org.jenkinsci.plugins.github_branch_source.OriginPullRequestDiscoveryTrait', strategyId: 1],
-                                     gitHubForkDiscovery(strategyId: 1, trust: gitHubTrustPermissions())]),
-                            targets: ["$CHANGE_TARGET"]))
+                timeout(30) {
                     sh 'mvn clean install'
                 }
             }
         }
+        stage('Build submarine-examples') {
+            steps {
+                timeout(30) {
+                    dir("submarine-examples") {
+                        script {
+                            if (submarineExamplesScmCustom != null) {
+                                checkout submarineExamplesScmCustom
+                            } else {
+                                checkout(githubscm.resolveRepository('submarine-examples', 'kiegroup', "$CHANGE_TARGET", false))
+                            }
+                        }
+                        sh 'mvn clean install'
+                    }
+                }
+            }
+        }
+        stage('Publish test results') {
+            steps {
+                junit '**/target/surefire-reports/**/*.xml'
+            }
+        }
     }
     post {
-        success {
-            junit '**/target/surefire-reports/**/*.xml'
-        }
         unstable {
-            junit '**/target/surefire-reports/**/*.xml'
-            mail to: "$CHANGE_AUTHOR_EMAIL", subject: "Build for PR $BRANCH_NAME failed!", body: "For more details see $BUILD_URL"
+            script {
+                mailer.sendEmailFailure()
+            }
         }
         failure {
-            mail to: "$CHANGE_AUTHOR_EMAIL", subject: "Build for PR $BRANCH_NAME failed!", body: "For more details see $BUILD_URL"
+            script {
+                mailer.sendEmailFailure()
+            }
         }
-        cleanup {
+        always {
             cleanWs()
         }
     }
