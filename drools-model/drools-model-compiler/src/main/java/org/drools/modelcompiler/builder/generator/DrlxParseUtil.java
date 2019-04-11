@@ -373,11 +373,13 @@ public class DrlxParseUtil {
             throw new RuntimeException("This doesn't work on arrayAccessExpr convert them to a method call");
         }
 
-        if (expr instanceof NodeWithTraversableScope) {
+        if (expr instanceof EnclosedExpr) {
+            return findRootNodeViaScopeRec(expr.asEnclosedExpr().getInner(), acc);
+        } else if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
             return exprWithScope.traverseScope().map((Expression scope) -> {
-                Expression sanitizedExpr = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
+                Expression sanitizedExpr = DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
                 acc.addLast(sanitizedExpr.clone());
                 return findRootNodeViaScopeRec(scope, acc);
             }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
