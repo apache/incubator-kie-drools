@@ -14,11 +14,12 @@ import javax.ws.rs.core.MediaType;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.kie.submarine.process.Process;
 import org.kie.submarine.process.ProcessInstance;
 
 @Path("/$name$")
-@Api("$documentation$")
+@Api(description = "$documentation$")
 public class $Type$Resource {
 
     Process<$Type$> process;
@@ -27,7 +28,7 @@ public class $Type$Resource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Creates new instance of $name$")
-    public $Type$ createResource($Type$ resource) {
+    public $Type$ createResource(@ApiParam(value="$Type$ Object that should be created") $Type$ resource) {
         if (resource == null) {
             resource = new $Type$();
         }
