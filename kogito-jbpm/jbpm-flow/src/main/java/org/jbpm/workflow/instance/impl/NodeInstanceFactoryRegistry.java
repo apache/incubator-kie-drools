@@ -106,7 +106,7 @@ public class NodeInstanceFactoryRegistry {
         return null;
     }
 
-    private NodeInstanceFactory get(Class<?> clazz) {
+    protected NodeInstanceFactory get(Class<?> clazz) {
         // hard wired nodes:
         if (RuleSetNode.class == clazz) {
             return factory(RuleSetNodeInstance::new);
@@ -179,7 +179,7 @@ public class NodeInstanceFactoryRegistry {
         return this.registry.get(clazz);
     }
 
-    private NodeInstanceFactory factoryOnce(Supplier<NodeInstanceImpl> supplier) {
+    protected NodeInstanceFactory factoryOnce(Supplier<NodeInstanceImpl> supplier) {
         return (node, processInstance, nodeInstanceContainer) -> {
             NodeInstance result = ((org.jbpm.workflow.instance.NodeInstanceContainer)
                     nodeInstanceContainer).getFirstNodeInstance(node.getId());
@@ -191,7 +191,7 @@ public class NodeInstanceFactoryRegistry {
         };
     }
 
-    private NodeInstanceFactory factory(Supplier<NodeInstanceImpl> supplier) {
+    protected NodeInstanceFactory factory(Supplier<NodeInstanceImpl> supplier) {
         return (node, processInstance, nodeInstanceContainer) ->
                 createInstance(supplier.get(), node, processInstance, nodeInstanceContainer);
     }

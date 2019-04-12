@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -278,6 +279,11 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
 
         @Override
         public void setVariable(String name, Object value) {
+        }
+
+        @Override
+        public Map<String, Object> getVariables() {
+            return null;
         }
 
     }

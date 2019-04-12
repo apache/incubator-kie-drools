@@ -27,7 +27,7 @@ public class RuleUnitSourceClass {
     private final String canonicalName;
     private final String targetCanonicalName;
     private String targetTypeName;
-    private boolean hasCdi = false;
+    private boolean hasCdi;
 
     public RuleUnitSourceClass(String packageName, String typeName, String generatedSourceFile) {
         this.packageName = packageName;
@@ -78,8 +78,7 @@ public class RuleUnitSourceClass {
                 .addParameter(canonicalName, "value")
                 .setType(ruleUnitInstanceFQCN)
                 .setBody(new BlockStmt()
-                                 .addStatement(returnStmt)
-                );
+                                 .addStatement(returnStmt));
         return methodDeclaration;
     }
 
@@ -121,9 +120,7 @@ public class RuleUnitSourceClass {
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
                 .setName(targetTypeName)
                 .setModifiers(Modifier.Keyword.PUBLIC);
-        if (hasCdi) {
-            cls.addAnnotation("javax.enterprise.context.ApplicationScoped");
-        }
+        cls.addAnnotation("javax.inject.Singleton");
         String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);
 
         MethodDeclaration methodDeclaration = createInstanceMethod(ruleUnitInstanceFQCN);
@@ -133,7 +130,7 @@ public class RuleUnitSourceClass {
     }
 
     public RuleUnitSourceClass withCdi(boolean hasCdi) {
-        this.hasCdi = true;
+        this.hasCdi = hasCdi;
         return this;
     }
 }

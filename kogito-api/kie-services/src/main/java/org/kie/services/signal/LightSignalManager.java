@@ -18,6 +18,8 @@ package org.kie.services.signal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.runtime.process.EventListener;
@@ -25,7 +27,7 @@ import org.kie.api.runtime.process.EventListener;
 public class LightSignalManager implements SignalManager {
 
 	private final EventListenerResolver instanceResolver;
-	private ConcurrentHashMap<String, ArrayList<EventListener>> listeners =
+	private ConcurrentHashMap<String, List<EventListener>> listeners =
 			new ConcurrentHashMap<>();
 
 	public LightSignalManager(EventListenerResolver instanceResolver) {
@@ -50,8 +52,7 @@ public class LightSignalManager implements SignalManager {
 	}
 	
 	public void signalEvent(String type, Object event) {
-		listeners.values().stream()
-				.flatMap(Collection::stream)
+		listeners.getOrDefault(type, Collections.emptyList())
 				.forEach(e -> e.signalEvent(type, event));
 	}
 

@@ -66,7 +66,7 @@ public class ProcessToExecModelGeneratorTest {
         ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process);
         assertNotNull("Dumper should return non null class for process", processMetadata);
         
-        logger.debug(processMetadata.getGeneratedClassModel());
+        logger.debug(processMetadata.getGeneratedClassModel().toString());
         
         assertEquals("orders", processMetadata.getExtractedProcessId());
         assertEquals("demo.orders", processMetadata.getProcessId());

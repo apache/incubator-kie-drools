@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.process;
 
+import java.util.Map;
+
 import org.kie.api.definition.process.Process;
 
 /**
@@ -86,5 +88,11 @@ public interface ProcessInstance
      * @return the unique id of parent process instance, 0 if this process instance doesn't have a parent
      */
     long getParentProcessInstanceId();
+    
+    /**
+     * Returns current snapshot of process instance variables
+     * @return non empty map of process instance variables
+     */
+    Map<String, Object> getVariables();
 
 }

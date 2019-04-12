@@ -39,14 +39,14 @@ public class SubProcessNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "processName", new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), "")));
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "waitForCompletion", new BooleanLiteralExpr(subProcessNode.isWaitForCompletion()));
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "independent", new BooleanLiteralExpr(subProcessNode.isIndependent()));
-        
+
         for (Entry<String, String> entry : subProcessNode.getInMappings().entrySet()) {
             addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "inMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
         for (Entry<String, String> entry : subProcessNode.getOutMappings().entrySet()) {
             addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
-        
+
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "done");
     }
 }

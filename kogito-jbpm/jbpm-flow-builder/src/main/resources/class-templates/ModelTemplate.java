@@ -21,6 +21,10 @@ public class XXXModel {
         
     }
 
+    public void fromMap(Map<String, Object> params) {
+
+    }
+
     public static XXXModel fromMap(Long id, Map<String, Object> params) {
         
     }

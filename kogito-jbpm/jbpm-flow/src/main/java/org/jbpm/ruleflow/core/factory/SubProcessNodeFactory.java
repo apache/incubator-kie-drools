@@ -18,6 +18,8 @@ package org.jbpm.ruleflow.core.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
@@ -26,7 +28,10 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.kie.api.runtime.process.ProcessContext;
+import org.kie.submarine.process.ProcessInstance;
 
 /**
  *
@@ -40,9 +45,9 @@ public class SubProcessNodeFactory extends NodeFactory {
     protected Node createNode() {
         return new SubProcessNode();
     }
-    
+
     protected SubProcessNode getSubProcessNode() {
-    	return (SubProcessNode) getNode();
+        return (SubProcessNode) getNode();
     }
 
     public SubProcessNodeFactory name(String name) {
@@ -51,38 +56,38 @@ public class SubProcessNodeFactory extends NodeFactory {
     }
 
     public SubProcessNodeFactory processId(final String processId) {
-    	getSubProcessNode().setProcessId(processId);
+        getSubProcessNode().setProcessId(processId);
         return this;
     }
-    
+
     public SubProcessNodeFactory processName(final String processName) {
         getSubProcessNode().setProcessName(processName);
         return this;
     }
 
     public SubProcessNodeFactory waitForCompletion(boolean waitForCompletion) {
-    	getSubProcessNode().setWaitForCompletion(waitForCompletion);
+        getSubProcessNode().setWaitForCompletion(waitForCompletion);
         return this;
     }
 
     public SubProcessNodeFactory inMapping(String parameterName, String variableName) {
-    	getSubProcessNode().addInMapping(parameterName, variableName);
+        getSubProcessNode().addInMapping(parameterName, variableName);
         return this;
     }
 
     public SubProcessNodeFactory outMapping(String parameterName, String variableName) {
-    	getSubProcessNode().addOutMapping(parameterName, variableName);
+        getSubProcessNode().addOutMapping(parameterName, variableName);
         return this;
     }
 
     public SubProcessNodeFactory independent(boolean independent) {
-    	getSubProcessNode().setIndependent(independent);
+        getSubProcessNode().setIndependent(independent);
         return this;
     }
 
     public SubProcessNodeFactory onEntryAction(String dialect, String action) {
         if (getSubProcessNode().getActions(dialect) != null) {
-        	getSubProcessNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
+            getSubProcessNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
         } else {
             List<DroolsAction> actions = new ArrayList<DroolsAction>();
             actions.add(new DroolsConsequenceAction(dialect, action));
@@ -93,7 +98,7 @@ public class SubProcessNodeFactory extends NodeFactory {
 
     public SubProcessNodeFactory onExitAction(String dialect, String action) {
         if (getSubProcessNode().getActions(dialect) != null) {
-        	getSubProcessNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
+            getSubProcessNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
         } else {
             List<DroolsAction> actions = new ArrayList<DroolsAction>();
             actions.add(new DroolsConsequenceAction(dialect, action));
@@ -103,11 +108,15 @@ public class SubProcessNodeFactory extends NodeFactory {
     }
 
     public SubProcessNodeFactory timer(String delay, String period, String dialect, String action) {
-    	Timer timer = new Timer();
-    	timer.setDelay(delay);
-    	timer.setPeriod(period);
-    	getSubProcessNode().addTimer(timer, new DroolsConsequenceAction(dialect, action));
-    	return this;
+        Timer timer = new Timer();
+        timer.setDelay(delay);
+        timer.setPeriod(period);
+        getSubProcessNode().addTimer(timer, new DroolsConsequenceAction(dialect, action));
+        return this;
     }
-    
+
+    public <T> SubProcessNodeFactory subProcessFactory(SubProcessFactory<T> factory) {
+        getSubProcessNode().setSubProcessFactory(factory);
+        return this;
+    }
 }

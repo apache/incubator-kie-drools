@@ -18,6 +18,7 @@ package org.jbpm.process.instance;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +33,6 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.time.TimeUtils;
-import org.kie.services.time.TimerService;
-import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
-import org.kie.services.time.impl.CronExpression;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
@@ -42,10 +40,6 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
-import org.kie.services.signal.SignalManager;
-import org.kie.services.time.manager.TimerInstance;
-import org.kie.services.time.manager.TimerManager;
-import org.kie.services.time.manager.TimerManagerRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
@@ -65,6 +59,13 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.services.signal.SignalManager;
+import org.kie.services.time.TimerService;
+import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
+import org.kie.services.time.impl.CronExpression;
+import org.kie.services.time.manager.TimerInstance;
+import org.kie.services.time.manager.TimerManager;
+import org.kie.services.time.manager.TimerManagerRuntime;
 
 public class LightProcessRuntime implements InternalProcessRuntime {
 
@@ -76,10 +77,20 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     private TimerManager timerManager;
     private ProcessEventSupport processEventSupport;
 
+    public static LightProcessRuntime ofProcess(Process p) {
+        LightProcessRuntimeServiceProvider services =
+                new LightProcessRuntimeServiceProvider();
+
+        LightProcessRuntimeContext rtc = new LightProcessRuntimeContext(
+                Collections.singletonList(p));
+
+        return new LightProcessRuntime(rtc, services);
+    }
+
     public LightProcessRuntime(
             ProcessRuntimeContext runtimeContext,
             ProcessRuntimeServiceProvider services) {
-        this.knowledgeRuntime = new DummyKnowledgeRuntime(this);
+        this.knowledgeRuntime = new DummyKnowledgeRuntime(this, services.getWorkItemManager());
         TimerService timerService = services.getTimerService();
         if (!(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager)) {
             timerService.setTimerJobFactoryManager(new ThreadSafeTrackableTimeJobFactoryManager());
@@ -191,9 +202,11 @@ public class LightProcessRuntime implements InternalProcessRuntime {
                                                                    Map<String, Object> parameters) {
         org.jbpm.process.instance.ProcessInstance pi =
                 runtimeContext.createProcessInstance(process,
-                                                     correlationKey,
-                                                     parameters);
+                                                     correlationKey);
+
         pi.setKnowledgeRuntime(knowledgeRuntime);
+        runtimeContext.setupParameters(pi, parameters);
+
         processInstanceManager.addProcessInstance(pi, correlationKey);
         return pi;
     }

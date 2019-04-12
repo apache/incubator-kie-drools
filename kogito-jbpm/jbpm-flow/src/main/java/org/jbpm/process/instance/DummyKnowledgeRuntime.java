@@ -9,7 +9,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.kie.services.time.TimerService;
+import org.jbpm.workflow.instance.impl.CodegenNodeInstanceFactoryRegistry;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -29,6 +29,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.services.time.TimerService;
 
 /**
  * A severely limited implementation of the WorkingMemory interface.
@@ -38,10 +39,14 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
 
     private final EnvironmentImpl environment;
     private InternalProcessRuntime processRuntime;
+    private final WorkItemManager workItemManager;
 
-    DummyKnowledgeRuntime(InternalProcessRuntime processRuntime) {
-        environment = new EnvironmentImpl();
+    DummyKnowledgeRuntime(InternalProcessRuntime processRuntime, WorkItemManager workItemManager) {
         this.processRuntime = processRuntime;
+        this.workItemManager = workItemManager;
+        this.environment = new EnvironmentImpl();
+        // register codegen-based node instances factories
+        environment.set("NodeInstanceFactoryRegistry", new CodegenNodeInstanceFactoryRegistry());
     }
 
     @Override
@@ -73,7 +78,6 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
     public InternalProcessRuntime getProcessRuntime() {
         return this.processRuntime;
     }
-
 
     @Override
     public Environment getEnvironment() {
@@ -252,7 +256,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
 
     @Override
     public WorkItemManager getWorkItemManager() {
-        return null;
+        return workItemManager;
     }
 
     @Override

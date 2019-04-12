@@ -75,7 +75,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
                 
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("Minimal"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -92,7 +92,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
                 
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("UserTask"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -117,7 +117,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithParametrizedInput.bpmn2");
                 
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("UserTask"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -144,7 +144,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-CallActivitySubProcess.bpmn2");
                 
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("SubProcess"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -161,7 +161,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
         
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -182,7 +182,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     public void testInclusiveSplit() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -202,7 +202,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     public void testInclusiveSplitDefaultConnection() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-InclusiveGatewayWithDefault.bpmn2");
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("InclusiveGatewayWithDefault"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -221,7 +221,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     public void testParallelGateway() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ParallelSplit.bpmn2");
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -238,7 +238,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     public void testInclusiveSplitAndJoinNested() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinNested.bpmn2");
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
@@ -283,7 +283,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
                 
         ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("ServiceProcess"));        
-        String content = metaData.getGeneratedClassModel();
+        String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         

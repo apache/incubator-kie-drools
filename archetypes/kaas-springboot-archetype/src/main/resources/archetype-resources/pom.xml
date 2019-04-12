@@ -21,6 +21,7 @@
     <submarine.version>8.0.0-SNAPSHOT</submarine.version>
     <swagger.version>1.5.21</swagger.version>
     <cxf.version>3.2.6</cxf.version>
+    <dependencyInjection>false</dependencyInjection>
   </properties>
 
   <dependencies>

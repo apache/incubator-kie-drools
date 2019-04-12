@@ -30,6 +30,7 @@ public interface ProcessRuntimeContext {
 
     ProcessInstance createProcessInstance(
             Process process,
-            CorrelationKey correlationKey,
-            Map<String, Object> parameters);
+            CorrelationKey correlationKey);
+
+    void setupParameters(ProcessInstance pi, Map<String, Object> parameters);
 }

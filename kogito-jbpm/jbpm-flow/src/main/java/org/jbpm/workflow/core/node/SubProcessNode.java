@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.kie.api.definition.process.Connection;
 import org.jbpm.process.core.Context;
@@ -29,7 +31,8 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.impl.ContextContainerImpl;
-
+import org.kie.api.runtime.process.ProcessContext;
+import org.kie.submarine.process.ProcessInstance;
 
 /**
  * Default implementation of a sub-flow node.
@@ -49,7 +52,8 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
 
-    private boolean independent = true;    
+    private boolean independent = true;
+    private SubProcessFactory subProcessFactory;
 
     public void setProcessId(final String processId) {
         this.processId = processId;
@@ -237,4 +241,12 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
         return Boolean.parseBoolean(abortParent);
     }
 
+    public <T> void setSubProcessFactory(
+            SubProcessFactory<T> subProcessFactory) {
+        this.subProcessFactory = subProcessFactory;
+    }
+
+    public SubProcessFactory getSubProcessFactory() {
+        return subProcessFactory;
+    }
 }

@@ -19,6 +19,8 @@ package org.jbpm.compiler.canonical;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.github.javaparser.ast.CompilationUnit;
+
 public class ProcessMetaData {
 
     private String processClassName;
@@ -31,7 +33,7 @@ public class ProcessMetaData {
 
     private String processVersion;
 
-    private String generatedClassModel;
+    private CompilationUnit generatedClassModel;
 
     private Set<String> workItems = new HashSet<>();
 
@@ -84,11 +86,11 @@ public class ProcessMetaData {
         this.processVersion = processVersion;
     }
 
-    public String getGeneratedClassModel() {
+    public CompilationUnit getGeneratedClassModel() {
         return generatedClassModel;
     }
 
-    public void setGeneratedClassModel(String generatedClassModel) {
+    public void setGeneratedClassModel(CompilationUnit generatedClassModel) {
         this.generatedClassModel = generatedClassModel;
     }
 
