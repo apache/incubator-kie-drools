@@ -17,6 +17,7 @@
 package org.kie.api.internal.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,7 +26,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +37,11 @@ import org.slf4j.LoggerFactory;
 public class ServiceDiscoveryImpl {
     private static final Logger log = LoggerFactory.getLogger( ServiceDiscoveryImpl.class );
 
-    private final String fileName = "kie.conf";
+    private static final String CONF_FILE_NAME = "kie.conf";
 
-    private final String path =  "META-INF/" + fileName;
+    private static final String CONF_FILE_PATH =  "META-INF/" + CONF_FILE_NAME;
 
-    private ClassLoader classloader;
+//    private ClassLoader classloader;
 
     private ServiceDiscoveryImpl() {}
 
@@ -83,17 +87,11 @@ public class ServiceDiscoveryImpl {
     public synchronized Map<String, Object> getServices() {
         if (!sealed) {
             if (kiecConfDiscoveryAllowed) {
-                Enumeration<URL> confResources = null;
-                try {
-                    confResources = getClassLoader().getResources(path);
-                } catch (Exception e) {
-                    throw new IllegalStateException("Discovery started, but no kie.conf's found");
-                }
-                if (confResources != null) {
-                    while (confResources.hasMoreElements()) {
-                        registerConfs( getClassLoader(), confResources.nextElement() );
+                getKieConfs().ifPresent( kieConfs -> {
+                    while (kieConfs.resources.hasMoreElements()) {
+                        registerConfs( kieConfs.classLoader, kieConfs.resources.nextElement() );
                     }
-                }
+                } );
                 buildMap();
             }
 
@@ -155,14 +153,33 @@ public class ServiceDiscoveryImpl {
         }
     }
 
-    private ClassLoader getClassLoader() {
-        if (classloader == null) {
-            classloader = Thread.currentThread().getContextClassLoader();
-            if (classloader == null) {
-                classloader = ClassLoader.getSystemClassLoader();
-            }
+    private Optional<KieConfs> getKieConfs() {
+        return Stream.of(this.getClass().getClassLoader(), Thread.currentThread().getContextClassLoader(), ClassLoader.getSystemClassLoader())
+                .map(this::loadKieConfs)
+                .filter( Objects::nonNull )
+                .findFirst();
+    }
+
+    private KieConfs loadKieConfs(ClassLoader cl) {
+        if (cl == null) {
+            return null;
         }
-        return classloader;
+        try {
+            Enumeration<URL> resources = cl.getResources( CONF_FILE_PATH );
+            return resources.hasMoreElements() ? new KieConfs( cl, resources ) : null;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private static class KieConfs {
+        private final ClassLoader classLoader;
+        private final Enumeration<URL> resources;
+
+        private KieConfs( ClassLoader classLoader, Enumeration<URL> confResources ) {
+            this.classLoader = classLoader;
+            this.resources = confResources;
+        }
     }
 
     private void buildMap() {
