@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.submarine</groupId>
+    <artifactId>submarine-cloud-services</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>submarine-cloud-workitems</artifactId>
+  <name>Submarine Cloud Work Items</name>
+  <description>Submarine Cloud Work Items</description>
+
+  <properties>
+    <submarine.version>8.0.0-SNAPSHOT</submarine.version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+      <version>${submarine.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-client</artifactId>
+    </dependency>
+  </dependencies>
+</project>
