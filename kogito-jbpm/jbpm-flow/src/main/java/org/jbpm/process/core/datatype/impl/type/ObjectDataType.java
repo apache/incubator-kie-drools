@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 
 /**
  * Representation of an object datatype.
@@ -86,11 +87,11 @@ public class ObjectDataType implements DataType {
     }
 
     public Object readValue(String value) {
-        return null;
+        return TypeConverterRegistry.get().forType(getStringType()).apply(value);
     }
 
     public String writeValue(Object value) {
-        return null;
+        return value.toString();
     }
 
 

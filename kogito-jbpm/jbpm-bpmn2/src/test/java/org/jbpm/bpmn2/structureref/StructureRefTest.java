@@ -29,6 +29,7 @@ import org.jbpm.bpmn2.StartEventTest;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -38,6 +39,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 @RunWith(Parameterized.class)
 public class StructureRefTest extends JbpmBpmn2TestCase {
@@ -129,7 +132,9 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testObjectStructureRef() throws Exception {
 
         String personAsXml = "<org.jbpm.bpmn2.objects.Person><id>1</id><name>john</name></org.jbpm.bpmn2.objects.Person>";
-
+        TypeConverterRegistry.get().register("org.jbpm.bpmn2.objects.Person", (s) -> 
+            new XStream().fromXML(personAsXml)
+        );
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ObjectStructureRef.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();

@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 
-    protected final static String LABEL_PREFIX = "org.kie.";
+    protected final static String LABEL_PREFIX = "org.kie/";
     
     private ObjectMapper mapper = new ObjectMapper();
     

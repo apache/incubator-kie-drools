@@ -224,12 +224,10 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
             for (ProcessExecutableModelGenerator legacyProcessGenerator : processExecutableModelGenerators) {
                 if (legacyProcessGenerator.isPublic()) {
                     publicProcesses.add(legacyProcessGenerator.extractedProcessId());
-                    labels.put(legacyProcessGenerator.label(), legacyProcessGenerator.description());
+                    labels.put(legacyProcessGenerator.label(), "process");// add the label id of the process with value set to process as resource type
                 }
             }
 
-            labels.put(LABEL_PREFIX + "processes",
-                       publicProcesses.stream().collect(Collectors.joining(",")));
             writeLabelsImageMetadata(targetDirectory.getPath(), labels);
         } catch (Exception e) {
             throw new MojoExecutionException("An error was caught during process generation", e);

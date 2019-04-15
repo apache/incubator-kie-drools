@@ -118,8 +118,8 @@ public class BuildMojo extends AbstractKieMojo {
         }
         
         Map<String, String> labels = new HashMap<>();
-        labels.put(LABEL_PREFIX + "organization", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("not set"));
-        labels.put(LABEL_PREFIX + "organization-url", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("not set"));
+        labels.put(LABEL_PREFIX + "organization", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("empty"));
+        labels.put(LABEL_PREFIX + "organization-url", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("empty"));
         
         writeLabelsImageMetadata(targetDirectory.getPath(), labels);
 

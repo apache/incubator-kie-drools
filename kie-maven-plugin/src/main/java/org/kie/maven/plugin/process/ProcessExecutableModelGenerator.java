@@ -24,7 +24,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 
 public class ProcessExecutableModelGenerator {
 
-    protected final static String LABEL_PREFIX = "org.kie.";
+    protected final static String LABEL_PREFIX = "org.kie/";
 
     private final WorkflowProcess workFlowProcess;
     private final ProcessToExecModelGenerator execModelGenerator;

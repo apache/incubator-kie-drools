@@ -51,6 +51,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
@@ -82,6 +83,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 	    this.nodesVisitors.put(SubProcessNode.class, new LambdaSubProcessNodeVisitor(processToModel));
 	    this.nodesVisitors.put(Split.class, new SplitNodeVisitor());
 	    this.nodesVisitors.put(Join.class, new JoinNodeVisitor());
+	    this.nodesVisitors.put(FaultNode.class, new FaultNodeVisitor());
     }
 
     public ProcessMetaData generate(WorkflowProcess process) {
