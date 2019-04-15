@@ -5,6 +5,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.core.util.Drools;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
@@ -59,6 +69,8 @@ public class ModelWriter {
             for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
                 String addFileName = cu.findFirst( ClassOrInterfaceDeclaration.class ).get().getNameAsString();
                 String addSourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
+//                debugPrettyPrinter(prettyPrinter, cu);
+                prettyPrinter.print(cu);
                 String addSource = prettyPrinter.print( cu );
                 pkgModel.logRule( addSource );
                 byte[] addBytes = addSource.getBytes();
@@ -98,5 +110,17 @@ public class ModelWriter {
         public List<String> getModelFiles() {
             return modelFiles;
         }
+
+    }
+    private void debugPrettyPrinter(PrettyPrinter prettyPrinter, CompilationUnit cu) {
+        Node node = cu.getChildNodes().get(13).getChildNodes().get(2).getChildNodes().get(4).getChildNodes().get(2).getChildNodes().get(0).getChildNodes().get(1).getChildNodes().get(4).getChildNodes().get(1).getChildNodes().get(1).getChildNodes().get(0).getChildNodes().get(0);
+
+        CastExpr castExpr = new CastExpr(JavaParser.parseType("org.drools.modelcompiler.consequence.DroolsImpl"), new NameExpr("drools"));
+        EnclosedExpr enclosedExpr = new EnclosedExpr(castExpr);
+        MethodCallExpr mc = new MethodCallExpr(enclosedExpr, "asKnowledgeHelper");
+        MethodCallExpr insertLogical = new MethodCallExpr(mc, "insertLogical", NodeList.nodeList(new StringLiteralExpr("blah")));
+
+        prettyPrinter.print(insertLogical);
+        prettyPrinter.print(node);
     }
 }
