@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -336,7 +337,12 @@ public class GuidedDTDRLPersistence {
             final ActionSetField original = (ActionSetField) action;
 
             ActionSetField asf = null;
-            if (original instanceof ActionUpdateField) {
+            if (original instanceof ActionCallMethod) {
+                final ActionCallMethod originalACM = (ActionCallMethod) action;
+                asf = new ActionCallMethod(originalACM.getVariable());
+                ((ActionCallMethod) asf).setMethodName(originalACM.getMethodName());
+                ((ActionCallMethod) asf).setState(originalACM.getState());
+            } else if (original instanceof ActionUpdateField) {
                 asf = new ActionUpdateField(original.getVariable());
                 isUpdate = true;
             } else {
