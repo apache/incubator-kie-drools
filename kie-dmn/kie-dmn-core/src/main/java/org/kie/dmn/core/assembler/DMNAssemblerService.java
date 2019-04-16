@@ -88,11 +88,6 @@ public class DMNAssemblerService implements KieAssemblerService {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
         DMNMarshaller dmnMarshaller = dmnCompiler.getMarshaller();
-        if (resources.size() == 1) {
-            // quick path:
-            internalAddResource(kbuilderImpl, dmnCompiler, resources.iterator().next(), Collections.emptyList());
-            return;
-        }
         List<DMNResource> dmnResources = new ArrayList<>();
         for (ResourceWithConfiguration r : resources) {
             Definitions definitions = dmnMarshaller.unmarshal(r.getResource().getReader());
@@ -100,9 +95,18 @@ public class DMNAssemblerService implements KieAssemblerService {
             DMNResource dmnResource = new DMNResource(modelID, r, definitions);
             dmnResources.add(dmnResource);
         }
-        enrichDMNResourcesWithImportsDependencies(dmnResources);
-        List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
+
         Collection<DMNModel> dmnModels = new ArrayList<>();
+        for (PackageRegistry pr : kbuilderImpl.getPackageRegistry().values()) {
+            ResourceTypePackage resourceTypePackage = pr.getPackage().getResourceTypePackages().get(ResourceType.DMN);
+            if (resourceTypePackage != null) {
+                DMNPackageImpl dmnpkg = (DMNPackageImpl) resourceTypePackage;
+                dmnModels.addAll(dmnpkg.getAllModels().values());
+            }
+        }
+
+        enrichDMNResourcesWithImportsDependencies(dmnResources, dmnModels);
+        List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
 
         for (DMNResource dmnRes : sortedDmnResources) {
             DMNModel dmnModel = internalAddResource(kbuilderImpl, dmnCompiler, dmnRes.getResAndConfig(), dmnModels);
@@ -110,14 +114,18 @@ public class DMNAssemblerService implements KieAssemblerService {
         }
     }
 
-    public static void enrichDMNResourcesWithImportsDependencies(List<DMNResource> dmnResources) {
-        // enrich with imports
+    public static void enrichDMNResourcesWithImportsDependencies(List<DMNResource> dmnResources, Collection<DMNModel> dmnModels) {
         for (DMNResource r : dmnResources) {
             for (Import i : r.getDefinitions().getImport()) {
                 if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
-                    Either<String, DMNResource> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnResources, DMNResource::getModelID);
-                    DMNResource located = resolvedResult.getOrElseThrow(RuntimeException::new);
-                    r.addDependency(located.getModelID());
+                    Either<String, DMNModel> inAlreadyCompiled = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, x -> new QName(x.getNamespace(), x.getName()));
+                    if (inAlreadyCompiled.isLeft()) { // the DMN Model is not already available in the KieBuilder and needs to be compiled.
+                        Either<String, DMNResource> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnResources, DMNResource::getModelID);
+                        DMNResource located = resolvedResult.getOrElseThrow(RuntimeException::new);
+                        r.addDependency(located.getModelID());
+                    } else {
+                        // do nothing: the DMN Model is already available in the KieBuilder.
+                    }
                 }
             }
         }
