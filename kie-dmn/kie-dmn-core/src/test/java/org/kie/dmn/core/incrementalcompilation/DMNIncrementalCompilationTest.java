@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTestCanonicalKieModule {
 
@@ -71,6 +72,46 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         kieContainer.updateToVersion(releaseId_v11);
 
         checkTestUpgrade(kieContainer, runtime, "setFN", "setLN", "UPGRADED Hello John Doe, your age is: 47");
+    }
+
+    @Test
+    //See https://issues.jboss.org/browse/DROOLS-3841
+    //If both files are present and a FULL build is performed there are no errors
+    public void testFullBuildWithImport() {
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-DROOLS-3841", "1.0");
+        KieHelper.createAndDeployJar(ks,
+                                     releaseId_v10,
+                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/DROOLS-3841a.dmn", this.getClass())
+                                                                         .setTargetPath("DROOLS-3841a.dmn"),
+                                                                 ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/DROOLS-3841b.dmn", this.getClass())
+                                                                         .setTargetPath("DROOLS-3841b.dmn")));
+
+        ks.newKieContainer(releaseId_v10);
+    }
+
+    @Test
+    public void testIncrementalBuildWithImport() {
+        //See https://issues.jboss.org/browse/DROOLS-3841
+        //If one file is first built and then another incrementally added that contains an Import there are errors
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-DROOLS-3841", "1.0");
+        KieHelper.createAndDeployJar(ks,
+                                     releaseId_v10,
+                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/DROOLS-3841a.dmn", this.getClass())
+                                             .setTargetPath("DROOLS-3841a.dmn")));
+        final KieContainer kieContainer = ks.newKieContainer(releaseId_v10);
+
+        final ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-DROOLS-3841", "1.1");
+        KieHelper.createAndDeployJar(ks,
+                                     releaseId_v11,
+                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/DROOLS-3841b.dmn", this.getClass())
+                                             .setTargetPath("DROOLS-3841b.dmn")));
+        final Results results = kieContainer.updateToVersion(releaseId_v11);
+
+        assertThat(results.getMessages().isEmpty(), is(true));
     }
 
     private void checkTestUpgrade(final KieContainer kieContainer,
