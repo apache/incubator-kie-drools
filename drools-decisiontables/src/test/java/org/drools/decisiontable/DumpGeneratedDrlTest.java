@@ -15,12 +15,17 @@
 
 package org.drools.decisiontable;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 import org.apache.commons.io.FileUtils;
 import org.drools.core.util.IoUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -29,9 +34,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.DumpDirOption;
 import org.kie.internal.io.ResourceFactory;
-
-import java.io.File;
-import java.io.FilenameFilter;
+import org.kie.internal.utils.KieHelper;
 
 public class DumpGeneratedDrlTest {
 
@@ -88,6 +91,13 @@ public class DumpGeneratedDrlTest {
             Assert.fail("Unexpected Drools compilation errors: " + kbuilder.getErrors().toString());
         }
         assertGeneratedDrlExists(dumpDir, null);
+    }
+
+    @Test
+    public void testUseReleaseIdInGeneratedDumpForProjectResource() {
+        ReleaseId releaseId = KieServices.get().getRepository().getDefaultReleaseId();
+        new KieHelper().addContent(DUMMY_DTABLE_CSV_SOURCE, "some/source/path/project-dtable.csv").build();
+        assertGeneratedDrlExists(dumpDir, releaseId.getGroupId() + "_" + releaseId.getArtifactId() + "_" + "some_source_path_project-dtable.csv.drl");
     }
 
     @After

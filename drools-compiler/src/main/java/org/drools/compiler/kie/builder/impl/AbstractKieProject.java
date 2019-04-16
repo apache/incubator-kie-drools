@@ -210,12 +210,13 @@ public abstract class AbstractKieProject implements KieProject {
     public KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel,
                                                     ResultsImpl messages ) {
         InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
-        KnowledgeBuilder kbuilder = createKnowledgeBuilder( kBaseModel, kModule );
+        KnowledgeBuilderImpl kbuilder = ( KnowledgeBuilderImpl ) createKnowledgeBuilder( kBaseModel, kModule );
         if (kbuilder == null) {
             return null;
         }
 
-        boolean useFolders = (( KnowledgeBuilderImpl ) kbuilder).getBuilderConfiguration().isGroupDRLsInKieBasesByFolder();
+        kbuilder.setReleaseId( getGAV() );
+        boolean useFolders = kbuilder.getBuilderConfiguration().isGroupDRLsInKieBasesByFolder();
 
         Set<Asset> assets = new HashSet<>();
 

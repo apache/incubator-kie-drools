@@ -133,6 +133,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.internal.assembler.KieAssemblers;
@@ -221,6 +222,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
     private final TypeDeclarationBuilder typeBuilder;
 
     private Map<String, Object> builderCache;
+
+    private ReleaseId releaseId;
 
     /**
      * Use this when package is starting from scratch.
@@ -313,6 +316,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         typeBuilder = new TypeDeclarationBuilder(this);
+    }
+
+    public void setReleaseId( ReleaseId releaseId ) {
+        this.releaseId = releaseId;
     }
 
     Resource getCurrentResource() {
@@ -451,12 +458,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
     }
 
     private void dumpDrlGeneratedFromDTable(File dumpDir, String generatedDrl, String srcPath) {
-        File dumpFile;
-        if (srcPath != null) {
-            dumpFile = createDumpDrlFile(dumpDir, srcPath, ".drl");
-        } else {
-            dumpFile = createDumpDrlFile(dumpDir, "decision-table-" + UUID.randomUUID(), ".drl");
+        String fileName = srcPath != null ? srcPath : "decision-table-" + UUID.randomUUID();
+        if (releaseId != null) {
+            fileName = releaseId.getGroupId() + "_" + releaseId.getArtifactId() + "_" + fileName;
         }
+        File dumpFile = createDumpDrlFile(dumpDir, fileName, ".drl");
         try {
             IoUtils.write(dumpFile, generatedDrl.getBytes(IoUtils.UTF8_CHARSET));
         } catch (IOException ex) {
