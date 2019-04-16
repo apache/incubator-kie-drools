@@ -83,10 +83,8 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         final ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-DROOLS-3841", "1.0");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v10,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/DROOLS-3841a.dmn", this.getClass())
-                                                                         .setTargetPath("DROOLS-3841a.dmn"),
-                                                                 ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/DROOLS-3841b.dmn", this.getClass())
-                                                                         .setTargetPath("DROOLS-3841b.dmn")));
+                                     ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/DROOLS-3841a.dmn", this.getClass()),
+                                     ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/DROOLS-3841b.dmn", this.getClass()));
 
         ks.newKieContainer(releaseId_v10);
     }
@@ -100,15 +98,13 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         final ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-DROOLS-3841", "1.0");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v10,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/DROOLS-3841a.dmn", this.getClass())
-                                             .setTargetPath("DROOLS-3841a.dmn")));
+                                     ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/DROOLS-3841a.dmn", this.getClass()));
         final KieContainer kieContainer = ks.newKieContainer(releaseId_v10);
 
         final ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-DROOLS-3841", "1.1");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v11,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/DROOLS-3841b.dmn", this.getClass())
-                                             .setTargetPath("DROOLS-3841b.dmn")));
+                                     ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/DROOLS-3841b.dmn", this.getClass()));
         final Results results = kieContainer.updateToVersion(releaseId_v11);
 
         assertThat(results.getMessages().isEmpty(), is(true));
