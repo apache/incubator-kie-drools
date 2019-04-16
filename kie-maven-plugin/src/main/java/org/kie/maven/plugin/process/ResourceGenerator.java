@@ -15,17 +15,24 @@
 
 package org.kie.maven.plugin.process;
 
+import org.drools.core.util.StringUtils;
+import org.kie.api.definition.process.WorkflowProcess;
+
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.core.util.StringUtils;
-import org.kie.api.definition.process.WorkflowProcess;
 
 public class ResourceGenerator {
 
@@ -37,6 +44,7 @@ public class ResourceGenerator {
     private WorkflowProcess process;
     private final String packageName;
     private final String resourceClazzName;
+    private final String processClazzName;
     private String processId;
     private String dataClazzName;
     private String modelfqcn;
@@ -45,7 +53,8 @@ public class ResourceGenerator {
 
     public ResourceGenerator(
             WorkflowProcess process,
-            String modelfqcn) {
+            String modelfqcn,
+            String processfqcn) {
         this.process = process;
         this.packageName = process.getPackageName();
         this.processId = process.getId();
@@ -55,6 +64,7 @@ public class ResourceGenerator {
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
         this.modelfqcn = modelfqcn;
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
+        this.processClazzName = processfqcn;
     }
 
     public ResourceGenerator withCdi(boolean hasCdi) {
@@ -83,6 +93,9 @@ public class ResourceGenerator {
         if (hasCdi) {
             template.findAll(FieldDeclaration.class,
                              this::isProcessField).forEach(this::annotateFields);
+        } else {
+            template.findAll(FieldDeclaration.class,
+                             this::isProcessField).forEach(fd -> initializeField(fd, template));
         }
 
         return clazz.toString();
@@ -95,6 +108,17 @@ public class ResourceGenerator {
     private void annotateFields(FieldDeclaration fd) {
         fd.addAnnotation("javax.inject.Inject");
         fd.addSingleMemberAnnotation("javax.inject.Named", new StringLiteralExpr(processId));
+    }
+    
+    private void initializeField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
+        BlockStmt body = new BlockStmt();
+        AssignExpr assignExpr = new AssignExpr(
+                                               new FieldAccessExpr(new ThisExpr(), "process"),
+                                               new ObjectCreationExpr().setType(processClazzName),
+                                               AssignExpr.Operator.ASSIGN);
+        
+        body.addStatement(assignExpr);
+        template.addConstructor(Keyword.PUBLIC).setBody(body);
     }
 
     private void interpolateStrings(StringLiteralExpr vv) {

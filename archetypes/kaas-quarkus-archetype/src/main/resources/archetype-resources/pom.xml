@@ -8,7 +8,7 @@
   <description>Generated project ${artifactId}</description>
   
   <properties>
-    <quarkus.version>0.11.0</quarkus.version>
+    <quarkus.version>@version.io.quarkus@</quarkus.version>
     <submarine.version>8.0.0-SNAPSHOT</submarine.version>
     <swagger.version>1.5.21</swagger.version>
     
@@ -41,15 +41,30 @@
       <version>${submarine.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-flow</artifactId>
-      <version>${submarine.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core-static</artifactId>
       <version>${submarine.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>${submarine.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-canonical-model</artifactId>
+      <version>${submarine.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-model-compiler</artifactId>
+      <version>${submarine.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow</artifactId>
+      <version>${submarine.version}</version>
+    </dependency>    
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>

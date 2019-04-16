@@ -169,13 +169,14 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
                         workFlowProcess.getPackageName(),
                         classPrefix,
                         modelClassGenerator.generate());
-
+                
                 // do not generate REST endpoint if the process is not "public"
                 if (execModelGen.isPublic()) {
                     // create REST resource class for process
                     ResourceGenerator resourceGenerator = new ResourceGenerator(
                             workFlowProcess,
-                            modelClassGenerator.className())
+                            modelClassGenerator.className(),
+                            execModelGen.className())
                             .withCdi(dependencyInjection);
 
                     rgs.add(resourceGenerator);
