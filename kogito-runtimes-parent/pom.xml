@@ -3,10 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.kie</groupId>
+  
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>submarine-bom</artifactId>
+    <version>8.0.0-SNAPSHOT</version>
+  </parent>
+    
   <artifactId>submarine-runtimes</artifactId>
-  <packaging>pom</packaging>
-  <version>8.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>  
 
   <name>Submarine Runtimes</name>
   <description>Submarine Runtimes</description>
@@ -18,24 +23,5 @@
     <module>kie-maven-plugin</module>
     <module>archetypes</module>
   </modules>
-
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
