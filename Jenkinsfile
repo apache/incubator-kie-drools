@@ -62,11 +62,6 @@ pipeline {
                 }
             }
         }
-        stage('Publish test results') {
-            steps {
-                junit '**/target/surefire-reports/**/*.xml'
-            }
-        }
     }
     post {
         unstable {
@@ -80,6 +75,7 @@ pipeline {
             }
         }
         always {
+            junit '**/target/surefire-reports/**/*.xml'
             cleanWs()
         }
     }
