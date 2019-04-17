@@ -12,6 +12,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.modelcompiler.builder.ModelWriter;
 import org.kie.submarine.rules.RuleUnit;
 
 public class ModuleSourceClass {
@@ -23,7 +24,6 @@ public class ModuleSourceClass {
     private final List<RuleUnitSourceClass> ruleUnits;
     private final List<RuleUnitInstanceSourceClass> ruleUnitInstances;
     private String targetTypeName;
-    private boolean hasCdi;
 
     public ModuleSourceClass() {
         this.packageName = "org.drools.project.model";
@@ -44,7 +44,7 @@ public class ModuleSourceClass {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        ruleUnits.forEach(r -> r.withCdi(hasCdi).write(srcMfs));
+        ruleUnits.forEach(r -> r.withCdi( ModelWriter.HAS_CDI ).write(srcMfs));
         ruleUnitInstances.forEach(r -> r.write(srcMfs));
         srcMfs.write(completePath, generate().getBytes());
     }
@@ -78,10 +78,5 @@ public class ModuleSourceClass {
     public static ClassOrInterfaceType ruleUnitType( String canonicalName) {
         return new ClassOrInterfaceType(null, RuleUnit.class.getCanonicalName())
                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName));
-    }
-
-    public ModuleSourceClass withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
-        return this;
     }
 }

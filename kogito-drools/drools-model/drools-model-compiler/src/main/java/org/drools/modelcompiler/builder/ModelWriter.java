@@ -15,12 +15,7 @@ import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_META
 
 public class ModelWriter {
 
-    private boolean hasCdi;
-
-    public ModelWriter withCdi() {
-        this.hasCdi = true;
-        return this;
-    }
+    public static final boolean HAS_CDI = hasCdi();
 
     public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageModel> packageModels) {
         List<String> sourceFiles = new ArrayList<>();
@@ -60,7 +55,7 @@ public class ModelWriter {
 
             String sourceName = "src/main/java/" + folderName + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + pkgModel.getPackageUUID() + ".java";
             addSource( srcMfs, sourceFiles, pkgModel, sourceName, pkgModel.getDomainClassesMetadataSource() );
-            pkgModel.getModuleGenerator().withCdi(hasCdi).write(srcMfs);
+            pkgModel.getModuleGenerator().write(srcMfs);
         }
 
         return new Result(sourceFiles, modelFiles);
@@ -91,6 +86,15 @@ public class ModelWriter {
 
         public List<String> getModelFiles() {
             return modelFiles;
+        }
+    }
+
+    public static boolean hasCdi() {
+        try {
+            Class.forName("javax.enterprise.context.ApplicationScoped");
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

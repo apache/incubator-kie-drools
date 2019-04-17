@@ -43,9 +43,7 @@ public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKiePro
         new org.drools.modelcompiler.builder.ModelSourceClass(
                 getInternalKieModule().getReleaseId(), modelMethod, generatedSourceFiles)
                 .write(srcMfs);
-        new ProjectSourceClass(modelMethod)
-                .withCdi()
-                .write(srcMfs);
+        new ProjectSourceClass(modelMethod).write(srcMfs);
 
         srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("."));
         writeModelFile(generatedSourceFiles, trgMfs);
