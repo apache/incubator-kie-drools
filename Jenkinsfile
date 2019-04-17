@@ -23,8 +23,8 @@ pipeline {
                     dir("submarine-bom") {
                         script {
                             githubscm.checkoutIfExists('submarine-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                            maven.runMavenWithSubmarineSettings('clean install', true)
                         }
-                        sh 'mvn clean install -DskipTests'
                     }
                 }
             }
@@ -32,7 +32,9 @@ pipeline {
         stage('Build submarine-runtimes') {
             steps {
                 timeout(30) {
-                    sh 'mvn clean install'
+                    script {
+                        maven.runMavenWithSubmarineSettings('clean install', false)
+                    }
                 }
             }
         }
@@ -42,8 +44,8 @@ pipeline {
                     dir("submarine-cloud") {
                         script {
                             githubscm.checkoutIfExists('submarine-cloud', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                            maven.runMavenWithSubmarineSettings('clean install', false)
                         }
-                        sh 'mvn clean install'
                     }
                 }
             }
@@ -54,8 +56,8 @@ pipeline {
                     dir("submarine-examples") {
                         script {
                             githubscm.checkoutIfExists('submarine-examples', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                            maven.runMavenWithSubmarineSettings('clean install', false)
                         }
-                        sh 'mvn clean install'
                     }
                 }
             }
