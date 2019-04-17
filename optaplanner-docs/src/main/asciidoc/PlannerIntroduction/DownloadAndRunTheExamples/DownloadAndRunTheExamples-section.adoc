@@ -106,27 +106,27 @@ To run the examples in your favorite IDE:
 [[useWithMavenGradleEtc]]
 == Use OptaPlanner with Maven, Gradle, Ivy, Buildr or ANT
 
-The OptaPlanner jars are also available in http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository] (and also in
-pass:macros[https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~[the JBoss maven repository\]]).
+The OptaPlanner jars are available in http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository]
+(and the snapshots in pass:macros[https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~[the JBoss maven repository\]]).
 
-If you use Maven, add a dependency to `optaplanner-core` in your project's [path]_pom.xml_
-:
+If you use Maven, add a dependency to `optaplanner-core` in your `pom.xml`:
 
 [source,xml,options="nowrap"]
 ----
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core</artifactId>
+      <version>...</version>
     </dependency>
 ----
 
-This is similar for Gradle, Ivy and Buildr.
-To identify the latest version, check http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository].
-
-Because you might end up using other OptaPlanner modules too, it's recommended to import the `optaplanner-bom` in Maven's `dependencyManagement` so the OptaPlanner version is specified only once:
+Or better yet, import the `optaplanner-bom` in `dependencyManagement` to avoid duplicating version numbers
+when adding other optaplanner dependencies later on:
 
 [source,xml,options="nowrap"]
 ----
+<project>
+  ...
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -136,22 +136,41 @@ Because you might end up using other OptaPlanner modules too, it's recommended t
         <version>...</version>
         <scope>import</scope>
       </dependency>
-      ...
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-persistence-jpa</artifactId>
+    </dependency>
+    ...
+  </dependencies>
+</project>
 ----
 
-If you're still using ANT (without Ivy), copy all the jars from the download zip's [path]_binaries_
- directory in your classpath.
+If you use Gradle, add a dependency to `optaplanner-core` in your `build.gradle`:
+
+[source,xml,options="nowrap"]
+----
+dependencies {
+  implementation 'org.optaplanner:optaplanner-core:#{site.pom.latestFinal.version}'
+}
+----
+
+This is similar for Ivy and Buildr.
+
+If you're still using ANT (without Ivy), copy all the jars from the download zip's `binaries` directory in your classpath.
 
 [NOTE]
 ====
-The download zip's [path]_binaries_
- directory contains far more jars then `optaplanner-core` actually uses.
+The download zip's `binaries` directory contains far more jars then `optaplanner-core` actually uses.
 It also contains the jars used by other modules, such as ``optaplanner-benchmark``.
 
-Check the maven repository [path]_pom.xml_
- files to determine the minimal dependency set of a specific module (for a specific version).
+Check the maven repository `pom.xml` files to determine the minimal dependency set of `optaplanner-core` etc.
 ====
 
 
