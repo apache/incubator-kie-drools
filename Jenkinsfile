@@ -10,6 +10,7 @@ pipeline {
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+        timeout(time: 90, unit: 'MINUTES')
     }
     stages {
         stage('Initialize') {
@@ -19,45 +20,37 @@ pipeline {
         }
         stage('Build submarine-bom') {
             steps {
-                timeout(15) {
-                    dir("submarine-bom") {
-                        script {
-                            githubscm.checkoutIfExists('submarine-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                            maven.runMavenWithSubmarineSettings('clean install', true)
-                        }
+                dir("submarine-bom") {
+                    script {
+                        githubscm.checkoutIfExists('submarine-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                        maven.runMavenWithSubmarineSettings('clean install', true)
                     }
                 }
             }
         }
         stage('Build submarine-runtimes') {
             steps {
-                timeout(30) {
-                    script {
-                        maven.runMavenWithSubmarineSettings('clean install', false)
-                    }
+                script {
+                    maven.runMavenWithSubmarineSettings('clean install', false)
                 }
             }
         }
         stage('Build submarine-cloud') {
             steps {
-                timeout(30) {
-                    dir("submarine-cloud") {
-                        script {
-                            githubscm.checkoutIfExists('submarine-cloud', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                            maven.runMavenWithSubmarineSettings('clean install', false)
-                        }
+                dir("submarine-cloud") {
+                    script {
+                        githubscm.checkoutIfExists('submarine-cloud', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                        maven.runMavenWithSubmarineSettings('clean install', false)
                     }
                 }
             }
         }
         stage('Build submarine-examples') {
             steps {
-                timeout(30) {
-                    dir("submarine-examples") {
-                        script {
-                            githubscm.checkoutIfExists('submarine-examples', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                            maven.runMavenWithSubmarineSettings('clean install', false)
-                        }
+                dir("submarine-examples") {
+                    script {
+                        githubscm.checkoutIfExists('submarine-examples', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                        maven.runMavenWithSubmarineSettings('clean install', false)
                     }
                 }
             }
