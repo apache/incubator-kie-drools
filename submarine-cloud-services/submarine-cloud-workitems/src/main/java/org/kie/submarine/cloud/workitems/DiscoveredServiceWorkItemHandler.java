@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.submarine.cloud.workitems;
 
 import java.io.IOException;
@@ -5,7 +20,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -16,14 +33,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.ServiceList;
-import io.fabric8.kubernetes.api.model.ServiceSpec;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Request.Builder;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -35,16 +50,28 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
     protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     protected static final List<String> INTERNAL_FIELDS = Arrays.asList("TaskName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Model", "Namespace");
     
-    protected Map<String, String> serviceEndpoints = new ConcurrentHashMap<>();
+    protected static final String KNATIVE_SERVICE_SERVICE_URL = "apis/serving.knative.dev/v1alpha1/namespaces/@ns@/services?labelSelector=";
+    protected static final String KNATIVE_ISTIO_GATEWAY_URL = "api/v1/namespaces/istio-system/services/istio-ingressgateway";
+    protected static final String SERVICE_URL = "api/v1/namespaces/@ns@/services?labelSelector=";
+    
+    protected String istionGatewayClusterIp;
+    
+    protected Map<String, ServiceInfo> serviceEndpoints = new ConcurrentHashMap<>();
     
     private volatile KubernetesClient client;
-    private OkHttpClient http = new OkHttpClient();
+    private OkHttpClient http;
     private ObjectMapper mapper = new ObjectMapper();
 
     
     public DiscoveredServiceWorkItemHandler() {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
+        
+        http = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build();
     }
     
     /**
@@ -53,24 +80,65 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
      * @param service label assign to a service that should be used as selector
      * @return valid endpoint (in URL form) if found or runtime exception in case of no services found
      */
-    protected String findEndpoint(String namespace, String service) {
-
-        ServiceList found = getKubeClient().services().inNamespace(namespace).withLabel(service).list();
-        if (found.getItems().isEmpty()) {
-            throw new RuntimeException("No endpoint found for service " + service);
-        }
-        Service foundService = found.getItems().get(0);
-
-        ServiceSpec spec = foundService.getSpec();
+    protected ServiceInfo findEndpoint(String namespace, String service) {
         
-        StringBuilder location = new StringBuilder("http://")
-                                    .append(spec.getClusterIP())
-                                    .append(":")
-                                    .append(spec.getPorts().get(0).getPort())
-                                    .append("/")
-                                    .append(service);
+        LOGGER.debug("Looking up for service {} in namespace {}", service, namespace);
+        DefaultKubernetesClient kubeClient = (DefaultKubernetesClient) getKubeClient();
+        String host = null;
+        Integer port = null;
+        Map<String, String> headers = null;
+        if (istionGatewayClusterIp != null) {
+            LOGGER.debug("Knative environment found, looking up for ingresgateway {} and host for serving service", istionGatewayClusterIp);
+            host = istionGatewayClusterIp;
+            port = 80;
+            headers = new HashMap<>();
+            
+            Request request = new Request.Builder().url(kubeClient.getMasterUrl() + KNATIVE_SERVICE_SERVICE_URL.replaceFirst("@ns@", namespace) + service)
+                                                   .build();
+            LOGGER.debug("About to call a search for services labeled with {}, complete url is {}", service, request.url());
+            try (Response response = kubeClient.getHttpClient().newCall(request).execute()) {
+                String out = response.body().string();
+                if (response.isSuccessful()) {
+                    Map<?, ?> data = mapper.readValue(out, Map.class);
+                    headers.put("HOST", ((Map<?, ?>)((Map<?, ?>)((List<?>)data.get("items")).get(0)).get("status")).get("domain").toString());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            LOGGER.debug("Headers to be used for requests {}", headers);
+            
+        } else {
+            LOGGER.debug("Looking up for service in regular kube/openshift environment");
+            
+            Request request = new Request.Builder()
+                                                   .url(kubeClient.getMasterUrl() + SERVICE_URL.replaceFirst("@ns@", namespace) + service)
+                                                   .build();
 
-        return location.toString();
+            try (Response response = kubeClient.getHttpClient().newCall(request).execute()) {
+                String out = response.body().string();
+
+                if (response.isSuccessful()) {
+                    Map<?, ?> data = mapper.readValue(out, Map.class);
+                    
+                    Map<?, ?> spec = ((Map<?, ?>) ((Map<?, ?>) ((List<?>) data.get("items")).get(0)).get("spec"));
+                    host = spec.get("clusterIP").toString();
+                    port = (Integer) ((Map<?, ?>) ((List<?>)spec.get("ports")).get(0)).get("port");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }            
+        }
+        if (host == null) {
+          throw new RuntimeException("No endpoint found for service " + service);
+        }
+        StringBuilder location = new StringBuilder("http://")
+                .append(host)
+                .append(":")
+                .append(port)
+                .append("/")
+                .append(service);
+        LOGGER.debug("Host {} and port {} found for service {} in namespace {}", host, port, service, namespace);
+       return new ServiceInfo(location.toString(), headers);
     }
 
     /**
@@ -91,7 +159,7 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
         INTERNAL_FIELDS.forEach(field -> data.remove(field));
         
         // discover service endpoint
-        String endpoint = serviceEndpoints.computeIfAbsent(service, (s) -> findEndpoint(namespace, s));
+        ServiceInfo endpoint = serviceEndpoints.computeIfAbsent(service, (s) -> findEndpoint(namespace, s));
         LOGGER.debug("Found endpoint for service {} with location {}", service, endpoint);
         
         RequestBody body = produceRequestPayload(data);
@@ -154,36 +222,45 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
         return results;
     }
     
-    protected Request producePostRequest(String endpoint, RequestBody body) {
-        Request request = new Request.Builder().url(endpoint)
-                .post(body)
-                .build();
+    protected Request producePostRequest(ServiceInfo endpoint, RequestBody body) {
+        Builder builder = new Request.Builder().url(endpoint.getUrl())
+                .post(body);
+        applyHeaders(endpoint, builder);
         
-        return request;
+        return builder.build();
     }
     
-    protected Request produceGetRequest(String endpoint) {
-        Request request = new Request.Builder().url(endpoint)
-                .get()
-                .build();
+    protected Request produceGetRequest(ServiceInfo endpoint) {
+        Builder builder = new Request.Builder().url(endpoint.getUrl())
+                .get();
+        applyHeaders(endpoint, builder);
         
-        return request;
+        return builder.build();
     }
     
-    protected Request producePutRequest(String endpoint, RequestBody body) {
-        Request request = new Request.Builder().url(endpoint)
-                .put(body)
-                .build();
+    protected Request producePutRequest(ServiceInfo endpoint, RequestBody body) {
+        Builder builder = new Request.Builder().url(endpoint.getUrl())
+                .put(body);
+        applyHeaders(endpoint, builder);
         
-        return request;
+        return builder.build();
     }
     
-    protected Request produceDeleteRequest(String endpoint, RequestBody body) {
-        Request request = new Request.Builder().url(endpoint)
-                .delete(body)
-                .build();
+    protected Request produceDeleteRequest(ServiceInfo endpoint, RequestBody body) {
+        Builder builder = new Request.Builder().url(endpoint.getUrl())
+                .delete(body);
+        applyHeaders(endpoint, builder);
         
-        return request;
+        return builder.build();
+    }
+    
+    protected void applyHeaders(ServiceInfo endpoint, Builder builder) {
+
+        if (endpoint.getHeaders() != null) {
+            for (Entry<String, String> header : endpoint.getHeaders().entrySet()) {
+                builder.addHeader(header.getKey(), header.getValue());
+            }
+        }
     }
     
     protected KubernetesClient getKubeClient() {
@@ -191,6 +268,21 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
             synchronized (this) {
                 if (client == null) {
                     client = new DefaultKubernetesClient();
+                    LOGGER.debug("Kube Client created, looking up istio ingressgateway...");
+                    Request request = new Request.Builder().url(client.getMasterUrl() + KNATIVE_ISTIO_GATEWAY_URL)
+                                                           .build();
+
+                    try (Response response = ((DefaultKubernetesClient) client).getHttpClient().newCall(request).execute()) {
+                        String out = response.body().string();
+                        LOGGER.debug("Request {} completed with code {}, and response {}", request.url().toString(), response.code(), out);
+                        if (response.isSuccessful()) {
+                            Map<?, ?> data = mapper.readValue(out, Map.class);
+                            this.istionGatewayClusterIp = ((Map<?, ?>) data.get("spec")).get("clusterIP").toString();
+                        }
+                        LOGGER.debug("Istio geteway is " + istionGatewayClusterIp);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

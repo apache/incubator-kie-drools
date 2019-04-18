@@ -15,8 +15,29 @@
 
 package org.kie.submarine.cloud.workitems;
 
+import java.util.Map;
 
-public enum HttpMethods {
+public class ServiceInfo {
 
-    GET, POST, PUT, DELETE;
+    private final String url;
+    private final Map<String, String> headers;
+
+    public ServiceInfo(String url, Map<String, String> headers) {
+        this.url = url;
+        this.headers = headers;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceInfo [url=" + url + ", headers=" + headers + "]";
+    }
+
 }
