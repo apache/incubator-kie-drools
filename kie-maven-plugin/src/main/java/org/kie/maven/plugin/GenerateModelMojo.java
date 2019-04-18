@@ -38,6 +38,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.ExecutableModelCodeGenerationProject;
+import org.drools.modelcompiler.builder.CanonicalModelCodeGenerationKieProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
@@ -79,6 +80,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(property = "generateModel", defaultValue = "no")
     private String generateModel;
 
+    @Parameter(property = "dependencyInjection", defaultValue = "true")
+    private boolean dependencyInjection;
+
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (ExecModelMode.shouldGenerateModel(generateModel)) {
@@ -101,9 +106,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
             getLog().info("Begin code generation");
 
-            kieBuilder.buildAll( ExecutableModelCodeGenerationProject.class, s -> {
-                return !s.contains("src/test/java");
-            });
+            kieBuilder.buildAll((kieModule1, classLoader) ->
+                                        new CanonicalModelCodeGenerationKieProject(kieModule1, classLoader)
+                                                .withCdi(dependencyInjection),
+                                s -> !s.contains("src/test/java"));
 
             InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
             getLog().info("kieBuilder is type: "+kieBuilder.getClass());

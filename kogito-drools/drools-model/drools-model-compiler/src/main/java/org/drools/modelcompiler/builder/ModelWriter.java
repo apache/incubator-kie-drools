@@ -17,6 +17,13 @@ public class ModelWriter {
 
     public static final boolean HAS_CDI = hasCdi();
 
+    private boolean hasCdi = HAS_CDI;
+
+    public ModelWriter withCdi(boolean hasCdi) {
+        this.hasCdi = hasCdi;
+        return this;
+    }
+
     public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageModel> packageModels) {
         List<String> sourceFiles = new ArrayList<>();
         List<String> modelFiles = new ArrayList<>();
@@ -55,7 +62,7 @@ public class ModelWriter {
 
             String sourceName = "src/main/java/" + folderName + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + pkgModel.getPackageUUID() + ".java";
             addSource( srcMfs, sourceFiles, pkgModel, sourceName, pkgModel.getDomainClassesMetadataSource() );
-            pkgModel.getModuleGenerator().write(srcMfs);
+            pkgModel.getModuleGenerator().withCdi(hasCdi).write(srcMfs);
         }
 
         return new Result(sourceFiles, modelFiles);

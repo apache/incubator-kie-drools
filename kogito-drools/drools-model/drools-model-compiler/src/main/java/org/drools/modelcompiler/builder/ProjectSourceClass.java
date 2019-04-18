@@ -9,11 +9,16 @@ import org.kie.api.runtime.KieSession;
 public class ProjectSourceClass {
 
     final KieModuleModelMethod modelMethod;
+    private boolean hasCdi;
 
     public ProjectSourceClass(KieModuleModelMethod modelMethod) {
         this.modelMethod = modelMethod;
     }
 
+    public ProjectSourceClass withCdi(boolean hasCdi) {
+        this.hasCdi = hasCdi;
+        return this;
+    }
     public String generate() {
         StringBuilder sb = new StringBuilder();
         sb.append(
@@ -24,7 +29,7 @@ public class ProjectSourceClass {
                         "import " + KieBaseModel.class.getCanonicalName()  + ";\n" +
                         "import " + KieSession.class.getCanonicalName()  + ";\n" +
                         "\n" +
-                        ( ModelWriter.HAS_CDI ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
+                        ( hasCdi ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
                         "public class ProjectRuntime implements org.drools.modelcompiler.KieRuntimeBuilder {\n" +
                         "\n");
         sb.append(modelMethod.getConstructor());
