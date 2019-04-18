@@ -17,6 +17,7 @@ package org.drools.verifier.core.index.model;
 
 import java.util.Collection;
 
+import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.matchers.Matcher;
 import org.drools.verifier.core.index.query.Where;
 import org.drools.verifier.core.index.select.Listen;
@@ -26,12 +27,16 @@ import org.drools.verifier.core.maps.IndexedKeyTreeMap;
 public class Rules {
 
     public final IndexedKeyTreeMap<Rule> map = new IndexedKeyTreeMap<>(Rule.keyDefinitions());
+    private final AnalyzerConfiguration configuration;
 
-    public Rules() {
-
+    public Rules(final AnalyzerConfiguration configuration) {
+        this.configuration = configuration;
     }
 
-    public Rules(final Collection<Rule> rules) {
+    public Rules(final AnalyzerConfiguration configuration,
+                 final Collection<Rule> rules) {
+        this(configuration);
+
         for (final Rule rule : rules) {
             add(rule);
         }
@@ -75,7 +80,7 @@ public class Rules {
         public Patterns patterns() {
             final Collection<Rule> rules = all();
 
-            final Patterns patterns = new Patterns();
+            final Patterns patterns = new Patterns(configuration);
 
             for (final Rule rule : rules) {
                 patterns.merge(rule.getPatterns());

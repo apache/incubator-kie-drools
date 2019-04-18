@@ -403,9 +403,27 @@ public class StringConditionInspector
     }
 
     @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(field.toString());
+        stringBuilder.append(" ");
+        stringBuilder.append(operator);
+        stringBuilder.append(" ");
+        final Iterator<Comparable> iterator = getValues().iterator();
+        while (iterator.hasNext()) {
+            stringBuilder.append(iterator.next());
+            if (iterator.hasNext()) {
+                stringBuilder.append(", ");
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    @Override
     public String toHumanReadableString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(field.getName());
+        stringBuilder.append(field.toHumanReadableString());
         stringBuilder.append(" ");
         stringBuilder.append(operator);
         stringBuilder.append(" ");

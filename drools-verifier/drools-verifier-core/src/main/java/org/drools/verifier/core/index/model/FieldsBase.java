@@ -17,9 +17,10 @@ package org.drools.verifier.core.index.model;
 
 import java.util.Collection;
 
+import org.drools.verifier.core.index.model.meta.ConditionParentBase;
 import org.drools.verifier.core.maps.KeyTreeMap;
 
-public class FieldsBase<T extends FieldBase> {
+public class FieldsBase<T extends ConditionParentBase> {
 
     public final KeyTreeMap<T> map = new KeyTreeMap<>(Field.keyDefinitions());
 

@@ -19,8 +19,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Value;
 import org.drools.verifier.core.index.matchers.Matcher;
+import org.drools.verifier.core.index.model.meta.ConditionMaster;
 import org.drools.verifier.core.index.query.Where;
 import org.drools.verifier.core.index.select.Listen;
 import org.drools.verifier.core.index.select.Select;
@@ -29,20 +31,26 @@ import org.drools.verifier.core.maps.MultiMap;
 
 public class Patterns {
 
-    public final KeyTreeMap<Pattern> patternsMap = new KeyTreeMap<>(Pattern.keyDefinitions());
+    public final KeyTreeMap<ConditionMaster> patternsMap = new KeyTreeMap<>(Pattern.keyDefinitions());
+    private final AnalyzerConfiguration configuration;
 
-    public Patterns(final Collection<Pattern> patternsMap) {
-        for (final Pattern pattern : patternsMap) {
+    public Patterns(final AnalyzerConfiguration configuration,
+                    final Collection<ConditionMaster> patternsMap) {
+        this(configuration);
+
+        for (final ConditionMaster pattern : patternsMap) {
             add(pattern);
         }
     }
 
-    public Patterns(final Pattern[] patternsMap) {
-        this(Arrays.asList(patternsMap));
+    public Patterns(final AnalyzerConfiguration configuration,
+                    final ConditionMaster[] patternsMap) {
+        this(configuration,
+             Arrays.asList(patternsMap));
     }
 
-    public Patterns() {
-
+    public Patterns(final AnalyzerConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     public void merge(final Patterns patterns) {
@@ -63,37 +71,37 @@ public class Patterns {
         };
     }
 
-    public void add(final Pattern... patterns) {
-        for (final Pattern pattern : patterns) {
+    public void add(final ConditionMaster... patterns) {
+        for (final ConditionMaster pattern : patterns) {
             this.patternsMap.put(pattern);
         }
     }
 
     public class PatternsSelect
-            extends Select<Pattern> {
+            extends Select<ConditionMaster> {
 
         public PatternsSelect(final Matcher matcher) {
             super(patternsMap.get(matcher.getKeyDefinition()),
                   matcher);
         }
 
-        public Fields fields() {
-            final Fields fields = new Fields();
+        public ConditionParents fields() {
+            final ConditionParents conditionParents = new ConditionParents(configuration);
 
-            final MultiMap<Value, Pattern, List<Pattern>> subMap = asMap();
+            final MultiMap<Value, ConditionMaster, List<ConditionMaster>> subMap = asMap();
             if (subMap != null) {
-                final Collection<Pattern> patterns = subMap.allValues();
-                for (final Pattern pattern : patterns) {
-                    fields.merge(pattern.getFields());
+                final Collection<ConditionMaster> patterns = subMap.allValues();
+                for (final ConditionMaster pattern : patterns) {
+                    conditionParents.merge(pattern.getConditionParents());
                 }
             }
 
-            return fields;
+            return conditionParents;
         }
     }
 
     public class PatternsListen
-            extends Listen<Pattern> {
+            extends Listen<ConditionMaster> {
 
         public PatternsListen(final Matcher matcher) {
             super(patternsMap.get(matcher.getKeyDefinition()),

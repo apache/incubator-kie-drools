@@ -17,13 +17,17 @@ package org.drools.verifier.core;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.drools.verifier.core.checks.base.JavaCheckRunner;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.configuration.CheckConfiguration;
 import org.drools.verifier.core.configuration.DateTimeFormatProvider;
 import org.drools.verifier.core.index.keys.UUIDKeyProvider;
+import org.drools.verifier.core.index.model.Action;
+import org.drools.verifier.core.index.model.Condition;
 
 public class AnalyzerConfigurationMock
         extends AnalyzerConfiguration {
@@ -59,6 +63,8 @@ public class AnalyzerConfigurationMock
                   }
               },
               checkConfiguration,
+              new HashSet<>(Arrays.asList(Condition.keyDefinitions())),
+              new HashSet<>(Arrays.asList(Action.keyDefinitions())),
               new JavaCheckRunner());
     }
 }

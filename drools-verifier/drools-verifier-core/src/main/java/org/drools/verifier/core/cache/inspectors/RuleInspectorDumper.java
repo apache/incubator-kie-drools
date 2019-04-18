@@ -16,6 +16,8 @@
 
 package org.drools.verifier.core.cache.inspectors;
 
+import java.util.Collection;
+
 import org.drools.verifier.core.cache.inspectors.action.ActionInspector;
 import org.drools.verifier.core.cache.inspectors.action.ActionsInspectorMultiMap;
 import org.drools.verifier.core.cache.inspectors.condition.ConditionInspector;
@@ -55,16 +57,16 @@ public class RuleInspectorDumper {
 
     private void dumpPatterns() {
         dump.append("Patterns{\n");
-        InspectorList<PatternInspector> patternsInspector = ruleInspector.getPatternsInspector();
-        for (final PatternInspector patternInspector : patternsInspector) {
+        InspectorList<ConditionMasterInspector> patternsInspector = ruleInspector.getPatternsInspector();
+        for (final ConditionMasterInspector conditionMasterInspector : patternsInspector) {
             dump.append("Pattern{\n");
-            dump.append(patternInspector.getPattern().getName());
+            dump.append(conditionMasterInspector.getConditionMaster().getName());
             dump.append("\n");
             dump.append("Conditions{\n");
-            dumpCondition(patternInspector.getConditionsInspector());
+            dumpCondition(conditionMasterInspector.getConditionsInspector());
             dump.append("}\n");
             dump.append("Actions{\n");
-            dumpAction(patternInspector.getActionsInspector());
+            dumpAction(conditionMasterInspector.getActionsInspector());
             dump.append("}\n");
         }
         dump.append("}\n");
@@ -99,7 +101,8 @@ public class RuleInspectorDumper {
     }
 
     private void dumpAction(final ActionsInspectorMultiMap actionsInspectorMultiMap) {
-        for (final Object object : actionsInspectorMultiMap.allValues()) {
+        final Collection allValues = actionsInspectorMultiMap.allValues();
+        for (final Object object : allValues) {
             dump.append("Action{\n");
             if (object instanceof HumanReadable) {
                 dump.append(((HumanReadable) object).toHumanReadableString());

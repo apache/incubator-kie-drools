@@ -24,7 +24,8 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.index.model.Field;
-import org.drools.verifier.core.index.model.Pattern;
+import org.drools.verifier.core.index.model.meta.ConditionMaster;
+import org.drools.verifier.core.index.model.meta.ConditionParent;
 import org.drools.verifier.core.maps.InspectorList;
 import org.drools.verifier.core.maps.util.HasConflicts;
 import org.drools.verifier.core.maps.util.HasKeys;
@@ -36,7 +37,7 @@ import org.drools.verifier.core.relations.IsSubsuming;
 import org.drools.verifier.core.relations.RelationResolver;
 import org.drools.verifier.core.util.PortablePreconditions;
 
-public class PatternInspector
+public class ConditionMasterInspector
         implements HasConflicts,
                    IsConflicting,
                    IsSubsuming,
@@ -46,17 +47,17 @@ public class PatternInspector
 
     private final UUIDKey uuidKey;
 
-    private final Pattern pattern;
+    private final ConditionMaster conditionMaster;
     private final AnalyzerConfiguration configuration;
 
     private final InspectorList<FieldInspector> inspectorList;
     private final RelationResolver relationResolver;
 
-    public PatternInspector(final Pattern pattern,
-                            final RuleInspectorUpdater ruleInspectorUpdater,
-                            final AnalyzerConfiguration configuration) {
-        this.pattern = PortablePreconditions.checkNotNull("pattern",
-                                                          pattern);
+    public ConditionMasterInspector(final ConditionMaster conditionMaster,
+                                    final RuleInspectorUpdater ruleInspectorUpdater,
+                                    final AnalyzerConfiguration configuration) {
+        this.conditionMaster = PortablePreconditions.checkNotNull("conditionMaster",
+                                                                  conditionMaster);
         this.configuration = PortablePreconditions.checkNotNull("configuration",
                                                                 configuration);
 
@@ -65,7 +66,7 @@ public class PatternInspector
 
         relationResolver = new RelationResolver(inspectorList);
 
-        makeFieldInspectors(pattern.getFields()
+        makeFieldInspectors(conditionMaster.getConditionParents()
                                     .where(Field.uuid()
                                                    .any())
                                     .select()
@@ -73,31 +74,30 @@ public class PatternInspector
                             ruleInspectorUpdater);
     }
 
-    private void makeFieldInspectors(final Collection<Field> fields,
+    private void makeFieldInspectors(final Collection<ConditionParent> fields,
                                      final RuleInspectorUpdater ruleInspectorUpdater) {
 
         inspectorList.clear();
 
-        for (final Field field : fields) {
+        for (final ConditionParent field : fields) {
             inspectorList.add(new FieldInspector(field,
                                                  ruleInspectorUpdater,
                                                  configuration));
         }
     }
 
-    public Pattern getPattern() {
-        return pattern;
+    public ConditionMaster getConditionMaster() {
+        return conditionMaster;
     }
 
     @Override
     public boolean conflicts(final Object other) {
-        if (other instanceof PatternInspector) {
-            if (pattern.getObjectType()
+        if (other instanceof ConditionMasterInspector) {
+            if (conditionMaster
                     .getType()
-                    .equals(((PatternInspector) other).getPattern()
-                                    .getObjectType()
+                    .equals(((ConditionMasterInspector) other).getConditionMaster()
                                     .getType())) {
-                return inspectorList.conflicts(((PatternInspector) other).inspectorList);
+                return inspectorList.conflicts(((ConditionMasterInspector) other).inspectorList);
             } else {
                 return false;
             }
@@ -108,13 +108,12 @@ public class PatternInspector
 
     @Override
     public boolean isRedundant(final Object other) {
-        if (other instanceof PatternInspector) {
-            if (pattern.getObjectType()
+        if (other instanceof ConditionMasterInspector) {
+            if (conditionMaster
                     .getType()
-                    .equals(((PatternInspector) other).getPattern()
-                                    .getObjectType()
+                    .equals(((ConditionMasterInspector) other).getConditionMaster()
                                     .getType())) {
-                return inspectorList.isRedundant(((PatternInspector) other).inspectorList);
+                return inspectorList.isRedundant(((ConditionMasterInspector) other).inspectorList);
             } else {
                 return false;
             }
@@ -125,13 +124,12 @@ public class PatternInspector
 
     @Override
     public boolean subsumes(final Object other) {
-        if (other instanceof PatternInspector) {
-            if (pattern.getObjectType()
+        if (other instanceof ConditionMasterInspector) {
+            if (conditionMaster
                     .getType()
-                    .equals(((PatternInspector) other).getPattern()
-                                    .getObjectType()
+                    .equals(((ConditionMasterInspector) other).getConditionMaster()
                                     .getType())) {
-                return inspectorList.subsumes(((PatternInspector) other).inspectorList);
+                return inspectorList.subsumes(((ConditionMasterInspector) other).inspectorList);
             } else {
                 return false;
             }
@@ -171,7 +169,7 @@ public class PatternInspector
 
     @Override
     public String toHumanReadableString() {
-        return pattern.getName();
+        return conditionMaster.getName();
     }
 
     @Override

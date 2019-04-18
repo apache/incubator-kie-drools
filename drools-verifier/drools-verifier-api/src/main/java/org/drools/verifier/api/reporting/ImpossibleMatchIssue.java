@@ -20,8 +20,7 @@ import java.util.Set;
 public class ImpossibleMatchIssue
         extends Issue {
 
-    private String fieldFactType;
-    private String fieldName;
+    private String conditionParent;
     private String conflictedItem;
     private String conflictingItem;
     private String ruleId;
@@ -32,8 +31,7 @@ public class ImpossibleMatchIssue
     public ImpossibleMatchIssue(final Severity severity,
                                 final CheckType checkType,
                                 final String ruleId,
-                                final String fieldFactType,
-                                final String fieldName,
+                                final String conditionParent,
                                 final String conflictedItem,
                                 final String conflictingItem,
                                 final Set<Integer> rowNumbers) {
@@ -43,18 +41,17 @@ public class ImpossibleMatchIssue
         );
 
         this.ruleId = ruleId;
-        this.fieldFactType = fieldFactType;
-        this.fieldName = fieldName;
+        this.conditionParent = conditionParent;
         this.conflictedItem = conflictedItem;
         this.conflictingItem = conflictingItem;
     }
 
-    public void setFieldFactType(final String fieldFactType) {
-        this.fieldFactType = fieldFactType;
+    public String getConditionParent() {
+        return conditionParent;
     }
 
-    public void setFieldName(final String fieldName) {
-        this.fieldName = fieldName;
+    public void setConditionParent(String conditionParent) {
+        this.conditionParent = conditionParent;
     }
 
     public void setConflictedItem(final String conflictedItem) {
@@ -67,14 +64,6 @@ public class ImpossibleMatchIssue
 
     public void setRuleId(final String ruleId) {
         this.ruleId = ruleId;
-    }
-
-    public String getFieldFactType() {
-        return fieldFactType;
-    }
-
-    public String getFieldName() {
-        return fieldName;
     }
 
     public String getConflictedItem() {
@@ -103,10 +92,7 @@ public class ImpossibleMatchIssue
 
         ImpossibleMatchIssue that = (ImpossibleMatchIssue) o;
 
-        if (fieldFactType != null ? !fieldFactType.equals(that.fieldFactType) : that.fieldFactType != null) {
-            return false;
-        }
-        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) {
+        if (conditionParent != null ? !conditionParent.equals(that.conditionParent) : that.conditionParent != null) {
             return false;
         }
         if (conflictedItem != null ? !conflictedItem.equals(that.conflictedItem) : that.conflictedItem != null) {
@@ -121,8 +107,7 @@ public class ImpossibleMatchIssue
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (fieldFactType != null ? ~~fieldFactType.hashCode() : 0);
-        result = 31 * result + (fieldName != null ? ~~fieldName.hashCode() : 0);
+        result = 31 * result + (conditionParent != null ? ~~conditionParent.hashCode() : 0);
         result = 31 * result + (conflictedItem != null ? ~~conflictedItem.hashCode() : 0);
         result = 31 * result + (conflictingItem != null ? ~~conflictingItem.hashCode() : 0);
         result = 31 * result + (ruleId != null ? ~~ruleId.hashCode() : 0);

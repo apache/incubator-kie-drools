@@ -27,8 +27,8 @@ import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.index.model.Action;
 import org.drools.verifier.core.index.model.Condition;
-import org.drools.verifier.core.index.model.Field;
-import org.drools.verifier.core.index.model.ObjectField;
+import org.drools.verifier.core.index.model.meta.ConditionParent;
+import org.drools.verifier.core.index.model.meta.ConditionParentType;
 import org.drools.verifier.core.index.select.AllListener;
 import org.drools.verifier.core.maps.InspectorList;
 import org.drools.verifier.core.maps.UpdatableInspectorList;
@@ -49,17 +49,17 @@ public class FieldInspector
                    HumanReadable,
                    HasKeys {
 
-    private final ObjectField objectField;
+    private final ConditionParentType objectField;
 
     private final UpdatableInspectorList<ActionInspector, Action> actionInspectorList;
     private final UpdatableInspectorList<ConditionInspector, Condition> conditionInspectorList;
     private final UUIDKey uuidKey;
     private final RuleInspectorUpdater ruleInspectorUpdater;
 
-    public FieldInspector(final Field field,
+    public FieldInspector(final ConditionParent field,
                           final RuleInspectorUpdater ruleInspectorUpdater,
                           final AnalyzerConfiguration configuration) {
-        this(field.getObjectField(),
+        this(field.getConditionParentType(),
              ruleInspectorUpdater,
              configuration);
 
@@ -80,7 +80,7 @@ public class FieldInspector
         setupConditionsListener(field);
     }
 
-    public FieldInspector(final ObjectField field,
+    public FieldInspector(final ConditionParentType field,
                           final RuleInspectorUpdater ruleInspectorUpdater,
                           final AnalyzerConfiguration configuration) {
         this.objectField = PortablePreconditions.checkNotNull("field",
@@ -96,7 +96,7 @@ public class FieldInspector
                                                               configuration);
     }
 
-    private void setupConditionsListener(final Field field) {
+    private void setupConditionsListener(final ConditionParent field) {
         field.getConditions()
                 .where(Condition.value()
                                .any())
@@ -110,7 +110,7 @@ public class FieldInspector
                 });
     }
 
-    private void setupActionsListener(final Field field) {
+    private void setupActionsListener(final ConditionParent field) {
         field.getActions()
                 .where(Action.value()
                                .any())
@@ -124,7 +124,7 @@ public class FieldInspector
                 });
     }
 
-    public ObjectField getObjectField() {
+    public ConditionParentType getObjectField() {
         return objectField;
     }
 

@@ -33,38 +33,38 @@ public class ConditionTest {
 
     @Before
     public void setUp() throws
-                        Exception {
-        condition = new Condition(mock( Column.class ),
+            Exception {
+        condition = new Condition(mock(Column.class),
                                   ConditionSuperType.FIELD_CONDITION,
-                                  new Values(1 ),
-                                  new AnalyzerConfigurationMock() ) {
+                                  new Values(1),
+                                  new AnalyzerConfigurationMock()) {
 
         };
     }
 
     @Test
     public void valueSet() throws
-                           Exception {
-        assertEquals( 1,
-                      condition.getValues()
-                              .size() );
-        assertEquals( 1,
-                      condition.getValues()
-                              .iterator()
-                              .next() );
+            Exception {
+        assertEquals(1,
+                     condition.getValues()
+                             .size());
+        assertEquals(1,
+                     condition.getValues()
+                             .iterator()
+                             .next());
     }
 
     @Test
     public void changeValue() throws
-                              Exception {
-        condition.setValue( new Values( 2 ) );
+            Exception {
+        condition.setValue(new Values(2));
 
-        assertEquals( 1,
-                      condition.getValues()
-                              .size() );
-        assertEquals( 2,
-                      condition.getValues()
-                              .iterator()
-                              .next() );
+        assertEquals(1,
+                     condition.getValues()
+                             .size());
+        assertEquals(2,
+                     condition.getValues()
+                             .iterator()
+                             .next());
     }
 }

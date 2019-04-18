@@ -22,6 +22,7 @@ public class RelationResolver {
 
     private final ConflictResolver conflictResolver;
     private final SubsumptionResolver subsumptionResolver;
+    private final OverlapResolver overlapResolver;
 
     private final InspectorList list;
 
@@ -37,6 +38,8 @@ public class RelationResolver {
                                                 record);
         subsumptionResolver = new SubsumptionResolver(list,
                                                       record);
+        overlapResolver = new OverlapResolver(list,
+                                              record);
     }
 
     public boolean isConflicting(final InspectorList otherCollection) {
@@ -51,6 +54,12 @@ public class RelationResolver {
         return list != null && otherList != null &&
                 !isConflicting(otherList) &&
                 subsumptionResolver.listSubsumesOther(otherList);
+    }
+
+    public boolean overlaps(InspectorList otherList) {
+        return list != null && otherList != null &&
+                !isConflicting(otherList) &&
+                overlapResolver.listOverlapsOther(otherList);
     }
 
     public boolean isRedundant(final InspectorList otherList) {

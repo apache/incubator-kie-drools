@@ -18,6 +18,7 @@ package org.drools.verifier.core.index;
 import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
+import org.drools.verifier.core.index.model.ColumnType;
 import org.drools.verifier.core.index.model.Condition;
 import org.drools.verifier.core.index.model.Conditions;
 import org.drools.verifier.core.index.model.Field;
@@ -43,7 +44,7 @@ public class ConditionsListenerTest {
             Exception {
         configuration = new AnalyzerConfigurationMock();
 
-        conditions = new Conditions();
+        conditions = new Conditions(configuration.getConditionKeyDefinitions());
 
         allListener = mock(AllListener.class);
         conditions
@@ -62,6 +63,7 @@ public class ConditionsListenerTest {
                                                     "name",
                                                     configuration),
                                           new Column(1,
+                                                     ColumnType.LHS,
                                                      configuration),
                                           "==",
                                           new Values<>(10),
@@ -79,6 +81,7 @@ public class ConditionsListenerTest {
                                                                  "name",
                                                                  configuration),
                                                        new Column(1,
+                                                                  ColumnType.LHS,
                                                                   configuration),
                                                        "==",
                                                        new Values<>(10),

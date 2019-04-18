@@ -33,37 +33,37 @@ public class ActionTest {
 
     @Before
     public void setUp() throws
-                        Exception {
-        action = new Action(mock( Column.class ),
+            Exception {
+        action = new Action(mock(Column.class),
                             ActionSuperType.FIELD_ACTION,
-                            new Values(true ),
-                            new AnalyzerConfigurationMock() ) {
+                            new Values(true),
+                            new AnalyzerConfigurationMock()) {
         };
     }
 
     @Test
     public void valueSet() throws
-                           Exception {
-        assertEquals( 1,
-                      action.getValues()
-                              .size() );
-        assertEquals( true,
-                      action.getValues()
-                              .iterator()
-                              .next() );
+            Exception {
+        assertEquals(1,
+                     action.getValues()
+                             .size());
+        assertEquals(true,
+                     action.getValues()
+                             .iterator()
+                             .next());
     }
 
     @Test
     public void changeValue() throws
-                              Exception {
-        action.setValue( new Values( false ) );
+            Exception {
+        action.setValue(new Values(false));
 
-        assertEquals( 1,
-                      action.getValues()
-                              .size() );
-        assertEquals( false,
-                      action.getValues()
-                              .iterator()
-                              .next() );
+        assertEquals(1,
+                     action.getValues()
+                             .size());
+        assertEquals(false,
+                     action.getValues()
+                             .iterator()
+                             .next());
     }
 }

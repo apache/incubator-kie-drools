@@ -16,6 +16,8 @@
 
 package org.drools.verifier.core.checks.base;
 
+import java.util.List;
+
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.core.configuration.CheckConfiguration;
 
@@ -23,7 +25,7 @@ public interface Check {
 
     boolean check();
 
-    Issue getIssue();
+    List<Issue> getIssues();
 
     boolean hasIssues();
 

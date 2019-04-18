@@ -15,6 +15,7 @@
  */
 package org.drools.verifier.core.index;
 
+import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.model.Columns;
 import org.drools.verifier.core.index.model.ObjectTypes;
 import org.drools.verifier.core.index.model.Rules;
@@ -22,11 +23,13 @@ import org.drools.verifier.core.index.model.Rules;
 public class IndexImpl
         implements Index {
 
-    private Rules rules = new Rules();
+    private final Rules rules;
+    private final Columns columns = new Columns();
+    private final ObjectTypes objectTypes = new ObjectTypes();
 
-    private Columns columns = new Columns();
-
-    private ObjectTypes objectTypes = new ObjectTypes();
+    public IndexImpl(final AnalyzerConfiguration configuration) {
+        this.rules = new Rules(configuration);
+    }
 
     @Override
     public Rules getRules() {

@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.joining;
 
 public class InspectorList<InspectorType extends HasUUID>
         extends ArrayList<InspectorType>
-        implements IsOverlapping,
+        implements IsOverlapping<InspectorList>,
                    IsSubsuming<InspectorList>,
                    IsRedundant<InspectorList>,
                    IsConflicting<InspectorList>,
@@ -56,8 +56,8 @@ public class InspectorList<InspectorType extends HasUUID>
     }
 
     @Override
-    public boolean overlaps(final Object other) {
-        return false;
+    public boolean overlaps(final InspectorList other) {
+        return relationResolver.overlaps(other);
     }
 
     @Override

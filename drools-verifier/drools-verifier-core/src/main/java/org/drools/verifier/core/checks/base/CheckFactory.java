@@ -76,16 +76,22 @@ public class CheckFactory {
 
     protected Optional<PairCheckBundle> makePairRowCheck(final RuleInspector ruleInspector,
                                                          final RuleInspector other) {
-
-        final List<Check> filteredSet = filter(new DetectConflictingRowsCheck(ruleInspector,
-                                                                              other,
-                                                                              configuration),
-                                               new DetectRedundantRowsCheck(ruleInspector,
-                                                                            other,
-                                                                            configuration),
-                                               new SingleHitCheck(ruleInspector,
-                                                                  other,
-                                                                  configuration));
+        final List<Check> filteredSet = new ArrayList<Check>();
+        if (ruleInspector.getRowIndex() < other.getRowIndex()) {
+            filteredSet.addAll(filter(new DetectConflictingRowsCheck(ruleInspector,
+                                                                     other,
+                                                                     configuration),
+//                                               new OverlappingRowsCheck(ruleInspector,
+//                                                                        other,
+//                                                                        index,
+//                                                                        configuration),
+                                      new DetectRedundantRowsCheck(ruleInspector,
+                                                                   other,
+                                                                   configuration),
+                                      new SingleHitCheck(ruleInspector,
+                                                         other,
+                                                         configuration)));
+        }
 
         if (filteredSet.isEmpty()) {
             return Optional.empty();

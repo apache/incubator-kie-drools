@@ -37,9 +37,9 @@ public class Rule
                    HasKeys,
                    HasIndex {
 
-    private final Patterns patterns = new Patterns();
-    private final Actions actions = new Actions();
-    private final Conditions conditions = new Conditions();
+    private final Patterns patterns;
+    private final Actions actions;
+    private final Conditions conditions;
     private final UUIDKey uuidKey;
     private final Map<String, RuleAttribute> ruleAttributes = new HashMap<String, RuleAttribute>();
     private UpdatableKey<Rule> indexKey;
@@ -50,6 +50,9 @@ public class Rule
         this.indexKey = new UpdatableKey<>(IndexKey.INDEX_ID,
                                            rowNumber);
         this.uuidKey = configuration.getUUID(this);
+        this.patterns = new Patterns(configuration);
+        this.conditions = new Conditions(configuration.getConditionKeyDefinitions());
+        this.actions = new Actions(configuration.getActionKeyDefinitions());
     }
 
     public static Matchers uuid() {

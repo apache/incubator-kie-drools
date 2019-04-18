@@ -30,7 +30,7 @@ import org.drools.verifier.core.relations.IsConflicting;
 import org.drools.verifier.core.relations.IsRedundant;
 import org.drools.verifier.core.relations.IsSubsuming;
 
-public abstract class ActionInspector
+public class ActionInspector
         implements IsRedundant,
                    IsSubsuming,
                    IsConflicting,

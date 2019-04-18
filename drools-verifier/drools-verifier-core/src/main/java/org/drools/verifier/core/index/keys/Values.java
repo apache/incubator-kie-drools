@@ -16,6 +16,7 @@
 package org.drools.verifier.core.index.keys;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.joining;
 
@@ -33,9 +34,15 @@ public class Values<T extends Comparable>
     public Values() {
     }
 
+    public static <T extends Comparable> Values<T> nullValue() {
+        final Values<T> comparables = new Values<>();
+        comparables.add(null);
+        return comparables;
+    }
+
     @Override
     public String toString() {
-        return stream().map(Object::toString).collect(joining(", "));
+        return stream().filter(Objects::nonNull).map(Object::toString).collect(joining(", "));
     }
 
     public boolean isThereChanges(final Values otherValues) {
@@ -75,11 +82,5 @@ public class Values<T extends Comparable>
         }
 
         return false;
-    }
-
-    public static <T extends Comparable> Values<T> nullValue() {
-        final Values<T> comparables = new Values<>();
-        comparables.add(null);
-        return comparables;
     }
 }

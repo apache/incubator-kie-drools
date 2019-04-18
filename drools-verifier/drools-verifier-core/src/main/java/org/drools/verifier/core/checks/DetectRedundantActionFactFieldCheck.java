@@ -16,14 +16,16 @@
 
 package org.drools.verifier.core.checks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
 import org.drools.verifier.api.reporting.ValueForFactFieldIsSetTwiceIssue;
-import org.drools.verifier.core.cache.inspectors.PatternInspector;
+import org.drools.verifier.core.cache.inspectors.ConditionMasterInspector;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.maps.InspectorMultiMap;
@@ -42,9 +44,9 @@ public class DetectRedundantActionFactFieldCheck
     @Override
     public boolean check() {
         result = ruleInspector.getPatternsInspector().stream()
-                .filter(p -> p.getPattern().getBoundName() != null)
-                .peek(p -> patternInspector = p)
-                .map(PatternInspector::getActionsInspector)
+                .filter(p -> p.getConditionMaster().getBoundName() != null)
+                .map(p -> conditionMasterInspector = p)
+                .map(ConditionMasterInspector::getActionsInspector)
                 .map(InspectorMultiMap::hasRedundancy)
                 .filter(RedundancyResult::isTrue)
                 .findFirst().orElse(null);
@@ -58,18 +60,22 @@ public class DetectRedundantActionFactFieldCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new ValueForFactFieldIsSetTwiceIssue(severity,
-                                                    checkType,
-                                                    patternInspector.getPattern()
-                                                            .getBoundName(),
-                                                    result.getParent()
-                                                            .getName(),
-                                                    result.get(0)
-                                                            .toHumanReadableString(),
-                                                    result.get(1)
-                                                            .toHumanReadableString(),
-                                                    new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1)));
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+        final ArrayList<Issue> resultIssues = new ArrayList<>();
+
+        resultIssues.add(new ValueForFactFieldIsSetTwiceIssue(severity,
+                                                              checkType,
+                                                              conditionMasterInspector.getConditionMaster()
+                                                                      .getBoundName(),
+                                                              result.getParent()
+                                                                      .getName(),
+                                                              result.get(0)
+                                                                      .toHumanReadableString(),
+                                                              result.get(1)
+                                                                      .toHumanReadableString(),
+                                                              new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1))));
+
+        return resultIssues;
     }
 }

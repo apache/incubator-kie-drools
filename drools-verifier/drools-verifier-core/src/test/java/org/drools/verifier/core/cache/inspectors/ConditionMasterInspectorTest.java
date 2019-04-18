@@ -27,30 +27,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class PatternInspectorTest {
+public class ConditionMasterInspectorTest {
 
     private AnalyzerConfigurationMock configurationMock;
 
-    private PatternInspector a;
-    private PatternInspector b;
+    private ConditionMasterInspector a;
+    private ConditionMasterInspector b;
 
     @Before
     public void setUp() throws
             Exception {
         configurationMock = new AnalyzerConfigurationMock();
 
-        a = new PatternInspector(new Pattern("a",
-                                             new ObjectType("org.Person",
+        a = new ConditionMasterInspector(new Pattern("a",
+                                                     new ObjectType("org.Person",
                                                             configurationMock),
-                                             configurationMock),
-                                 mock(RuleInspectorUpdater.class),
-                                 mock(AnalyzerConfiguration.class));
-        b = new PatternInspector(new Pattern("b",
-                                             new ObjectType("org.Person",
+                                                     configurationMock),
+                                         mock(RuleInspectorUpdater.class),
+                                         mock(AnalyzerConfiguration.class));
+        b = new ConditionMasterInspector(new Pattern("b",
+                                                     new ObjectType("org.Person",
                                                             configurationMock),
-                                             configurationMock),
-                                 mock(RuleInspectorUpdater.class),
-                                 mock(AnalyzerConfiguration.class));
+                                                     configurationMock),
+                                         mock(RuleInspectorUpdater.class),
+                                         mock(AnalyzerConfiguration.class));
     }
 
     @Test
@@ -63,12 +63,12 @@ public class PatternInspectorTest {
     @Test
     public void testRedundancy02() throws
             Exception {
-        final PatternInspector x = new PatternInspector(new Pattern("x",
-                                                                    new ObjectType("org.Address",
+        final ConditionMasterInspector x = new ConditionMasterInspector(new Pattern("x",
+                                                                                    new ObjectType("org.Address",
                                                                                    configurationMock),
-                                                                    configurationMock),
-                                                        mock(RuleInspectorUpdater.class),
-                                                        mock(AnalyzerConfiguration.class));
+                                                                                    configurationMock),
+                                                                        mock(RuleInspectorUpdater.class),
+                                                                        mock(AnalyzerConfiguration.class));
 
         assertFalse(x.isRedundant(b));
         assertFalse(b.isRedundant(x));
@@ -84,12 +84,12 @@ public class PatternInspectorTest {
     @Test
     public void testSubsumpt02() throws
             Exception {
-        final PatternInspector x = new PatternInspector(new Pattern("x",
-                                                                    new ObjectType("org.Address",
+        final ConditionMasterInspector x = new ConditionMasterInspector(new Pattern("x",
+                                                                                    new ObjectType("org.Address",
                                                                                    configurationMock),
-                                                                    configurationMock),
-                                                        mock(RuleInspectorUpdater.class),
-                                                        mock(AnalyzerConfiguration.class));
+                                                                                    configurationMock),
+                                                                        mock(RuleInspectorUpdater.class),
+                                                                        mock(AnalyzerConfiguration.class));
 
         assertFalse(x.subsumes(b));
         assertFalse(b.subsumes(x));

@@ -38,13 +38,14 @@ public abstract class Action
             .withId("superType")
             .updatable()
             .build();
+
     protected static final KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition()
             .withId("columnUUID")
             .build();
 
-    protected final UUIDKey uuidKey;
     protected final Column column;
-    private final ActionSuperType superType;
+    protected final UUIDKey uuidKey;
+    protected final ActionSuperType superType;
     private final Values<Comparable> values = new Values<>();
     protected UpdatableKey<Action> valueKey;
 
@@ -52,13 +53,13 @@ public abstract class Action
                   final ActionSuperType superType,
                   final Values values,
                   final AnalyzerConfiguration configuration) {
-        this.column = PortablePreconditions.checkNotNull("column",
-                                                         column);
         this.superType = PortablePreconditions.checkNotNull("superType",
                                                             superType);
         this.valueKey = new UpdatableKey<>(Action.VALUE,
                                            values);
         this.uuidKey = configuration.getUUID(this);
+        this.column = PortablePreconditions.checkNotNull("column",
+                                                         column);
         resetValues();
     }
 

@@ -19,7 +19,7 @@ package org.drools.verifier.core;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.verifier.core.cache.RuleInspectorCache;
+import org.drools.verifier.core.cache.IndexedRuleInspectorCache;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
@@ -36,16 +36,16 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class RuleInspectorCacheTest {
 
-    private RuleInspectorCache cache;
+    private IndexedRuleInspectorCache cache;
 
     @Before
     public void setUp() throws
             Exception {
-        final Index index = new IndexImpl();
         final AnalyzerConfiguration configuration = new AnalyzerConfigurationMock();
+        final Index index = new IndexImpl(configuration);
 
-        cache = new RuleInspectorCache(index,
-                                       configuration);
+        cache = new IndexedRuleInspectorCache(index,
+                                              configuration);
 
         cache.addRule(new Rule(0,
                                configuration));

@@ -18,33 +18,37 @@ package org.drools.verifier.core.index.model;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.verifier.core.index.matchers.ExactMatcher;
 import org.drools.verifier.core.index.matchers.Matcher;
 import org.drools.verifier.core.index.query.Where;
 import org.drools.verifier.core.index.select.Listen;
 import org.drools.verifier.core.index.select.Select;
+import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.KeyTreeMap;
 
 public class Conditions {
 
-    public final KeyTreeMap<Condition> map = new KeyTreeMap<>(Condition.keyDefinitions());
+    public final KeyTreeMap<Condition> map;
 
-    public Conditions() {
-
+    public Conditions(final KeyDefinition[] keyDefinitions) {
+        map = new KeyTreeMap<>(keyDefinitions);
     }
 
-    public Conditions(final Collection<Condition> conditions) {
+    public Conditions(final KeyDefinition[] keyDefinitions,
+                      final Collection<Condition> conditions) {
+        this(keyDefinitions);
         for (final Condition condition : conditions) {
             add(condition);
         }
     }
 
-    public void add(final Condition condition) {
-        map.put(condition);
+    public Conditions(final KeyDefinition[] keyDefinitions,
+                      final Condition... conditions) {
+        this(keyDefinitions,
+             Arrays.asList(conditions));
     }
 
-    public Conditions(final Condition... conditions) {
-        this(Arrays.asList(conditions));
+    public void add(final Condition condition) {
+        map.put(condition);
     }
 
     public Where<ConditionSelector, ConditionListen> where(final Matcher matcher) {
@@ -63,13 +67,6 @@ public class Conditions {
 
     public void merge(final Conditions conditions) {
         map.merge(conditions.map);
-    }
-
-    public void remove(final Column column) {
-        final ExactMatcher matcher = Condition.columnUUID().is(column.getUuidKey());
-        for (final Condition condition : where(matcher).select().all()) {
-            condition.getUuidKey().retract();
-        }
     }
 
     public class ConditionSelector

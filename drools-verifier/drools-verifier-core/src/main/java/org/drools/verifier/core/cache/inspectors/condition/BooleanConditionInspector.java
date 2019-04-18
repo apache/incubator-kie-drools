@@ -79,9 +79,7 @@ public class BooleanConditionInspector
     @Override
     public String toHumanReadableString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(field.getFactType());
-        stringBuilder.append(".");
-        stringBuilder.append(field.getName());
+        stringBuilder.append(field.toString());
         stringBuilder.append(" ");
         stringBuilder.append(operator);
         stringBuilder.append(" ");

@@ -24,11 +24,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
+import org.drools.verifier.api.reporting.Issue;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
@@ -113,26 +115,38 @@ public class DMNDTAnalyser {
         printDebugTableInfo(ddtaTable);
         DTAnalysis analysis = new DTAnalysis(dt, ddtaTable);
         analysis.computeOutputInLOV();
-        if (!dt.getHitPolicy().equals(HitPolicy.COLLECT)) {
-            if (ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
-                LOG.debug("findGaps");
-                findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
-            } else {
-                LOG.debug("findGaps Skipped because getColIDsStringWithoutEnum is not empty: {}", ddtaTable.getColIDsStringWithoutEnum());
-            }
-            LOG.debug("findOverlaps");
-            findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+
+        if (Boolean.getBoolean("enable.experimental.generic.validator")) {
+
+            final DroolsVerifierDTValidator droolsVerifierDTValidator = new DroolsVerifierDTValidator(FEEL,
+                                                                                                      valueFromNodeVisitor,
+                                                                                                      outputClauseVisitor);
+            final Set<Issue> issues = droolsVerifierDTValidator.validateDT(dt);
+            analysis.addIssues(issues);
         } else {
-            LOG.debug("findGaps(), findOverlaps() are Skipped because getHitPolicy is COLLECT.");
+
+            if (!dt.getHitPolicy().equals(HitPolicy.COLLECT)) {
+                if (ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
+                    LOG.debug("findGaps");
+                    findGaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+                } else {
+                    LOG.debug("findGaps Skipped because getColIDsStringWithoutEnum is not empty: {}", ddtaTable.getColIDsStringWithoutEnum());
+                }
+                LOG.debug("findOverlaps");
+                findOverlaps(analysis, ddtaTable, 0, new Interval[ddtaTable.inputCols()], Collections.emptyList());
+            } else {
+                LOG.debug("findGaps(), findOverlaps() are Skipped because getHitPolicy is COLLECT.");
+            }
+            LOG.debug("computeMaskedRules");
+            analysis.computeMaskedRules();
+            LOG.debug("computeMisleadingRules");
+            analysis.computeMisleadingRules();
+            LOG.debug("normalize");
+            analysis.normalize();
+            LOG.debug("computeSubsumptions");
+            analysis.computeSubsumptions();
         }
-        LOG.debug("computeMaskedRules");
-        analysis.computeMaskedRules();
-        LOG.debug("computeMisleadingRules");
-        analysis.computeMisleadingRules();
-        LOG.debug("normalize");
-        analysis.normalize();
-        LOG.debug("computeSubsumptions");
-        analysis.computeSubsumptions();
+
         LOG.debug("computeContractions");
         analysis.computeContractions();
         LOG.debug("compute1stNFViolations");
@@ -141,6 +155,7 @@ public class DMNDTAnalyser {
         analysis.compute2ndNFViolations();
         LOG.debug("computeHitPolicyRecommender");
         analysis.computeHitPolicyRecommender();
+
         return analysis;
     }
 
@@ -215,7 +230,6 @@ public class DMNDTAnalyser {
             ddtaTable.addRule(ddtaRule);
         }
     }
-
 
     private void compileTableInputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int jColIdx = 0; jColIdx < dt.getInput().size(); jColIdx++) {
@@ -333,10 +347,10 @@ public class DMNDTAnalyser {
 
         List<DMNModel> childModels = ((DMNModelImpl) model).getImportChainDirectChildModels();
         return childModels.stream()
-                          .map(childModel -> findAllowedValues(childModel, typeRef))
-                          .filter(Objects::nonNull)
-                          .findFirst()
-                          .orElse(null);
+                .map(childModel -> findAllowedValues(childModel, typeRef))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     private void findOverlaps(DTAnalysis analysis, DDTATable ddtaTable, int jColIdx, Interval[] currentIntervals, Collection<Integer> activeRules) {
@@ -463,8 +477,8 @@ public class DMNDTAnalyser {
         } else {
             if (lastBound.isLowerBound() && currentBound.isUpperBound()) {
                 return true;
-            } else if (lastBound.isUpperBound() && lastBound.getBoundaryType() == RangeBoundary.OPEN 
-                && currentBound.isLowerBound() && currentBound.getBoundaryType() == RangeBoundary.OPEN) {
+            } else if (lastBound.isUpperBound() && lastBound.getBoundaryType() == RangeBoundary.OPEN
+                    && currentBound.isLowerBound() && currentBound.getBoundaryType() == RangeBoundary.OPEN) {
                 return true; // the case x) (x
             } else {
                 return false;
@@ -513,7 +527,7 @@ public class DMNDTAnalyser {
                         upperBoundIdx = i;
                     }
                 } else {
-                    if (lowerBoundIdx >= 0 && upperBoundIdx >=0) {
+                    if (lowerBoundIdx >= 0 && upperBoundIdx >= 0) {
                         results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
                         lowerBoundIdx = -1;
                         upperBoundIdx = -1;
@@ -559,7 +573,7 @@ public class DMNDTAnalyser {
             }
             return result;
         } catch (Throwable e) {
-            return false;    
+            return false;
         }
     }
 

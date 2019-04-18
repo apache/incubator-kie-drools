@@ -15,16 +15,25 @@
  */
 package org.drools.verifier.core.checks.base;
 
-import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.AnalyzerConfigurationMock;
+import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.configuration.CheckConfiguration;
+import org.drools.verifier.core.index.Index;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CheckFactoryTest {
+
+    @Mock
+    private Index index;
 
     @Test
     public void emptyWhiteList() throws
@@ -47,8 +56,12 @@ public class CheckFactoryTest {
 
         assertFalse(new CheckFactory(configuration).makeSingleChecks(mock(RuleInspector.class))
                             .isEmpty());
-        assertTrue(new CheckFactory(configuration).makePairRowCheck(mock(RuleInspector.class),
-                                                                    mock(RuleInspector.class))
+        RuleInspector ruleInspector = mock(RuleInspector.class);
+        doReturn(1).when(ruleInspector).getRowIndex();
+        RuleInspector other = mock(RuleInspector.class);
+        doReturn(2).when(other).getRowIndex();
+        assertTrue(new CheckFactory(configuration).makePairRowCheck(ruleInspector,
+                                                                    other)
                            .isPresent());
     }
 }

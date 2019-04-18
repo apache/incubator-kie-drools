@@ -34,7 +34,8 @@ public class ActionInspectorFactory
             return new FieldActionInspector((FieldAction) action,
                                             configuration);
         } else {
-            return null;
+            return new ActionInspector(action,
+                                       configuration);
         }
     }
 }

@@ -17,24 +17,27 @@ package org.drools.verifier.core.index.model;
 
 import java.util.Collection;
 
-import org.drools.verifier.core.index.matchers.ExactMatcher;
 import org.drools.verifier.core.index.matchers.KeyMatcher;
 import org.drools.verifier.core.index.matchers.Matcher;
 import org.drools.verifier.core.index.query.MapBy;
 import org.drools.verifier.core.index.query.Where;
 import org.drools.verifier.core.index.select.Listen;
 import org.drools.verifier.core.index.select.Select;
+import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.KeyTreeMap;
 
 public class Actions {
 
-    private final KeyTreeMap<Action> map = new KeyTreeMap<>(Action.keyDefinitions());
+    private final KeyTreeMap<Action> map;
 
-    public Actions() {
-
+    public Actions(final KeyDefinition[] keyDefinitions) {
+        map = new KeyTreeMap<>(keyDefinitions);
     }
 
-    public Actions(final Collection<Action> actions) {
+    public Actions(final KeyDefinition[] keyDefinitions,
+                   final Collection<Action> actions) {
+        this(keyDefinitions);
+
         for (final Action action : actions) {
             add(action);
         }
@@ -65,13 +68,6 @@ public class Actions {
 
     public <KeyType> MapBy<KeyType, Action> mapBy(final KeyMatcher matcher) {
         return new MapBy<>(map.get(matcher.getKeyDefinition()));
-    }
-
-    public void remove(final Column column) {
-        final ExactMatcher matcher = Action.columnUUID().is(column.getUuidKey());
-        for (final Action action : where(matcher).select().all()) {
-            action.getUuidKey().retract();
-        }
     }
 
     public class ActionSelect

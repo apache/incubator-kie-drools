@@ -16,10 +16,10 @@
 
 package org.drools.verifier.core.cache.inspectors;
 
+import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.cache.inspectors.condition.ComparableConditionInspector;
 import org.drools.verifier.core.cache.inspectors.condition.ConditionInspector;
 import org.drools.verifier.core.cache.inspectors.condition.ConditionsInspectorMultiMap;
-import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Column;
 import org.drools.verifier.core.index.model.Field;
@@ -90,7 +90,10 @@ public class ConditionsInspectorTest {
                                                                                                                          new Values<>(1),
                                                                                                                          configurationMock),
                                                                                                       configurationMock),
-                                                            new ComparableConditionInspector<Integer>(new FieldCondition(new Field(mock(ObjectField.class),
+                                                            new ComparableConditionInspector<Integer>(new FieldCondition(new Field(new ObjectField("Person",
+                                                                                                                                                   "Integer",
+                                                                                                                                                   "balance",
+                                                                                                                                                   configurationMock),
                                                                                                                                    "Person",
                                                                                                                                    "Integer",
                                                                                                                                    "balance",
@@ -158,7 +161,7 @@ public class ConditionsInspectorTest {
         final ConditionsInspectorMultiMap conditionsInspector = new ConditionsInspectorMultiMap(configurationMock);
         for (final ConditionInspector inspector : numericIntegerConditions) {
             conditionsInspector.put(((ComparableConditionInspector) inspector).getField()
-                                            .getObjectField(),
+                                            .getConditionParentType(),
                                     inspector);
         }
         return conditionsInspector;

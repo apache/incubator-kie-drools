@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.model.Column;
+import org.drools.verifier.core.index.model.ColumnType;
 import org.drools.verifier.core.index.model.Columns;
 import org.drools.verifier.core.index.model.ObjectType;
 import org.drools.verifier.core.index.model.ObjectTypes;
@@ -70,7 +71,7 @@ public class QueryableIndexTest {
             Exception {
         configuration = new AnalyzerConfigurationMock();
 
-        final Rules rules = new Rules();
+        final Rules rules = new Rules(configuration);
         rules.add(new Rule(0,
                            configuration));
         rules.add(new Rule(1,
@@ -80,9 +81,11 @@ public class QueryableIndexTest {
 
         final Columns columns = new Columns();
         firstColumn = new Column(0,
+                                 ColumnType.UNKNOWN,
                                  configuration);
         columns.add(firstColumn);
         columns.add(new Column(1,
+                               ColumnType.UNKNOWN,
                                configuration));
 
         final ObjectTypes objectTypes = new ObjectTypes();

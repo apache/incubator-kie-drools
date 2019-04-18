@@ -16,10 +16,17 @@
 
 package org.drools.verifier.core.index.model;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
+import org.drools.verifier.core.index.model.meta.ConditionParentType;
 
 public class ObjectField
-        extends FieldBase {
+        extends FieldBase
+        implements ConditionParentType {
+
+    private final Optional<FieldRange> range;
 
     public ObjectField(final String factType,
                        final String fieldType,
@@ -29,5 +36,42 @@ public class ObjectField
               fieldType,
               name,
               configuration);
+        range = Optional.empty();
+    }
+
+    public ObjectField(final String factType,
+                       final String fieldType,
+                       final String name,
+                       final FieldRange fieldRange,
+                       final AnalyzerConfiguration configuration) {
+        super(factType,
+              fieldType,
+              name,
+              configuration);
+        this.range = Optional.of(fieldRange);
+    }
+
+    public Optional<FieldRange> getRange() {
+        return range;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ObjectField that = (ObjectField) o;
+        return range.equals(that.range);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), range);
     }
 }

@@ -17,12 +17,14 @@
 package org.drools.verifier.core.main;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.verifier.api.Command;
 import org.drools.verifier.api.Status;
 import org.drools.verifier.api.StatusUpdate;
 import org.drools.verifier.api.reporting.Issue;
+import org.drools.verifier.core.cache.IndexedRuleInspectorCache;
 import org.drools.verifier.core.cache.RuleInspectorCache;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.checks.base.Check;
@@ -45,29 +47,52 @@ public class Analyzer {
     public Analyzer(final Reporter reporter,
                     final Index index,
                     final AnalyzerConfiguration configuration) {
+        this(reporter,
+             new IndexedRuleInspectorCache(PortablePreconditions.checkNotNull("index",
+                                                                              index),
+                                           configuration),
+             configuration);
+    }
+
+    public Analyzer(final Reporter reporter,
+                    final List<Rule> rules,
+                    final AnalyzerConfiguration configuration) {
+        this(reporter,
+             new RuleInspectorCache(rules,
+                                    configuration),
+             configuration);
+    }
+
+    private Analyzer(final Reporter reporter,
+                     final RuleInspectorCache cache,
+                     final AnalyzerConfiguration configuration) {
         this.reporter = PortablePreconditions.checkNotNull("reporter",
                                                            reporter);
         this.configuration = PortablePreconditions.checkNotNull("configuration",
                                                                 configuration);
         this.checkRunManager = new CheckRunManager(configuration.getCheckRunner());
-        this.cache = new RuleInspectorCache(PortablePreconditions.checkNotNull("index",
-                                                                               index),
-                                            configuration);
+        this.cache = cache;
         this.cache.reset();
     }
 
     public void newColumn(final Column column) {
-        cache.newColumn(column);
+        if (cache instanceof IndexedRuleInspectorCache) {
+            ((IndexedRuleInspectorCache) cache).newColumn(column);
+        }
     }
 
     public void newRule(final Rule rule) {
-        final RuleInspector ruleInspector = cache.addRule(rule);
+        if (cache instanceof IndexedRuleInspectorCache) {
+            final RuleInspector ruleInspector = ((IndexedRuleInspectorCache) cache).addRule(rule);
 
-        checkRunManager.addChecks(ruleInspector.getChecks());
+            checkRunManager.addChecks(ruleInspector.getChecks());
+        }
     }
 
     public void deleteColumn(final int firstColumnIndex) {
-        cache.deleteColumns(firstColumnIndex);
+        if (cache instanceof IndexedRuleInspectorCache) {
+            ((IndexedRuleInspectorCache) cache).deleteColumns(firstColumnIndex);
+        }
     }
 
     public void resetChecks() {
@@ -82,8 +107,10 @@ public class Analyzer {
     }
 
     public void removeRule(final Integer rowDeleted) {
-        checkRunManager.remove(cache.removeRow(rowDeleted));
-        analyze();
+        if (cache instanceof IndexedRuleInspectorCache) {
+            checkRunManager.remove(((IndexedRuleInspectorCache) cache).removeRow(rowDeleted));
+            analyze();
+        }
     }
 
     public void start() {
@@ -97,15 +124,18 @@ public class Analyzer {
 
     public void update(final Set<Integer> canBeUpdated) {
 
-        final Set<Check> checks = new HashSet<>();
+        if (cache instanceof IndexedRuleInspectorCache) {
 
-        for (final Integer row : canBeUpdated) {
-            checks.addAll(cache.getRuleInspector(row)
-                                  .getChecks());
-        }
+            final Set<Check> checks = new HashSet<>();
 
-        if (!checks.isEmpty()) {
-            checkRunManager.addChecks(checks);
+            for (final Integer row : canBeUpdated) {
+                checks.addAll(((IndexedRuleInspectorCache) cache).getRuleInspector(row)
+                                      .getChecks());
+            }
+
+            if (!checks.isEmpty()) {
+                checkRunManager.addChecks(checks);
+            }
         }
     }
 

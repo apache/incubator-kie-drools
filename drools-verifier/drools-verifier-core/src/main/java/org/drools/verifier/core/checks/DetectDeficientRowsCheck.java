@@ -16,12 +16,14 @@
 
 package org.drools.verifier.core.checks;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
+import org.drools.verifier.core.cache.inspectors.IndexRuleInspector;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.checks.base.OneToManyCheck;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
@@ -32,9 +34,8 @@ public class DetectDeficientRowsCheck
     public DetectDeficientRowsCheck(final RuleInspector ruleInspector,
                                     final AnalyzerConfiguration configuration) {
         super(ruleInspector,
-              other -> !ruleInspector.getRule()
-                      .getUuidKey()
-                      .equals(other.getRule().getUuidKey()) && !other.isEmpty(),
+              other -> !ruleInspector.getInspectedRule().getRuleUuidKey()
+                      .equals(other.getInspectedRule().getRuleUuidKey()) && !other.isEmpty(),
               configuration,
               CheckType.DEFICIENT_ROW);
     }
@@ -52,7 +53,12 @@ public class DetectDeficientRowsCheck
     }
 
     private boolean isDeficient(final RuleInspector other) {
-        return ruleInspector.isDeficient(other);
+
+        if (ruleInspector instanceof IndexRuleInspector && other instanceof IndexRuleInspector) {
+            return ((IndexRuleInspector) ruleInspector).isDeficient((IndexRuleInspector) other);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -61,11 +67,13 @@ public class DetectDeficientRowsCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new Issue(severity,
-                         checkType,
-                         new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1))
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+        return Collections.singletonList(
+                new Issue(severity,
+                          checkType,
+                          new HashSet<>(Collections.singleton(ruleInspector.getRowIndex() + 1))
+                )
         );
     }
 }

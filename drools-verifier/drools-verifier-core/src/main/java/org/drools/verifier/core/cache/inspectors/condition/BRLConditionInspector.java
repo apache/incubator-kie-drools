@@ -18,6 +18,9 @@ package org.drools.verifier.core.cache.inspectors.condition;
 
 import java.util.Iterator;
 
+import org.drools.verifier.api.reporting.model.Bound;
+import org.drools.verifier.api.reporting.model.Interval;
+import org.drools.verifier.api.reporting.model.Range;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.model.BRLCondition;
 

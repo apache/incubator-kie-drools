@@ -82,7 +82,8 @@ public class FieldInspectorUpdateTest {
                                                               configurationMock);
         final ArrayList<Condition> actionsList = new ArrayList<>();
         actionsList.add(fieldAction);
-        final Conditions conditions = new Conditions(actionsList);
+        final Conditions conditions = new Conditions(configurationMock.getConditionKeyDefinitions(),
+                                                     actionsList);
         when(field.getConditions()).thenReturn(conditions);
 
         return fieldAction;
@@ -96,7 +97,8 @@ public class FieldInspectorUpdateTest {
                                                         configurationMock);
         final ArrayList<Action> actionsList = new ArrayList<>();
         actionsList.add(fieldAction);
-        final Actions actions = new Actions(actionsList);
+        final Actions actions = new Actions(configurationMock.getActionKeyDefinitions(),
+                                            actionsList);
         when(field.getActions()).thenReturn(actions);
 
         return fieldAction;

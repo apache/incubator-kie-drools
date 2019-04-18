@@ -15,21 +15,18 @@
  */
 package org.drools.verifier.core.index.model;
 
-import java.util.ArrayList;
-
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
-import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.Values;
-import org.drools.verifier.core.maps.KeyDefinition;
+import org.drools.verifier.core.index.model.meta.ConditionParent;
 import org.drools.verifier.core.util.PortablePreconditions;
 
 public class FieldCondition<T extends Comparable>
         extends Condition {
 
-    private final Field field;
+    private final ConditionParent field;
     private String operator;
 
-    public FieldCondition(final Field field,
+    public FieldCondition(final ConditionParent field,
                           final Column column,
                           final String operator,
                           final Values<T> values,
@@ -45,7 +42,7 @@ public class FieldCondition<T extends Comparable>
                                                            operator);
     }
 
-    public Field getField() {
+    public ConditionParent getField() {
         return field;
     }
 
@@ -60,24 +57,5 @@ public class FieldCondition<T extends Comparable>
     @Override
     public String toString() {
         return field + " " + operator + " " + getValues();
-    }
-
-    @Override
-    public Key[] keys() {
-        final ArrayList<Key> keys = new ArrayList<>();
-        for (final Key key : super.keys()) {
-            keys.add(key);
-        }
-
-        return keys.toArray(new Key[keys.size()]);
-    }
-
-    public static KeyDefinition[] keyDefinitions() {
-        final ArrayList<KeyDefinition> keyDefinitions = new ArrayList<>();
-        for (final KeyDefinition keyDefinition : Condition.keyDefinitions()) {
-            keyDefinitions.add(keyDefinition);
-        }
-
-        return keyDefinitions.toArray(new KeyDefinition[keyDefinitions.size()]);
     }
 }

@@ -16,16 +16,22 @@
 package org.drools.verifier.core.index.model;
 
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
+import org.drools.verifier.core.index.model.meta.ConditionParent;
+import org.drools.verifier.core.index.model.meta.ConditionParentType;
 import org.drools.verifier.core.util.PortablePreconditions;
 
+/**
+ * Actual field of a Pattern instance.
+ */
 public class Field
-        extends FieldBase {
+        extends FieldBase
+        implements ConditionParent {
 
-    private final ObjectField objectField;
-    private final Conditions conditions = new Conditions();
-    private final Actions actions = new Actions();
+    private final ConditionParentType conditionParentType;
+    private final Conditions conditions;
+    private final Actions actions;
 
-    public Field(final ObjectField objectField,
+    public Field(final ConditionParentType conditionParentType,
                  final String factType,
                  final String fieldType,
                  final String name,
@@ -34,24 +40,29 @@ public class Field
               fieldType,
               name,
               configuration);
-        this.objectField = PortablePreconditions.checkNotNull("objectField",
-                                                              objectField);
+        this.conditions = new Conditions(configuration.getConditionKeyDefinitions());
+        this.actions = new Actions(configuration.getActionKeyDefinitions());
+        this.conditionParentType = PortablePreconditions.checkNotNull("conditionParentType",
+                                                                      conditionParentType);
     }
 
-    public ObjectField getObjectField() {
-        return objectField;
+    @Override
+    public ConditionParentType getConditionParentType() {
+        return conditionParentType;
     }
 
+    @Override
     public Conditions getConditions() {
         return conditions;
     }
 
+    @Override
     public Actions getActions() {
         return actions;
     }
 
-    public void remove(final Column column) {
-        this.conditions.remove(column);
-        this.actions.remove(column);
+    @Override
+    public String toHumanReadableString() {
+        return new StringBuilder().append(getFactType()).append(".").append(getName()).toString();
     }
 }

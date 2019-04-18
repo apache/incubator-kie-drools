@@ -47,7 +47,7 @@ public class StringWithoutEnumNoGapTest extends AbstractDTAnalysisTest {
         List<DMNMessage> validate = validator.validate(getReader("stringWithoutEnumNoGap.dmn"), VALIDATE_COMPILATION, VALIDATE_MODEL, ANALYZE_DECISION_TABLE);
         assertThat(validate, hasSize(7)); // no gap, 2 overlaps, 2 masked, 2 misleading.
         debugValidatorMsg(validate);
-        
+
         DTAnalysis analysis = getAnalysis(validate, "_8b48d1c9-265c-47aa-9378-7f11d55dfe55");
 
         assertThat(analysis.getGaps(), hasSize(0));

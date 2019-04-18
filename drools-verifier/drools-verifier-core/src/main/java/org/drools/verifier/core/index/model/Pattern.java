@@ -19,24 +19,26 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.index.matchers.UUIDMatchers;
+import org.drools.verifier.core.index.model.meta.ConditionMaster;
 import org.drools.verifier.core.index.query.Matchers;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.util.HasKeys;
 import org.drools.verifier.core.util.PortablePreconditions;
 
 public class Pattern
-        implements HasKeys {
+        implements HasKeys,
+                   ConditionMaster {
 
-    private static final KeyDefinition NAME = KeyDefinition.newKeyDefinition()
+    private static final KeyDefinition NAME_KEY_DEFINITION = KeyDefinition.newKeyDefinition()
             .withId("name")
             .build();
-    private static final KeyDefinition BOUND_NAME = KeyDefinition.newKeyDefinition()
+    private static final KeyDefinition BOUND_NAME_KEY_DEFINITION = KeyDefinition.newKeyDefinition()
             .withId("boundName")
             .build();
 
     private final UUIDKey uuidKey;
     private final String name;
-    private final Fields fields = new Fields();
+    private final ConditionParents conditionParents;
     private final String boundName;
     private final ObjectType objectType;
 
@@ -49,14 +51,15 @@ public class Pattern
                                                              objectType);
         this.name = objectType.getType();
         this.uuidKey = configuration.getUUID(this);
+        this.conditionParents = new ConditionParents(configuration);
     }
 
     public static Matchers boundName() {
-        return new Matchers(BOUND_NAME);
+        return new Matchers(BOUND_NAME_KEY_DEFINITION);
     }
 
     public static Matchers name() {
-        return new Matchers(NAME);
+        return new Matchers(NAME_KEY_DEFINITION);
     }
 
     public static Matchers uuid() {
@@ -66,8 +69,8 @@ public class Pattern
     public static KeyDefinition[] keyDefinitions() {
         return new KeyDefinition[]{
                 UUIDKey.UNIQUE_UUID,
-                NAME,
-                BOUND_NAME
+                NAME_KEY_DEFINITION,
+                BOUND_NAME_KEY_DEFINITION
         };
     }
 
@@ -76,10 +79,12 @@ public class Pattern
         return uuidKey;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getBoundName() {
         return boundName;
     }
@@ -88,16 +93,23 @@ public class Pattern
         return objectType;
     }
 
-    public Fields getFields() {
-        return fields;
+    @Override
+    public String getType() {
+        return objectType.getType();
     }
 
+    @Override
+    public ConditionParents getConditionParents() {
+        return conditionParents;
+    }
+
+    @Override
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key(NAME,
+                new Key(NAME_KEY_DEFINITION,
                         name),
-                new Key(BOUND_NAME,
+                new Key(BOUND_NAME_KEY_DEFINITION,
                         boundName)
         };
     }

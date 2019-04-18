@@ -20,8 +20,18 @@ import java.util.Set;
 
 public enum CheckType {
 
+    // Row to row relationships
     CONFLICTING_ROWS,
+    OVERLAPPING_ROWS,
     DEFICIENT_ROW,
+    REDUNDANT_ROWS,
+    SUBSUMPTANT_ROWS,
+    SINGLE_HIT_LOST,
+
+    // Full table check
+    MISSING_RANGE,
+
+    // Single row checks
     IMPOSSIBLE_MATCH,
     MISSING_ACTION,
     MISSING_RESTRICTION,
@@ -29,11 +39,9 @@ public enum CheckType {
     VALUE_FOR_FACT_FIELD_IS_SET_TWICE,
     VALUE_FOR_ACTION_IS_SET_TWICE,
     REDUNDANT_CONDITIONS_TITLE,
-    REDUNDANT_ROWS,
-    SUBSUMPTANT_ROWS,
-    MISSING_RANGE,
-    SINGLE_HIT_LOST,
     EMPTY_RULE,
+
+    // Validation is not possible
     ILLEGAL_VERIFIER_STATE;
 
     public static Set<CheckType> getRowLevelCheckTypes() {

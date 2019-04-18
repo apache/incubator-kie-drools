@@ -17,6 +17,8 @@
 package org.drools.verifier.core.relations;
 
 import org.drools.verifier.core.index.keys.UUIDKey;
+import org.drools.verifier.core.maps.InspectorList;
+import org.drools.verifier.core.maps.util.HasUUID;
 
 public abstract class Relation<T extends Relation> {
 
@@ -42,9 +44,12 @@ public abstract class Relation<T extends Relation> {
 
     public abstract UUIDKey otherUUID();
 
+    protected abstract HasUUID getItem();
+
     public abstract boolean doesRelationStillExist();
 
     protected void setParent(final T parent) {
         this.parent = parent;
     }
+
 }

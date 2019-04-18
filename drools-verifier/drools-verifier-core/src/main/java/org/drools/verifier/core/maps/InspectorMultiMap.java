@@ -121,7 +121,8 @@ public class InspectorMultiMap<GroupBy extends Comparable, Value extends IsConfl
 
         if (other instanceof InspectorMultiMap) {
 
-            for (final Object groupBy : ((InspectorMultiMap) other).map.keySet()) {
+            Set set = ((InspectorMultiMap) other).map.keySet();
+            for (final Object groupBy : set) {
                 final InspectorList otherCollection = ((InspectorMultiMap<GroupBy, Value>) other).map.get((GroupBy) groupBy);
                 final LeafInspectorList<Value> collection = map.get((GroupBy) groupBy);
                 if (!otherCollection.subsumes(collection)) {

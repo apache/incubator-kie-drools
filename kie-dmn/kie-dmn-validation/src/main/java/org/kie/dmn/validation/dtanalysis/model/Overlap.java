@@ -29,6 +29,7 @@ public class Overlap {
 
     public Overlap(Collection<Integer> rules, Hyperrectangle overlap) {
         this.rules.addAll(rules);
+        Collections.sort(this.rules);
         this.overlap = overlap;
     }
 
@@ -123,6 +124,7 @@ public class Overlap {
         } else if (!overlap.equals(other.overlap)) {
             return false;
         }
+
         if (!rules.equals(other.rules)) {
             return false;
         }
@@ -137,5 +139,4 @@ public class Overlap {
         builder.append(rules);
         return builder.toString();
     }
-
 }

@@ -34,14 +34,32 @@ public class Column
     private final UUIDKey uuidKey;
 
     private UpdatableKey<Column> indexKey;
+    private ColumnType columnType;
+
+    protected static final KeyDefinition COLUMN_TYPE = KeyDefinition.newKeyDefinition()
+            .withId("columnType")
+            .build();
 
     public Column(final int columnIndex,
+                  final ColumnType columnType,
                   final AnalyzerConfiguration configuration) {
+
         PortablePreconditions.checkNotNull("columnIndex",
                                            columnIndex);
         this.indexKey = new UpdatableKey<>(IndexKey.INDEX_ID,
                                            columnIndex);
         this.uuidKey = configuration.getUUID(this);
+
+        this.columnType = PortablePreconditions.checkNotNull("columnType",
+                                                             columnType);
+    }
+
+    public ColumnType getColumnType() {
+        return columnType;
+    }
+
+    public static Matchers columnType() {
+        return new Matchers(COLUMN_TYPE);
     }
 
     public static Matchers index() {
@@ -51,7 +69,8 @@ public class Column
     public static KeyDefinition[] keyDefinitions() {
         return new KeyDefinition[]{
                 UUIDKey.UNIQUE_UUID,
-                IndexKey.INDEX_ID
+                IndexKey.INDEX_ID,
+                COLUMN_TYPE
         };
     }
 
@@ -59,7 +78,9 @@ public class Column
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                indexKey
+                indexKey,
+                new Key(COLUMN_TYPE,
+                        getColumnType())
         };
     }
 

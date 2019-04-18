@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.drools.verifier.api.reporting.Issue;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.core.util.Msg;
@@ -39,6 +40,8 @@ import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.validation.dtanalysis.AnalysisMsgConverter;
+import org.kie.dmn.validation.dtanalysis.ConversionMessage;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +64,7 @@ public class DTAnalysis {
     private final Throwable error;
     private final DDTATable ddtaTable;
     private final Collection<DMNMessage> passThruMessages = new ArrayList<>();
-
-
+    private final Set<DMNDTAnalysisMessage> issues = new HashSet<>();
 
     public DTAnalysis(DecisionTable sourceDT, DDTATable ddtaTable) {
         this.sourceDT = sourceDT;
@@ -172,6 +174,7 @@ public class DTAnalysis {
         results.addAll(contractionsAsMessages());
         results.addAll(check1stNFViolationAsMessages());
         results.addAll(check2ndNFViolationAsMessages());
+        results.addAll(issues);
 
         // keep last.
         if (results.isEmpty()) {
@@ -343,11 +346,11 @@ public class DTAnalysis {
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
         if (!ddtaTable.getColIDsStringWithoutEnum().isEmpty()) {
             List<String> names = ddtaTable.getColIDsStringWithoutEnum()
-                                          .stream()
-                                          .map(id -> sourceDT.getInput().get(id - 1))
-                                          .map(InputClause::getInputExpression)
-                                          .map(LiteralExpression::getText)
-                                          .collect(Collectors.toList());
+                    .stream()
+                    .map(id -> sourceDT.getInput().get(id - 1))
+                    .map(InputClause::getInputExpression)
+                    .map(LiteralExpression::getText)
+                    .collect(Collectors.toList());
             results.add(new DMNDTAnalysisMessage(this,
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_GAP_SKIPPED_BECAUSE_FREE_STRING,
@@ -425,12 +428,20 @@ public class DTAnalysis {
         return isOtherRuleWider;
     }
 
+    public void addIssues(final Set<Issue> issues) {
+
+        final ConversionMessage conversionMessage = new AnalysisMsgConverter(sourceDT,
+                                                                             ddtaTable,
+                                                                             this).convert(issues);
+        this.issues.addAll(conversionMessage.getIssues());
+        this.subsumptions.addAll(conversionMessage.getSubsumptions());
+    }
+
     public class ComparingRulesWithMultipleInputEntries extends Exception {
 
         public ComparingRulesWithMultipleInputEntries(String message) {
             super(message);
         }
-
     }
 
     public List<MaskedRule> getMaskedRules() {

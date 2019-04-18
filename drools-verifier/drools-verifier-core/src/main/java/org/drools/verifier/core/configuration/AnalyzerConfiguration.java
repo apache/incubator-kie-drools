@@ -16,10 +16,12 @@
 package org.drools.verifier.core.configuration;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.drools.verifier.core.checks.base.CheckRunner;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.index.keys.UUIDKeyProvider;
+import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.util.HasKeys;
 import org.drools.verifier.core.util.PortablePreconditions;
 
@@ -29,12 +31,16 @@ public class AnalyzerConfiguration {
     private final String webWorkerUUID;
     private final DateTimeFormatProvider dateTimeFormatter;
     private final CheckConfiguration checkConfiguration;
+    private Set<KeyDefinition> conditionKeyDefinitions;
+    private Set<KeyDefinition> actionKeyDefinitions;
     private final CheckRunner checkRunner;
 
     public AnalyzerConfiguration(final String webWorkerUUID,
                                  final DateTimeFormatProvider dateTimeFormatter,
                                  final UUIDKeyProvider uuidKeyProvider,
                                  final CheckConfiguration checkConfiguration,
+                                 final Set<KeyDefinition> conditionKeyDefinitions,
+                                 final Set<KeyDefinition> actionKeyDefinitions,
                                  final CheckRunner checkRunner) {
         this.webWorkerUUID = PortablePreconditions.checkNotNull("webWorkerUUID",
                                                                 webWorkerUUID);
@@ -44,6 +50,10 @@ public class AnalyzerConfiguration {
                                                                   uuidKeyProvider);
         this.checkConfiguration = PortablePreconditions.checkNotNull("checkConfiguration",
                                                                      checkConfiguration);
+        this.conditionKeyDefinitions = PortablePreconditions.checkNotNull("conditionKeyDefinitions",
+                                                                          conditionKeyDefinitions);
+        this.actionKeyDefinitions = PortablePreconditions.checkNotNull("actionKeyDefinitions",
+                                                                       actionKeyDefinitions);
         this.checkRunner = PortablePreconditions.checkNotNull("checkRunner",
                                                               checkRunner);
     }
@@ -66,6 +76,14 @@ public class AnalyzerConfiguration {
 
     public CheckConfiguration getCheckConfiguration() {
         return checkConfiguration;
+    }
+
+    public KeyDefinition[] getConditionKeyDefinitions() {
+        return conditionKeyDefinitions.toArray(new KeyDefinition[conditionKeyDefinitions.size()]);
+    }
+
+    public KeyDefinition[] getActionKeyDefinitions() {
+        return actionKeyDefinitions.toArray(new KeyDefinition[actionKeyDefinitions.size()]);
     }
 
     public CheckRunner getCheckRunner() {

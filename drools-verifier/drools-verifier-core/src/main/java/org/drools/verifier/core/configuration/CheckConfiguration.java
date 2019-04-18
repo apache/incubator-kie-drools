@@ -40,6 +40,8 @@ public class CheckConfiguration {
         checkConfiguration.getCheckConfiguration()
                 .addAll(Arrays.asList(CheckType.values()));
 
+        checkConfiguration.getCheckConfiguration().remove(CheckType.OVERLAPPING_ROWS);
+
         return checkConfiguration;
     }
 

@@ -74,6 +74,11 @@ public class Conflict
     }
 
     @Override
+    protected HasUUID getItem() {
+        return conflictingItem;
+    }
+
+    @Override
     public boolean doesRelationStillExist() {
         if (origin != null
                 && stillContainsConflictedItem(getOrigin().getConflictedItem())

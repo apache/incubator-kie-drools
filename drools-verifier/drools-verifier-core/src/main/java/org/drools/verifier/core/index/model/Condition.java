@@ -33,23 +33,24 @@ import org.drools.verifier.core.util.PortablePreconditions;
 public abstract class Condition<T extends Comparable>
         implements HasKeys {
 
-    private final static KeyDefinition SUPER_TYPE = KeyDefinition.newKeyDefinition()
+    protected static final KeyDefinition SUPER_TYPE = KeyDefinition.newKeyDefinition()
             .withId("superType")
             .updatable()
             .build();
-    private final static KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition()
-            .withId("columnUUID")
-            .build();
-    private final static KeyDefinition VALUE = KeyDefinition.newKeyDefinition()
+    protected static final KeyDefinition VALUE = KeyDefinition.newKeyDefinition()
             .withId("value")
             .updatable()
             .build();
 
-    protected final UUIDKey uuidKey;
+    private static final KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition()
+            .withId("columnUUID")
+            .build();
+
     protected final Column column;
-    private final ConditionSuperType superType;
+    protected final UUIDKey uuidKey;
+    protected final ConditionSuperType superType;
     private final Values<Comparable> values = new Values<>();
-    private UpdatableKey<Condition<T>> valueKey;
+    protected UpdatableKey<Condition<T>> valueKey;
 
     public Condition(final Column column,
                      final ConditionSuperType superType,
@@ -60,22 +61,26 @@ public abstract class Condition<T extends Comparable>
         PortablePreconditions.checkNotNull("configuration",
                                            configuration);
 
-        this.column = PortablePreconditions.checkNotNull("column",
-                                                         column);
         this.superType = PortablePreconditions.checkNotNull("superType",
                                                             superType);
+        this.column = PortablePreconditions.checkNotNull("column",
+                                                         column);
         this.uuidKey = configuration.getUUID(this);
         this.valueKey = new UpdatableKey<>(VALUE,
                                            values);
         resetValues();
     }
 
-    public static ComparableMatchers value() {
-        return new ComparableMatchers(VALUE);
-    }
-
     public static Matchers columnUUID() {
         return new Matchers(COLUMN_UUID);
+    }
+
+    public Column getColumn() {
+        return column;
+    }
+
+    public static ComparableMatchers value() {
+        return new ComparableMatchers(VALUE);
     }
 
     public static Matchers superType() {
@@ -101,10 +106,6 @@ public abstract class Condition<T extends Comparable>
         for (final Object o : valueKey.getValues()) {
             values.add(((Value) o).getComparable());
         }
-    }
-
-    public Column getColumn() {
-        return column;
     }
 
     @Override
@@ -153,7 +154,7 @@ public abstract class Condition<T extends Comparable>
                 new Key(SUPER_TYPE,
                         superType),
                 new Key(COLUMN_UUID,
-                        column.getUuidKey()),
+                        column.getUuidKey())
         };
     }
 }

@@ -44,9 +44,9 @@ public class StringConditionInspectorToHumanReadableTest {
     private static final String VALUE = "someValue";
     private static final String IS_NOT_NULL = "!= null";
     private static final String IS_NULL = "== null";
+    private static final String FACT_NAME = "Test";
 
     private final String operator;
-
     private AnalyzerConfiguration configuration;
 
     public StringConditionInspectorToHumanReadableTest(String operator) {
@@ -77,17 +77,20 @@ public class StringConditionInspectorToHumanReadableTest {
         final StringConditionInspector inspector = getStringConditionInspector();
 
         if (IS_NOT_NULL.matches(operator)) {
-            assertEquals(format("%s %s",
+            assertEquals(format("%s.%s %s",
+                                FACT_NAME,
                                 FIELD_NAME,
                                 operator),
                          inspector.toHumanReadableString());
         } else if (IS_NULL.matches(operator)) {
-            assertEquals(format("%s %s",
+            assertEquals(format("%s.%s %s",
+                                FACT_NAME,
                                 FIELD_NAME,
                                 operator),
                          inspector.toHumanReadableString());
         } else {
-            assertEquals(format("%s %s %s",
+            assertEquals(format("%s.%s %s %s",
+                                FACT_NAME,
                                 FIELD_NAME,
                                 operator,
                                 VALUE),
@@ -98,7 +101,7 @@ public class StringConditionInspectorToHumanReadableTest {
     private StringConditionInspector getStringConditionInspector() {
         if (IS_NOT_NULL.matches(operator)) {
             return new StringConditionInspector(new FieldCondition<>(new Field(mock(ObjectField.class),
-                                                                               "Test",
+                                                                               FACT_NAME,
                                                                                "String",
                                                                                FIELD_NAME,
                                                                                configuration),
@@ -110,7 +113,7 @@ public class StringConditionInspectorToHumanReadableTest {
                                                 configuration);
         } else if (IS_NULL.matches(operator)) {
             return new StringConditionInspector(new FieldCondition<>(new Field(mock(ObjectField.class),
-                                                                               "Test",
+                                                                               FACT_NAME,
                                                                                "String",
                                                                                FIELD_NAME,
                                                                                configuration),
@@ -121,7 +124,7 @@ public class StringConditionInspectorToHumanReadableTest {
                                                 configuration);
         } else {
             return new StringConditionInspector(new FieldCondition<>(new Field(mock(ObjectField.class),
-                                                                               "Test",
+                                                                               FACT_NAME,
                                                                                "String",
                                                                                FIELD_NAME,
                                                                                configuration),

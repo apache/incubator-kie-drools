@@ -19,6 +19,7 @@ import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
 import org.drools.verifier.core.index.matchers.UUIDMatchers;
+import org.drools.verifier.core.index.model.meta.ConditionParentBase;
 import org.drools.verifier.core.index.query.Matchers;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.maps.util.HasKeys;
@@ -26,11 +27,12 @@ import org.drools.verifier.core.relations.HumanReadable;
 import org.drools.verifier.core.util.PortablePreconditions;
 
 public abstract class FieldBase
-        implements Comparable<FieldBase>,
+        implements Comparable<ConditionParentBase>,
                    HasKeys,
-                   HumanReadable {
+                   HumanReadable,
+                   ConditionParentBase {
 
-    private static KeyDefinition NAME = KeyDefinition.newKeyDefinition()
+    private static final KeyDefinition NAME_KEY_DEFINITION = KeyDefinition.newKeyDefinition()
             .withId("name")
             .updatable()
             .build();
@@ -54,7 +56,7 @@ public abstract class FieldBase
     }
 
     public static Matchers name() {
-        return new Matchers(NAME);
+        return new Matchers(NAME_KEY_DEFINITION);
     }
 
     public static Matchers uuid() {
@@ -64,7 +66,7 @@ public abstract class FieldBase
     public static KeyDefinition[] keyDefinitions() {
         return new KeyDefinition[]{
                 UUIDKey.UNIQUE_UUID,
-                NAME
+                NAME_KEY_DEFINITION
         };
     }
 
@@ -91,14 +93,20 @@ public abstract class FieldBase
     }
 
     @Override
-    public int compareTo(final FieldBase field) {
-        if (factType.equals(field.factType)
-                && name.equals(field.name)) {
-            return 0;
-        } else if (factType.equals(field.factType)) {
-            return name.compareTo(field.name);
+    public int compareTo(final ConditionParentBase conditionParentBase) {
+        if (conditionParentBase instanceof FieldBase) {
+
+            final FieldBase fieldBase = (FieldBase) conditionParentBase;
+            if (factType.equals(fieldBase.factType)
+                    && name.equals(fieldBase.name)) {
+                return 0;
+            } else if (factType.equals(fieldBase.factType)) {
+                return name.compareTo(fieldBase.name);
+            } else {
+                return factType.compareTo(fieldBase.factType);
+            }
         } else {
-            return factType.compareTo(field.factType);
+            return -1;
         }
     }
 
@@ -130,7 +138,7 @@ public abstract class FieldBase
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key(NAME,
+                new Key(NAME_KEY_DEFINITION,
                         name)
         };
     }

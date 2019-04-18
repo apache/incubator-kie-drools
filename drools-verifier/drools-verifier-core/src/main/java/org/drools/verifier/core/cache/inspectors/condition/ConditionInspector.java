@@ -16,6 +16,9 @@
 
 package org.drools.verifier.core.cache.inspectors.condition;
 
+import org.drools.verifier.api.reporting.model.Bound;
+import org.drools.verifier.api.reporting.model.Interval;
+import org.drools.verifier.api.reporting.model.Range;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
 import org.drools.verifier.core.index.keys.UUIDKey;
@@ -110,6 +113,15 @@ public abstract class ConditionInspector<T extends Comparable<T>>
     public boolean hasValue() {
         return !condition.getValues()
                 .isEmpty();
+    }
+
+    public Interval getInterval() {
+        return Interval.newFromBounds(new Bound(getValue(),
+                                                Range.RangeBoundary.CLOSED,
+                                                null),
+                                      new Bound(getValue(),
+                                                Range.RangeBoundary.CLOSED,
+                                                null));
     }
 
     public abstract String toHumanReadableString();

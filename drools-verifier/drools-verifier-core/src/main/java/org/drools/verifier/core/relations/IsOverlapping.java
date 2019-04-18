@@ -16,7 +16,7 @@
 
 package org.drools.verifier.core.relations;
 
-public interface IsOverlapping {
+public interface IsOverlapping<T> {
 
-    boolean overlaps(Object other);
+    boolean overlaps(T other);
 }

@@ -121,7 +121,7 @@ public class DMNValidatorImpl implements DMNValidator {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
-    
+
     /**
      * A KieContainer is normally available,
      * unless at runtime some problem prevented building it correctly.
@@ -142,15 +142,15 @@ public class DMNValidatorImpl implements DMNValidator {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId( "org.kie", "kie-dmn-validation", Drools.getFullVersion() ),
-                ks.getResources().newReaderResource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
-                        "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" + 
-                        "  <kbase name=\"kbase_DMNv1x\" default=\"false\" packages=\"org.kie.dmn.validation.DMNv1x\" />\n" + 
-                        "  <kbase name=\"kbase_DMNv1_1\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_1\">\n" + 
-                        "    <ksession name=\"ksession_DMNv1_1\" default=\"false\" type=\"stateless\"/>\n" + 
-                        "  </kbase>\n" + 
-                        "  <kbase name=\"kbase_DMNv1_2\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_2\">\n" + 
-                        "    <ksession name=\"ksession_DMNv1_2\" default=\"false\" type=\"stateless\"/>\n" + 
-                        "  </kbase>\n" + 
+                ks.getResources().newReaderResource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                        "  <kbase name=\"kbase_DMNv1x\" default=\"false\" packages=\"org.kie.dmn.validation.DMNv1x\" />\n" +
+                        "  <kbase name=\"kbase_DMNv1_1\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_1\">\n" +
+                        "    <ksession name=\"ksession_DMNv1_1\" default=\"false\" type=\"stateless\"/>\n" +
+                        "  </kbase>\n" +
+                        "  <kbase name=\"kbase_DMNv1_2\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_2\">\n" +
+                        "    <ksession name=\"ksession_DMNv1_2\" default=\"false\" type=\"stateless\"/>\n" +
+                        "  </kbase>\n" +
                         "</kmodule>")).setTargetPath("META-INF/kmodule.xml"),
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules.drl", getClass() ),
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-auth-req.drl", getClass() ),
@@ -188,7 +188,7 @@ public class DMNValidatorImpl implements DMNValidator {
         this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
         dmnDTValidator = new DMNDTAnalyser(this.dmnProfiles);
     }
-    
+
     public void dispose() {
         kieContainer.ifPresent( KieContainer::dispose );
     }
@@ -554,7 +554,7 @@ public class DMNValidatorImpl implements DMNValidator {
         if (!kieContainer.isPresent()) {
             return failedInitMsg;
         }
-        
+
         String kieSessionName = "ksession_DMNv1_2";
         if (dmnModel instanceof KieDMNModelInstrumentedBase) {
             kieSessionName = "ksession_DMNv1_1";
@@ -563,7 +563,7 @@ public class DMNValidatorImpl implements DMNValidator {
         StatelessKieSession kieSession = kieContainer.get().newStatelessKieSession(kieSessionName);
         MessageReporter reporter = new MessageReporter();
         kieSession.setGlobal( "reporter", reporter );
-        
+
         List<DMNModelInstrumentedBase> dmnModelElements = allChildren(dmnModel).collect(toList());
         BatchExecutionCommand batch = CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements, "DEFAULT", false, "DEFAULT"),
                                                                                      CommandFactory.newInsertElements(otherModel_Definitions, "DMNImports", false, "DMNImports")));

@@ -16,26 +16,28 @@
 
 package org.drools.verifier.core.checks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.RedundantConditionsIssue;
 import org.drools.verifier.api.reporting.Severity;
-import org.drools.verifier.core.cache.inspectors.PatternInspector;
+import org.drools.verifier.core.cache.inspectors.ConditionMasterInspector;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.cache.inspectors.condition.ConditionInspector;
 import org.drools.verifier.core.checks.base.SingleCheck;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
-import org.drools.verifier.core.index.model.ObjectField;
+import org.drools.verifier.core.index.model.meta.ConditionParentType;
 import org.drools.verifier.core.maps.InspectorMultiMap;
 import org.drools.verifier.core.maps.util.RedundancyResult;
 
 public class DetectRedundantConditionsCheck
         extends SingleCheck {
 
-    private RedundancyResult<ObjectField, ConditionInspector> result;
+    private RedundancyResult<ConditionParentType, ConditionInspector> result;
 
     public DetectRedundantConditionsCheck(final RuleInspector ruleInspector,
                                           final AnalyzerConfiguration configuration) {
@@ -47,7 +49,7 @@ public class DetectRedundantConditionsCheck
     @Override
     public boolean check() {
         result = ruleInspector.getPatternsInspector().stream()
-                .map(PatternInspector::getConditionsInspector)
+                .map(ConditionMasterInspector::getConditionsInspector)
                 .map(InspectorMultiMap::hasRedundancy)
                 .filter(RedundancyResult::isTrue)
                 .findFirst().orElse(null);
@@ -61,19 +63,20 @@ public class DetectRedundantConditionsCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
-        return new RedundantConditionsIssue(severity,
-                                            checkType,
-                                            result.getParent()
-                                                    .getFactType(),
-                                            result.getParent()
-                                                    .getName(),
-                                            result.get(0)
-                                                    .toHumanReadableString(),
-                                            result.get(1)
-                                                    .toHumanReadableString(),
-                                            new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1)));
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+        final ArrayList<Issue> issues = new ArrayList<>();
+        issues.add(new RedundantConditionsIssue(severity,
+                                                checkType,
+                                                this.result.getParent()
+                                                        .getName(),
+                                                this.result.get(0)
+                                                        .toHumanReadableString(),
+                                                this.result.get(1)
+                                                        .toHumanReadableString(),
+                                                new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1))));
+
+        return issues;
     }
 }
 

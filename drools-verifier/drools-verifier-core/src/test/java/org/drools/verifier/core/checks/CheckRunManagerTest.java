@@ -17,15 +17,18 @@
 package org.drools.verifier.core.checks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.api.reporting.Severity;
 import org.drools.verifier.core.AnalyzerConfigurationMock;
-import org.drools.verifier.core.cache.RuleInspectorCache;
+import org.drools.verifier.core.cache.IndexedRuleInspectorCache;
+import org.drools.verifier.core.cache.inspectors.IndexRuleInspector;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.checks.base.Check;
 import org.drools.verifier.core.checks.base.CheckFactory;
@@ -34,6 +37,7 @@ import org.drools.verifier.core.checks.base.CheckStorage;
 import org.drools.verifier.core.checks.base.JavaCheckRunner;
 import org.drools.verifier.core.checks.base.SingleCheck;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
+import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.model.Rule;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +59,10 @@ public class CheckRunManagerTest {
     private CheckRunManager checkRunManager = new CheckRunManager(new JavaCheckRunner());
 
     @Mock
-    private RuleInspectorCache cache;
+    private IndexedRuleInspectorCache cache;
+
+    @Mock
+    private Index index;
 
     private RuleInspector ruleInspector1;
     private RuleInspector ruleInspector2;
@@ -98,13 +105,13 @@ public class CheckRunManagerTest {
     @Test
     public void testChecksGetGenerated() throws
             Exception {
-        assertEquals(5,
+        assertEquals(3,
                      ruleInspector1.getChecks()
                              .size());
-        assertEquals(5,
+        assertEquals(3,
                      ruleInspector2.getChecks()
                              .size());
-        assertEquals(5,
+        assertEquals(3,
                      ruleInspector3.getChecks()
                              .size());
     }
@@ -116,7 +123,7 @@ public class CheckRunManagerTest {
         this.checkRunManager.remove(ruleInspector2);
 
         final Set<Check> checks = ruleInspector1.getChecks();
-        assertEquals(3,
+        assertEquals(2,
                      checks.size());
         assertTrue(ruleInspector2.getChecks()
                            .isEmpty());
@@ -161,20 +168,20 @@ public class CheckRunManagerTest {
 
         assertHasIssues(newRuleInspector);
 
-        assertEquals(7,
+        assertEquals(4,
                      ruleInspector1.getChecks()
                              .size());
-        assertEquals(7,
+        assertEquals(3,
                      newRuleInspector.getChecks()
                              .size());
     }
 
     private RuleInspector mockRowInspector(final int rowNumber) {
-        return new RuleInspector(new Rule(rowNumber,
-                                          configuration),
-                                 checkStorage,
-                                 cache,
-                                 mock(AnalyzerConfiguration.class));
+        return new IndexRuleInspector(new Rule(rowNumber,
+                                               configuration),
+                                      checkStorage,
+                                      cache,
+                                      mock(AnalyzerConfiguration.class));
     }
 
     private void assertHasIssues(final RuleInspector ruleInspector) {
@@ -209,11 +216,11 @@ public class CheckRunManagerTest {
         }
 
         @Override
-        protected Issue makeIssue(final Severity severity,
-                                  final CheckType checkType) {
-            return new Issue(severity,
-                             checkType,
-                             Collections.emptySet());
+        protected List<Issue> makeIssues(final Severity severity,
+                                         final CheckType checkType) {
+            return Arrays.asList(new Issue(severity,
+                                           checkType,
+                                           Collections.emptySet()));
         }
     }
 }

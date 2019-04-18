@@ -17,7 +17,9 @@
 package org.drools.verifier.core.checks;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
@@ -54,8 +56,9 @@ public class DetectConflictingRowsCheck
     }
 
     @Override
-    protected Issue makeIssue(final Severity severity,
-                              final CheckType checkType) {
+    protected List<Issue> makeIssues(final Severity severity,
+                                     final CheckType checkType) {
+
         final Issue issue = new Issue(severity,
                                       checkType,
                                       new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1,
@@ -64,6 +67,6 @@ public class DetectConflictingRowsCheck
 
         issue.setDebugMessage(new RuleInspectorDumper(ruleInspector).dump() + " ## " + new RuleInspectorDumper(other).dump());
 
-        return issue;
+        return Collections.singletonList(issue);
     }
 }

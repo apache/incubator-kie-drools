@@ -16,9 +16,12 @@
 
 package org.drools.verifier.core.cache.inspectors.condition;
 
+import org.drools.verifier.api.reporting.model.Bound;
+import org.drools.verifier.api.reporting.model.Interval;
+import org.drools.verifier.api.reporting.model.Range;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
-import org.drools.verifier.core.index.model.Field;
 import org.drools.verifier.core.index.model.FieldCondition;
+import org.drools.verifier.core.index.model.meta.ConditionParent;
 import org.drools.verifier.core.relations.IsConflicting;
 import org.drools.verifier.core.relations.Operator;
 
@@ -26,7 +29,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
         extends ConditionInspector<T>
         implements IsConflicting.Covers<T> {
 
-    protected final Field field;
+    protected final ConditionParent field;
     protected final Operator operator;
 
     public ComparableConditionInspector(final FieldCondition condition,
@@ -38,7 +41,7 @@ public class ComparableConditionInspector<T extends Comparable<T>>
         this.operator = Operator.resolve(condition.getOperator());
     }
 
-    public Field getField() {
+    public ConditionParent getField() {
         return field;
     }
 
@@ -281,14 +284,54 @@ public class ComparableConditionInspector<T extends Comparable<T>>
     @Override
     public String toHumanReadableString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(field.getFactType());
-        stringBuilder.append(".");
-        stringBuilder.append(field.getName());
+        stringBuilder.append(field.toHumanReadableString());
         stringBuilder.append(" ");
         stringBuilder.append(operator);
         stringBuilder.append(" ");
         stringBuilder.append(getValue());
 
         return stringBuilder.toString();
+    }
+
+    // TODO Test
+    @Override
+    public Interval getInterval() {
+        switch (operator) {
+            case LESS_OR_EQUAL:
+                return Interval.newFromBounds(new Bound(Interval.NEG_INF,
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null),
+                                              new Bound(getValue(),
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null));
+            case LESS_THAN:
+                return Interval.newFromBounds(new Bound(Interval.NEG_INF,
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null),
+                                              new Bound(getValue(),
+                                                        Range.RangeBoundary.OPEN,
+                                                        null));
+            case GREATER_OR_EQUAL:
+                return Interval.newFromBounds(new Bound(getValue(),
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null),
+                                              new Bound(Interval.POS_INF,
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null));
+            case GREATER_THAN:
+                return Interval.newFromBounds(new Bound(getValue(),
+                                                        Range.RangeBoundary.OPEN,
+                                                        null),
+                                              new Bound(Interval.POS_INF,
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null));
+            default:
+                return Interval.newFromBounds(new Bound(getValue(),
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null),
+                                              new Bound(getValue(),
+                                                        Range.RangeBoundary.CLOSED,
+                                                        null));
+        }
     }
 }

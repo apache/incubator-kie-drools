@@ -17,7 +17,7 @@
 package org.drools.verifier.core.checks;
 
 import org.drools.verifier.api.reporting.CheckType;
-import org.drools.verifier.core.cache.inspectors.PatternInspector;
+import org.drools.verifier.core.cache.inspectors.ConditionMasterInspector;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.verifier.core.cache.inspectors.action.ActionInspector;
 import org.drools.verifier.core.checks.base.SingleCheck;
@@ -29,7 +29,7 @@ import org.drools.verifier.core.maps.util.RedundancyResult;
 public abstract class DetectRedundantActionBase
         extends SingleCheck {
 
-    protected PatternInspector patternInspector;
+    protected ConditionMasterInspector conditionMasterInspector;
 
     protected RedundancyResult<ObjectField, ActionInspector> result;
 
@@ -44,7 +44,7 @@ public abstract class DetectRedundantActionBase
     @Override
     public boolean check() {
         result = ruleInspector.getPatternsInspector().stream()
-                .map(PatternInspector::getActionsInspector)
+                .map(ConditionMasterInspector::getActionsInspector)
                 .map(InspectorMultiMap::hasRedundancy)
                 .filter(RedundancyResult::isTrue)
                 .findFirst().orElse(null);
