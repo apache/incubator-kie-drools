@@ -49,6 +49,7 @@
     <module>drools-core</module>
     <module>drools-compiler</module>
     <module>drools-model</module>
+    <module>kie-dmn</module>
     </modules>
 
   <dependencyManagement>
