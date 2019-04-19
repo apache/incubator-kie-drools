@@ -17,11 +17,14 @@ package org.jbpm.process.instance;
 
 import java.util.Optional;
 
+import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.services.signal.LightSignalManager;
 import org.kie.services.signal.SignalManager;
 import org.kie.services.time.TimerService;
+import org.kie.submarine.process.ProcessEventListenerConfig;
 import org.kie.submarine.process.WorkItemHandlerConfig;
 
 public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServiceProvider {
@@ -30,10 +33,12 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     private final ProcessInstanceManager processInstanceManager;
     private final SignalManager signalManager;
     private final WorkItemManager workItemManager;
+    private final ProcessEventSupport eventSupport;
 
     public AbstractProcessRuntimeServiceProvider(
             TimerService timerService,
-            WorkItemHandlerConfig workItemHandlerProvider) {
+            WorkItemHandlerConfig workItemHandlerProvider,
+            ProcessEventListenerConfig processEventListenerProvider) {
         processInstanceManager = new DefaultProcessInstanceManager();
         signalManager = new LightSignalManager(
                 id -> Optional.ofNullable(
@@ -44,6 +49,12 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
         for (String workItem : workItemHandlerProvider.names()) {
             workItemManager.registerWorkItemHandler(
                     workItem, workItemHandlerProvider.forName(workItem));
+        }
+        
+        this.eventSupport = new ProcessEventSupport();
+        
+        for (ProcessEventListener listener : processEventListenerProvider.listeners()) {
+            this.eventSupport.addEventListener(listener);
         }
     }
 
@@ -65,5 +76,10 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     @Override
     public WorkItemManager getWorkItemManager() {
         return workItemManager;
+    }
+
+    @Override
+    public ProcessEventSupport getEventSupport() {        
+        return eventSupport;
     }
 }

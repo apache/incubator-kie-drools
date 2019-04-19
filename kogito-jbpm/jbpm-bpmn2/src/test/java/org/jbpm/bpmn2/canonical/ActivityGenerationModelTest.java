@@ -19,7 +19,8 @@ package org.jbpm.bpmn2.canonical;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+import static org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -35,46 +36,39 @@ import org.drools.compiler.commons.jci.compilers.JavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.event.DebugProcessEventListener;
+import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.junit.After;
 import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieRepository;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.submarine.process.ProcessConfig;
+import org.kie.submarine.process.ProcessInstance;
+import org.kie.submarine.process.bpmn2.BpmnProcess;
+import org.kie.submarine.process.bpmn2.BpmnVariables;
+import org.kie.submarine.process.impl.CachedWorkItemHandlerConfig;
+import org.kie.submarine.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.submarine.process.impl.StaticProcessConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActivityGenerationModelTest.class);
+    @SuppressWarnings("deprecation")
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler( JavaDialectConfiguration.CompilerType.NATIVE, "1.8" );
-    
-    private KieSession ksession;
-    
-    @After
-    public void dispose() {
-        if (ksession != null) {   
-            ksession.dispose();
-            ksession = null;
-        }
-    }
     
     @Test
     public void testMinimalProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-MinimalProcess.bpmn2")).get(0);        
                 
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("Minimal"));        
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
@@ -82,41 +76,46 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         Map<String, String> classData = new HashMap<>();
         classData.put("com.sample.MinimalProcess", content);
         
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
-        ProcessInstance processInstance = ksession.startProcess("Minimal");
-        assertProcessInstanceCompleted(processInstance);
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.emptyMap());
+        ProcessInstance<BpmnVariables> processInstance = processes.get("Minimal").createInstance();
+        
+        processInstance.start();
+        
+        assertEquals(STATE_COMPLETED, processInstance.status());
     }
     
     @Test
     public void testUserTaskProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
-                
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("UserTask"));        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+             
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.UserTaskProcess", content);
-        
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession, true);
+        
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Human Task", workItemHandler));                
+        ProcessInstance<BpmnVariables> processInstance = processes.get("UserTask").createInstance();
+        
+        processInstance.start();
+        assertEquals(STATE_ACTIVE, processInstance.status());
+        
+        
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
+        processInstance.completeWorkItem(workItem.getId(), null);
+        assertEquals(STATE_COMPLETED, processInstance.status());
     }
     
     @Test
-    public void testUserTaskWithParamProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-UserTaskWithParametrizedInput.bpmn2");
+    public void testUserTaskWithParamProcess() throws Exception {        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTaskWithParametrizedInput.bpmn2")).get(0);
                 
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("UserTask"));        
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
@@ -124,43 +123,46 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.UserTaskProcess", content);
         
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
-        
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession, true);
+        
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Human Task", workItemHandler));                
+        ProcessInstance<BpmnVariables> processInstance = processes.get("UserTask").createInstance();
+        
+        processInstance.start();
+        assertEquals(STATE_ACTIVE, processInstance.status());
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        assertEquals("Executing task of process instance " + processInstance.getId() + " as work item with Hello",
+        assertEquals("Executing task of process instance " + processInstance.id() + " as work item with Hello",
                 workItem.getParameter("Description").toString().trim());
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
+        processInstance.completeWorkItem(workItem.getId(), null);
+        assertEquals(STATE_COMPLETED, processInstance.status());
     }
     
     @Test
-    public void testScriptMultilineExprProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-CallActivitySubProcess.bpmn2");
+    public void testScriptMultilineExprProcess() throws Exception {        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-CallActivitySubProcess.bpmn2")).get(0);
                 
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("SubProcess"));        
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
         Map<String, String> classData = new HashMap<>();
-        classData.put("org.drools.bpmn2.SubProcessProcess", content);
+        classData.put("org.drools.bpmn2.SubProcessProcess", content);        
         
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
-        ProcessInstance processInstance = ksession.startProcess("SubProcess");
-        assertProcessInstanceCompleted(processInstance);
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.emptyMap());
+        ProcessInstance<BpmnVariables> processInstance = processes.get("SubProcess").createInstance();
+        
+        processInstance.start();
+        
+        assertEquals(STATE_COMPLETED, processInstance.status());
     }
     
     @Test
-    public void testExclusiveSplit() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
+    public void testExclusiveSplit() throws Exception {        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-ExclusiveSplit.bpmn2")).get(0);
         
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
@@ -168,20 +170,25 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.TestProcess", content);
         
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
-        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        SystemOutWorkItemHandler workItemHandler = new SystemOutWorkItemHandler();
+        
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Email", workItemHandler)); 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "First");
         params.put("y", "Second");
-        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
-        assertProcessInstanceCompleted(processInstance);
+        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(BpmnVariables.create(params));
+        
+        processInstance.start();
+        
+        assertEquals(STATE_COMPLETED, processInstance.status());
 
     }
     
     @Test
     public void testInclusiveSplit() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-InclusiveSplit.bpmn2")).get(0);
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
@@ -189,38 +196,45 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.TestProcess", content);
         
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.emptyMap()); 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
-        ProcessInstance processInstance = ksession.startProcess(
-                "com.sample.test", params);
-        assertProcessInstanceCompleted(processInstance);
+        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(BpmnVariables.create(params));
+        
+        processInstance.start();
+        
+        assertEquals(STATE_COMPLETED, processInstance.status());
 
     }
     
     @Test
     public void testInclusiveSplitDefaultConnection() throws Exception {
-        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-InclusiveGatewayWithDefault.bpmn2");
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("InclusiveGatewayWithDefault"));        
+        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-InclusiveGatewayWithDefault.bpmn2")).get(0);
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.InclusiveGatewayWithDefaultProcess", content);
-        
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+              
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.emptyMap()); 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("test", "c");
-        ProcessInstance processInstance = ksession.startProcess("InclusiveGatewayWithDefault", params);
-        assertProcessInstanceCompleted(processInstance);
+        ProcessInstance<BpmnVariables> processInstance = processes.get("InclusiveGatewayWithDefault").createInstance(BpmnVariables.create(params));
+        
+        processInstance.start();
+        
+        assertEquals(STATE_COMPLETED, processInstance.status());
 
     }
     
     @Test
     public void testParallelGateway() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ParallelSplit.bpmn2");
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-ParallelSplit.bpmn2")).get(0);
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
@@ -228,16 +242,20 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.TestProcess", content);
         
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
-        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
-        assertProcessInstanceCompleted(processInstance);
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.emptyMap()); 
+        Map<String, Object> params = new HashMap<String, Object>();        
+        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(BpmnVariables.create(params));
+        
+        processInstance.start();
+        
+        assertEquals(STATE_COMPLETED, processInstance.status());
         
     }
     
     @Test
-    public void testInclusiveSplitAndJoinNested() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinNested.bpmn2");
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("com.sample.test"));        
+    public void testInclusiveSplitAndJoinNested() throws Exception {        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-InclusiveSplitAndJoinNested.bpmn2")).get(0);
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
@@ -245,67 +263,63 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.TestProcess", content);
         
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
-        ProcessInstance processInstance = ksession.startProcess(
-                "com.sample.test", params);
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Human Task", workItemHandler));                
+        ProcessInstance<BpmnVariables> processInstance = processes.get("com.sample.test").createInstance(BpmnVariables.create(params));
+        
+        processInstance.start();
+        assertEquals(STATE_ACTIVE, processInstance.status());
 
         List<WorkItem> activeWorkItems = workItemHandler.getWorkItems();
 
         assertEquals(2, activeWorkItems.size());
         
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-
+    
         for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+            processInstance.completeWorkItem(wi.getId(), null);
         }
 
         activeWorkItems = workItemHandler.getWorkItems();
         assertEquals(2, activeWorkItems.size());
-        
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
 
         for (WorkItem wi : activeWorkItems) {
-            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+            processInstance.completeWorkItem(wi.getId(), null);
         }
-        assertProcessInstanceFinished(processInstance, ksession);
+        assertEquals(STATE_COMPLETED, processInstance.status());
 
     }
     
     @Test
-    public void testWorkItemProcessWithVariableMapping() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
+    public void testWorkItemProcessWithVariableMapping() throws Exception {        
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-ServiceProcess.bpmn2")).get(0);
                 
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) kbase.getProcess("ServiceProcess"));        
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
         
         Map<String, String> classData = new HashMap<>();
         classData.put("org.drools.bpmn2.ServiceProcessProcess", content);
-        
-        ksession = createKnowledgeSession(createKieBaseForProcesses(classData));
+ 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", workItemHandler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john");
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Service Task", workItemHandler));                
+        ProcessInstance<BpmnVariables> processInstance = processes.get("ServiceProcess").createInstance(BpmnVariables.create(params));
         
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("s", "john");
-        ProcessInstance processInstance = ksession.startProcess("ServiceProcess", parameters);
+        processInstance.start();
+        assertEquals(STATE_ACTIVE, processInstance.status());
         
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         
         assertEquals("john", workItem.getParameter("Parameter"));
         
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), Collections.singletonMap("Result", "john doe"));
+        processInstance.completeWorkItem(workItem.getId(), BpmnVariables.create(Collections.singletonMap("Result", "john doe")));
         
-        assertProcessInstanceCompleted(processInstance);
+        assertEquals(STATE_COMPLETED, processInstance.status());
     }
     
     /*
@@ -315,26 +329,9 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
     protected void log(String content) {
         LOG.info(content);
     }
-    
-    protected KieBase createEmptyKnowledgeBase() throws Exception {
-
-        KieServices ks = KieServices.Factory.get();  
-        KieRepository kr = ks.getRepository();
-        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
-        KieBase kbase = kContainer.getKieBase();
-        
-        for (Process p : kbase.getProcesses()) {
-            ((InternalKnowledgeBase) kbase).removeProcess(p.getId());
-        }
-        
-        return kbase;
-    }
-    
-    
-    protected KieBase createKieBaseForProcesses(Map<String, String> classData) throws Exception {
-        KieBase testKbase = createEmptyKnowledgeBase();
-        
-        MemoryFileSystem srcMfs = new MemoryFileSystem();
+   
+    protected Map<String, BpmnProcess> createProcesses(Map<String, String> classData, Map<String, WorkItemHandler> handlers) throws Exception {
+       MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
         
         String[] sources = new String[classData.size()];
@@ -350,20 +347,27 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).hasSize(0);
         
-        TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
+        CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
+        for (Entry<String, WorkItemHandler> entry : handlers.entrySet()) {
+            wiConfig.register(entry.getKey(), entry.getValue());
+        }
         
+        ProcessConfig config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(new DebugProcessEventListener()));
+        
+        TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
+        Map<String, BpmnProcess> processes = new HashMap<>();
         for (String className : classData.keySet()) {
             Class<?> processClass = Class.forName(className, true, cl);
             
             Method processMethod = processClass.getMethod("process");
-            Object process = processMethod.invoke(null);
+            Process process = (Process) processMethod.invoke(null);
             assertThat(process).isNotNull();
             
             
-            ((InternalKnowledgeBase) testKbase).addProcess((Process) process);
+            processes.put(process.getId(), new BpmnProcess(process, config));
         }
         
-        return testKbase;
+        return processes;
     }
     
     private static class TestClassLoader extends URLClassLoader {

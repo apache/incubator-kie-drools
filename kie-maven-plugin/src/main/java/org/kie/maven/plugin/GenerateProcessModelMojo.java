@@ -216,6 +216,14 @@ public class GenerateProcessModelMojo extends AbstractKieMojo {
             if (Files.exists(p)) {
                 moduleSourceClass.setWorkItemHandlerClass(workItemHandlerConfigClass);
             }
+            
+            String processEventListenerConfigClass = project.getGroupId() + ".ProcessEventListenerConfig";
+            p = Paths.get(sourceDir.getPath(),
+                               "main/java",
+                               processEventListenerConfigClass.replace('.', '/') + ".java");
+            if (Files.exists(p)) {
+                moduleSourceClass.setProcessEventListenerConfigClass(processEventListenerConfigClass);
+            }
 
             Files.write(pathOf(moduleSourceClass.generatedFilePath()),
                         moduleSourceClass.generate().getBytes());

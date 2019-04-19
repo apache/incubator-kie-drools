@@ -15,10 +15,14 @@
 
 package org.kie.submarine.process.impl;
 
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.kie.api.event.process.ProcessEventListener;
 
-public class DefaultWorkItemHandlerConfig extends CachedWorkItemHandlerConfig {{
-    register("Log", new SystemOutWorkItemHandler());
-    register("Human Task", new DoNothingWorkItemHandler());
-}}
+public class DefaultProcessEventListenerConfig extends CachedProcessEventListenerConfig {
+
+    
+    public DefaultProcessEventListenerConfig(ProcessEventListener...listeners) {
+        for (ProcessEventListener listener : listeners) {
+            register(listener);
+        }
+    }
+}

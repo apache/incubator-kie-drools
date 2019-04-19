@@ -23,10 +23,20 @@ public class BpmnVariables {
 
     private final Map<String, Object> variables = new HashMap<>();
 
-    private BpmnVariables(){}
+    private BpmnVariables(){
+        
+    }
+    
+    private BpmnVariables(Map<String, Object> variables){
+        this.variables.putAll(variables);
+    }
 
     public static BpmnVariables create() {
         return new BpmnVariables();
+    }
+    
+    public static BpmnVariables create(Map<String, Object> variables) {
+        return new BpmnVariables(variables);
     }
 
     public Object get(String v) {

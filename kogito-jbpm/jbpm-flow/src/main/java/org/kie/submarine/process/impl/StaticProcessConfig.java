@@ -16,18 +16,26 @@
 package org.kie.submarine.process.impl;
 
 import org.kie.submarine.process.ProcessConfig;
+import org.kie.submarine.process.ProcessEventListenerConfig;
 import org.kie.submarine.process.WorkItemHandlerConfig;
 
 public class StaticProcessConfig implements ProcessConfig {
 
     private final WorkItemHandlerConfig workItemHandlerConfig;
+    private final ProcessEventListenerConfig processEventListenerConfig;
 
-    public StaticProcessConfig(WorkItemHandlerConfig workItemHandlerConfig) {
+    public StaticProcessConfig(WorkItemHandlerConfig workItemHandlerConfig, ProcessEventListenerConfig processEventListenerConfig) {
         this.workItemHandlerConfig = workItemHandlerConfig;
+        this.processEventListenerConfig = processEventListenerConfig;
     }
 
     @Override
     public WorkItemHandlerConfig workItemHandlers() {
         return this.workItemHandlerConfig;
+    }
+
+    @Override
+    public ProcessEventListenerConfig processEventListeners() {
+        return this.processEventListenerConfig;
     }
 }

@@ -29,11 +29,19 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
 
     @Override
     protected Map<String, Object> bind(BpmnVariables variables) {
+        
+        if (variables == null) {
+            return null;
+        }
         return variables.asMap();
     }
 
     @Override
     protected void unbind(BpmnVariables variables, Map<String, Object> vmap) {
+        
+        if (variables == null) {
+            return;
+        }
         variables.fromMap(vmap);
     }
 }

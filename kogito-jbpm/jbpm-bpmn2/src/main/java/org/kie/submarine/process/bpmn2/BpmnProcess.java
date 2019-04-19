@@ -23,9 +23,9 @@ import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
-import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.submarine.process.ProcessConfig;
 import org.kie.submarine.process.ProcessInstance;
 import org.kie.submarine.process.impl.AbstractProcess;
 
@@ -42,6 +42,12 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     private final Process process;
 
     public BpmnProcess(Process p) {
+        process = p;
+    }
+    
+    
+    public BpmnProcess(Process p, ProcessConfig config) {
+        super(config);
         process = p;
     }
 
@@ -67,7 +73,7 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     }
 
     @Override
-    protected Process legacyProcess() {
+    public Process legacyProcess() {
         return process;
     }
 }

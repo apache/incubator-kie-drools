@@ -98,7 +98,7 @@ public abstract class JbpmBpmn2TestCase {
     protected WorkingMemoryInMemoryLogger logger;
     
     @Rule
-    public Timeout globalTimeout = Timeout.seconds(30);
+    public Timeout globalTimeout = Timeout.seconds(3000);
 
     @Rule
     public TestRule watcher = new TestWatcher() {

@@ -13,12 +13,14 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.process.impl;
+package org.kie.submarine.process;
 
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import java.util.List;
 
-public class DefaultWorkItemHandlerConfig extends CachedWorkItemHandlerConfig {{
-    register("Log", new SystemOutWorkItemHandler());
-    register("Human Task", new DoNothingWorkItemHandler());
-}}
+import org.kie.api.event.process.ProcessEventListener;
+
+public interface ProcessEventListenerConfig {
+
+    List<ProcessEventListener> listeners();
+    
+}

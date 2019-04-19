@@ -103,7 +103,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         this.processInstanceManager = services.getProcessInstanceManager();
         this.signalManager = services.getSignalManager();
         this.timerManager = new TimerManager(timerManagerRuntime, timerService);
-        this.processEventSupport = new ProcessEventSupport();
+        this.processEventSupport = services.getEventSupport();
         if (isActive()) {
             initProcessEventListeners();
             initStartTimers();
@@ -451,7 +451,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     }
 
     public WorkItemManager getWorkItemManager() {
-        return runtimeContext.getWorkItemManager();
+        return knowledgeRuntime.getWorkItemManager();
     }
 
     public void signalEvent(String type, Object event) {

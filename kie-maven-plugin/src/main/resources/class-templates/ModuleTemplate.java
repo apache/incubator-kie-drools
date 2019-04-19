@@ -7,7 +7,8 @@ public class Module {
     private static final Config config =
             new org.kie.submarine.StaticConfig(
                     new org.kie.submarine.process.impl.StaticProcessConfig(
-                            new $WorkItemHandlerConfig$()));
+                            new $WorkItemHandlerConfig$(),
+                            new $ProcessEventListenerConfig$()));
 
     public Config config() {
         return config;

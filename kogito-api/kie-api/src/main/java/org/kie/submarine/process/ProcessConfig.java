@@ -17,4 +17,6 @@ package org.kie.submarine.process;
 
 public interface ProcessConfig {
     WorkItemHandlerConfig workItemHandlers();
+    
+    ProcessEventListenerConfig processEventListeners();
 }

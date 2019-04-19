@@ -30,6 +30,7 @@ public abstract class AbstractProcessInstance<T> implements ProcessInstance<T> {
     private final AbstractProcess<T> process;
     private final ProcessRuntime rt;
     private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance;
+    private int status;
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this.process = process;
@@ -45,6 +46,8 @@ public abstract class AbstractProcessInstance<T> implements ProcessInstance<T> {
         process.instances().update(pid, this);
         org.kie.api.runtime.process.ProcessInstance pi = this.rt.startProcessInstance(pid);
         unbind(variables, pi.getVariables());
+        
+        this.status = pi.getState();
     }
 
     public void abort() {
@@ -55,11 +58,15 @@ public abstract class AbstractProcessInstance<T> implements ProcessInstance<T> {
         unbind(variables, legacyProcessInstance.getVariables());
         process.instances().remove(pid);
         this.rt.abortProcessInstance(pid);
+        
+        this.status = legacyProcessInstance.getState();
     }
 
     @Override
     public <S> void send(Signal<S> signal) {
         legacyProcessInstance.signalEvent(signal.channel(), signal.payload());
+        
+        this.status = legacyProcessInstance.getState();
     }
 
     @Override
@@ -72,9 +79,29 @@ public abstract class AbstractProcessInstance<T> implements ProcessInstance<T> {
         return variables;
     }
 
+    @Override
+    public int status() {
+        return status;
+    }
+
+    @Override
+    public long id() {
+        return legacyProcessInstance.getId();
+    }
+
+    @Override
+    public void completeWorkItem(long id, T variables) {
+        this.rt.getWorkItemManager().completeWorkItem(id, bind(variables));
+        unbind(variables, legacyProcessInstance.getVariables());
+        this.status = legacyProcessInstance.getState();
+    }
+
     // this must be overridden at compile time
     protected Map<String, Object> bind(T variables) {
         HashMap<String, Object> vmap = new HashMap<>();
+        if (variables == null) {
+            return vmap;
+        }
         try {
             for (Field f : variables.getClass().getDeclaredFields()) {
                 f.setAccessible(true);

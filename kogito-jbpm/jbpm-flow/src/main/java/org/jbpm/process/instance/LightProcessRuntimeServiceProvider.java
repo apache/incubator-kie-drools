@@ -16,12 +16,14 @@
 package org.jbpm.process.instance;
 
 import org.kie.services.time.impl.JDKTimerService;
+import org.kie.submarine.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.submarine.process.impl.DefaultWorkItemHandlerConfig;
 
 public class LightProcessRuntimeServiceProvider extends AbstractProcessRuntimeServiceProvider {
 
     public LightProcessRuntimeServiceProvider() {
         super(new JDKTimerService(),
-              new DefaultWorkItemHandlerConfig());
+              new DefaultWorkItemHandlerConfig(),
+              new DefaultProcessEventListenerConfig());
     }
 }

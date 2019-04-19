@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.submarine.process.WorkItemHandlerConfig;
 
@@ -29,12 +27,7 @@ public class CachedWorkItemHandlerConfig implements WorkItemHandlerConfig {
 
     private final Map<String, WorkItemHandler> workItemHandlers = new HashMap<>();
 
-    public CachedWorkItemHandlerConfig() {
-        register("Log", new DoNothingWorkItemHandler());
-        register("Human Task", new SystemOutWorkItemHandler());
-    }
-
-    protected CachedWorkItemHandlerConfig register(String name, WorkItemHandler handler) {
+    public CachedWorkItemHandlerConfig register(String name, WorkItemHandler handler) {
         workItemHandlers.put(name, handler);
         return this;
     }
