@@ -22,8 +22,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.Period;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
@@ -126,7 +126,7 @@ public enum BuiltInType implements SimpleType {
             return TIME;
         } else if( o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime ) {
             return DATE_TIME;
-        } else if( o instanceof Duration || o instanceof Period ) {
+        } else if (o instanceof Duration || o instanceof ChronoPeriod) {
             return DURATION;
         } else if( o instanceof Boolean ) {
             return BOOLEAN;

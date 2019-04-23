@@ -22,9 +22,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
-import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,6 +60,7 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.model.Person;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
+import org.kie.dmn.feel.lang.ast.RangeNode.ComparablePeriod;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -649,7 +650,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( ctx.get("dtDuration2"), is( Duration.parse( "P367DT3H58M59S" ) ) );
         assertThat( ctx.get("hoursInDuration"), is( new BigDecimal( "3" ) ) );
         assertThat( ctx.get("sumDurations"), is( Duration.parse( "PT9125H59M13S" ) ) );
-        assertThat( ctx.get("ymDuration2"), is( Period.parse( "P1Y" ) ) );
+        assertThat( ctx.get("ymDuration2"), is( ComparablePeriod.parse( "P1Y" ) ) );
         assertThat( ctx.get("cDay"), is( BigDecimal.valueOf( 24 ) ) );
         assertThat( ctx.get("cYear"), is( BigDecimal.valueOf( 2015 ) ) );
         assertThat( ctx.get("cMonth"), is( BigDecimal.valueOf( 12 ) ) );
@@ -772,7 +773,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         final BuiltInType feelType = (BuiltInType) BuiltInType.determineTypeFromName("yearMonthDuration" );
-        final Period period = (Period) feelType.fromString("P2Y1M" );
+        final ChronoPeriod period = (ChronoPeriod) feelType.fromString("P2Y1M");
 
         final DMNContext context = runtime.newContext();
         context.set( "iDuration", period );
