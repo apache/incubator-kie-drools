@@ -48,10 +48,10 @@ public class FeelExpressionSourceGenerator implements ExecModelDMNEvaluatorCompi
         sourceGenerator = new JavaParserSourceGenerator(dTableName, ExecModelDMNEvaluatorCompiler.GeneratorsEnum.FEEL_EXPRESSION.type, pkgName);
         sourceGenerator.addImports(org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction.class,
                                    org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression.class,
-                                   org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.class,
                                    org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport.class,
                                    EvaluationContext.class,
                                    CompiledFEELExpression.class);
+        sourceGenerator.addStaticImportStar(org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.class);
 
         generateInitRows(ctx, dTableModel, dTableName);
         generateInputClauses(ctx, dTableModel);

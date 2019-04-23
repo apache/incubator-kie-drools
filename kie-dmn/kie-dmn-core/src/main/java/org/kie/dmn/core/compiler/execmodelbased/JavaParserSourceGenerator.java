@@ -54,6 +54,10 @@ public class JavaParserSourceGenerator {
         }
     }
 
+    public void addStaticImportStar(Class<?> clazz) {
+        compilationUnit.addImport(clazz.getName(), true, true);
+    }
+
     public void addInnerClassWithName(ClassOrInterfaceDeclaration feelExpressionSource, String name) {
         renameFeelExpressionClass(name, feelExpressionSource);
         firstClass.addMember(feelExpressionSource);
