@@ -209,7 +209,7 @@ public class InfixOpNode
         } else if ( left instanceof String && right instanceof String ) {
             return ((String) left) + ((String) right);
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
-            return ((ChronoPeriod) left).plus((ChronoPeriod) right);
+            return new ComparablePeriod(((ChronoPeriod) left).plus((ChronoPeriod) right));
         } else if ( left instanceof Duration && right instanceof Duration ) {
             return ((Duration) left).plus( (Duration) right);
         } else if (left instanceof ZonedDateTime && right instanceof ChronoPeriod) {
@@ -274,7 +274,7 @@ public class InfixOpNode
             }
             return Duration.between( (Temporal) right, (Temporal) left);
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
-            return ((ChronoPeriod) left).minus((ChronoPeriod) right);
+            return new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right));
         } else if ( left instanceof Duration && right instanceof Duration ) {
             return ((Duration) left).minus( (Duration) right);
         } else if (left instanceof ZonedDateTime && right instanceof ChronoPeriod) {

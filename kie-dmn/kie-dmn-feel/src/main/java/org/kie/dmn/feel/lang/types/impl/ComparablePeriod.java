@@ -38,6 +38,12 @@ public class ComparablePeriod implements Comparable<ChronoPeriod>, ChronoPeriod 
         this.toStringRep = TypeUtil.formatPeriod(value, true);
     }
 
+    public ComparablePeriod(ChronoPeriod value) {
+        this.period = Period.from(value);
+        this.left = (int) toTotalMonths(value);
+        this.toStringRep = TypeUtil.formatPeriod(value, true);
+    }
+
     public static ComparablePeriod parse(CharSequence text) {
         return new ComparablePeriod(Period.parse(text));
     }
