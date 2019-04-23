@@ -113,5 +113,4 @@ public class JavaParserSourceGenerator {
     public String getSource() {
         return compilationUnit.toString();
     }
-
 }
