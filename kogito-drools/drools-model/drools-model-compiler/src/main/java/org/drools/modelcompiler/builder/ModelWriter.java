@@ -62,7 +62,6 @@ public class ModelWriter {
 
             String sourceName = "src/main/java/" + folderName + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + pkgModel.getPackageUUID() + ".java";
             addSource( srcMfs, sourceFiles, pkgModel, sourceName, pkgModel.getDomainClassesMetadataSource() );
-            pkgModel.getModuleGenerator().withCdi(hasCdi).write(srcMfs);
         }
 
         return new Result(sourceFiles, modelFiles);

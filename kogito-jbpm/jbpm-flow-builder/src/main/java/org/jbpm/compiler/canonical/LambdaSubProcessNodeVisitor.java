@@ -95,7 +95,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         String processId = ProcessToExecModelGenerator.extractProcessId(subProcessNode.getProcessId());
         String factoryMethodName = String.format("create%sProcess", StringUtils.capitalize(processId));
 
-        MethodCallExpr processSupplier = new MethodCallExpr(new NameExpr("module"), factoryMethodName);
+        MethodCallExpr processSupplier = new MethodCallExpr(new NameExpr("app"), factoryMethodName);
         MethodCallExpr processInstanceSupplier = new MethodCallExpr(processSupplier, "createInstance").addArgument("model");
 
         return new BlockStmt().addStatement(new ReturnStmt(processInstanceSupplier));

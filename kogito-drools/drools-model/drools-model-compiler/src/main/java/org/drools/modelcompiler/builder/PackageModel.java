@@ -50,9 +50,11 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.ruleunit.RuleUnitDescription;
 import org.drools.model.DomainClassMetadata;
 import org.drools.model.Global;
 import org.drools.model.Model;
@@ -133,6 +135,7 @@ public class PackageModel {
     private ModuleSourceClass moduleGenerator;
 
     private final String pkgUUID = generateUUID();
+    private Set<Class<?>> ruleUnits = new HashSet<>();
 
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this.name = name;
@@ -327,12 +330,12 @@ public class PackageModel {
         return dialectCompiletimeRegistry;
     }
 
-    public void setModuleGenerator(ModuleSourceClass m) {
-        this.moduleGenerator = m;
+    public void addRuleUnit(Class<?> ruleUnitType) {
+        this.ruleUnits.add(ruleUnitType);
     }
 
-    public ModuleSourceClass getModuleGenerator() {
-        return moduleGenerator;
+    public Collection<Class<?>> getRuleUnits() {
+        return ruleUnits;
     }
 
     public static class RuleSourceResult {

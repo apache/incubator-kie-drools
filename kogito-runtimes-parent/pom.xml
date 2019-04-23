@@ -22,6 +22,7 @@
     <module>jbpm</module>
     <module>kie-maven-plugin</module>
     <module>archetypes</module>
+    <module>submarine-codegen</module>
   </modules>
 
 </project>

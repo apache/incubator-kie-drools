@@ -17,11 +17,13 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
+import org.drools.modelcompiler.builder.generator.ModuleSourceClass;
 
 public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKieProject {
 
@@ -34,6 +36,10 @@ public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKiePro
     public CanonicalModelCodeGenerationKieProject withCdi(boolean hasCdi) {
         this.hasCdi = hasCdi;
         return this;
+    }
+
+    protected boolean hasCdi() {
+        return hasCdi;
     }
 
     @Override

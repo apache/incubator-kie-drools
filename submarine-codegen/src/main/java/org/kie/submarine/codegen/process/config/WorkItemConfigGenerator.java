@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin.process.config;
+package org.kie.submarine.codegen.process.config;
 
 import java.util.HashMap;
 import java.util.Map;

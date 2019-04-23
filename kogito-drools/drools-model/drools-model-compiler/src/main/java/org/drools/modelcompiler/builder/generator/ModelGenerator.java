@@ -163,21 +163,12 @@ public class ModelGenerator {
             }
         }
 
-        ModuleSourceClass m = new ModuleSourceClass();
 
         for (RuleUnitDescription rud : ruleUnitDescriptions) {
             Class<? extends RuleUnit> ruc = rud.getRuleUnitClass();
-
-            RuleUnitSourceClass rusc = new RuleUnitSourceClass(
-                    ruc.getPackage().getName(), ruc.getSimpleName(), packageModel.getRulesFileName());
-            RuleUnitInstanceSourceClass ruisc = new RuleUnitInstanceSourceClass(
-                    ruc.getPackage().getName(), ruc.getSimpleName());
-
-            m.addRuleUnit(rusc);
-            m.addRuleUnitInstance(ruisc);
+            packageModel.addRuleUnit(ruc);
         }
 
-        packageModel.setModuleGenerator(m);
     }
 
 

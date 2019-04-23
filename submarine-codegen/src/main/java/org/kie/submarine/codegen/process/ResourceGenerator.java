@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin.process;
+package org.kie.submarine.codegen.process;
 
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.process.WorkflowProcess;

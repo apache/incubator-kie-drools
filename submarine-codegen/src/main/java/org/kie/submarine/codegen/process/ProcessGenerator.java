@@ -13,12 +13,13 @@
  * limitations under the License.
  */
 
-package org.kie.maven.plugin.process;
+package org.kie.submarine.codegen.process;
 
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -55,7 +56,7 @@ public class ProcessGenerator {
     private final String completePath;
     private final String canonicalName;
     private final String targetCanonicalName;
-    private final String moduleCanonicalName;
+    private final String appCanonicalName;
     private String targetTypeName;
     private boolean hasCdi = false;
 
@@ -65,9 +66,9 @@ public class ProcessGenerator {
             Map<String, WorkflowProcess> processMapping,
             String typeName,
             String modelTypeName,
-            String moduleCanonicalName) {
+            String appCanonicalName) {
 
-        this.moduleCanonicalName = moduleCanonicalName;
+        this.appCanonicalName = appCanonicalName;
 
         this.packageName = process.getPackageName();
         this.process = process;
@@ -113,7 +114,7 @@ public class ProcessGenerator {
         ReturnStmt returnStmt = new ReturnStmt(
                 new ObjectCreationExpr()
                         .setType(processInstanceFQCN)
-                        .setArguments(nodeList(
+                        .setArguments(NodeList.nodeList(
                                 new ThisExpr(),
                                 new NameExpr("value"),
                                 createProcessRuntime())));
@@ -167,27 +168,27 @@ public class ProcessGenerator {
         String processInstanceFQCN = ProcessInstanceGenerator.qualifiedName(packageName, typeName);
 
         FieldDeclaration fieldDeclaration = new FieldDeclaration()
-                .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, moduleCanonicalName), "module"));
+                .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, appCanonicalName), "app"));
 
         ConstructorDeclaration constructorDeclaration = new ConstructorDeclaration()
                 .setName(targetTypeName)
                 .addModifier(Modifier.Keyword.PUBLIC)
-                .addParameter(moduleCanonicalName, "module")
+                .addParameter(appCanonicalName, "app")
                 .setBody(new BlockStmt()
                                  // super(module.config().process())
                                  .addStatement(new MethodCallExpr(null, "super")
                                               .addArgument(
                                                       new MethodCallExpr(
-                                                              new MethodCallExpr(new NameExpr("module"), "config"),
+                                                              new MethodCallExpr(new NameExpr("app"), "config"),
                                                               "process")))
                                  .addStatement(
-                                         new AssignExpr(new FieldAccessExpr(new ThisExpr(), "module"), new NameExpr("module"), AssignExpr.Operator.ASSIGN)));
+                                         new AssignExpr(new FieldAccessExpr(new ThisExpr(), "app"), new NameExpr("app"), AssignExpr.Operator.ASSIGN)));
         ConstructorDeclaration emptyConstructorDeclaration = new ConstructorDeclaration()
                 .setName(targetTypeName)
                 .addModifier(Modifier.Keyword.PUBLIC)
                 .setBody(new BlockStmt()
                                  .addStatement(
-                                         new MethodCallExpr(null, "this").addArgument(new ObjectCreationExpr().setType(moduleCanonicalName))));
+                                         new MethodCallExpr(null, "this").addArgument(new ObjectCreationExpr().setType(appCanonicalName))));
 
         MethodDeclaration methodDeclaration = createInstanceMethod(processInstanceFQCN);
         cls.addExtendedType(abstractProcessType(modelTypeName))
