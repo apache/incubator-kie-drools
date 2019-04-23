@@ -35,8 +35,8 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.RangeNode.ComparablePeriod;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class InfixOpNode

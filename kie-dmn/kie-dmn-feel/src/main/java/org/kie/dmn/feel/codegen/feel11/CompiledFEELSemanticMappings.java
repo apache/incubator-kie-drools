@@ -27,7 +27,7 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
@@ -174,7 +174,7 @@ public class CompiledFEELSemanticMappings {
             return (Comparable) s;
         } else if (s instanceof Period) {
             // period has special semantics
-            return new RangeNode.ComparablePeriod((Period) s);
+            return new ComparablePeriod((Period) s);
         } else {
             throw new IllegalArgumentException("Unable to transform s " + s + "as Comparable");
         }

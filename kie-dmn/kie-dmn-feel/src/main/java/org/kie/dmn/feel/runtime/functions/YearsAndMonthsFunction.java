@@ -25,7 +25,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.ast.RangeNode.ComparablePeriod;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class YearsAndMonthsFunction

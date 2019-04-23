@@ -32,7 +32,7 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.ast.RangeNode.ComparablePeriod;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 public class FEELDateTimeDurationTest extends BaseFEELTest {
 

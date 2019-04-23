@@ -22,7 +22,7 @@ import java.time.temporal.TemporalAmount;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.dmn.feel.lang.ast.RangeNode.ComparablePeriod;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class DurationFunctionTest {

@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELRangesTest extends BaseFEELTest {
@@ -66,8 +66,8 @@ public class FEELRangesTest extends BaseFEELTest {
 
                 {"(duration(\"P1Y6M\")..duration(\"P2Y6M\"))",
                         new RangeImpl(Range.RangeBoundary.OPEN,
-                                      new RangeNode.ComparablePeriod(Period.parse("P1Y6M")),
-                                      new RangeNode.ComparablePeriod(Period.parse("P2Y6M")),
+                                      new ComparablePeriod(Period.parse("P1Y6M")),
+                                      new ComparablePeriod(Period.parse("P2Y6M")),
                                       Range.RangeBoundary.OPEN), null},
 
                 {"[1+2..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
