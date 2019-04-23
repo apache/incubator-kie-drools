@@ -73,6 +73,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     protected int slaCompliance = ProcessInstance.SLA_NA;
     protected Date slaDueDate;
     protected long slaTimerId = -1;
+    protected Date triggerTime;
     
     protected transient Map<String, Object> dynamicParameters;
 
@@ -378,7 +379,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     protected void triggerNodeInstance(org.jbpm.workflow.instance.NodeInstance nodeInstance, String type, boolean fireEvents) {
-    	boolean hidden = false;
+        triggerTime = new Date();
+        boolean hidden = false;
     	if (getNode().getMetaData().get("hidden") != null) {
     		hidden = true;
     	}
@@ -572,5 +574,9 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     
     public void internalSetSlaTimerId(Long slaTimerId) {
         this.slaTimerId = slaTimerId;
+    }
+    
+    public Date getTriggerTime() {
+        return triggerTime;
     }
 }
