@@ -17,11 +17,17 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+import java.time.Period;
+import java.time.chrono.ChronoPeriod;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class MaxFunctionTest {
@@ -65,6 +71,21 @@ public class MaxFunctionTest {
     }
 
     @Test
+    public void invokeListOfChronoPeriods() {
+        final ChronoPeriod p1Period = Period.parse("P1Y");
+        final ChronoPeriod p1Comparable = ComparablePeriod.parse("P1Y");
+        final ChronoPeriod p2Period = Period.parse("P1M");
+        final ChronoPeriod p2Comparable = ComparablePeriod.parse("P1M");
+        Predicate<ChronoPeriod> assertion = i -> i.get(ChronoUnit.YEARS) == 1 && i.get(ChronoUnit.MONTHS) == 0;
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(Collections.singletonList(p1Period)), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(Collections.singletonList(p1Comparable)), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(Arrays.asList(p1Period, p2Period)), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(Arrays.asList(p1Comparable, p2Period)), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(Arrays.asList(p1Period, p2Comparable)), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(Arrays.asList(p1Comparable, p2Comparable)), ChronoPeriod.class, assertion);
+    }
+
+    @Test
     public void invokeNullArray() {
         FunctionTestUtil.assertResultError(maxFunction.invoke((Object[]) null), InvalidParametersEvent.class);
     }
@@ -93,5 +114,20 @@ public class MaxFunctionTest {
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{"a", "b", "c"}), "c");
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{"a", "c", "b"}), "c");
         FunctionTestUtil.assertResult(maxFunction.invoke(new Object[]{"c", "a", "b"}), "c");
+    }
+
+    @Test
+    public void invokeArrayOfChronoPeriods() {
+        final ChronoPeriod p1Period = Period.parse("P1Y");
+        final ChronoPeriod p1Comparable = ComparablePeriod.parse("P1Y");
+        final ChronoPeriod p2Period = Period.parse("P1M");
+        final ChronoPeriod p2Comparable = ComparablePeriod.parse("P1M");
+        Predicate<ChronoPeriod> assertion = i -> i.get(ChronoUnit.YEARS) == 1 && i.get(ChronoUnit.MONTHS) == 0;
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(new Object[]{p1Period}), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(new Object[]{p1Comparable}), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(new Object[]{p1Period, p2Period}), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(new Object[]{p1Comparable, p2Period}), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(new Object[]{p1Period, p2Comparable}), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(maxFunction.invoke(new Object[]{p1Comparable, p2Comparable}), ChronoPeriod.class, assertion);
     }
 }

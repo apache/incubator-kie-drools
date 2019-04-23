@@ -18,12 +18,11 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.types.impl.InterceptNotComparableComparator;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.TypeUtil;
 
 public class MaxFunction
         extends BaseFEELFunction {
@@ -37,7 +36,7 @@ public class MaxFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null or empty"));
         } else {
             try {
-                return FEELFnResult.ofResult( Collections.max( list ) );
+                return FEELFnResult.ofResult(Collections.max(list, new InterceptNotComparableComparator()));
             } catch (ClassCastException e) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains items that are not comparable"));
             }
