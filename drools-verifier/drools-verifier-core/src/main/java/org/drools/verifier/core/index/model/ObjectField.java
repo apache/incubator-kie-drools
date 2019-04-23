@@ -16,10 +16,14 @@
 
 package org.drools.verifier.core.index.model;
 
+import java.util.Optional;
+
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 
 public class ObjectField
         extends FieldBase {
+
+    private final Optional<FieldRange> range;
 
     public ObjectField(final String factType,
                        final String fieldType,
@@ -29,5 +33,22 @@ public class ObjectField
               fieldType,
               name,
               configuration);
+        range = Optional.empty();
+    }
+
+    public ObjectField(final String factType,
+                       final String fieldType,
+                       final String name,
+                       final FieldRange fieldRange,
+                       final AnalyzerConfiguration configuration) {
+        super(factType,
+              fieldType,
+              name,
+              configuration);
+        this.range = Optional.of(fieldRange);
+    }
+
+    public Optional<FieldRange> getRange() {
+        return range;
     }
 }
