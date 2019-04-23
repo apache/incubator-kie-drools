@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.examples.nqueens.domain.Queen;
 
 public class NQueensConstraintProvider implements ConstraintProvider {
@@ -36,26 +36,29 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Horizontal conflict", SimpleScore.of(1));
         c.from(Queen.class)
-                .join(c.from(Queen.class), BiJoiner.equals(Queen::getRowIndex))
-                .filter((a, b) -> a.getId() < b.getId())
+                .join(c.from(Queen.class),
+                        Joiners.equalTo(Queen::getRowIndex)
+                                .and(Joiners.lessThan(Queen::getId)))
                 .penalize();
     }
 
     protected void ascendingDiagonalConflict(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(
+        Constraint c = constraintFactory.newConstraintWithWeight(
                 "Ascending diagonal conflict", SimpleScore.of(1));
-        constraint.from(Queen.class)
-                .join(constraint.from(Queen.class), BiJoiner.equals(Queen::getAscendingDiagonalIndex))
-                .filter((a, b) -> a.getId() < b.getId())
+        c.from(Queen.class)
+                .join(c.from(Queen.class),
+                        Joiners.equalTo(Queen::getAscendingDiagonalIndex)
+                                .and(Joiners.lessThan(Queen::getId)))
                 .penalize();
     }
 
     protected void descendingDiagonalConflict(ConstraintFactory constraintFactory) {
-        Constraint constraint = constraintFactory.newConstraintWithWeight(
+        Constraint c = constraintFactory.newConstraintWithWeight(
                 "Descending diagonal conflict", SimpleScore.of(1));
-        constraint.from(Queen.class)
-                .join(constraint.from(Queen.class), BiJoiner.equals(Queen::getDescendingDiagonalIndex))
-                .filter((a, b) -> a.getId() < b.getId())
+        c.from(Queen.class)
+                .join(c.from(Queen.class),
+                        Joiners.equalTo(Queen::getDescendingDiagonalIndex)
+                                .and(Joiners.lessThan(Queen::getId)))
                 .penalize();
     }
 

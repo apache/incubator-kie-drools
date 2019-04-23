@@ -56,10 +56,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param other never null
      * @param joiner never null
      * @param <B> the type of the second matched fact
-     * @param <Property_> a property that is both retrievable from this stream and the other stream
      * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
      */
-    <B, Property_> BiConstraintStream<A, B> join(UniConstraintStream<B> other, BiJoiner<A, B, Property_> joiner);
+    <B> BiConstraintStream<A, B> join(UniConstraintStream<B> other, BiJoiner<A, B> joiner);
 
     <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,

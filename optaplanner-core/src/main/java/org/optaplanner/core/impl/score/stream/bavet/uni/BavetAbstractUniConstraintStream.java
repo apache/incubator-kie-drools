@@ -35,6 +35,8 @@ import org.optaplanner.core.impl.score.stream.bavet.bi.BavetGroupedBiConstraintS
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
         implements UniConstraintStream<A> {
@@ -57,8 +59,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public <B, Property_> BiConstraintStream<A, B> join(
-                UniConstraintStream<B> otherStream, BiJoiner<A, B, Property_> joiner) {
+    public <B> BiConstraintStream<A, B> join(
+                UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
         if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {
             throw new IllegalStateException("The streams (" + this + ", " + otherStream
                     + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
@@ -69,12 +71,17 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     + ") are build from different constraints (" + constraint + ", " + other.constraint
                     + ").");
         }
-        BavetJoinBiConstraintStream<Solution_, A, B, Property_> biStream = new BavetJoinBiConstraintStream<>(constraint);
-        BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B, Property_> leftBridge = new BavetJoinLeftBridgeUniConstraintStream<>(
-                constraint, biStream, joiner.getLeftMapping());
+        if (!(joiner instanceof AbstractBiJoiner)) {
+            throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
+        }
+        AbstractBiJoiner<A, B> castedJoiner = (AbstractBiJoiner<A, B>) joiner;
+        BavetIndexFactory indexFactory = new BavetIndexFactory(castedJoiner);
+        BavetJoinBiConstraintStream<Solution_, A, B> biStream = new BavetJoinBiConstraintStream<>(constraint);
+        BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B> leftBridge = new BavetJoinLeftBridgeUniConstraintStream<>(
+                constraint, biStream, castedJoiner.getLeftCombinedMapping(), indexFactory);
         childStreamList.add(leftBridge);
-        BavetJoinRightBridgeUniConstraintStream<Solution_, A, B, Property_> rightBridge = new BavetJoinRightBridgeUniConstraintStream<>(
-                constraint, biStream, joiner.getRightMapping());
+        BavetJoinRightBridgeUniConstraintStream<Solution_, A, B> rightBridge = new BavetJoinRightBridgeUniConstraintStream<>(
+                constraint, biStream, castedJoiner.getRightCombinedMapping(), indexFactory);
         other.childStreamList.add(rightBridge);
         return biStream;
     }

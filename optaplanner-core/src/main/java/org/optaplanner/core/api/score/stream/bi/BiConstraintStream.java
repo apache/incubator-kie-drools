@@ -27,6 +27,10 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
+import org.optaplanner.core.api.score.stream.common.Joiners;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.api.score.stream.tri.TriPredicate;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
@@ -41,13 +45,28 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Exhaustively test each tuple of facts against the {@link BiPredicate}
      * and match if {@link BiPredicate#test(Object, Object)} returns true.
      * <p>
-     * Important: This is slower and less scalable than {@link UniConstraintStream#join(UniConstraintStream, BiJoiner)}
-     * with a proper {@link BiJoiner} predicate (such as {@link BiJoiner#equals(Function, Function)},
+     * Important: This is slower and less scalable than {@link UniConstraintStream#join(UniConstraintStream, BiJoiner[])}
+     * with a proper {@link BiJoiner} predicate (such as {@link Joiners#equalTo(Function, Function)},
      * because the latter applies hashing and/or indexing, so it doesn't create every combination just to filter it out.
      * @param predicate never null
      * @return never null
      */
     BiConstraintStream<A, B> filter(BiPredicate<A, B> predicate);
+
+    /**
+     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
+     * is true (for the property it extracts from both facts).
+     * <p>
+     * Important: This is faster and more scalable than a join
+     * followed by a {@link TriConstraintStream#filter(TriPredicate)},
+     * because it applies hashing and/or indexing on the Property,
+     * so it doesn't create nor checks every combination of [A, B] and C.
+     * @param other never null
+     * @param joiner never null
+     * @param <C> the type of the third matched fact
+     * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
+     */
+    <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> other, TriJoiner<A, B, C> joiner);
 
     // ************************************************************************
     // Penalize/reward

@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 
-public final class BavetJoinBiConstraintStream<Solution_, A, B, Property_> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
+public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
     public BavetJoinBiConstraintStream(BavetConstraint<Solution_> bavetConstraint) {
         super(bavetConstraint);
@@ -33,9 +33,9 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B, Property_> exten
     // ************************************************************************
 
     @Override
-    public BavetJoinBiNode<A, B, Property_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
+    public BavetJoinBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder) {
-        return (BavetJoinBiNode<A, B, Property_>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
+        return (BavetJoinBiNode<A, B>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
     }
 
     @Override

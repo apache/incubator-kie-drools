@@ -21,39 +21,31 @@ import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
 
-public final class BavetJoinLeftBridgeUniTuple<A, B> extends BavetJoinBridgeUniTuple<A> {
+public abstract class BavetJoinBridgeUniTuple<A> extends BavetAbstractUniTuple<A> {
 
-    private final BavetJoinLeftBridgeUniNode<A, B> node;
+    protected final BavetAbstractUniTuple<A> parentTuple;
 
-    protected Set<BavetJoinBiTuple<A, B>> childTupleSet = new LinkedHashSet<>(); // TODO capacity
+    private Object[] indexProperties;
 
-    public BavetJoinLeftBridgeUniTuple(BavetJoinLeftBridgeUniNode<A, B> node,
-            BavetAbstractUniTuple<A> parentTuple) {
-        super(parentTuple);
-        this.node = node;
+    public BavetJoinBridgeUniTuple(BavetAbstractUniTuple<A> parentTuple) {
+        this.parentTuple = parentTuple;
     }
 
     @Override
-    public void refresh() {
-        node.refresh(this);
-    }
-
-    @Override
-    public String toString() {
-        return "JoinLeftBridge(" + getFactA() + ") with " + childTupleSet.size() + " children";
+    public A getFactA() {
+        return parentTuple.getFactA();
     }
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
 
-    @Override
-    public BavetJoinLeftBridgeUniNode<A, B> getNode() {
-        return node;
+    public Object[] getIndexProperties() {
+        return indexProperties;
     }
 
-    public Set<BavetJoinBiTuple<A, B>> getChildTupleSet() {
-        return childTupleSet;
+    public void setIndexProperties(Object[] indexProperties) {
+        this.indexProperties = indexProperties;
     }
 
 }

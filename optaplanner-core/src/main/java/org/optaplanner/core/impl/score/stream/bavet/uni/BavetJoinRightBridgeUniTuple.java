@@ -21,18 +21,16 @@ import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
 
-public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAbstractUniTuple<B> {
+public final class BavetJoinRightBridgeUniTuple<A, B> extends BavetJoinBridgeUniTuple<B> {
 
-    private final BavetJoinRightBridgeUniNode<A, B, Property_> node;
-    private final BavetAbstractUniTuple<B> parentTuple;
+    private final BavetJoinRightBridgeUniNode<A, B> node;
 
-    private Property_ indexedProperty;
-    private Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = new LinkedHashSet<>(); // TODO capacity
+    private Set<BavetJoinBiTuple<A, B>> childTupleSet = new LinkedHashSet<>(); // TODO capacity
 
-    public BavetJoinRightBridgeUniTuple(BavetJoinRightBridgeUniNode<A, B, Property_> node,
+    public BavetJoinRightBridgeUniTuple(BavetJoinRightBridgeUniNode<A, B> node,
             BavetAbstractUniTuple<B> parentTuple) {
+        super(parentTuple);
         this.node = node;
-        this.parentTuple = parentTuple;
     }
 
     @Override
@@ -50,26 +48,11 @@ public final class BavetJoinRightBridgeUniTuple<A, B, Property_> extends BavetAb
     // ************************************************************************
 
     @Override
-    public BavetJoinRightBridgeUniNode<A, B, Property_> getNode() {
+    public BavetJoinRightBridgeUniNode<A, B> getNode() {
         return node;
     }
 
-    @Override
-    public B getFactA() {
-        // Naming paradox:
-        // If we rename getFactA() to getFact(), it is still there for joining a BiStream with a UniStream
-        return parentTuple.getFactA();
-    }
-
-    public Property_ getIndexedProperty() {
-        return indexedProperty;
-    }
-
-    public void setIndexedProperty(Property_ indexedProperty) {
-        this.indexedProperty = indexedProperty;
-    }
-
-    public Set<BavetJoinBiTuple<A, B, Property_>> getChildTupleSet() {
+    public Set<BavetJoinBiTuple<A, B>> getChildTupleSet() {
         return childTupleSet;
     }
 

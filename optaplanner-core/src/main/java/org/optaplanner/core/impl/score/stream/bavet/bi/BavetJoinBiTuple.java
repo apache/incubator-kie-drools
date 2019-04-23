@@ -22,16 +22,16 @@ import java.util.List;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniTuple;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniTuple;
 
-public final class BavetJoinBiTuple<A, B, Property_> extends BavetAbstractBiTuple<A, B> {
+public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
 
-    private final BavetJoinBiNode<A, B, Property_> node;
-    private final BavetJoinLeftBridgeUniTuple<A, B, Property_> aTuple;
-    private final BavetJoinRightBridgeUniTuple<A, B, Property_> bTuple;
+    private final BavetJoinBiNode<A, B> node;
+    private final BavetJoinLeftBridgeUniTuple<A, B> aTuple;
+    private final BavetJoinRightBridgeUniTuple<A, B> bTuple;
 
     protected List<BavetAbstractBiTuple<A, B>> childTupleList = null;
 
-    public BavetJoinBiTuple(BavetJoinBiNode<A, B, Property_> node,
-            BavetJoinLeftBridgeUniTuple<A, B, Property_> aTuple, BavetJoinRightBridgeUniTuple<A, B, Property_> bTuple) {
+    public BavetJoinBiTuple(BavetJoinBiNode<A, B> node,
+            BavetJoinLeftBridgeUniTuple<A, B> aTuple, BavetJoinRightBridgeUniTuple<A, B> bTuple) {
         this.node = node;
         this.aTuple = aTuple;
         this.bTuple = bTuple;
@@ -53,7 +53,7 @@ public final class BavetJoinBiTuple<A, B, Property_> extends BavetAbstractBiTupl
     // ************************************************************************
 
     @Override
-    public BavetJoinBiNode<A, B, Property_> getNode() {
+    public BavetJoinBiNode<A, B> getNode() {
         return node;
     }
 
@@ -67,11 +67,11 @@ public final class BavetJoinBiTuple<A, B, Property_> extends BavetAbstractBiTupl
         return bTuple.getFactA();
     }
 
-    public BavetJoinLeftBridgeUniTuple<A, B, Property_> getATuple() {
+    public BavetJoinLeftBridgeUniTuple<A, B> getATuple() {
         return aTuple;
     }
 
-    public BavetJoinRightBridgeUniTuple<A, B, Property_> getBTuple() {
+    public BavetJoinRightBridgeUniTuple<A, B> getBTuple() {
         return bTuple;
     }
 

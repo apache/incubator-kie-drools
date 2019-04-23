@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.stream.bi;
+package org.optaplanner.core.impl.score.stream.bavet.common.index;
 
-import java.util.function.Function;
+import java.util.Set;
 
-import org.optaplanner.core.api.score.stream.common.JoinerType;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
 
-public interface BiJoiner<A, B> {
+public abstract class BavetIndex<A, Tuple_ extends BavetJoinBridgeUniTuple<A>> {
 
-    // ************************************************************************
-    // Combine joiners
-    // ************************************************************************
+    public abstract void remove(Tuple_ tuple);
 
-    BiJoiner<A, B> and(BiJoiner<A, B> other);
+    public abstract void put(Object[] indexProperties, Tuple_ tuple);
+
+    public abstract Set<Tuple_> get(Object[] indexProperties);
 
 }

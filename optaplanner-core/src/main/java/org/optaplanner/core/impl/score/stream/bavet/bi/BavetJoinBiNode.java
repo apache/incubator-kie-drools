@@ -21,15 +21,16 @@ import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
+import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniTuple;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniNode;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniTuple;
 
-public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<A, B> {
+public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
-    private BavetJoinLeftBridgeUniNode<A, B, Property_> leftParentNode;
-    private BavetJoinRightBridgeUniNode<A, B, Property_> rightParentNode;
+    private BavetJoinLeftBridgeUniNode<A, B> leftParentNode;
+    private BavetJoinRightBridgeUniNode<A, B> rightParentNode;
 
     private final List<BavetAbstractBiNode<A, B>> childNodeList;
 
@@ -40,17 +41,17 @@ public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<
     }
 
     @Override
-    public BavetJoinBiTuple<A, B, Property_> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
+    public BavetJoinBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
         throw new IllegalStateException("The join node (" + getClass().getSimpleName()
                 + ") can't have a parentTuple (" + parentTuple + ");");
     }
 
-    public BavetJoinBiTuple<A, B, Property_> createTuple(
-            BavetJoinLeftBridgeUniTuple<A, B, Property_> aTuple, BavetJoinRightBridgeUniTuple<A, B, Property_> bTuple) {
+    public BavetJoinBiTuple<A, B> createTuple(
+            BavetJoinLeftBridgeUniTuple<A, B> aTuple, BavetJoinRightBridgeUniTuple<A, B> bTuple) {
         return new BavetJoinBiTuple<>(this, aTuple, bTuple);
     }
 
-    public void refresh(BavetJoinBiTuple<A, B, Property_> tuple) {
+    public void refresh(BavetJoinBiTuple<A, B> tuple) {
         A a = tuple.getFactA();
         B b = tuple.getFactB();
         List<BavetAbstractBiTuple<A, B>> childTupleList = tuple.getChildTupleList();
@@ -68,6 +69,14 @@ public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<
         tuple.refreshed();
     }
 
+    public BavetIndex<A, BavetJoinLeftBridgeUniTuple<A, B>> getLeftIndex() {
+        return leftParentNode.getIndex();
+    }
+
+    public BavetIndex<B, BavetJoinRightBridgeUniTuple<A, B>> getRightIndex() {
+        return rightParentNode.getIndex();
+    }
+
     @Override
     public String toString() {
         return "Join() with " + childNodeList.size()  + " children";
@@ -77,20 +86,12 @@ public final class BavetJoinBiNode<A, B, Property_> extends BavetAbstractBiNode<
     // Getters/setters
     // ************************************************************************
 
-    public void setLeftParentNode(BavetJoinLeftBridgeUniNode<A, B, Property_> leftParentNode) {
+    public void setLeftParentNode(BavetJoinLeftBridgeUniNode<A, B> leftParentNode) {
         this.leftParentNode = leftParentNode;
     }
 
-    public void setRightParentNode(BavetJoinRightBridgeUniNode<A, B, Property_> rightParentNode) {
+    public void setRightParentNode(BavetJoinRightBridgeUniNode<A, B> rightParentNode) {
         this.rightParentNode = rightParentNode;
-    }
-
-    public Set<BavetJoinLeftBridgeUniTuple<A, B, Property_>> getATupleListByProperty(Property_ property) {
-        return leftParentNode.getTupleListByProperty(property);
-    }
-
-    public Set<BavetJoinRightBridgeUniTuple<A, B, Property_>> getBTupleListByProperty(Property_ property) {
-        return rightParentNode.getTupleListByProperty(property);
     }
 
 }

@@ -17,8 +17,6 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -26,31 +24,33 @@ import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
+import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
 
-public final class BavetJoinLeftBridgeUniNode<A, B, Property_> extends BavetAbstractUniNode<A> {
+public final class BavetJoinLeftBridgeUniNode<A, B> extends BavetAbstractUniNode<A> {
 
-    private final Function<A, Property_> mapping;
-    private final BavetJoinBiNode<A, B, Property_> biNode;
+    private final Function<A, Object[]> mapping;
+    private final BavetJoinBiNode<A, B> biNode;
 
-    private final Map<Property_, Set<BavetJoinLeftBridgeUniTuple<A, B, Property_>>> index;
+    private final BavetIndex<A, BavetJoinLeftBridgeUniTuple<A, B>> index;
 
     public BavetJoinLeftBridgeUniNode(BavetConstraintSession session, int nodeOrder,
-            Function<A, Property_> mapping, BavetJoinBiNode<A, B, Property_> biNode) {
+            Function<A, Object[]> mapping, BavetIndex<A, BavetJoinLeftBridgeUniTuple<A, B>> index,
+            BavetJoinBiNode<A, B> biNode) {
         super(session, nodeOrder);
         this.mapping = mapping;
+        this.index = index;
         this.biNode = biNode;
-        index = new HashMap<>();
     }
 
     @Override
-    public BavetJoinLeftBridgeUniTuple<A, B, Property_> createTuple(BavetAbstractUniTuple<A> parentTuple) {
+    public BavetJoinLeftBridgeUniTuple<A, B> createTuple(BavetAbstractUniTuple<A> parentTuple) {
         return new BavetJoinLeftBridgeUniTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetJoinLeftBridgeUniTuple<A, B, Property_> tuple) {
+    public void refresh(BavetJoinLeftBridgeUniTuple<A, B> tuple) {
         A a = tuple.getFactA();
-        Set<BavetJoinBiTuple<A, B, Property_>> childTupleSet = tuple.getChildTupleSet();
-        for (BavetJoinBiTuple<A, B, Property_> childTuple : childTupleSet) {
+        Set<BavetJoinBiTuple<A, B>> childTupleSet = tuple.getChildTupleSet();
+        for (BavetJoinBiTuple<A, B> childTuple : childTupleSet) {
             boolean removed = childTuple.getBTuple().getChildTupleSet().remove(childTuple);
             if (!removed) {
                 throw new IllegalStateException("Impossible state: the fact (" + a
@@ -62,35 +62,18 @@ public final class BavetJoinLeftBridgeUniNode<A, B, Property_> extends BavetAbst
         childTupleSet.clear();
         if (tuple.getState() != BavetTupleState.CREATING) {
             // Clean up index
-            Property_ oldProperty = tuple.getIndexedProperty();
-            Set<BavetJoinLeftBridgeUniTuple<A, B, Property_>> aTupleSet = index.get(oldProperty);
-            boolean removed = aTupleSet.remove(tuple);
-            if (!removed) {
-                throw new IllegalStateException("Impossible state: the fact (" + a
-                        + ")'s tuple cannot be removed from the index.");
-            }
-            if (aTupleSet.isEmpty()) {
-                index.remove(oldProperty);
-            }
-            // tuple.setIndexedProperty() gets called later unless the tuple dies
+            index.remove(tuple);
         }
         if (tuple.isActive()) {
-            Property_ property = mapping.apply(a);
-            boolean added = index.computeIfAbsent(property, k -> new LinkedHashSet<>()).add(tuple);
-            tuple.setIndexedProperty(property);
-            if (!added) {
-                throw new IllegalStateException("Impossible state: the fact (" + a + ") with property (" + property
-                        + ") cannot be added to the index (" + index.keySet() + ").");
-            }
-            Set<BavetJoinRightBridgeUniTuple<A, B, Property_>> bTupleList = biNode.getBTupleListByProperty(property);
-            if (bTupleList != null) {
-                for (BavetJoinRightBridgeUniTuple<A, B, Property_> bTuple : bTupleList) {
-                    if (!bTuple.isDirty()) {
-                        BavetJoinBiTuple<A, B, Property_> childTuple = biNode.createTuple(tuple, bTuple);
-                        childTupleSet.add(childTuple);
-                        bTuple.getChildTupleSet().add(childTuple);
-                        session.transitionTuple(childTuple, BavetTupleState.CREATING);
-                    }
+            Object[] indexProperties = mapping.apply(a);
+            index.put(indexProperties, tuple);
+            Set<BavetJoinRightBridgeUniTuple<A, B>> bTupleList = biNode.getRightIndex().get(indexProperties);
+            for (BavetJoinRightBridgeUniTuple<A, B> bTuple : bTupleList) {
+                if (!bTuple.isDirty()) {
+                    BavetJoinBiTuple<A, B> childTuple = biNode.createTuple(tuple, bTuple);
+                    childTupleSet.add(childTuple);
+                    bTuple.getChildTupleSet().add(childTuple);
+                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
                 }
             }
         }
@@ -106,8 +89,8 @@ public final class BavetJoinLeftBridgeUniNode<A, B, Property_> extends BavetAbst
     // Getters/setters
     // ************************************************************************
 
-    public Set<BavetJoinLeftBridgeUniTuple<A, B, Property_>> getTupleListByProperty(Property_ property) {
-        return index.get(property);
+    public BavetIndex<A, BavetJoinLeftBridgeUniTuple<A, B>> getIndex() {
+        return index;
     }
 
 }

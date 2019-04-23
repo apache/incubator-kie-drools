@@ -26,6 +26,9 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -48,6 +51,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         BavetFilterBiConstraintStream<Solution_, A, B> stream = new BavetFilterBiConstraintStream<>(constraint, predicate);
         childStreamList.add(stream);
         return stream;
+    }
+
+    @Override
+    public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> other, TriJoiner<A, B, C> joiner) {
+        throw new UnsupportedOperationException(); // TODO
     }
 
     // ************************************************************************
