@@ -77,8 +77,8 @@ public class MinFunctionTest {
         final ChronoPeriod p2Period = Period.parse("P1M");
         final ChronoPeriod p2Comparable = ComparablePeriod.parse("P1M");
         Predicate<ChronoPeriod> assertion = i -> i.get(ChronoUnit.YEARS) == 0 && i.get(ChronoUnit.MONTHS) == 1;
-        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(Collections.singletonList(p1Period)), ChronoPeriod.class, assertion);
-        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(Collections.singletonList(p1Comparable)), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(Collections.singletonList(p2Period)), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(Collections.singletonList(p2Comparable)), ChronoPeriod.class, assertion);
         FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(Arrays.asList(p1Period, p2Period)), ChronoPeriod.class, assertion);
         FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(Arrays.asList(p1Comparable, p2Period)), ChronoPeriod.class, assertion);
         FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(Arrays.asList(p1Period, p2Comparable)), ChronoPeriod.class, assertion);
@@ -123,8 +123,8 @@ public class MinFunctionTest {
         final ChronoPeriod p2Period = Period.parse("P1M");
         final ChronoPeriod p2Comparable = ComparablePeriod.parse("P1M");
         Predicate<ChronoPeriod> assertion = i -> i.get(ChronoUnit.YEARS) == 0 && i.get(ChronoUnit.MONTHS) == 1;
-        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(new Object[]{p1Period}), ChronoPeriod.class, assertion);
-        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(new Object[]{p1Comparable}), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(new Object[]{p2Period}), ChronoPeriod.class, assertion);
+        FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(new Object[]{p2Comparable}), ChronoPeriod.class, assertion);
         FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(new Object[]{p1Period, p2Period}), ChronoPeriod.class, assertion);
         FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(new Object[]{p1Comparable, p2Period}), ChronoPeriod.class, assertion);
         FunctionTestUtil.assertPredicateOnResult(minFunction.invoke(new Object[]{p1Period, p2Comparable}), ChronoPeriod.class, assertion);
