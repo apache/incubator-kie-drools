@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.assertj.core.api.Assertions;
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -1174,6 +1175,52 @@ public class BRLRuleModelTest {
                 "  modify( x ) {\n" +
                 "    setF1( \"v1\" )\n" +
                 "}\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace(expected,
+                                     drl);
+    }
+
+    @Test
+    /**
+     * DROOLS-3893
+     */
+    public void testActionCallIsNotIgnored() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName("x");
+        p1.setFactType("Context");
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        p1.getChildColumns().add(c);
+        dt.getConditions().add(p1);
+
+        BRLActionColumn brlAction1 = new BRLActionColumn();
+        ActionCallMethod actionCallMethod = new ActionCallMethod("x");
+        actionCallMethod.setState(ActionCallMethod.TYPE_DEFINED);
+        actionCallMethod.setMethodName("clear");
+
+        brlAction1.getDefinition().add(actionCallMethod);
+        brlAction1.getChildColumns().add(new BRLActionVariableColumn("",
+                                                                     DataType.TYPE_BOOLEAN,
+                                                                     null,
+                                                                     null));
+        dt.getActionCols().add(brlAction1);
+
+        dt.setData(DataUtilities.makeDataLists(new Object[][]{
+                new Object[]{"1", "desc", "x", true}
+        }));
+        String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+        final String expected = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  x.clear( );\n" +
                 "end\n";
 
         assertEqualsIgnoreWhitespace(expected,
