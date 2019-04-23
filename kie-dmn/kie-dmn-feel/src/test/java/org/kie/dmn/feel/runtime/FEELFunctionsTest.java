@@ -31,8 +31,6 @@ public class FEELFunctionsTest extends BaseFEELTest {
     @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
-                                                {"max(duration(\"PT1H6M\"), duration(\"PT1H5M\"))", Duration.parse("PT1H6M"), null},
-                                                {"max(duration(\"P6Y\"), duration(\"P5Y\"))", ComparablePeriod.parse("P6Y"), null},
                 // constants
                 { "string(1.1)", "1.1" , null},
                 { "replace( \"  foo   bar zed  \", \"^(\\s)+|(\\s)+$|\\s+(?=\\s)\", \"\" )", "foo bar zed", null },
@@ -86,6 +84,8 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "min([ \"a\", \"b\", \"c\" ])", "a" , null},
                 { "max( 1, 2, 3 )", BigDecimal.valueOf( 3 ) , null},
                 { "max([ 1, 2, 3 ])", BigDecimal.valueOf( 3 ) , null},
+                { "max(duration(\"PT1H6M\"), duration(\"PT1H5M\"))", Duration.parse("PT1H6M"), null},
+                { "max(duration(\"P6Y\"), duration(\"P5Y\"))", ComparablePeriod.parse("P6Y"), null},
                 { "sum( 1, 2, 3 )", BigDecimal.valueOf( 6 ) , null},
                 { "sum([ 1, 2, 3 ])", BigDecimal.valueOf( 6 ) , null},
                 { "mean( 1, 2, 3 )", BigDecimal.valueOf( 2 ) , null},
