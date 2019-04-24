@@ -10,13 +10,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>drools-verifier-api</artifactId>
+    <artifactId>drools-verifier-api</artifactId>
 
-  <name>Drools Workbench - Verifier Api</name>
-  <description>Drools Workbench - Verifier Api</description>
+    <name>Drools Workbench - Verifier Api</name>
+    <description>Drools Workbench - Verifier Api</description>
 
-  <properties>
-    <java.module.name>org.drools.verifier.api</java.module.name>
-  </properties>
+    <properties>
+        <java.module.name>org.drools.verifier.api</java.module.name>
+    </properties>
 
 </project>

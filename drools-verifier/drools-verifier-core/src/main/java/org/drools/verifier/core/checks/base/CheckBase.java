@@ -16,7 +16,6 @@
 
 package org.drools.verifier.core.checks.base;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.drools.verifier.api.reporting.CheckType;
@@ -44,13 +43,13 @@ public abstract class CheckBase
     }
 
     @Override
-    public final List<Issue> getIssues() {
-        return makeIssues(resolveSeverity(),
-                          getCheckType());
+    public final Issue getIssue() {
+        return makeIssue(resolveSeverity(),
+                         getCheckType());
     }
 
-    protected abstract List<Issue> makeIssues(final Severity severity,
-                                              final CheckType checkType);
+    protected abstract Issue makeIssue(final Severity severity,
+                                       final CheckType checkType);
 
     protected abstract CheckType getCheckType();
 
