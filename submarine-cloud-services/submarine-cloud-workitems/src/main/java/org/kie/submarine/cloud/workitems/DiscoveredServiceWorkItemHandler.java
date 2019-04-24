@@ -67,7 +67,11 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
         
-        http = new OkHttpClient.Builder()
+        http = buildHttpClient();
+    }
+    
+    protected OkHttpClient buildHttpClient() {
+        return new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
