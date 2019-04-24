@@ -1312,7 +1312,9 @@ It recognizes most of the common JDK collection and map implementations.
 ====
 
 The `FieldAccessingSolutionCloner` does not clone problem facts by default.
-If any of your problem facts needs to be deep cloned for a planning clone, for example if the problem fact references a planning entity or the planning solution, mark it with a `@DeepPlanningClone` annotation:
+If any of your problem facts needs to be deep cloned for a planning clone,
+for example if the problem fact references a planning entity or the planning solution,
+mark its class with a `@DeepPlanningClone` annotation:
 
 [source,java,options="nowrap"]
 ----
@@ -1324,9 +1326,12 @@ public class SeatDesignationDependency {
 }
 ----
 
-In the example above, because `SeatDesignation` is a planning entity (which is deep planning cloned automatically), `SeatDesignationDependency` must also be deep planning cloned.
+In the example above, because `SeatDesignationDependency` references the planning entity `SeatDesignation`
+(which is deep planning cloned automatically), it should also be deep planning cloned.
 
-Alternatively, the `@DeepPlanningClone` annotation can also be used on a getter method.
+Alternatively, the `@DeepPlanningClone` annotation also works on a getter method or a field to planning clone it.
+If that property is a `Collection` or a `Map`, it will shallow clone it and deep planning clone
+any element thereof that is an instance of a class that has a `@DeepPlanningClone` annotation.
 
 
 [[customCloning]]
