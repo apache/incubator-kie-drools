@@ -16,10 +16,8 @@
 
 package org.drools.verifier.core.checks;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
@@ -60,22 +58,18 @@ public class DetectRedundantActionFactFieldCheck
     }
 
     @Override
-    protected List<Issue> makeIssues(final Severity severity,
-                                     final CheckType checkType) {
-        final ArrayList<Issue> resultIssues = new ArrayList<Issue>();
-
-        resultIssues.add(new ValueForFactFieldIsSetTwiceIssue(severity,
-                                                        checkType,
-                                                        patternInspector.getPattern()
-                                                                .getBoundName(),
-                                                        result.getParent()
-                                                                .getName(),
-                                                        result.get(0)
-                                                                .toHumanReadableString(),
-                                                        result.get(1)
-                                                                .toHumanReadableString(),
-                                                        new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1))));
-
-        return resultIssues;
+    protected Issue makeIssue(final Severity severity,
+                              final CheckType checkType) {
+        return new ValueForFactFieldIsSetTwiceIssue(severity,
+                                                    checkType,
+                                                    patternInspector.getPattern()
+                                                            .getBoundName(),
+                                                    result.getParent()
+                                                            .getName(),
+                                                    result.get(0)
+                                                            .toHumanReadableString(),
+                                                    result.get(1)
+                                                            .toHumanReadableString(),
+                                                    new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1)));
     }
 }

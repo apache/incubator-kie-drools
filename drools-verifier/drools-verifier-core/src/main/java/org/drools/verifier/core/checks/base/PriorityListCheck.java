@@ -42,8 +42,8 @@ public class PriorityListCheck
     }
 
     @Override
-    public List<Issue> getIssues() {
-        return checkWithIssues.getIssues();
+    public Issue getIssue() {
+        return checkWithIssues.getIssue();
     }
 
     @Override

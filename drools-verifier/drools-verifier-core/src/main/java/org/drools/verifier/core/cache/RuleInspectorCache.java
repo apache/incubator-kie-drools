@@ -26,10 +26,10 @@ import java.util.function.Predicate;
 
 import org.drools.verifier.api.reporting.Issue;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
+import org.drools.verifier.core.checks.SingleRangeCheck;
 import org.drools.verifier.core.checks.base.Check;
 import org.drools.verifier.core.checks.base.CheckFactory;
 import org.drools.verifier.core.checks.base.CheckStorage;
-import org.drools.verifier.core.checks.gaps.SingleRangeCheck;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.matchers.UUIDMatcher;
@@ -42,12 +42,13 @@ import org.drools.verifier.core.index.model.Rule;
 import org.drools.verifier.core.util.PortablePreconditions;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class RuleInspectorCache {
 
-    protected final Index index;
     private final Map<Rule, RuleInspector> ruleInspectors = new HashMap<>();
     private final Set<Check> generalChecks = new HashSet<>();
+    protected final Index index;
     private final CheckStorage checkStorage;
     private final AnalyzerConfiguration configuration;
 
@@ -97,19 +98,19 @@ public class RuleInspectorCache {
     }
 
     public Set<Issue> getAllIssues() {
-        final Set<Issue> issues = new HashSet<>();
-        all().stream()
-                .flatMap(inspector -> inspector.getChecks().stream())
-                .filter(Check::hasIssues)
-                .map(Check::getIssues)
-                .forEach(issues::addAll);
-
-        for (final Check generalCheck : generalChecks) {
-            if (generalCheck.hasIssues()) {
-                issues.addAll(generalCheck.getIssues());
-            }
-        }
-
+        Set<Issue> issues = new HashSet<>();
+        issues.addAll(
+                all().stream()
+                        .flatMap(inspector -> inspector.getChecks().stream())
+                        .filter(Check::hasIssues)
+                        .map(Check::getIssue)
+                        .collect(toSet())
+        );
+        issues.addAll(generalChecks.stream()
+                              .filter(Check::hasIssues)
+                              .map(Check::getIssue)
+                              .collect(toSet())
+        );
         return issues;
     }
 

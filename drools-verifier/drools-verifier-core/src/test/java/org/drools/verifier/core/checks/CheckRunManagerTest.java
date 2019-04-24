@@ -17,10 +17,8 @@
 package org.drools.verifier.core.checks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.drools.verifier.api.reporting.CheckType;
@@ -211,11 +209,11 @@ public class CheckRunManagerTest {
         }
 
         @Override
-        protected List<Issue> makeIssues(final Severity severity,
-                                         final CheckType checkType) {
-            return Arrays.asList(new Issue(severity,
-                                           checkType,
-                                           Collections.emptySet()));
+        protected Issue makeIssue(final Severity severity,
+                                  final CheckType checkType) {
+            return new Issue(severity,
+                             checkType,
+                             Collections.emptySet());
         }
     }
 }
