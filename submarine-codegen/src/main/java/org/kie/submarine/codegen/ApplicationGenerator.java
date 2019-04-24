@@ -15,11 +15,21 @@
 
 package org.kie.submarine.codegen;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kie.submarine.Config;
+import org.kie.submarine.codegen.metadata.ImageMetaData;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -27,15 +37,19 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import org.kie.submarine.Config;
 
 public class ApplicationGenerator {
 
     private static final String RESOURCE = "/class-templates/ApplicationTemplate.java";
+    private final static String LABEL_PREFIX = "org.kie/";
+    
+    private ObjectMapper mapper = new ObjectMapper();   
+    
     private final String packageName;
     private final String sourceFilePath;
     private final String completePath;
     private final String targetCanonicalName;
+    private final File targetDirectory;
 
     private String targetTypeName;
     private boolean hasCdi;
@@ -43,8 +57,9 @@ public class ApplicationGenerator {
     private ConfigGenerator configGenerator = new ConfigGenerator();
     private List<Generator> generators = new ArrayList<>();
 
-    public ApplicationGenerator(String packageName) {
+    public ApplicationGenerator(String packageName, File targetDirectory) {
         this.packageName = packageName;
+        this.targetDirectory = targetDirectory;
         this.targetTypeName = "Application";
         this.targetCanonicalName = this.packageName + "." + targetTypeName;
         this.sourceFilePath = targetCanonicalName.replace('.', '/') + ".java";
@@ -97,6 +112,7 @@ public class ApplicationGenerator {
                         .collect(Collectors.toList());
         generators.forEach(gen -> gen.updateConfig(configGenerator));
         generators.forEach(gen -> factoryMethods.addAll(gen.factoryMethods()));
+        generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
         generatedFiles.add(new GeneratedFile(generatedFilePath(), compilationUnit().toString().getBytes()));
         return generatedFiles;
     }
@@ -106,5 +122,25 @@ public class ApplicationGenerator {
         generator.setPackageName(packageName);
         generator.setDependencyInjection(hasCdi);
         return generator;
+    }
+    
+    protected void writeLabelsImageMetadata(Map<String, String> labels) {
+        
+        try {
+            Path imageMetaDataFile = Paths.get(targetDirectory.getAbsolutePath(), "image_metadata.json");
+            ImageMetaData imageMetadata = null;
+            if (Files.exists(imageMetaDataFile)) {
+                // read the file to merge the content
+                imageMetadata =  mapper.readValue(imageMetaDataFile.toFile(), ImageMetaData.class);
+            } else {
+                imageMetadata = new ImageMetaData();            
+            }
+            imageMetadata.add(labels);
+            
+            Files.write(imageMetaDataFile, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(imageMetadata).getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+               
     }
 }

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.maven.plugin.metadata;
+package org.kie.submarine.codegen.metadata;
 
 import java.util.ArrayList;
 import java.util.List;

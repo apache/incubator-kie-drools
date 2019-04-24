@@ -15,6 +15,8 @@
 
 package org.kie.maven.plugin;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -27,7 +29,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.inject.Inject;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.resolver.filter.CumulativeScopeArtifactFilter;
@@ -65,8 +67,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 
 /**
  * This goal builds the Drools files belonging to the kproject.
@@ -116,13 +116,6 @@ public class BuildMojo extends AbstractKieMojo {
         if(!ExecModelMode.shouldGenerateModel(generateModel)) {
             buildDrl();
         }
-        
-        Map<String, String> labels = new HashMap<>();
-        labels.put(LABEL_PREFIX + "organization", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("empty"));
-        labels.put(LABEL_PREFIX + "organization-url", Optional.ofNullable(project.getOrganization()).map(org -> org.getName()).orElse("empty"));
-        
-        writeLabelsImageMetadata(targetDirectory.getPath(), labels);
-
     }
 
     private void buildDrl() throws MojoFailureException {

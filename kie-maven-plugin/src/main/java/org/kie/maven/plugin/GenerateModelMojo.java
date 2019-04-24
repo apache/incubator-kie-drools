@@ -127,7 +127,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
         Path projectPath = projectDir.toPath();
 
         ApplicationGenerator appGen =
-                new ApplicationGenerator(appPackageName)
+                new ApplicationGenerator(appPackageName, targetDirectory)
                         .withDependencyInjection(dependencyInjection);
 
         if (generateRuleUnits) {

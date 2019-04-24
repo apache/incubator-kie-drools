@@ -16,6 +16,8 @@
 package org.kie.submarine.codegen;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 
@@ -30,4 +32,8 @@ public interface Generator {
     void setPackageName(String packageName);
 
     void setDependencyInjection(boolean dependencyInjection);
+    
+    default Map<String, String> getLabels() {
+        return Collections.emptyMap();
+    }
 }
