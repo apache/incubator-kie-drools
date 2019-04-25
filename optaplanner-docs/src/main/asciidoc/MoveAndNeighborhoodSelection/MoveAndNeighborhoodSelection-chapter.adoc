@@ -1662,7 +1662,7 @@ Because the `MoveListFactory` generates all moves at once in a ``List<Move>``,
 it does not support `cacheType` ``JUST_IN_TIME``.
 Therefore, `moveListFactory` uses `cacheType` ``STEP`` by default and it scales badly.
 
-To configure values of an `MoveListFactory` dynamically in the solver configuration
+To configure values of a `MoveListFactory` dynamically in the solver configuration
 (so the <<benchmarker,Benchmarker>> can tweak those parameters),
 add the `moveListFactoryCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>.
 
@@ -1726,7 +1726,7 @@ Advanced configuration:
     </moveIteratorFactory>
 ----
 
-To configure values of an `MoveListFactory` dynamically in the solver configuration
+To configure values of a `MoveIteratorFactory` dynamically in the solver configuration
 (so the <<benchmarker,Benchmarker>> can tweak those parameters),
 add the `moveIteratorFactoryCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>.
 
