@@ -114,7 +114,7 @@ public class PrometheusProcessEventListener extends DefaultProcessEventListener 
         if (nodeInstance instanceof WorkItemNodeInstance) {
             WorkItemNodeInstance wi = (WorkItemNodeInstance) nodeInstance;
             if (wi.getTriggerTime() != null) {
-                final String name = wi.getWorkItem().getName();
+                final String name = (String)wi.getWorkItem().getParameters().getOrDefault("TaskName", wi.getWorkItem().getName());
                 final double duration = millisToSeconds(System.currentTimeMillis() - wi.getTriggerTime().getTime());
                 workItemsDuration.labels(name).observe(duration);
                 LOGGER.debug("Work Item {}, duration: {}s", name, duration);

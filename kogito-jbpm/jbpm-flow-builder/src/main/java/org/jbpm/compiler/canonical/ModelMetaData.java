@@ -74,8 +74,8 @@ public class ModelMetaData {
                 AssignExpr.Operator.ASSIGN);
     }
 
-    public MethodCallExpr fromMap(String varName, String mapVarName) {
-        return new MethodCallExpr(new NameExpr(varName), "fromMap").addArgument(mapVarName);
+    public MethodCallExpr fromMap(String variableName, String mapVarName) {
+        return new MethodCallExpr(new NameExpr(variableName), "fromMap").addArgument(new MethodCallExpr(new ThisExpr(), "id")).addArgument(mapVarName);
     }
 
     public MethodCallExpr toMap(String varName) {
@@ -131,15 +131,10 @@ public class ModelMetaData {
         // setup of static fromMap method body
         ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, modelClass.getNameAsString());
         BlockStmt staticFromMap = new BlockStmt();
-        VariableDeclarationExpr itemField = new VariableDeclarationExpr(modelType, "item");
-        staticFromMap.addStatement(new AssignExpr(itemField, new ObjectCreationExpr(null, modelType, NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
-        NameExpr item = new NameExpr("item");
-        FieldAccessExpr idField = new FieldAccessExpr(item, "id");
+        
+        FieldAccessExpr idField = new FieldAccessExpr(new ThisExpr(), "id");
         staticFromMap.addStatement(new AssignExpr(idField, new NameExpr("id"), AssignExpr.Operator.ASSIGN));
-
-        // setup of non-static fromMap method body
-        BlockStmt fromMapBody = new BlockStmt();
-
+       
         for (Variable variable : variableScope.getVariables()) {
 
             FieldDeclaration fd = declareField(variable);
@@ -154,20 +149,11 @@ public class ModelMetaData {
             putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), variable.getName()));
             toMapBody.addStatement(putVariable);
 
-            // fromMap static method body
-            FieldAccessExpr field = new FieldAccessExpr(item, variable.getName());
-
             ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(variable.getType().getStringType());
-            staticFromMap.addStatement(new AssignExpr(field, new CastExpr(
-                    type,
-                    new MethodCallExpr(
-                            new NameExpr("params"),
-                            "get")
-                            .addArgument(new StringLiteralExpr(variable.getName()))), AssignExpr.Operator.ASSIGN));
-
+            
             // from map instance method body
             FieldAccessExpr instanceField = new FieldAccessExpr(new ThisExpr(), variable.getName());
-            fromMapBody.addStatement(new AssignExpr(instanceField, new CastExpr(
+            staticFromMap.addStatement(new AssignExpr(instanceField, new CastExpr(
                     type,
                     new MethodCallExpr(
                             new NameExpr("params"),
@@ -180,18 +166,9 @@ public class ModelMetaData {
         toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
         toMapMethod.get().setBody(toMapBody);
 
-        Optional<MethodDeclaration> staticFromMapMethod = modelClass.findFirst(
-                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.isStatic());
-        if (staticFromMapMethod.isPresent()) {
-            MethodDeclaration fromMap = staticFromMapMethod.get();
-            fromMap.setType(modelClass.getNameAsString());
-            staticFromMap.addStatement(new ReturnStmt(new NameExpr("item")));
-            fromMap.setBody(staticFromMap);
-        }
-
         modelClass.findFirst(
-                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && !sl.isStatic())
-                .ifPresent(m -> m.setBody(fromMapBody));
+                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap"))
+                .ifPresent(m -> m.setBody(staticFromMap));
 
         return compilationUnit;
     }

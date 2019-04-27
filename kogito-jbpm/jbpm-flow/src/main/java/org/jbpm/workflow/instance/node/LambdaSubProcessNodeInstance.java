@@ -136,6 +136,14 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         processInstance.start();
         
         subProcessFactory.unbind(context, processInstance.variables());
+        
+        if (!getSubProcessNode().isWaitForCompletion()) {
+            triggerCompleted();
+        } else if (processInstance.status() == ProcessInstance.STATE_COMPLETED || processInstance.status() == ProcessInstance.STATE_ABORTED) {
+            triggerCompleted();
+        } else {
+            addProcessListener();
+        }
     }
 
     private Map<String, Object> prepareParameters() {

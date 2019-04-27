@@ -15,6 +15,13 @@
 
 package org.kie.submarine.process;
 
+import java.util.List;
+import java.util.Map;
+
+import org.kie.api.runtime.process.WorkItemNotFoundException;
+
+
+
 public interface ProcessInstance<T> {
     
     /**
@@ -55,12 +62,35 @@ public interface ProcessInstance<T> {
      * Completes work item belonging to this process instance with given variables
      * @param id id of the work item to complete
      * @param variables optional variables
+     * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
-    void completeWorkItem(long id, T variables);
+    void completeWorkItem(long id, Map<String, Object> variables);
+    
+    /**
+     * Aborts work item belonging to this process instance
+     * @param id id of the work item to complete
+     * @throws WorkItemNotFoundException in case work item with given id does not exist
+     */
+    void abortWorkItem(long id);
+    
+    /**
+     * Returns work item identified by given id if found
+     * @param workItemId id of the work item 
+     * @return work item with its parameters if found
+     * @throws WorkItemNotFoundException in case work item with given id does not exist
+     */
+    WorkItem workItem(Long workItemId);
+    
+    /**
+     * Returns list of currently active work items.
+     * @return non empty list of identifiers of currently active tasks.
+     */
+    List<WorkItem> workItems();
     
     /**
      * Returns identifier of this process instance
      * @return id of the process instance
      */
     long id();
+
 }

@@ -42,6 +42,7 @@ import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
+import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.Test;
 import org.kie.api.definition.process.Process;
@@ -82,6 +83,23 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         processInstance.start();
         
         assertEquals(STATE_COMPLETED, processInstance.status());
+    }
+    
+    @Test
+    public void testUserTaskProcessWithTaskModels() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+
+        List<UserTaskModelMetaData> models = ProcessToExecModelGenerator.INSTANCE.generateUserTaskModel((WorkflowProcess) process.legacyProcess());
+
+        for (UserTaskModelMetaData metaData : models) {
+            String content = metaData.generateInput();
+            assertThat(content).isNotNull();
+            log(content);
+
+            content = metaData.generateOutput();
+            assertThat(content).isNotNull();
+            log(content);
+        }
     }
     
     @Test
@@ -317,7 +335,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         
         assertEquals("john", workItem.getParameter("Parameter"));
         
-        processInstance.completeWorkItem(workItem.getId(), BpmnVariables.create(Collections.singletonMap("Result", "john doe")));
+        processInstance.completeWorkItem(workItem.getId(), Collections.singletonMap("Result", "john doe"));
         
         assertEquals(STATE_COMPLETED, processInstance.status());
     }

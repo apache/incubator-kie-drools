@@ -23,6 +23,7 @@
     <version>8.0.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
+  <artifactId>submarine-codegen</artifactId>
 
   <dependencyManagement>
     <dependencies>
@@ -50,7 +51,7 @@
     </dependencies>
   </dependencyManagement>
 
-  <artifactId>submarine-codegen</artifactId>
+  
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>

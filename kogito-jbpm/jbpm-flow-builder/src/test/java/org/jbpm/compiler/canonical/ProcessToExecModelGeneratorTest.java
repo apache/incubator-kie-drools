@@ -112,7 +112,7 @@ public class ProcessToExecModelGeneratorTest {
         ModelMetaData modelMetadata = ProcessToExecModelGenerator.INSTANCE.generateModel((WorkflowProcess) process);
         assertNotNull("Dumper should return non null class for process", modelMetadata);
         
-        logger.debug(modelMetadata.getGeneratedClassModel());
+        logger.info(modelMetadata.generate());
         assertEquals("com.myspace.demo.OrdersModel", modelMetadata.getModelClassName());
     }
 }

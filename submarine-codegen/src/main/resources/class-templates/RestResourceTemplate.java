@@ -1,6 +1,7 @@
 package com.myspace.demo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -15,8 +16,11 @@ import javax.ws.rs.core.MediaType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.submarine.process.Process;
 import org.kie.submarine.process.ProcessInstance;
+import org.kie.submarine.process.WorkItem;
 
 @Path("/$name$")
 @Api(description = "$documentation$")
@@ -28,7 +32,7 @@ public class $Type$Resource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Creates new instance of $name$")
-    public $Type$ createResource(@ApiParam(value="$Type$ Object that should be created") $Type$ resource) {
+    public $Type$ createResource(@ApiParam(value="$name$ data that should be created") $Type$ resource) {
         if (resource == null) {
             resource = new $Type$();
         }
@@ -72,5 +76,17 @@ public class $Type$Resource {
             pi.abort();
             return pi.variables();
         }
+    }
+    
+    @GET()
+    @Path("/{id}/tasks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation("Returns list of task ids that are currently active in given $name$")
+    public Map<Long, String> getTasks(@PathParam("id") Long id) {
+        return process.instances()
+                .findById(id)
+                .map(ProcessInstance::workItems)
+                .map(l -> l.stream().collect(Collectors.toMap(WorkItem::getId, WorkItem::getName)))
+                .orElse(null);
     }
 }

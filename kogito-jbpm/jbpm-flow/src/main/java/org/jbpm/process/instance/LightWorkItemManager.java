@@ -28,6 +28,7 @@ import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.internal.runtime.Closeable;
 import org.kie.services.signal.SignalManager;
 
@@ -130,6 +131,8 @@ public class LightWorkItemManager implements WorkItemManager{
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
             workItems.remove(id);
+        } else {
+            throw new WorkItemNotFoundException("Work Item (" + id + ") does not exist", id);
         }
     }
 

@@ -39,6 +39,7 @@ import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
+import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -176,12 +177,20 @@ public class ProcessCodegen implements Generator {
 
         Map<String, ModelMetaData> processIdToModel = new HashMap<>();
         Map<String, ModelClassGenerator> processIdToModelGenerator = new HashMap<>();
+        
+        Map<String, List<UserTaskModelMetaData>> processIdToUserTaskModel = new HashMap<>();
 
         // first we generate all the data classes from variable declarations
         for (WorkflowProcess workFlowProcess : processes.values()) {
             ModelClassGenerator mcg = new ModelClassGenerator(workFlowProcess);
             processIdToModelGenerator.put(workFlowProcess.getId(), mcg);
             processIdToModel.put(workFlowProcess.getId(), mcg.generate());
+        }
+        
+        // then we generate user task inputs and outputs if any
+        for (WorkflowProcess workFlowProcess : processes.values()) {
+            UserTasksModelClassGenerator utcg = new UserTasksModelClassGenerator(workFlowProcess);
+            processIdToUserTaskModel.put(workFlowProcess.getId(), utcg.generate());
         }
 
         // then we can instantiate the exec model generator
@@ -225,7 +234,8 @@ public class ProcessCodegen implements Generator {
                         workFlowProcess,
                         modelClassGenerator.className(),
                         execModelGen.className())
-                        .withCdi(dependencyInjection);
+                        .withCdi(dependencyInjection)
+                        .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()));
 
                 rgs.add(resourceGenerator);
             }
@@ -240,6 +250,15 @@ public class ProcessCodegen implements Generator {
             ModelMetaData mmd = modelClassGenerator.generate();
             storeFile(modelClassGenerator.generatedFilePath(),
                       mmd.generate().getBytes());
+        }
+        
+        for (List<UserTaskModelMetaData> utmd : processIdToUserTaskModel.values()) {
+            
+            for (UserTaskModelMetaData ut : utmd) {
+                storeFile(UserTasksModelClassGenerator.generatedFilePath(ut.getInputModelClassName()), ut.generateInput().getBytes());
+                
+                storeFile(UserTasksModelClassGenerator.generatedFilePath(ut.getOutputModelClassName()), ut.generateOutput().getBytes());
+            }
         }
 
         for (ResourceGenerator resourceGenerator : rgs) {
