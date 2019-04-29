@@ -23,8 +23,10 @@ import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.temporal.Temporal;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class YearsAndMonthsFunctionTest {
@@ -51,25 +53,25 @@ public class YearsAndMonthsFunctionTest {
 
     @Test
     public void invokeYear() {
-        FunctionTestUtil.assertResult(yamFunction.invoke(Year.of(2017), Year.of(2020)), Period.of(3, 0, 0));
-        FunctionTestUtil.assertResult(yamFunction.invoke(Year.of(2017), Year.of(2014)), Period.of(-3, 0, 0));
+        FunctionTestUtil.assertResult(yamFunction.invoke(Year.of(2017), Year.of(2020)), ComparablePeriod.of(3, 0, 0));
+        FunctionTestUtil.assertResult(yamFunction.invoke(Year.of(2017), Year.of(2014)), ComparablePeriod.of(-3, 0, 0));
     }
 
     @Test
     public void invokeYearMonth() {
         FunctionTestUtil.assertResult(
                 yamFunction.invoke(YearMonth.of(2017, 6), Year.of(2020)),
-                Period.of(2, 7, 0));
+                ComparablePeriod.of(2, 7, 0));
         FunctionTestUtil.assertResult(
                 yamFunction.invoke(YearMonth.of(2017, 6), Year.of(2014)),
-                Period.of(-3, -5, 0));
+                ComparablePeriod.of(-3, -5, 0));
     }
 
     @Test
     public void invokeYearLocalDate() {
         FunctionTestUtil.assertResult(
                 yamFunction.invoke(LocalDate.of(2017, 6, 12), Year.of(2020)),
-                Period.of(2, 6, 0));
+                ComparablePeriod.of(2, 6, 0));
     }
 
     @Test
@@ -78,7 +80,7 @@ public class YearsAndMonthsFunctionTest {
                 yamFunction.invoke(
                         LocalDate.of(2017, 6, 12),
                         YearMonth.of(2020, 4)),
-                Period.of(2, 9, 0));
+                ComparablePeriod.of(2, 9, 0));
     }
 
     @Test
@@ -87,7 +89,7 @@ public class YearsAndMonthsFunctionTest {
                 yamFunction.invoke(
                         LocalDateTime.of(2017, 6, 12, 12, 43),
                         LocalDate.of(2020, 7, 13)),
-                Period.of(3, 1, 0));
+                ComparablePeriod.of(3, 1, 0));
     }
 
     @Test
@@ -96,6 +98,6 @@ public class YearsAndMonthsFunctionTest {
                 yamFunction.invoke(
                         LocalDate.of(2017, 6, 12),
                         LocalDate.of(2020, 7, 13)),
-                Period.of(3, 1, 0));
+                ComparablePeriod.of(3, 1, 0));
     }
 }

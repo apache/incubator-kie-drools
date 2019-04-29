@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.types.impl.InterceptNotComparableComparator;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.TypeUtil;
 
 public class MinFunction
         extends BaseFEELFunction {
@@ -36,7 +36,7 @@ public class MinFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null or empty"));
         } else {
             try {
-                return FEELFnResult.ofResult( Collections.min( list ) );
+                return FEELFnResult.ofResult(Collections.min(list, new InterceptNotComparableComparator()));
             } catch (ClassCastException e) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains items that are not comparable"));
             }

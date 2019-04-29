@@ -32,6 +32,7 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 public class FEELDateTimeDurationTest extends BaseFEELTest {
 
@@ -66,9 +67,9 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\")", DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) , null},
                 { "date and time(date(\"2016-07-29\"), time(\"05:48:23.765-05:00\") )", DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) , null},
                 { "duration( \"P2DT20H14M\" )", Duration.parse( "P2DT20H14M" ) , null},
-                { "duration( \"P2Y2M\" )", Period.parse( "P2Y2M" ) , null},
-                { "duration( \"P26M\" )", Period.parse( "P2Y2M" ) , null},
-                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", Period.parse( "P1Y8M" ) , null},
+                { "duration( \"P2Y2M\" )", ComparablePeriod.parse( "P2Y2M" ) , null},
+                { "duration( \"P26M\" )", ComparablePeriod.parse( "P2Y2M" ) , null},
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", ComparablePeriod.parse( "P1Y8M" ) , null},
 
                 // comparison operators
                 { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE , null},
@@ -112,7 +113,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date and time(\"2018-12-01T09:30:00@Europe/Rome\") between date and time(\"2018-12-01T08:00:00\") and date and time(\"2018-12-01T16:00:00\")", Boolean.TRUE , null},
 
                 // Math operations with date, time, duration
-                { "duration( \"P2Y2M\" ) + duration( \"P1Y1M\" )", Period.parse("P3Y3M"), null },
+                { "duration( \"P2Y2M\" ) + duration( \"P1Y1M\" )", ComparablePeriod.parse("P3Y3M"), null },
                 { "duration( \"P2DT20H14M\" ) + duration( \"P1DT1H1M\" )", Duration.parse( "P3DT21H15M" ) , null},
                 { "date and time(\"2016-07-29T05:48:23Z\") + duration( \"P1Y1M\" )", ZonedDateTime.of(2017, 8, 29, 5, 48, 23, 0, ZoneId.of("Z").normalized()) , null},
                 { "date and time(\"2016-07-29T05:48:23\") + duration( \"P1Y1M\" )", LocalDateTime.of(2017, 8, 29, 5, 48, 23, 0) , null},
@@ -139,7 +140,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") - duration( \"P1Y1M\" ) ", OffsetDateTime.of(2015, 6, 29, 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") - duration( \"P1DT1H1M\" ) ", OffsetDateTime.of(2016, 7, 28, 4, 47, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
 
-                { "duration( \"P2Y2M\" ) - duration( \"P1Y1M\" )", Period.parse("P1Y1M"), null },
+                { "duration( \"P2Y2M\" ) - duration( \"P1Y1M\" )", ComparablePeriod.parse("P1Y1M"), null },
                 { "duration( \"P2DT20H14M\" ) - duration( \"P1DT1H1M\" )", Duration.parse( "P1DT19H13M" ) , null},
                 { "date and time(\"2016-07-29T05:48:23Z\") - duration( \"P1Y1M\" )", ZonedDateTime.of(2015, 6, 29, 5, 48, 23, 0, ZoneId.of("Z").normalized()) , null},
                 { "date and time(\"2016-07-29T05:48:23\") - duration( \"P1Y1M\" )", LocalDateTime.of(2015, 6, 29, 5, 48, 23, 0) , null},
@@ -150,15 +151,15 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "time(\"22:57:00\") - duration( \"PT1H1M\" )", LocalTime.of(21, 56, 0) , null},
                 { "time( 22, 57, 00, duration(\"PT5H\")) - duration( \"PT1H1M\" )", OffsetTime.of( 21, 56, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
 
-                { "duration( \"P2Y2M\" ) * 2", Period.parse("P52M"), null },
-                { "2 * duration( \"P2Y2M\" )", Period.parse("P52M"), null },
+                { "duration( \"P2Y2M\" ) * 2", ComparablePeriod.parse("P52M"), null },
+                { "2 * duration( \"P2Y2M\" )", ComparablePeriod.parse("P52M"), null },
                 { "duration( \"P2Y2M\" ) * duration( \"P2Y2M\" )", BigDecimal.valueOf(676), null },
                 { "duration( \"P2DT20H14M\" ) * 2", Duration.parse( "P4DT40H28M" ) , null},
                 { "2 * duration( \"P2DT20H14M\" )", Duration.parse( "P4DT40H28M" ) , null},
                 { "duration( \"P2DT20H14M\" ) * duration( \"P2DT20H14M\" )", BigDecimal.valueOf(60339009600L) , null},
 
-                { "duration( \"P2Y2M\" ) / 2", Period.parse("P13M"), null },
-                { "2 / duration( \"P2Y2M\" )", Period.parse("P0D"), null },
+                { "duration( \"P2Y2M\" ) / 2", ComparablePeriod.parse("P13M"), null },
+                { "2 / duration( \"P2Y2M\" )", ComparablePeriod.parse("P0D"), null },
                 { "duration( \"P2Y2M\" ) / duration( \"P2Y2M\" )", BigDecimal.valueOf(1), null },
                 { "duration( \"P2DT20H14M\" ) / 2", Duration.parse( "P1DT10H7M" ) , null},
                 { "2 / duration( \"P2DT20H14M\" )", Duration.parse( "PT0S" ) , null},

@@ -1,18 +1,22 @@
 package org.kie.dmn.feel.marshaller;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.impl.RangeImpl;
-
-import java.math.BigDecimal;
-import java.time.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -61,10 +65,10 @@ public class FEELStringMarshallerUnmarshallTest {
                 { BuiltInType.DURATION, "P5DT4H", Duration.ofHours( 124 )},
                 { BuiltInType.DURATION, "P737DT20H8M3S", Duration.ofSeconds( 63749283 )},
                 // months and years duration
-                { BuiltInType.DURATION, "P4Y5M", Period.of( 4, 5, 0 ) },
-                { BuiltInType.DURATION, "P6Y1M", Period.of( 6, 1, 0 ) },
-                { BuiltInType.DURATION, "-P6Y1M", Period.of( -6, -1, 0 ) },
-                { BuiltInType.DURATION, "P0M", Period.of( 0, 0, 0 ) },
+                { BuiltInType.DURATION, "P4Y5M", ComparablePeriod.of( 4, 5, 0 ) },
+                { BuiltInType.DURATION, "P6Y1M", ComparablePeriod.of( 6, 1, 0 ) },
+                { BuiltInType.DURATION, "-P6Y1M", ComparablePeriod.of( -6, -1, 0 ) },
+                { BuiltInType.DURATION, "P0M", ComparablePeriod.of( 0, 0, 0 ) },
                 // null
                 { BuiltInType.UNKNOWN, "null", null }
         };

@@ -23,7 +23,9 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class YearsAndMonthsFunction
@@ -49,7 +51,7 @@ public class YearsAndMonthsFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "to", "is of type not suitable for years and months function"));
         }
 
-        return FEELFnResult.ofResult( Period.between( fromDate, toDate ).withDays( 0 ) );
+        return FEELFnResult.ofResult(new ComparablePeriod(Period.between(fromDate, toDate).withDays(0)));
     }
 
     private LocalDate getLocalDateFromTemporal(final Temporal temporal) {

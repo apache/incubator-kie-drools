@@ -22,10 +22,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Collection;
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.DateFunction;
@@ -84,8 +85,8 @@ public final class TypeUtil {
             }
         } else if (val instanceof Duration) {
             return formatDuration((Duration) val, wrapForCodeUsage);
-        } else if (val instanceof Period) {
-            return formatPeriod((Period) val, wrapForCodeUsage);
+        } else if (val instanceof ChronoPeriod) {
+            return formatPeriod((ChronoPeriod) val, wrapForCodeUsage);
         } else if (val instanceof TemporalAccessor) {
             TemporalAccessor ta = (TemporalAccessor) val;
             if (ta.query(TemporalQueries.localDate()) == null && ta.query(TemporalQueries.localTime()) != null && ta.query(TemporalQueries.zoneId()) != null) {
@@ -185,8 +186,8 @@ public final class TypeUtil {
         return sb.toString();
     }
 
-    public static String formatPeriod(final Period period, final boolean wrapInDurationFunction) {
-        final long totalMonths = period.toTotalMonths();
+    public static String formatPeriod(final ChronoPeriod period, final boolean wrapInDurationFunction) {
+        final long totalMonths = ComparablePeriod.toTotalMonths(period);
         if (totalMonths == 0) {
             if (wrapInDurationFunction) {
                 return "duration( \"P0M\" )";

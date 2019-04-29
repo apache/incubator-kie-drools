@@ -1,18 +1,25 @@
 package org.kie.dmn.feel.marshaller;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
-
-import java.math.BigDecimal;
-import java.time.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -61,10 +68,10 @@ public class FEELCodeMarshallerUnmarshallTest {
                 { BuiltInType.UNKNOWN, "duration( \"P5DT4H\" )", Duration.ofHours( 124 )},
                 { BuiltInType.UNKNOWN, "duration( \"P737DT20H8M3S\" )", Duration.ofSeconds( 63749283 )},
                 // months and years duration
-                { BuiltInType.UNKNOWN, "duration( \"P4Y5M\" )", Period.of( 4, 5, 0 ) },
-                { BuiltInType.UNKNOWN, "duration( \"P6Y1M\" )", Period.of( 6, 1, 0 ) },
-                { BuiltInType.UNKNOWN, "duration( \"-P6Y1M\" )", Period.of( -6, -1, 0 ) },
-                { BuiltInType.UNKNOWN, "duration( \"P0M\" )", Period.of( 0, 0, 0 ) },
+                { BuiltInType.UNKNOWN, "duration( \"P4Y5M\" )", ComparablePeriod.of( 4, 5, 0 ) },
+                { BuiltInType.UNKNOWN, "duration( \"P6Y1M\" )", ComparablePeriod.of( 6, 1, 0 ) },
+                { BuiltInType.UNKNOWN, "duration( \"-P6Y1M\" )", ComparablePeriod.of( -6, -1, 0 ) },
+                { BuiltInType.UNKNOWN, "duration( \"P0M\" )", ComparablePeriod.of( 0, 0, 0 ) },
                 // lists
                 { BuiltInType.UNKNOWN, "[ 1, 2, 3, 4 ]", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) },
                 { BuiltInType.UNKNOWN, "[ \"foo\", \"bar\", \"baz\" ]", Arrays.asList( "foo", "bar", "baz" ) },

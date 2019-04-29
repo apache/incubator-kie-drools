@@ -24,11 +24,12 @@ import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Collection;
@@ -45,6 +46,7 @@ import java.util.stream.Stream;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -302,13 +304,13 @@ public class EvalHelper {
                     return PropertyValueResult.notDefined();
                 }
             }
-        } else if ( current instanceof Period ) {
+        } else if (current instanceof ChronoPeriod) {
             switch ( property ) {
                 case "years":
-                    result = ((Period) current).getYears();
+                    result = ((ChronoPeriod) current).get(ChronoUnit.YEARS);
                     break;
                 case "months":
-                    result = ((Period) current).getMonths() % 12;
+                    result = ((ChronoPeriod) current).get(ChronoUnit.MONTHS) % 12;
                     break;
                 default:
                     return PropertyValueResult.notDefined();
@@ -483,12 +485,10 @@ public class EvalHelper {
     public static Boolean compare(Object left, Object right, EvaluationContext ctx, BiPredicate<Comparable, Comparable> op) {
         if ( left == null || right == null ) {
             return null;
-        } else if ( (left instanceof Period && right instanceof Period ) ) {
+        } else if ((left instanceof ChronoPeriod && right instanceof ChronoPeriod)) {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
-            Period lp = (Period) left;
-            Period rp = (Period) right;
-            Integer l = lp.getYears() * 12 + lp.getMonths();
-            Integer r = rp.getYears() * 12 + rp.getMonths();
+            Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
+            Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
             return op.test( l, r );
         } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
             // Handle specific cases when both date / datetime

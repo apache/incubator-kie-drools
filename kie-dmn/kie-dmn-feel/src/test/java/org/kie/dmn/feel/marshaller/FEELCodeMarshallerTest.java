@@ -3,6 +3,7 @@ package org.kie.dmn.feel.marshaller;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
@@ -64,6 +65,11 @@ public class FEELCodeMarshallerTest {
                 { Period.of( -4, -25, 0 ), "duration( \"-P6Y1M\" )" },
                 { Period.of( 0, 0, -4 ), "duration( \"P0M\" )" },
                 { Period.of( 0, 0, 0 ), "duration( \"P0M\" )" },
+                { ComparablePeriod.of( 4, 5, 12 ), "duration( \"P4Y5M\" )" },
+                { ComparablePeriod.of( 4, 25, 0 ), "duration( \"P6Y1M\" )" },
+                { ComparablePeriod.of( -4, -25, 0 ), "duration( \"-P6Y1M\" )" },
+                { ComparablePeriod.of( 0, 0, -4 ), "duration( \"P0M\" )" },
+                { ComparablePeriod.of( 0, 0, 0 ), "duration( \"P0M\" )" },
                 // lists
                 { Arrays.asList( 1, 2, 3, 4 ), "[ 1, 2, 3, 4 ]" },
                 { Arrays.asList( "foo", "bar", "baz" ), "[ \"foo\", \"bar\", \"baz\" ]" },

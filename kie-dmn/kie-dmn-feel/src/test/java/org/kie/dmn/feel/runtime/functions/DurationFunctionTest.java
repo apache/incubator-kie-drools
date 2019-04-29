@@ -17,12 +17,12 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.time.Duration;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class DurationFunctionTest {
@@ -65,8 +65,8 @@ public class DurationFunctionTest {
 
     @Test
     public void invokeParamStringPeriod() {
-        FunctionTestUtil.assertResult(durationFunction.invoke("P2Y3M"), Period.of(2, 3, 0));
-        FunctionTestUtil.assertResult(durationFunction.invoke("P2Y3M4D"), Period.of(2, 3, 4));
+        FunctionTestUtil.assertResult(durationFunction.invoke("P2Y3M"), ComparablePeriod.of(2, 3, 0));
+        FunctionTestUtil.assertResult(durationFunction.invoke("P2Y3M4D"), ComparablePeriod.of(2, 3, 4));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class DurationFunctionTest {
 
     @Test
     public void invokeParamTemporalPeriod() {
-        FunctionTestUtil.assertResult(durationFunction.invoke(Period.parse("P2Y3M4D")), Period.of(2, 3, 4));
+        FunctionTestUtil.assertResult(durationFunction.invoke(ComparablePeriod.parse("P2Y3M4D")), ComparablePeriod.of(2, 3, 4));
     }
 
 }

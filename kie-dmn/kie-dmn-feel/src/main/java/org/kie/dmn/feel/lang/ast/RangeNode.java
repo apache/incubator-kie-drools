@@ -23,10 +23,10 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.Msg;
-import org.kie.dmn.feel.util.TypeUtil;
 
 public class RangeNode
         extends BaseNode {
@@ -133,43 +133,6 @@ public class RangeNode
             start = null;
         }
         return start;
-    }
-
-    public static class ComparablePeriod implements Comparable<Period> {
-        private final int left;
-        private final String toStringRep;
-
-        public ComparablePeriod(Period value) {
-            this.left = value.getYears() * 12 + value.getMonths();
-            this.toStringRep = TypeUtil.formatPeriod(value, true);
-        }
-
-        @Override
-        public int compareTo(Period o) {
-            int right = o.getYears() * 12 + o.getMonths();
-            return left - right;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if ( this == o ) return true;
-            if ( !(o instanceof ComparablePeriod) ) return false;
-
-            ComparablePeriod that = (ComparablePeriod) o;
-
-            return left == that.left;
-        }
-
-        @Override
-        public int hashCode() {
-            return left;
-        }
-
-        @Override
-        public String toString() {
-            return toStringRep;
-        }
-
     }
 
     @Override

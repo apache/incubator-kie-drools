@@ -25,6 +25,8 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,6 +63,7 @@ import org.kie.dmn.core.model.Person;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.Decision;
@@ -78,6 +81,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
@@ -649,7 +653,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( ctx.get("dtDuration2"), is( Duration.parse( "P367DT3H58M59S" ) ) );
         assertThat( ctx.get("hoursInDuration"), is( new BigDecimal( "3" ) ) );
         assertThat( ctx.get("sumDurations"), is( Duration.parse( "PT9125H59M13S" ) ) );
-        assertThat( ctx.get("ymDuration2"), is( Period.parse( "P1Y" ) ) );
+        assertThat( ctx.get("ymDuration2"), is( ComparablePeriod.parse( "P1Y" ) ) );
         assertThat( ctx.get("cDay"), is( BigDecimal.valueOf( 24 ) ) );
         assertThat( ctx.get("cYear"), is( BigDecimal.valueOf( 2015 ) ) );
         assertThat( ctx.get("cMonth"), is( BigDecimal.valueOf( 12 ) ) );
@@ -772,7 +776,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         final BuiltInType feelType = (BuiltInType) BuiltInType.determineTypeFromName("yearMonthDuration" );
-        final Period period = (Period) feelType.fromString("P2Y1M" );
+        final ChronoPeriod period = (ChronoPeriod) feelType.fromString("P2Y1M");
 
         final DMNContext context = runtime.newContext();
         context.set( "iDuration", period );
@@ -2421,6 +2425,57 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("using get value").getResult(), is("value2"));
+    }
+
+    @Test
+    public void testChronoPeriod() {
+        // DROOLS-3848 DMN Years and Months internals expect value is Comparable
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("ChronoPeriod.dmn", this.getClass());
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/definitions/_f6036734-c7b3-42d2-adde-d7db17953114", "Drawing 1");
+
+        final ChronoPeriod p1Period = Period.parse("P1Y");
+        final ChronoPeriod p1Comparable = ComparablePeriod.parse("P1Y");
+        final ChronoPeriod p2Period = Period.parse("P1M");
+        final ChronoPeriod p2Comparable = ComparablePeriod.parse("P1M");
+
+        checkChronoPeriodEvaluateAll(runtime, dmnModel, p1Period, p2Period);
+        checkChronoPeriodEvaluateAll(runtime, dmnModel, p1Comparable, p2Period);
+        checkChronoPeriodEvaluateAll(runtime, dmnModel, p1Period, p2Comparable);
+        checkChronoPeriodEvaluateAll(runtime, dmnModel, p1Comparable, p2Comparable);
+        checkChronoPeriodEvaluateDS(runtime, dmnModel, p1Period, p2Period);
+        checkChronoPeriodEvaluateDS(runtime, dmnModel, p1Comparable, p2Period);
+        checkChronoPeriodEvaluateDS(runtime, dmnModel, p1Period, p2Comparable);
+        checkChronoPeriodEvaluateDS(runtime, dmnModel, p1Comparable, p2Comparable);
+    }
+
+    private void checkChronoPeriodEvaluateDS(DMNRuntime runtime, DMNModel dmnModel, ChronoPeriod period1, ChronoPeriod period2) {
+        final DMNContext myContext = DMNFactory.newContext();
+        myContext.set("period1", period1);
+        myContext.set("period2", period2);
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, myContext, "Decision Service 1");
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.getContext().getAll(), not(hasEntry(is("Decision1"), anything()))); // we invoked only the Decision Service, not this other Decision in the model.
+        assertThat(dmnResult.getDecisionResultByName("Decision2").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("Decision2").getResult(), is(instanceOf(ChronoPeriod.class)));
+        assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.YEARS), is(2L));
+        assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.MONTHS), is(1L));
+    }
+
+    private void checkChronoPeriodEvaluateAll(final DMNRuntime runtime, final DMNModel dmnModel, ChronoPeriod period1, ChronoPeriod period2) {
+        final DMNContext myContext = DMNFactory.newContext();
+        myContext.set("period1", period1);
+        myContext.set("period2", period2);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, myContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision1").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("Decision1").getResult(), is(instanceOf(ChronoPeriod.class)));
+        assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision1").getResult()).get(ChronoUnit.YEARS), is(1L));
+        assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision1").getResult()).get(ChronoUnit.MONTHS), is(1L));
+        assertThat(dmnResult.getDecisionResultByName("Decision2").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("Decision2").getResult(), is(instanceOf(ChronoPeriod.class)));
+        assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.YEARS), is(2L));
+        assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.MONTHS), is(1L));
     }
 }
 

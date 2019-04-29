@@ -18,6 +18,8 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Predicate;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -51,6 +53,13 @@ public final class FunctionTestUtil {
         } else {
             Assert.assertThat(resultList, Matchers.contains(expectedResult.toArray(new Object[]{})));
         }
+    }
+    
+    public static <T> void assertPredicateOnResult(final FEELFnResult<?> result, final Class<T> clazz, final Predicate<T> assertion) {
+        assertResultNotError(result);
+        final T resultValue = result.cata(left -> null, clazz::cast);
+        Assert.assertThat(resultValue, Matchers.notNullValue());
+        Assert.assertThat(assertion.test(resultValue), Matchers.is(true));
     }
 
     public static <T> void assertResultNull(final FEELFnResult<T> result) {
