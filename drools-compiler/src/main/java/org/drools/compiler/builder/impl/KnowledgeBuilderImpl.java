@@ -45,6 +45,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Supplier;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
+import org.drools.compiler.builder.impl.errors.MissingImplementationException;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
@@ -428,9 +429,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         this.resource = null;
     }
 
-    PackageDescr guidedDecisionTableToPackageDescr(Resource resource) throws DroolsParserException,
-            IOException {
+    PackageDescr guidedDecisionTableToPackageDescr(Resource resource) throws DroolsParserException, IOException {
         GuidedDecisionTableProvider guidedDecisionTableProvider = GuidedDecisionTableFactory.getGuidedDecisionTableProvider();
+        if (guidedDecisionTableProvider == null) {
+            throw new MissingImplementationException(resource, "drools-workbench-models-guided-dtable");
+        }
         ResourceConversionResult conversionResult = guidedDecisionTableProvider.loadFromInputStream(resource.getInputStream());
         return conversionResultToPackageDescr(resource, conversionResult);
     }
@@ -524,9 +527,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
         this.resource = null;
     }
 
-    PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException,
-            IOException {
+    PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException, IOException {
         GuidedRuleTemplateProvider guidedRuleTemplateProvider = GuidedRuleTemplateFactory.getGuidedRuleTemplateProvider();
+        if (guidedRuleTemplateProvider == null) {
+            throw new MissingImplementationException(resource, "drools-workbench-models-guided-template");
+        }
         ResourceConversionResult conversionResult = guidedRuleTemplateProvider.loadFromInputStream(resource.getInputStream());
         return conversionResultToPackageDescr(resource, conversionResult);
     }
