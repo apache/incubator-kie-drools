@@ -418,23 +418,13 @@ public class DTAnalysis {
                 List<Integer> otherRules = listWithoutElement(rulesWithGivenOutputEntry, ruleId);
                 for (Integer otherRuleId : otherRules) {
                     List<DDTAInputEntry> otherInputEntries = ddtaTable.getRule().get(otherRuleId - 1).getInputEntry();
-                    boolean inputEntriesIncludeAll = inputEntriesIncludeAll(curInputEntries, otherInputEntries);
+                    boolean inputEntriesIncludeAll = DDTARule.inputEntriesIncludeAll(curInputEntries, otherInputEntries);
                     if (inputEntriesIncludeAll) {
                         subsumptions.add(new Subsumption(ruleId, otherRuleId));
                     }
                 }
             }
         }
-    }
-
-    private boolean inputEntriesIncludeAll(List<DDTAInputEntry> curInputEntries, List<DDTAInputEntry> otherInputEntries) {
-        boolean includeAll = true;
-        for (int i = 0; i < curInputEntries.size(); i++) {
-            DDTAInputEntry curIE = curInputEntries.get(i);
-            DDTAInputEntry otherIE = otherInputEntries.get(i);
-            includeAll &= curIE.includes(otherIE);
-        }
-        return includeAll;
     }
 
     public List<Subsumption> getSubsumptions() {

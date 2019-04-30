@@ -43,4 +43,14 @@ public class DDTARule {
         return builder.toString();
     }
 
+    static boolean inputEntriesIncludeAll(List<DDTAInputEntry> curInputEntries, List<DDTAInputEntry> otherInputEntries) {
+        boolean includeAll = true;
+        for (int i = 0; i < curInputEntries.size(); i++) {
+            DDTAInputEntry curIE = curInputEntries.get(i);
+            DDTAInputEntry otherIE = otherInputEntries.get(i);
+            includeAll &= curIE.includes(otherIE);
+        }
+        return includeAll;
+    }
+
 }
