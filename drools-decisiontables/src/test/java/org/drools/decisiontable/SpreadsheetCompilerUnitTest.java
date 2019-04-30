@@ -469,7 +469,7 @@ public class SpreadsheetCompilerUnitTest {
 
         assertNotNull( drl );
 
-        final String expected = "package Some_business_rules;\n" +
+        final String expected = "package data;\n" +
                 "//generated from Decision Table\n" +
                 "import org.drools.decisiontable.Person;\n" +
                 "// rule values at C10, header at C5\n" +
@@ -517,7 +517,7 @@ public class SpreadsheetCompilerUnitTest {
 
         assertNotNull( drl );
 
-        final String expected = "package Some_business_rules;\n" +
+        final String expected = "package data;\n" +
                 "//generated from Decision Table\n" +
                 "import org.drools.decisiontable.Person;\n" +
                 "// rule values at C10, header at C5\n" +
@@ -567,7 +567,7 @@ public class SpreadsheetCompilerUnitTest {
 
         assertNotNull( drl );
 
-        final String expected = "package Some_business_rules;\n" +
+        final String expected = "package data;\n" +
                 "//generated from Decision Table\n" +
                 "import org.drools.decisiontable.Person;\n" +
                 "// rule values at C10, header at C5\n" +
@@ -619,7 +619,7 @@ public class SpreadsheetCompilerUnitTest {
 
         assertNotNull( drl );
 
-        final String expected = "package Connexis_Cash_Enrichment;\n" +
+        final String expected = "package data;\n" +
                 "//generated from Decision Table\n" +
                 "import com.brms.dto.fact.*;\n" +
                 "dialect \"mvel\";\n" +
@@ -755,7 +755,7 @@ public class SpreadsheetCompilerUnitTest {
 
         assertNotNull( drl );
 
-        final String expected = "package com.sample;\n" +
+        final String expected = "package data;\n" +
                 "//generated from Decision Table\n" +
                 "import com.sample.DecisionTableTest.Message;\n" +
                 "dialect \"mvel\"\n" +

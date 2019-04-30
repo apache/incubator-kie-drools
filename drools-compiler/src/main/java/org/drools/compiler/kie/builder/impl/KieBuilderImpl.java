@@ -373,36 +373,66 @@ public class KieBuilderImpl
         if ( kieBase.getPackages().isEmpty() ) {
             return true;
         } else {
-            String pkgNameForFile = getPackageNameForFile( lastSep > 0 ? fileName.substring( 0, lastSep ) : "", !useFolders && fileName.endsWith( ".drl" ), file );
+            String folderNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
+            folderNameForFile = folderNameForFile.startsWith( RESOURCES_ROOT ) ? folderNameForFile.substring( RESOURCES_ROOT.length() ) : folderNameForFile;
+            String pkgNameForFile = packageNameForFile( fileName, folderNameForFile, !useFolders, file );
             return isPackageInKieBase( kieBase, pkgNameForFile );
         }
     }
 
-    private static String getPackageNameForFile( String fileName, boolean discoverPackage, Supplier<byte[]> file ) {
-        String folderNameForFile = fileName.startsWith( RESOURCES_ROOT ) ? fileName.substring( RESOURCES_ROOT.length() ) : fileName;
-        folderNameForFile = folderNameForFile.replace( '/', '.' );
+    private static String packageNameForFile( String fileName, String folderNameForFile, boolean discoverPackage, Supplier<byte[]> file ) {
+        String packageNameFromFolder = folderNameForFile.replace( '/', '.' );
 
         if (discoverPackage) {
-            byte[] bytes = file.get();
-            String content = bytes != null ? new String(bytes) : "";
-            int pkgPos = codeAwareIndexOf( content, "package " );
-            if (pkgPos >= 0) {
-                pkgPos += "package ".length();
-                int semiPos = content.indexOf( ';', pkgPos );
-                int breakPos = content.indexOf( '\n', pkgPos );
-                int end = semiPos > 0 ? (breakPos > 0 ? Math.min( semiPos, breakPos ) : semiPos) : breakPos;
-                if (end > 0) {
-                    String packageNameForFile = content.substring( pkgPos, end ).trim();
-                    if (!packageNameForFile.equals( folderNameForFile )) {
-                        log.warn( "File '" + fileName + "' is in folder '" + folderNameForFile + "' but declares package '" + packageNameForFile +
-                                "'. It is advised to have a correspondance between package and folder names." );
-                    }
-                    return packageNameForFile;
+            String packageNameForFile = packageNameFromAsset(fileName, file);
+            if (packageNameForFile != null) {
+                if ( !packageNameForFile.equals( packageNameFromFolder ) ) {
+                    log.warn( "File '" + fileName + "' is in folder '" + folderNameForFile + "' but declares package '" + packageNameForFile +
+                            "'. It is advised to have a correspondance between package and folder names." );
                 }
+                return packageNameForFile;
             }
         }
 
-        return folderNameForFile;
+        return packageNameFromFolder;
+    }
+
+    private static String packageNameFromAsset(String fileName, Supplier<byte[]> file) {
+        if (fileName.endsWith( ".drl" )) {
+            return packageNameFromDrl( file.get() );
+        }
+        if (fileName.endsWith( ".xls" ) || fileName.endsWith( ".xlsx" ) || fileName.endsWith( ".csv" )) {
+            return packageNameFromDtable( file.get() );
+        }
+        return null;
+    }
+
+    private static String packageNameFromDrl(byte[] bytes) {
+        String content = bytes != null ? new String(bytes) : "";
+        int pkgPos = codeAwareIndexOf( content, "package " );
+        if (pkgPos >= 0) {
+            pkgPos += "package ".length();
+            int semiPos = content.indexOf( ';', pkgPos );
+            int breakPos = content.indexOf( '\n', pkgPos );
+            int end = semiPos > 0 ? (breakPos > 0 ? Math.min( semiPos, breakPos ) : semiPos) : breakPos;
+            if ( end > 0 ) {
+                return content.substring( pkgPos, end ).trim();
+            }
+        }
+        return null;
+    }
+
+    private static String packageNameFromDtable(byte[] bytes) {
+        String content = bytes != null ? new String(bytes) : "";
+        int pkgPos = content.indexOf( "RuleSet" );
+        if (pkgPos >= 0) {
+            pkgPos += "RuleSet ".length();
+            for (; !Character.isJavaIdentifierStart( content.charAt( pkgPos ) ); pkgPos++);
+            int end = pkgPos+1;
+            for (; Character.isLetterOrDigit( content.charAt( end ) ) || content.charAt( end ) == '.'; end++);
+            return content.substring( pkgPos, end ).trim();
+        }
+        return null;
     }
 
     public static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
