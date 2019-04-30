@@ -126,6 +126,8 @@ public class DMNDTAnalyser {
         analysis.normalize();
         LOG.debug("computeSubsumptions");
         analysis.computeSubsumptions();
+        LOG.debug("computeContractions");
+        analysis.computeContractions();
         return analysis;
     }
 
