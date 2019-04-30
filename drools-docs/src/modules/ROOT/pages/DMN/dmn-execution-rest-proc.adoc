@@ -706,14 +706,31 @@ Example XML request (JAXB format):
 
 [source,xml]
 ----
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <dmn-evaluation-context>
-    <model-namespace>https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</model-namespace>
-    <model-name>Traffic Violation</model-name>
     <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <type>MAP</type>
-        <element xsi:type="jaxbStringObjectPair" key="Points">
-            <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
+        <element xsi:type="jaxbStringObjectPair" key="Violation">
+            <value xsi:type="jaxbListWrapper">
+                <type>MAP</type>
+                <element xsi:type="jaxbStringObjectPair" key="Type">
+                    <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">speed</value>
+                </element>
+                <element xsi:type="jaxbStringObjectPair" key="Speed Limit">
+                    <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</value>
+                </element>
+                <element xsi:type="jaxbStringObjectPair" key="Actual Speed">
+                    <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">135</value>
+                </element>
+            </value>
+        </element>
+        <element xsi:type="jaxbStringObjectPair" key="Driver">
+            <value xsi:type="jaxbListWrapper">
+                <type>MAP</type>
+                <element xsi:type="jaxbStringObjectPair" key="Points">
+                    <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
+                </element>
+            </value>
         </element>
     </dmn-context>
 </dmn-evaluation-context>
@@ -785,33 +802,81 @@ Example XML (JAXB format) response:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<response type="SUCCESS" msg="OK from container 'Traffic-Violation_1.0.0'">
-      <dmn-evaluation-result>
-            <model-namespace>https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8</model-namespace>
-            <model-name>Traffic Violation</model-name>
-            <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                  <type>MAP</type>
-                  <element xsi:type="jaxbStringObjectPair" key="Violation">
-                        <value xsi:type="xs:int" xmlns:xs="http://www.w3.org/2001/XMLSchema">Speed</value>
-                  </element>
-                  <element xsi:type="jaxbStringObjectPair" key="Points">
-                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
-                  </element>
-            </dmn-context>
-            <messages/>
-            <decisionResults>
-                  <entry>
-                        <key>_3</key>
-                        <value>
-                              <decision-id>_3</decision-id>
-                              <decision-name>Should the driver be suspended?</decision-name>
-                              <result xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Yes</result>
-                              <messages/>
-                              <status>SUCCEEDED</status>
-                        </value>
-                  </entry>
-            </decisionResults>
-      </dmn-evaluation-result>
+<response type="SUCCESS" msg="OK from container 'Traffic_1.0.0-SNAPSHOT'">
+    <dmn-evaluation-result>
+        <model-namespace>https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</model-namespace>
+        <model-name>Traffic Violation</model-name>
+        <dmn-context xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <type>MAP</type>
+            <element xsi:type="jaxbStringObjectPair" key="Violation">
+                <value xsi:type="jaxbListWrapper">
+                    <type>MAP</type>
+                    <element xsi:type="jaxbStringObjectPair" key="Type">
+                        <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">speed</value>
+                    </element>
+                    <element xsi:type="jaxbStringObjectPair" key="Speed Limit">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">100</value>
+                    </element>
+                    <element xsi:type="jaxbStringObjectPair" key="Actual Speed">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">135</value>
+                    </element>
+                </value>
+            </element>
+            <element xsi:type="jaxbStringObjectPair" key="Driver">
+                <value xsi:type="jaxbListWrapper">
+                    <type>MAP</type>
+                    <element xsi:type="jaxbStringObjectPair" key="Points">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">15</value>
+                    </element>
+                </value>
+            </element>
+            <element xsi:type="jaxbStringObjectPair" key="Fine">
+                <value xsi:type="jaxbListWrapper">
+                    <type>MAP</type>
+                    <element xsi:type="jaxbStringObjectPair" key="Points">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">7</value>
+                    </element>
+                    <element xsi:type="jaxbStringObjectPair" key="Amount">
+                        <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
+                    </element>
+                </value>
+            </element>
+            <element xsi:type="jaxbStringObjectPair" key="Should the driver be suspended?">
+                <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema">Yes</value>
+            </element>
+        </dmn-context>
+        <messages/>
+        <decisionResults>
+            <entry>
+                <key>_4055D956-1C47-479C-B3F4-BAEB61F1C929</key>
+                <value>
+                    <decision-id>_4055D956-1C47-479C-B3F4-BAEB61F1C929</decision-id>
+                    <decision-name>Fine</decision-name>
+                    <result xsi:type="jaxbListWrapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <type>MAP</type>
+                        <element xsi:type="jaxbStringObjectPair" key="Points">
+                            <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">7</value>
+                        </element>
+                        <element xsi:type="jaxbStringObjectPair" key="Amount">
+                            <value xsi:type="xs:decimal" xmlns:xs="http://www.w3.org/2001/XMLSchema">1000</value>
+                        </element>
+                    </result>
+                    <messages/>
+                    <status>SUCCEEDED</status>
+                </value>
+            </entry>
+            <entry>
+                <key>_8A408366-D8E9-4626-ABF3-5F69AA01F880</key>
+                <value>
+                    <decision-id>_8A408366-D8E9-4626-ABF3-5F69AA01F880</decision-id>
+                    <decision-name>Should the driver be suspended?</decision-name>
+                    <result xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Yes</result>
+                    <messages/>
+                    <status>SUCCEEDED</status>
+                </value>
+            </entry>
+        </decisionResults>
+    </dmn-evaluation-result>
 </response>
 ----
 --
