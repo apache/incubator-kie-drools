@@ -124,6 +124,8 @@ public class DMNDTAnalyser {
         analysis.computeMisleadingRules();
         LOG.debug("normalize");
         analysis.normalize();
+        LOG.debug("computeSubsumptions");
+        analysis.computeSubsumptions();
         return analysis;
     }
 

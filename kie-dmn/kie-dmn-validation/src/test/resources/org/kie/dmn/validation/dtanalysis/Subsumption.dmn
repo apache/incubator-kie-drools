@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_14c0310e-225b-4177-a6d1-cfc67c5910b1" id="_14c0310e-225b-4177-a6d1-cfc67c5910b1" namespace="http://www.trisotech.com/definitions/_14c0310e-225b-4177-a6d1-cfc67c5910b1"          exporter="DMN Modeler" exporterVersion="6.2.1" name="Drawing 1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decisionService id="_14c0310e-225b-4177-a6d1-cfc67c5910b1_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_8b1d56dd-8446-4791-82b0-6dd2d526bd90" typeRef="Any"/>
+        <semantic:outputDecision href="#_6922ea95-6671-4c47-bea0-3fd67d5a0923"/>
+        <semantic:inputData href="#_75f9ab0d-e639-4c4b-9676-e1b3f1ba4f08"/>
+        <semantic:inputData href="#_09821737-fbe5-4869-ac07-e90e7d1de930"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_46602403-a178-400c-993a-3144292bb23f_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_54472459-8683-4e08-b557-862a06e08b18" typeRef="Any"/>
+        <semantic:outputDecision href="#_6922ea95-6671-4c47-bea0-3fd67d5a0923"/>
+        <semantic:inputData href="#_75f9ab0d-e639-4c4b-9676-e1b3f1ba4f08"/>
+        <semantic:inputData href="#_09821737-fbe5-4869-ac07-e90e7d1de930"/>
+    </semantic:decisionService>
+    <semantic:inputData id="_75f9ab0d-e639-4c4b-9676-e1b3f1ba4f08" name="age">
+        <semantic:variable name="age" id="_44ec4c4f-7e3e-498c-899d-952c191299bc" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:inputData id="_09821737-fbe5-4869-ac07-e90e7d1de930" name="is Risky">
+        <semantic:variable name="is Risky" id="_bf3c6bbb-23a2-4a5a-9d26-896816b938c1" typeRef="boolean"/>
+    </semantic:inputData>
+    <semantic:decision id="_6922ea95-6671-4c47-bea0-3fd67d5a0923" name="my Decision">
+        <semantic:variable name="my Decision" id="_04c13409-1b70-4d80-9837-a33f68e3490b" typeRef="string"/>
+        <semantic:informationRequirement id="_55aecb91-8592-4039-bf3c-7ade2fe2c0da">
+            <semantic:requiredInput href="#_75f9ab0d-e639-4c4b-9676-e1b3f1ba4f08"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_779a3ff8-6ca1-4da0-8a5b-8eea47b00c50">
+            <semantic:requiredInput href="#_09821737-fbe5-4869-ac07-e90e7d1de930"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_82100fc5-8799-4ee2-981f-215ded39e68a" hitPolicy="PRIORITY" outputLabel="my Decision" typeRef="string" triso:expressionId="_96fb07fd-e85d-464c-ad10-fefb014b090a">
+            <semantic:input id="_86065c10-e62e-4ffd-a67c-67e52122336a">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>age</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_703b33e9-7c57-4eb3-9c5b-be810b3f5243">
+                <semantic:inputExpression typeRef="boolean">
+                    <semantic:text>is Risky</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_3b69516a-15b5-46cf-834b-a178920ddc25">
+                <semantic:outputValues triso:constraintsType="enumeration">
+                    <semantic:text>"X","no probs","na"</semantic:text>
+                </semantic:outputValues>
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_1cef69d4-4353-4bcf-8177-2be483593170">
+                <semantic:inputEntry id="_cbaecd40-2506-4d19-86ec-ffbfacf6487c">
+                    <semantic:text>&lt;18</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_00f4ae2e-9eaa-4550-8abf-394f6b2a9c2c">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_2a7a7413-73a1-4b18-abc7-e6a420d713ed">
+                    <semantic:text>"na"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_0cb02190-2d82-42c9-bc25-ac4392d18ae2">
+                <semantic:inputEntry id="_fc058fe7-76eb-4954-9d67-883ca2107420">
+                    <semantic:text>&gt;=18</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_4587b6d6-9a01-4689-954b-29810f8ccc9e">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_8f7ad5fc-3a96-426c-91f1-daf9ad072ef5">
+                    <semantic:text>"X"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_a43d6154-fed6-4943-a756-7a8abf6277a3">
+                <semantic:inputEntry id="_ffece486-6cc9-4638-978f-ca0f3b42a968">
+                    <semantic:text>&gt;21</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_6dee7c88-e990-4741-a072-77c9af6ccd82">
+                    <semantic:text>false</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_6c2471ff-e0dc-498b-8bed-f4aec0064c3f">
+                    <semantic:text>"no probs"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b611e114-9166-4346-866a-31b1793a6c33">
+                <semantic:inputEntry id="_d79cd6e8-092c-4ae7-95f1-3ef458fd0297">
+                    <semantic:text>&gt;21</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_35ea556e-7e2d-4a23-9a23-8f409059cf77">
+                    <semantic:text>true</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_933b5207-532d-48ca-a70b-7d409a0b8597">
+                    <semantic:text>"X"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_46602403-a178-400c-993a-3144292bb23f" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_154c630e-fb91-4512-9b2d-6486f689494b" dmnElementRef="_75f9ab0d-e639-4c4b-9676-e1b3f1ba4f08">
+                <dc:Bounds x="134.7588291168213" y="97.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_14c0310e-225b-4177-a6d1-cfc67c5910b1_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="153.99680137634277" y="120.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_acac7c50-448c-4b72-9287-49665467fe73" dmnElementRef="_09821737-fbe5-4869-ac07-e90e7d1de930">
+                <dc:Bounds x="134.7588291168213" y="216.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_14c0310e-225b-4177-a6d1-cfc67c5910b1_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="153.99680137634277" y="239.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_2e38e087-8d5e-4888-9ab5-f219473ecd6a" dmnElementRef="_6922ea95-6671-4c47-bea0-3fd67d5a0923">
+                <dc:Bounds x="343" y="157" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_14c0310e-225b-4177-a6d1-cfc67c5910b1_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="346" y="181"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_9bba9c78-9702-4a79-8aea-b11da398110a" dmnElementRef="_55aecb91-8592-4039-bf3c-7ade2fe2c0da">
+                <di:waypoint x="263.9968013763428" y="147.99999618530273"/>
+                <di:waypoint x="343" y="187"/>
+                <dmndi:DMNLabel sharedStyle="LS_14c0310e-225b-4177-a6d1-cfc67c5910b1_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_25f4883a-9804-42e7-b965-8cbbcfcd4993" dmnElementRef="_779a3ff8-6ca1-4da0-8a5b-8eea47b00c50">
+                <di:waypoint x="268.9968013763428" y="236.99999618530273"/>
+                <di:waypoint x="343" y="187"/>
+                <dmndi:DMNLabel sharedStyle="LS_14c0310e-225b-4177-a6d1-cfc67c5910b1_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_14c0310e-225b-4177-a6d1-cfc67c5910b1_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>

@@ -19,7 +19,9 @@ package org.kie.dmn.validation.dtanalysis.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessage.Severity;
@@ -37,6 +39,7 @@ public class DTAnalysis {
     private final List<Overlap> overlaps = new ArrayList<>();
     private final List<MaskedRule> maskedRules = new ArrayList<>();
     private final List<MisleadingRule> misleadingRules = new ArrayList<>();
+    private final List<Subsumption> subsumptions = new ArrayList<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
@@ -146,6 +149,8 @@ public class DTAnalysis {
         results.addAll(gapsAsMessages());
         results.addAll(overlapsAsMessages());
         warnAboutHitPolicyFirst(results);
+        results.addAll(maskedAndMisleadingRulesAsMessagesIfPriority());
+        results.addAll(subsumptionsAsMessages());
 
         // keep last.
         if (results.isEmpty()) {
@@ -156,6 +161,45 @@ public class DTAnalysis {
                                                     Msg.DTANALYSIS_EMPTY.getType());
             results.add(m);
             return results;
+        }
+        return results;
+    }
+
+    private Collection<? extends DMNMessage> maskedAndMisleadingRulesAsMessagesIfPriority() {
+        if (sourceDT.getHitPolicy() != HitPolicy.PRIORITY) {
+            return Collections.emptyList();
+        }
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (MaskedRule masked : maskedRules) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.ERROR,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE,
+                                                                       masked.maskedRule,
+                                                                       masked.maskedBy),
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
+        }
+        for (MisleadingRule misleading : misleadingRules) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
+                                                                       misleading.misleadingRule,
+                                                                       misleading.misleadRule),
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType()));
+        }
+        return results;
+    }
+
+    private Collection<? extends DMNMessage> subsumptionsAsMessages() {
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (Subsumption s : subsumptions) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_SUBSUMPTION_RULE,
+                                                                       s.rule,
+                                                                       s.includedRule,
+                                                                       s.rule,
+                                                                       s.includedRule),
+                                                 Msg.DTANALYSIS_SUBSUMPTION_RULE.getType()));
         }
         return results;
     }
@@ -184,25 +228,6 @@ public class DTAnalysis {
                                                          MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE,
                                                                                overlap.asHumanFriendly(ddtaTable)),
                                                          Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType()));
-                    break;
-                case PRIORITY:
-                    for (MaskedRule masked : maskedRules) {
-                        results.add(new DMNDTAnalysisMessage(this,
-                                                             Severity.ERROR,
-                                                             MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE,
-                                                                                   masked.maskedRule,
-                                                                                   masked.maskedBy),
-                                                             Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
-                    }
-                    results.add(overlapToStandardDMNMessage(overlap));
-                    for (MisleadingRule misleading : misleadingRules) {
-                        results.add(new DMNDTAnalysisMessage(this,
-                                                             Severity.WARN,
-                                                             MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
-                                                                                   misleading.misleadingRule,
-                                                                                   misleading.misleadRule),
-                                                             Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType()));
-                    }
                     break;
                 case ANY:
                     List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0) - 1).getOutputEntry();
@@ -267,8 +292,7 @@ public class DTAnalysis {
                 if (curOutputClause.isDiscreteDomain()) {
                     int curOutputIdx = curOutputClause.getOutputOrder().indexOf(curValues.get(jOutputIdx));
 
-                    List<Integer> otherRules = new ArrayList<>(overlap.getRules());
-                    otherRules.remove(ruleId);
+                    List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
 
                     for (Integer otherRuleID : otherRules) {
                         List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
@@ -344,8 +368,7 @@ public class DTAnalysis {
                         List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
                         boolean isRuleContainsHypen = inputEntry.stream().flatMap(ie -> ie.getUts().stream()).anyMatch(DashNode.class::isInstance);
                         if (isRuleContainsHypen) {
-                            List<Integer> otherRules = new ArrayList<>(overlap.getRules());
-                            otherRules.remove(ruleId);
+                            List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
                             for (Integer otherRuleID : otherRules) {
                                 List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
                                 int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
@@ -360,7 +383,61 @@ public class DTAnalysis {
         }
     }
 
+    private static <T> List<T> listWithoutElement(List<T> coll, T elem) {
+        List<T> others = new ArrayList<>(coll);
+        others.remove(elem);
+        return others;
+    }
+
     public List<MisleadingRule> getMisleadingRules() {
         return Collections.unmodifiableList(misleadingRules);
+    }
+
+    public void computeSubsumptions() {
+        for (Overlap overlap : overlaps) {
+            analyseOverlapForSubsumptions(overlap);
+        }
+    }
+
+    private void analyseOverlapForSubsumptions(Overlap overlap) {
+        Set<List<Comparable<?>>> outputEntries = new HashSet<>();
+        for (Integer ruleId : overlap.getRules()) {
+            List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+            outputEntries.add(curValues);
+        }
+        for (List<Comparable<?>> curOutputEntry : outputEntries) {
+            List<Integer> rulesWithGivenOutputEntry = new ArrayList<>();
+            for (Integer ruleId : overlap.getRules()) {
+                List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+                if (curValues.equals(curOutputEntry)) {
+                    rulesWithGivenOutputEntry.add(ruleId);
+                }
+            }
+            for (Integer ruleId : rulesWithGivenOutputEntry) {
+                List<DDTAInputEntry> curInputEntries = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
+                List<Integer> otherRules = listWithoutElement(rulesWithGivenOutputEntry, ruleId);
+                for (Integer otherRuleId : otherRules) {
+                    List<DDTAInputEntry> otherInputEntries = ddtaTable.getRule().get(otherRuleId - 1).getInputEntry();
+                    boolean inputEntriesIncludeAll = inputEntriesIncludeAll(curInputEntries, otherInputEntries);
+                    if (inputEntriesIncludeAll) {
+                        subsumptions.add(new Subsumption(ruleId, otherRuleId));
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean inputEntriesIncludeAll(List<DDTAInputEntry> curInputEntries, List<DDTAInputEntry> otherInputEntries) {
+        boolean includeAll = true;
+        for (int i = 0; i < curInputEntries.size(); i++) {
+            DDTAInputEntry curIE = curInputEntries.get(i);
+            DDTAInputEntry otherIE = otherInputEntries.get(i);
+            includeAll &= curIE.includes(otherIE);
+        }
+        return includeAll;
+    }
+
+    public List<Subsumption> getSubsumptions() {
+        return Collections.unmodifiableList(subsumptions);
     }
 }
