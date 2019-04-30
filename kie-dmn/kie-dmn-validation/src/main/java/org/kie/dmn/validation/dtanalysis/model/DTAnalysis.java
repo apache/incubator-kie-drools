@@ -47,7 +47,7 @@ public class DTAnalysis {
     private final List<MisleadingRule> misleadingRules = new ArrayList<>();
     private final List<Subsumption> subsumptions = new ArrayList<>();
     private final List<Contraction> contractions = new ArrayList<>();
-    private final Map<Integer, List<Integer>> cacheNonContractingRules = new HashMap<>();
+    private final Map<Integer, Collection<Integer>> cacheNonContractingRules = new HashMap<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
@@ -462,7 +462,7 @@ public class DTAnalysis {
     }
 
     private boolean areRulesInNonContractionCache(Integer a, Integer b) {
-        return cacheNonContractingRules.getOrDefault(a, Collections.emptyList()).contains(b) || cacheNonContractingRules.getOrDefault(b, Collections.emptyList()).contains(a);
+        return cacheNonContractingRules.getOrDefault(a, Collections.emptySet()).contains(b) || cacheNonContractingRules.getOrDefault(b, Collections.emptySet()).contains(a);
     }
 
     public void computeContractions() {
@@ -507,8 +507,8 @@ public class DTAnalysis {
                     if (allEqualsAllowingOneAdjOverlap) {
                         contractions.add(new Contraction(ruleId, otherRuleId));
                     } else {
-                        cacheNonContractingRules.computeIfAbsent(otherRuleId, x -> new ArrayList<>()).add(ruleId);
-                        cacheNonContractingRules.computeIfAbsent(ruleId, x -> new ArrayList<>()).add(otherRuleId);
+                        cacheNonContractingRules.computeIfAbsent(otherRuleId, x -> new HashSet<>()).add(ruleId);
+                        cacheNonContractingRules.computeIfAbsent(ruleId, x -> new HashSet<>()).add(otherRuleId);
                     }
                 }
             }
