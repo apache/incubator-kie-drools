@@ -113,7 +113,7 @@ public class ApplicationGenerator {
         generators.forEach(gen -> gen.updateConfig(configGenerator));
         generators.forEach(gen -> factoryMethods.addAll(gen.factoryMethods()));
         generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
-        generatedFiles.add(new GeneratedFile(generatedFilePath(), compilationUnit().toString().getBytes()));
+        generatedFiles.add(new GeneratedFile(GeneratedFile.Type.APPLICATION, generatedFilePath(), compilationUnit().toString().getBytes()));
         return generatedFiles;
     }
 
@@ -139,7 +139,7 @@ public class ApplicationGenerator {
             
             Files.write(imageMetaDataFile, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(imageMetadata).getBytes());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            
         }
                
     }

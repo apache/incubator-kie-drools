@@ -15,6 +15,8 @@
 
 package org.kie.submarine.codegen.process;
 
+import static org.kie.submarine.codegen.GeneratedFile.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -248,30 +250,30 @@ public class ProcessCodegen implements Generator {
 
         for (ModelClassGenerator modelClassGenerator : processIdToModelGenerator.values()) {
             ModelMetaData mmd = modelClassGenerator.generate();
-            storeFile(modelClassGenerator.generatedFilePath(),
+            storeFile(Type.MODEL, modelClassGenerator.generatedFilePath(),
                       mmd.generate().getBytes());
         }
         
         for (List<UserTaskModelMetaData> utmd : processIdToUserTaskModel.values()) {
             
             for (UserTaskModelMetaData ut : utmd) {
-                storeFile(UserTasksModelClassGenerator.generatedFilePath(ut.getInputModelClassName()), ut.generateInput().getBytes());
+                storeFile(Type.MODEL, UserTasksModelClassGenerator.generatedFilePath(ut.getInputModelClassName()), ut.generateInput().getBytes());
                 
-                storeFile(UserTasksModelClassGenerator.generatedFilePath(ut.getOutputModelClassName()), ut.generateOutput().getBytes());
+                storeFile(Type.MODEL, UserTasksModelClassGenerator.generatedFilePath(ut.getOutputModelClassName()), ut.generateOutput().getBytes());
             }
         }
 
         for (ResourceGenerator resourceGenerator : rgs) {
-            storeFile(resourceGenerator.generatedFilePath(),
+            storeFile(Type.REST, resourceGenerator.generatedFilePath(),
                       resourceGenerator.generate().getBytes());
         }
 
         for (ProcessGenerator p : ps) {
-            storeFile(p.generatedFilePath(), p.generate().getBytes());
+            storeFile(Type.PROCESS, p.generatedFilePath(), p.generate().getBytes());
         }
 
         for (ProcessInstanceGenerator pi : pis) {
-            storeFile(pi.generatedFilePath(), pi.generate().getBytes());
+            storeFile(Type.PROCESS_INSTANCE, pi.generatedFilePath(), pi.generate().getBytes());
         }
 
         if (workItemHandlerConfigClass != null) {
@@ -303,8 +305,8 @@ public class ProcessCodegen implements Generator {
         }
     }
 
-    private void storeFile(String path, byte[] data) {
-        generatedFiles.add(new GeneratedFile(path, data));
+    private void storeFile(GeneratedFile.Type type, String path, byte[] data) {
+        generatedFiles.add(new GeneratedFile(type, path, data));
     }
 
     public List<GeneratedFile> getGeneratedFiles() {

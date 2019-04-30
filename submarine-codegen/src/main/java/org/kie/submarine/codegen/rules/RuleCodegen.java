@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -32,6 +31,8 @@ import org.kie.api.KieServices;
 import org.kie.submarine.codegen.ConfigGenerator;
 import org.kie.submarine.codegen.GeneratedFile;
 import org.kie.submarine.codegen.Generator;
+
+import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class RuleCodegen implements Generator {
 
@@ -85,7 +86,7 @@ public class RuleCodegen implements Generator {
                 .filter(f -> f.endsWith("java"))
                 .map(mfs::getFile)
                 .map(MemoryFile.class::cast)
-                .map(f -> new GeneratedFile(f.getPath().toPortableString(), mfs.getFileContents(f)))
+                .map(f -> new GeneratedFile(GeneratedFile.Type.RULE, f.getPath().toPortableString(), mfs.getFileContents(f)))
                 .collect(Collectors.toList());
     }
 

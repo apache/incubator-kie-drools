@@ -16,10 +16,22 @@
 package org.kie.submarine.codegen;
 
 public class GeneratedFile {
+    
+    public enum Type {
+        APPLICATION,
+        PROCESS,
+        PROCESS_INSTANCE,
+        REST,
+        RULE,
+        MODEL;
+    }
+    
     private final String relativePath;
     private final byte[] contents;
+    private final Type type;
 
-    public GeneratedFile(String relativePath, byte[] contents) {
+    public GeneratedFile(Type type, String relativePath, byte[] contents) {
+        this.type = type;
         this.relativePath = relativePath;
         this.contents = contents;
     }
@@ -30,5 +42,9 @@ public class GeneratedFile {
 
     public byte[] contents() {
         return contents;
+    }
+    
+    public Type getType() {
+        return type;
     }
 }
