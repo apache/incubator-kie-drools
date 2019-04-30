@@ -462,7 +462,7 @@ public class DTAnalysis {
     }
 
     private boolean areRulesInNonContractionCache(Integer a, Integer b) {
-        return cacheNonContractingRules.getOrDefault(a, Collections.emptyList()).contains(b) && cacheNonContractingRules.getOrDefault(b, Collections.emptyList()).contains(a);
+        return cacheNonContractingRules.getOrDefault(a, Collections.emptyList()).contains(b) || cacheNonContractingRules.getOrDefault(b, Collections.emptyList()).contains(a);
     }
 
     public void computeContractions() {
