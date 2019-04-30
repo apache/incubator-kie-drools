@@ -1,0 +1,12 @@
+package org.drools.decisiontable.project.rules
+
+import org.drools.decisiontable.project.*
+
+rule R1 when
+        $r : Result()
+        $p : Person()
+    then
+        $r.setValue( "Hello " + $p.getName() );
+end
+
+

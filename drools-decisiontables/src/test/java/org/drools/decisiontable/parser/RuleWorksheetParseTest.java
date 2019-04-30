@@ -53,7 +53,7 @@ public class RuleWorksheetParseTest {
 
         final CaseInsensitiveMap props = listener.getProperties();
         assertNotNull( props );
-        assertEquals( "myruleset", props.getSingleProperty( "RuleSet" ) );
+        assertEquals( "data", props.getSingleProperty( "RuleSet" ) );
         assertEquals( "someMisc",  props.getSingleProperty( "misc" ) );
         /*
          * System.out.println("Here are the global properties...");
@@ -69,7 +69,7 @@ public class RuleWorksheetParseTest {
         final CaseInsensitiveMap props = listener.getProperties();
         assertNotNull( props );
         final String ruleSetName = props.getSingleProperty( "RuleSet" );
-        assertEquals( "ruleSetName", ruleSetName );
+        assertEquals( "data", ruleSetName );
     }
 
     @Test
@@ -86,7 +86,7 @@ public class RuleWorksheetParseTest {
 
         // System.out.println(ruleset.toXML());
 
-        assertEquals( "myruleset", ruleset.getName() );
+        assertEquals( "data", ruleset.getName() );
         assertEquals( 3, ruleset.getImports().size() );
         assertEquals( 6, ruleset.getRules().size() );
 

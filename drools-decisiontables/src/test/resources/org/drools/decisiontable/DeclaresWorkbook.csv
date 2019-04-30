@@ -1,4 +1,4 @@
-"RuleSet","DeclaresWorkbook"
+"RuleSet","org.drools.decisiontable"
 "Declare","declare Smurf name : String end"
 
 "RuleTable declares",
