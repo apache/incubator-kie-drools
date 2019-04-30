@@ -1376,9 +1376,8 @@ public class CompilerTest extends BaseModelTest {
 
 
     @Test
-    @Ignore
-    // https://issues.jboss.org/browse/DROOLS-3850
     public void testErrorTwoPatterns() {
+        // DROOLS-3850
         final String drl1 =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "import java.util.Map;\n" +
