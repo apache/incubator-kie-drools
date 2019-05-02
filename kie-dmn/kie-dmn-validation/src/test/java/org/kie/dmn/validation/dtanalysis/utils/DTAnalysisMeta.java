@@ -17,6 +17,7 @@
 package org.kie.dmn.validation.dtanalysis.utils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 
 import com.github.javaparser.JavaParser;
@@ -27,6 +28,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
@@ -110,6 +112,18 @@ public class DTAnalysisMeta {
         } else if (value instanceof Boolean) {
             Boolean b = (Boolean) value;
             valueExpr = new BooleanLiteralExpr(b);
+        } else if (value instanceof LocalDate) {
+            LocalDate localDateTime = (LocalDate) value;
+            MethodCallExpr newExpression = JavaParser.parseExpression("java.time.LocalDate.parse()");
+            StringLiteralExpr stringRep = new StringLiteralExpr(localDateTime.toString());
+            newExpression.addArgument(stringRep);
+            valueExpr = newExpression;
+        } else if (value instanceof ComparablePeriod) {
+            ComparablePeriod comparablePeriod = (ComparablePeriod) value;
+            MethodCallExpr newExpression = JavaParser.parseExpression("org.kie.dmn.feel.lang.types.impl.ComparablePeriod.parse()");
+            StringLiteralExpr stringRep = new StringLiteralExpr(comparablePeriod.asPeriod().toString());
+            newExpression.addArgument(stringRep);
+            valueExpr = newExpression;
         } else {
             throw new UnsupportedOperationException("boundAsExpression value " + value + " not supported.");
         }
