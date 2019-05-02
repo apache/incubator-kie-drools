@@ -16,22 +16,25 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.xml.bind.DatatypeConverter;
+
 import static org.drools.model.impl.NamesGenerator.generateName;
 
 public class DRLIdGenerator {
-    private Map<PatternTypeDRLConstraint, String> generatedExprIds = new HashMap<>();
+
     private Map<PatternTypeDRLConstraint, String> generatedCondIds = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateOOPathId = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateUnificationVariableId = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateAccumulateBindingId = new HashMap<>();
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
-        PatternTypeDRLConstraint key = PatternTypeDRLConstraint.of(patternType, drlConstraint);
-        return generatedExprIds.computeIfAbsent(key, k -> generateNewId());
+        return md5Hash(patternType + drlConstraint);
     }
 
     public String getCondId(Class<?> patternType, String drlConstraint) {
@@ -79,13 +82,6 @@ public class DRLIdGenerator {
         return generateName("accBindingId");
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        generatedExprIds.forEach((k, v) -> sb.append(v+": "+k+"\n"));
-        return sb.toString();
-    }
-
     private static class PatternTypeDRLConstraint {
         public final Class<?> patternType;
         public final String drlConstraint;
@@ -129,6 +125,16 @@ public class DRLIdGenerator {
         public String toString() {
             return "" + ((patternType != null) ? patternType.getName() : "<no patternType>") + "( " + drlConstraint + " )";
         }
-        
+    }
+
+    private static String md5Hash(String s) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(s.getBytes());
+            byte[] digest = md.digest();
+            return DatatypeConverter.printHexBinary(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException( e );
+        }
     }
 }
