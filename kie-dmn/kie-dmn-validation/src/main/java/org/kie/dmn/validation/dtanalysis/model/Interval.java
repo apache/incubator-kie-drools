@@ -134,4 +134,12 @@ public class Interval {
     public boolean includes(Interval o) {
         return this.lowerBound.compareTo((Bound) o.lowerBound) <= 0 && this.upperBound.compareTo((Bound) o.upperBound) >= 0;
     }
+
+    public boolean leftAdjOrOverlap(Interval o) {
+        boolean thisLeftLower = this.lowerBound.compareTo((Bound) o.lowerBound) <= 0;
+        boolean oRightHigher = o.upperBound.compareTo((Bound) this.upperBound) >= 0;
+        boolean chained = BoundValueComparator.compareValueDispatchingToInf(o.lowerBound, this.upperBound) < 0;
+        boolean adj = Bound.adOrOver(o.lowerBound, this.upperBound);
+        return thisLeftLower && oRightHigher && (chained || adj);
+    }
 }

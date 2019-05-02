@@ -19,7 +19,11 @@ package org.kie.dmn.validation.dtanalysis.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessage.Severity;
@@ -30,13 +34,20 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DTAnalysis {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DTAnalysis.class);
 
     private final List<Hyperrectangle> gaps = new ArrayList<>();
     private final List<Overlap> overlaps = new ArrayList<>();
     private final List<MaskedRule> maskedRules = new ArrayList<>();
     private final List<MisleadingRule> misleadingRules = new ArrayList<>();
+    private final List<Subsumption> subsumptions = new ArrayList<>();
+    private final List<Contraction> contractions = new ArrayList<>();
+    private final Map<Integer, Collection<Integer>> cacheNonContractingRules = new HashMap<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
@@ -146,6 +157,9 @@ public class DTAnalysis {
         results.addAll(gapsAsMessages());
         results.addAll(overlapsAsMessages());
         warnAboutHitPolicyFirst(results);
+        results.addAll(maskedAndMisleadingRulesAsMessagesIfPriority());
+        results.addAll(subsumptionsAsMessages());
+        results.addAll(contractionsAsMessages());
 
         // keep last.
         if (results.isEmpty()) {
@@ -156,6 +170,58 @@ public class DTAnalysis {
                                                     Msg.DTANALYSIS_EMPTY.getType());
             results.add(m);
             return results;
+        }
+        return results;
+    }
+
+    private Collection<? extends DMNMessage> maskedAndMisleadingRulesAsMessagesIfPriority() {
+        if (sourceDT.getHitPolicy() != HitPolicy.PRIORITY) {
+            return Collections.emptyList();
+        }
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (MaskedRule masked : maskedRules) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.ERROR,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE,
+                                                                       masked.maskedRule,
+                                                                       masked.maskedBy),
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
+        }
+        for (MisleadingRule misleading : misleadingRules) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
+                                                                       misleading.misleadingRule,
+                                                                       misleading.misleadRule),
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType()));
+        }
+        return results;
+    }
+
+    private Collection<? extends DMNMessage> subsumptionsAsMessages() {
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (Subsumption s : subsumptions) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_SUBSUMPTION_RULE,
+                                                                       s.rule,
+                                                                       s.includedRule,
+                                                                       s.rule,
+                                                                       s.includedRule),
+                                                 Msg.DTANALYSIS_SUBSUMPTION_RULE.getType()));
+        }
+        return results;
+    }
+
+    private Collection<? extends DMNMessage> contractionsAsMessages() {
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (Contraction x : contractions) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_CONTRACTION_RULE,
+                                                                       x.rule,
+                                                                       x.pairedRule),
+                                                 Msg.DTANALYSIS_CONTRACTION_RULE.getType()));
         }
         return results;
     }
@@ -184,25 +250,6 @@ public class DTAnalysis {
                                                          MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE,
                                                                                overlap.asHumanFriendly(ddtaTable)),
                                                          Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType()));
-                    break;
-                case PRIORITY:
-                    for (MaskedRule masked : maskedRules) {
-                        results.add(new DMNDTAnalysisMessage(this,
-                                                             Severity.ERROR,
-                                                             MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE,
-                                                                                   masked.maskedRule,
-                                                                                   masked.maskedBy),
-                                                             Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
-                    }
-                    results.add(overlapToStandardDMNMessage(overlap));
-                    for (MisleadingRule misleading : misleadingRules) {
-                        results.add(new DMNDTAnalysisMessage(this,
-                                                             Severity.WARN,
-                                                             MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
-                                                                                   misleading.misleadingRule,
-                                                                                   misleading.misleadRule),
-                                                             Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType()));
-                    }
                     break;
                 case ANY:
                     List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0) - 1).getOutputEntry();
@@ -267,8 +314,7 @@ public class DTAnalysis {
                 if (curOutputClause.isDiscreteDomain()) {
                     int curOutputIdx = curOutputClause.getOutputOrder().indexOf(curValues.get(jOutputIdx));
 
-                    List<Integer> otherRules = new ArrayList<>(overlap.getRules());
-                    otherRules.remove(ruleId);
+                    List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
 
                     for (Integer otherRuleID : otherRules) {
                         List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
@@ -344,8 +390,7 @@ public class DTAnalysis {
                         List<DDTAInputEntry> inputEntry = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
                         boolean isRuleContainsHypen = inputEntry.stream().flatMap(ie -> ie.getUts().stream()).anyMatch(DashNode.class::isInstance);
                         if (isRuleContainsHypen) {
-                            List<Integer> otherRules = new ArrayList<>(overlap.getRules());
-                            otherRules.remove(ruleId);
+                            List<Integer> otherRules = listWithoutElement(overlap.getRules(), ruleId);
                             for (Integer otherRuleID : otherRules) {
                                 List<Comparable<?>> otherRuleValues = ddtaTable.getRule().get(otherRuleID - 1).getOutputEntry();
                                 int otherOutputIdx = curOutputClause.getOutputOrder().indexOf(otherRuleValues.get(jOutputIdx));
@@ -360,7 +405,117 @@ public class DTAnalysis {
         }
     }
 
+    private static <T> List<T> listWithoutElement(List<T> coll, T elem) {
+        List<T> others = new ArrayList<>(coll);
+        others.remove(elem);
+        return others;
+    }
+
     public List<MisleadingRule> getMisleadingRules() {
         return Collections.unmodifiableList(misleadingRules);
+    }
+
+    public void computeSubsumptions() {
+        for (Overlap overlap : overlaps) {
+            analyseOverlapForSubsumptions(overlap);
+        }
+    }
+
+    private void analyseOverlapForSubsumptions(Overlap overlap) {
+        Set<List<Comparable<?>>> outputEntries = new HashSet<>();
+        for (Integer ruleId : overlap.getRules()) {
+            List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+            outputEntries.add(curValues);
+        }
+        for (List<Comparable<?>> curOutputEntry : outputEntries) {
+            List<Integer> rulesWithGivenOutputEntry = new ArrayList<>();
+            for (Integer ruleId : overlap.getRules()) {
+                List<Comparable<?>> curValues = ddtaTable.getRule().get(ruleId - 1).getOutputEntry();
+                if (curValues.equals(curOutputEntry)) {
+                    rulesWithGivenOutputEntry.add(ruleId);
+                }
+            }
+            for (Integer ruleId : rulesWithGivenOutputEntry) {
+                List<DDTAInputEntry> curInputEntries = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
+                List<Integer> otherRules = listWithoutElement(rulesWithGivenOutputEntry, ruleId);
+                for (Integer otherRuleId : otherRules) {
+                    List<DDTAInputEntry> otherInputEntries = ddtaTable.getRule().get(otherRuleId - 1).getInputEntry();
+                    boolean inputEntriesIncludeAll = DDTARule.inputEntriesIncludeAll(curInputEntries, otherInputEntries);
+                    if (inputEntriesIncludeAll) {
+                        subsumptions.add(new Subsumption(ruleId, otherRuleId));
+                    }
+                }
+            }
+        }
+    }
+
+    public List<Subsumption> getSubsumptions() {
+        return Collections.unmodifiableList(subsumptions);
+    }
+
+    private boolean areRulesSubsumption(Integer a, Integer b) {
+        return subsumptions.stream().filter(s -> (s.rule == a && s.includedRule == b) || (s.rule == b && s.includedRule == a)).findAny().isPresent();
+    }
+
+    private boolean areRulesContraction(Integer a, Integer b) {
+        return contractions.stream().filter(s -> (s.rule == b && s.pairedRule == a) || (s.rule == a && s.pairedRule == b)).findAny().isPresent();
+    }
+
+    private boolean areRulesInNonContractionCache(Integer a, Integer b) {
+        return cacheNonContractingRules.getOrDefault(a, Collections.emptySet()).contains(b) || cacheNonContractingRules.getOrDefault(b, Collections.emptySet()).contains(a);
+    }
+
+    public void computeContractions() {
+        Set<List<Comparable<?>>> outputEntries = new HashSet<>();
+        for (DDTARule rule : ddtaTable.getRule()) {
+            List<Comparable<?>> curValues = rule.getOutputEntry();
+            outputEntries.add(curValues);
+        }
+        for (List<Comparable<?>> curOutputEntry : outputEntries) {
+            List<Integer> rulesWithGivenOutputEntry = new ArrayList<>();
+            for (int i = 0; i < ddtaTable.getRule().size(); i++) {
+                List<Comparable<?>> curValues = ddtaTable.getRule().get(i).getOutputEntry();
+                if (curValues.equals(curOutputEntry)) {
+                    rulesWithGivenOutputEntry.add(i + 1);
+                }
+            }
+            for (Integer ruleId : rulesWithGivenOutputEntry) {
+                List<DDTAInputEntry> curInputEntries = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
+                List<Integer> otherRules = listWithoutElement(rulesWithGivenOutputEntry, ruleId);
+                for (Integer otherRuleId : otherRules) {
+                    if (areRulesSubsumption(ruleId, otherRuleId) || areRulesContraction(ruleId, otherRuleId) || areRulesInNonContractionCache(ruleId, otherRuleId)) {
+                        continue;
+                    }
+                    LOG.debug("computeContractions ruleId {} otherRuleId {}", ruleId, otherRuleId);
+                    List<DDTAInputEntry> otherInputEntries = ddtaTable.getRule().get(otherRuleId - 1).getInputEntry();
+                    boolean detectedAdjacentOrOverlap = false;
+                    boolean allEqualsAllowingOneAdjOverlap = true;
+                    for (int i = 0; i < curInputEntries.size(); i++) {
+                        DDTAInputEntry curIE = curInputEntries.get(i);
+                        DDTAInputEntry otherIE = otherInputEntries.get(i);
+                        boolean intervalsAreEqual = curIE.getIntervals().equals(otherIE.getIntervals());
+                        if (intervalsAreEqual) {
+                            continue;
+                        }
+                        boolean canOverlapThisDimention = !detectedAdjacentOrOverlap && curIE.adjOrOverlap(otherIE);
+                        if (canOverlapThisDimention) {
+                            detectedAdjacentOrOverlap = true;
+                            continue;
+                        }
+                        allEqualsAllowingOneAdjOverlap = false;
+                    }
+                    if (allEqualsAllowingOneAdjOverlap) {
+                        contractions.add(new Contraction(ruleId, otherRuleId));
+                    } else {
+                        cacheNonContractingRules.computeIfAbsent(otherRuleId, x -> new HashSet<>()).add(ruleId);
+                        cacheNonContractingRules.computeIfAbsent(ruleId, x -> new HashSet<>()).add(otherRuleId);
+                    }
+                }
+            }
+        }
+    }
+
+    public List<Contraction> getContractions() {
+        return Collections.unmodifiableList(contractions);
     }
 }

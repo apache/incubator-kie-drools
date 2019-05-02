@@ -16,6 +16,7 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -43,6 +44,34 @@ public class DDTAInputEntry {
 
     public List<Interval> getIntervals() {
         return intervals;
+    }
+
+    public boolean includes(DDTAInputEntry other) {
+        List<Interval> otherIntervals = new ArrayList<>(other.intervals);
+        for (Interval i : intervals) {
+            List<Interval> includedInI = new ArrayList<>();
+            for (Interval o : otherIntervals) {
+                if (i.includes(o)) {
+                    includedInI.add(o);
+                }
+            }
+            otherIntervals.removeAll(includedInI);
+        }
+        return otherIntervals.isEmpty();
+    }
+
+    public boolean adjOrOverlap(DDTAInputEntry other) {
+        List<Interval> otherIntervals = new ArrayList<>(other.intervals);
+        for (Interval i : intervals) {
+            List<Interval> adjOrOverlapWithI = new ArrayList<>();
+            for (Interval o : otherIntervals) {
+                if (i.leftAdjOrOverlap(o) || o.leftAdjOrOverlap(i)) {
+                    adjOrOverlapWithI.add(o);
+                }
+            }
+            otherIntervals.removeAll(adjOrOverlapWithI);
+        }
+        return otherIntervals.isEmpty();
     }
 
 }
