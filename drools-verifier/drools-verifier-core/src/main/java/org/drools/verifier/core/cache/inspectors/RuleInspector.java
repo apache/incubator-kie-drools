@@ -225,6 +225,7 @@ public class RuleInspector
     @Override
     public boolean isRedundant(final Object other) {
         return other instanceof RuleInspector
+                && rule.getActivationTime().overlaps(((RuleInspector) other).rule.getActivationTime())
                 && brlConditionsInspectors.isRedundant(((RuleInspector) other).brlConditionsInspectors)
                 && brlActionInspectors.isRedundant(((RuleInspector) other).brlActionInspectors)
                 && getActionsInspectors().isRedundant(((RuleInspector) other).getActionsInspectors())
@@ -234,6 +235,7 @@ public class RuleInspector
     @Override
     public boolean subsumes(final Object other) {
         return other instanceof RuleInspector
+                && rule.getActivationTime().overlaps(((RuleInspector) other).rule.getActivationTime())
                 && brlActionInspectors.subsumes(((RuleInspector) other).brlActionInspectors)
                 && brlConditionsInspectors.subsumes(((RuleInspector) other).brlConditionsInspectors)
                 && getActionsInspectors().subsumes(((RuleInspector) other).getActionsInspectors())
@@ -242,7 +244,7 @@ public class RuleInspector
 
     @Override
     public boolean conflicts(final Object other) {
-        if (other instanceof RuleInspector) {
+        if (other instanceof RuleInspector && rule.getActivationTime().overlaps(((RuleInspector) other).rule.getActivationTime())) {
             if (getActionsInspectors().conflicts(((RuleInspector) other).getActionsInspectors())) {
                 if (getConditionsInspectors().subsumes(((RuleInspector) other).getConditionsInspectors())
                         && getBrlConditionsInspectors().subsumes(((RuleInspector) other).getBrlConditionsInspectors())) {

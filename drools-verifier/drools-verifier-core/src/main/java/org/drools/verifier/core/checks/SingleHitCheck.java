@@ -42,7 +42,8 @@ public class SingleHitCheck
     @Override
     public boolean check() {
         return hasIssues =
-                ruleInspector.getConditionsInspectors().subsumes(other.getConditionsInspectors())
+                ruleInspector.getRule().getActivationTime().overlaps(other.getRule().getActivationTime())
+                        && ruleInspector.getConditionsInspectors().subsumes(other.getConditionsInspectors())
                         && ruleInspector.getBrlConditionsInspectors().subsumes(other.getBrlConditionsInspectors
                         ());
     }
