@@ -34,7 +34,7 @@ public class AbstractRuleUnitInstance<T> implements RuleUnitInstance<T> {
     }
 
     public void fire() {
-        magicReflectionThingie(rt, workingMemory);
+        bind(rt, workingMemory);
         rt.fireAllRules();
     }
 
@@ -47,7 +47,7 @@ public class AbstractRuleUnitInstance<T> implements RuleUnitInstance<T> {
         return workingMemory;
     }
 
-    private void magicReflectionThingie(KieSession rt, T workingMemory) {
+    protected void bind(KieSession rt, T workingMemory) {
         try {
             for (Field f : workingMemory.getClass().getDeclaredFields()) {
                 f.setAccessible(true);
