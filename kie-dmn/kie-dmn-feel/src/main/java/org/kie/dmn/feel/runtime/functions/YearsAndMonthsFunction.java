@@ -32,7 +32,7 @@ public class YearsAndMonthsFunction
         extends BaseFEELFunction {
 
     public YearsAndMonthsFunction() {
-        super( "years and months duration" );
+        super(FEELConversionFunctionNames.YEARS_AND_MONTHS_DURATION);
     }
 
     public FEELFnResult<TemporalAmount> invoke(@ParameterName("from") Temporal from, @ParameterName("to") Temporal to) {

@@ -10,6 +10,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
@@ -17,7 +18,7 @@ public class DurationFunction extends BaseFEELFunction {
     public static final DurationFunction INSTANCE = new DurationFunction();
 
     DurationFunction() {
-        super( "duration" );
+        super(FEELConversionFunctionNames.DURATION);
     }
 
     public FEELFnResult<TemporalAmount> invoke(@ParameterName( "from" ) String val) {

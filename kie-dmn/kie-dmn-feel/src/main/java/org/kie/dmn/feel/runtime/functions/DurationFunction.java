@@ -30,7 +30,7 @@ public class DurationFunction
         extends BaseFEELFunction {
 
     public DurationFunction() {
-        super( "duration" );
+        super(FEELConversionFunctionNames.DURATION);
     }
 
     public FEELFnResult<TemporalAmount> invoke(@ParameterName( "from" ) String val) {

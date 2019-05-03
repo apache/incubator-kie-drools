@@ -34,6 +34,14 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 
+import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DATE;
+import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DATE_AND_TIME;
+import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DURATION;
+import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.NUMBER;
+import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.STRING;
+import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.TIME;
+import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.YEARS_AND_MONTHS_DURATION;
+
 public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparable<?>> {
 
     private final FEELImpl FEEL;
@@ -131,36 +139,36 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
             }
             List<BaseNode> params = n.getParams().getElements();
             switch (fnName) {
-                case "date":
+                case DATE:
                     if (params.size() == 1 || params.size() == 3) {
                         return areAllSupported(params);
                     }
                     break;
-                case "date and time":
+                case DATE_AND_TIME:
                     if (params.size() == 2 || params.size() == 1) {
                         return areAllSupported(params);
                     }
                     break;
-                case "time":
+                case TIME:
                     if (params.size() == 1 || params.size() == 4) {
                         return areAllSupported(params);
                     }
                     break;
-                case "number":
+                case NUMBER:
                     if (params.size() == 3) {
                         return areAllSupported(params);
                     }
                     break;
-                case "string":
+                case STRING:
                     if (params.size() == 1) {
                         return areAllSupported(params);
                     }
                     break;
-                case "duration":
+                case DURATION:
                     if (params.size() == 1) {
                         return areAllSupported(params);
                     }
-                case "years and months duration":
+                case YEARS_AND_MONTHS_DURATION:
                     if (params.size() == 2) {
                         return areAllSupported(params);
                     }

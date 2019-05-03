@@ -24,7 +24,7 @@ public class StringFunction
         extends BaseFEELFunction {
 
     public StringFunction() {
-        super( "string" );
+        super(FEELConversionFunctionNames.STRING);
     }
 
     public FEELFnResult<String> invoke(@ParameterName("from") Object val) {

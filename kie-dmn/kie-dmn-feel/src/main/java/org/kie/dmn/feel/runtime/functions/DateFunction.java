@@ -16,10 +16,6 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.ChronoField.YEAR;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +26,10 @@ import java.util.regex.Pattern;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
 
 public class DateFunction
         extends BaseFEELFunction {
@@ -46,7 +46,7 @@ public class DateFunction
     }
 
     public DateFunction() {
-        super( "date" );
+        super(FEELConversionFunctionNames.DATE);
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) String val) {
