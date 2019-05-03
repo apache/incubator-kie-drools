@@ -2477,5 +2477,21 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.YEARS), is(2L));
         assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.MONTHS), is(1L));
     }
+
+    @Test
+    public void testDROOLS3962() {
+        // DROOLS-3962 dmn model fails to compile when <di:extension> tag is included in a dmndi:DMNDiagram
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DataTest.dmn", this.getClass());
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/definitions/_d09fac69-d8f7-470c-8743-f760a4b2b8cd", "DataTest");
+
+        final DMNContext myContext = DMNFactory.newContext();
+        myContext.set("Input Complex Type", null);
+        myContext.set("Input Simple Text", "asd");
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, myContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("Decision 1").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("Decision 1").getResult(), is(true));
+    }
 }
 
