@@ -29,6 +29,8 @@ public class Person extends AbstractReactiveObject {
 
     private Map<Integer, Integer> items = new HashMap<>();
 
+    private Person ParentP;
+
     public Person() { }
 
     public Person(String name) {
@@ -141,6 +143,14 @@ public class Person extends AbstractReactiveObject {
         this.addresses = addresses;
     }
 
+    public Person getParentP() {
+        return ParentP;
+    }
+
+    public Person setParentP(Person parentP) {
+        ParentP = parentP;
+        return this;
+    }
 
     @Override
     public boolean equals(Object o) {

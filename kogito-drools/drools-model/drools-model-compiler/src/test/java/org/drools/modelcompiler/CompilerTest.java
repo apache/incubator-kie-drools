@@ -143,6 +143,34 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testCapitalLetterProperty() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person( ParentP!.name == \"Luca\")\n" +
+                "then\n" +
+                "  insert(new Result($p));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        final Person luca = new Person("Luca", 35);
+        final Person leonardo = new Person("Leonardo", 2).setParentP(luca);
+        final Person edoardo = new Person("Edoardo", 31);
+
+        ksession.insert(leonardo);
+        ksession.insert(luca);
+        ksession.insert(edoardo);
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        Assertions.assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(leonardo);
+    }
+
+    @Test
     public void testBeta() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
