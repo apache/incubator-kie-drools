@@ -16,15 +16,12 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.xml.bind.DatatypeConverter;
-
 import static org.drools.model.impl.NamesGenerator.generateName;
+import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class DRLIdGenerator {
 
@@ -124,17 +121,6 @@ public class DRLIdGenerator {
         @Override
         public String toString() {
             return "" + ((patternType != null) ? patternType.getName() : "<no patternType>") + "( " + drlConstraint + " )";
-        }
-    }
-
-    private static String md5Hash(String s) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(s.getBytes());
-            byte[] digest = md.digest();
-            return DatatypeConverter.printHexBinary(digest);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException( e );
         }
     }
 }
