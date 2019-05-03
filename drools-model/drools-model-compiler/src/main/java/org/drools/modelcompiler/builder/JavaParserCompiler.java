@@ -87,7 +87,7 @@ public class JavaParserCompiler {
         MemoryFileSystem trgMfs = new MemoryFileSystem();
 
         String[] resources = writeModel(classes, srcMfs);
-        CompilationResult resultCompilation = getCompiler().compile(resources, srcMfs, trgMfs, classLoader);
+        CompilationResult resultCompilation = createEclipseCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
         if(errors.length != 0) {
             classes.forEach(c -> logger.error(c.toString()));
@@ -109,6 +109,12 @@ public class JavaParserCompiler {
             }
         }
         return result;
+    }
+
+    private static JavaCompiler createEclipseCompiler() {
+        EclipseJavaCompiler javaCompiler = (EclipseJavaCompiler) new JavaCompilerFactory().loadCompiler(JavaDialectConfiguration.CompilerType.ECLIPSE, "1.8");
+        javaCompiler.setPrefix("src/main/java/");
+        return javaCompiler;
     }
 
     private static String[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {
