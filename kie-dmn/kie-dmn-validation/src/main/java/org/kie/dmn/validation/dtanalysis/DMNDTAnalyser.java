@@ -16,7 +16,6 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -39,14 +38,9 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
-import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
-import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
-import org.kie.dmn.feel.lang.ast.SignedUnaryNode.Sign;
-import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
@@ -54,7 +48,6 @@ import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
@@ -81,9 +74,11 @@ public class DMNDTAnalyser {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNDTAnalyser.class);
     private final org.kie.dmn.feel.FEEL FEEL;
+    private final DMNDTAnalyserValueFromNodeVisitor valueFromNodeVisitor;
 
     public DMNDTAnalyser(List<DMNProfile> dmnProfiles) {
         FEEL = org.kie.dmn.feel.FEEL.newInstance((List) dmnProfiles);
+        valueFromNodeVisitor = new DMNDTAnalyserValueFromNodeVisitor((List) dmnProfiles);
     }
 
     public List<DTAnalysis> analyse(DMNModel model) {
@@ -458,7 +453,7 @@ public class DMNDTAnalyser {
         }
     }
 
-    private static List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, List discreteValues, int rule, int col) {
+    private List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
             BitSet hitValues = new BitSet(discreteValues.size());
@@ -525,7 +520,7 @@ public class DMNDTAnalyser {
         }
     }
 
-    private static Interval utnToInterval(UnaryTestNode ut, Interval minMax, List discreteValues, int rule, int col) {
+    private Interval utnToInterval(UnaryTestNode ut, Interval minMax, List discreteValues, int rule, int col) {
         if (ut.getOperator() == UnaryOperator.EQ) {
             if (discreteValues == null || discreteValues.isEmpty()) {
                 return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), valueFromNode(ut.getValue()), RangeBoundary.CLOSED, rule, col);
@@ -561,32 +556,7 @@ public class DMNDTAnalyser {
         }
     }
 
-    private static Comparable<?> valueFromNode(BaseNode node) {
-        if (node instanceof NumberNode) {
-            NumberNode numberNode = (NumberNode) node;
-            return numberNode.getValue(); 
-        } else if (node instanceof BooleanNode) {
-            BooleanNode booleanNode = (BooleanNode) node;
-            return booleanNode.getValue();
-        } else if (node instanceof StringNode) {
-            StringNode stringNode = (StringNode) node;
-            return EvalHelper.unescapeString(stringNode.getText());
-        } else if (node instanceof SignedUnaryNode) {
-            SignedUnaryNode signedUnaryNode = (SignedUnaryNode) node;
-            BaseNode signedExpr = signedUnaryNode.getExpression();
-            if (signedExpr instanceof NumberNode) {
-                BigDecimal valueFromNode = (BigDecimal) valueFromNode(signedExpr);
-                if (signedUnaryNode.getSign() == Sign.NEGATIVE) {
-                    return BigDecimal.valueOf(-1).multiply(valueFromNode);
-                } else {
-                    return valueFromNode;
-                }
-
-            } else {
-                throw new UnsupportedOperationException("valueFromNode: " + node);
-            }
-        } else {
-            throw new UnsupportedOperationException("valueFromNode: " + node);
-        }
+    private Comparable<?> valueFromNode(BaseNode node) {
+        return node.accept(valueFromNodeVisitor);
     }
 }

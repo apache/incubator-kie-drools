@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b" id="_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b" namespace="http://www.trisotech.com/definitions/_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b"          exporter="DMN Modeler" exporterVersion="6.2.1" name="complexDTdates" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decisionService id="_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_40d79732-b9a8-4e9c-beb5-0d50bba1785f" typeRef="Any"/>
+        <semantic:outputDecision href="#_8cdaa5d6-11d0-4153-8533-ddbf6d1c43c8"/>
+        <semantic:inputData href="#_5a8f8929-3052-4856-a90c-cc2c07ff9454"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_e683cb26-2e4b-4882-8a6e-c58ed0f1ec92_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_e66f188b-1b8b-414a-b199-22ec42e1f41d" typeRef="Any"/>
+        <semantic:outputDecision href="#_8cdaa5d6-11d0-4153-8533-ddbf6d1c43c8"/>
+        <semantic:inputData href="#_5a8f8929-3052-4856-a90c-cc2c07ff9454"/>
+    </semantic:decisionService>
+    <semantic:inputData id="_5a8f8929-3052-4856-a90c-cc2c07ff9454" name="my date">
+        <semantic:variable name="my date" id="_dc71cc26-dbf7-46c9-8394-2581fd081740" typeRef="date"/>
+    </semantic:inputData>
+    <semantic:decision id="_8cdaa5d6-11d0-4153-8533-ddbf6d1c43c8" name="my decision">
+        <semantic:variable name="my decision" id="_62bd0fa7-c894-45f8-96a2-128998addce3" typeRef="string"/>
+        <semantic:informationRequirement id="_38dce1ba-f683-4287-830a-e2b4853fa9e4">
+            <semantic:requiredInput href="#_5a8f8929-3052-4856-a90c-cc2c07ff9454"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_a8a4362e-9f2d-4051-9bd6-e7356244f6b7" hitPolicy="UNIQUE" outputLabel="my decision" typeRef="string" triso:expressionId="_e7cc510b-0ded-4add-801a-9489be9508fc">
+            <semantic:input id="_74427df6-1665-42d2-8f7b-47a39a75ac72">
+                <semantic:inputExpression typeRef="date">
+                    <semantic:text>my date</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="simple">
+                    <semantic:text>[date("2019-01-01")..date("2019-12-31")]</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_902bb877-ca57-4088-89a0-3e9c6aef1965"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_a8a338fc-d0e6-40a1-a536-25f4889a74d7">
+                <semantic:inputEntry id="_a78620e9-e2ff-4c97-afd2-3fc9272b3330">
+                    <semantic:text>&lt;date("2019-03-31")</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_30cfb0ab-a0c9-4280-b9f4-1c2e41b30397">
+                    <semantic:text>"2019Q1"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_90e9a365-10f0-44a5-a731-12e78a6d622d">
+                <semantic:inputEntry id="_fc87cc04-5e1a-4f50-ad95-6c4708669d27">
+                    <semantic:text>(date(date and time("2019-03-31T00:00:00Z"))..date(2019, 6, 30)]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_4c6226d7-6c68-4ddf-94d4-de0115a84923">
+                    <semantic:text>"2019Q2"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_1dae1103-ef85-4633-973d-530d612359f3">
+                <semantic:inputEntry id="_f97a21c1-b40b-407c-9b4b-27e789d200d5">
+                    <semantic:text>[date(date and time(date(2019, 6, 30), time("00:01:00Z")))..date(number("2019", " ",","), 9, 30)]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_7fbb338f-2d17-4aef-a506-0d7f25911390">
+                    <semantic:text>"2019Q3"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_b39b7d40-8a49-429e-8ede-8775b8c0a444">
+                <semantic:inputEntry id="_9c5e6593-7aee-4761-baad-fe50137eb547">
+                    <semantic:text>(date(date and time(date(2019, 9, 30), time(date and time("2019-03-31T00:00:00Z")))) .. date(date and time(date(2019, 12, 31), time(0, 0, 0, duration("PT0H")))))</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_d2fb6327-d17e-4451-823d-710002e4f324">
+                    <semantic:text>"2019Q4"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_e683cb26-2e4b-4882-8a6e-c58ed0f1ec92" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_ed050306-6d1e-43e4-91ff-16afb43ae74d" dmnElementRef="_5a8f8929-3052-4856-a90c-cc2c07ff9454">
+                <dc:Bounds x="166.7588291168213" y="140.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="185.99680137634277" y="163.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_280b47c7-7b2f-4f41-9c53-1f67f136febb" dmnElementRef="_8cdaa5d6-11d0-4153-8533-ddbf6d1c43c8">
+                <dc:Bounds x="357.2411708831787" y="141" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="360.2411708831787" y="165"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_fe72cff7-c6da-4045-bc24-7731d813569f" dmnElementRef="_38dce1ba-f683-4287-830a-e2b4853fa9e4">
+                <di:waypoint x="302.9968013763428" y="170.99999618530273"/>
+                <di:waypoint x="357.2411708831787" y="171"/>
+                <dmndi:DMNLabel sharedStyle="LS_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_6635f28b-6bd3-4eda-b8cb-576ef14c5c4b_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
