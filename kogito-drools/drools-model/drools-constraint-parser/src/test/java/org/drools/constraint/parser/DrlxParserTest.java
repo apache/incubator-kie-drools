@@ -257,6 +257,20 @@ public class DrlxParserTest {
     }
 
     @Test
+    public void testMapInitializationEmpty() {
+        String expr = "countItems([])";
+        DrlxExpression drlx = parseExpression( parser, expr );
+        assertEquals(expr, printConstraint(drlx));
+    }
+
+    @Test
+    public void testMapInitializationLiteralAsArgument() {
+        String expr = "countItems([123 : 456, 789 : 1011])";
+        DrlxExpression drlx = parseExpression( parser, expr );
+        assertEquals(expr, printConstraint(drlx));
+    }
+
+    @Test
     public void testParseTemporalLiteral() {
         String expr = "5s";
         TemporalLiteralExpr drlx = DrlxParser.parseTemporalLiteral(expr);

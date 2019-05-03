@@ -27,6 +27,8 @@ import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
 import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.constraint.parser.ast.expr.InlineCastExpr;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
 import org.drools.constraint.parser.ast.expr.OOPathChunk;
@@ -81,4 +83,8 @@ public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
     default void visit(CommaSeparatedMethodCallExpr commaSeparatedMethodCallExpr, A arg) {  }
 
     default void visit(DrlNameExpr drlNameExpr, A arg) { };
+
+    default void visit(MapCreationLiteralExpression n, A arg) { };
+
+    default void visit(MapCreationLiteralExpressionKeyValuePair n, A arg) { };
 }

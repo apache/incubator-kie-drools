@@ -70,6 +70,7 @@ import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.DrlxExpression;
 import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
+import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
 import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.constraint.parser.printer.PrintUtil;
 import org.drools.core.addon.TypeResolver;
@@ -177,6 +178,10 @@ public class DrlxParseUtil {
 
         if (expr instanceof ArrayCreationExpr) {
             return getClassFromContext(typeResolver, ((ArrayCreationExpr) expr).getElementType().asString());
+        }
+
+        if (expr instanceof MapCreationLiteralExpression) {
+            return Map.class;
         }
 
         if (expr instanceof NameExpr) {
