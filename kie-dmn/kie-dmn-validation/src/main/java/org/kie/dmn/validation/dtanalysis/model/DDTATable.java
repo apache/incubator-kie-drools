@@ -17,20 +17,27 @@
 package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DDTATable {
 
     private List<DDTAInputClause> inputs = new ArrayList<>();
     private List<DDTARule> rules = new ArrayList<>();
     private List<DDTAOutputClause> outputs = new ArrayList<>();
+    private Map<List<List<Interval>>, List<Integer>> cacheByInputEntry = new HashMap<>();
+    private Map<List<Comparable<?>>, List<Integer>> cacheByOutputEntry = new HashMap<>();
 
     public List<DDTAInputClause> getInputs() {
         return inputs;
     }
 
     public List<DDTARule> getRule() {
-        return rules;
+        return Collections.unmodifiableList(rules);
     }
 
     public int inputCols() {
@@ -65,6 +72,26 @@ public class DDTATable {
 
     public int outputCols() {
         return outputs.size();
+    }
+
+    public void addRule(DDTARule ddtaRule) {
+        rules.add(ddtaRule);
+        int ruleID = rules.size();
+        List<List<Interval>> ieIntervals = ddtaRule.getInputEntry().stream().map(DDTAInputEntry::getIntervals).collect(Collectors.toList());
+        cacheByInputEntry.computeIfAbsent(ieIntervals, x -> new ArrayList<>()).add(ruleID);
+        cacheByOutputEntry.computeIfAbsent(ddtaRule.getOutputEntry(), x -> new ArrayList<>()).add(ruleID);
+    }
+
+    public Set<List<Comparable<?>>> outputEntries() {
+        return Collections.unmodifiableSet(cacheByOutputEntry.keySet());
+    }
+
+    public List<Integer> ruleIDsByOutputEntry(List<Comparable<?>> oe) {
+        return Collections.unmodifiableList(cacheByOutputEntry.getOrDefault(oe, Collections.emptyList()));
+    }
+
+    public Map<List<List<Interval>>, List<Integer>> getCacheByInputEntry() {
+        return Collections.unmodifiableMap(cacheByInputEntry);
     }
 
 }

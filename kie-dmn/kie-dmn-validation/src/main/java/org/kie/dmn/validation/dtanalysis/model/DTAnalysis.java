@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessage.Severity;
@@ -48,11 +49,12 @@ public class DTAnalysis {
     private final List<Subsumption> subsumptions = new ArrayList<>();
     private final List<Contraction> contractions = new ArrayList<>();
     private final Map<Integer, Collection<Integer>> cacheNonContractingRules = new HashMap<>();
+    private boolean c1stNFViolation = false;
+    private Collection<Collection<Integer>> cOfDuplicateRules = Collections.emptyList();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
     private final Collection passThruMessages = new ArrayList<>();
-
 
     public DTAnalysis(DecisionTable sourceDT, DDTATable ddtaTable) {
         this.sourceDT = sourceDT;
@@ -160,6 +162,7 @@ public class DTAnalysis {
         results.addAll(maskedAndMisleadingRulesAsMessagesIfPriority());
         results.addAll(subsumptionsAsMessages());
         results.addAll(contractionsAsMessages());
+        results.addAll(check1stNFViolationAsMessages());
 
         // keep last.
         if (results.isEmpty()) {
@@ -222,6 +225,33 @@ public class DTAnalysis {
                                                                        x.rule,
                                                                        x.pairedRule),
                                                  Msg.DTANALYSIS_CONTRACTION_RULE.getType()));
+        }
+        return results;
+    }
+
+    private Collection<? extends DMNMessage> check1stNFViolationAsMessages() {
+        if (!c1stNFViolation) {
+            return Collections.emptyList();
+        }
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        if (sourceDT.getHitPolicy() == HitPolicy.FIRST) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_FIRST),
+                                                 Msg.DTANALYSIS_1STNFVIOLATION_FIRST.getType()));
+        }
+        if (sourceDT.getHitPolicy() == HitPolicy.RULE_ORDER) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_RULE_ORDER),
+                                                 Msg.DTANALYSIS_1STNFVIOLATION_RULE_ORDER.getType()));
+        }
+        for (Collection<Integer> duplicateRulesTuple : getDuplicateRulesTuples()) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES,
+                                                                       duplicateRulesTuple),
+                                                 Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType()));
         }
         return results;
     }
@@ -466,19 +496,9 @@ public class DTAnalysis {
     }
 
     public void computeContractions() {
-        Set<List<Comparable<?>>> outputEntries = new HashSet<>();
-        for (DDTARule rule : ddtaTable.getRule()) {
-            List<Comparable<?>> curValues = rule.getOutputEntry();
-            outputEntries.add(curValues);
-        }
+        Set<List<Comparable<?>>> outputEntries = ddtaTable.outputEntries();
         for (List<Comparable<?>> curOutputEntry : outputEntries) {
-            List<Integer> rulesWithGivenOutputEntry = new ArrayList<>();
-            for (int i = 0; i < ddtaTable.getRule().size(); i++) {
-                List<Comparable<?>> curValues = ddtaTable.getRule().get(i).getOutputEntry();
-                if (curValues.equals(curOutputEntry)) {
-                    rulesWithGivenOutputEntry.add(i + 1);
-                }
-            }
+            List<Integer> rulesWithGivenOutputEntry = ddtaTable.ruleIDsByOutputEntry(curOutputEntry);
             for (Integer ruleId : rulesWithGivenOutputEntry) {
                 List<DDTAInputEntry> curInputEntries = ddtaTable.getRule().get(ruleId - 1).getInputEntry();
                 List<Integer> otherRules = listWithoutElement(rulesWithGivenOutputEntry, ruleId);
@@ -518,4 +538,24 @@ public class DTAnalysis {
     public List<Contraction> getContractions() {
         return Collections.unmodifiableList(contractions);
     }
+
+    public void compute1stNFViolations() {
+        if (sourceDT.getHitPolicy() == HitPolicy.FIRST || sourceDT.getHitPolicy() == HitPolicy.RULE_ORDER) {
+            c1stNFViolation = true;
+        }
+        cOfDuplicateRules = ddtaTable.getCacheByInputEntry().values().stream().filter(c -> c.size() > 1).collect(Collectors.toList());
+        if (!cOfDuplicateRules.isEmpty()) {
+            c1stNFViolation = true;
+        }
+        LOG.debug("compute1stNFViolations() c1stNFViolation result: {}", c1stNFViolation);
+    }
+
+    public boolean is1stNFViolation() {
+        return c1stNFViolation;
+    }
+
+    public Collection<Collection<Integer>> getDuplicateRulesTuples() {
+        return cOfDuplicateRules;
+    }
+
 }
