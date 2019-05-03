@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner</artifactId>
-    <version>7.21.0-SNAPSHOT</version>
+    <version>7.22.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-docs</artifactId>
