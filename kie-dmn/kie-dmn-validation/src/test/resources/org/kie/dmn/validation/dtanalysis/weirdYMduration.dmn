@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/definitions/_0c522666-d9a8-4cfa-8f03-8cac1b190e53" id="_0c522666-d9a8-4cfa-8f03-8cac1b190e53" namespace="http://www.trisotech.com/definitions/_0c522666-d9a8-4cfa-8f03-8cac1b190e53"          exporter="DMN Modeler" exporterVersion="6.2.1" name="weirdYMduration" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decisionService id="_0c522666-d9a8-4cfa-8f03-8cac1b190e53_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_e922b15e-7b5f-4ae0-8978-6ecfabaf3265" typeRef="Any"/>
+        <semantic:outputDecision href="#_af459202-07fc-4e7e-9304-1f0a2e38cad9"/>
+        <semantic:inputData href="#_7b9063de-d228-4e3a-bc3f-689845180799"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_b8bb04d4-9b3a-4cb1-a572-932be7ffae2e_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_e143b173-4b9c-4b11-bf62-296f59444fe0" typeRef="Any"/>
+        <semantic:outputDecision href="#_af459202-07fc-4e7e-9304-1f0a2e38cad9"/>
+        <semantic:inputData href="#_7b9063de-d228-4e3a-bc3f-689845180799"/>
+    </semantic:decisionService>
+    <semantic:inputData id="_7b9063de-d228-4e3a-bc3f-689845180799" name="my duration">
+        <semantic:variable name="my duration" id="_36f735ec-2587-4c88-b9cc-83d269e4c953" typeRef="yearMonthDuration"/>
+    </semantic:inputData>
+    <semantic:decision id="_af459202-07fc-4e7e-9304-1f0a2e38cad9" name="my decision">
+        <semantic:variable name="my decision" id="_c021f73a-13b8-4343-87bb-cbb43c17826f" typeRef="string"/>
+        <semantic:informationRequirement id="_b3ae0eec-7bc9-473b-970d-b3d919914a34">
+            <semantic:requiredInput href="#_7b9063de-d228-4e3a-bc3f-689845180799"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_fe7d267b-d770-461e-8300-e09981147341" hitPolicy="UNIQUE" outputLabel="my decision" typeRef="string" triso:expressionId="_b70899ab-65c6-45b0-9a26-0e407310a9ac">
+            <semantic:input id="_7d278440-cb4e-4905-92f6-637902ab2176">
+                <semantic:inputExpression typeRef="yearMonthDuration">
+                    <semantic:text>my duration</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_75552101-79bf-4c85-bf20-64016c867c50"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_06d43882-7789-4c0e-9acb-438e918e7fea">
+                <semantic:inputEntry id="_52974114-2cc0-42c2-9b44-3fda73057248">
+                    <semantic:text> &lt; years and months duration(date and time("2019-01-01T00:00:00Z"), date and time("2019-02-01T00:00:00Z"))</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_f3d137ab-5368-409b-be7c-2255ca981414">
+                    <semantic:text>"less than 1M"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_4c5a22d9-4b2b-409d-a028-8c0b1cce7024">
+                <semantic:inputEntry id="_b7764b56-aa1a-4039-948e-3994db360d08">
+                    <semantic:text>&gt; years and months duration(date ("2019-01-01T00:00:00Z"), date ("2019-02-01T00:00:00Z"))</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_2b75518d-d1a5-4f10-80e9-883618475c32">
+                    <semantic:text>"more than 1M"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text></semantic:text>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_b8bb04d4-9b3a-4cb1-a572-932be7ffae2e" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_d0e4d2b7-5e64-43df-8684-3e9032d5110c" dmnElementRef="_7b9063de-d228-4e3a-bc3f-689845180799">
+                <dc:Bounds x="253.7588291168213" y="149.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_0c522666-d9a8-4cfa-8f03-8cac1b190e53_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="272.9968013763428" y="172.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_85d9b5b8-f02a-4147-afeb-71c7099d9425" dmnElementRef="_af459202-07fc-4e7e-9304-1f0a2e38cad9">
+                <dc:Bounds x="444.2411708831787" y="150" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_0c522666-d9a8-4cfa-8f03-8cac1b190e53_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="447.2411708831787" y="174"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_00871e2b-9af7-4765-82ec-31822210cd1e" dmnElementRef="_b3ae0eec-7bc9-473b-970d-b3d919914a34">
+                <di:waypoint x="389.9968013763428" y="179.99999618530273"/>
+                <di:waypoint x="444.2411708831787" y="180"/>
+                <dmndi:DMNLabel sharedStyle="LS_0c522666-d9a8-4cfa-8f03-8cac1b190e53_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_0c522666-d9a8-4cfa-8f03-8cac1b190e53_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
