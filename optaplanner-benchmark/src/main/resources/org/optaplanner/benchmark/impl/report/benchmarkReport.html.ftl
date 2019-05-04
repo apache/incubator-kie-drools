@@ -548,6 +548,14 @@
                         Variable count: ${problemBenchmarkResult.variableCount!""}<br/>
                         Maximum value count: ${problemBenchmarkResult.maximumValueCount!""}<br/>
                         Problem scale: ${problemBenchmarkResult.problemScale!""}
+                        <#if problemBenchmarkResult.inputSolutionLoadingTimeMillisSpent??>
+                            <br/>Time spent to load the inputSolution:&nbsp;
+                            <#if problemBenchmarkResult.inputSolutionLoadingTimeMillisSpent lt 1>
+                                &lt; 1 ms
+                            <#else>
+                                ${problemBenchmarkResult.inputSolutionLoadingTimeMillisSpent} ms
+                            </#if>
+                        </#if>
                         <#if problemBenchmarkResult.averageUsedMemoryAfterInputSolution??>
                             <br/>Memory usage after loading the inputSolution (before creating the Solver): ${problemBenchmarkResult.averageUsedMemoryAfterInputSolution?string.number} bytes on average.
                         </#if>

@@ -76,6 +76,7 @@ public class ProblemBenchmarkResult<Solution_> {
     private Long variableCount = null;
     private Long maximumValueCount = null;
     private Long problemScale = null;
+    private Long inputSolutionLoadingTimeMillisSpent = null;
 
     @XStreamOmitField // Loaded lazily from singleBenchmarkResults
     private Integer maximumSubSingleCount = null;
@@ -163,6 +164,10 @@ public class ProblemBenchmarkResult<Solution_> {
 
     public Long getProblemScale() {
         return problemScale;
+    }
+
+    public Long getInputSolutionLoadingTimeMillisSpent() {
+        return inputSolutionLoadingTimeMillisSpent;
     }
 
     public Integer getMaximumSubSingleCount() {
@@ -293,7 +298,10 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     public Solution_ readProblem() {
-        return problemProvider.readProblem();
+        long startTimeMillis = System.currentTimeMillis();
+        Solution_ inputSolution = problemProvider.readProblem();
+        inputSolutionLoadingTimeMillisSpent = System.currentTimeMillis() - startTimeMillis;
+        return inputSolution;
     }
 
     public void writeSolution(SubSingleBenchmarkResult subSingleBenchmarkResult, Solution_ solution) {
