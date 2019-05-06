@@ -51,7 +51,7 @@ public class TimeFunction
     }
 
     public TimeFunction() {
-        super( "time" );
+        super(FEELConversionFunctionNames.TIME);
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("from") String val) {

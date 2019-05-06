@@ -1,16 +1,26 @@
 package org.kie.dmn.feel.runtime.functions.extended;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.*;
-
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
+import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
+import org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 public class TimeFunction extends BaseFEELFunction {
     public static final TimeFunction INSTANCE = new TimeFunction();
@@ -31,7 +41,7 @@ public class TimeFunction extends BaseFEELFunction {
     }
 
     TimeFunction() {
-        super("time");
+        super(FEELConversionFunctionNames.TIME);
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("from") String val) {

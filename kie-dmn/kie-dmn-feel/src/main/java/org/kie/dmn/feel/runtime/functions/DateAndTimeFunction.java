@@ -54,7 +54,7 @@ public class DateAndTimeFunction
     }
 
     public DateAndTimeFunction() {
-        super( "date and time" );
+        super(FEELConversionFunctionNames.DATE_AND_TIME);
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) String val) {

@@ -1,9 +1,5 @@
 package org.kie.dmn.feel.runtime.functions.extended;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.*;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +7,15 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
 import java.time.temporal.TemporalAccessor;
 import java.util.regex.Pattern;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
+import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
+import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
+import org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
@@ -32,7 +37,7 @@ public class DateFunction extends BaseFEELFunction {
     }
 
     DateFunction() {
-        super("date");
+        super(FEELConversionFunctionNames.DATE);
     }
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName("from") String val) {
