@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.util.Either;
@@ -35,4 +36,8 @@ public class FEELFnResult<T> extends Either<FEELEvent, T> {
         return new FEELFnResult<>(Optional.empty(), Optional.ofNullable(value));
     }
     
+    public <X> FEELFnResult<X> map(Function<T, X> rightFn) {
+        return isLeft() ? ofError(this.getLeft().get()) : ofResult(rightFn.apply(this.getRight().get()));
+    }
+
 }

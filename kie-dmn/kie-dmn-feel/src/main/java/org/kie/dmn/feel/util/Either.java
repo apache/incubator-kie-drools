@@ -44,6 +44,14 @@ public class Either<L,R> {
         return ! isLeft();
     }
     
+    protected Optional<L> getLeft() {
+        return left;
+    }
+
+    protected Optional<R> getRight() {
+        return right;
+    }
+
     public R getOrElse(R default_value) {
         return cata(e -> default_value, Function.identity());
     }
