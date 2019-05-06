@@ -123,6 +123,8 @@ public class DMNDTAnalyser {
         analysis.computeSubsumptions();
         LOG.debug("computeContractions");
         analysis.computeContractions();
+        LOG.debug("compute1stNFViolations");
+        analysis.compute1stNFViolations();
         return analysis;
     }
 
@@ -173,7 +175,7 @@ public class DMNDTAnalyser {
                 ddtaRule.getOutputEntry().add(value);
                 jColIdx++;
             }
-            ddtaTable.getRule().add(ddtaRule);
+            ddtaTable.addRule(ddtaRule);
         }
     }
 
