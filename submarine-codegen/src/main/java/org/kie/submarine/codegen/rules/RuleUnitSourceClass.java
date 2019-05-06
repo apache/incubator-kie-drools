@@ -15,26 +15,19 @@
 
 package org.kie.submarine.codegen.rules;
 
-import java.lang.reflect.Method;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.kie.api.runtime.KieSession;
 import org.kie.submarine.rules.RuleUnit;
 import org.kie.submarine.rules.impl.AbstractRuleUnit;
-import org.kie.submarine.rules.impl.ListDataSource;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -46,7 +39,6 @@ public class RuleUnitSourceClass {
     private final String generatedFilePath;
     private final String canonicalName;
     private final String targetCanonicalName;
-    private final Class<?> typeClass;
     private String targetTypeName;
     private boolean hasCdi;
 
@@ -58,12 +50,6 @@ public class RuleUnitSourceClass {
         this.targetTypeName = typeName + "RuleUnit";
         this.targetCanonicalName = packageName + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
-
-        try {
-            this.typeClass = Thread.currentThread().getContextClassLoader().loadClass(canonicalName);
-        } catch (ClassNotFoundException e) {
-            throw new Error(e);
-        }
     }
 
     public RuleUnitInstanceSourceClass instance() {
@@ -113,41 +99,6 @@ public class RuleUnitSourceClass {
         return methodDeclaration;
     }
 
-    private MethodDeclaration bindMethod() {
-        MethodDeclaration methodDeclaration = new MethodDeclaration();
-
-        BlockStmt methodBlock = new BlockStmt();
-        methodDeclaration.setName("bind")
-                .addModifier(Modifier.Keyword.PROTECTED)
-                .addParameter(KieSession.class.getCanonicalName(), "rt")
-                .addParameter(typeName, "value")
-                .setType(void.class)
-                .setBody(methodBlock);
-
-        try {
-
-            for (Method m : typeClass.getDeclaredMethods()) {
-                m.setAccessible(true);
-                EnclosedExpr casted = new EnclosedExpr(
-                        //  ((ListDataSource) value.$method())
-                        new CastExpr()
-                                .setType(ListDataSource.class.getCanonicalName())
-                                .setExpression(new MethodCallExpr(new NameExpr("value"), m.getName())));
-
-                // .drainInto(rt::insert)
-                MethodCallExpr drainInto = new MethodCallExpr(casted, "drainInto").addArgument(
-                        new MethodReferenceExpr().setScope(new NameExpr("rt")).setIdentifier("insert"));
-
-                methodBlock.addStatement(drainInto);
-            }
-        } catch (Exception e) {
-            throw new Error(e);
-        }
-
-
-        return methodDeclaration;
-    }
-
     private MethodCallExpr newKieSession() {
         /*
         KieBaseBuilder.createKieBaseFromModel(
@@ -193,7 +144,6 @@ public class RuleUnitSourceClass {
         cls.addExtendedType(abstractRuleUnitType(canonicalName))
                 .addMember(methodDeclaration);
 
-        cls.addMember(bindMethod());
         return cls;
     }
 
