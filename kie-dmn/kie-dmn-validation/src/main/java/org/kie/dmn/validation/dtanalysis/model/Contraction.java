@@ -16,21 +16,29 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Contraction {
 
     public final int rule;
     public final int pairedRule;
+    public final int adjacentDimension;
+    public final List<Interval> dimensionAsContracted;
 
-    public Contraction(int rule, int pairedRule) {
+    public Contraction(int rule, int pairedRule, int adjacentDimension, List<Interval> dimensionAsContracted) {
         super();
         this.rule = rule;
         this.pairedRule = pairedRule;
+        this.adjacentDimension = adjacentDimension;
+        this.dimensionAsContracted = Collections.unmodifiableList(dimensionAsContracted);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + adjacentDimension;
         result = prime * result + pairedRule;
         result = prime * result + rule;
         return result;
@@ -45,6 +53,8 @@ public class Contraction {
         if (getClass() != obj.getClass())
             return false;
         Contraction other = (Contraction) obj;
+        if (adjacentDimension != other.adjacentDimension)
+            return false;
         if (pairedRule != other.pairedRule)
             return false;
         if (rule != other.rule)

@@ -125,6 +125,8 @@ public class DMNDTAnalyser {
         analysis.computeContractions();
         LOG.debug("compute1stNFViolations");
         analysis.compute1stNFViolations();
+        LOG.debug("compute2ndNFViolations");
+        analysis.compute2ndNFViolations();
         return analysis;
     }
 

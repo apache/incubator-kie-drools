@@ -16,9 +16,21 @@
 
 package org.kie.dmn.validation.dtanalysis.model;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Interval {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Interval.class);
 
     public static final Comparable<?> POS_INF = new Comparable<Object>() {
 
@@ -141,5 +153,45 @@ public class Interval {
         boolean chained = BoundValueComparator.compareValueDispatchingToInf(o.lowerBound, this.upperBound) < 0;
         boolean adj = Bound.adOrOver(o.lowerBound, this.upperBound);
         return thisLeftLower && oRightHigher && (chained || adj);
+    }
+
+    public static List<Interval> flatten(List<Interval> intervals) {
+        List<Interval> results = new ArrayList<>();
+        LOG.debug("intervals {}", intervals);
+        List<Bound> bounds = intervals.stream().flatMap(i -> Stream.of(i.getLowerBound(), i.getUpperBound())).collect(Collectors.toList());
+        Collections.sort(bounds);
+        LOG.debug("bounds (sorted) {}", bounds);
+        Deque<Bound> stack = new ArrayDeque<Bound>();
+        Interval candidate = null;
+        for (Bound cur : bounds) {
+            if (stack.isEmpty() && !cur.isLowerBound()) {
+                throw new RuntimeException("Inconsistent sort of bounds.");
+            }
+            if (cur.isLowerBound()) {
+                if (candidate == null) {
+                    stack.push(cur);
+                } else {
+                    if (Bound.adOrOver(candidate.upperBound, cur)) {
+                        stack.push(candidate.lowerBound);
+                        candidate = null;
+                    } else {
+                        results.add(candidate);
+                        stack.push(cur);
+                    }
+                }
+            } else if (cur.isUpperBound()) {
+                Bound pop = stack.pop();
+                if (stack.isEmpty()) {
+                    candidate = Interval.newFromBounds(pop, cur);
+                }
+            } else {
+                throw new RuntimeException("Inconsistent value for bounds.");
+            }
+        }
+        if (candidate != null) {
+            results.add(candidate);
+        }
+        LOG.debug("results {}", results);
+        return results;
     }
 }
