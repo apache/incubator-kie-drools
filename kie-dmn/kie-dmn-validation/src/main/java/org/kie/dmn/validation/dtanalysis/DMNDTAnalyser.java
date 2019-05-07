@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -50,7 +49,6 @@ import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
-import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
@@ -84,25 +82,22 @@ public class DMNDTAnalyser {
     public List<DTAnalysis> analyse(DMNModel model) {
         List<DTAnalysis> results = new ArrayList<>();
 
-        for (DecisionNode dn : model.getDecisions()) {
-            Expression expression = dn.getDecision().getExpression();
-            if (expression instanceof DecisionTable) {
-                DecisionTable decisionTable = (DecisionTable) expression;
-                try {
-                    DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
-                    results.add(result);
-                } catch (Throwable t) {
-                    LOG.debug("Skipped dmnDTAnalysis for table: " + decisionTable.getId(), t);
-                    DTAnalysis result = DTAnalysis.ofError(decisionTable, t);
-                    results.add(result);
-                }
+        List<? extends DecisionTable> decisionTables = model.getDefinitions().findAllChildren(DecisionTable.class);
+        for (DecisionTable dt : decisionTables) {
+            try {
+                DTAnalysis result = dmnDTAnalysis(model, dt);
+                results.add(result);
+            } catch (Throwable t) {
+                LOG.debug("Skipped dmnDTAnalysis for table: " + dt.getId(), t);
+                DTAnalysis result = DTAnalysis.ofError(dt, t);
+                results.add(result);
             }
         }
 
         return results;
     }
 
-    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionNode dn, DecisionTable dt) {
+    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt) {
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);

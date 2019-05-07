@@ -1,0 +1,136 @@
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_37693c3a-d1af-4271-820d-3cd77ca79efc" id="_37693c3a-d1af-4271-820d-3cd77ca79efc" name="DTnestedEverywhere" namespace="http://www.trisotech.com/definitions/_37693c3a-d1af-4271-820d-3cd77ca79efc" exporter="DMN Modeler" exporterVersion="6.2.2" triso:logoChoice="Default">
+    <semantic:decisionService id="_37693c3a-d1af-4271-820d-3cd77ca79efc_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_78b5cea1-2c80-4982-97dc-384a254a449c" typeRef="Any"/>
+        <semantic:outputDecision href="#_da08e862-de22-49f2-8631-356164d98378"/>
+        <semantic:inputData href="#_9ff3fc14-e053-4584-880d-0a6ce14cc4bf"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_313c1979-e3c4-496e-8e3c-e1a4ad6043cb_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_7576b0d8-ef35-4511-a679-af85cb090c40" typeRef="Any"/>
+        <semantic:outputDecision href="#_da08e862-de22-49f2-8631-356164d98378"/>
+        <semantic:inputData href="#_9ff3fc14-e053-4584-880d-0a6ce14cc4bf"/>
+    </semantic:decisionService>
+    <semantic:inputData id="_9ff3fc14-e053-4584-880d-0a6ce14cc4bf" name="my number">
+        <semantic:variable name="my number" id="_4cd9327f-57f8-4552-a3c1-bc3087107859" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_da08e862-de22-49f2-8631-356164d98378" name="my decision">
+        <semantic:variable name="my decision" id="_b5cec2ca-067f-4d0e-9b22-ce4b568892c2" typeRef="Any"/>
+        <semantic:informationRequirement id="_7164522f-f426-4693-9c57-54fc0562de8a">
+            <semantic:requiredInput href="#_9ff3fc14-e053-4584-880d-0a6ce14cc4bf"/>
+        </semantic:informationRequirement>
+        <semantic:knowledgeRequirement id="_03bcd32d-39cd-4e80-852a-b1872abb4052">
+            <semantic:requiredKnowledge href="#_54b4b975-d87f-43c0-89d6-aa768159065e"/>
+        </semantic:knowledgeRequirement>
+        <semantic:context id="_db543faf-894a-4ffa-ae47-67069abdc259" typeRef="Any" triso:expressionId="_41af0baa-8950-433e-b4b7-655bfae22b5c">
+            <semantic:contextEntry id="_2b9aca5d-9115-48e8-8ad4-5eee2d2f8597">
+                <semantic:variable name="invoke the bkm" id="_eae07937-c25b-4808-bed7-b0a637ef3c2b" typeRef="Any"/>
+                <semantic:literalExpression id="_bd14eea4-b349-461d-a34f-f728f982e631">
+                    <semantic:text>my bkm(1)</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_0fa607c6-3934-433e-a856-0a15a8126dd1">
+                <semantic:variable name="subcontext" id="_4b6c9a6f-423a-498f-80a1-9969604db865" typeRef="Any"/>
+                <semantic:context id="_2a700858-5756-438b-bfeb-b91d046d7e1e">
+                    <semantic:contextEntry id="_40db4a1c-b86b-48fd-b483-30fe57af6b27">
+                        <semantic:variable name="my dT" id="_ef506a89-145f-4af7-990d-cbc0ca6d75bd" typeRef="string"/>
+                        <semantic:decisionTable id="_83a8fbd6-ffcb-4068-ab6a-4a19086ce9c7" hitPolicy="UNIQUE" outputLabel="my dT">
+                            <semantic:input id="_5cef133a-3d0a-438b-b03f-f78045fe0aab">
+                                <semantic:inputExpression typeRef="number">
+                                    <semantic:text>my number</semantic:text>
+                                </semantic:inputExpression>
+                            </semantic:input>
+                            <semantic:output id="_551dbd49-872a-490b-882c-719a7c011ef1"/>
+                            <semantic:annotation name="Description"/>
+                            <semantic:rule id="_1081f4de-493e-4760-b8e6-c6bbf579db2b">
+                                <semantic:inputEntry id="_c02eb934-0e80-4129-b535-e5a2e7748e04">
+                                    <semantic:text>&gt;0</semantic:text>
+                                </semantic:inputEntry>
+                                <semantic:outputEntry id="_0f67e22c-265f-4cb1-951c-936fd75eb359">
+                                    <semantic:text>"positive"</semantic:text>
+                                </semantic:outputEntry>
+                                <semantic:annotationEntry>
+                                    <semantic:text/>
+                                </semantic:annotationEntry>
+                            </semantic:rule>
+                        </semantic:decisionTable>
+                    </semantic:contextEntry>
+                </semantic:context>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_30d81e1e-65c3-49a6-8582-660164ebb759">
+                <semantic:literalExpression id="_dfe1c54c-fa0e-4874-aded-6e652df9f2ff">
+                    <semantic:text>"boh"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+    <semantic:businessKnowledgeModel id="_54b4b975-d87f-43c0-89d6-aa768159065e" name="my bkm">
+        <semantic:variable name="my bkm" id="_c3764b6d-7a07-4046-ac28-c4741b8f1b62" typeRef="string"/>
+        <semantic:encapsulatedLogic id="_fcf1ce7e-1317-4d88-b09d-098e0fe5b00f" kind="FEEL" typeRef="string" triso:expressionId="_037d173f-be0d-4083-817d-946e6e6fecd9">
+            <semantic:formalParameter name="p1" typeRef="number" id="_42decb92-a0c7-4ae5-9dfc-db5f7bb26445"/>
+            <semantic:context id="_d557670a-860f-4f14-956e-fde728d81b66">
+                <semantic:contextEntry id="_3481f0c7-901c-4bb6-81d6-d5fb4075a520">
+                    <semantic:variable name="asd" id="_2551adb9-e5e1-401b-9886-529ab1c59c92" typeRef="string"/>
+                    <semantic:decisionTable id="_68839ac9-1d1b-4e12-9c4f-6b9048b860e1" hitPolicy="UNIQUE" outputLabel="asd">
+                        <semantic:input id="_3f0008a2-1983-4a63-86b3-32e65ce313ff">
+                            <semantic:inputExpression typeRef="number">
+                                <semantic:text>p1</semantic:text>
+                            </semantic:inputExpression>
+                        </semantic:input>
+                        <semantic:output id="_728e528e-30ab-4306-a048-9ac8a6e65026"/>
+                        <semantic:annotation name="Description"/>
+                        <semantic:rule id="_b3476dda-a618-45ce-af8a-83fe4dc82cc4">
+                            <semantic:inputEntry id="_b6580ec4-24c6-48c6-ba14-9fc685e87996">
+                                <semantic:text>&lt;0</semantic:text>
+                            </semantic:inputEntry>
+                            <semantic:outputEntry id="_9acf06ba-3167-4394-938a-2290547036eb">
+                                <semantic:text>"negative"</semantic:text>
+                            </semantic:outputEntry>
+                            <semantic:annotationEntry>
+                                <semantic:text/>
+                            </semantic:annotationEntry>
+                        </semantic:rule>
+                    </semantic:decisionTable>
+                </semantic:contextEntry>
+                <semantic:contextEntry id="_0878020e-6771-4759-81f9-3697da1cee50">
+                    <semantic:literalExpression id="_1e130893-2f13-4480-a68b-dbda9d381d44">
+                        <semantic:text>asd</semantic:text>
+                    </semantic:literalExpression>
+                </semantic:contextEntry>
+            </semantic:context>
+        </semantic:encapsulatedLogic>
+    </semantic:businessKnowledgeModel>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_313c1979-e3c4-496e-8e3c-e1a4ad6043cb" triso:modelElementRef="_5ad6a652-1756-4ee1-be23-a12d789e1ef8" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_5bef9813-2f1c-4fb0-894e-82dbbb90eb76" dmnElementRef="_9ff3fc14-e053-4584-880d-0a6ce14cc4bf">
+                <dc:Bounds x="277.7588291168213" y="190.99999618530273" width="135.48234176635742" height="60.00000762939453"/>
+                <dmndi:DMNLabel sharedStyle="LS_37693c3a-d1af-4271-820d-3cd77ca79efc_0" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="296.9968013763428" y="213.99999618530273"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_6db06897-6805-4496-b670-8250680ad0a3" dmnElementRef="_da08e862-de22-49f2-8631-356164d98378">
+                <dc:Bounds x="468.2411708831787" y="191" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_37693c3a-d1af-4271-820d-3cd77ca79efc_0" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="471.2411708831787" y="215"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="_3f108f3a-a4d9-4141-816e-a7da6f61e531" dmnElementRef="_54b4b975-d87f-43c0-89d6-aa768159065e">
+                <dc:Bounds x="468.7411708831787" y="306" width="152" height="59"/>
+                <dmndi:DMNLabel sharedStyle="LS_37693c3a-d1af-4271-820d-3cd77ca79efc_0" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="94" x="496.7411708831787" y="329"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge id="_2cf7fa2c-b897-4aeb-b7de-a3e8ccd0f8e9" dmnElementRef="_7164522f-f426-4693-9c57-54fc0562de8a">
+                <di:waypoint x="413.9968013763428" y="220.99999618530273"/>
+                <di:waypoint x="468.2411708831787" y="221"/>
+                <dmndi:DMNLabel sharedStyle="LS_37693c3a-d1af-4271-820d-3cd77ca79efc_0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge id="_31518ef2-1e45-4e00-9d3d-1e417f61d8ef" dmnElementRef="_03bcd32d-39cd-4e80-852a-b1872abb4052">
+                <di:waypoint x="544.7411708831787" y="306"/>
+                <di:waypoint x="544.7411708831787" y="251"/>
+                <dmndi:DMNLabel sharedStyle="LS_37693c3a-d1af-4271-820d-3cd77ca79efc_0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_37693c3a-d1af-4271-820d-3cd77ca79efc_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
