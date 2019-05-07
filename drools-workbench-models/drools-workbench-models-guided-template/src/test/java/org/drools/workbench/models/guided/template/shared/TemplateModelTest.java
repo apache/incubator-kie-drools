@@ -17,6 +17,7 @@
 package org.drools.workbench.models.guided.template.shared;
 
 import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,5 +49,91 @@ public class TemplateModelTest {
         } catch (IllegalArgumentException iae) {
             assertEquals("Invalid numbers of columns: 0 expected: 1", iae.getMessage());
         }
+    }
+
+    @Test
+    public void sameFieldSameVariable() throws Exception {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+        m.lhs = new IPattern[1];
+        FactPattern factPattern = new FactPattern();
+        m.lhs[0] = factPattern;
+        factPattern.addConstraint(makeConstraint("Applicant", "age", "Integer", "$default", "=="));
+        factPattern.addConstraint(makeConstraint("Applicant", "age", "Integer", "$default", "=="));
+
+        assertEquals(1, m.getInterpolationVariablesList().length);
+        assertEquals("Integer", m.getInterpolationVariablesList()[0].getDataType());
+    }
+
+    @Test
+    public void sameVariableFroTwoDifferentTypes() throws Exception {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+        m.lhs = new IPattern[1];
+        FactPattern factPattern = new FactPattern();
+        m.lhs[0] = factPattern;
+        factPattern.addConstraint(makeConstraint("Applicant", "age", "Integer", "$default", "=="));
+        factPattern.addConstraint(makeConstraint("Applicant", "name", "String", "$default", "=="));
+
+        assertEquals(1, m.getInterpolationVariablesList().length);
+        assertEquals(TemplateModel.DEFAULT_TYPE, m.getInterpolationVariablesList()[0].getDataType());
+    }
+
+    @Test
+    public void sameVariableFroTwoDifferentOperatorsSameType() throws Exception {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+        m.lhs = new IPattern[1];
+        FactPattern factPattern = new FactPattern();
+        m.lhs[0] = factPattern;
+        factPattern.addConstraint(makeConstraint("Applicant", "age", "Integer", "$default", "=="));
+        factPattern.addConstraint(makeConstraint("Applicant", "name", "Integer", "$default", "!="));
+
+        assertEquals(1, m.getInterpolationVariablesList().length);
+        assertEquals(TemplateModel.DEFAULT_TYPE, m.getInterpolationVariablesList()[0].getDataType());
+    }
+
+    @Test
+    public void sameVariableFroTwoDifferentOperatorsDifferentType() throws Exception {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+        m.lhs = new IPattern[1];
+        FactPattern factPattern = new FactPattern();
+        m.lhs[0] = factPattern;
+        factPattern.addConstraint(makeConstraint("Applicant", "age", "Integer", "$default", "=="));
+        factPattern.addConstraint(makeConstraint("Applicant", "name", "String", "$default", "!="));
+
+        assertEquals(1, m.getInterpolationVariablesList().length);
+        assertEquals(TemplateModel.DEFAULT_TYPE, m.getInterpolationVariablesList()[0].getDataType());
+    }
+
+    @Test
+    public void separateVariableNames() throws Exception {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+        m.lhs = new IPattern[1];
+        FactPattern factPattern = new FactPattern();
+        m.lhs[0] = factPattern;
+        factPattern.addConstraint(makeConstraint("Applicant", "age", "Integer", "$default", "=="));
+        factPattern.addConstraint(makeConstraint("Applicant", "name", "String", "$other", "=="));
+
+        assertEquals(2, m.getInterpolationVariablesList().length);
+        assertEquals("Integer", m.getInterpolationVariablesList()[0].getDataType());
+        assertEquals("String", m.getInterpolationVariablesList()[1].getDataType());
+    }
+
+    private SingleFieldConstraint makeConstraint(final String factType,
+                                                 final String fieldName,
+                                                 final String fieldType,
+                                                 final String variableName,
+                                                 final String operator) {
+        SingleFieldConstraint constraint = new SingleFieldConstraint(factType,
+                                                                     fieldName,
+                                                                     fieldType,
+                                                                     null);
+        constraint.setOperator(operator);
+        constraint.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        constraint.setValue(variableName);
+        return constraint;
     }
 }
