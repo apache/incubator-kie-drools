@@ -58,7 +58,7 @@ public class ChangesetUndoTest {
         return "" +
                 "<change-set xmlns='http://drools.org/drools-5.0/change-set'\n" +
                 "            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'\n" +
-                "            xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >\n" +
+                "            xs:schemaLocation='http://drools.org/drools-5.0/change-set https://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >\n" +
                 "            \n" +
                 "    <add >\n" +
                 (excludeCorrectOne ? "" : "      <resource source='file:" + folder.getRoot().getAbsolutePath() + "/file1.drl' type='DRL' />\n ") +
