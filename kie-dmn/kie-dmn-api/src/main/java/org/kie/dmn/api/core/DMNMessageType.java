@@ -49,7 +49,8 @@ public enum DMNMessageType {
     DECISION_TABLE_MISLEADING_RULE("DMN Validation, Decision Table Analysis, Misleading Rule Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
     DECISION_TABLE_SUBSUMPTION_RULE("DMN Validation, Decision Table Analysis, Subsumption Rule Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
     DECISION_TABLE_CONTRACTION_RULE("DMN Validation, Decision Table Analysis, Contraction Rule Analysis", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
-    DECISION_TABLE_1STNFVIOLATION("DMN Validation, Decision Table Analysis, First Normal Form Violation", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR);
+    DECISION_TABLE_1STNFVIOLATION("DMN Validation, Decision Table Analysis, First Normal Form Violation", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR),
+    DECISION_TABLE_2NDNFVIOLATION("DMN Validation, Decision Table Analysis, Second Normal Form Violation", Tag.DECISION_TABLE_ANALYSIS, Tag.DMN_VALIDATOR);
 
     private final Tag[]  tags;
     private final String description;

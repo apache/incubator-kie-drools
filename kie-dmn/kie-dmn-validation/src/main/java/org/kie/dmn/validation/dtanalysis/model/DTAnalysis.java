@@ -51,10 +51,13 @@ public class DTAnalysis {
     private final Map<Integer, Collection<Integer>> cacheNonContractingRules = new HashMap<>();
     private boolean c1stNFViolation = false;
     private Collection<Collection<Integer>> cOfDuplicateRules = Collections.emptyList();
+    private Collection<Contraction> contractionsViolating2ndNF = new ArrayList<>();
     private final DecisionTable sourceDT;
     private final Throwable error;
     private final DDTATable ddtaTable;
     private final Collection passThruMessages = new ArrayList<>();
+
+
 
     public DTAnalysis(DecisionTable sourceDT, DDTATable ddtaTable) {
         this.sourceDT = sourceDT;
@@ -163,6 +166,7 @@ public class DTAnalysis {
         results.addAll(subsumptionsAsMessages());
         results.addAll(contractionsAsMessages());
         results.addAll(check1stNFViolationAsMessages());
+        results.addAll(check2ndNFViolationAsMessages());
 
         // keep last.
         if (results.isEmpty()) {
@@ -223,14 +227,15 @@ public class DTAnalysis {
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_CONTRACTION_RULE,
                                                                        x.rule,
-                                                                       x.pairedRule),
+                                                                       x.pairedRule,
+                                                                       x.adjacentDimension),
                                                  Msg.DTANALYSIS_CONTRACTION_RULE.getType()));
         }
         return results;
     }
 
     private Collection<? extends DMNMessage> check1stNFViolationAsMessages() {
-        if (!c1stNFViolation) {
+        if (!is1stNFViolation()) {
             return Collections.emptyList();
         }
         List<DMNDTAnalysisMessage> results = new ArrayList<>();
@@ -252,6 +257,23 @@ public class DTAnalysis {
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES,
                                                                        duplicateRulesTuple),
                                                  Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType()));
+        }
+        return results;
+    }
+
+    private Collection<? extends DMNMessage> check2ndNFViolationAsMessages() {
+        if (!is2ndNFViolation()) {
+            return Collections.emptyList();
+        }
+        List<DMNDTAnalysisMessage> results = new ArrayList<>();
+        for (Contraction c : getContractionsViolating2ndNF()) {
+            results.add(new DMNDTAnalysisMessage(this,
+                                                 Severity.WARN,
+                                                 MsgUtil.createMessage(Msg.DTANALYSIS_2NDNFVIOLATION,
+                                                                       c.adjacentDimension,
+                                                                       c.rule,
+                                                                       c.pairedRule),
+                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType()));
         }
         return results;
     }
@@ -508,7 +530,7 @@ public class DTAnalysis {
                     }
                     LOG.debug("computeContractions ruleId {} otherRuleId {}", ruleId, otherRuleId);
                     List<DDTAInputEntry> otherInputEntries = ddtaTable.getRule().get(otherRuleId - 1).getInputEntry();
-                    boolean detectedAdjacentOrOverlap = false;
+                    int detectedAdjacentOrOverlap = 0;
                     boolean allEqualsAllowingOneAdjOverlap = true;
                     for (int i = 0; i < curInputEntries.size(); i++) {
                         DDTAInputEntry curIE = curInputEntries.get(i);
@@ -517,15 +539,19 @@ public class DTAnalysis {
                         if (intervalsAreEqual) {
                             continue;
                         }
-                        boolean canOverlapThisDimention = !detectedAdjacentOrOverlap && curIE.adjOrOverlap(otherIE);
+                        boolean canOverlapThisDimention = detectedAdjacentOrOverlap == 0 && curIE.adjOrOverlap(otherIE);
                         if (canOverlapThisDimention) {
-                            detectedAdjacentOrOverlap = true;
+                            detectedAdjacentOrOverlap = i + 1;
                             continue;
                         }
                         allEqualsAllowingOneAdjOverlap = false;
                     }
                     if (allEqualsAllowingOneAdjOverlap) {
-                        contractions.add(new Contraction(ruleId, otherRuleId));
+                        List<Interval> allIntervals = new ArrayList<>();
+                        allIntervals.addAll(curInputEntries.get(detectedAdjacentOrOverlap - 1).getIntervals());
+                        allIntervals.addAll(otherInputEntries.get(detectedAdjacentOrOverlap - 1).getIntervals());
+                        List<Interval> flatten = Interval.flatten(allIntervals);
+                        contractions.add(new Contraction(ruleId, otherRuleId, detectedAdjacentOrOverlap, flatten));
                     } else {
                         cacheNonContractingRules.computeIfAbsent(otherRuleId, x -> new HashSet<>()).add(ruleId);
                         cacheNonContractingRules.computeIfAbsent(ruleId, x -> new HashSet<>()).add(otherRuleId);
@@ -555,7 +581,33 @@ public class DTAnalysis {
     }
 
     public Collection<Collection<Integer>> getDuplicateRulesTuples() {
-        return cOfDuplicateRules;
+        return Collections.unmodifiableCollection(cOfDuplicateRules);
+    }
+
+    public void compute2ndNFViolations() {
+        if (is1stNFViolation()) {
+            LOG.debug("Violated already at 1st NF.");
+            return;
+        }
+        for (Contraction c : contractions) {
+            if (c.dimensionAsContracted.size() == 1) {
+                Interval domainMinMax = ddtaTable.getInputs().get(c.adjacentDimension - 1).getDomainMinMax();
+                if (domainMinMax.equals(c.dimensionAsContracted.get(0))) {
+                    LOG.debug("compute2ndNFViolations() Contraction: {} violates 2NF", c);
+                    contractionsViolating2ndNF.add(c);
+                }
+            }
+        }
+
+        LOG.debug("compute2ndNFViolations() c2ndNFViolation result: {}", is2ndNFViolation());
+    }
+
+    public boolean is2ndNFViolation() {
+        return !contractionsViolating2ndNF.isEmpty();
+    }
+
+    public Collection<Contraction> getContractionsViolating2ndNF() {
+        return Collections.unmodifiableCollection(contractionsViolating2ndNF);
     }
 
 }

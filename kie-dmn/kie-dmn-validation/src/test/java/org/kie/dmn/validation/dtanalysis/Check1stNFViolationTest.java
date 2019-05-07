@@ -55,4 +55,16 @@ public class Check1stNFViolationTest extends AbstractDTAnalysisTest {
         assertTrue("It should contain at DMNMessage for the 1st NF Violation",
                    validate.stream().anyMatch(p -> p.getSourceId().equals("_03522945-b520-4b45-ac5e-ef3cbd7f1eaf") && p.getMessageType().equals(DMNMessageType.DECISION_TABLE_1STNFVIOLATION)));
     }
+
+    @Test
+    public void testCheck1stNFViolationB() {
+        List<DMNMessage> validate = validator.validate(getReader("DT1stNFViolationB.dmn"), ANALYZE_DECISION_TABLE);
+
+        DTAnalysis analysisDuplicate = getAnalysis(validate, "_053034d5-0e1f-4c4a-8513-ab3c6ba538db");
+        assertThat(analysisDuplicate.is1stNFViolation(), is(true));
+        assertThat(analysisDuplicate.getDuplicateRulesTuples(), hasSize(1));
+        assertThat(analysisDuplicate.getDuplicateRulesTuples(), contains(Collections.singletonList(Arrays.asList(1, 2)).toArray()));
+        assertTrue("It should contain at DMNMessage for the 1st NF Violation",
+                   validate.stream().anyMatch(p -> p.getSourceId().equals("_053034d5-0e1f-4c4a-8513-ab3c6ba538db") && p.getMessageType().equals(DMNMessageType.DECISION_TABLE_1STNFVIOLATION)));
+    }
 }

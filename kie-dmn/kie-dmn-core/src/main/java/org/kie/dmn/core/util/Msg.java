@@ -128,10 +128,11 @@ public final class Msg {
     public static final Message2 DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE           = new Message2( DMNMessageType.DECISION_TABLE_MASKED_RULE, "Rule %s is masked by rule: %s");
     public static final Message2 DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE       = new Message2( DMNMessageType.DECISION_TABLE_MISLEADING_RULE, "Rule %s is a misleading rule. It could be misleading over other rules, such as rule: %s");
     public static final Message4 DTANALYSIS_SUBSUMPTION_RULE                         = new Message4( DMNMessageType.DECISION_TABLE_SUBSUMPTION_RULE, "Subsumption: Rule %s contains rule: %s; rules can be contracted, by keeping rule %s and erasing rule %s");
-    public static final Message2 DTANALYSIS_CONTRACTION_RULE                         = new Message2( DMNMessageType.DECISION_TABLE_CONTRACTION_RULE, "Contraction: Rule %s and rule %s can be combined for contraction");
+    public static final Message3 DTANALYSIS_CONTRACTION_RULE                         = new Message3( DMNMessageType.DECISION_TABLE_CONTRACTION_RULE, "Contraction: Rule %s and rule %s can be combined for contraction by joining on input %s");
     public static final Message0 DTANALYSIS_1STNFVIOLATION_FIRST                     = new Message0( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: hit policy First is a violation of First Normal Form; consider changing for example to Priority");
     public static final Message0 DTANALYSIS_1STNFVIOLATION_RULE_ORDER                = new Message0( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: hit policy Rule Order is a violation of First Normal Form; consider changing for example to Output Order or Collect");
     public static final Message1 DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES           = new Message1( DMNMessageType.DECISION_TABLE_1STNFVIOLATION, "First Normal Form Violation: Rules %s are duplicates");
+    public static final Message3 DTANALYSIS_2NDNFVIOLATION                           = new Message3( DMNMessageType.DECISION_TABLE_2NDNFVIOLATION, "Second Normal Form Violation: Input %s is irrelevant for rules %s, %s. Consider combining these rules over the irrelevant input");
 
     public static interface Message {
         String getMask();

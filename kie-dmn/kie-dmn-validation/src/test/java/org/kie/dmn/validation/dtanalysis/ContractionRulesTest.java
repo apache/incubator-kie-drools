@@ -16,6 +16,7 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +24,10 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Contraction;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
+import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
@@ -42,7 +45,14 @@ public class ContractionRulesTest extends AbstractDTAnalysisTest {
 
         // Contraction count.
         assertThat(analysis.getContractions(), hasSize(2));
-        List<Contraction> results = Arrays.asList(new Contraction(4, 5), new Contraction(3, 6));
+        List<Contraction> results = Arrays.asList(new Contraction(4,
+                                                                  5,
+                                                                  2,
+                                                                  Arrays.asList(new Interval(RangeBoundary.CLOSED, new BigDecimal("0.35"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))),
+                                                  new Contraction(3, 
+                                                                  6, 
+                                                                  1,
+                                                                  Arrays.asList(new Interval(RangeBoundary.CLOSED, new BigDecimal("600"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))));
         assertThat(results, hasSize(2));
         assertThat(analysis.getContractions(), contains(results.toArray()));
         assertThat("It should contain 2 DMNMessage for the Contraction",
