@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
@@ -31,6 +32,7 @@ public class TemplateModel
         extends RuleModel {
 
     public static final String ID_COLUMN_NAME = "__ID_KOL_NAME__";
+    public static final String DEFAULT_TYPE = "DEFAULT_TYPE";
     private Map<String, List<String>> table = new HashMap<String, List<String>>();
 
     //Pre-6.0 this was a long, however private long fields cannot be set using JSNI (as used by Errai-marshalling).
@@ -42,7 +44,6 @@ public class TemplateModel
 
     /**
      * Append a row of data
-     *
      * @param rowId
      * @param row
      * @return
@@ -79,7 +80,6 @@ public class TemplateModel
 
     /**
      * Add a row of data at the specified index
-     *
      * @param index
      * @param row
      * @return
@@ -135,13 +135,39 @@ public class TemplateModel
 
     private Map<InterpolationVariable, Integer> getInterpolationVariables() {
         Map<InterpolationVariable, Integer> result = new HashMap<InterpolationVariable, Integer>();
-        new RuleModelVisitor(result).visit(this);
+        Map<InterpolationVariable, Integer> variables = new HashMap<InterpolationVariable, Integer>();
+        new RuleModelVisitor(variables).visit(this);
+
+        int index = 0;
+
+        for (Map.Entry<InterpolationVariable, Integer> entry : variables.entrySet()) {
+            final InterpolationVariable newVar = entry.getKey();
+            final Optional<InterpolationVariable> oldColumnData = findByVariable(result, newVar);
+            if (oldColumnData.isPresent()) {
+                oldColumnData.get().setDataType(DEFAULT_TYPE);
+            } else {
+                result.put(new InterpolationVariable(newVar.getVarName(),
+                                                     newVar.getDataType()),
+                           index++);
+            }
+        }
 
         InterpolationVariable id = new InterpolationVariable(ID_COLUMN_NAME,
                                                              DataType.TYPE_NUMERIC_LONG);
         result.put(id,
                    result.size());
         return result;
+    }
+
+    private Optional<InterpolationVariable> findByVariable(final Map<InterpolationVariable, Integer> result,
+                                                           final InterpolationVariable newVar) {
+        for (final InterpolationVariable columnData : result.keySet()) {
+            if (columnData.getVarName().equals(newVar.getVarName())) {
+                return Optional.of(columnData);
+            }
+        }
+
+        return Optional.empty();
     }
 
     public InterpolationVariable[] getInterpolationVariablesList() {

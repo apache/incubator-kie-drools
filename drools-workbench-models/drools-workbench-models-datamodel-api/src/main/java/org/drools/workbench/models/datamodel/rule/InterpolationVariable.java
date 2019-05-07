@@ -82,6 +82,10 @@ public class InterpolationVariable {
         return dataType;
     }
 
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
     public String getFactField() {
         return factField;
     }
