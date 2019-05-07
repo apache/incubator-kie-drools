@@ -37,7 +37,7 @@ import org.kie.api.io.Resource;
  * <pre>
  * &lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
  *             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
- *             xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
+ *             xs:schemaLocation='http://drools.org/drools-5.0/change-set https://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' &gt;
  *  &lt;add&gt;
  *       &lt;resource source='http:org/domain/myrules.drl' type='DRL' /&gt;
  *       &lt;resource source='classpath:data/IntegrationExampleTest.xls' type="DTABLE"&gt;
