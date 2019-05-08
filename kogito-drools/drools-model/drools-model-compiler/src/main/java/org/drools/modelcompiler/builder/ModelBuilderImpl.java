@@ -35,6 +35,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.kie.api.builder.ReleaseId;
 
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
@@ -46,10 +47,12 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
     private final DRLIdGenerator exprIdGenerator = new DRLIdGenerator();
 
     private final Map<String, PackageModel> packageModels = new HashMap<>();
-    private boolean isPattern = false;
+    private final ReleaseId releaseId;
+    private final boolean isPattern;
 
-    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration, boolean isPattern) {
+    public ModelBuilderImpl(KnowledgeBuilderConfigurationImpl configuration, ReleaseId releaseId, boolean isPattern) {
         super(configuration);
+        this.releaseId = releaseId;
         this.isPattern = isPattern;
     }
 
@@ -126,7 +129,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
+            return new PackageModel(releaseId.toString(), pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         model.addImports(pkg.getTypeResolver().getImports());
         generatePOJO(this, pkg, packageDescr, model);
@@ -139,7 +142,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
+            return new PackageModel(releaseId.toString(), pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         generateModel(this, pkg, packageDescr, model, isPattern);
     }

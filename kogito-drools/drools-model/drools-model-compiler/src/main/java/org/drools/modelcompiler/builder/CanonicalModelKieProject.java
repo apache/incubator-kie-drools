@@ -17,6 +17,8 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -39,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
+
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.createFromClassLoader;
@@ -71,7 +74,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
     @Override
     protected KnowledgeBuilder createKnowledgeBuilder(KieBaseModelImpl kBaseModel, InternalKieModule kModule) {
-        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(getBuilderConfiguration(kBaseModel, kModule), isPattern);
+        ModelBuilderImpl modelBuilder = new ModelBuilderImpl(getBuilderConfiguration(kBaseModel, kModule), kModule.getReleaseId(), isPattern);
         modelBuilders.add(modelBuilder);
         return modelBuilder;
     }
@@ -80,8 +83,8 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         ModelWriter modelWriter = new ModelWriter();
-        List<String> modelFiles = new ArrayList<>();
-        List<String> sourceFiles = new ArrayList<>();
+        Collection<String> modelFiles = new HashSet<>();
+        Collection<String> sourceFiles = new HashSet<>();
 
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
             final ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
@@ -131,7 +134,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         writeModelFile(modelFiles, trgMfs);
     }
 
-    protected void writeModelFile(List<String> modelSources, MemoryFileSystem trgMfs) {
+    protected void writeModelFile(Collection<String> modelSources, MemoryFileSystem trgMfs) {
         String pkgNames = MODEL_VERSION + Drools.getFullVersion() + "\n";
         if (!modelSources.isEmpty()) {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));

@@ -15,10 +15,13 @@
 
 package org.kie.submarine.codegen.rules;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.compiler.io.memory.MemoryFile;
@@ -41,16 +44,34 @@ public class RuleCodegen implements Generator {
 
     public static RuleCodegen ofPath(Path path) throws IOException {
         KieServices ks = KieServices.Factory.get();
-        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(path.toFile()));
+        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(path.toFile()), Collections.emptyList());
     }
 
+    public static RuleCodegen ofFiles(Path basePath, Collection<File> files) throws IOException {
+        KieServices ks = KieServices.Factory.get();
+        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(basePath.toFile()), files);
+    }
+
+
     private final KieBuilderImpl kieBuilder;
+    /**
+     * will compile iff returns true for the given file
+     */
+    private final Predicate<String> fileFilter;
 
     private boolean dependencyInjection;
 
     public RuleCodegen(
-            KieBuilderImpl kieBuilder) {
+            KieBuilderImpl kieBuilder, Collection<File> files) {
         this.kieBuilder = kieBuilder;
+        if (files.isEmpty()) {
+            this.fileFilter = f -> true;
+        } else {
+            this.fileFilter = fname ->
+                    files.stream()
+                            .map(f -> f.getPath())
+                            .anyMatch(f -> f.contains(fname));
+        }
     }
 
     public void setPackageName(String packageName) {
@@ -75,7 +96,12 @@ public class RuleCodegen implements Generator {
                         new RuleCodegenProject(km, cl)
                                 .withModuleGenerator(moduleGenerator)
                                 .withCdi(dependencyInjection),
-                s -> !s.contains("src/test/java") && !s.endsWith("bpmn") && !s.endsWith("bpmn2"));
+                s -> {
+                    return !s.contains("src/test/java")
+                            && !s.endsWith("bpmn")
+                            && !s.endsWith("bpmn2");
+                }
+        );
 
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
 

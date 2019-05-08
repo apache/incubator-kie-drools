@@ -1,6 +1,6 @@
 package org.drools.modelcompiler.builder;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.ReleaseIdImpl;
@@ -12,14 +12,14 @@ import static java.util.stream.Collectors.joining;
 
 public class ModelSourceClass {
 
-    private final List<String> modelSources;
+    private final Collection<String> modelSources;
     private final KieModuleModelMethod modelMethod;
     private final ReleaseId releaseId;
 
     public ModelSourceClass(
             ReleaseId releaseId,
             KieModuleModelMethod modelMethod,
-            List<String> modelSources) {
+            Collection<String> modelSources) {
         this.releaseId = releaseId;
         this.modelSources = modelSources;
         this.modelMethod = modelMethod;
