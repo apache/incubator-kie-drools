@@ -91,18 +91,22 @@ public class SimulationDescriptor {
         return factMappings;
     }
 
+    @Deprecated
     public String getFileName() {
         return fileName;
     }
 
+    @Deprecated
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    @Deprecated
     public String getKieSession() {
         return kieSession;
     }
 
+    @Deprecated
     public void setKieSession(String kieSession) {
         this.kieSession = kieSession;
     }

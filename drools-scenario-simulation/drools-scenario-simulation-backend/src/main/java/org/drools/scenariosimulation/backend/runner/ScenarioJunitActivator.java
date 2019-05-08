@@ -63,7 +63,10 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
             } catch (FileNotFoundException e) {
                 throw new ScenarioException("File not found, this should not happen: " + elem, e);
             }
-        }).collect(Collectors.toList());
+        })
+                // FIXME to test
+                .filter(simulationWithFileName -> !simulationWithFileName.getSimulation().getSimulationDescriptor().isSkipFromBuild())
+                .collect(Collectors.toList());
     }
 
     @Override
