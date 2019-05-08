@@ -15,7 +15,7 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.*;
 
-interface AbstractCompilerTest {
+interface CompilerTest {
 
     default void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
                       String actualExpression,

@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
 
-public class MvelCompilerTest implements AbstractCompilerTest {
+public class MvelCompilerTest implements CompilerTest {
 
     @Test
     public void testConvertPropertyToAccessor() {
