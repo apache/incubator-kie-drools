@@ -40,7 +40,6 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -309,7 +308,7 @@ public class RuleScenarioRunnerHelperTest {
         } catch (ScenarioException ignored) {
 
         }
-        Assert.assertEquals(factMappingValue.getStatus(), FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertEquals(factMappingValue.getStatus(), FactMappingValueStatus.FAILED_WITH_EXCEPTION);
     }
 
     @Test
