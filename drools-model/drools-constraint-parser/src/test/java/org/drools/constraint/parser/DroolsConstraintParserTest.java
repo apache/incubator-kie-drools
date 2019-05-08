@@ -542,6 +542,12 @@ public class DroolsConstraintParserTest {
                              "}", printConstraint(expression));
     }
 
+    @Test(expected = ParseProblemException.class)
+    public void testModifyFailing() {
+        String expr = "{ modify  { name = \"Luca\", age = \"35\" }; }";
+        DrlConstraintParser.parseBlock(expr);
+    }
+
     @Test
     public void testModifyStatementSemicolon() {
         String expr = "{ modify ( $p )  { name = \"Luca\"; }; }";
