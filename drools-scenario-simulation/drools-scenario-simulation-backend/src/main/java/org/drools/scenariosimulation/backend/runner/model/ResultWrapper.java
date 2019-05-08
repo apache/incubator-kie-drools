@@ -27,18 +27,26 @@ public class ResultWrapper<T> {
     private final boolean satisfied;
 
     private final T result;
+    private final T expected;
 
     private ResultWrapper(T result, boolean satisfied) {
         this.satisfied = satisfied;
         this.result = result;
+        this.expected = null;
+    }
+
+    private ResultWrapper(T result, T expected) {
+        this.satisfied = false;
+        this.result = result;
+        this.expected = expected;
     }
 
     public static <T> ResultWrapper<T> createResult(T result) {
         return new ResultWrapper<>(result, true);
     }
 
-    public static <T> ResultWrapper<T> createErrorResult() {
-        return new ResultWrapper<>(null, false);
+    public static <T> ResultWrapper<T> createErrorResult(T result, T expected) {
+        return new ResultWrapper<>(result, expected);
     }
 
     public boolean isSatisfied() {
@@ -47,6 +55,10 @@ public class ResultWrapper<T> {
 
     public T getResult() {
         return result;
+    }
+
+    public T getExpected() {
+        return expected;
     }
 
     public T orElse(T defaultValue) {
