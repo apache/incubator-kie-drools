@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class ModifyCompilerTest implements AbstractCompilerTest {
+public class ModifyCompilerTest implements CompilerTest {
 
     @Test
     public void testUncompiledMethod() {
