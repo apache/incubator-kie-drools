@@ -92,7 +92,7 @@ public class DroolsConstraintParserTest {
         Expression or = parseExpression(parser, "(\naddresses == 2 || addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
 
-        Expression and = parseExpression(parser, "(\naddresses == 2 &&addresses == 3  )").getExpr();
+        Expression and = parseExpression(parser, "(\naddresses == 2 && addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
@@ -102,7 +102,7 @@ public class DroolsConstraintParserTest {
         Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 \n)").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
 
-        Expression and = parseExpression(parser, "(addresses == 2 &&addresses == 3  \n)").getExpr();
+        Expression and = parseExpression(parser, "(addresses == 2 && addresses == 3  \n)").getExpr();
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
