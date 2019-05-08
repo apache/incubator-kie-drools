@@ -119,9 +119,9 @@ public class DroolsConstraintParserTest {
 
     @Test
     public void testParseSafeCastExpr() {
-        String expr = "this instanceof Person && ((Person)this).name == \"Mark\"";
-        Expression exssion = parseExpression( parser, expr ).getExpr();
-
+        String expr = "this instanceof Person && ((Person) this).name == \"Mark\"";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertEquals(expr, printConstraint(expression));
     }
 
     @Test
