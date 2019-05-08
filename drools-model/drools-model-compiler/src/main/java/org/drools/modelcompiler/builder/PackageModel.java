@@ -476,7 +476,7 @@ public class PackageModel {
                 .map(MethodDeclaration::toString).collect(Collectors.toList());
 
 
-        int maxLength = rulemethods.stream().mapToInt(String::length ).max().orElse(1 );
+        int maxLength = rulemethods.stream().mapToInt(String::length).max().orElse(1);
         int rulesPerClass = Math.max( 50000 / maxLength, 1 );
 
         // each method per Drlx parser result
