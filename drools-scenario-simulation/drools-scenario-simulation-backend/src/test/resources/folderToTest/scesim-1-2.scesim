@@ -1,0 +1,35 @@
+<ScenarioSimulationModel version="1.2">
+  <simulation>
+    <simulationDescriptor>
+      <factMappings>
+        <FactMapping>
+          <expressionElements />
+          <expressionIdentifier>
+            <name>1541680933813</name>
+            <type>EXPECT</type>
+          </expressionIdentifier>
+          <factIdentifier>
+            <name>1541680933813</name>
+            <className>mortgages.mortgages.LoanApplication</className>
+          </factIdentifier>
+          <className>java.lang.Integer</className>
+          <factAlias>LoanApplication1</factAlias>
+          <expressionAlias>lengthYears</expressionAlias>
+        </FactMapping>
+      </factMappings>
+      <dmoSession></dmoSession>
+      <type>RULE</type>
+    </simulationDescriptor>
+    <scenarios>
+      <Scenario>
+        <factMappingValues>
+          <FactMappingValue/>
+        </factMappingValues>
+        <simulationDescriptor reference="../../../simulationDescriptor"/>
+      </Scenario>
+    </scenarios>
+  </simulation>
+  <imports>
+    <imports/>
+  </imports>
+</ScenarioSimulationModel>
