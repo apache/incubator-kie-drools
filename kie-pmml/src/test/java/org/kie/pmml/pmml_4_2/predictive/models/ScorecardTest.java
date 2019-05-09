@@ -16,26 +16,24 @@
 
 package org.kie.pmml.pmml_4_2.predictive.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.command.RequestContextImpl;
+import org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.InternalRuleUnitExecutor;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.pmml.PMML4Data;
+import org.kie.api.pmml.PMML4Result;
+import org.kie.api.pmml.PMMLRequestData;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.io.ResourceFactory;
@@ -43,13 +41,11 @@ import org.kie.internal.utils.KieHelper;
 import org.kie.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
-import org.kie.api.pmml.PMML4Result;
-import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.pmml.PMML4Data;
-import org.kie.pmml.pmml_4_2.model.PMML4UnitImpl;
-import org.kie.pmml.pmml_4_2.PMMLExecutor;
-import org.kie.pmml.pmml_4_2.PMMLKieBaseUtil;
 import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 
@@ -197,8 +193,48 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         assertEquals( "LX00", iter.next() );
         assertEquals( "RES", iter.next() );
         assertEquals( "CX2", iter.next() );
+    }
 
+    @Test
+    public void testScorecardWithCommand() throws Exception {
+        KieContainer kContainer = new KieHelper().addResource( ResourceFactory.newClassPathResource(source1) ).getKieContainer();
+        KieBase kieBase = kContainer.getKieBase();
 
+        PMMLRequestData request = new PMMLRequestDataBuilder("123", "Sample Score")
+                .addParameter("age", 33.0, Double.class)
+                .addParameter("occupation", "SKYDIVER", String.class)
+                .addParameter("residenceState", "KN", String.class)
+                .addParameter("validLicense", true, Boolean.class)
+                .build();
+
+        ApplyPmmlModelCommand command = new ApplyPmmlModelCommand( request );
+        command.setPackageName( "org.drools.scorecards.example" );
+
+        RequestContextImpl context = new RequestContextImpl();
+        context.register( KieBase.class, kieBase );
+
+        PMML4Result resultHolder = command.execute( context );
+
+        assertEquals(3, resultHolder.getResultVariables().size());
+        Object scorecard = resultHolder.getResultValue("ScoreCard", null);
+        assertNotNull(scorecard);
+
+        Double score = resultHolder.getResultValue("ScoreCard", "score", Double.class).orElse(null);
+        assertEquals(41.345,score,0.000);
+        Object ranking = resultHolder.getResultValue("ScoreCard", "ranking");
+        assertNotNull(ranking);
+        assertTrue(ranking instanceof LinkedHashMap);
+        LinkedHashMap map = (LinkedHashMap)ranking;
+        assertTrue( map.containsKey( "LX00") );
+        assertTrue( map.containsKey( "RES") );
+        assertTrue( map.containsKey( "CX2" ) );
+        assertEquals( -1.0, map.get( "LX00" ) );
+        assertEquals( -10.0, map.get( "RES" ) );
+        assertEquals( -30.0, map.get( "CX2" ) );
+        Iterator iter = map.keySet().iterator();
+        assertEquals( "LX00", iter.next() );
+        assertEquals( "RES", iter.next() );
+        assertEquals( "CX2", iter.next() );
     }
 
     @Test
