@@ -16,9 +16,9 @@
 
 package org.drools.scenariosimulation.api.model;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FactMappingValueTest {
@@ -38,9 +38,9 @@ public class FactMappingValueTest {
     public void resetStatus() {
         FactMappingValue value = new FactMappingValue();
         value.resetStatus();
-        Assert.assertTrue(FactMappingValueStatus.SUCCESS == value.getStatus());
-        Assert.assertTrue(null == value.getExceptionMessage());
-        Assert.assertTrue(null == value.getErrorValue());
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
+        assertThat(value.getExceptionMessage()).isNull();
+        assertThat(value.getErrorValue()).isNull();
     }
 
     @Test
@@ -48,9 +48,9 @@ public class FactMappingValueTest {
         String errorValue = "value";
         FactMappingValue value = new FactMappingValue();
         value.setErrorValue(errorValue);
-        Assert.assertTrue(FactMappingValueStatus.FAILED_WITH_ERROR == value.getStatus());
-        Assert.assertTrue(null == value.getExceptionMessage());
-        Assert.assertTrue(errorValue.equals(value.getErrorValue()));
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
+        assertThat(value.getExceptionMessage()).isNull();
+        assertThat(value.getErrorValue()).isEqualTo(errorValue);
     }
 
     @Test
@@ -58,8 +58,8 @@ public class FactMappingValueTest {
         String exceptionValue = "Exception";
         FactMappingValue value = new FactMappingValue();
         value.setExceptionMessage(exceptionValue);
-        Assert.assertTrue(FactMappingValueStatus.FAILED_WITH_EXCEPTION == value.getStatus());
-        Assert.assertTrue(exceptionValue == value.getExceptionMessage());
-        Assert.assertTrue(null == value.getErrorValue());
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertThat(value.getExceptionMessage()).isEqualTo(exceptionValue);
+        assertThat(value.getErrorValue()).isNull();
     }
 }
