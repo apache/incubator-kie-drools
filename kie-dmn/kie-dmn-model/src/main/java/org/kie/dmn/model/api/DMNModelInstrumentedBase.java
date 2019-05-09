@@ -44,6 +44,8 @@ public interface DMNModelInstrumentedBase {
 
     void addChildren(DMNModelInstrumentedBase child);
 
+    <T extends DMNModelInstrumentedBase> List<? extends T> findAllChildren(Class<T> clazz);
+
     String getIdentifierString();
 
     String getURIFEEL();

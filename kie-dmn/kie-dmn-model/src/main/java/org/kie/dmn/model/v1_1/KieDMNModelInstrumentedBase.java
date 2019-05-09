@@ -19,6 +19,7 @@ package org.kie.dmn.model.v1_1;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -149,4 +150,16 @@ public abstract class KieDMNModelInstrumentedBase implements DMNModelInstrumente
         return URI_FEEL;
     }
 
+    @Override
+    public <T extends DMNModelInstrumentedBase> List<? extends T> findAllChildren(Class<T> clazz) {
+        if (clazz.isInstance(this)) {
+            T obj = (T) this;
+            return Collections.singletonList(obj);
+        }
+        List<T> results = new ArrayList<>();
+        for (DMNModelInstrumentedBase c : getChildren()) {
+            results.addAll(c.findAllChildren(clazz));
+        }
+        return results;
+    }
 }
