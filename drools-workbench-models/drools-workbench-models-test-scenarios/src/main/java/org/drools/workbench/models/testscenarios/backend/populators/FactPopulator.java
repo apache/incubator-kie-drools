@@ -34,6 +34,10 @@ public class FactPopulator {
 
     private final KieSession ksession;
 
+    public FactPopulator( Map<String, Object> populatedData ) {
+        this(null, populatedData);
+    }
+
     public FactPopulator( KieSession ksession,
                           Map<String, Object> populatedData ) {
         this.ksession = ksession;

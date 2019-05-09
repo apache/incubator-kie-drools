@@ -131,7 +131,7 @@ public class ScenarioRunner {
         return false;
     }
 
-    private Set<String> getImports(final Scenario scenario) {
+    static Set<String> getImports(final Scenario scenario) {
         final Set<String> imports = new HashSet<String>();
         imports.addAll(scenario.getImports().getImportStrings());
         if (scenario.getPackageName() != null && !scenario.getPackageName().isEmpty()) {

@@ -25,7 +25,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-class NewFactPopulator extends FactPopulatorBase {
+public class NewFactPopulator extends FactPopulatorBase {
 
     private final Object factObject;
 
