@@ -108,7 +108,7 @@
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
-        <version>4.5.3</version>
+        <version>${version.org.antlr4}</version>
         <executions>
           <execution>
             <goals>
