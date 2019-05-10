@@ -37,10 +37,12 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.Scope;
+import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
+import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
@@ -137,8 +139,13 @@ public class ParserHelper {
                     this.currentScope.define(new VariableSymbol( f.getKey(), f.getValue() ));
                 }
                 LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
-            } else if ( resolved != null && resolved.getType() instanceof BuiltInType ) {
-                BuiltInType resolvedBIType = (BuiltInType) resolved.getType();
+            } else if (resolved != null && resolved.getType() instanceof SimpleType) {
+                BuiltInType resolvedBIType = null;
+                if (resolved.getType() instanceof BuiltInType) {
+                    resolvedBIType = (BuiltInType) resolved.getType();
+                } else if (resolved.getType() instanceof AliasFEELType) {
+                    resolvedBIType = ((AliasFEELType) resolved.getType()).getBuiltInType();
+                }
                 pushName(name);
                 pushScope(resolvedBIType);
                 switch (resolvedBIType) {
