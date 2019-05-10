@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.model.Model;
 import org.drools.model.Rule;
 import org.drools.model.impl.ModelImpl;
@@ -72,7 +73,7 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
         List<FEELEvent> events = new ArrayList<>();
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult );
 
-        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kieBase );
+        RuleUnitExecutor executor = new RuleUnitExecutorSession( kieBase );
         EvaluationContext evalCtx = createEvaluationContext( events, eventManager, dmnResult );
         evalCtx.enterFrame();
 
