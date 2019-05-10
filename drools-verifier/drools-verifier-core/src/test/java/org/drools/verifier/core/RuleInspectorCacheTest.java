@@ -19,16 +19,15 @@ package org.drools.verifier.core;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.drools.verifier.core.cache.RuleInspectorCache;
 import org.drools.verifier.core.cache.inspectors.RuleInspector;
-import org.drools.verifier.core.AnalyzerConfigurationMock;
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.IndexImpl;
 import org.drools.verifier.core.index.model.Rule;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;

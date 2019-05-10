@@ -15,6 +15,10 @@
  */
 package org.drools.verifier.core.index.model;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.IndexKey;
 import org.drools.verifier.core.index.keys.Key;
@@ -36,10 +40,10 @@ public class Rule
     private final Patterns patterns = new Patterns();
     private final Actions actions = new Actions();
     private final Conditions conditions = new Conditions();
-
     private final UUIDKey uuidKey;
-
+    private final Map<String, RuleAttribute> ruleAttributes = new HashMap<String, RuleAttribute>();
     private UpdatableKey<Rule> indexKey;
+    private ActivationTime activationTime = null;
 
     public Rule(final Integer rowNumber,
                 final AnalyzerConfiguration configuration) {
@@ -63,6 +67,15 @@ public class Rule
         };
     }
 
+    public void addRuleAttribute(final RuleAttribute ruleAttribute) {
+        ruleAttributes.put(ruleAttribute.getName(), ruleAttribute);
+        setActivationTime();
+    }
+
+    public Map<String, RuleAttribute> getRuleAttributes() {
+        return ruleAttributes;
+    }
+
     public Integer getRowNumber() {
         return getIndex();
     }
@@ -77,6 +90,28 @@ public class Rule
 
     public Actions getActions() {
         return actions;
+    }
+
+    public ActivationTime getActivationTime() {
+        if (activationTime == null) {
+            setActivationTime();
+        }
+        return activationTime;
+    }
+
+    private void setActivationTime() {
+        Date start = null;
+        Date end = null;
+
+        if (ruleAttributes.containsKey(DateEffectiveRuleAttribute.NAME)) {
+            start = ((DateEffectiveRuleAttribute) ruleAttributes.get(DateEffectiveRuleAttribute.NAME)).getValue();
+        }
+        if (ruleAttributes.containsKey(DateExpiresRuleAttribute.NAME)) {
+            end = ((DateExpiresRuleAttribute) ruleAttributes.get(DateExpiresRuleAttribute.NAME)).getValue();
+        }
+
+        activationTime = new ActivationTime(start,
+                                            end);
     }
 
     @Override
