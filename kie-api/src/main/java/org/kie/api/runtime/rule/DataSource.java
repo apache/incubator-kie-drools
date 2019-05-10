@@ -63,13 +63,39 @@ public interface DataSource<T> extends Iterable<T> {
      */
     static <T> DataSource<T> create(T... items) {
         try {
-            DataSource<T> dataSource = (DataSource<T>) Class.forName( "org.drools.core.datasources.CursoredDataSource" ).newInstance();
+            DataSource<T> dataSource = DataSourceFactory.newInstance();
             for (T item : items) {
                 dataSource.insert( item );
             }
             return dataSource;
         } catch (Exception e) {
             throw new RuntimeException("Unable to instance KieServices", e);
+        }
+    }
+
+    class DataSourceFactory {
+
+        private static class LazyHolder {
+            private static Class<?> DATA_SOURCE_DEFAULT_CLASS;
+
+            static {
+                try {
+                    DATA_SOURCE_DEFAULT_CLASS = Class.forName( "org.drools.core.datasources.CursoredDataSource" );
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException( e );
+                }
+            }
+        }
+
+        /**
+         * Returns a reference to the KieServices singleton
+         */
+        public static <T> DataSource<T> newInstance() {
+            try {
+                return (DataSource<T>) LazyHolder.DATA_SOURCE_DEFAULT_CLASS.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException( e );
+            }
         }
     }
 }
