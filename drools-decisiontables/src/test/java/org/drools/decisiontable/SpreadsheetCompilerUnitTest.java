@@ -85,6 +85,36 @@ public class SpreadsheetCompilerUnitTest {
     }
 
     @Test
+    public void testMultilineActions() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream("MultiLinesInAction.xls");
+        final String drl = converter.compile(stream,
+                                             InputType.XLS);
+
+        Assertions.assertThat(drl).doesNotContain("\\n");
+    }
+
+    @Test
+    public void testMultilineActionsAndMultiLineInConstant() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream("MultiLinesInActionAndMultiLineInConstant.xls");
+        final String drl = converter.compile(stream,
+                                             InputType.XLS);
+
+        Assertions.assertThat(drl).contains(" **\n** ");
+    }
+
+    @Test
+    public void testMultilineActionsAndMultiLineAsConstant() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream("MultiLinesInActionAndMultiLineAsConstant.xls");
+        final String drl = converter.compile(stream,
+                                             InputType.XLS);
+
+        Assertions.assertThat(drl).contains(" **\\n** ");
+    }
+
+    @Test
     public void testMultilineCommentsInDescription() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream("/data/Multiline comment example.xls");
