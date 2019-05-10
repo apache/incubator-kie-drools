@@ -64,6 +64,8 @@ public abstract class BaseInterpretedVsCompiledTestCanonicalKieModule {
     }
 
     private Resource getDroolsModelResource(KieServices ks) {
-        return ks.getResources().newClassPathResource("/org/kie/dmn/core/drools-model", this.getClass()).setTargetPath(CanonicalKieModule.MODEL_FILE);
+        return ks.getResources()
+                .newClassPathResource("/org/kie/dmn/core/drools-model", this.getClass())
+                .setTargetPath(CanonicalKieModule.MODEL_FILE_DIRECTORY + CanonicalKieModule.MODEL_FILE_NAME);
     }
 }

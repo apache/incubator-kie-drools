@@ -10,10 +10,12 @@ import org.drools.core.util.Drools;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
+import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
+import org.kie.api.builder.ReleaseId;
 
-import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
+import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
 public class ModelWriter {
@@ -69,12 +71,12 @@ public class ModelWriter {
         return new Result(sourceFiles, modelFiles);
     }
 
-    public void writeModelFile( List<String> modelSources, MemoryFileSystem trgMfs) {
+    public void writeModelFile(List<String> modelSources, MemoryFileSystem trgMfs, ReleaseId releaseId) {
         String pkgNames = MODEL_VERSION + Drools.getFullVersion() + "\n";
         if(!modelSources.isEmpty()) {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
         }
-        trgMfs.write( MODEL_FILE, pkgNames.getBytes() );
+        trgMfs.write(getModelFileWithGAV(releaseId), pkgNames.getBytes() );
     }
 
     public static class Result {
