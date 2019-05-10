@@ -19,6 +19,7 @@ package org.kie.dmn.core.compiler.execmodelbased;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
@@ -48,11 +49,12 @@ public class DecisionTableEvaluator {
     }
 
     private Object[] initInputs(DMNFEELHelper feel) {
+        Map<String, Object> allValues = evalCtx.getAllValues();
         for (int i = 0; i < inputs.length; i++) {
             Object result = dTableModel.getColumns().get(i).evaluate( evalCtx );
             inputs[i] = new FeelValue(result);
 
-            columnEvalCtxs[i] = feel.newEvaluationContext( Collections.singletonList( events::add ), evalCtx.getAllValues());
+            columnEvalCtxs[i] = feel.newEvaluationContext( Collections.singletonList( events::add ), allValues);
             columnEvalCtxs[i].enterFrame();
             columnEvalCtxs[i].setValue( "?", result );
         }

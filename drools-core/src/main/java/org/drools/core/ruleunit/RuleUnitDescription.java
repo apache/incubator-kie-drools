@@ -39,7 +39,6 @@ import static org.drools.core.util.ClassUtils.getter2property;
 public class RuleUnitDescription {
     private final Class<? extends RuleUnit> ruleUnitClass;
 
-    private final Map<String, String> datasources = new HashMap<>();
     private final Map<String, Class<?>> datasourceTypes = new HashMap<>();
 
     private final Map<String, Method> varAccessors = new HashMap<>();
@@ -62,7 +61,7 @@ public class RuleUnitDescription {
     }
 
     public Optional<EntryPointId> getEntryPointId( String name ) {
-        return Optional.ofNullable( datasources.get( name ) ).map( ds -> new EntryPointId( getEntryPointName(name) ) );
+        return varAccessors.containsKey( name ) ? Optional.of( new EntryPointId( getEntryPointName(name) ) ) : Optional.empty();
     }
 
     public Optional<Class<?>> getDatasourceType( String name ) {
@@ -86,17 +85,17 @@ public class RuleUnitDescription {
     }
 
     public boolean hasDataSource( String name ) {
-        return datasources.containsKey( name );
+        return varAccessors.containsKey( name );
     }
 
     public void bindDataSources( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit ) {
-        datasources.forEach( (name, accessor) -> bindDataSource( wm, ruleUnit, name, accessor ) );
+        varAccessors.forEach( (name, method) -> bindDataSource( wm, ruleUnit, name, method ) );
     }
 
-    private void bindDataSource( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit, String name, String accessor ) {
+    private void bindDataSource( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit, String name, Method method ) {
         WorkingMemoryEntryPoint entryPoint = wm.getEntryPoint( getEntryPointName( name ) );
         if (entryPoint != null) {
-            BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
+            BindableDataProvider dataSource = findDataSource( ruleUnit, method );
             if (dataSource != null) {
                 dataSource.bind( ruleUnit, entryPoint );
             }
@@ -104,11 +103,11 @@ public class RuleUnitDescription {
     }
 
     public void unbindDataSources( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit ) {
-        datasources.values().forEach( accessor -> unbindDataSource( ruleUnit, accessor ) );
+        varAccessors.values().forEach( method -> unbindDataSource( ruleUnit, method ) );
     }
 
-    private void unbindDataSource( RuleUnit ruleUnit, String accessor ) {
-        BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
+    private void unbindDataSource( RuleUnit ruleUnit, Method method ) {
+        BindableDataProvider dataSource = findDataSource( ruleUnit, method );
         if (dataSource != null) {
             dataSource.unbind( ruleUnit );
         }
@@ -126,9 +125,13 @@ public class RuleUnitDescription {
         return null;
     }
 
-    private BindableDataProvider findDataSource( RuleUnit ruleUnit, String accessor ) {
+    private BindableDataProvider findDataSource( RuleUnit ruleUnit, String name ) {
+        return findDataSource( ruleUnit, varAccessors.get( name ) );
+    }
+
+    private BindableDataProvider findDataSource( RuleUnit ruleUnit, Method m ) {
         try {
-            Object value = ruleUnit.getClass().getMethod( accessor ).invoke( ruleUnit );
+            Object value = m.invoke( ruleUnit );
             if (value == null) {
                 return null;
             }
@@ -152,7 +155,6 @@ public class RuleUnitDescription {
             if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 && !"getUnitIdentity".equals(m.getName())) {
                 String id = getter2property(m.getName());
                 if (id != null && !id.equals( "class" )) {
-                    datasources.put( id, m.getName() );
                     varAccessors.put( id, m );
 
                     Class<?> returnClass = m.getReturnType();
@@ -161,8 +163,8 @@ public class RuleUnitDescription {
                     } else if (Iterable.class.isAssignableFrom( returnClass )) {
                         Type returnType = m.getGenericReturnType();
                         Class<?> sourceType = returnType instanceof ParameterizedType ?
-                                              (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
-                                              Object.class;
+                                (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
+                                Object.class;
                         datasourceTypes.put( id, sourceType );
                     } else {
                         datasourceTypes.put( id, returnClass );

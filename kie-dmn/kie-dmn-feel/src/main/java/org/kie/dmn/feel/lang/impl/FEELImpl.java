@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -55,7 +54,7 @@ public class FEELImpl
     private final ClassLoader classLoader;
     private final List<FEELProfile> profiles;
     // pre-cached results from the above profiles...
-    private final Optional<ExecutionFrameImpl> customFrame;
+    private final ExecutionFrameImpl customFrame;
     private final Collection<FEELFunction> customFunctions;
     private final boolean doCompile;
 
@@ -74,16 +73,15 @@ public class FEELImpl
     public FEELImpl(ClassLoader cl, List<FEELProfile> profiles) {
         this.classLoader = cl;
         this.profiles = Collections.unmodifiableList(profiles);
-        ExecutionFrameImpl frame = new ExecutionFrameImpl(null);
+        this.customFrame = new ExecutionFrameImpl(null);
         Map<String, FEELFunction> functions = new HashMap<>();
         for (FEELProfile p : profiles) {
             for (FEELFunction f : p.getFEELFunctions()) {
-                frame.setValue(f.getName(), f);
+                customFrame.setValue(f.getName(), f);
                 functions.put(f.getName(), f);
             }
         }
         doCompile = profiles.stream().anyMatch(DoCompileFEELProfile.class::isInstance);
-        customFrame = Optional.of(frame);
         customFunctions = Collections.unmodifiableCollection(functions.values());
     }
 
@@ -177,14 +175,13 @@ public class FEELImpl
     public EvaluationContextImpl newEvaluationContext(ClassLoader cl, Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
         FEELEventListenersManager eventsManager = getEventsManager(listeners);
         EvaluationContextImpl ctx = new EvaluationContextImpl(cl, eventsManager, inputVariables.size());
-        if (customFrame.isPresent()) {
-            ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
-            ExecutionFrameImpl interveawedFrame = customFrame.get();
-            interveawedFrame.setParentFrame(ctx.peek());
-            globalFrame.setParentFrame(interveawedFrame);
-            ctx.push(interveawedFrame);
-            ctx.push(globalFrame);
-        }
+
+        ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
+        customFrame.setParentFrame(ctx.peek());
+        globalFrame.setParentFrame(customFrame);
+        ctx.push(customFrame);
+        ctx.push(globalFrame);
+
         ctx.setValues(inputVariables);
         return ctx;
     }
