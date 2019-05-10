@@ -27,7 +27,6 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
-import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
@@ -42,6 +41,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.createBuilder;
 import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResult;
 import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createResult;
@@ -60,10 +60,16 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                                           ScenarioRunnerData scenarioRunnerData,
                                           ExpressionEvaluator expressionEvaluator,
                                           SimulationDescriptor simulationDescriptor) {
-        if (!ScenarioSimulationModel.Type.RULE.equals(simulationDescriptor.getType())) {
+        if (!Type.RULE.equals(simulationDescriptor.getType())) {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
         }
-        RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilder(kieContainer);
+        RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilder(kieContainer,
+                                                                                    simulationDescriptor.getDmoSession());
+
+        if (simulationDescriptor.getRuleFlowGroup() != null) {
+            ruleScenarioExecutableBuilder.setActiveRuleFlowGroup(simulationDescriptor.getRuleFlowGroup());
+        }
+
         scenarioRunnerData.getGivens().stream().map(ScenarioGiven::getValue).forEach(ruleScenarioExecutableBuilder::insert);
         // all new facts should be verified internally to the working memory
         scenarioRunnerData.getExpects().stream()

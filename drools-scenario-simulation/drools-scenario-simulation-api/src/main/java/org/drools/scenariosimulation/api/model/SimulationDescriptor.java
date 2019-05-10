@@ -49,7 +49,7 @@ public class SimulationDescriptor {
 
     private String dmnName;
 
-    private boolean skipFromBuild;
+    private boolean skipFromBuild = false;
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
@@ -111,10 +111,12 @@ public class SimulationDescriptor {
         this.kieSession = kieSession;
     }
 
+    @Deprecated
     public String getKieBase() {
         return kieBase;
     }
 
+    @Deprecated
     public void setKieBase(String kieBase) {
         this.kieBase = kieBase;
     }

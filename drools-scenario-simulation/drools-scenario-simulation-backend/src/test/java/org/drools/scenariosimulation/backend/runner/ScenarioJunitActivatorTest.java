@@ -16,7 +16,6 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
@@ -24,7 +23,6 @@ import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.runner.model.SimulationWithFileName;
 import org.drools.scenariosimulation.backend.util.ResourceHelper;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +32,7 @@ import org.kie.api.runtime.KieContainer;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,9 +51,6 @@ public class ScenarioJunitActivatorTest {
     private AbstractScenarioRunner runnerMock;
 
     @Mock
-    private Simulation simulationMock;
-
-    @Mock
     private SimulationWithFileName simulationWithFileNameMock;
 
     @Mock
@@ -63,16 +59,23 @@ public class ScenarioJunitActivatorTest {
     @Mock
     private RunNotifier runNotifierMock;
 
+    private Simulation simulationLocal;
+
     @Before
     public void setup() {
+        simulationLocal = new Simulation();
+        simulationLocal.getSimulationDescriptor().setSkipFromBuild(true);
         when(xmlReaderMock.unmarshal(any())).thenReturn(scenarioSimulationModelMock);
-        when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationMock);
+        when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationLocal);
     }
 
     @Test
     public void getChildrenTest() throws InitializationError {
-        List<SimulationWithFileName> children = getScenarioJunitActivator().getChildren();
-        Assert.assertEquals(1, children.size());
+        assertEquals(0, getScenarioJunitActivator().getChildren().size());
+
+        simulationLocal.getSimulationDescriptor().setSkipFromBuild(false);
+
+        assertEquals(1, getScenarioJunitActivator().getChildren().size());
     }
 
     @Test

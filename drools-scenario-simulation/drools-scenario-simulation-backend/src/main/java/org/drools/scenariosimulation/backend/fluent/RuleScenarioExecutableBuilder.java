@@ -49,20 +49,21 @@ public class RuleScenarioExecutableBuilder {
         return kc;
     };
 
-    private RuleScenarioExecutableBuilder(KieContainer kieContainer, String name) {
+    private RuleScenarioExecutableBuilder(KieContainer kieContainer, String kieSessionName) {
         executableBuilder = ExecutableBuilder.create();
 
-        kieSessionFluent = executableBuilder.newApplicationContext(name)
+        kieSessionFluent = executableBuilder
+                .newApplicationContext(DEFAULT_APPLICATION)
                 .setKieContainer(kieContainer)
-                .newSessionCustomized(null, forcePseudoClock);
+                .newSessionCustomized(kieSessionName, forcePseudoClock);
     }
 
     private RuleScenarioExecutableBuilder(KieContainer kieContainer) {
-        this(kieContainer, DEFAULT_APPLICATION);
+        this(kieContainer, null);
     }
 
-    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String name) {
-        return new RuleScenarioExecutableBuilder(kieContainer, name);
+    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String kieSessionName) {
+        return new RuleScenarioExecutableBuilder(kieContainer, kieSessionName);
     }
 
     public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer) {
@@ -74,6 +75,14 @@ public class RuleScenarioExecutableBuilder {
                                      ScenarioResult scenarioResult) {
         internalConditions.computeIfAbsent(scenarioResult.getFactIdentifier(), key -> new ArrayList<>())
                 .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));
+    }
+
+    public void setActiveAgendaGroup(String agendaGroup) {
+        kieSessionFluent.setActiveAgendaGroup(agendaGroup);
+    }
+
+    public void setActiveRuleFlowGroup(String ruleFlowGroup) {
+        kieSessionFluent.setActiveRuleFlowGroup(ruleFlowGroup);
     }
 
     public void insert(Object element) {
