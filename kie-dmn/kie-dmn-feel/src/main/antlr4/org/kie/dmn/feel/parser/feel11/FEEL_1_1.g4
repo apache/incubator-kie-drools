@@ -177,7 +177,7 @@ nameDefinition
     ;
     
 nameDefinitionWithEOF
-    : nameDefinitionTokens { helper.defineVariable( $nameDefinitionTokens.ctx ); } EOF
+    : nameDefinition EOF
     ;
 
 nameDefinitionTokens
