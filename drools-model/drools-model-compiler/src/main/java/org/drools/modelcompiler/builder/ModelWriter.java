@@ -5,12 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.Drools;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
-import org.drools.modelcompiler.CanonicalKieModule;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.core.util.Drools;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 import org.kie.api.builder.ReleaseId;
 
@@ -71,7 +70,7 @@ public class ModelWriter {
         return new Result(sourceFiles, modelFiles);
     }
 
-    public void writeModelFile(List<String> modelSources, MemoryFileSystem trgMfs, ReleaseId releaseId) {
+    public void writeModelFile(Collection<String> modelSources, MemoryFileSystem trgMfs, ReleaseId releaseId) {
         String pkgNames = MODEL_VERSION + Drools.getFullVersion() + "\n";
         if(!modelSources.isEmpty()) {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
