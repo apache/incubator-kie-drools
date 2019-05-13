@@ -140,13 +140,13 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
             List<String> pathToValue = factMapping.getExpressionElementsWithoutClass().stream().map(ExpressionElement::getStep).collect(toList());
             ScenarioBeanWrapper<?> scenarioBeanWrapper = ScenarioBeanUtil.navigateToObject(objectToCheck, pathToValue, false);
             Object resultValue = scenarioBeanWrapper.getBean();
-
+            Object expectedResultValue = expectedResult.getRawValue();
             try {
-                return expressionEvaluator.evaluateUnaryExpression(expectedResult.getRawValue(), resultValue, scenarioBeanWrapper.getBeanClass()) ?
+                return expressionEvaluator.evaluateUnaryExpression(expectedResultValue, resultValue, scenarioBeanWrapper.getBeanClass()) ?
                         createResult(resultValue) :
-                        createErrorResult();
+                        createErrorResult(resultValue, expectedResultValue);
             } catch (Exception e) {
-                expectedResult.setError(true);
+                expectedResult.setExceptionMessage(e.getMessage());
                 throw new ScenarioException(e.getMessage(), e);
             }
         };
