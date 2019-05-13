@@ -23,6 +23,8 @@ import com.github.javaparser.ast.CompilationUnit;
 
 public class ProcessMetaData {
 
+    private final String processPackageName;
+    private final String processBaseClassName;
     private String processClassName;
 
     private String processId;
@@ -37,13 +39,25 @@ public class ProcessMetaData {
 
     private Set<String> workItems = new HashSet<>();
 
-    public ProcessMetaData(String processId, String extractedProcessId, String processName, String processVersion, String processClassName) {
+    public ProcessMetaData(String processId, String extractedProcessId, String processName, String processVersion, String processPackageName, String processClassName) {
         super();
         this.processId = processId;
         this.extractedProcessId = extractedProcessId;
         this.processName = processName;
         this.processVersion = processVersion;
-        this.processClassName = processClassName;
+        this.processPackageName = processPackageName;
+        this.processClassName = processPackageName == null ?
+                processClassName :
+                processPackageName + "." + processClassName;
+        this.processBaseClassName = processClassName;
+    }
+
+    public String getPackageName() {
+        return processPackageName;
+    }
+
+    public String getProcessBaseClassName() {
+        return processBaseClassName;
     }
 
     public String getProcessClassName() {
@@ -104,9 +118,9 @@ public class ProcessMetaData {
 
     @Override
     public String toString() {
-        return "ProcessMetaData [processClassName=" + processClassName + 
-                ", processId=" + processId + ", extractedProcessId=" + extractedProcessId + 
+        return "ProcessMetaData [processClassName=" + processClassName +
+                ", processId=" + processId + ", extractedProcessId=" + extractedProcessId +
                 ", processName=" + processName + ", processVersion=" + processVersion +
-               ", workItems=" + workItems + "]";
+                ", workItems=" + workItems + "]";
     }
 }

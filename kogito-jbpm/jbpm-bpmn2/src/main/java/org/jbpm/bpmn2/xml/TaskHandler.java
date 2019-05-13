@@ -76,7 +76,7 @@ public class TaskHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();
         	if ("ioSpecification".equals(nodeName)) {
-        		readIoSpecification(xmlNode, dataInputs, dataOutputs);
+        		readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes);
         	} else if ("dataInputAssociation".equals(nodeName)) {
         		readDataInputAssociation(xmlNode, workItemNode, dataInputs);
         	} else if ("dataOutputAssociation".equals(nodeName)) {
@@ -102,7 +102,7 @@ public class TaskHandler extends AbstractNodeHandler {
         return element.getAttribute("taskName");
     }
     
-    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
+    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs, Map<String, String> dataInputTypes) {
         
         dataTypeInputs.clear();
         dataTypeOutputs.clear();

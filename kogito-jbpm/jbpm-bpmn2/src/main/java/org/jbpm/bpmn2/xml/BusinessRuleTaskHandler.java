@@ -69,7 +69,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("ioSpecification".equals(nodeName)) {
-                readIoSpecification(xmlNode, dataInputs, dataOutputs);
+                readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes, dataOutputTypes);
             } else if ("dataInputAssociation".equals(nodeName)) {
                 readDataInputAssociation(xmlNode, ruleSetNode, dataInputs);
             } else if ("dataOutputAssociation".equals(nodeName)) {

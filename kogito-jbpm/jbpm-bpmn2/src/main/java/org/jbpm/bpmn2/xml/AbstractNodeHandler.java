@@ -72,9 +72,14 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     static final String RUNTIME_SIGNAL_EVENT = "kcontext.getKnowledgeRuntime().signalEvent(";
     static final String RUNTIME_MANAGER_SIGNAL_EVENT = "((org.kie.api.runtime.manager.RuntimeManager)kcontext.getKnowledgeRuntime().getEnvironment().get(\"RuntimeManager\")).signalEvent(";
 
+    public static final String INPUT_TYPES = "BPMN.InputTypes";
+    public static final String OUTPUT_TYPES = "BPMN.OutputTypes";
+
     protected final static String EOL = System.getProperty( "line.separator" );
     protected Map<String, String> dataInputs = new HashMap<String, String>();
+    protected Map<String, String> dataInputTypes = new HashMap<String, String>();
     protected Map<String, String> dataOutputs = new HashMap<String, String>();
+    protected Map<String, String> dataOutputTypes = new HashMap<String, String>();
     protected Map<String, String> inputAssociation = new HashMap<String, String>();
     protected Map<String, String> outputAssociation = new HashMap<String, String>();
 
@@ -108,6 +113,8 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         node.setMetaData("UniqueId", id);
         final String name = attrs.getValue("name");
         node.setName(name);
+        node.setMetaData(INPUT_TYPES, dataInputTypes);
+        node.setMetaData(OUTPUT_TYPES, dataOutputTypes);
         if ("true".equalsIgnoreCase(System.getProperty("jbpm.v5.id.strategy"))) {
             try {
                 // remove starting _
@@ -333,19 +340,23 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     }
 
-    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
+    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs, Map<String, String> dataInputTypes, Map<String, String> dataOutputTypes) {
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         while (subNode instanceof Element) {
             String subNodeName = subNode.getNodeName();
             if ("dataInput".equals(subNodeName)) {
                 String id = ((Element) subNode).getAttribute("id");
                 String inputName = ((Element) subNode).getAttribute("name");
+                String type = ((Element) subNode).getAttribute("dtype");
                 dataInputs.put(id, inputName);
+                dataInputTypes.put(inputName, type);
             }
             if ("dataOutput".equals(subNodeName)) {
                 String id = ((Element) subNode).getAttribute("id");
                 String outputName = ((Element) subNode).getAttribute("name");
+                String type = ((Element) subNode).getAttribute("dtype");
                 dataOutputs.put(id, outputName);
+                dataOutputTypes.put(outputName, type);
             }
             subNode = subNode.getNextSibling();
         }

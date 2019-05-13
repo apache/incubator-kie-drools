@@ -72,7 +72,7 @@ public class ProcessCodegen implements Generator {
         return ofFiles(files);
     }
 
-    public static ProcessCodegen ofFiles(List<File> processFiles) throws IOException {
+    public static ProcessCodegen ofFiles(Collection<File> processFiles) throws IOException {
         List<Process> allProcesses = parseProcesses(processFiles);
         return ofProcesses(allProcesses);
     }
@@ -81,7 +81,7 @@ public class ProcessCodegen implements Generator {
         return new ProcessCodegen(processes);
     }
 
-    private static List<Process> parseProcesses(List<File> processFiles) throws IOException {
+    private static List<Process> parseProcesses(Collection<File> processFiles) throws IOException {
         List<Process> processes = new ArrayList<>();
         for (File bpmnFile : processFiles) {
             FileSystemResource r = new FileSystemResource(bpmnFile);

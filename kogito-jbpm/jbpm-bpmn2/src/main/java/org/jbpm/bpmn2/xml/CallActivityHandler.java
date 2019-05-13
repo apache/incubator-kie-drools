@@ -29,7 +29,6 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Transformation;
-import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.runtime.process.DataTransformer;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -75,7 +74,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();
         	if ("ioSpecification".equals(nodeName)) {
-        		readIoSpecification(xmlNode, dataInputs, dataOutputs);
+        		readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes, dataOutputTypes);
         	} else if ("dataInputAssociation".equals(nodeName)) {
         		readDataInputAssociation(xmlNode, subProcessNode, dataInputs);
         	} else if ("dataOutputAssociation".equals(nodeName)) {
@@ -139,7 +138,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
         return node;
     }
 
-    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
+    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs, Map<String, String> dataInputTypes, Map<String, String> dataOutputTypes) {
     	org.w3c.dom.Node subNode = xmlNode.getFirstChild();
 		while (subNode instanceof Element) {
 			String subNodeName = subNode.getNodeName();
@@ -147,11 +146,15 @@ public class CallActivityHandler extends AbstractNodeHandler {
         		String id = ((Element) subNode).getAttribute("id");
         		String inputName = ((Element) subNode).getAttribute("name");
         		dataInputs.put(id, inputName);
+				String type = ((Element) subNode).getAttribute("dtype");
+				dataInputTypes.put(inputName, type);
         	} else if ("dataOutput".equals(subNodeName)) {
         		String id = ((Element) subNode).getAttribute("id");
         		String outputName = ((Element) subNode).getAttribute("name");
         		dataOutputs.put(id, outputName);
-        	}
+				String type = ((Element) subNode).getAttribute("dtype");
+				dataOutputTypes.put(outputName, type);
+			}
         	subNode = subNode.getNextSibling();
 		}
     }

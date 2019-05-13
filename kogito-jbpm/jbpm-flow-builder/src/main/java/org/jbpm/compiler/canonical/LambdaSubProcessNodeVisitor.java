@@ -51,20 +51,26 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         Expression retValue = JavaParser.parse(resourceAsStream).findFirst(Expression.class).get();
 
         SubProcessNode subProcessNode = (SubProcessNode) node;
+        String subProcessId = subProcessNode.getProcessId();
         String nodeVar = "subProcessNode" + node.getId();
+
         addFactoryMethodWithArgsWithAssignment(body, SubProcessNodeFactory.class, nodeVar, "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
         addFactoryMethodWithArgs(body, nodeVar, "name", new StringLiteralExpr(getOrDefault(subProcessNode.getName(), "Call Activity")));
-        addFactoryMethodWithArgs(body, nodeVar, "processId", new StringLiteralExpr(subProcessNode.getProcessId()));
+        addFactoryMethodWithArgs(body, nodeVar, "processId", new StringLiteralExpr(subProcessId));
         addFactoryMethodWithArgs(body, nodeVar, "processName", new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), "")));
         addFactoryMethodWithArgs(body, nodeVar, "waitForCompletion", new BooleanLiteralExpr(subProcessNode.isWaitForCompletion()));
         addFactoryMethodWithArgs(body, nodeVar, "independent", new BooleanLiteralExpr(subProcessNode.isIndependent()));
 
-        ModelMetaData subProcessModel = processToModel.get(subProcessNode.getProcessId());
+        Map<String, String> inputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.InputTypes");
+        Map<String, String> outputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.OutputTypes");
+
+        String subProcessModelClassName = ProcessToExecModelGenerator.extractModelClassName(subProcessId);
+        ModelMetaData subProcessModel = new ModelMetaData(metadata.getPackageName(), subProcessModelClassName, VariableDeclarations.of(inputTypes));
 
         retValue.findAll(ClassOrInterfaceType.class)
                 .stream()
                 .filter(t -> t.getNameAsString().equals("$Type$"))
-                .forEach(t -> t.setName(subProcessModel.getModelClassName()));
+                .forEach(t -> t.setName(subProcessModelClassName));
 
         retValue.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
                 .ifPresent(m -> m.setBody(bind(variableScope, subProcessNode, subProcessModel)));

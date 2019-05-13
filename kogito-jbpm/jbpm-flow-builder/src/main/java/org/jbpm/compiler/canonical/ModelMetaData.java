@@ -45,16 +45,15 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
 
 public class ModelMetaData {
 
     private final String packageName;
     private String modelClassSimpleName;
-    private final VariableScope variableScope;
+    private final VariableDeclarations variableScope;
     private String modelClassName;
 
-    public ModelMetaData(String packageName, String modelClassSimpleName, VariableScope variableScope) {
+    public ModelMetaData(String packageName, String modelClassSimpleName, VariableDeclarations variableScope) {
         this.packageName = packageName;
         this.modelClassSimpleName = modelClassSimpleName;
         this.variableScope = variableScope;
@@ -96,18 +95,22 @@ public class ModelMetaData {
     }
 
     public MethodCallExpr callSetter(String targetVar, String destField, Expression value) {
-        Variable v = variableScope.findVariable(destField);
-        String setter = "set" + StringUtils.capitalize(v.getName()); // todo cache FieldDeclarations in compilationUnit()
+        String type = variableScope.getType(destField);
+        String setter = "set" + StringUtils.capitalize(destField); // todo cache FieldDeclarations in compilationUnit()
         return new MethodCallExpr(new NameExpr(targetVar), setter).addArgument(
                 new CastExpr(
-                        new ClassOrInterfaceType(null, v.getType().getStringType()),
+                        new ClassOrInterfaceType(null, type),
                         new EnclosedExpr(value)));
     }
 
     public MethodCallExpr callGetter(String targetVar, String field) {
-        Variable v = variableScope.findVariable(field);
-        String getter = "get" + StringUtils.capitalize(v.getName()); // todo cache FieldDeclarations in compilationUnit()
+        String type = variableScope.getType(field);
+        String getter = "get" + StringUtils.capitalize(field); // todo cache FieldDeclarations in compilationUnit()
         return new MethodCallExpr(new NameExpr(targetVar), getter);
+    }
+
+    private FieldDeclaration declareField(Variable variable) {
+        return declareField(variable.getName(), variable.getType().getStringType());
     }
 
     private CompilationUnit compilationUnit() {
@@ -131,13 +134,15 @@ public class ModelMetaData {
         // setup of static fromMap method body
         ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, modelClass.getNameAsString());
         BlockStmt staticFromMap = new BlockStmt();
-        
+
         FieldAccessExpr idField = new FieldAccessExpr(new ThisExpr(), "id");
         staticFromMap.addStatement(new AssignExpr(idField, new NameExpr("id"), AssignExpr.Operator.ASSIGN));
-       
-        for (Variable variable : variableScope.getVariables()) {
 
-            FieldDeclaration fd = declareField(variable);
+        for (Map.Entry<String, String> variable : variableScope.getTypes().entrySet()) {
+
+            String vname = variable.getKey();
+            String vtype = variable.getValue();
+            FieldDeclaration fd = declareField(vname, vtype);
             modelClass.addMember(fd);
 
             fd.createGetter();
@@ -145,20 +150,20 @@ public class ModelMetaData {
 
             // toMap method body
             MethodCallExpr putVariable = new MethodCallExpr(new NameExpr("params"), "put");
-            putVariable.addArgument(new StringLiteralExpr(variable.getName()));
-            putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), variable.getName()));
+            putVariable.addArgument(new StringLiteralExpr(vname));
+            putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), vname));
             toMapBody.addStatement(putVariable);
 
-            ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(variable.getType().getStringType());
-            
+            ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(vtype);
+
             // from map instance method body
-            FieldAccessExpr instanceField = new FieldAccessExpr(new ThisExpr(), variable.getName());
+            FieldAccessExpr instanceField = new FieldAccessExpr(new ThisExpr(), vname);
             staticFromMap.addStatement(new AssignExpr(instanceField, new CastExpr(
                     type,
                     new MethodCallExpr(
                             new NameExpr("params"),
                             "get")
-                            .addArgument(new StringLiteralExpr(variable.getName()))), AssignExpr.Operator.ASSIGN));
+                            .addArgument(new StringLiteralExpr(vname))), AssignExpr.Operator.ASSIGN));
         }
 
         Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
@@ -173,11 +178,11 @@ public class ModelMetaData {
         return compilationUnit;
     }
 
-    private FieldDeclaration declareField(Variable variable) {
+    private FieldDeclaration declareField(String name, String type) {
         return new FieldDeclaration().addVariable(
                 new VariableDeclarator()
-                        .setType(variable.getType().getStringType())
-                        .setName(variable.getName()))
+                        .setType(type)
+                        .setName(name))
                 .addModifier(Modifier.Keyword.PRIVATE);
     }
 
