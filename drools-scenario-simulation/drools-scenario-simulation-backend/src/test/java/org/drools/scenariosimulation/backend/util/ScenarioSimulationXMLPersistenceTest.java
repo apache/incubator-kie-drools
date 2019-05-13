@@ -25,6 +25,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 
+import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -159,15 +160,4 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertNull(retrieved.getSimulation().getSimulationDescriptor().getDmoSession());
     }
 
-    private String getFileContent(String fileName) throws IOException {
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        String filePath = ResourceHelper.getResourcesByExtension(extension)
-                .filter(path -> path.endsWith(fileName))
-                .findFirst()
-                .orElse(null);
-        assertNotNull(filePath);
-        File sourceFile = new File(filePath);
-        assertTrue(sourceFile.exists());
-        return new String(Files.readAllBytes(sourceFile.toPath()));
-    }
 }

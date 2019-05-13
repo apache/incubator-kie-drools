@@ -1302,6 +1302,19 @@ public class FEELParserTest {
     }
 
     @Test
+    public void testVariableNameWithValidCharactersHorseEmoji() {
+        String var = "🐎";
+        assertThat(FEELParser.isVariableNameValid(var), is(true));
+    }
+
+    @Test
+    public void testVariableNameWithInvalidCharacterPercentSimplified() {
+        String var = "banana%mango";
+        assertThat(FEELParser.isVariableNameValid(var), is(false));
+        assertThat(FEELParser.checkVariableName(var).get(0).getMessage(), is(Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "character", "%")));
+    }
+
+    @Test
     public void testVariableNameWithInvalidCharacterPercent() {
         String var = "?_873./-'%+*valid";
         assertThat( FEELParser.isVariableNameValid( var ), is( false ) );

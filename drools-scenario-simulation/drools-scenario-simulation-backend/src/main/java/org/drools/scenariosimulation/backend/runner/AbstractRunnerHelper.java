@@ -108,7 +108,7 @@ public abstract class AbstractRunnerHelper {
                 return ResultWrapper.createResult(entry.getValue());
             }
         }
-        return ResultWrapper.createErrorResult();
+        return ResultWrapper.createErrorResult(null, null);
     }
 
     public List<ScenarioExpect> extractExpectedValues(List<FactMappingValue> factMappingValues) {
@@ -179,7 +179,7 @@ public abstract class AbstractRunnerHelper {
                                                                              factMappingValue.getRawValue());
                 paramsForBean.put(pathToField, value);
             } catch (IllegalArgumentException e) {
-                factMappingValue.setError(true);
+                factMappingValue.setExceptionMessage(e.getMessage());
                 throw new ScenarioException(e.getMessage(), e);
             }
         }
@@ -203,7 +203,12 @@ public abstract class AbstractRunnerHelper {
     protected ScenarioResult fillResult(FactMappingValue expectedResult, FactIdentifier factIdentifier, Supplier<ResultWrapper<?>> resultSupplier) {
         ResultWrapper<?> resultValue = resultSupplier.get();
 
-        expectedResult.setError(!resultValue.isSatisfied());
+        if (!resultValue.isSatisfied()) {
+            expectedResult.setErrorValue(resultValue.getResult());
+
+        } else {
+            expectedResult.resetStatus();
+        }
 
         return new ScenarioResult(factIdentifier, expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied());
     }

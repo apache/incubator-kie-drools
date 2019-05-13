@@ -32,6 +32,7 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
@@ -184,7 +185,7 @@ public class DMNScenarioRunnerHelperTest {
                                       newScenarioRunnerData,
                                       mock(ExpressionEvaluator.class),
                                       requestContextMock);
-        assertTrue(newScenarioRunnerData.getResults().get(0).getFactMappingValue().isError());
+        assertEquals(newScenarioRunnerData.getResults().get(0).getFactMappingValue().getStatus(), FactMappingValueStatus.FAILED_WITH_ERROR);
     }
 
     @SuppressWarnings("unchecked")

@@ -21,12 +21,15 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class IntervalTest extends AbstractDTAnalysisTest {
+public class IntervalTest {
 
     @Test
     public void testFlatten() {
@@ -57,5 +60,34 @@ public class IntervalTest extends AbstractDTAnalysisTest {
 
         List<Interval> result = Interval.flatten(Arrays.asList(c, b, a));
         assertThat(result, contains(new Interval(RangeBoundary.CLOSED, 0, 4, RangeBoundary.CLOSED, 0, 0)));
+    }
+
+    @Test
+    public void testInvertOverDomain() {
+        Interval a = new Interval(RangeBoundary.CLOSED, 0, 3, RangeBoundary.OPEN, 1, 2);
+        Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.invertOverDomain(a, domain);
+        assertThat(result, hasSize(2));
+        assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, 0, RangeBoundary.OPEN, 1, 2);
+        assertInterval(result.get(1), RangeBoundary.CLOSED, 3, Interval.POS_INF, RangeBoundary.CLOSED, 1, 2);
+    }
+
+    @Test
+    public void testInvertOverDomain2() {
+        Interval a = new Interval(RangeBoundary.CLOSED, "i", "o", RangeBoundary.OPEN, 9, 8);
+        Interval domain = new Interval(RangeBoundary.CLOSED, "a", "u", RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.invertOverDomain(a, domain);
+        assertThat(result, hasSize(2));
+        assertInterval(result.get(0), RangeBoundary.CLOSED, "a", "i", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(1), RangeBoundary.CLOSED, "o", "u", RangeBoundary.CLOSED, 9, 8);
+    }
+
+    private static void assertInterval(Interval interval, RangeBoundary lowType, Comparable<?> lowValue, Comparable<?> hiValue, RangeBoundary hiType, int rule, int col) {
+        assertThat(interval.getLowerBound(), is(new Bound(lowValue, lowType, interval)));
+        assertThat(interval.getUpperBound(), is(new Bound(hiValue, hiType, interval)));
+        assertThat(interval.getRule(), is(rule));
+        assertThat(interval.getCol(), is(col));
     }
 }

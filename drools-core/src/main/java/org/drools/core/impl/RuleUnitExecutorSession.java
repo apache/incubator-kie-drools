@@ -75,6 +75,12 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         session.ruleEventListenerSupport = new RuleEventListenerSupport();
     }
 
+    public RuleUnitExecutorSession(KieBase kiebase) {
+        session = (StatefulKnowledgeSessionImpl) kiebase.newKieSession();
+        session.ruleUnitExecutor = this;
+        this.ruleUnitGuardSystem = new RuleUnitGuardSystem( this );
+    }
+
     public RuleUnitExecutorSession(KieSession session) {
         this.session = (( StatefulKnowledgeSessionImpl ) session);
         this.session.ruleUnitExecutor = this;

@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNModelImpl;
@@ -46,11 +45,9 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
-import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
-import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
@@ -84,25 +81,22 @@ public class DMNDTAnalyser {
     public List<DTAnalysis> analyse(DMNModel model) {
         List<DTAnalysis> results = new ArrayList<>();
 
-        for (DecisionNode dn : model.getDecisions()) {
-            Expression expression = dn.getDecision().getExpression();
-            if (expression instanceof DecisionTable) {
-                DecisionTable decisionTable = (DecisionTable) expression;
-                try {
-                    DTAnalysis result = dmnDTAnalysis(model, dn, decisionTable);
-                    results.add(result);
-                } catch (Throwable t) {
-                    LOG.debug("Skipped dmnDTAnalysis for table: " + decisionTable.getId(), t);
-                    DTAnalysis result = DTAnalysis.ofError(decisionTable, t);
-                    results.add(result);
-                }
+        List<? extends DecisionTable> decisionTables = model.getDefinitions().findAllChildren(DecisionTable.class);
+        for (DecisionTable dt : decisionTables) {
+            try {
+                DTAnalysis result = dmnDTAnalysis(model, dt);
+                results.add(result);
+            } catch (Throwable t) {
+                LOG.debug("Skipped dmnDTAnalysis for table: " + dt.getId(), t);
+                DTAnalysis result = DTAnalysis.ofError(dt, t);
+                results.add(result);
             }
         }
 
         return results;
     }
 
-    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionNode dn, DecisionTable dt) {
+    private DTAnalysis dmnDTAnalysis(DMNModel model, DecisionTable dt) {
         DDTATable ddtaTable = new DDTATable();
         compileTableInputClauses(model, dt, ddtaTable);
         compileTableOutputClauses(model, dt, ddtaTable);
@@ -159,7 +153,7 @@ public class DMNDTAnalyser {
 
                 DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(jColIdx);
 
-                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
+                DDTAInputEntry ddtaInputEntry = new DDTAInputEntry(utln.getElements(), toIntervals(utln.getElements(), utln.isNegated(), ddtaInputClause.getDomainMinMax(), ddtaInputClause.getDiscreteValues(), jRowIdx + 1, jColIdx + 1));
                 for (Interval interval : ddtaInputEntry.getIntervals()) {
                     Interval domainMinMax = ddtaTable.getInputs().get(jColIdx).getDomainMinMax();
                     if (!domainMinMax.includes(interval)) {
@@ -300,10 +294,10 @@ public class DMNDTAnalyser {
             for (Bound<?> currentBound : bounds) {
                 LOG.debug("lastBound {} currentBound {}      activeIntervals {} == rules {}", lastBound, currentBound, activeIntervals, activeIntervalsToRules(activeIntervals));
                 if (activeIntervals.size() > 1 && canBeNewCurrIntervalForOverlaps(lastBound, currentBound)) {
-                    Interval analysisInterval = new Interval(lastBound.isUpperBound() ? invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
+                    Interval analysisInterval = new Interval(lastBound.isUpperBound() ? Interval.invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
                                                              lastBound.getValue(),
                                                              currentBound.getValue(),
-                                                             currentBound.isLowerBound() ? invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
+                                                             currentBound.isLowerBound() ? Interval.invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
                                                              0, 0);
                     currentIntervals[jColIdx] = analysisInterval;
                     findOverlaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervalsToRules(activeIntervals));
@@ -367,10 +361,10 @@ public class DMNDTAnalyser {
                     analysis.addGap(gap);
                 }
                 if (!activeIntervals.isEmpty() && canBeNewCurrInterval(lastBound, currentBound)) {
-                    Interval missingInterval = new Interval(lastBound.isUpperBound() ? invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
+                    Interval missingInterval = new Interval(lastBound.isUpperBound() ? Interval.invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
                                                             lastBound.getValue(),
                                                             currentBound.getValue(),
-                                                            currentBound.isLowerBound() ? invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
+                                                            currentBound.isLowerBound() ? Interval.invertBoundary(currentBound.getBoundaryType()) : currentBound.getBoundaryType(),
                                                             0, 0);
                     currentIntervals[jColIdx] = missingInterval;
                     findGaps(analysis, ddtaTable, jColIdx + 1, currentIntervals, activeIntervalsToRules(activeIntervals));
@@ -440,27 +434,18 @@ public class DMNDTAnalyser {
     private static Interval lastDimensionUncoveredInterval(Bound<?> l, Bound<?> r, Interval domain) {
         boolean isLmin = l.isLowerBound() && l.equals(domain.getLowerBound());
         boolean isRmax = r.isUpperBound() && r.equals(domain.getUpperBound());
-        return new Interval(isLmin ? domain.getLowerBound().getBoundaryType() : invertBoundary(l.getBoundaryType()),
+        return new Interval(isLmin ? domain.getLowerBound().getBoundaryType() : Interval.invertBoundary(l.getBoundaryType()),
                             l.getValue(),
                             r.getValue(),
-                            isRmax ? domain.getUpperBound().getBoundaryType() : invertBoundary(r.getBoundaryType()),
+                            isRmax ? domain.getUpperBound().getBoundaryType() : Interval.invertBoundary(r.getBoundaryType()),
                             0, 0);
     }
 
-    private static Range.RangeBoundary invertBoundary(Range.RangeBoundary b) {
-        if (b == RangeBoundary.OPEN) {
-            return RangeBoundary.CLOSED;
-        } else if (b == RangeBoundary.CLOSED) {
-            return RangeBoundary.OPEN;
-        } else {
-            throw new IllegalStateException("invertBoundary for: " + b);
-        }
-    }
-
-    private List<Interval> toIntervals(List<BaseNode> elements, Interval minMax, List discreteValues, int rule, int col) {
+    private List<Interval> toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
-            BitSet hitValues = new BitSet(discreteValues.size());
+            int bitsetLogicalSize = discreteValues.size(); // JDK BitSet size will always be larger.
+            BitSet hitValues = new BitSet(bitsetLogicalSize);
             for (BaseNode n : elements) {
                 Comparable<?> thisValue = valueFromNode(((UnaryTestNode) n).getValue());
                 int indexOf = discreteValues.indexOf(thisValue);
@@ -468,6 +453,9 @@ public class DMNDTAnalyser {
                     throw new IllegalStateException("Unable to determine discreteValue index for: " + n);
                 }
                 hitValues.set(indexOf);
+            }
+            if (isNegated) {
+                hitValues.flip(0, bitsetLogicalSize);
             }
             int lowerBoundIdx = -1;
             int upperBoundIdx = -1;
@@ -483,6 +471,8 @@ public class DMNDTAnalyser {
                 } else {
                     if (lowerBoundIdx >= 0 && upperBoundIdx >=0) {
                         results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
+                        lowerBoundIdx = -1;
+                        upperBoundIdx = -1;
                     }
                 }
             }
@@ -496,7 +486,12 @@ public class DMNDTAnalyser {
                     continue;
                 }
                 UnaryTestNode ut = (UnaryTestNode) n;
-                results.add(utnToInterval(ut, minMax, discreteValues, rule, col));
+                Interval interval = utnToInterval(ut, minMax, discreteValues, rule, col);
+                if (isNegated) {
+                    results.addAll(Interval.invertOverDomain(interval, minMax));
+                } else {
+                    results.add(interval);
+                }
             }
         }
         return results;

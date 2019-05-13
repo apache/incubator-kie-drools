@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DefaultErrorStrategy;
@@ -53,7 +54,7 @@ public class FEELParser {
     private static final Pattern DIGITS_PATTERN = Pattern.compile( "[0-9]*" );
 
     public static FEEL_1_1Parser parse(FEELEventListenersManager eventsManager, String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, Collection<FEELFunction> additionalFunctions, List<FEELProfile> profiles) {
-        ANTLRInputStream input = new ANTLRInputStream(source);
+        CharStream input = CharStreams.fromString(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
@@ -102,7 +103,7 @@ public class FEELParser {
                                                                     0,
                                                                     null ) );
         }
-        ANTLRInputStream input = new ANTLRInputStream(source);
+        CharStream input = CharStreams.fromString(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
@@ -111,7 +112,7 @@ public class FEELParser {
         FEELParserErrorListener errorChecker = new FEELParserErrorListener( null );
         parser.removeErrorListeners(); // removes the error listener that prints to the console
         parser.addErrorListener( errorChecker );
-        FEEL_1_1Parser.NameDefinitionContext nameDef = parser.nameDefinition();
+        FEEL_1_1Parser.NameDefinitionWithEOFContext nameDef = parser.nameDefinitionWithEOF(); // be sure to align below parser.getRuleInvocationStack().contains("nameDefinition...
 
         if( ! errorChecker.hasErrors() &&
             nameDef != null &&
@@ -168,7 +169,7 @@ public class FEELParser {
             CommonToken token = (CommonToken) offendingSymbol;
             final int tokenIndex = token.getTokenIndex();
             final Parser parser = (Parser) recognizer;
-            if( parser.getRuleInvocationStack().contains( "nameDefinition" ) ) {
+            if (parser.getRuleInvocationStack().contains("nameDefinitionWithEOF")) {
                 error = generateInvalidVariableError(offendingSymbol, line, charPositionInLine, e, token);
             } else if ( "}".equals(token.getText()) && tokenIndex > 1 && ":".equals(parser.getTokenStream().get(tokenIndex - 1).getText()) ) {
                 error = new SyntaxErrorEvent( FEELEvent.Severity.ERROR,

@@ -2477,5 +2477,25 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.YEARS), is(2L));
         assertThat(((ChronoPeriod) dmnResult.getDecisionResultByName("Decision2").getResult()).get(ChronoUnit.MONTHS), is(1L));
     }
+
+    @Test
+    public void testTable61ForAliasFeelType() {
+        // DROOLS-3998 DMN FEEL parser Table61 error with aliased type
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Table61ForAliasFeelType.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_aaff9a5f-a654-40d3-a209-8a7dc1d74eeb", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("my input", mapOf(entry("Date", LocalDate.of(2019, 5, 10)),
+                                      entry("Text", "John")));
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("my decision"), is(new BigDecimal("2019")));
+    }
 }
 

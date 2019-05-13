@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,6 +156,16 @@ public class Interval {
         return thisLeftLower && oRightHigher && (chained || adj);
     }
 
+    public static Range.RangeBoundary invertBoundary(Range.RangeBoundary b) {
+        if (b == RangeBoundary.OPEN) {
+            return RangeBoundary.CLOSED;
+        } else if (b == RangeBoundary.CLOSED) {
+            return RangeBoundary.OPEN;
+        } else {
+            throw new IllegalStateException("invertBoundary for: " + b);
+        }
+    }
+
     public static List<Interval> flatten(List<Interval> intervals) {
         List<Interval> results = new ArrayList<>();
         LOG.debug("intervals {}", intervals);
@@ -190,6 +201,30 @@ public class Interval {
         }
         if (candidate != null) {
             results.add(candidate);
+        }
+        LOG.debug("results {}", results);
+        return results;
+    }
+
+    public static List<Interval> invertOverDomain(Interval interval, Interval domain) {
+        List<Interval> results = new ArrayList<>();
+        if (!domain.lowerBound.equals(interval.lowerBound)) {
+            Interval left = new Interval(domain.lowerBound.getBoundaryType(),
+                                         domain.lowerBound.getValue(),
+                                         interval.lowerBound.getValue(),
+                                         invertBoundary(interval.lowerBound.getBoundaryType()),
+                                         interval.rule,
+                                         interval.col);
+            results.add(left);
+        }
+        if (!domain.upperBound.equals(interval.upperBound)) {
+            Interval right = new Interval(invertBoundary(interval.upperBound.getBoundaryType()),
+                                          interval.upperBound.getValue(),
+                                          domain.upperBound.getValue(),
+                                          domain.upperBound.getBoundaryType(),
+                                          interval.rule,
+                                          interval.col);
+            results.add(right);
         }
         LOG.debug("results {}", results);
         return results;

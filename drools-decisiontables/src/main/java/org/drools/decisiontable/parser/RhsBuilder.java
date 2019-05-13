@@ -87,12 +87,10 @@ public class RhsBuilder implements SourceBuilder {
 
     public String getResult() {
         StringBuffer buf = new StringBuffer();
-        for (Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
-            String next = iter.next();
-            String replace = next.replace("\n", "\\n");
-            buf.append(replace);
+        for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
+            buf.append( iter.next() );
             if (iter.hasNext()) {
-                buf.append('\n');
+                buf.append( '\n' );
             }
         }
         return buf.toString();

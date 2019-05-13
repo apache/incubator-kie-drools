@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.api.model;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FactMappingValueTest {
@@ -31,5 +32,34 @@ public class FactMappingValueTest {
         assertThatThrownBy(() -> new FactMappingValue(FactIdentifier.DESCRIPTION, null, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("ExpressionIdentifier has to be not null");
+    }
+
+    @Test
+    public void resetStatus() {
+        FactMappingValue value = new FactMappingValue();
+        value.resetStatus();
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.SUCCESS);
+        assertThat(value.getExceptionMessage()).isNull();
+        assertThat(value.getErrorValue()).isNull();
+    }
+
+    @Test
+    public void setErrorValue() {
+        String errorValue = "value";
+        FactMappingValue value = new FactMappingValue();
+        value.setErrorValue(errorValue);
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_ERROR);
+        assertThat(value.getExceptionMessage()).isNull();
+        assertThat(value.getErrorValue()).isEqualTo(errorValue);
+    }
+
+    @Test
+    public void setExceptionMessage() {
+        String exceptionValue = "Exception";
+        FactMappingValue value = new FactMappingValue();
+        value.setExceptionMessage(exceptionValue);
+        assertThat(value.getStatus()).isEqualTo(FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertThat(value.getExceptionMessage()).isEqualTo(exceptionValue);
+        assertThat(value.getErrorValue()).isNull();
     }
 }

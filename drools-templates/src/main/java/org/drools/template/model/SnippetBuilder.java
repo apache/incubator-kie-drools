@@ -179,7 +179,7 @@ public class SnippetBuilder {
         while ( ( end = text.indexOf( repl,
                                       start ) ) != -1 ) {
             buf.append( text.substring( start,
-                                        end ) ).append( with );
+                                        end ) ).append( with.replace("\n", "\\n") );
             start = end + repl.length();
 
             if ( --max == 0 ) {

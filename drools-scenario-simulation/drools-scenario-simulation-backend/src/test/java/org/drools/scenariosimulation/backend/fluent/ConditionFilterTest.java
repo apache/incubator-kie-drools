@@ -40,7 +40,7 @@ public class ConditionFilterTest {
         Assert.assertFalse(conditionFilter.accept(1));
         Assert.assertTrue(conditionFilter.accept("String"));
 
-        Function<Object, ResultWrapper> alwaysNotMatchFunction = object -> ResultWrapper.createErrorResult();
+        Function<Object, ResultWrapper> alwaysNotMatchFunction = object -> ResultWrapper.createErrorResult(null, null);
         ConditionFilter conditionFilterFail = new ConditionFilter(asList(new FactCheckerHandle(String.class, alwaysNotMatchFunction, scenarioResult)));
         Assert.assertFalse(conditionFilterFail.accept("String"));
     }
