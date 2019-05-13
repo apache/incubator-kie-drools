@@ -98,7 +98,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             }
         }
 
-        modelWriter.writeModelFile(modelFiles, trgMfs);
+        modelWriter.writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
     }
 
     @Override
