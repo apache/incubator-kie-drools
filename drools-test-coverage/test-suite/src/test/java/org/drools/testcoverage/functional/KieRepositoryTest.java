@@ -36,7 +36,7 @@ public class KieRepositoryTest {
 
     private static final String TEST_ARTIFACT_ID = "kie-repo-test";
     private static final String TEST_ARTIFACT_VERSION_RELEASE = "1.0.0";
-    private static final String TEST_ARTIFACT_VERSION_SNAPSHOT = "1.0.0";
+    private static final String TEST_ARTIFACT_VERSION_SNAPSHOT = "1.0.0-SNAPSHOT";
 
     private KieServices kieServices;
 
