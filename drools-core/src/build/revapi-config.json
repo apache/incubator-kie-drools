@@ -44,7 +44,18 @@
   "ignores": {
     "revapi": {
       "_comment": "Changes between 7.18.0.Final and the current branch. These changes are desired and thus ignored.",
-      "ignore": []
+      "ignore": [
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method void org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand::<init>(org.kie.api.pmml.PMMLRequestData, java.lang.Boolean)",
+          "new": "method void org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand::<init>(org.kie.api.pmml.PMMLRequestData, java.util.List<java.lang.Object>, java.lang.Boolean)",
+          "package": "org.drools.core.command.runtime.pmml",
+          "classSimpleName": "ApplyPmmlModelCommand",
+          "methodName": "<init>",
+          "elementKind": "constructor",
+          "justification": "Added new parameter for external objects to be passed in"
+        }
+      ]
     }
   }
 }
