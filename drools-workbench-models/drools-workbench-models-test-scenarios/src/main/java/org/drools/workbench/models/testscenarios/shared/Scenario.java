@@ -77,6 +77,8 @@ public class Scenario implements HasImports {
 
     private ArrayList<String> ksessions = new ArrayList<String>();
 
+    private String modelName;
+
     public Scenario() {
     }
 
@@ -469,5 +471,13 @@ public class Scenario implements HasImports {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName( String modelName ) {
+        this.modelName = modelName;
     }
 }
