@@ -129,7 +129,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(releaseId.toString(), pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
+            return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         model.addImports(pkg.getTypeResolver().getImports());
         generatePOJO(this, pkg, packageDescr, model);
@@ -142,7 +142,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
         String pkgName = pkg.getName();
         PackageModel model = packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-            return new PackageModel(releaseId.toString(), pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
+            return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         generateModel(this, pkg, packageDescr, model, isPattern);
     }

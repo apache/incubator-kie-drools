@@ -64,6 +64,7 @@ import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,12 +131,12 @@ public class PackageModel {
     private final String pkgUUID;
 
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
-        this("", name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator);
+        this(null, name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator);
     }
 
-    public PackageModel(String gav, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
+    public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this.name = name;
-        this.pkgUUID = md5Hash(gav+name);
+        this.pkgUUID = (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+name) : generateUUID();
         this.isPattern = isPattern;
         this.rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;
@@ -149,10 +150,6 @@ public class PackageModel {
 
     public String getRulesFileName() {
         return rulesFileName;
-    }
-
-    private String generateRulesFileName() {
-        return RULES_FILE_NAME + generateUUID();
     }
 
     public KnowledgeBuilderConfigurationImpl getConfiguration() {
