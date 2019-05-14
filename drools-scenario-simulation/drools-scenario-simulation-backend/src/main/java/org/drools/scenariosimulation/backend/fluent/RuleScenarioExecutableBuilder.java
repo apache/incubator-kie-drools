@@ -25,6 +25,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.kie.api.builder.model.KieSessionModel;
@@ -43,8 +44,11 @@ public class RuleScenarioExecutableBuilder {
     private final ExecutableBuilder executableBuilder;
     private final Map<FactIdentifier, List<FactCheckerHandle>> internalConditions = new HashMap<>();
 
-    private static BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
+    protected static final BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
         KieSessionModel kieSessionModel = kc.getKieSessionModel(sessionName);
+        if (kieSessionModel == null) {
+            throw new ScenarioException("Impossible to find a KieSession with name " + sessionName);
+        }
         kieSessionModel.setClockType(ClockTypeOption.get("pseudo"));
         return kc;
     };
