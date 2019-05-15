@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
+@Deprecated
 public class TestdataExtendedAbstractSolution extends AbstractSolution<HardSoftScore> {
 
     public static SolutionDescriptor<TestdataExtendedAbstractSolution> buildSolutionDescriptor() {

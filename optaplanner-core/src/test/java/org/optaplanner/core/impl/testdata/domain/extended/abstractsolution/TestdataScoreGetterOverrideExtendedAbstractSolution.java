@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
+@Deprecated
 public class TestdataScoreGetterOverrideExtendedAbstractSolution extends AbstractSolution<BendableScore> {
 
     public static SolutionDescriptor<TestdataScoreGetterOverrideExtendedAbstractSolution> buildSolutionDescriptor() {

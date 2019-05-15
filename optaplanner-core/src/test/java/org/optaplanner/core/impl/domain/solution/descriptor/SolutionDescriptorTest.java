@@ -165,6 +165,7 @@ public class SolutionDescriptorTest {
     // ************************************************************************
 
     @Test
+    @Deprecated
     public void extendedAbstractSolution() {
         SolutionDescriptor<TestdataExtendedAbstractSolution> solutionDescriptor
                 = TestdataExtendedAbstractSolution.buildSolutionDescriptor();
@@ -184,6 +185,7 @@ public class SolutionDescriptorTest {
     }
 
     @Test
+    @Deprecated
     public void extendedAbstractSolutionOverridesGetScore() {
         SolutionDescriptor<TestdataScoreGetterOverrideExtendedAbstractSolution> solutionDescriptor
                 = TestdataScoreGetterOverrideExtendedAbstractSolution.buildSolutionDescriptor();
