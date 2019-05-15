@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.chained.shadowing;
+package org.optaplanner.core.impl.testdata.domain.chained.shadow;
 
 import java.util.List;
 

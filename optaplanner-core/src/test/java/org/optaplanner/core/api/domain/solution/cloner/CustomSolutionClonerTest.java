@@ -22,10 +22,10 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataCorrectlyClonedSolution;
-import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataEntitiesNotClonedSolution;
-import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotClonedSolution;
-import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotEqualSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataCorrectlyClonedSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataEntitiesNotClonedSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataScoreNotClonedSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.customcloner.TestdataScoreNotEqualSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;

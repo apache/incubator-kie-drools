@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.KieContainerHelper;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class PlannerBenchmarkFactoryTest {
 

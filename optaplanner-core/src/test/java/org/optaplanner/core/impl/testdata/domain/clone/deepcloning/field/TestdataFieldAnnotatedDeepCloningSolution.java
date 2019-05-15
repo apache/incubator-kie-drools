@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.deepcloning.field;
+package org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field;
 
 import java.util.List;
 

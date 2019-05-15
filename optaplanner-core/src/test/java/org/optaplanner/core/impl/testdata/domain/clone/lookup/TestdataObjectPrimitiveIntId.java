@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.optaplanner.core.impl.testdata.domain.clone.lookup;
 
-package org.optaplanner.core.impl.testdata.domain.lookup;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
-public enum TestdataObjectEnum {
-    FIRST_VALUE,
-    SECOND_VALUE,
-    THIRD_VALUE;
+public class TestdataObjectPrimitiveIntId {
+
+    @PlanningId
+    private final int id;
+
+    public TestdataObjectPrimitiveIntId(int id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
 }

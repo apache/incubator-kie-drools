@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2014 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.deepcloning.field;
+package org.optaplanner.core.impl.testdata.domain.clone.deepcloning;
 
 import java.util.List;
 import java.util.Map;
@@ -29,38 +29,36 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
-public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
+public class TestdataDeepCloningEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedDeepCloningEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataDeepCloningSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataDeepCloningEntity.class);
     }
 
     public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataFieldAnnotatedDeepCloningEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataDeepCloningSolution.buildSolutionDescriptor();
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataDeepCloningEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private TestdataValue value;
-    @DeepPlanningClone
     private List<String> shadowVariableList;
-    @DeepPlanningClone
     private Map<String, String> shadowVariableMap;
 
-    public TestdataFieldAnnotatedDeepCloningEntity() {
+    public TestdataDeepCloningEntity() {
     }
 
-    public TestdataFieldAnnotatedDeepCloningEntity(String code) {
+    public TestdataDeepCloningEntity(String code) {
         super(code);
     }
 
-    public TestdataFieldAnnotatedDeepCloningEntity(String code, TestdataValue value) {
+    public TestdataDeepCloningEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;
     }
 
+    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public TestdataValue getValue() {
         return value;
     }
@@ -69,6 +67,7 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
         this.value = value;
     }
 
+    @DeepPlanningClone
     public List<String> getShadowVariableList() {
         return shadowVariableList;
     }
@@ -77,6 +76,7 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
         this.shadowVariableList = shadowVariableList;
     }
 
+    @DeepPlanningClone
     public Map<String, String> getShadowVariableMap() {
         return shadowVariableMap;
     }

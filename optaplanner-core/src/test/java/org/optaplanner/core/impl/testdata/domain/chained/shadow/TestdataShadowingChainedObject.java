@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.lookup;
 
-import org.optaplanner.core.api.domain.lookup.PlanningId;
+package org.optaplanner.core.impl.testdata.domain.chained.shadow;
 
-public class TestdataObjectPrimitiveIntId {
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
-    @PlanningId
-    private final int id;
+@PlanningEntity
+public interface TestdataShadowingChainedObject {
 
-    public TestdataObjectPrimitiveIntId(int id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
+    /**
+     * @return sometimes null
+     */
+    @InverseRelationShadowVariable(sourceVariableName = "chainedObject")
+    TestdataShadowingChainedEntity getNextEntity();
+    void setNextEntity(TestdataShadowingChainedEntity nextEntity);
 
 }

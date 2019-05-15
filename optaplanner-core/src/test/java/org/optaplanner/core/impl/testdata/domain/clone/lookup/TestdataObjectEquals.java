@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.lookup;
+package org.optaplanner.core.impl.testdata.domain.clone.lookup;
 
 import java.util.Objects;
 

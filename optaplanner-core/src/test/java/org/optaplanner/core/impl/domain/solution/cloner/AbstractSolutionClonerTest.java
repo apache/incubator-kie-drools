@@ -44,10 +44,10 @@ import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollec
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedEntity;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
-import org.optaplanner.core.impl.testdata.domain.deepcloning.TestdataDeepCloningEntity;
-import org.optaplanner.core.impl.testdata.domain.deepcloning.TestdataDeepCloningSolution;
-import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
-import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningEntity;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataExtendedThirdPartyEntity;

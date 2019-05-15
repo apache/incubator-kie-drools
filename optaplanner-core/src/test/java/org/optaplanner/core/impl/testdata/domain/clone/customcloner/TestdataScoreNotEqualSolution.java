@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.customcloner;
+package org.optaplanner.core.impl.testdata.domain.clone.customcloner;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
@@ -28,24 +27,33 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-@PlanningSolution(solutionCloner = TestdataScoreNotClonedSolution.class)
-public class TestdataScoreNotClonedSolution implements SolutionCloner<TestdataScoreNotClonedSolution> {
+@PlanningSolution(solutionCloner = TestdataScoreNotEqualSolution.class)
+public class TestdataScoreNotEqualSolution implements SolutionCloner<TestdataScoreNotEqualSolution> {
 
     @PlanningScore
     private SimpleScore score;
     @PlanningEntityProperty
-    private TestdataEntity entity = new TestdataEntity("A");
+    private TestdataEntity entity = new TestdataEntity();
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
     public List<TestdataValue> valueRange() {
-        return Collections.singletonList(new TestdataValue("1"));
+        // solver will never get to this point due to cloning corruption
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public TestdataScoreNotClonedSolution cloneSolution(TestdataScoreNotClonedSolution original) {
-        TestdataScoreNotClonedSolution clone = new TestdataScoreNotClonedSolution();
+    public TestdataScoreNotEqualSolution cloneSolution(TestdataScoreNotEqualSolution original) {
+        TestdataScoreNotEqualSolution clone = new TestdataScoreNotEqualSolution();
         clone.entity.setValue(original.entity.getValue());
+        if (original.score != null) {
+            clone.score = SimpleScore.ofUninitialized(original.score.getInitScore() - 1, original.score.getScore() - 1);
+        } else {
+            clone.score = SimpleScore.of(0);
+        }
+        if (clone.score.equals(original.score)) {
+            throw new IllegalStateException("The cloned score should be intentionally unequal to the original score");
+        }
         return clone;
     }
 

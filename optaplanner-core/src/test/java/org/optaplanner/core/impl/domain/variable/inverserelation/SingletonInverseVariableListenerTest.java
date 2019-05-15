@@ -24,9 +24,9 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedAnchor;
-import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

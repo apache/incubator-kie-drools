@@ -13,32 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.lookup;
+package org.optaplanner.core.impl.testdata.domain.clone.lookup;
 
-import java.util.Objects;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 
-@SuppressWarnings("checkstyle:equalshashcode")
-public class TestdataObjectEqualsNoHashCode {
+public class TestdataObjectIntegerId {
 
+    @PlanningId
     private final Integer id;
 
-    public TestdataObjectEqualsNoHashCode(Integer id) {
+    public TestdataObjectIntegerId(Integer id) {
         this.id = id;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TestdataObjectEqualsNoHashCode other = (TestdataObjectEqualsNoHashCode) obj;
-        return Objects.equals(this.id, other.id);
+    public Integer getId() {
+        return id;
     }
 
 }

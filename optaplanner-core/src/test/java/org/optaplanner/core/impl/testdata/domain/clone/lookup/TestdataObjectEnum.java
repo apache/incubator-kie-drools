@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.lookup;
 
-public class TestdataObjectIntegerIdSubclass extends TestdataObjectIntegerId {
+package org.optaplanner.core.impl.testdata.domain.clone.lookup;
 
-    public TestdataObjectIntegerIdSubclass(Integer id) {
-        super(id);
-    }
-
-    @Override
-    public String toString() {
-        return "id=" + getId();
-    }
-
+public enum TestdataObjectEnum {
+    FIRST_VALUE,
+    SECOND_VALUE,
+    THIRD_VALUE;
 }

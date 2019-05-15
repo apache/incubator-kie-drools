@@ -22,10 +22,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectEquals;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectEqualsNoHashCode;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectEqualsSubclass;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectNoId;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEquals;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsNoHashCode;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsSubclass;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 
 import static org.junit.Assert.*;
 

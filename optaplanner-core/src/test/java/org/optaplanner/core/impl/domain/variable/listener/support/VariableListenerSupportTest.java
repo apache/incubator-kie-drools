@@ -31,8 +31,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
-import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;

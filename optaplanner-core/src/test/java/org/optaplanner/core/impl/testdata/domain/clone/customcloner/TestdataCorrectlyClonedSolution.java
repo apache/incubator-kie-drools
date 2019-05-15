@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.customcloner;
+package org.optaplanner.core.impl.testdata.domain.clone.customcloner;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
@@ -27,27 +28,34 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-@PlanningSolution(solutionCloner = TestdataEntitiesNotClonedSolution.class)
-public class TestdataEntitiesNotClonedSolution implements SolutionCloner<TestdataEntitiesNotClonedSolution> {
+@PlanningSolution(solutionCloner = TestdataCorrectlyClonedSolution.class)
+public class TestdataCorrectlyClonedSolution implements SolutionCloner<TestdataCorrectlyClonedSolution> {
 
+    private boolean clonedByCustomCloner = false;
     @PlanningScore
     private SimpleScore score;
     @PlanningEntityProperty
-    private TestdataEntity entity = new TestdataEntity();
+    private TestdataEntity entity = new TestdataEntity("A");
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
     public List<TestdataValue> valueRange() {
-        // solver will never get to this point due to cloning corruption
-        throw new UnsupportedOperationException("Not supported yet.");
+        // two values needed to allow for at least one doable move, otherwise the second step ends in an infinite loop
+        return Arrays.asList(new TestdataValue("1"), new TestdataValue("2"));
     }
 
     @Override
-    public TestdataEntitiesNotClonedSolution cloneSolution(TestdataEntitiesNotClonedSolution original) {
-        TestdataEntitiesNotClonedSolution clone = new TestdataEntitiesNotClonedSolution();
-        clone.entity = original.entity;
+    public TestdataCorrectlyClonedSolution cloneSolution(TestdataCorrectlyClonedSolution original) {
+        TestdataCorrectlyClonedSolution clone = new TestdataCorrectlyClonedSolution();
+        clone.clonedByCustomCloner = true;
+        // score is immutable so no need to create a new instance
         clone.score = original.score;
+        clone.entity.setValue(original.entity.getValue());
         return clone;
+    }
+
+    public boolean isClonedByCustomCloner() {
+        return clonedByCustomCloner;
     }
 
 }

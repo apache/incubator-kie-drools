@@ -23,11 +23,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectIntegerId;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectIntegerIdSubclass;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectMultipleIds;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectNoId;
-import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectPrimitiveIntId;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerId;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectIntegerIdSubclass;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMultipleIds;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
+import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
 
 import static org.junit.Assert.*;
 
