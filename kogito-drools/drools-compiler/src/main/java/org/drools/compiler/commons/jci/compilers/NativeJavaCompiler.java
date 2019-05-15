@@ -15,8 +15,6 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
-import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -47,21 +45,21 @@ import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
-
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
 import org.drools.core.util.IoUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.internal.jci.CompilationProblem;
 
+import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
+
 public class NativeJavaCompiler extends AbstractJavaCompiler {
 
-    private final JavaCompilerSettings settings = new JavaCompilerSettings();
-
     public JavaCompilerSettings createDefaultSettings() {
-        return this.settings;
+        return new JavaCompilerSettings();
     }
 
     private static class InternalClassLoader extends ClassLoader {
@@ -83,7 +81,15 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                                      JavaCompilerSettings pSettings) {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        MemoryFileManager fileManager = new MemoryFileManager(compiler.getStandardFileManager(diagnostics, null, null), pClassLoader);
+
+        StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null);
+        try {
+            jFileManager.setLocation(StandardLocation.CLASS_PATH, pSettings.getClasspathLocations());
+        } catch (IOException e) {
+            // ignore if cannot set the classpath
+        }
+
+        MemoryFileManager fileManager = new MemoryFileManager(jFileManager, pClassLoader);
 
         final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
         for (final String sourcePath : pResourcePaths) {
