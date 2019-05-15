@@ -32,6 +32,7 @@ import org.junit.Test;
 
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.convertValue;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.loadClass;
+import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revertValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -144,6 +145,20 @@ public class ScenarioBeanUtilTest {
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), "0", classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), "0", classLoader));
         assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
+    }
+
+    @Test
+    public void revertValueTest() {
+        assertEquals("Test", revertValue("Test"));
+        assertEquals("false", revertValue(false));
+        assertEquals("1", revertValue(1));
+        assertEquals("1L", revertValue(1L));
+        assertEquals("1.0D", revertValue(1.0D));
+        assertEquals("1.0F", revertValue(1.0F));
+        assertEquals("a", revertValue('a'));
+        assertEquals("1", revertValue((short) 1));
+        assertEquals(String.valueOf("0".getBytes()[0]), revertValue("0".getBytes()[0]));
+        assertEquals("null", revertValue(null));
     }
 
     @Test(expected = IllegalArgumentException.class)

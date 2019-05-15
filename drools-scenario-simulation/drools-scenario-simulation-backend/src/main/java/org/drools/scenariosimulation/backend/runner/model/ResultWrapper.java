@@ -16,6 +16,7 @@
 
 package org.drools.scenariosimulation.backend.runner.model;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -28,25 +29,25 @@ public class ResultWrapper<T> {
 
     private final T result;
     private final T expected;
+    private final String errorMessage;
 
-    private ResultWrapper(T result, boolean satisfied) {
+    private ResultWrapper(T result, T expected, boolean satisfied, String errorMessage) {
         this.satisfied = satisfied;
         this.result = result;
-        this.expected = null;
-    }
-
-    private ResultWrapper(T result, T expected) {
-        this.satisfied = false;
-        this.result = result;
         this.expected = expected;
+        this.errorMessage = errorMessage;
     }
 
     public static <T> ResultWrapper<T> createResult(T result) {
-        return new ResultWrapper<>(result, true);
+        return new ResultWrapper<>(result, null, true, null);
     }
 
     public static <T> ResultWrapper<T> createErrorResult(T result, T expected) {
-        return new ResultWrapper<>(result, expected);
+        return new ResultWrapper<>(result, expected, false, null);
+    }
+
+    public static <T> ResultWrapper<T> createErrorResultWithErrorMessage(String errorMessage) {
+        return new ResultWrapper<>(null, null, false, errorMessage);
     }
 
     public boolean isSatisfied() {
@@ -59,6 +60,10 @@ public class ResultWrapper<T> {
 
     public T getExpected() {
         return expected;
+    }
+
+    public Optional<String> getErrorMessage() {
+        return Optional.ofNullable(errorMessage);
     }
 
     public T orElse(T defaultValue) {

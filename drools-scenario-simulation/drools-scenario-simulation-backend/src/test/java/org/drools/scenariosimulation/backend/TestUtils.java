@@ -40,5 +40,4 @@ public class TestUtils {
         assertTrue(sourceFile.exists());
         return new String(Files.readAllBytes(sourceFile.toPath()));
     }
-
 }

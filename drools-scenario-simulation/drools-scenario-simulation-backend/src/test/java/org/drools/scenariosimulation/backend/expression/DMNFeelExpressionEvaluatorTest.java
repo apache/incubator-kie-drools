@@ -17,6 +17,7 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -88,5 +89,14 @@ public class DMNFeelExpressionEvaluatorTest {
 
         assertEquals(1, parsedMap.size());
         assertEquals(BigDecimal.valueOf(1), ((Map<String, Object>) parsedMap.get("first").get("phones")).get("number"));
+    }
+
+    @Test
+    public void reverseFunction() {
+        assertEquals("\"Test\"", expressionEvaluator.reverseFunction("Test"));
+        assertEquals("false", expressionEvaluator.reverseFunction(false));
+        assertEquals("1", expressionEvaluator.reverseFunction(BigDecimal.valueOf(1)));
+        assertEquals("date( \"0001-01-01\" )", expressionEvaluator.reverseFunction(LocalDate.of(1, 1, 1)));
+        assertEquals("null", expressionEvaluator.reverseFunction(null));
     }
 }
