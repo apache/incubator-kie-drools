@@ -676,9 +676,6 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     public static String getModelFileWithGAV(ReleaseId releaseId) {
-        return Paths.get(MODEL_FILE_DIRECTORY,
-                              releaseId.getGroupId(),
-                              releaseId.getArtifactId(),
-                              MODEL_FILE_NAME).toString();
+        return MODEL_FILE_DIRECTORY + "/" + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + MODEL_FILE_NAME;
     }
 }
