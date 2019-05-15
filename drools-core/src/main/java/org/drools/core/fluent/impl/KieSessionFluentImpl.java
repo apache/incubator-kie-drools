@@ -66,8 +66,7 @@ public class KieSessionFluentImpl extends BaseBatchWithProcessFluent<KieSessionF
 
     @Override
     public KieSessionFluent setActiveRuleFlowGroup(String ruleFlowGroup) {
-        setActiveAgendaGroup(ruleFlowGroup);
-        return this;
+        return setActiveAgendaGroup(ruleFlowGroup);
     }
 
     @Override
