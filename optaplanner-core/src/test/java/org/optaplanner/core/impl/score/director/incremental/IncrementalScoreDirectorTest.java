@@ -27,9 +27,9 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
-import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedAnchor;
-import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -41,29 +41,29 @@ public class IncrementalScoreDirectorTest {
 
     @Test
     public void variableListener() {
-        TestdataRichChainedAnchor a0 = new TestdataRichChainedAnchor("a0");
-        TestdataRichChainedEntity a1 = new TestdataRichChainedEntity("a1", a0);
+        TestdataShadowingChainedAnchor a0 = new TestdataShadowingChainedAnchor("a0");
+        TestdataShadowingChainedEntity a1 = new TestdataShadowingChainedEntity("a1", a0);
         a0.setNextEntity(a1);
-        TestdataRichChainedEntity a2 = new TestdataRichChainedEntity("a2", a1);
+        TestdataShadowingChainedEntity a2 = new TestdataShadowingChainedEntity("a2", a1);
         a1.setNextEntity(a2);
-        TestdataRichChainedEntity a3 = new TestdataRichChainedEntity("a3", a2);
+        TestdataShadowingChainedEntity a3 = new TestdataShadowingChainedEntity("a3", a2);
         a2.setNextEntity(a3);
 
-        TestdataRichChainedAnchor b0 = new TestdataRichChainedAnchor("b0");
-        TestdataRichChainedEntity b1 = new TestdataRichChainedEntity("b1", b0);
+        TestdataShadowingChainedAnchor b0 = new TestdataShadowingChainedAnchor("b0");
+        TestdataShadowingChainedEntity b1 = new TestdataShadowingChainedEntity("b1", b0);
         b0.setNextEntity(b1);
 
-        TestdataRichChainedSolution solution = new TestdataRichChainedSolution("solution");
-        List<TestdataRichChainedAnchor> anchorList = Arrays.asList(a0, b0);
+        TestdataShadowingChainedSolution solution = new TestdataShadowingChainedSolution("solution");
+        List<TestdataShadowingChainedAnchor> anchorList = Arrays.asList(a0, b0);
         solution.setChainedAnchorList(anchorList);
-        List<TestdataRichChainedEntity> originalEntityList = Arrays.asList(a1, a2, a3, b1);
+        List<TestdataShadowingChainedEntity> originalEntityList = Arrays.asList(a1, a2, a3, b1);
         solution.setChainedEntityList(originalEntityList);
 
-        SolutionDescriptor<TestdataRichChainedSolution> solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
-        IncrementalScoreDirectorFactory<TestdataRichChainedSolution> scoreDirectorFactory = mock(IncrementalScoreDirectorFactory.class);
+        SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor = TestdataShadowingChainedSolution.buildSolutionDescriptor();
+        IncrementalScoreDirectorFactory<TestdataShadowingChainedSolution> scoreDirectorFactory = mock(IncrementalScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        IncrementalScoreCalculator<TestdataRichChainedSolution> incrementalScoreCalculator = mock(IncrementalScoreCalculator.class);
-        IncrementalScoreDirector<TestdataRichChainedSolution> scoreDirector = new IncrementalScoreDirector<TestdataRichChainedSolution>(
+        IncrementalScoreCalculator<TestdataShadowingChainedSolution> incrementalScoreCalculator = mock(IncrementalScoreCalculator.class);
+        IncrementalScoreDirector<TestdataShadowingChainedSolution> scoreDirector = new IncrementalScoreDirector<TestdataShadowingChainedSolution>(
                 scoreDirectorFactory, false, false, incrementalScoreCalculator) {
             @Override
             public Score calculateScore() {

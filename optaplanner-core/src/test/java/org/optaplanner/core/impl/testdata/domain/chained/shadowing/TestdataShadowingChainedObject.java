@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.chained.rich;
+package org.optaplanner.core.impl.testdata.domain.chained.shadowing;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
 @PlanningEntity
-public interface TestdataRichChainedObject {
+public interface TestdataShadowingChainedObject {
 
     /**
      * @return sometimes null
      */
     @InverseRelationShadowVariable(sourceVariableName = "chainedObject")
-    TestdataRichChainedEntity getNextEntity();
-    void setNextEntity(TestdataRichChainedEntity nextEntity);
+    TestdataShadowingChainedEntity getNextEntity();
+    void setNextEntity(TestdataShadowingChainedEntity nextEntity);
 
 }

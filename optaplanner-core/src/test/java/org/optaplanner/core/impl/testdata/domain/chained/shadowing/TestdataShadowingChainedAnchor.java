@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.chained.rich;
+package org.optaplanner.core.impl.testdata.domain.chained.shadowing;
 
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
-public class TestdataRichChainedAnchor extends TestdataObject implements TestdataRichChainedObject {
+public class TestdataShadowingChainedAnchor extends TestdataObject implements TestdataShadowingChainedObject {
 
     // Shadow variables
-    private TestdataRichChainedEntity nextEntity;
+    private TestdataShadowingChainedEntity nextEntity;
 
-    public TestdataRichChainedAnchor() {
+    public TestdataShadowingChainedAnchor() {
     }
 
-    public TestdataRichChainedAnchor(String code) {
+    public TestdataShadowingChainedAnchor(String code) {
         super(code);
     }
 
     @Override
-    public TestdataRichChainedEntity getNextEntity() {
+    public TestdataShadowingChainedEntity getNextEntity() {
         return nextEntity;
     }
 
     @Override
-    public void setNextEntity(TestdataRichChainedEntity nextEntity) {
+    public void setNextEntity(TestdataShadowingChainedEntity nextEntity) {
         this.nextEntity = nextEntity;
     }
 

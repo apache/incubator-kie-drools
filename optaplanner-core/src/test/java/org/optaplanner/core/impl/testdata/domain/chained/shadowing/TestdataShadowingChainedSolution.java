@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.chained.rich;
+package org.optaplanner.core.impl.testdata.domain.chained.shadowing;
 
 import java.util.List;
 
@@ -28,42 +28,42 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningSolution
-public class TestdataRichChainedSolution extends TestdataObject {
+public class TestdataShadowingChainedSolution extends TestdataObject {
 
-    public static SolutionDescriptor<TestdataRichChainedSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataRichChainedSolution.class,
-                TestdataRichChainedObject.class, TestdataRichChainedEntity.class);
+    public static SolutionDescriptor<TestdataShadowingChainedSolution> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataShadowingChainedSolution.class,
+                TestdataShadowingChainedObject.class, TestdataShadowingChainedEntity.class);
     }
 
-    private List<TestdataRichChainedAnchor> chainedAnchorList;
-    private List<TestdataRichChainedEntity> chainedEntityList;
+    private List<TestdataShadowingChainedAnchor> chainedAnchorList;
+    private List<TestdataShadowingChainedEntity> chainedEntityList;
 
     private SimpleScore score;
 
-    public TestdataRichChainedSolution() {
+    public TestdataShadowingChainedSolution() {
     }
 
-    public TestdataRichChainedSolution(String code) {
+    public TestdataShadowingChainedSolution(String code) {
         super(code);
     }
 
     @ValueRangeProvider(id = "chainedAnchorRange")
     @ProblemFactCollectionProperty
-    public List<TestdataRichChainedAnchor> getChainedAnchorList() {
+    public List<TestdataShadowingChainedAnchor> getChainedAnchorList() {
         return chainedAnchorList;
     }
 
-    public void setChainedAnchorList(List<TestdataRichChainedAnchor> chainedAnchorList) {
+    public void setChainedAnchorList(List<TestdataShadowingChainedAnchor> chainedAnchorList) {
         this.chainedAnchorList = chainedAnchorList;
     }
 
     @PlanningEntityCollectionProperty
     @ValueRangeProvider(id = "chainedEntityRange")
-    public List<TestdataRichChainedEntity> getChainedEntityList() {
+    public List<TestdataShadowingChainedEntity> getChainedEntityList() {
         return chainedEntityList;
     }
 
-    public void setChainedEntityList(List<TestdataRichChainedEntity> chainedEntityList) {
+    public void setChainedEntityList(List<TestdataShadowingChainedEntity> chainedEntityList) {
         this.chainedEntityList = chainedEntityList;
     }
 

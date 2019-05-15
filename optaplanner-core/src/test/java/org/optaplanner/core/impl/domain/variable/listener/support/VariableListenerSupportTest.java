@@ -31,8 +31,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
-import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.shadowing.TestdataShadowingChainedSolution;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
@@ -89,19 +89,19 @@ public class VariableListenerSupportTest {
 
     @Test
     public void demandRichChained() {
-        SolutionDescriptor<TestdataRichChainedSolution> solutionDescriptor
-                = TestdataRichChainedSolution.buildSolutionDescriptor();
-        InnerScoreDirector<TestdataRichChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
+        SolutionDescriptor<TestdataShadowingChainedSolution> solutionDescriptor
+                = TestdataShadowingChainedSolution.buildSolutionDescriptor();
+        InnerScoreDirector<TestdataShadowingChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        TestdataRichChainedSolution solution = new TestdataRichChainedSolution();
-        solution.setChainedEntityList(Collections.<TestdataRichChainedEntity>emptyList());
+        TestdataShadowingChainedSolution solution = new TestdataShadowingChainedSolution();
+        solution.setChainedEntityList(Collections.<TestdataShadowingChainedEntity>emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport<TestdataRichChainedSolution> variableListenerSupport
+        VariableListenerSupport<TestdataShadowingChainedSolution> variableListenerSupport
                 = new VariableListenerSupport<>(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
-        VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataRichChainedEntity.class)
+        VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataShadowingChainedEntity.class)
                 .getVariableDescriptor("chainedObject");
 
         SingletonInverseVariableSupply supply1

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.chained.rich;
+package org.optaplanner.core.impl.testdata.domain.chained.shadowing;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
@@ -25,57 +25,57 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
-public class TestdataRichChainedEntity extends TestdataObject implements TestdataRichChainedObject {
+public class TestdataShadowingChainedEntity extends TestdataObject implements TestdataShadowingChainedObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataRichChainedEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataShadowingChainedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.findEntityDescriptorOrFail(TestdataShadowingChainedEntity.class);
     }
 
-    private TestdataRichChainedObject chainedObject;
+    private TestdataShadowingChainedObject chainedObject;
 
     // Shadow variables
-    private TestdataRichChainedEntity nextEntity;
-    private TestdataRichChainedAnchor anchor;
+    private TestdataShadowingChainedEntity nextEntity;
+    private TestdataShadowingChainedAnchor anchor;
 
-    public TestdataRichChainedEntity() {
+    public TestdataShadowingChainedEntity() {
     }
 
-    public TestdataRichChainedEntity(String code) {
+    public TestdataShadowingChainedEntity(String code) {
         super(code);
     }
 
-    public TestdataRichChainedEntity(String code, TestdataRichChainedObject chainedObject) {
+    public TestdataShadowingChainedEntity(String code, TestdataShadowingChainedObject chainedObject) {
         this(code);
         this.chainedObject = chainedObject;
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"},
             graphType = PlanningVariableGraphType.CHAINED)
-    public TestdataRichChainedObject getChainedObject() {
+    public TestdataShadowingChainedObject getChainedObject() {
         return chainedObject;
     }
 
-    public void setChainedObject(TestdataRichChainedObject chainedObject) {
+    public void setChainedObject(TestdataShadowingChainedObject chainedObject) {
         this.chainedObject = chainedObject;
     }
 
     @Override
-    public TestdataRichChainedEntity getNextEntity() {
+    public TestdataShadowingChainedEntity getNextEntity() {
         return nextEntity;
     }
 
     @Override
-    public void setNextEntity(TestdataRichChainedEntity nextEntity) {
+    public void setNextEntity(TestdataShadowingChainedEntity nextEntity) {
         this.nextEntity = nextEntity;
     }
 
     @AnchorShadowVariable(sourceVariableName = "chainedObject")
-    public TestdataRichChainedAnchor getAnchor() {
+    public TestdataShadowingChainedAnchor getAnchor() {
         return anchor;
     }
 
-    public void setAnchor(TestdataRichChainedAnchor anchor) {
+    public void setAnchor(TestdataShadowingChainedAnchor anchor) {
         this.anchor = anchor;
     }
 
