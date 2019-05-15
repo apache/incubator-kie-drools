@@ -27,6 +27,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintConfigurationP
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintWeightDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -53,11 +54,11 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
                 = solutionDescriptor.getConstraintConfigurationDescriptor();
         if (configurationDescriptor == null) {
             throw new IllegalStateException("The constraint with package (" + constraintPackage
-                    + ") and name (" + constraintName + ") does not hard-code a constraint weight "
+                    + ") and name (" + constraintName + ") does not hard-code a constraint weight"
                     +" and there is no @" + ConstraintConfigurationProvider.class.getSimpleName()
                     + " on the solution class (" + solutionDescriptor.getSolutionClass() + ").\n"
-                    + "Maybe add a @" + ConstraintConfiguration.class + ".\n"
-                    + "Or maybe call newConstraintWithWeight() instead.\n");
+                    + "Maybe add a @" + ConstraintConfiguration.class.getSimpleName() + " class"
+                    + " or replace the use of" + ConstraintFactory.class.getSimpleName() + ".newConstraint() with newConstraintWithWeight() instead.");
         }
         if (constraintPackage == null) {
             constraintPackage = configurationDescriptor.getConstraintPackage();
@@ -65,11 +66,11 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
         ConstraintWeightDescriptor<Solution_> weightDescriptor = configurationDescriptor.findConstraintWeightDescriptor(constraintPackage, constraintName);
         if (weightDescriptor == null) {
             throw new IllegalStateException("The constraint with package (" + constraintPackage
-                    + ") and name (" + constraintName + ") does not hard-code a constraint weight "
+                    + ") and name (" + constraintName + ") does not hard-code a constraint weight"
                     +" and there is no such @" + ConstraintWeight.class.getSimpleName()
                     + " on the constraintConfigurationClass (" + configurationDescriptor.getConstraintConfigurationClass() + ").\n"
-                    + "Maybe there is a typo in the constraintPackage or constraintName of one of the @" + ConstraintWeight.class + " members.\n"
-                    + "Maybe add a @" + ConstraintWeight.class + " member for it.\n");
+                    + "Maybe there is a typo in the constraintPackage or constraintName of one of the @" + ConstraintWeight.class.getSimpleName() + " members.\n"
+                    + "Maybe add a @" + ConstraintWeight.class.getSimpleName() + " member for it.");
         }
         Function<Solution_, Score<?>> constraintWeightExtractor = weightDescriptor.createExtractor();
         return newConstraint(constraintPackage, constraintName, constraintWeightExtractor);
