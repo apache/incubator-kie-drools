@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.scenariosimulation.api.imports.Import;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
@@ -33,7 +34,6 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.kie.soup.commons.xstream.XStreamUtils;
-import org.kie.soup.project.datamodel.imports.Import;
 
 public class ScenarioSimulationXMLPersistence {
 
