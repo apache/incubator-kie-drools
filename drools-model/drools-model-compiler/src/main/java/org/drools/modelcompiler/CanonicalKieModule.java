@@ -299,7 +299,7 @@ public class CanonicalKieModule implements InternalKieModule {
         ReleaseId releaseId = internalKieModule.getReleaseId();
         String modelFileName = getModelFileWithGAV(releaseId);
         try {
-            ByteArrayResource modelFile = (ByteArrayResource) internalKieModule.getResource(modelFileName);
+            Resource modelFile = internalKieModule.getResource(modelFileName);
             modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
         } catch (IOException e) {
             throw new RuntimeException(e);
