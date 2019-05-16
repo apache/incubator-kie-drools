@@ -60,7 +60,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     @Override
-    public String reverseFunction(Object value) {
+    public String fromObjectToExpression(Object value) {
         FEELFnResult<String> invoke = codeFunction.invoke(value);
         return invoke.getOrElseThrow(feelEvent -> new IllegalArgumentException("This should not happen",
                                                                                feelEvent.getSourceException()));

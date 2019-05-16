@@ -57,7 +57,7 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     @Override
-    public String reverseFunction(Object value) {
+    public String fromObjectToExpression(Object value) {
         return revertValue(value);
     }
 

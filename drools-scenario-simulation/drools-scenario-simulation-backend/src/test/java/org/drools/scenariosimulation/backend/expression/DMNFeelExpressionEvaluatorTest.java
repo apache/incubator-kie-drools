@@ -92,11 +92,11 @@ public class DMNFeelExpressionEvaluatorTest {
     }
 
     @Test
-    public void reverseFunction() {
-        assertEquals("\"Test\"", expressionEvaluator.reverseFunction("Test"));
-        assertEquals("false", expressionEvaluator.reverseFunction(false));
-        assertEquals("1", expressionEvaluator.reverseFunction(BigDecimal.valueOf(1)));
-        assertEquals("date( \"0001-01-01\" )", expressionEvaluator.reverseFunction(LocalDate.of(1, 1, 1)));
-        assertEquals("null", expressionEvaluator.reverseFunction(null));
+    public void fromObjectToExpressionTest() {
+        assertEquals("\"Test\"", expressionEvaluator.fromObjectToExpression("Test"));
+        assertEquals("false", expressionEvaluator.fromObjectToExpression(false));
+        assertEquals("1", expressionEvaluator.fromObjectToExpression(BigDecimal.valueOf(1)));
+        assertEquals("date( \"2019-05-13\" )", expressionEvaluator.fromObjectToExpression(LocalDate.of(2019, 5, 13)));
+        assertEquals("null", expressionEvaluator.fromObjectToExpression(null));
     }
 }

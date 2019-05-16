@@ -24,5 +24,5 @@ public interface ExpressionEvaluator {
 
     Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw);
 
-    String reverseFunction(Object value);
+    String fromObjectToExpression(Object value);
 }

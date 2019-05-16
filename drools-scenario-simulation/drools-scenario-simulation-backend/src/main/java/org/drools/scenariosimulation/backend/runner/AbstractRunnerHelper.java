@@ -209,7 +209,7 @@ public abstract class AbstractRunnerHelper {
         if (!resultValue.isSatisfied() && resultValue.getErrorMessage().isPresent()) {
             expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
         } else if (!resultValue.isSatisfied()) {
-            expectedResult.setErrorValue(expressionEvaluator.reverseFunction(resultValue.getResult()));
+            expectedResult.setErrorValue(expressionEvaluator.fromObjectToExpression(resultValue.getResult()));
         } else {
             expectedResult.resetStatus();
         }

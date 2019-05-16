@@ -118,7 +118,7 @@ public class AbstractExpressionEvaluatorTest {
         }
 
         @Override
-        public String reverseFunction(Object value) {
+        public String fromObjectToExpression(Object value) {
             throw new UnsupportedOperationException();
         }
 
