@@ -18,12 +18,11 @@ package org.kie.api.internal.utils;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.ResourceType;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceDiscoveryImplTest {
 
