@@ -91,6 +91,20 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
     </dependency>
+    
+    <!-- Used to provide a default binding for PMML, and test in this module -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <!-- used by DMN for general (runtime-agnostic) inspection of PMML model -->
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+    </dependency>
+
 
     <dependency>
       <groupId>org.osgi</groupId>

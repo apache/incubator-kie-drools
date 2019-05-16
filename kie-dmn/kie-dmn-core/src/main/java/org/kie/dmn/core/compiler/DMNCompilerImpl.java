@@ -17,7 +17,10 @@
 package org.kie.dmn.core.compiler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -60,6 +63,7 @@ import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -130,13 +134,8 @@ public class DMNCompilerImpl implements DMNCompiler {
     @Override
     public DMNModel compile(Resource resource, Collection<DMNModel> dmnModels) {
         try {
-            DMNModel model = compile(resource.getReader(), dmnModels);
-            if (model == null) {
-                return null;
-            } else {
-                ((DMNModelImpl) model).setResource(resource);
-                return model;
-            }
+            DMNModel model = compile(resource.getReader(), dmnModels, resource);
+            return model;
         } catch ( IOException e ) {
             logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
         }
@@ -145,9 +144,13 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     @Override
     public DMNModel compile(Reader source, Collection<DMNModel> dmnModels) {
+        return compile(source, dmnModels, null);
+    }
+
+    public DMNModel compile(Reader source, Collection<DMNModel> dmnModels, Resource resource) {
         try {
             Definitions dmndefs = getMarshaller().unmarshal(source);
-            DMNModel model = compile(dmndefs, dmnModels);
+            DMNModel model = compile(dmndefs, dmnModels, resource);
             return model;
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
@@ -165,10 +168,14 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     @Override
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels) {
+        return compile(dmndefs, dmnModels, null);
+    }
+
+    public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource) {
         if (dmndefs == null) {
             return null;
         }
-        DMNModelImpl model = new DMNModelImpl(dmndefs);
+        DMNModelImpl model = new DMNModelImpl(dmndefs, resource);
         model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
@@ -201,6 +208,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                         model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
                         importFromModel(model, located, iAlias);
                     }
+                } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
+                    processPMMLImport(model, i);
                 } else {
                     MsgUtil.reportMessage(logger,
                                           DMNMessage.Severity.ERROR,
@@ -217,6 +226,32 @@ public class DMNCompilerImpl implements DMNCompiler {
         processItemDefinitions(ctx, model, dmndefs);
         processDrgElements(ctx, model, dmndefs);
         return model;
+    }
+
+    private void processPMMLImport(DMNModelImpl model, Import i) {
+        URI pmmlURI = null;
+        try {
+            pmmlURI = resolveRelativeURI(model, i.getLocationURI());
+        } catch (URISyntaxException e) {
+            logger.warn("Error inspecting the imported PMML model", e);
+        }
+        if (pmmlURI == null) {
+            return;
+        }
+        InputStream pmmlIS = ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader().getResourceAsStream(pmmlURI.toString());
+        Either<Exception, DMNImportPMMLInfo> pmml = DMNImportPMMLInfo.from(pmmlIS, model, i).cata(x -> {
+            logger.warn("Error inspecting the imported PMML model", x);
+            return null;
+        }, x -> {
+            model.addPMMLImportInfo(x);
+            return null;
+        });
+    }
+
+    protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException {
+        URI dmnModelURI = new URI(model.getResource().getSourcePath());
+        URI relativeURI = dmnModelURI.resolve(relative);
+        return relativeURI;
     }
 
     private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {

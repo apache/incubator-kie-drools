@@ -1,5 +1,8 @@
 package org.kie.dmn.core.compiler;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map.Entry;
@@ -31,6 +34,9 @@ import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
+import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -55,6 +61,7 @@ import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.Invocation;
@@ -431,14 +438,76 @@ public class DMNEvaluatorCompiler {
                                        node.getIdentifierString() );
             }
         } else if (kind.equals(FunctionKind.PMML)) {
-            MsgUtil.reportMessage( logger,
-                                   DMNMessage.Severity.WARN,
-                                   funcDef,
-                                   model,
-                                   null,
-                                   null,
-                                   Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
-                                   node.getIdentifierString() );
+            if (funcDef.getExpression() instanceof Context) {
+                Context context = (Context) funcDef.getExpression();
+                String pmmlDocument = null;
+                String pmmlModel = null;
+                for (ContextEntry ce : context.getContextEntry()) {
+                    if (ce.getVariable() != null && ce.getVariable().getName() != null && ce.getExpression() != null && ce.getExpression() instanceof LiteralExpression) {
+                        if (ce.getVariable().getName().equals("document")) {
+                            pmmlDocument = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                        } else if (ce.getVariable().getName().equals("model")) {
+                            pmmlModel = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                        }
+                    }
+                }
+                String locationURI = null;
+                DMNImportPMMLInfo pmmlInfo = null;
+                if (pmmlDocument != null ) {
+                    for (Import i : model.getDefinitions().getImport()) {
+                        if (i.getName().equals(pmmlDocument)) {
+                            locationURI = i.getLocationURI();
+                            pmmlInfo = model.getPmmlImportInfo().get(pmmlDocument);
+                        }
+                    }
+                }
+                if (locationURI != null) {
+                    logger.trace("{}", locationURI);
+                    URL pmmlURL = null;
+                    try {
+                        URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
+                        pmmlURL = getRootClassLoader().getResource(resolveRelativeURI.toString());
+                    } catch (URISyntaxException e1) {
+                        logger.warn("Unable to locate pmml model from locationURI {}.", locationURI, e1);
+                    }
+                    logger.trace("{}", pmmlURL);
+                    AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
+                                                                                                         getRootClassLoader(),
+                                                                                                         funcDef,
+                                                                                                         pmmlURL,
+                                                                                                         pmmlModel,
+                                                                                                         pmmlInfo);
+                    DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+                    for (InformationItem p : funcDef.getFormalParameter()) {
+                        DMNCompilerHelper.checkVariableName(model, p, p.getName());
+                        DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
+                        func.addParameter(p.getName(), dmnType);
+                        invoker.addParameter(p.getName(), dmnType);
+                    }
+                    func.setEvaluator(invoker);
+                    return func;
+                } else {
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          expression,
+                                          model,
+                                          null,
+                                          null,
+                                          Msg.FUNC_DEF_PMML_MISSING_ENTRY,
+                                          functionName,
+                                          node.getIdentifierString());
+                }
+            } else {
+                // error, PMML function definitions require a context
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      funcDef,
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.FUNC_DEF_BODY_NOT_CONTEXT,
+                                      node.getIdentifierString());
+            }
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,

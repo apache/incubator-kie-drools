@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -1246,6 +1247,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertTrue( sourceIDs.contains( "_a72a7aff-48c3-4806-83ca-fc1f1fe34321" ) );
     }
 
+    @Ignore("the purpose of this work is to enable PMML execution.")
     @Test
     public void testPMMLFunctionContext() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("pmml_function_context.dmn", this.getClass() );
