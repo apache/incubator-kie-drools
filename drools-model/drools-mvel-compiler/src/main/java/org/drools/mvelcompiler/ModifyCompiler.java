@@ -1,28 +1,26 @@
 package org.drools.mvelcompiler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.EmptyStmt;
-import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.DrlConstraintParser;
 import org.drools.constraint.parser.ast.expr.ModifyStatement;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 // A special case of compiler in which only the modify statements are processed
 public class ModifyCompiler {
 
-    private final MvelCompilerContext mvelCompilerContext;
     private PreprocessPhase preprocessPhase = new PreprocessPhase();
 
-    public ModifyCompiler(MvelCompilerContext mvelCompilerContext) {
-        this.mvelCompilerContext = mvelCompilerContext;
+    public ModifyCompiler() {
     }
 
     public ParsingResult compile(String mvelBlock) {
@@ -34,7 +32,6 @@ public class ModifyCompiler {
                 .findAll(EmptyStmt.class)
                 .forEach(Node::remove);
 
-        List<Statement> preProcessedStatements = new ArrayList<>();
         // TODO: This preprocessing will change the order of the modify statments Write a test for that
 
         // TODO: Preprocessor does not recurse see MapInitializationDrools3800Test.testPropertyReactivityHanging
@@ -45,9 +42,17 @@ public class ModifyCompiler {
                 .forEach(s -> {
                     PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
                     modifiedProperties.putAll(invoke.getModifyProperties());
-                    s.replace(new BlockStmt(NodeList.nodeList(invoke.getStatements())));
+                    Optional<Node> parentNode = s.getParentNode();
+                    parentNode.ifPresent(p -> {
+                        BlockStmt p1 = (BlockStmt) p;
+                        p1.getStatements().addAll(invoke.getStatements());
+                        for (String modifiedProperty : invoke.getModifyProperties().keySet()) {
+                            p1.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedProperty))));
+                        }
+                    });
+                    s.remove();
                 });
 
-        return new ParsingResult(preProcessedStatements).setModifyProperties(modifiedProperties);
+        return new ParsingResult(mvelExpression.getStatements()).setModifyProperties(modifiedProperties);
     }
 }
