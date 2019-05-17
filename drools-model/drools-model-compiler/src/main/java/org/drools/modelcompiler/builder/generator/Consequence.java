@@ -234,15 +234,11 @@ public class Consequence {
             return consequence;
         }
 
-        ParsingResult compile = new ModifyCompiler(new MvelCompilerContext(context.getTypeResolver())).compile(addCurlyBracesToBlock(consequence));
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
+        ModifyCompiler modifyCompiler = new ModifyCompiler();
+        ParsingResult compile = modifyCompiler.compile(addCurlyBracesToBlock(consequence));
 
-        BlockStmt statements = compile.statementResults();
-
-        for(String p : compile.getModifyProperties().keySet()) {
-            statements.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(p))));
-        }
-
-        return printConstraint(statements);
+        return printConstraint(compile.statementResults());
     }
 
     private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {
