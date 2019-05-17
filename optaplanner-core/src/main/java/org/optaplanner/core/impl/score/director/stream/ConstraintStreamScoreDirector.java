@@ -94,6 +94,14 @@ public class ConstraintStreamScoreDirector<Solution_>
     }
 
     @Override
+    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+        // TODO change isConstraintMatchEnabled() too
+
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Map<Object, Indictment> getIndictmentMap() {
         // TODO change isConstraintMatchEnabled() too
 

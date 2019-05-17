@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * or more objects.
  * Constraint steams are similar to a declaration of a JDK {@link Stream} or an SQL query,
  * but they support incremental score calculation
- * and {@link ScoreDirector#getConstraintMatchTotals() score justification}.
+ * and {@link ScoreDirector#getConstraintMatchTotalMap()} score justification}.
  * <p>
  * An object that passes through constraint streams is called a fact.
  * It's either a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}.

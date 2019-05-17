@@ -20,6 +20,7 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
@@ -151,6 +152,12 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         journal.fireAllRules();
         return super.getConstraintMatchTotals();
+    }
+
+    @Override
+    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+        journal.fireAllRules();
+        return super.getConstraintMatchTotalMap();
     }
 
     @Override

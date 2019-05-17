@@ -19,6 +19,8 @@ package org.optaplanner.core.impl.score.director.incremental;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -98,6 +100,12 @@ public class IncrementalScoreDirector<Solution_>
         // Notice that we don't trigger the variable listeners
         return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
                 .getConstraintMatchTotals();
+    }
+
+    @Override
+    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+        return getConstraintMatchTotals().stream()
+                .collect(Collectors.toMap(ConstraintMatchTotal::getConstraintId, Function.identity()));
     }
 
     @Override

@@ -78,7 +78,7 @@ public interface Solver<Solution_> {
      * <p>
      * Do not parse this string.
      * Instead, to provide this information in a UI or a service, use {@link #getScoreDirectorFactory()}
-     * to retrieve {@link ScoreDirector#getConstraintMatchTotals()} and {@link ScoreDirector#getIndictmentMap()}
+     * to retrieve {@link ScoreDirector#getConstraintMatchTotalMap()} and {@link ScoreDirector#getIndictmentMap()}
      * and convert those into a domain specific API.
      * <p>
      * This method is thread-safe.

@@ -68,6 +68,15 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
     }
 
     @Override
+    public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
+        if (!isConstraintMatchEnabled()) {
+            throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
+                    + ") is disabled in the constructor, this method should not be called.");
+        }
+        return constraintMatchTotalMap;
+    }
+
+    @Override
     public Map<Object, Indictment> getIndictmentMap() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()

@@ -50,7 +50,7 @@ public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFacto
      * should not do {@link ConstraintMatch} tracking even if it supports it.
      * @return never null
      * @see ScoreDirector#isConstraintMatchEnabled()
-     * @see ScoreDirector#getConstraintMatchTotals()
+     * @see ScoreDirector#getConstraintMatchTotalMap()
      */
     InnerScoreDirector<Solution_> buildScoreDirector(boolean lookUpEnabled, boolean constraintMatchEnabledPreference);
 

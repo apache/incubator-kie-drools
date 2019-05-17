@@ -45,6 +45,7 @@ public class DroolsScoreDirectorTest {
         DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
         assertNotNull(director.getConstraintMatchTotals());
+        assertNotNull(director.getConstraintMatchTotalMap());
     }
 
     @Test

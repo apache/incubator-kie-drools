@@ -72,7 +72,8 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
     Score calculateScore();
 
     /**
-     * @return true if {@link #getConstraintMatchTotals()} can be called
+     * @return true if {@link #getConstraintMatchTotals()}, {@link #getConstraintMatchTotalMap()}
+     * and {@link #getIndictmentMap} can be called
      */
     boolean isConstraintMatchEnabled();
 
@@ -86,12 +87,29 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * unless that method has already been called since the last {@link PlanningVariable} changes.
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     * @see #getConstraintMatchTotalMap()
+     * @see #getIndictmentMap()
      */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
     /**
+     * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per constraint type
+     * (which is usually a score rule).
+     * <p>
+     * The sum of {@link ConstraintMatchTotal#getScore()} equals {@link #calculateScore()}.
+     * <p>
+     * Call {@link #calculateScore()} before calling this method,
+     * unless that method has already been called since the last {@link PlanningVariable} changes.
+     * @return never null, the key is the {@link ConstraintMatchTotal#getConstraintId() constraintId}
+     * (to create one, use {@link ConstraintMatchTotal#composeConstraintId(String, String)}).
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     * @see #getIndictmentMap()
+     */
+    Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
+
+    /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
-     * An indictment is basically the inverse of {@link #getConstraintMatchTotals()}:
+     * An {@link Indictment} is basically the inverse of a {@link ConstraintMatchTotal}:
      * it is a {@link Score} total for each justification {@link Object}
      * in {@link ConstraintMatch#getJustificationList()}.
      * <p>
@@ -106,6 +124,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * unless that method has already been called since the last {@link PlanningVariable} changes.
      * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     * @see #getConstraintMatchTotalMap()
      */
     Map<Object, Indictment> getIndictmentMap();
 
@@ -117,7 +136,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * <p>
      * Do not parse this string.
      * Instead, to provide this information in a UI or a service,
-     * use {@link #getConstraintMatchTotals()} and {@link #getIndictmentMap()}
+     * use {@link #getConstraintMatchTotalMap()} and {@link #getIndictmentMap()}
      * and convert those into a domain specific API.
      * <p>
      * This automatically calls {@link #calculateScore()} first.

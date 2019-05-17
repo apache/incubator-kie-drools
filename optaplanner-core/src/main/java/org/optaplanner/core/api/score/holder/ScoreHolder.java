@@ -80,6 +80,16 @@ public interface ScoreHolder<Score_ extends Score<Score_>> {
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
     /**
+     * Explains the {@link Score} of {@link #extractScore(int)}.
+     * <p>
+     * Should not be called directly, use {@link ScoreDirector#getConstraintMatchTotalMap()} instead.
+     * @return never null
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} is false
+     * @see ScoreDirector#getConstraintMatchTotalMap()
+     */
+    Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
+
+    /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
      * <p>
      * Should not be called directly, use {@link ScoreDirector#getIndictmentMap()} instead.

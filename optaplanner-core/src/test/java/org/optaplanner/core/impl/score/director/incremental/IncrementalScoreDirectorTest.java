@@ -107,6 +107,7 @@ public class IncrementalScoreDirectorTest {
                 mockIncrementalScoreCalculator(true));
         director.setWorkingSolution(new Object());
         assertNotNull(director.getConstraintMatchTotals());
+        assertNotNull(director.getConstraintMatchTotalMap());
     }
 
     @Test

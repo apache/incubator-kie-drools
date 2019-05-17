@@ -28,9 +28,18 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Retrievable from {@link ScoreDirector#getConstraintMatchTotals()}.
+ * Retrievable from {@link ScoreDirector#getConstraintMatchTotalMap()}.
  */
 public final class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
+
+    /**
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @return never null
+     */
+    public static String composeConstraintId(String constraintPackage, String constraintName) {
+        return constraintPackage + "/" + constraintName;
+    }
 
     private final String constraintPackage;
     private final String constraintName;
@@ -148,8 +157,12 @@ public final class ConstraintMatchTotal implements Serializable, Comparable<Cons
     // Infrastructure methods
     // ************************************************************************
 
+    /**
+     * To create a constraintId, use {@link #composeConstraintId(String, String)}.
+     * @return never null
+     */
     public String getConstraintId() {
-        return constraintPackage + "/" + constraintName;
+        return composeConstraintId(constraintPackage, constraintName);
     }
 
     @Override

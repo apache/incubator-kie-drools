@@ -123,10 +123,13 @@ public abstract class AbstractScoreVerifier<Solution_> {
      */
     private ConstraintMatchTotal findConstraintMatchTotal(
             String constraintPackage, String constraintName, ScoreDirector<Solution_> scoreDirector) {
+        if (constraintPackage != null) {
+            String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
+            return scoreDirector.getConstraintMatchTotalMap().get(constraintId);
+        }
         ConstraintMatchTotal matchTotal = null;
         for (ConstraintMatchTotal selectedMatchTotal : scoreDirector.getConstraintMatchTotals()) {
-            if (selectedMatchTotal.getConstraintName().equals(constraintName)
-                    && (constraintPackage == null || selectedMatchTotal.getConstraintPackage().equals(constraintPackage))) {
+            if (selectedMatchTotal.getConstraintName().equals(constraintName)) {
                 if (matchTotal != null) {
                     throw new IllegalArgumentException("The constraintName (" + constraintName
                             + ") is used by 2 different constraintMatches (" + matchTotal.getConstraintId()
