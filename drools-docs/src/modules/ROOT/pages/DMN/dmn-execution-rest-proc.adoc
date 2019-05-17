@@ -676,7 +676,7 @@ Example curl request:
 
 [source]
 ----
-curl -u wbadmin:wbadmin -H "accept: application/json" -H "content-type: application/json" -X POST "http://localhost:8080/kie-server/services/rest/server/containers/Traffic-Violation_1.0.0/dmn" -d "{ \"model-namespace\" : \"https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8\", \"model-name\" : "Traffic Violation", \"dmn-context\" : {"Driver" : {"Points" : 15}, "Violation" : {"Type" : "speed", "Actual Speed" : 135, "Speed Limit" : 100}}"
+curl -u wbadmin:wbadmin -H "accept: application/json" -H "content-type: application/json" -X POST "http://localhost:8080/kie-server/services/rest/server/containers/Traffic-Violation_1.0.0/dmn" -d "{ \"model-namespace\" : \"https://github.com/kiegroup/drools/kie-dmn/_60B01F4D-E407-43F7-848E-258723B5FAC8\", \"model-name\" : \"Traffic Violation\", \"dmn-context\" : {\"Driver\" : {\"Points\" : 15}, \"Violation\" : {\"Type\" : \"speed\", \"Actual Speed\" : 135, \"Speed Limit\" : 100}}}"
 ----
 
 Example JSON request:
