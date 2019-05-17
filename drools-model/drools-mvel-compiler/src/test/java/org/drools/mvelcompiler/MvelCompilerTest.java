@@ -167,26 +167,17 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void testWith() {
-        test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ with ( $p )  { name = \"Luca\", age = 35 }; }",
-             "{ $p.setName(\"Luca\"); $p.setAge(35); }",
-             result -> assertThat(allModifiedProperties(result), is(empty())));
-    }
-
-    @Test
     public void testWithSemiColon() {
-        test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ with($p) { setAge(1); }; }",
-             "{ $p.setAge(1); }",
+        test("{ with( $l = new ArrayList()) { $l.add(2); }; }",
+             "{ java.util.ArrayList $l = new ArrayList(); $l.add(2); }",
              result -> assertThat(allModifiedProperties(result), is(empty())));
     }
 
     @Test
     public void testWithWithAssignment() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ with($p) { age = $p.age+1 }; }",
-             "{ $p.setAge($p.getAge() + 1); }",
+             "{ with($p = new Person()) { age = $p.age+1 }; }",
+             "{ org.drools.Person $p = new Person(); $p.setAge($p.getAge() + 1); }",
              result -> assertThat(allModifiedProperties(result), is(empty())));
     }
 

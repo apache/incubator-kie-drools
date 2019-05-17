@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,12 +17,18 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.expr.WithStatement;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.StringUtils.lcFirst;
 
@@ -93,7 +100,9 @@ public class PreprocessPhase {
     private PreprocessPhaseResult withPreprocessor(WithStatement withStatement) {
         PreprocessPhaseResult result = new PreprocessPhaseResult();
 
-        final Expression scope = withStatement.getWithObject();
+        Optional<Expression> initScope = addTypeToInitialization(withStatement, result);
+        final Expression scope = initScope.orElse(withStatement.getWithObject());
+
         withStatement
                 .findAll(AssignExpr.class)
                 .replaceAll(assignExpr -> assignToFieldAccess(result, scope, assignExpr));
@@ -107,6 +116,27 @@ public class PreprocessPhase {
 
         result.modifyProperties.clear(); // no need to have modify properties using with
         return result.addStatements(statements);
+    }
+
+    private Optional<Expression> addTypeToInitialization(WithStatement withStatement, PreprocessPhaseResult result) {
+        if (withStatement.getWithObject().isAssignExpr()) {
+            AssignExpr assignExpr = withStatement.getWithObject().asAssignExpr();
+            Expression assignExprValue = assignExpr.getValue();
+            Expression assignExprTarget = assignExpr.getTarget();
+
+            if (assignExprValue.isObjectCreationExpr() && assignExprTarget instanceof DrlNameExpr) {
+                ObjectCreationExpr constructor = assignExprValue.asObjectCreationExpr();
+                ClassOrInterfaceType ctorType = constructor.getType();
+
+                String targetVariableName = ((DrlNameExpr)assignExprTarget).getNameAsString();
+                VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
+                AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
+                ExpressionStmt expressionStmt = new ExpressionStmt(withTypeAssignmentExpr);
+                result.addStatements(nodeList(expressionStmt));
+                return of(new DrlNameExpr(targetVariableName));
+            }
+        }
+        return empty();
     }
 
     private List<Statement> wrapToExpressionStmt(NodeList<Statement> expressions) {
