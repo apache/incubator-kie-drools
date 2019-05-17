@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.drools.Person;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
@@ -27,6 +28,7 @@ interface CompilerTest {
         imports.add("java.util.ArrayList");
         imports.add("java.util.HashMap");
         imports.add("java.util.Map");
+        imports.add(Person.class.getCanonicalName());
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
         testFunction.apply(mvelCompilerContext);
