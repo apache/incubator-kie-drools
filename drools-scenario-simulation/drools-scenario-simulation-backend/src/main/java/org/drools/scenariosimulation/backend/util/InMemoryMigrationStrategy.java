@@ -107,7 +107,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
             ScenarioSimulationModel model = xmlPersistence.unmarshal(rawXml, false);
             String dmoSession = model.getSimulation().getSimulationDescriptor().getDmoSession();
-            if("default".equals(dmoSession) || "".equals(dmoSession)) {
+            if ("default".equals(dmoSession) || "".equals(dmoSession)) {
                 model.getSimulation().getSimulationDescriptor().setDmoSession(null);
             }
             return updateVersion(xmlPersistence.marshal(model), "1.4", "1.5");
