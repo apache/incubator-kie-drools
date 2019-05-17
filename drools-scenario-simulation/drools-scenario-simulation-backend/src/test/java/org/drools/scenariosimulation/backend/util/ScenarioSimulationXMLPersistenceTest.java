@@ -126,6 +126,8 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toMigrate = getFileContent("scesim-1-3-rule.scesim");
         assertTrue(toMigrate.contains("dmoSession"));
         String migrated = instance.migrateIfNecessary(toMigrate);
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
         assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
         assertTrue(!migrated.contains("dmoSession"));
     }
