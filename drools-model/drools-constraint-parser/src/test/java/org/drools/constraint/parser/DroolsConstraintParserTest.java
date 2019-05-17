@@ -684,6 +684,17 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    public void testWithConstructor() {
+        String expr = "{ with(s1 = new Some()) { }; }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    with (s1 = new Some()) {  };\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
     public void testWithoutSemicolon() {
         String expr = "{             " +
                         "a\n" +
