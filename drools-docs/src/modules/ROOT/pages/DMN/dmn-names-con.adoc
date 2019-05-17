@@ -18,7 +18,7 @@ Spaces in names::
 The DMN specification limits the use of spaces in FEEL names. According to the DMN specification, names can contain multiple spaces but not two consecutive spaces.
 +
 --
-In order to make the language easier to use and avoid common errors due to spaces, {PRODUCT} removes the limitation on the use of consecutive spaces. {PRODUCT} supports variable names with any number of consecutive spaces, but normalizes them into a single space. For example, the two variable references `First Name` and `First  Name` are both acceptable in {PRODUCT}.
+In order to make the language easier to use and avoid common errors due to spaces, {PRODUCT} removes the limitation on the use of consecutive spaces. {PRODUCT} supports variable names with any number of consecutive spaces, but normalizes them into a single space. For example, the variable references `First Name` with one space and `First  Name` with two spaces are both acceptable in {PRODUCT}.
 
 {PRODUCT} also normalizes the use of other white spaces, like the non-breakable white space that is common in web pages, tabs, and line breaks. From a {PRODUCT} FEEL engine perspective, all of these characters are normalized into a single white space before processing.
 --
