@@ -16,7 +16,7 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 public class ModifyCompiler {
 
     private final MvelCompilerContext mvelCompilerContext;
-    private ModifyPreprocessPhase modifyPreprocessPhase = new ModifyPreprocessPhase();
+    private PreprocessPhase preprocessPhase = new PreprocessPhase();
 
     public ModifyCompiler(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;
@@ -40,7 +40,7 @@ public class ModifyCompiler {
         // Write a test for that
         Map<String, Set<String>> modifiedProperties = new HashMap<>();
         for(Statement t : withoutEmptyStatements) {
-            ModifyPreprocessPhase.ModifyPreprocessPhaseResult invoke = modifyPreprocessPhase.invoke(t);
+            PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(t);
             modifiedProperties.putAll(invoke.getModifyProperties());
             preProcessedStatements.addAll(invoke.getStatements());
         }

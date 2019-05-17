@@ -135,6 +135,7 @@ import org.drools.constraint.parser.ast.expr.RulePattern;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
+import org.drools.constraint.parser.ast.expr.WithStatement;
 
 public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
     default R defaultMethod(Node n, A a) { return null; }
@@ -652,4 +653,6 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
     default R visit(MapCreationLiteralExpression n, A arg) { return null; };
 
     default R visit(MapCreationLiteralExpressionKeyValuePair n, A arg) { return null; };
+
+    default R visit(WithStatement withStatement, A arg) { return null; };
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,7 @@ import static java.util.Optional.ofNullable;
 public class MvelCompiler {
 
     private final MvelCompilerContext mvelCompilerContext;
-    private ModifyPreprocessPhase modifyPreprocessPhase = new ModifyPreprocessPhase();
+    private PreprocessPhase preprocessPhase = new PreprocessPhase();
 
     public MvelCompiler(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;
@@ -42,7 +41,7 @@ public class MvelCompiler {
         // Write a test for that
         Map<String, Set<String>> modifiedProperties = new HashMap<>();
         for(Statement t : withoutEmptyStatements) {
-            ModifyPreprocessPhase.ModifyPreprocessPhaseResult invoke = modifyPreprocessPhase.invoke(t);
+            PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(t);
             modifiedProperties.putAll(invoke.getModifyProperties());
             preProcessedModifyStatements.addAll(invoke.getStatements());
         }

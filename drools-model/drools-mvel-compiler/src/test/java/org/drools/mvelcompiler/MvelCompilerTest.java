@@ -6,6 +6,8 @@ import org.drools.Person;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class MvelCompilerTest implements CompilerTest {
@@ -162,6 +164,30 @@ public class MvelCompilerTest implements CompilerTest {
              "{ modify($p) { age = $p.age+1 }; }",
              "{ $p.setAge($p.getAge() + 1); }",
              result -> assertThat(allModifiedProperties(result), containsInAnyOrder("age")));
+    }
+
+    @Test
+    public void testWith() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ with ( $p )  { name = \"Luca\", age = 35 }; }",
+             "{ $p.setName(\"Luca\"); $p.setAge(35); }",
+             result -> assertThat(allModifiedProperties(result), is(empty())));
+    }
+
+    @Test
+    public void testWithSemiColon() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ with($p) { setAge(1); }; }",
+             "{ $p.setAge(1); }",
+             result -> assertThat(allModifiedProperties(result), is(empty())));
+    }
+
+    @Test
+    public void testWithWithAssignment() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ with($p) { age = $p.age+1 }; }",
+             "{ $p.setAge($p.getAge() + 1); }",
+             result -> assertThat(allModifiedProperties(result), is(empty())));
     }
 
     @Test

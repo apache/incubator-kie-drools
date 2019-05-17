@@ -135,6 +135,7 @@ import org.drools.constraint.parser.ast.expr.RulePattern;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
+import org.drools.constraint.parser.ast.expr.WithStatement;
 
 public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
 
@@ -651,4 +652,6 @@ public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
     default void visit(MapCreationLiteralExpression n, A arg) { };
 
     default void visit(MapCreationLiteralExpressionKeyValuePair n, A arg) { };
+
+    default void visit(WithStatement withStatement, A arg) { };
 }

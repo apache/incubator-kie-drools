@@ -1385,7 +1385,7 @@ String Identifier():
 }
 {
     // Make sure the module info keywords don't interfere with normal Java parsing by matching them as normal identifiers.
-    (<RULE> | <MODULE> | <REQUIRES> | <TO> | <WITH> | <OPEN> | <OPENS> | <USES> | <EXPORTS> | <PROVIDES> | <TRANSITIVE> |
+    (<RULE> | <MODULE> | <REQUIRES> | <TO> | <OPEN> | <OPENS> | <USES> | <EXPORTS> | <PROVIDES> | <TRANSITIVE> |
     // Make sure older Java versions parse
     <ENUM> | <STRICTFP> |
     // An actual plain old identifier
@@ -2151,6 +2151,8 @@ Statement Statement():
             ret = TryStatement()
         |
             ret = ModifyStatement()
+        |
+            ret = WithStatement()
         )
         { return ret; }
     } catch (ParseException e) {
@@ -2571,6 +2573,34 @@ ModifyStatement ModifyStatement():
             (<SEMICOLON>|<UNIX_EOL>)*
             {
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
+            }
+
+        )
+    )
+}
+
+
+WithStatement WithStatement():
+{
+    JavaToken begin;
+    Statement first = null;
+    Statement other = null;
+    NodeList<Statement> all = emptyList();
+    Expression withObject = null;
+}
+{
+    (
+        (
+            <WITH><LPAREN> (withObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
+            (first = Statement()(<SEMICOLON>|<UNIX_EOL>)?)* { begin=token(); all.add(first); }
+            (
+                          (<COMMA>|<UNIX_EOL>)
+                          other = Statement() { all.add(other); }
+            )*
+            <RBRACE>
+            (<SEMICOLON>|<UNIX_EOL>)*
+            {
+                return new WithStatement(range(begin, token()), withObject, all);
             }
 
         )
