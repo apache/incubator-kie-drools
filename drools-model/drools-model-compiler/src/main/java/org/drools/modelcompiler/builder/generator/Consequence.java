@@ -234,7 +234,6 @@ public class Consequence {
             return consequence;
         }
 
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
         ModifyCompiler modifyCompiler = new ModifyCompiler();
         ParsingResult compile = modifyCompiler.compile(addCurlyBracesToBlock(consequence));
 
