@@ -54,6 +54,7 @@ import org.drools.constraint.parser.ast.expr.TemporalChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
+import org.drools.constraint.parser.ast.expr.WithStatement;
 import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 
 import static com.github.javaparser.utils.Utils.isNullOrEmpty;
@@ -294,6 +295,24 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
         printer.print(") { ");
 
         String expressionWithComma = modifyExpression.getExpressions()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(Statement::isExpressionStmt)
+                .map(n -> printConstraint(n.asExpressionStmt().getExpression()))
+                .collect(Collectors.joining(", "));
+
+        printer.print(expressionWithComma);
+        printer.print(" }");
+
+        printer.print(";");
+    }
+
+    public void visit(WithStatement withExpression, Void arg) {
+        printer.print("with (");
+        withExpression.getWithObject().accept(this, arg);
+        printer.print(") { ");
+
+        String expressionWithComma = withExpression.getExpressions()
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(Statement::isExpressionStmt)

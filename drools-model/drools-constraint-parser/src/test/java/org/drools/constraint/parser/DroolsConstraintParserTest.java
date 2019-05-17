@@ -606,6 +606,82 @@ public class DroolsConstraintParserTest {
                              , printConstraint(expression));
 
     }
+    
+    
+    @Test
+    public void testWithStatement() {
+        String expr = "{ with ( $p )  { name = \"Luca\", age = \"35\" }; }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    with ($p) { name = \"Luca\", age = \"35\" };\n" +
+                             "}", printConstraint(expression));
+    }
+
+    @Test(expected = ParseProblemException.class)
+    public void testWithFailing() {
+        String expr = "{ with  { name = \"Luca\", age = \"35\" }; }";
+        DrlConstraintParser.parseBlock(expr);
+    }
+
+    @Test
+    public void testWithStatementSemicolon() {
+        String expr = "{ with ( $p )  { name = \"Luca\"; }; }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    with ($p) { name = \"Luca\" };\n" +
+                             "}", printConstraint(expression));
+    }
+
+    @Test
+    public void testWithSemiColon() {
+        String expr = "{ with($p) { setAge(1); }; }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    with ($p) { setAge(1) };\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
+    public void testWithEmptyBlock() {
+        String expr = "{ with( $s ) { } }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    with ($s) {  };\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
+    public void testWithWithoutSemicolon() {
+        String expr = "{with($p) { setAge($p.getAge()+1) } }";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals(
+                             "{\n" +
+                                     "    with ($p) { setAge($p.getAge() + 1) };\n" +
+                                     "}"
+                             , printConstraint(expression));
+
+    }
+
+
+    @Test
+    public void testWithWithCast() {
+        String expr = "{with( (BooleanEvent)$toEdit.get(0) ){  }}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals(
+                             "{\n" +
+                                     "    with ((BooleanEvent) $toEdit.get(0)) {  };\n" +
+                                     "}"
+                             , printConstraint(expression));
+
+    }
 
     @Test
     public void testWithoutSemicolon() {
