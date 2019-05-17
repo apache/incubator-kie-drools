@@ -17,17 +17,16 @@
 package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
-import org.drools.modelcompiler.builder.generator.ModuleSourceClass;
 
 public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKieProject {
 
     private boolean hasCdi = ModelWriter.HAS_CDI;
+    private boolean oneClassPerRule = false;
 
     public CanonicalModelCodeGenerationKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(true, kieModule, classLoader);
@@ -42,13 +41,18 @@ public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKiePro
         return hasCdi;
     }
 
+    public CanonicalModelCodeGenerationKieProject withOneClassPerRule(boolean oneClassPerRule) {
+        this.oneClassPerRule = oneClassPerRule;
+        return this;
+    }
+
     @Override
-    public void writeProjectOutput( MemoryFileSystem trgMfs, ResultsImpl messages) {
+    public void writeProjectOutput( MemoryFileSystem trgMfs, ResultsImpl messages ) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         List<String> generatedSourceFiles = new ArrayList<>();
         ModelWriter modelWriter = new ModelWriter();
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
-            ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
+            ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels(), oneClassPerRule);
             generatedSourceFiles.addAll(result.getModelFiles());
         }
 

@@ -43,15 +43,20 @@ public class RuleCodegen implements Generator {
     private ModuleSourceClass moduleGenerator;
 
     public static RuleCodegen ofPath(Path path) throws IOException {
+        return ofPath( path, false );
+    }
+
+    public static RuleCodegen ofPath(Path path, boolean oneClassPerRule) throws IOException {
         KieServices ks = KieServices.Factory.get();
-        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(path.toFile()), Collections.emptyList());
+        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(path.toFile()), oneClassPerRule, Collections.emptyList());
     }
 
     public static RuleCodegen ofFiles(Path basePath, Collection<File> files) throws IOException {
         KieServices ks = KieServices.Factory.get();
-        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(basePath.toFile()), files);
+        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(basePath.toFile()), true, files);
     }
 
+    private final boolean oneClassPerRule;
 
     private final KieBuilderImpl kieBuilder;
     /**
@@ -61,9 +66,9 @@ public class RuleCodegen implements Generator {
 
     private boolean dependencyInjection;
 
-    public RuleCodegen(
-            KieBuilderImpl kieBuilder, Collection<File> files) {
+    public RuleCodegen( KieBuilderImpl kieBuilder, boolean oneClassPerRule, Collection<File> files ) {
         this.kieBuilder = kieBuilder;
+        this.oneClassPerRule = oneClassPerRule;
         if (files.isEmpty()) {
             this.fileFilter = f -> true;
         } else {
@@ -95,6 +100,7 @@ public class RuleCodegen implements Generator {
                 (km, cl) ->
                         new RuleCodegenProject(km, cl)
                                 .withModuleGenerator(moduleGenerator)
+                                .withOneClassPerRule(oneClassPerRule)
                                 .withCdi(dependencyInjection),
                 s -> {
                     return !s.contains("src/test/java")

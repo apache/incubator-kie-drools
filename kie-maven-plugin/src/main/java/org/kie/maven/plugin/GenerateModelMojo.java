@@ -131,7 +131,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                         .withDependencyInjection(dependencyInjection);
 
         if (generateRuleUnits) {
-            appGen.withGenerator(RuleCodegen.ofPath(projectPath));
+            appGen.withGenerator(RuleCodegen.ofPath(projectPath, false));
         }
 
         if (generateProcesses) {

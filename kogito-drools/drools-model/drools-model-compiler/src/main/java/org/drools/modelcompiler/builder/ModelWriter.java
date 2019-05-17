@@ -24,7 +24,7 @@ public class ModelWriter {
         return this;
     }
 
-    public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageModel> packageModels) {
+    public Result writeModel(MemoryFileSystem srcMfs, Collection<PackageModel> packageModels, boolean oneClassPerRule) {
         List<String> sourceFiles = new ArrayList<>();
         List<String> modelFiles = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public class ModelWriter {
                 addSource( srcMfs, sourceFiles, pkgModel, pojoSourceName, source );
             }
 
-            RuleSourceResult rulesSourceResult = pkgModel.getRulesSource();
+            RuleSourceResult rulesSourceResult = pkgModel.getRulesSource(oneClassPerRule);
             // main rules file:
             String rulesFileName = pkgModel.getRulesFileName();
             String rulesSourceName = "src/main/java/" + folderName + "/" + rulesFileName + ".java";

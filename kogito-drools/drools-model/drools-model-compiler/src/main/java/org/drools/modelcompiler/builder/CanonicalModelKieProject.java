@@ -87,7 +87,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         Collection<String> sourceFiles = new HashSet<>();
 
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
-            final ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels());
+            final ModelWriter.Result result = modelWriter.writeModel(srcMfs, modelBuilder.getPackageModels(), false);
             modelFiles.addAll(result.getModelFiles());
             sourceFiles.addAll(result.getSources());
         }

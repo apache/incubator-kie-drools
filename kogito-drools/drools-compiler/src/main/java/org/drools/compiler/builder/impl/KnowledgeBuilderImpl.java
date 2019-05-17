@@ -15,10 +15,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
-import static org.drools.core.util.StringUtils.isEmpty;
-import static org.drools.core.util.StringUtils.ucFirst;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -120,7 +116,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.BaseResource;
 import org.drools.core.io.impl.ClassPathResource;
-import org.drools.core.io.impl.DescrResource;
 import org.drools.core.io.impl.ReaderResource;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.rule.Function;
@@ -163,6 +158,10 @@ import org.kie.internal.io.ResourceWithConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
+import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder,
                                                 DroolsAssemblerContext,
@@ -530,23 +529,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
 
     PackageDescr drlToPackageDescr(Resource resource) throws DroolsParserException,
             IOException {
-        PackageDescr pkg;
-        boolean hasErrors = false;
-        if (resource instanceof DescrResource) {
-            pkg = (PackageDescr) ((DescrResource) resource).getDescr();
-        } else {
-            final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-            pkg = parser.parse(resource);
-            this.results.addAll(parser.getErrors());
-            if (pkg == null) {
-                addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
-            }
-            hasErrors = parser.hasErrors();
+        PackageDescr pkg = KnowledgeBuilderUtil.drlToPackageDescr(resource, results, configuration.getLanguageLevel());
+        if (pkg == null) {
+            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
         }
-        if (pkg != null) {
-            pkg.setResource(resource);
-        }
-        return hasErrors ? null : pkg;
+        return pkg;
     }
 
     /**

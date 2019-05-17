@@ -365,7 +365,7 @@ public class PackageModel {
 
     }
 
-    public RuleSourceResult getRulesSource() {
+    public RuleSourceResult getRulesSource(boolean oneClassPerRule) {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( name );
 
@@ -502,19 +502,20 @@ public class PackageModel {
                 .values()
                 .parallelStream()
                 .map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
-        int rulesPerClass = Math.max( 50000 / maxLength, 1 );
+        int rulesPerClass = oneClassPerRule ? 1 : Math.max( 50000 / maxLength, 1 );
 
         // each method per Drlx parser result
         int count = -1;
         Map<Integer, ClassOrInterfaceDeclaration> splitted = new LinkedHashMap<>();
         for (Entry<String, MethodDeclaration> ruleMethodKV : ruleMethods.entrySet()) {
+            String methodName = ruleMethodKV.getKey();
             ClassOrInterfaceDeclaration rulesMethodClass = splitted.computeIfAbsent(++count / rulesPerClass, i -> {
                 CompilationUnit cuRulesMethod = new CompilationUnit();
                 results.with(cuRulesMethod);
                 cuRulesMethod.setPackageDeclaration(name);
                 manageImportForCompilationUnit(cuRulesMethod);
                 cuRulesMethod.addImport(name + "." + rulesFileName, true, true);
-                String currentRulesMethodClassName = rulesFileName + "RuleMethods" + i;
+                String currentRulesMethodClassName = rulesFileName + (oneClassPerRule ? "_" + methodName : "RuleMethods" + i);
                 return cuRulesMethod.addClass(currentRulesMethodClassName);
             });
             rulesMethodClass.addMember(ruleMethodKV.getValue());
