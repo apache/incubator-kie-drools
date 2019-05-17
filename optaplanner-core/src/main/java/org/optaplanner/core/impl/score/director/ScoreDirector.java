@@ -19,9 +19,11 @@ package org.optaplanner.core.impl.score.director;
 import java.util.Collection;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -102,7 +104,7 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
      * <p>
      * Call {@link #calculateScore()} before calling this method,
      * unless that method has already been called since the last {@link PlanningVariable} changes.
-     * @return never null
+     * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      */
     Map<Object, Indictment> getIndictmentMap();
