@@ -126,6 +126,7 @@ public class ResourceGenerator {
         
         template.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
         template.findAll(ClassOrInterfaceType.class).forEach(this::interpolateTypes);
+        template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
 
         if (hasCdi) {
             template.findAll(FieldDeclaration.class,
@@ -203,6 +204,12 @@ public class ResourceGenerator {
                 .forEach(this::interpolateTypes);
     }
     
+    private void interpolateMethods(MethodDeclaration m) {
+        SimpleName methodName = m.getName();
+        String interpolated =
+                methodName.asString().replace("$name$", processName);
+        m.setName(interpolated);
+    }
     
     private void interpolateUserTaskTypes(ClassOrInterfaceType t, String inputClazzName, String outputClazzName) {
         SimpleName returnType = t.asClassOrInterfaceType().getName();

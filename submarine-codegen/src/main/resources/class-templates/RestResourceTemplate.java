@@ -32,7 +32,7 @@ public class $Type$Resource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation("Creates new instance of $name$")
-    public $Type$ createResource(@ApiParam(value="$name$ data that should be created") $Type$ resource) {
+    public $Type$ createResource_$name$(@ApiParam(value="$name$ data that should be created") $Type$ resource) {
         if (resource == null) {
             resource = new $Type$();
         }
@@ -45,7 +45,7 @@ public class $Type$Resource {
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Returns a list of $name$")
-    public List<$Type$> getResources() {
+    public List<$Type$> getResources_$name$() {
         return process.instances().values().stream()
                 .map(ProcessInstance::variables)
                 .collect(Collectors.toList());
@@ -55,7 +55,7 @@ public class $Type$Resource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Returns information about specified $name$")
-    public $Type$ getResource(@PathParam("id") Long id) {
+    public $Type$ getResource_$name$(@PathParam("id") Long id) {
         return process.instances()
                 .findById(id)
                 .map(ProcessInstance::variables)
@@ -66,7 +66,7 @@ public class $Type$Resource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Cancels specified $name$")
-    public $Type$ deleteResource(@PathParam("id") Long id) {
+    public $Type$ deleteResource_$name$(@PathParam("id") Long id) {
         ProcessInstance<$Type$> pi = process.instances()
                 .findById(id)
                 .orElse(null);
@@ -82,7 +82,7 @@ public class $Type$Resource {
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation("Returns list of task ids that are currently active in given $name$")
-    public Map<Long, String> getTasks(@PathParam("id") Long id) {
+    public Map<Long, String> getTasks_$name$(@PathParam("id") Long id) {
         return process.instances()
                 .findById(id)
                 .map(ProcessInstance::workItems)
