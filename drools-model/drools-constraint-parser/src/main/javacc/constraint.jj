@@ -2591,7 +2591,7 @@ WithStatement WithStatement():
 {
     (
         (
-            <WITH><LPAREN> (withObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
+            <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
             (first = Statement()(<SEMICOLON>|<UNIX_EOL>)?)* { begin=token(); all.add(first); }
             (
                           (<COMMA>|<UNIX_EOL>)
