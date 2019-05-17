@@ -34,16 +34,23 @@ import static org.drools.core.util.StringUtils.lcFirst;
 
 public class PreprocessPhase {
 
-    static class PreprocessPhaseResult {
+    interface PreprocessPhaseResult {
+        List<Statement> getStatements();
+        Map<String, Set<String>> getModifyProperties();
+        PreprocessPhaseResult addModifyProperties(String name, String p);
+        PreprocessPhaseResult addStatements(List<Statement> statements);
+    }
+
+    static class ModifyResult implements PreprocessPhaseResult {
 
         final List<Statement> statements = new ArrayList<>();
         // TODO: Refactor this
         final Map<String, Set<String>> modifyProperties = new HashMap<>();
 
-        PreprocessPhaseResult() {
+        ModifyResult() {
         }
 
-        List<Statement> getStatements() {
+        public List<Statement> getStatements() {
             return statements;
         }
 
@@ -51,7 +58,7 @@ public class PreprocessPhase {
             return modifyProperties;
         }
 
-        PreprocessPhaseResult addModifyProperties(String name, String p) {
+        public PreprocessPhaseResult addModifyProperties(String name, String p) {
             Set<String> modifiedPropertiesSet = modifyProperties.get(name);
             if (modifiedPropertiesSet == null) {
                 HashSet<String> value = new HashSet<>();
@@ -69,6 +76,32 @@ public class PreprocessPhase {
         }
     }
 
+    static class StatementResult implements  PreprocessPhaseResult {
+
+        final List<Statement> statements = new ArrayList<>();
+
+        @Override
+        public List<Statement> getStatements() {
+            return statements;
+        }
+
+        @Override
+        public Map<String, Set<String>> getModifyProperties() {
+            return new HashMap<>();
+        }
+
+        @Override
+        public PreprocessPhaseResult addModifyProperties(String name, String p) {
+            return this;
+        }
+
+        @Override
+        public PreprocessPhaseResult addStatements(List<Statement> statements) {
+            this.statements.addAll(statements);
+            return this;
+        }
+    }
+
     public PreprocessPhaseResult invoke(Statement statement) {
 
         if (statement instanceof ModifyStatement) {
@@ -76,12 +109,12 @@ public class PreprocessPhase {
         } else if (statement instanceof WithStatement) {
             return withPreprocessor((WithStatement)statement);
         } else {
-            return new PreprocessPhaseResult().addStatements(Collections.singletonList(statement));
+            return new StatementResult().addStatements(Collections.singletonList(statement));
         }
     }
 
     private PreprocessPhaseResult modifyPreprocessor(ModifyStatement modifyStatement) {
-        PreprocessPhaseResult result = new PreprocessPhaseResult();
+        PreprocessPhaseResult result = new ModifyResult();
 
         final Expression scope = modifyStatement.getModifyObject();
         modifyStatement
@@ -98,7 +131,7 @@ public class PreprocessPhase {
     }
 
     private PreprocessPhaseResult withPreprocessor(WithStatement withStatement) {
-        PreprocessPhaseResult result = new PreprocessPhaseResult();
+        PreprocessPhaseResult result = new StatementResult();
 
         Optional<Expression> initScope = addTypeToInitialization(withStatement, result);
         final Expression scope = initScope.orElse(withStatement.getWithObject());
@@ -114,7 +147,6 @@ public class PreprocessPhase {
 
         List<Statement> statements = wrapToExpressionStmt(withStatement.getExpressions());
 
-        result.modifyProperties.clear(); // no need to have modify properties using with
         return result.addStatements(statements);
     }
 
