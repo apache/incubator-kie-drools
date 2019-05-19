@@ -100,6 +100,9 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
 
             DMNContext dmnContext = eventManager.getRuntime().newContext();
             try {
+                if (params.length != parameters.size()) {
+                    return null;
+                }
                 for (int i = 0; i < params.length; i++) {
                     DSFormalParameter formalParameter = parameters.get(i);
                     if (formalParameter.getImportName() == null) {
