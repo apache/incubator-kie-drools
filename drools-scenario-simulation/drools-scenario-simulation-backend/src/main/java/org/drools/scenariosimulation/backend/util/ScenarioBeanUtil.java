@@ -169,6 +169,36 @@ public class ScenarioBeanUtil {
                                                    .append(" is not supported").toString());
     }
 
+    public static String revertValue(Object cleanValue) {
+        if (cleanValue == null) {
+            return "null";
+        }
+
+        Class<?> clazz = cleanValue.getClass();
+
+        if (clazz.isAssignableFrom(String.class)) {
+            return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
+            return Boolean.toString((Boolean) cleanValue);
+        } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
+            return Integer.toString((Integer) cleanValue);
+        } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
+            return cleanValue + "L";
+        } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
+            return cleanValue + "D";
+        } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
+            return cleanValue + "F";
+        } else if (clazz.isAssignableFrom(Character.class) || clazz.isAssignableFrom(char.class)) {
+            return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(Byte.class) || clazz.isAssignableFrom(byte.class)) {
+            return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
+            return String.valueOf(cleanValue);
+        } else {
+            return String.valueOf(cleanValue);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> Class<T> loadClass(String className, ClassLoader classLoader) {
         if (isPrimitive(className)) {

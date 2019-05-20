@@ -27,6 +27,8 @@ import java.util.Map;
 
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 
+import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.revertValue;
+
 public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
 
     private final ClassLoader classLoader;
@@ -52,6 +54,11 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
         }
 
         return commonEvaluationLiteralExpression(className, genericClasses, (String) raw);
+    }
+
+    @Override
+    public String fromObjectToExpression(Object value) {
+        return revertValue(value);
     }
 
     @Override

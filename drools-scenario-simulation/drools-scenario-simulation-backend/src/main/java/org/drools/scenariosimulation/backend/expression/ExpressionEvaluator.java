@@ -23,4 +23,6 @@ public interface ExpressionEvaluator {
     boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass);
 
     Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw);
+
+    String fromObjectToExpression(Object value);
 }

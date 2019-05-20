@@ -21,17 +21,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 
 public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
     private final FEEL feel = FEEL.newInstance();
     private final ClassLoader classLoader;
+    private final CodeFunction codeFunction = new CodeFunction();
 
     public DMNFeelExpressionEvaluator(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -55,6 +59,13 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         return commonEvaluationLiteralExpression(className, genericClasses, (String) raw);
     }
 
+    @Override
+    public String fromObjectToExpression(Object value) {
+        FEELFnResult<String> invoke = codeFunction.invoke(value);
+        return invoke.getOrElseThrow(feelEvent -> new IllegalArgumentException("This should not happen",
+                                                                               feelEvent.getSourceException()));
+    }
+
     private EvaluationContext newEvaluationContext() {
         return new EvaluationContextImpl(classLoader, new FEELEventListenersManager());
     }
@@ -75,7 +86,10 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         if (unaryTests.size() < 1) {
             throw new IllegalArgumentException("Impossible to parse the expression '" + rawExpression + "'");
         }
-        return unaryTests.stream().allMatch(unaryTest -> unaryTest.apply(evaluationContext, resultValue));
+        return unaryTests.stream()
+                .allMatch(unaryTest -> Optional
+                        .ofNullable(unaryTest.apply(evaluationContext, resultValue))
+                        .orElse(false));
     }
 
     @Override

@@ -15,10 +15,6 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
@@ -159,5 +155,4 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertNotNull(retrieved.getSimulation().getSimulationDescriptor().getDmnFilePath());
         assertNull(retrieved.getSimulation().getSimulationDescriptor().getDmoSession());
     }
-
 }
