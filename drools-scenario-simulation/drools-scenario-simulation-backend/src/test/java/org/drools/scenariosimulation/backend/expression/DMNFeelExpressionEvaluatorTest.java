@@ -22,11 +22,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Test;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class DMNFeelExpressionEvaluatorTest {
@@ -37,13 +43,17 @@ public class DMNFeelExpressionEvaluatorTest {
     public void evaluateUnaryExpression() {
         assertTrue(expressionEvaluator.evaluateUnaryExpression("not( true )", false, boolean.class));
         assertTrue(expressionEvaluator.evaluateUnaryExpression(">2, >5", BigDecimal.valueOf(6), BigDecimal.class));
-        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Raw expression should be a string");
+        try {
+            expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Raw expression should be a string", e.getMessage());
+        }
 
-        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Impossible to parse the expression '! true'");
+        try {
+            expressionEvaluator.evaluateUnaryExpression("! true", null, null);
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().startsWith("Impossible to parse the expression"));
+        }
     }
 
     @Test
@@ -51,6 +61,18 @@ public class DMNFeelExpressionEvaluatorTest {
         assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
         Object nonStringObject = new Object();
         assertEquals(nonStringObject, expressionEvaluator.evaluateLiteralExpression("class", null, nonStringObject));
+
+        try {
+            expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), null, "SPEED");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().startsWith("Error during evaluation:"));
+        }
+
+        try {
+            expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), null, "\"SPEED");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().startsWith("Syntax error:"));
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -98,5 +120,43 @@ public class DMNFeelExpressionEvaluatorTest {
         assertEquals("1", expressionEvaluator.fromObjectToExpression(BigDecimal.valueOf(1)));
         assertEquals("date( \"2019-05-13\" )", expressionEvaluator.fromObjectToExpression(LocalDate.of(2019, 5, 13)));
         assertEquals("null", expressionEvaluator.fromObjectToExpression(null));
+    }
+
+    @Test
+    public void newEvaluationContextTest() {
+        FEELEvent syntaxErrorEvent = new SyntaxErrorEvent(Severity.ERROR, "test", null, 0, 0, null);
+        FEELEvent genericError = new FEELEventBase(Severity.ERROR, "error", null);
+        FEELEvent notError = new FEELEventBase(Severity.INFO, "info", null);
+
+        AtomicReference<FEELEvent> error = new AtomicReference<>();
+        EvaluationContext evaluationContext = expressionEvaluator.newEvaluationContext(error);
+
+        // Only a single error of type syntax
+        applyEvents(Collections.singletonList(syntaxErrorEvent), evaluationContext);
+        assertEquals(syntaxErrorEvent, error.get());
+
+        error.set(null);
+
+        // Syntax error as second
+        applyEvents(Arrays.asList(genericError, syntaxErrorEvent), evaluationContext);
+        assertEquals(syntaxErrorEvent, error.get());
+
+        error.set(null);
+
+        // Syntax error as first
+        applyEvents(Arrays.asList(syntaxErrorEvent, genericError), evaluationContext);
+        assertEquals(syntaxErrorEvent, error.get());
+
+        error.set(null);
+
+        // Not error
+        applyEvents(Collections.singletonList(notError), evaluationContext);
+        assertNull(error.get());
+    }
+
+    private void applyEvents(List<FEELEvent> events, EvaluationContext evaluationContext) {
+        for (FEELEvent event : events) {
+            evaluationContext.getListeners().forEach(listener -> listener.onEvent(event));
+        }
     }
 }
