@@ -55,7 +55,7 @@ public class MvelCompiler {
             TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
             Statement expression = (Statement) lhs.toJavaExpression();
             statements.add(expression);
-            lastExpressionType = rhs.getType();
+            lastExpressionType = ofNullable(rhs).flatMap(TypedExpression::getType);
         }
 
         return new ParsingResult(statements)
