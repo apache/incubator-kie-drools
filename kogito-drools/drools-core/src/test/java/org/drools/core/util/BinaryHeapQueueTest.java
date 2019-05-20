@@ -15,8 +15,6 @@
 
 package org.drools.core.util;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,9 +38,11 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Thes test class uses auxiliary test classes in org.kie.util:
@@ -78,7 +78,7 @@ public class BinaryHeapQueueTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.out.println( "Running setup" );
         Integer[] a = new Integer[max];
@@ -118,8 +118,7 @@ public class BinaryHeapQueueTest {
                 sb.append( " " ).append( sal );
                 if ( sal != i ) ok = false;
             }
-            assertTrue( "incorrect order in " + sb.toString(),
-                        ok );
+            assertTrue(ok, "incorrect order in " + sb.toString());
             //      System.out.println( sb.toString() );
         }
     }

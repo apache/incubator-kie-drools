@@ -16,13 +16,6 @@
 
 package org.drools.core.util;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +42,13 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.TupleList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 
 public class RightTupleIndexHashTableIteratorTest {
@@ -189,15 +186,10 @@ public class RightTupleIndexHashTableIteratorTest {
         FieldIndexHashTableFullIterator iterator = new FieldIndexHashTableFullIterator( table );
 
         // test it
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[0] ) );
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[1] ) );
-        assertThat( iterator.next(),
-                    sameInstance( (Object) tuples[2] ) );
-        assertThat( iterator.next(),
-                    is( (Object) null ) );
-
+        assertThat(iterator.next()).isSameAs((Object) tuples[0]);
+        assertThat(iterator.next()).isSameAs((Object) tuples[1]);
+        assertThat(iterator.next()).isSameAs((Object) tuples[2]);
+        assertThat(iterator.next()).isNull();
     }
 
     protected BetaNodeFieldConstraint getConstraint(String identifier,

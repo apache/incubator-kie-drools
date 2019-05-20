@@ -16,9 +16,6 @@
 
 package org.drools.core.base;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.HashSet;
 
 import org.drools.core.addon.ClassTypeResolver;
@@ -26,7 +23,10 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.FirstClass;
 import org.drools.core.test.model.SecondClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClassTypeResolverTest {
 

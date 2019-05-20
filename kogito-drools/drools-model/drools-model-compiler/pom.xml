@@ -87,6 +87,11 @@
       <scope>test</scope>
     </dependency>
 
+    <!--
+      this module is temporarily staying on JUnit 4, as in JUnit 5, we can not (yet) parameterize constructors and the
+      tests in this module make very heavy use of that.
+      constructor parameterization is a feature that is scheduled for JUnit 5.5.
+    -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>

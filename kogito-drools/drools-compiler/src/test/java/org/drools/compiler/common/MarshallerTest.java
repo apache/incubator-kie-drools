@@ -1,7 +1,10 @@
 package org.drools.compiler.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.stream.Stream;
 
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.SerializationHelper;
@@ -11,9 +14,9 @@ import org.drools.core.marshalling.impl.JavaSerializableResolverStrategy;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ReadSessionResult;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.io.ResourceType;
@@ -23,24 +26,23 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 public class MarshallerTest {
 
-    private Environment env;
-
-    @Parameterized.Parameters(name = "{0}")
-    public static Object[] params() {
-        return new Object[] { new JavaSerializableResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT ),
-                              new SerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT ) };
+    static Stream<Arguments> parameters() {
+        return Stream.of(new JavaSerializableResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT),
+                         new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT))
+                .map(s -> {
+                    final Environment env = EnvironmentFactory.newEnvironment();
+                    env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{s});
+                    return env;
+                }).map(Arguments::arguments);
     }
 
-    public MarshallerTest(ObjectMarshallingStrategy strategy) {
-        this.env = EnvironmentFactory.newEnvironment();
-        this.env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{ strategy } );
-    }
-
-    @Test
-    public void testAgendaDoNotSerializeObject() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testAgendaDoNotSerializeObject(Environment env) throws Exception {
         KieSession ksession = null;
         try {
             String str =
@@ -59,15 +61,17 @@ public class MarshallerTest {
 
             assertEquals(3, ksession.fireAllRules());
 
-            ReadSessionResult serialisedStatefulKnowledgeSession = SerializationHelper.getSerialisedStatefulKnowledgeSessionWithMessage(ksession, ksession.getKieBase(), true);
+            ReadSessionResult serialisedStatefulKnowledgeSession =
+                    SerializationHelper.getSerialisedStatefulKnowledgeSessionWithMessage(
+                    ksession, ksession.getKieBase(), true);
             ksession = serialisedStatefulKnowledgeSession.getSession();
 
-            ProtobufMessages.KnowledgeSession deserializedMessage = serialisedStatefulKnowledgeSession.getDeserializedMessage();
+            ProtobufMessages.KnowledgeSession deserializedMessage =
+                    serialisedStatefulKnowledgeSession.getDeserializedMessage();
 
             assertEquals(0, ksession.fireAllRules());
-            assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(ml -> {
-                return ml.getTuple().getObjectList().size() > 0;
-            }));
+            assertFalse(deserializedMessage.getRuleData().getAgenda().getMatchList().stream().anyMatch(
+                    ml -> ml.getTuple().getObjectList().size() > 0));
         } finally {
             if (ksession != null) {
                 ksession.dispose();
@@ -75,8 +79,8 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testFromWithFireBeforeSerialization() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testFromWithFireBeforeSerialization(Environment env) throws Exception {
         String str =
                 "import java.util.Collection\n" +
                         "rule R1 when\n" +
@@ -100,8 +104,8 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testFromWithFireAfterSerialization() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testFromWithFireAfterSerialization(Environment env) throws Exception {
         String str =
                 "import java.util.Collection\n" +
                         "rule R1 when\n" +
@@ -124,14 +128,14 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testFromWithPartialFiring() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testFromWithPartialFiring(Environment env) throws Exception {
         String str =
                 "import java.util.Collection\n" +
-                "rule R1 when\n" +
-                "    String() from [ \"x\", \"y\", \"z\" ]\n" +
-                "then\n" +
-                "end\n";
+                        "rule R1 when\n" +
+                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                        "then\n" +
+                        "end\n";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
@@ -149,15 +153,15 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void test2FromsWithPartialFiring() throws Exception {
+    @ParameterizedMarshallerTest
+    public void test2FromsWithPartialFiring(Environment env) throws Exception {
         String str =
                 "import java.util.Collection\n" +
-                "rule R1 when\n" +
-                "    String() from [ \"x\", \"y\", \"z\" ]\n" +
-                "    String() from [ \"a\", \"b\", \"c\" ]\n" +
-                "then\n" +
-                "end\n";
+                        "rule R1 when\n" +
+                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                        "    String() from [ \"a\", \"b\", \"c\" ]\n" +
+                        "then\n" +
+                        "end\n";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
@@ -175,21 +179,21 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testFromAndJoinWithPartialFiring() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testFromAndJoinWithPartialFiring(Environment env) throws Exception {
         String str =
                 "import java.util.Collection\n" +
-                "rule R1 when\n" +
-                "    String() from [ \"x\", \"y\", \"z\" ]\n" +
-                "    Integer()\n" +
-                "then\n" +
-                "end\n";
+                        "rule R1 when\n" +
+                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                        "    Integer()\n" +
+                        "then\n" +
+                        "end\n";
 
         KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
         KieSession ksession = null;
         try {
             ksession = kbase.newKieSession(null, env);
-            ksession.insert( 42 );
+            ksession.insert(42);
             assertEquals(2, ksession.fireAllRules(2));
 
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
@@ -202,8 +206,8 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testAgendaReconciliationAccumulate() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testAgendaReconciliationAccumulate(Environment env) throws Exception {
 
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -236,8 +240,8 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testAgendaReconciliationAccumulate2() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testAgendaReconciliationAccumulate2(Environment env) throws Exception {
 
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -268,8 +272,8 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testSubnetwork() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testSubnetwork(Environment env) throws Exception {
         final String str =
                 "rule R1 when\n" +
                         "    String()\n" +
@@ -306,8 +310,8 @@ public class MarshallerTest {
         }
     }
 
-    @Test
-    public void testSubnetwork2() throws Exception {
+    @ParameterizedMarshallerTest
+    public void testSubnetwork2(Environment env) throws Exception {
         final String str =
                 "rule R1 when\n" +
                         "    String()\n" +
@@ -337,5 +341,13 @@ public class MarshallerTest {
         } finally {
             ksession.dispose();
         }
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public @interface ParameterizedMarshallerTest {
+
     }
 }

@@ -15,8 +15,6 @@
 
 package org.drools.compiler.compiler;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Arrays;
 
 import org.drools.compiler.Cheese;
@@ -32,13 +30,15 @@ import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.test.model.DroolsTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
-public class QueryBuilderTest extends DroolsTestCase {
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class QueryBuilderTest {
 
     @Test
     public void testRuleWithQuery() throws Exception {
@@ -92,8 +92,7 @@ public class QueryBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "System.out.println(\"age: \" + $age);" );
 
         builder.addPackage( packageDescr );
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat((Object[]) builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage(packageDescr.getName()) } ));
@@ -149,8 +148,7 @@ public class QueryBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        assertLength( 0,
-                      builder.getErrors().getErrors() );
+        assertThat((Object[]) builder.getErrors().getErrors()).hasSize(0);
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage(packageDescr.getName()) } ) );

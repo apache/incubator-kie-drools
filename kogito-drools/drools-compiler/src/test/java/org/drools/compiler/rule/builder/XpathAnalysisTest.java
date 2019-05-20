@@ -15,13 +15,16 @@
 
 package org.drools.compiler.rule.builder;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests for syntactic analysis of XPath constraints.
@@ -33,7 +36,7 @@ public class XpathAnalysisTest {
         final String xpath = "";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath has to start with '/'.", true, result.hasError());
+        assertEquals(true, result.hasError(), "The XPath has to start with '/'.");
         assertNotNull(result.getError());
         assertEquals(false, result.iterator().hasNext());
     }
@@ -43,7 +46,7 @@ public class XpathAnalysisTest {
         final String xpath = "someAttribute";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath has to start with '/'.", true, result.hasError());
+        assertEquals(true, result.hasError(), "The XPath has to start with '/'.");
         assertNotNull(result.getError());
         assertEquals(false, result.iterator().hasNext());
     }
@@ -53,7 +56,7 @@ public class XpathAnalysisTest {
         final String xpath = "/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The empty XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The empty XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -66,7 +69,7 @@ public class XpathAnalysisTest {
         final String xpath = "?/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The empty XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The empty XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -79,7 +82,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -92,7 +95,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -106,7 +109,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address.";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -120,7 +123,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address.street/name";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -135,7 +138,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address.street/name/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -151,7 +154,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address.street[../city == \"The City\"]/name/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -168,7 +171,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address.ulička[name == 'ěščřžýáíé']/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -184,7 +187,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address[0]";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -197,7 +200,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address[0]/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -211,7 +214,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address/street[name == \"Elm\"]";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -226,7 +229,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address/street[name == \"Elm\", length <= 10, code == \"Something, \\\"and\\\" other thing\"]";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -244,7 +247,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address/street[name == \"Elm\"]/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -260,7 +263,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address/street#MyStreetType[name.value == \"Elm\"].city";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
@@ -276,7 +279,7 @@ public class XpathAnalysisTest {
         final String xpath = "/address/street#MyStreetType[name.value == \"Elm\"].city#MyCityMoreSpecificType[ value ]";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
-        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertEquals(false, result.hasError(), "The XPath should be valid.");
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);

@@ -16,10 +16,6 @@
 
 package org.drools.compiler.integrationtests.session;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +26,13 @@ import org.drools.compiler.PersonFinal;
 import org.drools.compiler.Pet;
 import org.drools.compiler.Win;
 import org.drools.compiler.integrationtests.SerializationHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InsertTest extends CommonTestMethodBase {
 

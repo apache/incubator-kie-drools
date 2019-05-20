@@ -16,8 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.assertEquals;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -28,23 +26,24 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.test.model.DroolsTestCase;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Test case to ensure that the ReteooRuleBase is thread safe. Specifically to test for
  * deadlocks when modifying the rulebase while creating new sessions.
  */
-public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
+public class ReteooRuleBaseMultiThreadedTest {
 
     InternalKnowledgeBase kBase;
     RuleImpl rule;
     InternalKnowledgePackage pkg;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -73,7 +72,8 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
         kBase.addPackage(pkg);
     }
 
-    @Test @Ignore
+    @Test
+    @Disabled
     public void testNewSessionWhileModifyingRuleBase() throws InterruptedException {
         PackageModifier modifier = new PackageModifier();
         SessionCreator creator = new SessionCreator();
@@ -93,18 +93,18 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
             printThreadStatus(modifier);
         }
 
-        assertEquals("Threads are deadlocked! See previous stacks for more detail", false, deadlockDetected);
+        assertFalse(deadlockDetected, "Threads are deadlocked! See previous stacks for more detail");
 
         // check to see if either had an exception also
         if (creator.isInError()) {
             creator.getError().printStackTrace();
         }
-        assertEquals("Exception in creator thread", false, creator.isInError());
+        assertFalse(creator.isInError(), "Exception in creator thread");
 
         if (modifier.isInError()) {
             modifier.getError().printStackTrace();
         }
-        assertEquals("Exception in modifier thread", false, modifier.isInError());
+        assertFalse(modifier.isInError(), "Exception in modifier thread");
     }
 
     private void printThreadStatus(Thread thread) {

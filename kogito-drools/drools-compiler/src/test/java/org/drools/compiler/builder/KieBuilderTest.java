@@ -15,11 +15,6 @@
 
 package org.drools.compiler.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -35,9 +30,9 @@ import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.util.FileManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -53,16 +48,21 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class KieBuilderTest extends CommonTestMethodBase {
     protected FileManager fileManager;
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
     }

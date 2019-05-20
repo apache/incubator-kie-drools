@@ -16,9 +16,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -39,6 +36,9 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KieFileSystemScannerTest {
 
@@ -194,8 +194,7 @@ public class KieFileSystemScannerTest {
 
         assertEquals(results.length, list.size());
         for (Object result : results) {
-            assertTrue( String.format( "Expected to contain: %s, got: %s", result, Arrays.toString( list.toArray() ) ),
-                    list.contains( result ) );
+            assertTrue(list.contains(result), String.format( "Expected to contain: %s, got: %s", result, Arrays.toString(list.toArray())));
         }
     }
 

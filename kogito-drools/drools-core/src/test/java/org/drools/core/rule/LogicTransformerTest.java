@@ -16,22 +16,23 @@
 
 package org.drools.core.rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.DroolsStreamUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class LogicTransformerTest extends DroolsTestCase {
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class LogicTransformerTest {
     /**
      * (a||b)&&c
      *
@@ -79,8 +80,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         LogicTransformer.getInstance().applyOrTransformation( parent );
 
-        assertLength( 2,
-                      parent.getChildren() );
+        assertThat((Collection) parent.getChildren()).hasSize(2);
         assertEquals( GroupElement.class,
                       parent.getChildren().get( 0 ).getClass() );
         assertEquals( GroupElement.class,
@@ -177,8 +177,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         assertEquals( GroupElement.Type.OR,
                       parent.getType() );
 
-        assertLength( 4,
-                      parent.getChildren() );
+        assertThat((Collection) parent.getChildren()).hasSize(4);
         assertEquals( GroupElement.class,
                       parent.getChildren().get( 0 ).getClass() );
         assertEquals( GroupElement.class,
@@ -190,8 +189,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         GroupElement and1 = (GroupElement) parent.getChildren().get( 0 );
         assertTrue( and1.isAnd() );
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat((Collection) and1.getChildren()).hasSize(4);
         assertEquals( a,
                       and1.getChildren().get( 0 ) );
         assertEquals( c,
@@ -203,8 +201,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         and1 = (GroupElement) parent.getChildren().get( 1 );
         assertTrue( and1.isAnd() );
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat((Collection) and1.getChildren()).hasSize(4);
         assertEquals( a,
                       and1.getChildren().get( 0 ) );
         assertEquals( c,
@@ -216,8 +213,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         and1 = (GroupElement) parent.getChildren().get( 2 );
         assertTrue( and1.isAnd() );
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat((Collection) and1.getChildren()).hasSize(4);
         assertEquals( b,
                       and1.getChildren().get( 0 ) );
         assertEquals( c,
@@ -229,8 +225,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         and1 = (GroupElement) parent.getChildren().get( 3 );
         assertTrue( and1.isAnd() );
-        assertLength( 4,
-                      and1.getChildren() );
+        assertThat((Collection) and1.getChildren()).hasSize(4);
         assertEquals( b,
                       and1.getChildren().get( 0 ) );
         assertEquals( c,
@@ -472,10 +467,8 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         final GroupElement[] result = LogicTransformer.getInstance().transform( and1, Collections.EMPTY_MAP );
 
-        assertLength( 1,
-                      result );
-        assertLength( 4,
-                      result[0].getChildren() );
+        assertThat((Object[]) result).hasSize(1);
+        assertThat((Collection) result[0].getChildren()).hasSize(4);
         // we must ensure order
         assertEquals( a,
                       result[0].getChildren().get( 0 ) );

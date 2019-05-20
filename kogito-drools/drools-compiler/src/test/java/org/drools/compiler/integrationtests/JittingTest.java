@@ -16,19 +16,19 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.facts.AnEnum;
 import org.drools.compiler.integrationtests.facts.FactWithEnum;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JittingTest extends CommonTestMethodBase {
 
@@ -100,7 +100,7 @@ public class JittingTest extends CommonTestMethodBase {
         final KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(AnEnum.FIRST);
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -119,6 +119,6 @@ public class JittingTest extends CommonTestMethodBase {
 
         final KieSession kieSession = kieBase.newKieSession();
         kieSession.insert(new FactWithEnum(AnEnum.FIRST));
-        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }

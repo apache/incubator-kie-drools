@@ -14,13 +14,6 @@
 */
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -34,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.xml.bind.JAXBContext;
 
 import org.drools.compiler.Address;
@@ -57,9 +49,7 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.runtime.rule.impl.FlatQueryResultRow;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -78,57 +68,55 @@ import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class QueryTest extends CommonTestMethodBase {
-
-    @org.junit.Rule
-    public TestName testName = new TestName();
-
-    @Before
-    public void before() {
-       System.out.println( "] " + testName.getMethodName());
-    }
 
     private static QueryResults getQueryResults(KieSession session, String queryName, Object... arguments ) throws Exception {
         QueryResultsImpl results = (QueryResultsImpl) session.getQueryResults( queryName, arguments );
 
         FlatQueryResults flatResults = new FlatQueryResults(results);
 
-        assertEquals( "Query results size", results.size(), flatResults.size() );
-        assertEquals( "Query results identifiers", results.getIdentifiers().length, flatResults.getIdentifiers().length );
+        assertEquals(results.size(), flatResults.size(), "Query results size");
+        assertEquals(results.getIdentifiers().length, flatResults.getIdentifiers().length, "Query results identifiers");
         Set<String> resultIds = new TreeSet<String>(Arrays.asList(results.getIdentifiers()));
         Set<String> flatIds = new TreeSet<String>(Arrays.asList(flatResults.getIdentifiers()));
-        assertArrayEquals("Flat query results identifiers", resultIds.toArray(), flatIds.toArray() );
+        assertArrayEquals(resultIds.toArray(), flatIds.toArray(), "Flat query results identifiers");
 
         FlatQueryResults copyFlatResults = roundTrip(flatResults);
         String [] identifiers = results.getIdentifiers();
         Iterator<QueryResultsRow> copyFlatIter = copyFlatResults.iterator();
         for( int i = 0; i < results.size(); ++i ) {
             QueryResultsRow row = results.get(i);
-            assertTrue( "Round-tripped flat query results contain less rows than original query results", copyFlatIter.hasNext());
+            assertTrue(copyFlatIter.hasNext(),  "Round-tripped flat query results contain less rows than original query results");
             QueryResultsRow copyRow = copyFlatIter.next();
             for( String id : identifiers ) {
                 Object obj = row.get(id);
                 if( obj != null ) {
                     Object copyObj = copyRow.get(id);
-                    assertTrue( "Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj, obj != null && obj.equals(copyObj));
+                    assertTrue(obj != null && obj.equals(copyObj), "Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj);
                 }
                 FactHandle fh = row.getFactHandle(id);
                 FactHandle copyFh = copyRow.getFactHandle(id);
                 if( fh != null ) {
-                    assertNotNull( "Flat query result [" + i + "] does not contain facthandle: '" + ((InternalFactHandle) fh).getId() + "'", copyFh);
+                    assertNotNull(copyFh, "Flat query result [" + i + "] does not contain facthandle: '" + ((InternalFactHandle) fh).getId() + "'");
                     String fhStr = fh.toExternalForm();
                     fhStr = fhStr.substring(0, fhStr.lastIndexOf(":"));
                     String copyFhStr = copyFh.toExternalForm();
                     copyFhStr = copyFhStr.substring(0, copyFhStr.lastIndexOf(":"));
-                    assertEquals( "Unequal fact handles for fact handle '" + ((InternalFactHandle) fh).getId() + "':",
-                                  fhStr, copyFhStr );
+                    assertEquals(fhStr, copyFhStr, "Unequal fact handles for fact handle '" + ((InternalFactHandle) fh).getId() + "':");
                 }
             }
         }
 
         // check identifiers
         Set<String> copyFlatIds = new TreeSet<String>(Arrays.asList(copyFlatResults.getIdentifiers()));
-        assertArrayEquals("Flat query results identifiers", flatIds.toArray(), copyFlatIds.toArray() );
+        assertArrayEquals(flatIds.toArray(), copyFlatIds.toArray(), "Flat query results identifiers");
         return copyFlatResults;
     }
 

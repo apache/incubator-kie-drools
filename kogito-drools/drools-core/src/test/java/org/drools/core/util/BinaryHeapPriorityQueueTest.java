@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.core.spi.Activation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BinaryHeapPriorityQueueTest {
     @Test

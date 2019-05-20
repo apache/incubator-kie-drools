@@ -16,19 +16,19 @@
 
 package org.drools.compiler.lang;
 
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.dsl.DefaultExpander;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ErrorsParserTest {
 
@@ -107,8 +107,7 @@ public class ErrorsParserTest {
         final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
         parser.compilationUnit();
 
-        assertTrue( "Parser should have raised errors",
-                    parser.hasErrors() );
+        assertTrue(parser.hasErrors(), "Parser should have raised errors");
 
         assertEquals( 1,
                       parser.getErrors().size() );
@@ -121,8 +120,7 @@ public class ErrorsParserTest {
     public void testNPEOnParser() throws Exception {
         final DRLParser parser = parseResource( "npe_on_parser.drl" );
         parser.compilationUnit();
-        assertTrue( "Parser should have raised errors",
-                    parser.hasErrors() );
+        assertTrue(parser.hasErrors(),"Parser should have raised errors");
 
         assertEquals( 1,
                       parser.getErrors().size() );
@@ -135,8 +133,7 @@ public class ErrorsParserTest {
         final DRLParser parser = parseResource( "comma_misuse.drl" );
         try {
             parser.compilationUnit();
-            assertTrue( "Parser should have raised errors",
-                        parser.hasErrors() );
+            assertTrue(parser.hasErrors(), "Parser should have raised errors");
         } catch ( NullPointerException npe ) {
             fail( "Should not raise NPE" );
         }

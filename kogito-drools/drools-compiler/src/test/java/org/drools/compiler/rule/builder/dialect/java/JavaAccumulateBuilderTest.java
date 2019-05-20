@@ -15,9 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -34,14 +31,17 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Accumulate;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaAccumulateBuilderTest {
 
     private JavaAccumulateBuilder builder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         builder = new JavaAccumulateBuilder();
     }

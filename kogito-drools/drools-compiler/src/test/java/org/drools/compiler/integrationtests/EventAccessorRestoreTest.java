@@ -15,9 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,10 +25,8 @@ import java.util.ArrayList;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -39,14 +34,14 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.marshalling.MarshallerFactory;
 
-public class EventAccessorRestoreTest extends CommonTestMethodBase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-    @Rule
-    public TemporaryFolder temp = new TemporaryFolder();
+public class EventAccessorRestoreTest extends CommonTestMethodBase {
 
     private File kbaseFile = null;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         String str =
                 "package org.drools.test;\n" +
@@ -75,7 +70,7 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
         KieSession ksession = kbase.newKieSession();
 
         try {
-            kbaseFile = temp.newFile( "test.bin" );
+            kbaseFile = File.createTempFile("test", ".bin");
             FileOutputStream fos = new FileOutputStream( kbaseFile ) ;
             saveSession( fos, ksession );
             fos.close();

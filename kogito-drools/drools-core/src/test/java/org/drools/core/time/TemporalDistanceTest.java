@@ -16,10 +16,10 @@
 
 package org.drools.core.time;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.jupiter.api.Test;
 import org.kie.services.time.Interval;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test class for the time distance calculation algorithm
@@ -71,7 +71,7 @@ public class TemporalDistanceTest {
     public void assertEqualsMatrix( Interval[][] expected, Interval[][] matrix ) {
         for( int i = 0; i < matrix.length; i++ ) {
             for( int j = 0; j < matrix[i].length; j++ ) {
-                assertEquals( "Wrong value at ("+i+", "+j, expected[i][j], matrix[i][j] );
+                assertEquals( expected[i][j], matrix[i][j], "Wrong value at ("+i+", "+j+")" );
             }
         }
     }

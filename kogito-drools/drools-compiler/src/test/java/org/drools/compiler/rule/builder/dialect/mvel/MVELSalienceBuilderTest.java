@@ -15,8 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,15 +45,17 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.Salience;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MVELSalienceBuilderTest {
     private RuleBuildContext context;
     private InternalKnowledgeBase kBase ;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
@@ -155,9 +155,9 @@ public class MVELSalienceBuilderTest {
                 errors++;
             }
         }
-        assertEquals( "There shouldn't be any threads in error: ",
-                      0,
-                      errors );
+        assertEquals( 0,
+                      errors,
+                      "There shouldn't be any threads in error: ");
 
     }
 

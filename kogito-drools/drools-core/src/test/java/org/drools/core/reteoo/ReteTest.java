@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,19 +35,23 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.Cheese;
-import org.drools.core.test.model.DroolsTestCase;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class ReteTest extends DroolsTestCase {
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ReteTest {
     private PropagationContextFactory pctxFactory;
     private InternalKnowledgeBase kBase;
     private BuildContext   buildContext;
     private EntryPointNode entryPoint;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -147,13 +147,10 @@ public class ReteTest extends DroolsTestCase {
                           ksession);
 
         ClassObjectTypeConf conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
-        assertLength(3,
-                     conf.getObjectTypeNodes());
+        assertThat((Object[]) conf.getObjectTypeNodes()).hasSize(3);
 
         conf = (ClassObjectTypeConf) ksession.getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
-        assertLength(3,
-                     conf.getObjectTypeNodes());
-
+        assertThat((Object[]) conf.getObjectTypeNodes()).hasSize(3);
     }
 
     /**
@@ -189,8 +186,7 @@ public class ReteTest extends DroolsTestCase {
                                                                null),
                           ksession);
 
-        assertLength(0,
-                     sink1.getAsserted());
+        assertThat(sink1.getAsserted()).hasSize(0);
 
         // There is a List ObjectTypeNode, make sure it was propagated
         final List list = new ArrayList();
@@ -208,8 +204,7 @@ public class ReteTest extends DroolsTestCase {
         ksession.fireAllRules();
 
         final List asserted = sink1.getAsserted();
-        assertLength(1,
-                     asserted);
+        assertThat(asserted).hasSize(1);
 
         final Object[] results = (Object[]) asserted.get(0);
         assertSame(list,
@@ -234,7 +229,7 @@ public class ReteTest extends DroolsTestCase {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testHierarchy() {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
@@ -340,10 +335,8 @@ public class ReteTest extends DroolsTestCase {
                                                                null,
                                                                null),
                           ksession);
-        assertLength(0,
-                     sink1.getAsserted());
-        assertLength(0,
-                     sink1.getRetracted());
+        assertThat(sink1.getAsserted()).hasSize(0);
+        assertThat(sink1.getRetracted()).hasSize(0);
 
         // There is a List ObjectTypeNode, make sure it was propagated
         final List list = new ArrayList();
@@ -370,8 +363,7 @@ public class ReteTest extends DroolsTestCase {
         ksession.fireAllRules();
 
         final List retracted = sink1.getRetracted();
-        assertLength(1,
-                     retracted);
+        assertThat(retracted).hasSize(1);
 
         final Object[] results = (Object[]) retracted.get(0);
         assertSame(list,
@@ -412,7 +404,8 @@ public class ReteTest extends DroolsTestCase {
         final Object[] results = (Object[]) sink1.getAsserted().get(0);
     }
 
-    @Test @Ignore
+    @Test
+    @Disabled
     public void testNotShadowed() {
 
         Properties properties = new Properties();

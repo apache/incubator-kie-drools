@@ -16,11 +16,6 @@
 
 package org.drools.core.base;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -52,7 +47,12 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test coverage for the temporal evaluators.
@@ -972,11 +972,11 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertTrue( result,
+                        message );
         } else {
-            assertFalse( message,
-                         result );
+            assertFalse( result,
+                         message );
         }
     }
 
@@ -995,11 +995,11 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertTrue( result,
+                        message );
         } else {
-            assertFalse( message,
-                         result );
+            assertFalse( result,
+                         message );
         }
     }
 
@@ -1018,11 +1018,11 @@ public class TemporalEvaluatorFactoryTest {
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
-            assertTrue( message,
-                        result );
+            assertTrue( result,
+                        message );
         } else {
-            assertFalse( message,
-                         result );
+            assertFalse( result,
+                         message );
         }
     }
 

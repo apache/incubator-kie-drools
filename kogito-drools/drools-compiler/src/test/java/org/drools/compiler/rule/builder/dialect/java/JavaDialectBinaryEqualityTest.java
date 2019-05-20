@@ -15,13 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +29,18 @@ import org.drools.core.rule.PredicateConstraint;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.PredicateExpression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class JavaDialectBinaryEqualityTest{
@@ -71,7 +69,7 @@ public class JavaDialectBinaryEqualityTest{
         Constraint rvc3 = p3.getConstraints().get( 0 );
         
         assertNotSame( rvc1, rvc3 );
-        assertThat(rvc1, not( equalTo( rvc3 ) ) );
+        assertThat(rvc1).isNotEqualTo(rvc3);
         
         // test inline eval
         PredicateConstraint pc1 = getPredicateConstraint(p1);
@@ -85,7 +83,7 @@ public class JavaDialectBinaryEqualityTest{
         PredicateConstraint pc3 = getPredicateConstraint(p3);
         PredicateExpression pe3 = ( PredicateExpression ) pc3.getPredicateExpression();
         assertNotSame( pe1, pe3 );
-        assertThat(pe1, not( equalTo( pe3 ) ) );
+        assertThat(pe1).isNotEqualTo(pe3);
         
        // test eval
         EvalCondition ec1 = ( EvalCondition ) rule1.getLhs().getChildren().get( 1 );
@@ -99,20 +97,20 @@ public class JavaDialectBinaryEqualityTest{
         EvalCondition ec3 = ( EvalCondition ) rule3.getLhs().getChildren().get( 1 );
         EvalExpression ee3 =( EvalExpression) ec3.getEvalExpression();
         assertNotSame( ee1,ee3 );
-        assertThat(ee1, not( equalTo( ee3 ) ) );
+        assertThat(ee1).isNotEqualTo(ee3);
         
         // test consequence
         assertNotSame( rule1.getConsequence(), rule2.getConsequence() );
         assertEquals(rule1.getConsequence(), rule2.getConsequence() );
         assertNotSame( rule1.getConsequence(), rule3.getConsequence() );
-        assertThat(rule1.getConsequence(), not( equalTo( rule3.getConsequence() ) ) );
+        assertThat(rule1.getConsequence()).isNotEqualTo(rule3.getConsequence());
         
         // check LHS equals
         assertNotSame(  rule1.getLhs(), rule2.getLhs() );
         assertEquals( rule1.getLhs(), rule2.getLhs() );
         
         assertNotSame( rule1.getLhs(), rule3.getLhs() );
-        assertThat(rule1.getLhs(), not( equalTo( rule3.getLhs() ) ) );
+        assertThat(rule1.getLhs()).isNotEqualTo(rule3.getLhs());
     }
 
     private PredicateConstraint getPredicateConstraint(Pattern pattern) {

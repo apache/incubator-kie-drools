@@ -16,15 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +27,7 @@ import org.drools.compiler.Person;
 import org.drools.compiler.Pet;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.ResourceType;
@@ -45,6 +36,12 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class MapConstraintTest extends CommonTestMethodBase {
 
@@ -130,14 +127,14 @@ public class MapConstraintTest extends CommonTestMethodBase {
         final ArgumentCaptor<AfterMatchFiredEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael, times(4)).afterMatchFired(arg.capture());
         org.kie.api.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get(0);
-        assertThat(aaf.getMatch().getRule().getName(), is("1. home != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("1. home != null");
         aaf = arg.getAllValues().get(1);
-        assertThat(aaf.getMatch().getRule().getName(), is("2. not home == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("2. not home == null");
 
         aaf = arg.getAllValues().get(2);
-        assertThat(aaf.getMatch().getRule().getName(), is("7. work == null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("7. work == null");
         aaf = arg.getAllValues().get(3);
-        assertThat(aaf.getMatch().getRule().getName(), is("8. not work != null"));
+        assertThat(aaf.getMatch().getRule().getName()).isEqualTo("8. not work != null");
     }
 
     @Test

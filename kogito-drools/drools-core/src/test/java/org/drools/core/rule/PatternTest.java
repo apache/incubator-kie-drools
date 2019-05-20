@@ -16,8 +16,6 @@
 
 package org.drools.core.rule;
 
-import static org.junit.Assert.assertEquals;
-
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -30,7 +28,9 @@ import org.drools.core.facttemplates.FieldTemplateImpl;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.test.model.Cheese;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PatternTest {
 

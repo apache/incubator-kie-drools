@@ -15,12 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -45,14 +40,22 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
-@Ignore
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+@Disabled
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
     @Test
@@ -156,7 +159,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testMultipleConcurrentEPs2() {
         String str = "global java.util.List results\n" +
                      "\n" +
@@ -190,7 +193,6 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
-        boolean success = true;
         final ExecutorService executor = Executors.newFixedThreadPool(3, r -> {
             Thread t = new Thread(r);
             t.setDaemon(true);
@@ -203,15 +205,18 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                 ecs.submit(new EPManipulator2(ksession, i));
             }
 
-            for (int i = 0; i < 3; i++) {
-                try {
-                    success = ecs.take().get() && success;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+            assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+                boolean success = true;
+                for (int i = 0; i < 3; i++) {
+                    try {
+                        success = ecs.take().get() && success;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
 
-            assertTrue(success);
+                assertTrue(success);
+            });
 
             ksession.fireAllRules();
             System.out.println(results);

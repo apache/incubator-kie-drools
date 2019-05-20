@@ -16,22 +16,22 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class FireUntilHaltTest extends CommonTestMethodBase {
 
@@ -102,8 +102,8 @@ public class FireUntilHaltTest extends CommonTestMethodBase {
         if (t1.isAlive()) {
             t1.interrupt();
         }
-        assertFalse("T2 should have finished", aliveT2);
-        assertFalse("T1 should have finished", aliveT1);
+        assertFalse(aliveT2, "T2 should have finished");
+        assertFalse(aliveT1, "T1 should have finished");
     }
 
     @Test
@@ -140,7 +140,7 @@ public class FireUntilHaltTest extends CommonTestMethodBase {
         if (alive) {
             t1.interrupt();
         }
-        assertFalse("Thread should have died!", alive);
+        assertFalse(alive, "Thread should have died!");
         assertEquals(1, list.size());
     }
 }

@@ -15,9 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -25,8 +22,7 @@ import java.io.StringReader;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -38,6 +34,9 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class UnmarshallingTest {
 
@@ -87,8 +86,7 @@ public class UnmarshallingTest {
             fail( t.getClass().getSimpleName() + " thrown when trying to unmarshall (see stack trace in output)." );
         }
         int rules = ksession.fireAllRules();
-        Assert.assertEquals( 2,
-                             rules );
+        assertEquals( 2, rules );
     }
 
     private KieBase initializeKnowledgeBase( String rule ) {

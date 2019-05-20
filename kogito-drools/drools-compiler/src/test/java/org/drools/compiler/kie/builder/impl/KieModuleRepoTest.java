@@ -1,20 +1,10 @@
 package org.drools.compiler.kie.builder.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,9 +22,10 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.reflective.ResourceProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -51,6 +42,13 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+
 /**
  * This test contains
  * - normal tests that test for concurrency issues and memory leaks (that the KieModuleRepo
@@ -65,7 +63,7 @@ public class KieModuleRepoTest {
     private Field maxSizeGaCacheField;
     private Field maxSizeGaVersionsCacheField;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         kieModuleRepo = new KieModuleRepo();
 
@@ -76,7 +74,7 @@ public class KieModuleRepoTest {
         maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
     }
 
-    @After
+    @AfterEach
     public void after() throws Exception {
         setFinalField(maxSizeGaCacheField, null, maxSizeGaCacheOrig);
         setFinalField(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
@@ -87,14 +85,16 @@ public class KieModuleRepoTest {
      */
 
     protected static void waitFor(final CyclicBarrier barrier) {
-        final String threadName = Thread.currentThread().getName();
-        try {
-            barrier.await();
-        } catch( final InterruptedException e ) {
-            fail( "Thread '" + threadName + "' was interrupted while waiting for the other threads!");
-        } catch( final BrokenBarrierException e ) {
-            fail( "Thread '" + threadName + "' barrier was broken while waiting for the other threads!");
-        }
+        Assertions.assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+            final String threadName = Thread.currentThread().getName();
+            try {
+                barrier.await();
+            } catch( final InterruptedException e ) {
+                fail( "Thread '" + threadName + "' was interrupted while waiting for the other threads!");
+            } catch( final BrokenBarrierException e ) {
+                fail( "Thread '" + threadName + "' barrier was broken while waiting for the other threads!");
+            }
+        });
     }
 
     private static KieContainerImpl createMockKieContainer(final ReleaseId projectReleaseId, final KieModuleRepo kieModuleRepo) throws Exception {
@@ -151,7 +151,7 @@ public class KieModuleRepoTest {
 
     // simultaneous requests to deploy two new deployments (different versions)
     // for an empty/new GA artifactMap
-    @Test(timeout=5000)
+    @Test
     public void testDeployTwoArtifactVersionsSameTime() throws Exception {
         final String groupId = "org";
         final String artifactId = "one";
@@ -188,8 +188,10 @@ public class KieModuleRepoTest {
         final ComparableVersion newFeatureVersion = new ComparableVersion(secondVersion);
         final KieModule newFeatureKieModule = artifactMap.get(newFeatureVersion);
 
-        assertNotNull( "Race condition occurred: normal KieModule disappeared from KieModuleRepo!", normalKieModule);
-        assertNotNull( "Race condition occurred: new feature KieModule disappeared from KieModuleRepo!", newFeatureKieModule);
+        assertNotNull(normalKieModule,
+                                 "Race condition occurred: normal KieModule disappeared from KieModuleRepo!");
+        assertNotNull(newFeatureKieModule,
+                                 "Race condition occurred: new feature KieModule disappeared from KieModuleRepo!");
     }
 
     public Runnable getStoreArtifactRunnable(final KieModuleRepo kieModuleRepo, final String groupId, final String artifactId,
@@ -206,7 +208,7 @@ public class KieModuleRepoTest {
 
     // remove request followed by a store request on a high load system
     // * remove does not completely finish before store starts
-    @Test(timeout=5000)
+    @Test
     public void removeStoreArtifactMapTest() throws Exception {
         // actual test
         final ReleaseIdImpl releaseId = new ReleaseIdImpl("org", "redeploy", "2.0");
@@ -253,13 +255,13 @@ public class KieModuleRepoTest {
         final String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
         final Map<ComparableVersion, KieModule> artifactMap = kieModuleRepo.kieModules.get(ga);
 
-        assertNotNull( "Artifact Map for GA '" + ga + "' not in KieModuleRepo!", artifactMap);
+        assertNotNull(artifactMap, "Artifact Map for GA '" + ga + "' not in KieModuleRepo!");
 
         // never gets this far, but this is a good check
         final KieModule redeployedKieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
-        assertNotNull( "Redeployed module has disappeared from KieModuleRepo!", redeployedKieModule);
-        assertEquals( "Original module retrieved instead of redeployed module!",
-                      1l, redeployKieModule.getCreationTimestamp() );
+        assertNotNull(redeployedKieModule, "Redeployed module has disappeared from KieModuleRepo!");
+        assertEquals(1l, redeployKieModule.getCreationTimestamp(),
+                                "Original module retrieved instead of redeployed module!");
     }
 
     private static class InternalKieModuleStub implements InternalKieModule {
@@ -417,7 +419,7 @@ public class KieModuleRepoTest {
     // 2. simultaneous deploy requests
     // - multitenant UI
     // - duplicate REST requests
-    @Test(timeout=5000)
+    @Test
     public void newerVersionDeployOverwritesTest() throws Exception {
 
         // setup
@@ -474,8 +476,8 @@ public class KieModuleRepoTest {
         final KieModule oldKieModule = kieModuleRepo.oldKieModules.get(releaseId);
         final long oldKieModuleTimeStamp = ((InternalKieModule) oldKieModule).getCreationTimestamp();
         final long originalKieModuleTimestamp = originalOldKieModule.getCreationTimestamp();
-        assertEquals( "The old kie module in the repo is not the originally deployed module!",
-                      originalKieModuleTimestamp, oldKieModuleTimeStamp);
+        assertEquals(originalKieModuleTimestamp, oldKieModuleTimeStamp,
+                                "The old kie module in the repo is not the originally deployed module!");
     }
 
     @Test
@@ -500,13 +502,13 @@ public class KieModuleRepoTest {
         }
 
         final int numKieModules = countKieModules(kieModuleRepo.kieModules);
-        assertEquals( "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_CACHE + ": ",
-                      KieModuleRepo.MAX_SIZE_GA_CACHE, numKieModules );
+        assertEquals((long) KieModuleRepo.MAX_SIZE_GA_CACHE, (long) numKieModules,
+                                "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_CACHE + ": ");
 
         final int oldKieModulesSize = kieModuleRepo.oldKieModules.size();
         final int max = KieModuleRepo.MAX_SIZE_GA_CACHE * KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE;
-        assertTrue( "KieModuleRepot old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + max,
-                     oldKieModulesSize <= max );
+        assertTrue(oldKieModulesSize <= max,
+                              "KieModuleRepot old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + max);
     }
 
     @Test
@@ -530,13 +532,13 @@ public class KieModuleRepoTest {
         }
 
         int numKieModules = countKieModules(kieModuleRepo.kieModules);
-        assertEquals( "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": ",
-                      KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE, numKieModules );
+        assertEquals((long) KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE, (long) numKieModules,
+                                "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": ");
 
         int oldKieModulesSize = kieModuleRepo.oldKieModules.size();
         final int maxOldKieModules = KieModuleRepo.MAX_SIZE_GA_CACHE * KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE;
-        assertTrue( "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules,
-                     oldKieModulesSize <= maxOldKieModules );
+        assertTrue(oldKieModulesSize <= maxOldKieModules,
+                              "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules);
 
         // store
         for( int o = 0; o < 2; ++o ) {
@@ -550,12 +552,12 @@ public class KieModuleRepoTest {
         }
 
         numKieModules = countKieModules(kieModuleRepo.kieModules);
-        assertEquals( "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": ",
-                      KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE, numKieModules );
+        assertEquals((long) KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE, (long) numKieModules,
+                                "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": ");
 
         oldKieModulesSize = kieModuleRepo.oldKieModules.size();
-        assertTrue( "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules,
-                     oldKieModulesSize <= maxOldKieModules );
+        assertTrue(oldKieModulesSize <= maxOldKieModules,
+                              "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules);
     }
 
     @Test
@@ -588,17 +590,16 @@ public class KieModuleRepoTest {
             }
         }
 
-        assertTrue( "The maximum of artifacts per GA should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": "
-                    + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + " < " + maxSameGAModules,
-                      KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE >= maxSameGAModules );
-        assertTrue( "The number of GAs not grow past " + KieModuleRepo.MAX_SIZE_GA_CACHE + ": "
-                    + KieModuleRepo.MAX_SIZE_GA_CACHE + " > " + maxGAs,
-                      KieModuleRepo.MAX_SIZE_GA_CACHE >= maxGAs );
+        assertTrue(KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE >= maxSameGAModules,
+                              "The maximum of artifacts per GA should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": "
+                    + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + " < " + maxSameGAModules);
+        assertTrue(KieModuleRepo.MAX_SIZE_GA_CACHE >= maxGAs, "The number of GAs not grow past " + KieModuleRepo.MAX_SIZE_GA_CACHE + ": "
+                    + KieModuleRepo.MAX_SIZE_GA_CACHE + " > " + maxGAs);
 
         final int oldKieModulesSize = kieModuleRepo.oldKieModules.size();
         final int maxOldKieModules = KieModuleRepo.MAX_SIZE_GA_CACHE * KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE;
-        assertTrue( "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules,
-                     oldKieModulesSize <= maxOldKieModules );
+        assertTrue(oldKieModulesSize <= maxOldKieModules,
+                              "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules);
     }
 
 }

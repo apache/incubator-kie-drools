@@ -16,8 +16,6 @@
 
 package org.drools.compiler.integrationtests.session;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +24,13 @@ import org.drools.compiler.Person;
 import org.drools.compiler.PolymorphicFact;
 import org.drools.compiler.Primitives;
 import org.drools.compiler.integrationtests.SerializationHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TypeCoercionTest extends CommonTestMethodBase {
 
@@ -81,7 +81,7 @@ public class TypeCoercionTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         int index = 0;
-        assertEquals(list.toString(), 4, list.size());
+        assertEquals(4, list.size(), list.toString());
         assertEquals("boolean", list.get(index++));
         assertEquals("boolean wrapper", list.get(index++));
         assertEquals("boolean object", list.get(index++));

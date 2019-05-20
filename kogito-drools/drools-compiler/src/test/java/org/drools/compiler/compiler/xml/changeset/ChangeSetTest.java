@@ -15,18 +15,16 @@
 
 package org.drools.compiler.compiler.xml.changeset;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -34,7 +32,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.UrlResource;
 import org.drools.core.xml.XmlChangeSetReader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -46,6 +44,11 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.xml.sax.SAXException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChangeSetTest extends CommonTestMethodBase {
 
@@ -146,23 +149,26 @@ public class ChangeSetTest extends CommonTestMethodBase {
                       resource.getResourceType() );
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testCustomClassLoader() throws Exception {
         // JBRULES-3630
         String absolutePath = new File("file").getAbsolutePath();
 
         URL url = ChangeSetTest.class.getResource(ChangeSetTest.class.getSimpleName() + ".class");
-        File file = new File( url.toURI() );
-        File jar = null;
-        while ( true ) {
-            file = file.getParentFile();
-            jar = new File( file, "/src/test/resources/org/drools/compiler/compiler/xml/changeset/changeset.jar" );
-            if ( jar.exists() ) {
-                break;
+        AtomicReference<File> jar = new AtomicReference<>();
+        assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+            File file = new File( url.toURI() );
+            while ( true ) {
+                file = file.getParentFile();
+                File j = new File( file, "/src/test/resources/org/drools/compiler/compiler/xml/changeset/changeset.jar" );
+                if ( j.exists() ) {
+                    jar.set(j);
+                    break;
+                }
             }
-        }
+        }, "JAR not found in time.");
 
-        ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{jar.toURI().toURL()}, getClass().getClassLoader());
+        ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{jar.get().toURI().toURL()}, getClass().getClassLoader());
         Resource changeSet = ResourceFactory.newClassPathResource("changeset1.xml", classLoader);
         KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);

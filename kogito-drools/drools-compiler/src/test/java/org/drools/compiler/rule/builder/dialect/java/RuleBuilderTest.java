@@ -16,9 +16,6 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,8 +41,13 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.util.DateUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class RuleBuilderTest {
 
@@ -60,8 +62,7 @@ public class RuleBuilderTest {
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
         // just checking there is no parsing errors
-        assertFalse( parser.getErrors().toString(),
-                            parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         
         pkg.addGlobal("results", List.class);
 
@@ -73,14 +74,11 @@ public class RuleBuilderTest {
         
         kBuilder.addPackage(pkgDescr);
 
-        assertTrue(kBuilder.getErrors().toString(),
-                   kBuilder.getErrors().isEmpty());
+        assertTrue(kBuilder.getErrors().isEmpty(), kBuilder.getErrors().toString());
 
         final RuleImpl rule = kBuilder.getPackage("org.drools.compiler").getRule( "test nested CEs" );
 
-        assertEquals( "There should be 2 rule level declarations",
-                      2,
-                      rule.getDeclarations().size() );
+        assertEquals(2, rule.getDeclarations().size(), "There should be 2 rule level declarations");
 
         // second GE should be a not
         final GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );
@@ -240,16 +238,14 @@ public class RuleBuilderTest {
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(pkgDescr);
 
-        assertTrue(kBuilder.getErrors().toString(),
-                   kBuilder.getErrors().isEmpty());
+        assertTrue(kBuilder.getErrors().isEmpty(), kBuilder.getErrors().toString());
 
         final RuleImpl rule = kBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         if (pat.getConstraints().get(0) instanceof MvelConstraint) {
             final MvelConstraint fc = (MvelConstraint) pat.getConstraints().get( 0 );
-            assertTrue( "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(),
-                        fc.getField().getValue() instanceof BigDecimal );
+            assertTrue(fc.getField().getValue() instanceof BigDecimal,  "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass());
         }
     }
 
@@ -264,8 +260,7 @@ public class RuleBuilderTest {
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(pkgDescr);
 
-        assertFalse(kBuilder.getErrors().toString(),
-                    kBuilder.getErrors().isEmpty());
+        assertFalse(kBuilder.getErrors().isEmpty(), kBuilder.getErrors().toString());
     }    
     
     @Test
@@ -285,16 +280,15 @@ public class RuleBuilderTest {
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(pkgDescr);
 
-        assertTrue(kBuilder.getErrors().toString(),
-                   kBuilder.getErrors().isEmpty());
+        assertTrue(kBuilder.getErrors().isEmpty(), kBuilder.getErrors().toString());
 
         final RuleImpl rule = kBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
         if (pat.getConstraints().get(0) instanceof MvelConstraint) {
             final MvelConstraint fc = (MvelConstraint) pat.getConstraints().get( 0 );
-            assertTrue( "Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(),
-                        fc.getField().getValue() instanceof BigInteger );
+            assertTrue(fc.getField().getValue() instanceof BigInteger,
+                       "Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass());
         }
     }
 

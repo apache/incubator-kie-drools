@@ -54,36 +54,36 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PackageBuilderConfigurationTest {
 
     private static String droolsDialectJavaCompilerOrig;
     private static String droolsDialectDefaultOrig;
 
-    @BeforeClass
+    @BeforeAll
     public static void backupPropertyValues() {
         droolsDialectJavaCompilerOrig = System.getProperty(JavaDialectConfiguration.JAVA_COMPILER_PROPERTY);
         droolsDialectDefaultOrig = System.getProperty(DefaultDialectOption.PROPERTY_NAME);
     }
 
-    @AfterClass
+    @AfterAll
     public static void restorePropertyValues() {
         if (droolsDialectJavaCompilerOrig != null) {
             System.setProperty(JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, droolsDialectJavaCompilerOrig);
@@ -93,13 +93,13 @@ public class PackageBuilderConfigurationTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         System.getProperties().remove("drools.dialect.java.compiler");
         System.getProperties().remove("drools.dialect.default");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         System.getProperties().remove("drools.dialect.java.compiler");
         System.getProperties().remove("drools.dialect.default");

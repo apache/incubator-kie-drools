@@ -15,8 +15,6 @@
 
 package org.drools.compiler.simulation;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 
 import org.kie.api.KieServices;
@@ -31,6 +29,8 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.conf.ClockTypeOption;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SimulateTestBase {
 

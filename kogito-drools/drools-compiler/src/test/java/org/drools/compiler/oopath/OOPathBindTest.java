@@ -16,6 +16,7 @@
 
 package org.drools.compiler.oopath;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -23,15 +24,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.oopath.model.Child;
 import org.drools.compiler.oopath.model.Man;
 import org.drools.compiler.oopath.model.Toy;
 import org.drools.compiler.oopath.model.Woman;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 public class OOPathBindTest {
 
@@ -40,7 +43,7 @@ public class OOPathBindTest {
         testBindInteger(false);
     }
 
-    @Test(timeout = 1000)
+    @Test
     public void testBindIntegerFireUntilHalt() throws InterruptedException, ExecutionException {
         testBindInteger(true);
     }
@@ -77,9 +80,9 @@ public class OOPathBindTest {
                 waitForResultAndStopFireUntilHalt(list, ksession, fireUntilHaltFuture);
             } else {
                 ksession.fireAllRules();
-                Assertions.assertThat(list).hasSize(1);
+                assertThat(list).hasSize(1);
             }
-            Assertions.assertThat(list).contains(40);
+            assertThat(list).contains(40);
         } finally {
             executorService.shutdownNow();
             ksession.dispose();
@@ -88,14 +91,16 @@ public class OOPathBindTest {
 
     private void waitForResultAndStopFireUntilHalt(final List<Integer> resultList, final KieSession kieSession,
             final Future fireUntilHaltFuture) throws InterruptedException, ExecutionException {
-        try {
-            while (resultList.size() < 1) {
-                Thread.sleep(100);
+        assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+            try {
+                while (resultList.size() < 1) {
+                    Thread.sleep(100);
+                }
+            } finally {
+                kieSession.halt();
+                fireUntilHaltFuture.get();
             }
-        } finally {
-            kieSession.halt();
-            fireUntilHaltFuture.get();
-        }
+        });
     }
 
     @Test
@@ -174,7 +179,7 @@ public class OOPathBindTest {
         ksession.insert(alice);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(expectedResults);
+        assertThat(list).containsExactlyInAnyOrder(expectedResults);
     }
 
     @Test
@@ -203,7 +208,7 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles", "Debbie");
+        assertThat(list).containsExactlyInAnyOrder("Charles", "Debbie");
     }
 
     @Test
@@ -241,7 +246,7 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(1, 2);
+        assertThat(list).containsExactlyInAnyOrder(1, 2);
     }
 
     @Test
@@ -279,6 +284,6 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder(2);
+        assertThat(list).containsExactlyInAnyOrder(2);
     }
 }

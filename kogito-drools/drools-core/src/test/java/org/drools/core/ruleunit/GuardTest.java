@@ -16,16 +16,16 @@
 
 package org.drools.core.ruleunit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.math.BigDecimal;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.test.model.MockActivation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.RuleUnit;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class GuardTest {
 
@@ -33,7 +33,7 @@ public class GuardTest {
     private RuleImpl guardingRule;
     private Guard guard;
 
-    @Before
+    @BeforeEach
     public void prepareGuard() {
         guardedUnit = new TestRuleUnit(new Integer[]{}, BigDecimal.TEN);
         guardingRule = new RuleImpl();

@@ -16,23 +16,17 @@
 
 package org.drools.core.time.impl;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.Test;
 import org.kie.services.time.Job;
 import org.kie.services.time.JobContext;
 import org.kie.services.time.JobHandle;
 import org.kie.services.time.Trigger;
-import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class PseudoClockSchedulerTest {
 
@@ -51,10 +45,10 @@ public class PseudoClockSchedulerTest {
         when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime);
 
         JobHandle jobHandle = scheduler.scheduleJob(mockJob_1, this.mockContext_1, mockTrigger_1);
-        assertThat(scheduler.getTimeToNextJob(), is(triggerTime.getTime()));
+        assertThat(scheduler.getTimeToNextJob()).isEqualTo(triggerTime.getTime());
 
         scheduler.removeJob(jobHandle);
-        assertThat(scheduler.getTimeToNextJob(), is(-1L));
+        assertThat(scheduler.getTimeToNextJob()).isEqualTo(-1L);
         
         verify( mockTrigger_1, atLeastOnce()).hasNextFireTime();
     }
@@ -68,13 +62,13 @@ public class PseudoClockSchedulerTest {
 
         JobHandle jobHandle_1 = scheduler.scheduleJob(mockJob_1, this.mockContext_1, mockTrigger_1);
         JobHandle jobHandle_2 = scheduler.scheduleJob(mockJob_2, this.mockContext_2, mockTrigger_2);
-        assertThat(scheduler.getTimeToNextJob(), is(triggerTime_1.getTime()));
+        assertThat(scheduler.getTimeToNextJob()).isEqualTo(triggerTime_1.getTime());
 
         scheduler.removeJob(jobHandle_1);
-        assertThat(scheduler.getTimeToNextJob(), is(triggerTime_2.getTime()));
+        assertThat(scheduler.getTimeToNextJob()).isEqualTo(triggerTime_2.getTime());
 
         scheduler.removeJob(jobHandle_2);
-        assertThat(scheduler.getTimeToNextJob(), is(-1L));
+        assertThat(scheduler.getTimeToNextJob()).isEqualTo(-1L);
         
         verify( mockTrigger_1, atLeastOnce()).hasNextFireTime();
         verify( mockTrigger_2, atLeastOnce()).hasNextFireTime();
@@ -89,7 +83,7 @@ public class PseudoClockSchedulerTest {
             public void execute(JobContext ctx) {
                 // Even though the clock has been advanced to 5000, the job should run
                 // with the time set its trigger time.
-                assertThat(scheduler.getCurrentTime(), is(1000L));
+                assertThat(scheduler.getCurrentTime()).isEqualTo(1000L);
             }
         };
 
@@ -98,7 +92,7 @@ public class PseudoClockSchedulerTest {
         scheduler.advanceTime(5000, TimeUnit.MILLISECONDS);
 
         // Now, after the job has been executed the time should be what it was advanced to
-        assertThat(scheduler.getCurrentTime(), is(5000L));
+        assertThat(scheduler.getCurrentTime()).isEqualTo(5000L);
         
         verify( mockTrigger_1, atLeast(2) ).hasNextFireTime();
         verify( mockTrigger_1, times(1) ).nextFireTime();
@@ -111,7 +105,7 @@ public class PseudoClockSchedulerTest {
 
         Job job = new Job() {
             public void execute(JobContext ctx) {
-                assertThat(scheduler.getCurrentTime(), is(1000L));
+                assertThat(scheduler.getCurrentTime()).isEqualTo(1000L);
                 throw new RuntimeException("for test");
             }
         };
@@ -121,7 +115,7 @@ public class PseudoClockSchedulerTest {
         scheduler.advanceTime(5000, TimeUnit.MILLISECONDS);
 
         // The time must be advanced correctly even when the job throws an exception
-        assertThat(scheduler.getCurrentTime(), is(5000L));
+        assertThat(scheduler.getCurrentTime()).isEqualTo(5000L);
         verify( mockTrigger_1, atLeast(2) ).hasNextFireTime();
         verify( mockTrigger_1, times(1) ).nextFireTime();
     }

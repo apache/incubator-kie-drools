@@ -29,7 +29,7 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
@@ -73,7 +73,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
             "";
     int evalFirePseudoClockStockCount = 5;
 
-    @Test(timeout = 10000)
+    @Test
     public void testEvenFirePseudoClockRuleA() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
@@ -86,7 +86,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testEvenFirePseudoClockRuleB() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
@@ -99,7 +99,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test(timeout = 60000)
+    @Test
     public void testEvenFirePseudoClockRulesAB() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);

@@ -15,14 +15,11 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
@@ -35,6 +32,9 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class QueryCepTest {
     
     private KieSession ksession;
@@ -43,7 +43,7 @@ public class QueryCepTest {
     
     private EntryPoint firstEntryPoint, secondEntryPoint;
 
-    @Before
+    @BeforeEach
     public void prepare() {
         String drl = "package org.drools.compiler.integrationtests\n" +
                 "import " + TestEvent.class.getCanonicalName() + "\n" +
@@ -124,7 +124,7 @@ public class QueryCepTest {
         assertEquals(0, results.size());
     }
     
-    @After
+    @AfterEach
     public void cleanup() {
         
         if (ksession != null) {

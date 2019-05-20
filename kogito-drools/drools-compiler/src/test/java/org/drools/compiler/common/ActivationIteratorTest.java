@@ -15,9 +15,6 @@
 
 package org.drools.compiler.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +25,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.Iterator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -39,6 +36,9 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
 
@@ -674,7 +674,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testEagerEvaluation() throws Exception {
         String str =
                 "package org.simple \n" +
@@ -709,7 +709,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         assertEquals(2, list.size());
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testFilteredEagerEvaluation() throws Exception {
         String str =
                 "package org.simple \n" +

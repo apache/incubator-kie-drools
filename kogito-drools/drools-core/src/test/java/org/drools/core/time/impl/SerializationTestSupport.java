@@ -17,11 +17,10 @@
 package org.drools.core.time.impl;
 
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base class for unit tests that wish to verify 
@@ -69,16 +68,13 @@ public abstract class SerializationTestSupport {
      * Deserialize the target object from disk.
      */
     protected Object deserialize(String version, Class clazz) throws Exception {
-        InputStream is = getClass().getResourceAsStream(getSerializedFileName(version, clazz));
-        
-        ObjectInputStream ois = new ObjectInputStream(is);
-        
-        Object obj = (Object)ois.readObject();
+        final String filename = getSerializedFileName(version, clazz);
+        try (ObjectInputStream is = new ObjectInputStream(getClass().getResourceAsStream(filename))) {
+            return (Object)is.readObject();
+        } catch (Exception ex) {
+            throw new IllegalStateException("Failed opening " + filename + " resource from class" + getClass(), ex);
+        }
 
-        ois.close();
-        is.close();
-
-        return obj;
     }
     
     /**

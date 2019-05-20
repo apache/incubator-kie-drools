@@ -16,12 +16,12 @@
 
 package org.drools.core.base;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.drools.core.spi.FieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class FieldValueTest {
     FieldValue field1;
@@ -30,7 +30,7 @@ public class FieldValueTest {
     FieldValue field4;
     FieldValue field5;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.field1 = FieldFactory.getInstance().getFieldValue( null );
         this.field2 = FieldFactory.getInstance().getFieldValue( null );

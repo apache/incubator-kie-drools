@@ -16,14 +16,10 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-
 import java.util.Collection;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -31,6 +27,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // DROOLS-1044
 public class KieBaseIncludesTest extends CommonTestMethodBase {

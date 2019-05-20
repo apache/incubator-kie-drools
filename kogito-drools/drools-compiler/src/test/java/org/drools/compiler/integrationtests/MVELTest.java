@@ -15,11 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,7 +44,7 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.util.DateUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -63,6 +58,11 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class MVELTest extends CommonTestMethodBase {
 
@@ -173,7 +173,7 @@ public class MVELTest extends CommonTestMethodBase {
 
         try {
             ksession.fireAllRules();
-            assertEquals("should have fired twice", 2, list.size());
+            assertEquals(2, list.size(), "should have fired twice");
         } catch (final Exception e) {
             e.printStackTrace();
             fail("Should not raise any exception");

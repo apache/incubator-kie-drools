@@ -15,9 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +23,7 @@ import org.drools.compiler.Person;
 import org.drools.compiler.RoutingMessage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -35,6 +32,9 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StrEvaluatorTest extends CommonTestMethodBase {
 
@@ -190,7 +190,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
                 ksession.insert(msg);
             }
 
-            assertEquals("Wrong number of rules fired", 2, ksession.fireAllRules());
+            assertEquals(2, ksession.fireAllRules(), "Wrong number of rules fired");
         } finally {
             ksession.dispose();
         }
@@ -211,7 +211,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         try {
             ksession.insert( new Person( "Mark" ) );
 
-            assertEquals("Wrong number of rules fired", 1, ksession.fireAllRules());
+            assertEquals(1, ksession.fireAllRules(), "Wrong number of rules fired");
         } finally {
             ksession.dispose();
         }
@@ -231,7 +231,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         try {
             ksession.insert( "Mark" );
 
-            assertEquals( "Wrong number of rules fired", 1, ksession.fireAllRules() );
+            assertEquals(1, ksession.fireAllRules(), "Wrong number of rules fired");
         } finally {
             ksession.dispose();
         }

@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -24,9 +22,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -36,6 +34,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionPseudoClock;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests inserting events into KIE Session from multiple threads using one and
@@ -47,7 +47,7 @@ public class MTEntryPointsTest {
 
     private KieSession kieSession;
 
-    @Before
+    @BeforeEach
     public void initSession() {
         String str = "package org.jboss.brms\n" +
                      "\n" +
@@ -100,7 +100,7 @@ public class MTEntryPointsTest {
                                                .getDefaultReleaseId()).newKieSession();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.kieSession != null) {
             this.kieSession.dispose();

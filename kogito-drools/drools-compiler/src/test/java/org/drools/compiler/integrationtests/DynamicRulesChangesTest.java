@@ -15,8 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,13 +31,17 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.CommandFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
@@ -47,24 +50,24 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
     private static InternalKnowledgeBase kbase;
     private ExecutorService executor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
         addRule("raiseAlarm");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         executor.shutdownNow();
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testConcurrentRuleAdditions() throws Exception {
         parallelExecute(RulesExecutor.getSolvers());
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testBatchRuleAdditions() throws Exception {
         parallelExecute(BatchRulesExecutor.getSolvers());
     }
@@ -74,10 +77,12 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
         for (Callable<List<String>> s : solvers) {
             ecs.submit(s);
         }
-        for (int i = 0; i < PARALLEL_THREADS; ++i) {
-            List<String> events = ecs.take().get();
-            assertEquals(5, events.size());
-        }
+        assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+            for (int i = 0; i < PARALLEL_THREADS; ++i) {
+                List<String> events = ecs.take().get();
+                assertEquals(5, events.size());
+            }
+        });
     }
 
     public static class RulesExecutor implements Callable<List<String>> {

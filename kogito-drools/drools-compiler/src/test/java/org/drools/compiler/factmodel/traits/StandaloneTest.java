@@ -15,11 +15,6 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
@@ -27,14 +22,19 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StandaloneTest {
 
     private StandaloneTraitFactory factory;
 
-    @Before
+    @BeforeEach
     public void init() {
         ProjectClassLoader loader = ProjectClassLoader.createProjectClassLoader();
         factory = new StandaloneTraitFactory( loader );

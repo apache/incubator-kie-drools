@@ -16,13 +16,13 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class FactHandleTest {
     /*
@@ -65,8 +65,8 @@ public class FactHandleTest {
         final DefaultFactHandle f3 = new DefaultFactHandle( 96,
                                                             "cheese" );
 
-        assertFalse( "f0 should not equal f1",
-                     f0.equals( f1 ) );
+        assertFalse( f0.equals( f1 ),
+                     "f0 should not equal f1" );
         assertEquals( f1,
                       f3 );
         assertNotSame( f1,

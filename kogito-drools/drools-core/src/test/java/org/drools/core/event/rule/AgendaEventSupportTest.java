@@ -16,10 +16,6 @@
 
 package org.drools.core.event.rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -47,8 +43,8 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -62,15 +58,16 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 public class AgendaEventSupportTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
 
-    //    public void testIsSerializable() {
-    //        assertTrue( Serializable.class.isAssignableFrom( AgendaEventSupport.class ) );
-    //    }
-
-    @Test @Ignore
+    @Test
+    @Disabled
     public void testAgendaEventListener() throws Exception {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 

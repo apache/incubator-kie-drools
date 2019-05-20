@@ -16,12 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -31,9 +25,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.services.time.impl.CronExpression;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CronExpressionTest extends SerializationTestSupport {
     private static final String[] VERSIONS = new String[] {"1.5.2"};
@@ -83,7 +83,7 @@ public class CronExpressionTest extends SerializationTestSupport {
         
         cal.set(2005, Calendar.JUNE, 1, 10, 15, 0);
         assertTrue(cronExpression.isSatisfiedBy(cal.getTime()));
-        
+
         cal.set(Calendar.YEAR, 2006);
         assertFalse(cronExpression.isSatisfiedBy(cal.getTime()));
 
@@ -125,16 +125,14 @@ public class CronExpressionTest extends SerializationTestSupport {
             CronExpression cronExpression = new CronExpression("* * * * Foo ? ");
             fail("Expected ParseException did not fire for non-existent month");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Invalid Month value:"));
+            assertTrue(pe.getMessage().startsWith("Invalid Month value:"), "Incorrect ParseException thrown");
         }
 
         try {
             CronExpression cronExpression = new CronExpression("* * * * Jan-Foo ? ");
             fail("Expected ParseException did not fire for non-existent month");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Invalid Month value:"));
+            assertTrue(pe.getMessage().startsWith("Invalid Month value:"), "Incorrect ParseException thrown");
         }
     }
 
@@ -144,22 +142,26 @@ public class CronExpressionTest extends SerializationTestSupport {
             CronExpression cronExpression = new CronExpression("0 0 * * * *");
             fail("Expected ParseException did not fire for wildcard day-of-month and day-of-week");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."));
+            assertTrue(
+                    pe.getMessage().startsWith(
+                            "Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."),
+                    "Incorrect ParseException thrown");
         }
         try {
             CronExpression cronExpression = new CronExpression("0 0 * 4 * *");
             fail("Expected ParseException did not fire for specified day-of-month and wildcard day-of-week");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."));
+            assertTrue(
+                    pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."),
+                    "Incorrect ParseException thrown");
         }
         try {
             CronExpression cronExpression = new CronExpression("0 0 * * * 4");
             fail("Expected ParseException did not fire for wildcard day-of-month and specified day-of-week");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."));
+            assertTrue(
+                    pe.getMessage().startsWith("Support for specifying both or none of day-of-week AND a day-of-month parameters is not implemented."),
+                    "Incorrect ParseException thrown");
         }
     }
 
@@ -169,22 +171,25 @@ public class CronExpressionTest extends SerializationTestSupport {
             CronExpression cronExpression = new CronExpression("0 43 9 1,5,29,L * ?");
             fail("Expected ParseException did not fire for L combined with other days of the month");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying 'L' and 'LW' with other days of the month is not implemented"));
+            assertTrue(
+                    pe.getMessage().startsWith("Support for specifying 'L' and 'LW' with other days of the month is not implemented"),
+                    "Incorrect ParseException thrown");
         }
         try {
             CronExpression cronExpression = new CronExpression("0 43 9 ? * SAT,SUN,L");
             fail("Expected ParseException did not fire for L combined with other days of the week");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying 'L' with other days of the week is not implemented"));
+            assertTrue(
+                    pe.getMessage().startsWith("Support for specifying 'L' with other days of the week is not implemented"),
+                    "Incorrect ParseException thrown");
         }
         try {
             CronExpression cronExpression = new CronExpression("0 43 9 ? * 6,7,L");
             fail("Expected ParseException did not fire for L combined with other days of the week");
         } catch(ParseException pe) {
-            assertTrue("Incorrect ParseException thrown", 
-                pe.getMessage().startsWith("Support for specifying 'L' with other days of the week is not implemented"));
+            assertTrue(
+                    pe.getMessage().startsWith("Support for specifying 'L' with other days of the week is not implemented"),
+                    "Incorrect ParseException thrown");
         }
         try {
             CronExpression cronExpression = new CronExpression("0 43 9 ? * 5L");
@@ -192,10 +197,12 @@ public class CronExpressionTest extends SerializationTestSupport {
             fail("Unexpected ParseException thrown for supported '5L' expression.");
         }
     }
-    
-    @Test @Ignore
+
+    @Test
+    @Disabled
+    @Override
     public void testSerialization() {
         // TODO as we don't want to worry about this for now
     }
-
+    
 }

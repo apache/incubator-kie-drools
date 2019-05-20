@@ -21,8 +21,8 @@ import java.util.List;
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.StatelessKieSession;
 
@@ -32,7 +32,7 @@ import org.kie.api.runtime.StatelessKieSession;
  */
 public class StatelessStressTest extends CommonTestMethodBase {
 
-    @Ignore
+    @Disabled
     @Test
     public void testLotsOfStateless() throws Exception {
         final KieBase kbase = loadKnowledgeBase("thread_class_test.drl");

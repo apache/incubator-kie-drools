@@ -16,9 +16,9 @@
 package org.drools.compiler.integrationtests;
 
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import org.drools.compiler.State;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ByteArrayResource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
@@ -47,7 +47,7 @@ import org.kie.internal.utils.KieHelper;
 
 public class PropertyReactivityTest extends CommonTestMethodBase {
 
-    @Test(timeout=10000)
+    @Test
     public void testComposedConstraint() {
         final String str =
                 "package org.drools.test;\n" +
@@ -69,7 +69,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals(1, k2.getD());
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testScrambleProperties() {
         // DROOLS-91
         final String str =
@@ -225,7 +225,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     }
 
 
-    @Test(timeout=10000)
+    @Test
     public void testScrambleWithInterfaces() {
     /*
      *       K1 a b c d e f    1000
@@ -314,7 +314,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals( 5, list.size() );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testScrambleWithInterfacesAndObject() {
         // DROOLS-91
         final String str =
@@ -364,7 +364,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals( "Klass2", list.get(1) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testWithDeclaredTypeAndTraitInDifferentPackages() {
         // DROOLS-91
         final String str1 =
@@ -435,7 +435,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testWithBeanAndTraitInDifferentPackages() {
         // DROOLS-91
         final String str1 =
@@ -468,7 +468,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testRepeatedPatternWithPR() {
         // JBRULES-3705
         final String str1 =
@@ -522,7 +522,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertTrue(list.contains(new BigDecimal(5)));
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testPRWithCollections() {
         // DROOLS-135
         final String str1 = "package org.test;\n" +
@@ -616,7 +616,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testPRWithPositionalUnification() {
         // DROOLS-247
         final String str1 =
@@ -700,7 +700,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      * are no way that rule 'Find Heisenberg' gets activated because a modification
      * or a Klass3 object.
      */
-    @Test(timeout=10000)
+    @Test
     public void testPRConstraintOnAttributesWithoutSetter(){
         final String str =
                 "package org.drools.test;\n" +
@@ -751,7 +751,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      * in the rule involving fullName to be aware of modifications in the name
      * and/or lastName of a Klass3 object.
      */
-    @Test(timeout=10000)
+    @Test
     public void testPRConstraintOnAttributesWithoutSetterUsingWatches(){
         final String str =
                 "package org.drools.test;\n" +
@@ -800,7 +800,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      * getFullName doesn't have a setter but Klass4 states that setName()
      * and setLastName() both @Modifies fullName.
      */
-    @Test(timeout=10000)
+    @Test
     public void testPRConstraintOnAttributesWithoutSetterUsingModifies(){
         final String str =
                 "package org.drools.test;\n" +
@@ -851,7 +851,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      * are no way that rule 'Get Person name' gets activated because a modification
      * or a Klass3 object.
      */
-    @Test(timeout=10000)
+    @Test
     public void testPRBindingOnAttributesWithoutSetter(){
         final String str =
                 "package org.drools.test;\n" +
@@ -901,7 +901,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      * annotation in 'Get Person name' rule. After the name of Kalss3 instance is
      * modified, rule 'Get Person name' must be re-activated.
      */
-    @Test(timeout=10000)
+    @Test
     public void testPRBindingOnAttributesWithoutSetterUsingWatches(){
         final String str =
                 "package org.drools.test;\n" +
@@ -951,7 +951,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      * in Klass4's setName() and setLastName(). After the name of Kalss4
      * instance is modified, rule 'Get Person name' must be re-activated.
      */
-    @Test(timeout=10000)
+    @Test
     public void testPRBindingOnAttributesWithoutSetterUsingModifies(){
         final String str =
                 "package org.drools.test;\n" +
@@ -995,7 +995,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     }
 
 
-    @Test(timeout=10000)
+    @Test
     public void testPRBindingOnNonexistingAttributes(){
         final String str =
                 "package org.drools.test;\n" +
@@ -1020,7 +1020,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertTrue( knowledgeBuilder.hasErrors() );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testPRBindingOnNonexistingWatchedAttribute(){
         final String str =
                 "package org.drools.test;\n" +
@@ -1044,7 +1044,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertTrue( knowledgeBuilder.hasErrors() );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testModifyAfterInsertWithPropertyReactive() {
         final String rule1 =
                 "\n" +
@@ -1181,7 +1181,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testIndexedNotWatchedProperty() {
         // DROOLS-569
         final String rule1 =
@@ -1256,7 +1256,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals("foo", p.getAddress().getStreet());
     }
 
-    @Test(timeout = 10000L)
+    @Test
     public void testMoreThan64Fields() {
         final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
@@ -1290,7 +1290,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals(1, list.size());
     }
 
-    @Test(timeout = 10000L)
+    @Test
     public void testMoreThan64FieldsMultipleFirings() {
         final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
@@ -1324,7 +1324,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals(10, list.size());
     }
 
-    @Test(timeout = 10000L)
+    @Test
     public void testMoreThan64FieldsWithWatch() {
         final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
@@ -1832,7 +1832,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 5000L)
+    @Test
     public void testPRAfterAccumulate() {
         // DROOLS-2427
         final String str1 =

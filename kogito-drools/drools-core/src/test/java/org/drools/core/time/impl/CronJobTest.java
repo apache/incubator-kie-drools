@@ -16,8 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.ClockType;
@@ -25,8 +23,10 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
+import org.junit.jupiter.api.Test;
 import org.kie.services.time.impl.CronTrigger;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CronJobTest {
     @Test

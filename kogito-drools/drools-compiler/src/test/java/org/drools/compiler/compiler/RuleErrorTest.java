@@ -15,14 +15,14 @@
 
 package org.drools.compiler.compiler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.jci.CompilationProblem;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RuleErrorTest {
 

@@ -16,10 +16,6 @@
 
 package org.drools.core.base;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import org.drools.core.util.asm.BeanInherit;
 import org.drools.core.util.asm.InterfaceChild;
 import org.drools.core.util.asm.TestAbstract;
@@ -27,14 +23,19 @@ import org.drools.core.util.asm.TestAbstractImpl;
 import org.drools.core.util.asm.TestBean;
 import org.drools.core.util.asm.TestInterface;
 import org.drools.core.util.asm.TestInterfaceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ClassFieldAccessorTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
@@ -51,22 +52,18 @@ public class ClassFieldAccessorTest {
 
         final ClassFieldReader ext = store.getReader( TestBean.class,
                                                       "blah" );
-        assertEquals( false,
-                      ((Boolean) ext.getValue( null,
-                                               obj )).booleanValue() );
+        assertEquals(false, ((Boolean) ext.getValue(null,
+                                                               obj )).booleanValue());
 
         final ClassFieldReader ext2 = store.getReader( TestBean.class,
                                                        "fooBar" );
-        assertEquals( "fooBar",
-                      ext2.getValue( null,
-                                     obj ) );
+        assertEquals("fooBar", ext2.getValue(null,
+                                                        obj ));
 
         final ClassFieldReader ext3 = store.getReader( TestBean.class,
                                                        "objArray" );
-        assertEquals( objArray,
-                      ext3.getValue( null,
-                                     obj ) );
-
+        assertEquals(objArray, ext3.getValue(null,
+                                                        obj ));
     }
 
     @Test
@@ -76,10 +73,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( TestInterface.class,
                                                       "something" );
 
-        assertEquals( "foo",
-                      (String) ext.getValue( null,
-                                             obj ) );
-
+        assertEquals("foo", (String) ext.getValue(null,
+                                                             obj ));
     }
 
     @Test
@@ -88,10 +83,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( TestAbstract.class,
                                                       "something" );
         final TestAbstract obj = new TestAbstractImpl();
-        assertEquals( "foo",
-                      (String) ext.getValue( null,
-                                             obj ) );
-
+        assertEquals("foo", (String) ext.getValue(null,
+                                                             obj ));
     }
 
     @Test
@@ -99,10 +92,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( BeanInherit.class,
                                                       "text" );
         final BeanInherit obj = new BeanInherit();
-        assertEquals( "hola",
-                      (String) ext.getValue( null,
-                                             obj ) );
-
+        assertEquals("hola", (String) ext.getValue(null,
+                                                              obj ));
     }
 
     @Test
@@ -110,9 +101,8 @@ public class ClassFieldAccessorTest {
         final ConcreteChild obj = new ConcreteChild();
         final ClassFieldReader ext = store.getReader( InterfaceChild.class,
                                                       "foo" );
-        assertEquals( 42,
-                      ((Number) ext.getValue( null,
-                                              obj )).intValue() );
+        assertEquals(42, (long) ((Number) ext.getValue(null,
+                                                                  obj)).intValue());
     }
 
     @Test
@@ -120,9 +110,8 @@ public class ClassFieldAccessorTest {
         final ClassFieldReader ext = store.getReader( TestBean.class,
                                                       "longField" );
         final TestBean bean = new TestBean();
-        assertEquals( 424242,
-                      ((Number) ext.getValue( null,
-                                              bean )).longValue() );
+        assertEquals(424242, ((Number) ext.getValue(null,
+                                                               bean )).longValue());
     }
 
     @Test
@@ -153,37 +142,23 @@ public class ClassFieldAccessorTest {
             instance.setIntAttr( 10 );
             instance.setStrAttr( testString1 );
 
-            assertEquals( "Error reading int attr",
-                                 10,
-                                 ((Integer) intAccessor.getValue( instance )).intValue() );
-            assertEquals( "Error reading int attr",
-                                 10,
-                                 intAccessor.getIntValue( instance ) );
-            assertEquals( "Error reading String attr",
-                                 testString1,
-                                 strAccessor.getValue( instance ) );
+            assertEquals(10, ((Integer) intAccessor.getValue(instance )).intValue(),
+                                    "Error reading int attr");
+            assertEquals(10, intAccessor.getIntValue(instance ), "Error reading int attr");
+            assertEquals(testString1, strAccessor.getValue(instance ), "Error reading String attr");
 
             intAccessor.setValue( instance,
                                   new Integer( 50 ) );
             strAccessor.setValue( instance,
                                   testString2 );
 
-            assertEquals( "Error setting int attr",
-                                 50,
-                                 instance.getIntAttr() );
-            assertEquals( "Error setting String attr",
-                                 testString2,
-                                 instance.getStrAttr() );
+            assertEquals(50, instance.getIntAttr(), "Error setting int attr");
+            assertEquals(testString2, instance.getStrAttr(), "Error setting String attr");
 
             intAccessor.setIntValue( instance,
                                      40 );
-            assertEquals( "Error reading int attr",
-                                 40,
-                                 intAccessor.getIntValue( instance ) );
-            assertEquals( "Error reading String attr",
-                                 testString2,
-                                 strAccessor.getValue( instance ) );
-
+            assertEquals(40, intAccessor.getIntValue(instance ), "Error reading int attr");
+            assertEquals(testString2, strAccessor.getValue(instance ), "Error reading String attr");
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "No exception is supposed to be generated when creating field accessor: " + e );
@@ -243,64 +218,31 @@ public class ClassFieldAccessorTest {
             shortAccessor.setValue( instance,
                                     null );
 
-            assertEquals( "Error setting attr",
-                                 0,
-                                 instance.getIntAttr() );
-            assertNull( "Error setting attr",
-                               instance.getStrAttr() );
-            assertEquals( "Error setting attr",
-                                 0,
-                                 instance.getByteAttr() );
-            assertEquals( "Error setting attr",
-                                 false,
-                                 instance.isBooleanAttr() );
-            assertEquals( "Error setting attr",
-                                 '\0',
-                                 instance.getCharAttr() );
-            assertEquals( "Error setting attr",
-                                 0.0d,
-                                 instance.getDoubleAttr(),
-                                 0.1d );
-            assertEquals( "Error setting attr",
-                                 0.0f,
-                                 instance.getFloatAttr(),
-                                 0.1f );
-            assertEquals( "Error setting attr",
-                                 0l,
-                                 instance.getLongAttr() );
-            assertEquals( "Error setting attr",
-                                 (short) 0,
-                                 instance.getShortAttr() );
+            assertEquals(0, instance.getIntAttr(), "Error setting attr");
+            assertNull(instance.getStrAttr(), "Error setting attr");
+            assertEquals(0, (int) instance.getByteAttr(), "Error setting attr");
+            assertFalse(instance.isBooleanAttr(), "Error setting attr");
+            assertEquals((int) '\0', (int) instance.getCharAttr(), "Error setting attr");
+            assertEquals(0.0d, instance.getDoubleAttr(), 0.1d, "Error setting attr");
+            assertEquals((double) 0.0f, (double) instance.getFloatAttr(), (double) 0.1f,
+                                    "Error setting attr");
+            assertEquals(0l, (Object) instance.getLongAttr(), "Error setting attr");
+            assertEquals((int) (short) 0, (int) instance.getShortAttr(), "Error setting attr");
 
-            assertEquals( "Error reading int attr",
-                                 0,
-                                 ((Integer) intAccessor.getValue( instance )).intValue() );
-            assertNull( "Error reading String attr",
-                               strAccessor.getValue( instance ) );
-            assertEquals( "Error reading attr",
-                                 0,
-                                 ((Byte) byteAccessor.getValue( instance )).byteValue() );
-            assertEquals( "Error reading attr",
-                                 false,
-                                 ((Boolean) booleanAccessor.getValue( instance )).booleanValue() );
-            assertEquals( "Error reading attr",
-                                 '\0',
-                                 ((Character) charAccessor.getValue( instance )).charValue() );
-            assertEquals( "Error reading attr",
-                                 0.0d,
-                                 ((Double) doubleAccessor.getValue( instance )).doubleValue(),
-                                 0.1d );
-            assertEquals( "Error reading attr",
-                                 0.0f,
-                                 ((Float) floatAccessor.getValue( instance )).floatValue(),
-                                 0.1f );
-            assertEquals( "Error reading attr",
-                                 0l,
-                                 ((Long) longAccessor.getValue( instance )).longValue() );
-            assertEquals( "Error reading attr",
-                                 (short) 0,
-                                 ((Short) shortAccessor.getValue( instance )).shortValue() );
-
+            assertEquals(0, ((Integer) intAccessor.getValue(instance )).intValue(), "Error reading int attr");
+            assertNull(strAccessor.getValue(instance ), "Error reading String attr");
+            assertEquals(0, (int) ((Byte) byteAccessor.getValue(instance)).byteValue(), "Error reading attr");
+            assertFalse(((Boolean) booleanAccessor.getValue(instance)).booleanValue(), "Error reading attr");
+            assertEquals((int) '\0', (int) ((Character) charAccessor.getValue(instance)).charValue(),
+                                    "Error reading attr");
+            assertEquals(0.0d, ((Double) doubleAccessor.getValue(instance )).doubleValue(), 0.1d,
+                                    "Error reading attr");
+            assertEquals((double) 0.0f, (double) ((Float) floatAccessor.getValue(instance)).floatValue(),
+                                    (double) 0.1f, "Error reading attr");
+            assertEquals(0l, (Object) ((Long) longAccessor.getValue(instance)).longValue(),
+                                    "Error reading attr");
+            assertEquals((int) (short) 0, (int) ((Short) shortAccessor.getValue(instance)).shortValue(),
+                                    "Error reading attr");
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "No exception is supposed to be generated when creating field accessor: " + e );

@@ -16,16 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static java.util.Arrays.asList;
-import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -35,6 +25,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -96,8 +87,9 @@ import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -148,6 +140,17 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Arrays.asList;
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -541,7 +544,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void testInfiniteLoopCausedByInheritance() throws Exception {
         // DROOLS-13
         String str =
@@ -645,7 +648,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( asList( 7, 6, 5, 4, 3, 2, 1 ), list );
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testPropertyReactiveOnAlphaNodeFollowedByAccumulate() {
         // DROOLS-16
         String str =
@@ -2293,7 +2296,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void testPhreakNoLoop() {
         // DROOLS-7
         String str =
@@ -2978,7 +2981,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1 ), list );
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testAgendaGroupSalience() {
         // BZ-999360
         String str =
@@ -4326,7 +4329,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "Three", m2.getMessage3() );
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testWumpus1() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4364,7 +4367,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 2, hero.getPos() );
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testWumpus2() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4403,7 +4406,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 2, hero.getPos() );
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testWumpus3() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4459,7 +4462,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, hero.getPos() );
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testWumpus4() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4907,7 +4910,7 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testInfiniteLoopUpdatingWithRBTreeIndexing() {
         // BZ-1040032
         String drl =
@@ -4986,7 +4989,7 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testJitting() {
         // DROOLS-185
         String str =
@@ -6878,7 +6881,8 @@ public class Misc2Test extends CommonTestMethodBase {
 
         System.out.println( "Rule R2 is fired count - " + cc.getValue() );
 
-        assertEquals( "Rule 2 should be fired once as we have firing rule as one of criteria checking rule only fire once", 1, cc.getValue() );
+        assertEquals(1, cc.getValue(),
+                     "Rule 2 should be fired once as we have firing rule as one of criteria checking rule only fire once");
     }
 
     public static class ValueContainer {
@@ -7533,7 +7537,7 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000L)
+    @Test
     public void testFireUntilHaltWithForceEagerActivation() throws InterruptedException {
         String drl = "global java.util.List list\n" +
                      "rule \"String detector\"\n" +
@@ -7567,24 +7571,26 @@ public class Misc2Test extends CommonTestMethodBase {
         // thread for firing until halt
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit((Runnable) ksession::fireUntilHalt);
-        try {
-            for ( int i = 0; i < factsNr; i++ ) {
-                ksession.insert( "" + i );
-            }
-
-            // wait for rule to fire
-            synchronized (monitor) {
-                if ( list.size() < factsNr ) {
-                    monitor.wait();
+        assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+            try {
+                for ( int i = 0; i < factsNr; i++ ) {
+                    ksession.insert( "" + i );
                 }
-            }
 
-            assertEquals( factsNr, list.size() );
-        } finally {
-            ksession.halt();
-            ksession.dispose();
-            executorService.shutdownNow();
-        }
+                // wait for rule to fire
+                synchronized (monitor) {
+                    if ( list.size() < factsNr ) {
+                        monitor.wait();
+                    }
+                }
+
+                assertEquals( factsNr, list.size() );
+            } finally {
+                ksession.halt();
+                ksession.dispose();
+                executorService.shutdownNow();
+            }
+        });
     }
 
     public static class NotifyingList<T> extends ArrayList<T> {
@@ -7836,7 +7842,7 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testBetaMemoryLeakOnSegmentUnlinking() {
         // DROOLS-915
         String drl =
@@ -8922,37 +8928,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals("42000", list.get(0));
     }
     
-    /**
-     * This test deliberately creates a deadlock, failing the test with a timeout.
-     * Helpful to test thread dump when a timeout occur on the JUnit listener.
-     * See {@link org.kie.test.util.TestStatusListener#testFailure(org.junit.runner.notification.Failure)}
-     * @throws Exception
-     */
-    @Ignore("This test deliberately creates a deadlock, failing the test with a timeout.\n" + 
-            "Helpful to test thread dump when a timeout occur on the JUnit listener.\n" + 
-            "See org.kie.test.util.TestStatusListener#testFailure()")
-    @Test(timeout=5_000L)
-    public void testDeadlock() {
-        Object lock1 = 1L;
-        Object lock2 = 2L;
-        Runnable task1 = () -> {
-            synchronized(lock1) {
-              try { Thread.sleep(50); } catch (InterruptedException e) {}
-              synchronized(lock2) {
-              }
-            }
-        };
-        Runnable task2 = () -> {
-            synchronized(lock2) {
-              try { Thread.sleep(50); } catch (InterruptedException e) {}
-              synchronized(lock1) {
-              }
-            }
-        };
-        new Thread(task1).start();
-        task2.run();
-    }
-
     public static class ElementOperation {
         private AbstractElement element;
         public ElementOperation(AbstractElement element) {
@@ -8998,7 +8973,7 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("This test is supposed to cause a StackOverflow inside mvel but this not always happens")
+    @Disabled("This test is supposed to cause a StackOverflow inside mvel but this not always happens")
     public void testStackOverflowInMvel() {
         // DROOLS-1542
         String str1 = "import " + Person.class.getName() + ";\n" +

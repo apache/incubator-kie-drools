@@ -15,13 +15,11 @@
  */
 package org.drools.compiler.conf;
 
-import static org.junit.Assert.assertEquals;
-
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.util.MemoryUtil;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -42,6 +40,8 @@ import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class KnowledgeBaseConfigurationTest {
 
     private KieBaseConfiguration config;
@@ -49,7 +49,7 @@ public class KnowledgeBaseConfigurationTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         config = KieServices.Factory.get().newKieBaseConfiguration();
     }
@@ -296,7 +296,7 @@ public class KnowledgeBaseConfigurationTest {
 
     @Test
     public void testPermGenThresholdConfiguration() {
-        Assume.assumeTrue("JVM with perm gen", MemoryUtil.hasPermGen());
+        Assumptions.assumeTrue(MemoryUtil.hasPermGen());
         // setting the option using the type safe method
         config.setOption( PermGenThresholdOption.get(85) );
 

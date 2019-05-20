@@ -16,12 +16,12 @@
 
 package org.drools.core.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DroolsAssert {
 
@@ -31,7 +31,7 @@ public class DroolsAssert {
             enumeration.nextElement();
             actualSize++;
         }
-        assertEquals("Enumeration size different than expected.", expectedSize, actualSize);
+        assertEquals(expectedSize, actualSize, "Enumeration size different than expected.");
     }
 
     public static void assertUrlEnumerationContainsMatch(String regex, Enumeration<URL> enumeration) {

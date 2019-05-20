@@ -15,10 +15,10 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +31,12 @@ import org.drools.core.factmodel.TraitableMap;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 public class TraitMapCoreTest extends CommonTestMethodBase {
 
-    @Test(timeout=10000)
+    @Test
     public void testMapCoreManyTraits(  ) {
         String source = "package org.drools.test;\n" +
                         "\n" +
@@ -95,7 +95,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( 3.0, map.get( "GPA" ) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
                         "import java.util.*\n;" +
@@ -149,7 +149,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testMapCore2(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
                         "\n" +
@@ -276,7 +276,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testMapCoreAliasing(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
                         "\n" +
@@ -342,7 +342,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
                         "\n" +
@@ -914,7 +914,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertTrue(list.contains("correct2"));
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testMapTraitMismatchTypes()
     {
         String drl = "" +

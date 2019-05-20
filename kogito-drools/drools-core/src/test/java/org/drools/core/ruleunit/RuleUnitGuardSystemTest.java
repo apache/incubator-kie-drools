@@ -16,23 +16,22 @@
 
 package org.drools.core.ruleunit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.core.spi.Activation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.*;
 
 public class RuleUnitGuardSystemTest {
 
     private RuleUnitExecutorSession executorSession;
     private RuleUnitGuardSystem guardSystem;
 
-    @Before
+    @BeforeEach
     public void prepareGuardSystem() {
         executorSession = mock(RuleUnitExecutorSession.class);
         when(executorSession.internalExecuteUnit(anyObject())).thenReturn(1);

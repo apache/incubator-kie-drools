@@ -16,14 +16,6 @@
 
 package org.drools.compiler.integrationtests.session;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +29,7 @@ import org.drools.compiler.Person;
 import org.drools.compiler.Target;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.integrationtests.facts.AFact;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.command.Setter;
 import org.kie.api.io.ResourceType;
@@ -48,6 +39,12 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class UpdateTest extends CommonTestMethodBase {
 
@@ -156,7 +153,7 @@ public class UpdateTest extends CommonTestMethodBase {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        Assert.assertFalse(kbuilder.getErrors().toString(), kbuilder.hasErrors());
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
     }
 
     @Test
@@ -275,10 +272,10 @@ public class UpdateTest extends CommonTestMethodBase {
             ksession.insert(n);
         }
         ksession.fireAllRules();
-        assertTrue("Processing generated errors: " + errors.toString(), errors.isEmpty());
+        assertTrue(errors.isEmpty(), "Processing generated errors: " + errors.toString());
         for (int i = 1; i <= MAX; i++) {
             final IndexedNumber n = (IndexedNumber) orderedFacts.get(i - 1);
-            assertEquals("Fact is out of order", i, n.getIndex());
+            assertEquals(i, n.getIndex(), "Fact is out of order");
         }
     }
 

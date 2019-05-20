@@ -15,9 +15,6 @@
 
 package org.drools.compiler.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.MVELDumper.MVELDumperContext;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
@@ -25,16 +22,19 @@ import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.core.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.core.base.evaluators.SetEvaluatorsDefinition;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MVELDumperTest {
 
     private MVELDumper dumper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // configure operators
         new SetEvaluatorsDefinition();
@@ -139,7 +139,7 @@ public class MVELDumperTest {
                       result );
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testDumpWithDateAttr() throws Exception {
         String input = "son.birthDate == \"01-jan-2000\"";
         String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )";
@@ -393,8 +393,7 @@ public class MVELDumperTest {
     public ConstraintConnectiveDescr parse( final String constraint ) {
         DrlExprParser parser = new DrlExprParser(LanguageLevelOption.DRL6);
         ConstraintConnectiveDescr result = parser.parse( constraint );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         return result;
     }

@@ -16,10 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import static org.kie.services.time.Interval.MAX;
-import static org.kie.services.time.Interval.MIN;
-import static org.junit.Assert.assertEquals;
-
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
@@ -30,16 +26,20 @@ import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.test.model.StockTick;
-import org.kie.services.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kie.services.time.Interval;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.kie.services.time.Interval.MAX;
+import static org.kie.services.time.Interval.MIN;
 
 public class BuildUtilsTest {
     
     private BuildUtils utils;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         utils = new BuildUtils();
     }
@@ -126,7 +126,7 @@ public class BuildUtilsTest {
     public void assertEqualsMatrix( Interval[][] expected, Interval[][] matrix ) {
         for( int i = 0; i < matrix.length; i++ ) {
             for( int j = 0; j < matrix[i].length; j++ ) {
-                assertEquals( "Wrong value at ("+i+", "+j, expected[i][j], matrix[i][j] );
+                assertEquals( expected[i][j], matrix[i][j], "Wrong value at ("+i+", "+j+")" );
             }
         }
     }

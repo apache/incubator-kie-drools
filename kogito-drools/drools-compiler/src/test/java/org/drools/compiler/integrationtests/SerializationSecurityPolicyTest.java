@@ -24,9 +24,9 @@ import java.util.Collection;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -36,11 +36,11 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class SerializationSecurityPolicyTest extends CommonTestMethodBase {
 
-    @Before
+    @BeforeEach
     public void init() {
         final String policy = SerializationSecurityPolicyTest.class.getResource("serialization-rules.policy").getFile();
         System.setProperty("java.security.policy", policy);
@@ -49,7 +49,7 @@ public class SerializationSecurityPolicyTest extends CommonTestMethodBase {
         System.setSecurityManager(new SecurityManager());
     }
 
-    @After
+    @AfterEach
     public void close() {
         System.setSecurityManager(null);
         System.clearProperty("java.security.policy");

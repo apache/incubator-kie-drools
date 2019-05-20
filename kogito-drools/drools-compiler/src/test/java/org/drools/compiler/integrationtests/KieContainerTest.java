@@ -15,12 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
-import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +24,7 @@ import java.lang.reflect.Constructor;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +35,7 @@ import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.core.impl.InternalKieContainer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message.Level;
@@ -52,6 +47,14 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
+import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 public class KieContainerTest extends CommonTestMethodBase {
 
@@ -228,7 +231,7 @@ public class KieContainerTest extends CommonTestMethodBase {
     }
 
 
-    @Test(timeout = 10000)
+    @Test
     public void testIncrementalCompilationSynchronization() throws Exception {
         final KieServices kieServices = KieServices.Factory.get();
 
@@ -244,34 +247,33 @@ public class KieContainerTest extends CommonTestMethodBase {
         kieSession.dispose();
         assertEquals(1, list.size());
 
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 1; i < 10; i++) {
-                    ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
-                    createAndDeployJar( kieServices, releaseId, createDRL("rule" + i) );
-                    kieContainer.updateToVersion(releaseId);
-                }
+        Thread t = new Thread(() -> {
+            for (int i = 1; i < 10; i++) {
+                ReleaseId releaseId1 = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
+                createAndDeployJar(kieServices, releaseId1, createDRL("rule" + i) );
+                kieContainer.updateToVersion(releaseId1);
             }
         });
 
         t.setDaemon(true);
         t.start();
 
-        while (true) {
-            kieSession = kieContainer.newKieSession();
-            list = new ArrayList<String>();
-            kieSession.setGlobal("list", list);
-            kieSession.fireAllRules();
-            kieSession.dispose();
-            // There can be multiple items in the list if an updateToVersion is triggered during a fireAllRules
-            // (updateToVersion can be called multiple times during fireAllRules, especially on slower machines)
-            // in that case it may fire with the old rule and multiple new ones
-            Assertions.assertThat(list).isNotEmpty();
-            if (list.get(0).equals("rule9")) {
-                break;
+        assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+            while (true) {
+                KieSession kieSession2 = kieContainer.newKieSession();
+                ArrayList<String> list2 = new ArrayList<>();
+                kieSession2.setGlobal("list", list2);
+                kieSession2.fireAllRules();
+                kieSession2.dispose();
+                // There can be multiple items in the list if an updateToVersion is triggered during a fireAllRules
+                // (updateToVersion can be called multiple times during fireAllRules, especially on slower machines)
+                // in that case it may fire with the old rule and multiple new ones
+                assertThat(list2).isNotEmpty();
+                if (list2.get(0).equals("rule9")) {
+                    break;
+                }
             }
-        }
+        });
     }
 
     @Test
@@ -353,7 +355,7 @@ public class KieContainerTest extends CommonTestMethodBase {
         URL url = classLoader.getResources("org/drools/testdrl").nextElement();
         
         List<String> lines = read(url.openStream());
-        Assertions.assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
+        assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
 
         assertUrlEnumerationContainsMatch("^mfs\\:/$", classLoader.getResources(""));
     }

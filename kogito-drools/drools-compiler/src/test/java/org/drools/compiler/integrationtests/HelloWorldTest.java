@@ -15,10 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +24,7 @@ import org.drools.compiler.Message;
 import org.drools.core.base.mvel.MVELDebugHandler;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
@@ -40,6 +36,10 @@ import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.mvel2.MVELRuntime;
 import org.mvel2.debug.Debugger;
 import org.mvel2.debug.Frame;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * This is a sample class to launch a rule.

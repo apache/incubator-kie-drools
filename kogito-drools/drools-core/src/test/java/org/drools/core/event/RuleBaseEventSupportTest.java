@@ -16,8 +16,6 @@
 
 package org.drools.core.event;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -40,8 +38,8 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseUnlockedEvent;
@@ -62,6 +60,8 @@ import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
 import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class RuleBaseEventSupportTest {
 
     private InternalKnowledgeBase kBase;
@@ -72,7 +72,7 @@ public class RuleBaseEventSupportTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         listener1 = new TestRuleBaseListener( "(listener-1) " );

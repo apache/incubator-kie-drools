@@ -16,10 +16,6 @@
 
 package org.drools.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -29,7 +25,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.core.factmodel.traits.IndexedTypeHierarchy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HierarchyTest {
 
@@ -576,11 +576,11 @@ public class HierarchyTest {
                 int subOf = ((HierarchyEncoderImpl) encoder).superset(xcode, ycode);
 
                 if ( x.equals( y ) ) {
-                    assertEquals( x + " vs " + y, 0, subOf );
+                    assertEquals( 0, subOf, x + " vs " + y);
                 } else if ( sups[ j - 'A' ].contains( y ) ) {
-                    assertEquals( x + " vs " + y, 1, subOf );
+                    assertEquals(1, subOf,  x + " vs " + y);
                 } else {
-                    assertEquals( x + " vs " + y, -1, subOf );
+                    assertEquals(-1, subOf,  x + " vs " + y);
                 }
 
             }

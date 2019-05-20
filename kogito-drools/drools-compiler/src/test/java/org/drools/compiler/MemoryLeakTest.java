@@ -16,8 +16,6 @@
 
 package org.drools.compiler;
 
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -42,14 +40,19 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MemoryLeakTest {
 
@@ -187,8 +190,8 @@ public class MemoryLeakTest {
         }
     }
 
-    @Test(timeout = 5000)
-    @Ignore("The checkReachability method is not totally reliable and can fall in an endless loop." +
+    @Test
+    @Disabled("The checkReachability method is not totally reliable and can fall in an endless loop." +
             "We need to find a better way to check this.")
     public void testLeakAfterSessionDispose() {
         // DROOLS-1655

@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests.concurrency;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -28,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
@@ -35,8 +37,8 @@ import org.drools.compiler.StockTick;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -56,6 +58,9 @@ import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+
 /**
  * This is a test case for multi-thred issues
  */
@@ -63,7 +68,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(MultithreadTest.class);
 
-    @Test(timeout = 1000000)
+    @Test
     public void testSlidingTimeWindows() {
         final String str = "package org.drools\n" +
                 "global java.util.List list; \n" +
@@ -111,7 +116,7 @@ public class MultithreadTest extends CommonTestMethodBase {
             });
 
             final int RUN_TIME = 5000; // runs for 10 seconds
-            boolean success = false;
+            AtomicBoolean success = new AtomicBoolean();
             try {
                 for (int i = 0; i < THREAD_NR; i++) {
                     ecs.submit(() -> {
@@ -136,29 +141,33 @@ public class MultithreadTest extends CommonTestMethodBase {
                     });
                 }
 
-                success = true;
-                for (int i = 0; i < THREAD_NR; i++) {
-                    try {
-                        success = ecs.take().get() && success;
-                    } catch (final Exception e) {
-                        errors.add(e);
+                assertTimeoutPreemptively(Duration.ofMinutes(5), () -> {
+                    success.set(true);
+                    for (int i = 0; i < THREAD_NR; i++) {
+                        try {
+                            success.set(ecs.take().get() && success.get());
+                        } catch (final Exception e) {
+                            errors.add(e);
+                        }
                     }
-                }
+                });
             } finally {
                 ksession.halt();
 
-                try {
-                    success = ecs.take().get() && success;
-                } catch (final Exception e) {
-                    errors.add(e);
-                }
+                assertTimeoutPreemptively(Duration.ofMinutes(5), () -> {
+                    try {
+                        success.set(ecs.take().get() && success.get());
+                    } catch (final Exception e) {
+                        errors.add(e);
+                    }
+                });
 
                 for (final Exception e : errors) {
                     e.printStackTrace();
                 }
 
-                Assertions.assertThat(errors).isEmpty();
-                Assertions.assertThat(success).isTrue();
+                assertThat(errors).isEmpty();
+                assertThat(success).isTrue();
 
                 ksession.dispose();
             }
@@ -167,7 +176,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testClassLoaderRace() throws InterruptedException {
 
         final String drl = "package org.drools.integrationtests;\n" +
@@ -200,44 +209,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    public static class IntEvent {
-
-        private int data;
-
-        public IntEvent(final int j) {
-            data = j;
-        }
-
-        public int getData() {
-            return data;
-        }
-
-        public void setData(final int data) {
-            this.data = data;
-        }
-    }
-
-    public class Server {
-
-        public int currentTemp;
-        public double avgTemp;
-        public String hostname;
-        public int readingCount;
-
-        public Server(final String hiwaesdk) {
-            hostname = hiwaesdk;
-        }
-
-        public String toString() {
-            return "Server{" +
-                    "currentTemp=" + currentTemp +
-                    ", avgTemp=" + avgTemp +
-                    ", hostname='" + hostname + '\'' +
-                    '}';
-        }
-    }
-
-    @Test(timeout = 5000)
+    @Test
     public void testRaceOnAccumulateNodeSimple() throws InterruptedException {
 
         final String drl = "package org.drools.integrationtests;\n" +
@@ -298,25 +270,8 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    public static class MyFact {
-
-        Date timestamp = new Date();
-        String id = UUID.randomUUID().toString();
-
-        public MyFact() {
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(final String id) {
-            this.id = id;
-        }
-    }
-
     @Test
-    @Ignore
+    @Disabled
     public void testConcurrencyWithChronThreads() throws InterruptedException {
 
         final String drl = "package it.intext.drools.fusion.bug;\n" +
@@ -390,31 +345,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    public static class Runner extends Thread {
-
-        private final KieSession ksession;
-        private Throwable error;
-
-        public Runner(final KieSession ksession) {
-            this.ksession = ksession;
-        }
-
-        @Override
-        public void run() {
-            try {
-                ksession.fireUntilHalt();
-            } catch (final Throwable t) {
-                error = t;
-                throw new RuntimeException(t);
-            }
-        }
-
-        public Throwable getError() {
-            return error;
-        }
-    }
-
-    @Test(timeout = 5000)
+    @Test
     public void testConcurrentQueries() {
         // DROOLS-175
         final StringBuilder drl = new StringBuilder();
@@ -457,23 +388,25 @@ public class MultithreadTest extends CommonTestMethodBase {
                 });
             }
 
-            boolean success = true;
-            for (int i = 0; i < THREAD_NR; i++) {
-                try {
-                    success = ecs.take().get() && success;
-                } catch (final Exception e) {
-                    throw new RuntimeException(e);
+            assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+                boolean success = true;
+                for (int i = 0; i < THREAD_NR; i++) {
+                    try {
+                        success = ecs.take().get() && success;
+                    } catch (final Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
 
-            Assertions.assertThat(success).isTrue();
-            ksession.dispose();
+                assertThat(success).isTrue();
+            });
         } finally {
+            ksession.dispose();
             executor.shutdownNow();
         }
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void testConcurrentDelete() {
         final String drl =
                 "import " + SlowBean.class.getCanonicalName() + ";\n" +
@@ -517,39 +450,18 @@ public class MultithreadTest extends CommonTestMethodBase {
                 }
             }
 
-            try {
-                barrier.await();
-            } catch (final Exception e) {
-                throw new RuntimeException(e);
-            }
+            assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+                try {
+                    barrier.await();
+                } catch (final Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
             System.out.println("Done step " + step);
         }
     }
 
-    public class SlowBean {
-
-        private final int id;
-
-        public SlowBean(final int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            try {
-                Thread.sleep(10L);
-            } catch (final InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            return id;
-        }
-
-        @Override
-        public String toString() {
-            return "" + id;
-        }
-    }
-
-    @Test(timeout = 10000)
+    @Test
     public void testConcurrentFireAndDispose() throws InterruptedException {
         // DROOLS-1103
         final String drl = "rule R no-loop timer( int: 1s )\n" +
@@ -599,7 +511,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         LOG.info("last line of test.");
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testFireUntilHaltAndDispose() throws InterruptedException {
         // DROOLS-1103
         final String drl = "rule R no-loop timer( int: 1s )\n" +
@@ -636,7 +548,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void testJittingShortComparison() {
         // DROOLS-1633
         final String drl =
@@ -664,15 +576,75 @@ public class MultithreadTest extends CommonTestMethodBase {
             threads[i].start();
         }
 
-        for (int i = 0; i < threadNr; i++) {
+        assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+            for (int i = 0; i < threadNr; i++) {
+                try {
+                    threads[i].join();
+                } catch (final InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        assertThat(list).hasSize(0);
+    }
+
+    public static class IntEvent {
+
+        private int data;
+
+        public IntEvent(final int j) {
+            data = j;
+        }
+
+        public int getData() {
+            return data;
+        }
+
+        public void setData(final int data) {
+            this.data = data;
+        }
+    }
+
+    public static class MyFact {
+
+        Date timestamp = new Date();
+        String id = UUID.randomUUID().toString();
+
+        public MyFact() {
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(final String id) {
+            this.id = id;
+        }
+    }
+
+    public static class Runner extends Thread {
+
+        private final KieSession ksession;
+        private Throwable error;
+
+        public Runner(final KieSession ksession) {
+            this.ksession = ksession;
+        }
+
+        @Override
+        public void run() {
             try {
-                threads[i].join();
-            } catch (final InterruptedException e) {
-                throw new RuntimeException(e);
+                ksession.fireUntilHalt();
+            } catch (final Throwable t) {
+                error = t;
+                throw new RuntimeException(t);
             }
         }
 
-        Assertions.assertThat(list).hasSize(0);
+        public Throwable getError() {
+            return error;
+        }
     }
 
     public static class SessionRunner implements Runnable {
@@ -694,6 +666,49 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         public Short getShortValue() {
             return 769;
+        }
+    }
+
+    public class Server {
+
+        public int currentTemp;
+        public double avgTemp;
+        public String hostname;
+        public int readingCount;
+
+        public Server(final String hiwaesdk) {
+            hostname = hiwaesdk;
+        }
+
+        public String toString() {
+            return "Server{" +
+                    "currentTemp=" + currentTemp +
+                    ", avgTemp=" + avgTemp +
+                    ", hostname='" + hostname + '\'' +
+                    '}';
+        }
+    }
+
+    public class SlowBean {
+
+        private final int id;
+
+        public SlowBean(final int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            try {
+                Thread.sleep(10L);
+            } catch (final InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "" + id;
         }
     }
 }

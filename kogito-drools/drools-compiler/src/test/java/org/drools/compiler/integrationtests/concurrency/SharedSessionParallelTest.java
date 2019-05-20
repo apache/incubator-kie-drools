@@ -16,38 +16,38 @@
 
 package org.drools.compiler.integrationtests.concurrency;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.BeanA;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
-@RunWith(Parameterized.class)
+import static org.assertj.core.api.Assertions.*;
+
 public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[] {false, false},
-                new Boolean[] {false, true},
-                new Boolean[] {true, false},
-                new Boolean[] {true, true});
+    static Stream<Arguments> parameters() {
+        return Stream.of(new Parameters(true, true),
+                         new Parameters(true, false),
+                         new Parameters(false, false),
+                         new Parameters(false, true))
+                .map(Arguments::arguments);
     }
 
-    public SharedSessionParallelTest(final boolean enforcedJitting, final boolean serializeKieBase) {
-        super(enforcedJitting, serializeKieBase, false, false);
-    }
-
-    @Test(timeout = 40000)
-    public void testNoExceptions() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testNoExceptions(Parameters params) throws InterruptedException {
         final String drl = "rule R1 when String() then end";
 
         final int repetitions = 100;
@@ -56,7 +56,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
         for (int i = 0; i < repetitions; i++) {
 
-            final KieSession kieSession = getKieBase(drl).newKieSession();
+            final KieSession kieSession = getKieBase(params, drl).newKieSession();
 
             parallelTest(countOfThreads, counter -> {
                 try {
@@ -74,21 +74,21 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         }
     }
 
-    @Test(timeout = 20000)
-    public void testCheckOneThreadOnly() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testCheckOneThreadOnly(Parameters params) throws InterruptedException {
         final int threadCount = 100;
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final String drl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List list;\n" +
-            "rule R1 " +
-            "when " +
-            "    BeanA($n : seed) " +
-            "then " +
-            "    list.add(\"\" + $n);" +
-            "end";
+                "global java.util.List list;\n" +
+                "rule R1 " +
+                "when " +
+                "    BeanA($n : seed) " +
+                "then " +
+                "    list.add(\"\" + $n);" +
+                "end";
 
-        final KieSession kieSession = getKieBase(drl).newKieSession();
+        final KieSession kieSession = getKieBase(params, drl).newKieSession();
         final CountDownLatch latch = new CountDownLatch(threadCount);
 
         final TestExecutor exec = counter -> {
@@ -111,26 +111,26 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         parallelTest(threadCount, exec);
         kieSession.dispose();
 
-        Assertions.assertThat(list).hasSize(threadCount);
+        assertThat(list).hasSize(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            Assertions.assertThat(list).contains("" + i);
+            assertThat(list).contains("" + i);
         }
     }
 
-    @Test(timeout = 20000)
-    public void testCorrectFirings() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testCorrectFirings(Parameters params) throws InterruptedException {
         final int threadCount = 100;
 
         final String drl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List globalList;\n" +
-            "rule R1 " +
-            "when " +
-            "    BeanA($n : seed) " +
-            "then " +
-            "    globalList.add(\"\" + $n);" +
-            "end";
+                "global java.util.List globalList;\n" +
+                "rule R1 " +
+                "when " +
+                "    BeanA($n : seed) " +
+                "then " +
+                "    globalList.add(\"\" + $n);" +
+                "end";
 
-        final KieSession kieSession = getKieBase(drl).newKieSession();
+        final KieSession kieSession = getKieBase(params, drl).newKieSession();
 
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
@@ -146,20 +146,20 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(threadCount, list);
     }
 
-    @Test(timeout = 20000)
-    public void testCorrectFirings2() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testCorrectFirings2(Parameters params) throws InterruptedException {
         final int threadCount = 100;
 
         final String drl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List list;\n" +
-            "rule R1 " +
-            "when " +
-            "    BeanA($n : seed, seed == 0) " +
-            "then " +
-            "    list.add(\"\" + $n);" +
-            "end";
+                "global java.util.List list;\n" +
+                "rule R1 " +
+                "when " +
+                "    BeanA($n : seed, seed == 0) " +
+                "then " +
+                "    list.add(\"\" + $n);" +
+                "end";
 
-        final KieSession kieSession = getKieBase(drl).newKieSession();
+        final KieSession kieSession = getKieBase(params, drl).newKieSession();
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
@@ -171,37 +171,37 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
         parallelTest(threadCount, exec);
         kieSession.dispose();
-        Assertions.assertThat(list).contains("" + 0);
-        Assertions.assertThat(list).doesNotContain("" + 1);
+        assertThat(list).contains("" + 0);
+        assertThat(list).doesNotContain("" + 1);
         final int expectedListSize = ((threadCount - 1) / 2) + 1;
-        Assertions.assertThat(list).hasSize(expectedListSize);
+        assertThat(list).hasSize(expectedListSize);
     }
 
-    @Test(timeout = 20000)
-    public void testLongRunningRule() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testLongRunningRule(Parameters params) throws InterruptedException {
         final int threadCount = 100;
         final int seed = threadCount + 200;
         final int objectCount = 1000;
 
         final String longRunningDrl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List list;\n" +
-            "rule longRunning " +
-            "when " +
-            "    $bean : BeanA($n : seed, seed > " + threadCount + ") " +
-            "then " +
-            "    modify($bean) { setSeed($n-1) };" +
-            "    list.add(\"\" + $bean.getSeed());" +
-            "end";
+                "global java.util.List list;\n" +
+                "rule longRunning " +
+                "when " +
+                "    $bean : BeanA($n : seed, seed > " + threadCount + ") " +
+                "then " +
+                "    modify($bean) { setSeed($n-1) };" +
+                "    list.add(\"\" + $bean.getSeed());" +
+                "end";
 
         final String listDrl = "global java.util.List list2;\n" +
-            "rule listRule " +
-            "when " +
-            "    BeanA($n : seed, seed < " + threadCount + ") " +
-            "then " +
-            "    list2.add(\"\" + $n);" +
-            "end";
+                "rule listRule " +
+                "when " +
+                "    BeanA($n : seed, seed < " + threadCount + ") " +
+                "then " +
+                "    list2.add(\"\" + $n);" +
+                "end";
 
-        final KieSession kieSession = getKieBase(longRunningDrl, listDrl).newKieSession();
+        final KieSession kieSession = getKieBase(params, longRunningDrl, listDrl).newKieSession();
 
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
@@ -235,28 +235,28 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(1, threadCount, list2, (threadCount - 1) * objectCount);
     }
 
-    @Test(timeout = 20000)
-    public void testLongRunningRule2() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testLongRunningRule2(Parameters params) throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
 
         final String waitingRule = "rule waitingRule " +
-            "when " +
-            "    String( this == \"wait\" ) " +
-            "then " +
-            "end";
+                "when " +
+                "    String( this == \"wait\" ) " +
+                "then " +
+                "end";
 
         final String longRunningDrl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List list;\n" +
-            "rule longRunning " +
-            "when " +
-            "    $bean : BeanA($n : seed, seed > 0 ) " +
-            "then " +
-            "    modify($bean) { setSeed($n-1) };" +
-            "    list.add(\"\" + $bean.getSeed());" +
-            "end";
+                "global java.util.List list;\n" +
+                "rule longRunning " +
+                "when " +
+                "    $bean : BeanA($n : seed, seed > 0 ) " +
+                "then " +
+                "    modify($bean) { setSeed($n-1) };" +
+                "    list.add(\"\" + $bean.getSeed());" +
+                "end";
 
-        final KieSession kieSession = getKieBase(longRunningDrl, waitingRule).newKieSession();
+        final KieSession kieSession = getKieBase(params, longRunningDrl, waitingRule).newKieSession();
 
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
@@ -286,31 +286,31 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         checkList(0, seed, list, seed * threadCount);
     }
 
-    @Test(timeout = 20000)
-    public void testLongRunningRule3() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testLongRunningRule3(Parameters params) throws InterruptedException {
         final int threadCount = 10;
         final int seed = threadCount + 50;
         final int objectCount = 1000;
 
         final String longRunningDrl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List list;\n" +
-            "rule longRunning " +
-            "when " +
-            "    $bean : BeanA($n : seed, seed > " + threadCount + ") " +
-            "then " +
-            "    modify($bean) { setSeed($n-1) };" +
-            "    list.add(\"\" + $bean.getSeed());" +
-            "end";
+                "global java.util.List list;\n" +
+                "rule longRunning " +
+                "when " +
+                "    $bean : BeanA($n : seed, seed > " + threadCount + ") " +
+                "then " +
+                "    modify($bean) { setSeed($n-1) };" +
+                "    list.add(\"\" + $bean.getSeed());" +
+                "end";
 
         final String listDrl = "global java.util.List list2;\n" +
-            "rule listRule " +
-            "when " +
-            "    BeanA($n : seed, seed < " + threadCount + ") " +
-            "then " +
-            "    list2.add(\"\" + $n);" +
-            "end";
+                "rule listRule " +
+                "when " +
+                "    BeanA($n : seed, seed < " + threadCount + ") " +
+                "then " +
+                "    list2.add(\"\" + $n);" +
+                "end";
 
-        final KieSession kieSession = getKieBase(longRunningDrl, listDrl).newKieSession();
+        final KieSession kieSession = getKieBase(params, longRunningDrl, listDrl).newKieSession();
 
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
@@ -345,29 +345,29 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         final int list2ExpectedSize = threadCount / 2 * objectCount;
         for (int i = 0; i < threadCount; i++) {
             if (i % 2 == 1) {
-                Assertions.assertThat(list2).contains("" + i);
+                assertThat(list2).contains("" + i);
             }
         }
-        Assertions.assertThat(list).hasSize(listExpectedSize);
-        Assertions.assertThat(list2).hasSize(list2ExpectedSize);
+        assertThat(list).hasSize(listExpectedSize);
+        assertThat(list2).hasSize(list2ExpectedSize);
     }
 
-    @Test(timeout = 20000)
-    public void testCountdownBean() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testCountdownBean(Parameters params) throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
 
         final String drl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List list;\n" +
-            "rule countdown " +
-            "when " +
-            "    $bean : BeanA($n : seed, seed >  0 ) " +
-            "then " +
-            "    modify($bean) { setSeed($n-1) };" +
-            "    list.add(\"\" + $bean.getSeed());" +
-            "end";
+                "global java.util.List list;\n" +
+                "rule countdown " +
+                "when " +
+                "    $bean : BeanA($n : seed, seed >  0 ) " +
+                "then " +
+                "    modify($bean) { setSeed($n-1) };" +
+                "    list.add(\"\" + $bean.getSeed());" +
+                "end";
 
-        final KieSession kieSession = getKieBase(drl).newKieSession();
+        final KieSession kieSession = getKieBase(params, drl).newKieSession();
         final CyclicBarrier barrier = new CyclicBarrier(threadCount);
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
         final BeanA bean = new BeanA(seed);
@@ -389,25 +389,25 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         parallelTest(threadCount, exec);
         kieSession.dispose();
         checkList(seed, list);
-        Assertions.assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
+        assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
     }
 
-    @Test(timeout = 20000)
-    public void testCountdownBean2() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testCountdownBean2(Parameters params) throws InterruptedException {
         final int threadCount = 100;
         final int seed = 1000;
 
         final String drl = "import " + BeanA.class.getCanonicalName() + ";\n" +
-            "global java.util.List list;\n" +
-            "rule countdown " +
-            "when " +
-            "    $bean : BeanA($n : seed, seed >  0 ) " +
-            "then " +
-            "    modify($bean) { setSeed($n-1) };" +
-            "    list.add(\"\" + $bean.getSeed());" +
-            "end";
+                "global java.util.List list;\n" +
+                "rule countdown " +
+                "when " +
+                "    $bean : BeanA($n : seed, seed >  0 ) " +
+                "then " +
+                "    modify($bean) { setSeed($n-1) };" +
+                "    list.add(\"\" + $bean.getSeed());" +
+                "end";
 
-        final KieSession kieSession = getKieBase(drl).newKieSession();
+        final KieSession kieSession = getKieBase(params, drl).newKieSession();
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
         final BeanA[] beans = new BeanA[threadCount];
 
@@ -429,27 +429,27 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
         checkList(0, seed, list, seed * threadCount);
         for (final BeanA bean : beans) {
-            Assertions.assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
+            assertThat(bean).hasFieldOrPropertyWithValue("seed", 0);
         }
     }
 
-    @Test(timeout = 20000)
-    public void testOneRulePerThread() throws InterruptedException {
+    @ParameterizedSharedSessionParallelTest
+    public void testOneRulePerThread(Parameters params) throws InterruptedException {
         final int threadCount = 1000;
 
         final String[] drls = new String[threadCount];
         for (int i = 0; i < threadCount; i++) {
             drls[i] = "import " + BeanA.class.getCanonicalName() + ";\n" +
-                "global java.util.List list;\n" +
-                "rule R" + i + " " +
-                "when " +
-                "    $bean : BeanA( seed == " + i + " ) " +
-                "then " +
-                "    list.add(\"" + i + "\");" +
-                "end";
+                    "global java.util.List list;\n" +
+                    "rule R" + i + " " +
+                    "when " +
+                    "    $bean : BeanA( seed == " + i + " ) " +
+                    "then " +
+                    "    list.add(\"" + i + "\");" +
+                    "end";
         }
 
-        final KieSession kieSession = getKieBase(drls).newKieSession();
+        final KieSession kieSession = getKieBase(params, drls).newKieSession();
         final List<String> list = Collections.synchronizedList(new ArrayList<>());
 
         final TestExecutor exec = counter -> {
@@ -474,9 +474,17 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
     }
 
     private void checkList(final int start, final int end, final List list, final int expectedSize) {
-        Assertions.assertThat(list).hasSize(expectedSize);
+        assertThat(list).hasSize(expectedSize);
         for (int i = start; i < end; i++) {
-            Assertions.assertThat(list).contains("" + i);
+            assertThat(list).contains("" + i);
         }
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public @interface ParameterizedSharedSessionParallelTest {
+
     }
 }

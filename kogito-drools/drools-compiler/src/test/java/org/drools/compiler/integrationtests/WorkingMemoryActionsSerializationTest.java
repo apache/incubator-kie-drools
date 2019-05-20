@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.fail;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,11 +23,10 @@ import java.util.Map;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
@@ -39,7 +36,10 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-@Ignore
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+@Disabled
 public class WorkingMemoryActionsSerializationTest {
     private static final List<String> RULES = Arrays.asList("enableRecording", "saveRecord", "processEvent", "ignoreEvent"); //rules expected to be executed
     private KieSession ksession;
@@ -93,7 +93,7 @@ public class WorkingMemoryActionsSerializationTest {
                "  //side effects go here\n" +
                "end";
 
-    @Before
+    @BeforeEach
     public void before() {
         ruleCalls.clear();
 
@@ -130,7 +130,7 @@ public class WorkingMemoryActionsSerializationTest {
 
     }
 
-    @After
+    @AfterEach
     public void after() {
         ksession.halt();
         ksession.dispose();
@@ -161,7 +161,7 @@ public class WorkingMemoryActionsSerializationTest {
      * Checks that the rule names passed in are called the number of times passed in.
      */
     private void checkExecutions(final List<String> rules, final List<Integer> expected) {
-        Assert.assertEquals("Wrong config passed. Rules doesn't match times", rules.size(), expected.size());
+        assertEquals(rules.size(), expected.size(), "Wrong config passed. Rules doesn't match times");
         synchronized (ruleCalls) {
             for (int i = 0; i < rules.size(); i++) {
                 final String ruleName = rules.get(i);
@@ -169,8 +169,7 @@ public class WorkingMemoryActionsSerializationTest {
                 if (actualTimes == null) {
                     actualTimes = 0;
                 }
-                Assert.assertEquals(
-                        "Ruled " + ruleName + " is not called as often as expected.", expected.get(i), actualTimes);
+                assertEquals(expected.get(i), actualTimes, "Rule " + ruleName + " is not called as often as expected.");
             }
         }
     }

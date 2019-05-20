@@ -15,10 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +44,16 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.InternalReadAccessor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr;
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaConsequenceBuilderTest {
 
@@ -139,8 +143,7 @@ public class JavaConsequenceBuilderTest {
 //            System.out.println( "=============================" );
 //            System.out.println( fixed );
 
-            assertNotNull( context.getErrors().toString(),
-                           fixed );
+            assertNotNull(fixed, context.getErrors().toString());
             assertEqualsIgnoreSpaces( expected,
                                       fixed );
         } catch ( RecognitionException e ) {

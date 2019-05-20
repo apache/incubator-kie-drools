@@ -16,7 +16,7 @@
 package org.drools.compiler.rule.builder.dialect;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 
 public class JavaAndMVELCombinedTest extends CommonTestMethodBase {

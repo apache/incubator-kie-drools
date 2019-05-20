@@ -16,15 +16,12 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -41,6 +38,9 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests stateful/stateless KieSession listeners registration - DROOLS-818.
@@ -64,7 +64,7 @@ public class ListenersTest {
     private KieSession kieSession;
     private StatelessKieSession statelessKieSession;
 
-    @Before
+    @BeforeEach
     public void init() {
         ReleaseId kieModuleId = prepareKieModule();
 
@@ -73,7 +73,7 @@ public class ListenersTest {
         this.statelessKieSession = kieContainer.newStatelessKieSession();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.kieSession != null) {
             this.kieSession.dispose();
@@ -108,9 +108,9 @@ public class ListenersTest {
     }
 
     private void checkThatListenerFired(Collection listeners) {
-        assertTrue("Listener not registered.", listeners.size() >= 1);
+        assertTrue(listeners.size() >= 1, "Listener not registered.");
         MarkingListener listener = getMarkingListener(listeners);
-        assertTrue("Expected listener to fire.", listener.hasFired());
+        assertTrue(listener.hasFired(), "Expected listener to fire.");
     }
 
     private MarkingListener getMarkingListener(Collection listeners) {
@@ -157,7 +157,7 @@ public class ListenersTest {
                 ResourceFactory.newByteArrayResource(DRL.getBytes()));
 
         KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
-        assertEquals("Unexpected compilation errors", 0, builder.getResults().getMessages().size());
+        assertEquals(0, builder.getResults().getMessages().size(), "Unexpected compilation errors");
 
         ks.getRepository().addKieModule(builder.getKieModule());
 

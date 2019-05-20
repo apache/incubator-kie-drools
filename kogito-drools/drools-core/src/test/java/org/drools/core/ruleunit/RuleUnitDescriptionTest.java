@@ -16,16 +16,6 @@
 
 package org.drools.core.ruleunit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -36,15 +26,21 @@ import java.util.Optional;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.*;
 
 public class RuleUnitDescriptionTest {
 
     private RuleUnitDescription ruleUnitDescr;
 
-    @Before
+    @BeforeEach
     public void prepareRuleUnitDescr() {
         ruleUnitDescr = new RuleUnitDescription(TestRuleUnit.class);
     }
@@ -228,19 +224,19 @@ public class RuleUnitDescriptionTest {
 
     private void assertEntryPointIdExists(final String entryPointIdName) {
         final Optional<EntryPointId> entryPointId = ruleUnitDescr.getEntryPointId(entryPointIdName);
-        Assert.assertTrue(entryPointId.isPresent());
-        Assert.assertEquals(TestRuleUnit.class.getName() + "." + entryPointIdName, entryPointId.get().getEntryPointId());
+        assertTrue(entryPointId.isPresent());
+        assertEquals(TestRuleUnit.class.getName() + "." + entryPointIdName, entryPointId.get().getEntryPointId());
     }
 
     private void assertDataSourceType(final String dataSourceName, final Class<?> expectedType) {
         final Optional<Class<?>> dataSourceType = ruleUnitDescr.getDatasourceType(dataSourceName);
-        Assert.assertTrue(dataSourceType.isPresent());
-        Assert.assertEquals(expectedType, dataSourceType.get());
+        assertTrue(dataSourceType.isPresent());
+        assertEquals(expectedType, dataSourceType.get());
     }
 
     private void assertVarType(final String varName, final Class<?> expectedType) {
         final Optional<Class<?>> variableTable = ruleUnitDescr.getVarType(varName);
-        Assert.assertTrue(variableTable.isPresent());
-        Assert.assertEquals(expectedType, variableTable.get());
+        assertTrue(variableTable.isPresent());
+        assertEquals(expectedType, variableTable.get());
     }
 }

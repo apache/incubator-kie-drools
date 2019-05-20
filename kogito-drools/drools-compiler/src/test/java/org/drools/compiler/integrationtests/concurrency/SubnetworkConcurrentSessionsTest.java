@@ -16,99 +16,99 @@
 
 package org.drools.compiler.integrationtests.concurrency;
 
-import java.util.Arrays;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.stream.Stream;
 
 import org.drools.compiler.integrationtests.facts.Product;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
 
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
-
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[]{false, false, false},
-                new Boolean[]{false, true, false},
-                new Boolean[]{true, false, false},
-                new Boolean[]{true, true, false},
-                new Boolean[]{false, false, true},
-                new Boolean[]{false, true, true},
-                new Boolean[]{true, false, true},
-                new Boolean[]{true, true, true});
+    static Stream<Arguments> parameters() {
+        return Stream.of(
+                new Parameters(true, true, true),
+                new Parameters(true, true, false),
+                new Parameters(true, false, true),
+                new Parameters(true, false, false),
+                new Parameters(false, true, true),
+                new Parameters(false, true, false),
+                new Parameters(false, false, true),
+                new Parameters(false, false, false)
+        ).map(Arguments::arguments);
     }
 
-    public SubnetworkConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
-                                            final boolean sharedKieBase) {
-        super(enforcedJitting, serializeKieBase, sharedKieBase, false);
-    }
-
-    @Test(timeout = 40000)
-    public void test1() throws InterruptedException {
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test1(Parameters params) throws InterruptedException {
         final String drl = "rule R when String() then end";
 
-        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
-            kieSession.insert( "test" );
+        parallelTest(params, NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+            kieSession.insert("test");
             return kieSession.fireAllRules() == 1;
-        }, null, null, drl );
+        }, null, null, drl);
     }
 
-    @Test(timeout = 40000)
-    public void test2NoSubnetwork() throws InterruptedException {
-        test2(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
-                getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test2NoSubnetwork(Parameters params) throws InterruptedException {
+        test2(params,
+              getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
+              getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 40000)
-    public void test2WithSubnetwork() throws InterruptedException {
-        test2(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
-                getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test2WithSubnetwork(Parameters params) throws InterruptedException {
+        test2(params,
+              getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
+              getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
     }
 
-    private void test2(final String... drls) throws InterruptedException {
-        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+    private void test2(Parameters params, final String... drls) throws InterruptedException {
+        parallelTest(params, NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
             final Product[] products = new Product[10];
             for (int i = 0; i < 10; i++) {
-                products[i] = new Product( "" + i, i % 2 == 0 ? "pair" : "odd" );
+                products[i] = new Product("" + i, i % 2 == 0 ? "pair" : "odd");
             }
 
-            kieSession.insert( "odd" );
-            kieSession.insert( "pair" );
+            kieSession.insert("odd");
+            kieSession.insert("pair");
             for (int i = 0; i < 10; i++) {
-                kieSession.insert( products[i] );
+                kieSession.insert(products[i]);
             }
 
             kieSession.fireAllRules();
 
             for (int i = 0; i < 10; i++) {
-                if ( !products[i].getCategory().equals( products[i].getDescription() ) ) {
+                if (!products[i].getCategory().equals(products[i].getDescription())) {
                     return false;
                 }
             }
             return true;
-        }, null, null, drls );
+        }, null, null, drls);
     }
 
-    @Test(timeout = 40000)
-    public void test3NoSubnetwork() throws InterruptedException {
-        test3(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
-                getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test3NoSubnetwork(Parameters params) throws InterruptedException {
+        test3(params,
+              getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
+              getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 40000)
-    public void test3WithSubnetwork() throws InterruptedException {
-        test3(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
-                getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test3WithSubnetwork(Parameters params) throws InterruptedException {
+        test3(params,
+              getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
+              getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 40000)
-    public void test3WithSharedSubnetwork() throws InterruptedException {
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test3WithSharedSubnetwork(Parameters params) throws InterruptedException {
         final String ruleTemplate = "import " + Product.class.getCanonicalName() + ";\n" +
                 "rule ${ruleName} when\n" +
                 "  $s : String()\n" +
@@ -126,88 +126,91 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
 
         final String drl1 = ruleTemplate.replace("${ruleName}", "R1").replace("${category}", "odd");
         final String drl2 = ruleTemplate.replace("${ruleName}", "R2").replace("${category}", "pair");
-        test3(drl1, drl2);
+        test3(params, drl1, drl2);
     }
 
-    private void test3(final String... drls) throws InterruptedException {
-        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+    private void test3(Parameters params, final String... drls) throws InterruptedException {
+        parallelTest(params, NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
             final Product[] products = new Product[10];
             for (int i = 0; i < 10; i++) {
-                products[i] = new Product( "" + i, i % 2 == 0 ? "pair" : "odd" );
+                products[i] = new Product("" + i, i % 2 == 0 ? "pair" : "odd");
             }
 
             for (int i = 0; i < 10; i++) {
-                kieSession.insert( products[i] );
+                kieSession.insert(products[i]);
             }
 
             kieSession.fireAllRules();
 
             final boolean pair = counter % 2 == 0;
-            kieSession.insert( pair ? "pair" : "odd" );
+            kieSession.insert(pair ? "pair" : "odd");
 
             kieSession.fireAllRules();
 
             for (int i = 0; i < 10; i++) {
-                if ( pair ) {
-                    if ( products[i].getCategory().equals( "pair" ) && !products[i].getDescription().equals( "pair" ) ) {
+                if (pair) {
+                    if (products[i].getCategory().equals("pair") && !products[i].getDescription().equals("pair")) {
                         return false;
                     }
-                    if ( products[i].getCategory().equals( "odd" ) && !products[i].getDescription().equals( "" ) ) {
+                    if (products[i].getCategory().equals("odd") && !products[i].getDescription().equals("")) {
                         return false;
                     }
                 }
-                if ( !pair ) {
-                    if ( products[i].getCategory().equals( "pair" ) && !products[i].getDescription().equals( "" ) ) {
+                if (!pair) {
+                    if (products[i].getCategory().equals("pair") && !products[i].getDescription().equals("")) {
                         return false;
                     }
-                    if ( products[i].getCategory().equals( "odd" ) && !products[i].getDescription().equals( "odd" ) ) {
+                    if (products[i].getCategory().equals("odd") && !products[i].getDescription().equals("odd")) {
                         return false;
                     }
                 }
             }
             return true;
-        }, null, null, drls );
+        }, null, null, drls);
     }
 
-    @Test(timeout = 10000)
-    public void test4NoSharing() throws InterruptedException {
-        test4(getRule("R1", "", false, true, "Number( intValue > 5 )"),
-                getRule("R2", "", false, true, "Number( intValue < 5 )"));
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test4NoSharing(Parameters params) throws InterruptedException {
+        test4(params,
+              getRule("R1", "", false, true, "Number( intValue > 5 )"),
+              getRule("R2", "", false, true, "Number( intValue < 5 )"));
     }
 
-    @Test(timeout = 10000)
-    public void test4WithSharing() throws InterruptedException {
-        test4(getRule("R1", "", true, true, "Number( intValue > 5 )"),
-                getRule("R2", "", true, true, "Number( intValue < 5 )"));
+    @ParameterizeSubnetworkConcurrentSessionsTest
+    public void test4WithSharing(Parameters params) throws InterruptedException {
+        test4(params,
+              getRule("R1", "", true, true, "Number( intValue > 5 )"),
+              getRule("R2", "", true, true, "Number( intValue < 5 )"));
     }
 
-    private void test4(final String... drls) throws InterruptedException {
-        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+    private void test4(Parameters params, final String... drls) throws InterruptedException {
+        parallelTest(params, NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
             final Product[] products = new Product[10];
             for (int i = 0; i < 10; i++) {
-                products[i] = new Product( "" + i, i % 3 == 0 ? "few" : "many" );
+                products[i] = new Product("" + i, i % 3 == 0 ? "few" : "many");
             }
 
-            kieSession.insert( "few" );
-            kieSession.insert( "many" );
+            kieSession.insert("few");
+            kieSession.insert("many");
 
             for (int i = 0; i < 10; i++) {
-                kieSession.insert( products[i] );
+                kieSession.insert(products[i]);
             }
 
             kieSession.fireAllRules();
 
             for (int i = 0; i < 10; i++) {
-                if ( !products[i].getCategory().equals( products[i].getDescription() ) ) {
+                if (!products[i].getCategory().equals(products[i].getDescription())) {
                     return false;
                 }
             }
             return true;
-        }, null, null, drls );
+        }, null, null, drls);
     }
 
     private String getRule(final String ruleName, final String stringFactCondition,
-            final boolean withSharing, final boolean withSubnetwork, final String accumulateResultFilter) {
+                           final boolean withSharing, final boolean withSubnetwork,
+                           final String accumulateResultFilter) {
         final String sharingCondition = withSharing ? "" : ", firings not contains \"" + ruleName + "\"";
         final String accumulateWithSubnetwork = withSubnetwork ?
                 "  $n : " + accumulateResultFilter + " from accumulate (\n" +
@@ -222,9 +225,17 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
                 "  $p : Product( category == $s " + sharingCondition + ")\n" +
                 accumulateWithSubnetwork +
                 "then\n" +
-                "  $p.getFirings().add(\"" + ruleName +"\");\n" +
+                "  $p.getFirings().add(\"" + ruleName + "\");\n" +
                 "  $p.appendDescription($s);\n" +
                 "  update($p);\n" +
                 "end\n";
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public @interface ParameterizeSubnetworkConcurrentSessionsTest {
+
     }
 }

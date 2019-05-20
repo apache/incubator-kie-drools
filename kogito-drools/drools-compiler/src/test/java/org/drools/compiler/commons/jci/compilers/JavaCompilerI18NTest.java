@@ -15,15 +15,15 @@
 
 package org.drools.compiler.commons.jci.compilers;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JavaCompilerI18NTest {
 

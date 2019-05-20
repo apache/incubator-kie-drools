@@ -15,14 +15,13 @@
 
 package org.drools.compiler.reteoo;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import com.thoughtworks.xstream.XStream;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -31,10 +30,10 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 
-import com.thoughtworks.xstream.XStream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReteooBuilderTest {
 
@@ -93,13 +92,8 @@ public class ReteooBuilderTest {
 
     private void nodesEquals(final Object object1,
                              final Object object2) {
-        assertEquals( object1 + " is not of the same type as " + object2,
-                      object1.getClass(),
-                      object2.getClass() );
-
-        assertEquals( object1 + " is not equal to " + object2,
-                      object1,
-                      object2 );
+        assertEquals(object1.getClass(), object2.getClass());
+        assertEquals(object1, object2);
 
         if ( object1 instanceof ObjectSource) {
             final ObjectSource source1 = (ObjectSource) object1;
@@ -108,9 +102,7 @@ public class ReteooBuilderTest {
             final ObjectSink[] list1 = source1.getObjectSinkPropagator().getSinks();
             final ObjectSink[] list2 = source2.getObjectSinkPropagator().getSinks();
 
-            assertEquals( object1.getClass() + " nodes have different number of sinks",
-                          list1.length,
-                          list2.length );
+            assertEquals(list1.length, list2.length, object1.getClass() + " nodes have different number of sinks");
 
             for ( int i = 0, size = list1.length; i < size; i++ ) {
                 nodesEquals( list1[i],
@@ -123,9 +115,7 @@ public class ReteooBuilderTest {
             final LeftTupleSink[] list1 = source1.getSinkPropagator().getSinks();
             final LeftTupleSink[] list2 = source2.getSinkPropagator().getSinks();
 
-            assertEquals( object1.getClass() + " nodes have different number of sinks",
-                          list1.length,
-                          list2.length );
+            assertEquals(list1.length, list2.length, object1.getClass() + " nodes have different number of sinks");
 
             for ( int i = 0, size = list1.length; i < size; i++ ) {
                 nodesEquals( list1[i],

@@ -16,16 +16,15 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.reteoo.TupleIterator.OnLeaf;
 import org.drools.core.spi.PropagationContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TupleIterationTest {
     @Test

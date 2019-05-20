@@ -16,16 +16,6 @@
 
 package org.drools.compiler.lang.api;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
@@ -49,7 +38,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -61,6 +50,14 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 /**
  * DescrBuilderTest
@@ -273,7 +270,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                       pkg.getRules().size() );
 
         String drl = new DrlDumper().dump( pkg );
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(drl);
+        assertThat(expected).isEqualToIgnoringWhitespace(drl);
 
         KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
@@ -469,8 +466,8 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         ArgumentCaptor<AfterMatchFiredEvent> cap = ArgumentCaptor.forClass( AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(cap.capture());
         
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
-        assertThat( ((Number) cap.getValue().getMatch().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
+        assertThat((Number)cap.getValue().getMatch().getDeclarationValue( "$sum" )).isEqualTo(180.0);
+        assertThat((Number)cap.getValue().getMatch().getDeclarationValue( "$cnt" )).isEqualTo(2L);
     }
     
     @Test
@@ -564,7 +561,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl)KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         System.err.println( knowledgeBuilder.getErrors() );
-        assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
+        assertFalse(knowledgeBuilder.hasErrors() , knowledgeBuilder.getErrors().toString());
 
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -623,7 +620,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         System.err.println( knowledgeBuilder.getErrors() );
-        assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
+        assertFalse(knowledgeBuilder.hasErrors() , knowledgeBuilder.getErrors().toString());
 
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -693,8 +690,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),
                       ResourceType.DESCR );
 
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors() , kbuilder.getErrors().toString());
 
         if (pkgName == null) {
             Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();

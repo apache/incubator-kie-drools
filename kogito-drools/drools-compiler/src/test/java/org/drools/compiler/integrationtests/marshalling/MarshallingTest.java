@@ -15,14 +15,6 @@
 
 package org.drools.compiler.integrationtests.marshalling;
 
-import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -81,8 +73,8 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreConstants;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -111,6 +103,14 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class MarshallingTest extends CommonTestMethodBase {
 
@@ -1256,7 +1256,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Person",
                       ((ClassObjectType) ((ObjectTypeNode) nodes.get( 5 )).getObjectType()).getClassType().getSimpleName() );
-        assertTrue( "Should end with JoinNode",  nodes.get( 6 ).getClass().getSimpleName().endsWith( "JoinNode") );
+        assertTrue(nodes.get( 6 ).getClass().getSimpleName().endsWith( "JoinNode"),  "Should end with JoinNode");
         assertEquals( "Rule 1",
                       ((RuleTerminalNode) nodes.get( 7 )).getRule().getName() );
 
@@ -2123,16 +2123,14 @@ public class MarshallingTest extends CommonTestMethodBase {
      *
      * @throws Exception
      */
-    @Test @Ignore
+    @Test @Disabled
     public void testDroolsObjectOutputInputStream() throws Exception {
         KieBase kbase = loadKnowledgeBase("org/drools/compiler/integrationtests/test_Serializable.drl"  );
         KieSession session = kbase.newKieSession();
         Person bob = new Person();
         session.insert( bob );
 
-        assertSame( "these two object references should be same",
-                    bob,
-                    session.getObjects().iterator().next() );
+        assertSame(bob, session.getObjects().iterator().next(), "these two object references should be same");
 
         Marshaller marshaller = createSerializableMarshaller( kbase );
 
@@ -2151,9 +2149,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         marshaller = createSerializableMarshaller( kbase );
         session = (StatefulKnowledgeSession) marshaller.unmarshall( in );
 
-        assertSame( "these two object references should be same",
-                    deserializedBob,
-                    session.getObjects().iterator().next() );
+        assertSame(deserializedBob, session.getObjects().iterator().next(), "these two object references should be same");
         in.close();
     }
 
@@ -2281,7 +2277,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       ksession.getObjects().size() );
     }
 
-    @Test @Ignore("This test is suspicious to say the least...")
+    @Test @Disabled("This test is suspicious to say the least...")
     public void testScheduledActivation() {
         KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackageImpl impl = new KnowledgePackageImpl( "test" );
@@ -2513,7 +2509,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       list.size() );
     }
 
-    @Test @Ignore("beta4 phreak")
+    @Test @Disabled("beta4 phreak")
     public void testMarshallEntryPointsWithSlidingTimeWindow() throws Exception {
         String str =
                 "package org.domain.test \n" +
@@ -2813,7 +2809,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Reproduces with pseudoclock. It takes too long with system clock")
+    @Disabled("Reproduces with pseudoclock. It takes too long with system clock")
     public void testMarshallWithTimedRuleRealClock() {
         // DROOLS-795
         String drl = "rule \"Rule A Timeout\"\n" +

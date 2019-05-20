@@ -16,9 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
 import java.io.FileWriter;
 import java.util.HashMap;
 
@@ -30,8 +27,8 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -41,6 +38,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class OutOfMemoryTest extends CommonTestMethodBase {
@@ -52,7 +52,7 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
      * @throws Exception
      */
     @Test
-    @Ignore
+    @Disabled
     public void testStatefulSessionsCreation() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_OutOfMemoryError.drl");
 
@@ -74,7 +74,7 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testAgendaLoop() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_OutOfMemory.drl");
         KieSession ksession = kbase.newKieSession();
@@ -89,14 +89,13 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     }
     
     @Test
-    @Ignore
+    @Disabled
     public void testMemoryLeak() {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource("test_MemoryLeak.drl",
                 OutOfMemoryTest.class),
                       ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );

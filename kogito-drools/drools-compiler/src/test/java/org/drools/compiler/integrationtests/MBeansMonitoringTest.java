@@ -14,16 +14,9 @@
 */
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -34,9 +27,9 @@ import org.drools.core.ClockType;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -61,6 +54,12 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class MBeansMonitoringTest extends CommonTestMethodBase {
     public static final Logger LOG = LoggerFactory.getLogger(MBeansMonitoringTest.class);
     
@@ -70,7 +69,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     private static final String KSESSION2 = "KSession2";
     private String mbeansprop;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ((KieServicesImpl) KieServices.Factory.get()).nullKieClasspathContainer();
         ((KieServicesImpl) KieServices.Factory.get()).nullAllContainerIds();
@@ -78,7 +77,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         System.setProperty( MBeansOption.PROPERTY_NAME, "enabled" );    
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         ((KieServicesImpl) KieServices.Factory.get()).nullKieClasspathContainer();
         ((KieServicesImpl) KieServices.Factory.get()).nullAllContainerIds();

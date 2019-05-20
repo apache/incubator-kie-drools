@@ -15,9 +15,6 @@
 
 package org.drools.compiler.phreak;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +37,10 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
-import org.junit.Assert;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class Scenario {
     /**
@@ -255,11 +255,11 @@ public class Scenario {
                 actualTuple = actual.getInsertFirst();        
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertTrue("insert " + i + ":\n" + actualTuple + "\nis not the expected\n" + expectedTuple, equals(expectedTuple, actualTuple));
+                    assertTrue(equals(expectedTuple, actualTuple), "insert " + i + ":\n" + actualTuple + "\nis not the expected\n" + expectedTuple);
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
-                assertNull( "Insert excpected more", actualTuple );
+                assertNull(actualTuple, "Insert expected more");
             } else if ( actual.getInsertFirst() != null ) {
                 fail( "Expected nothing, but insert existed" );
             }
@@ -271,11 +271,11 @@ public class Scenario {
                 actualTuple = actual.getDeleteFirst();
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertTrue( "delete " + i + ":\n" + actualTuple + "\nis not the expected\n" + expectedTuple, equals( expectedTuple, actualTuple ) );
+                    assertTrue(equals( expectedTuple, actualTuple), "delete " + i + ":\n" + actualTuple + "\nis not the expected\n" + expectedTuple);
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
-                assertNull( "Delete excpected more", actualTuple );
+                assertNull(actualTuple, "Delete expected more");
             } else if ( actual.getDeleteFirst() != null ) {
                 fail( "Expected nothing, but delete existed" );
             }
@@ -287,11 +287,11 @@ public class Scenario {
                 actualTuple = actual.getUpdateFirst();
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertTrue( "update " + i + ":\n" + actualTuple + "\nis not the expected\n" + expectedTuple, equals( expectedTuple, actualTuple ) );
+                    assertTrue(equals( expectedTuple, actualTuple ), "update " + i + ":\n" + actualTuple + "\nis not the expected\n" + expectedTuple);
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
-                assertNull( "Update excpected more", actualTuple );
+                assertNull(actualTuple, "Update expected more");
             } else if ( actual.getUpdateFirst() != null ) {
                 fail( "Expected nothing, but update existed" );
             }

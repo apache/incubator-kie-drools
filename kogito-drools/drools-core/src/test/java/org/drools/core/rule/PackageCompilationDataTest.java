@@ -16,8 +16,6 @@
 
 package org.drools.core.rule;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +30,9 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PackageCompilationDataTest {
     public static class TestEvalExpression implements EvalExpression {

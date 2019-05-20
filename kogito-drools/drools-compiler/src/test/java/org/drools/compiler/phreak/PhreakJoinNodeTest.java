@@ -33,7 +33,7 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PhreakJoinNodeTest {
     BuildContext          buildContext;

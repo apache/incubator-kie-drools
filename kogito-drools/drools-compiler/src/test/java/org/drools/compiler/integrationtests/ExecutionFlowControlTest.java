@@ -15,8 +15,8 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.AgendaGroup;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -50,7 +50,7 @@ import org.kie.internal.utils.KieHelper;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
-    @Test(timeout = 10000)
+    @Test
     public void testSalienceIntegerAndLoadOrder() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_salienceIntegerRule.drl");
         KieSession ksession = kbase.newKieSession();
@@ -62,13 +62,10 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( "Three rules should have been fired", 3, list.size() );
-        assertEquals( "Rule 4 should have been fired first", "Rule 4",
-                      list.get( 0 ) );
-        assertEquals( "Rule 2 should have been fired second", "Rule 2",
-                      list.get( 1 ) );
-        assertEquals( "Rule 3 should have been fired third", "Rule 3",
-                      list.get( 2 ) );
+        assertEquals(3, list.size(),  "Three rules should have been fired");
+        assertEquals("Rule 4", list.get( 0 ),  "Rule 4 should have been fired first");
+        assertEquals("Rule 2", list.get( 1 ),  "Rule 2 should have been fired second");
+        assertEquals("Rule 3", list.get( 2 ),  "Rule 3 should have been fired third");
     }
 
     @Test
@@ -87,11 +84,9 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( "Two rules should have been fired", 2, list.size() );
-        assertEquals( "Rule 3 should have been fired first", "Rule 3",
-                      list.get( 0 ) );
-        assertEquals( "Rule 2 should have been fired second", "Rule 2",
-                      list.get( 1 ) );
+        assertEquals(2, list.size(),  "Two rules should have been fired");
+        assertEquals("Rule 3", list.get( 0 ),  "Rule 3 should have been fired first");
+        assertEquals("Rule 2", list.get( 1 ),  "Rule 2 should have been fired second");
     }
     
     @Test
@@ -299,8 +294,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( "Should not loop  and thus size should be 1", 1,
-                      list.size() );
+        assertEquals(1, list.size(),  "Should not loop and thus size should be 1");
 
     }
 
@@ -317,8 +311,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( "Should not loop  and thus size should be 1", 1,
-                      list.size() );
+        assertEquals(1, list.size(),  "Should not loop and thus size should be 1");
         assertEquals( 50, brie.getPrice() );
 
     }
@@ -614,8 +607,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                                     int[][] expected) {
         for ( int row = 0; row < size; row++ ) {
             for ( int col = 0; col < size; col++ ) {
-                assertEquals( "Wrong value at " + row + "," + col + ": ",
-                              expected[row][col], cells[row][col].getValue() );
+                assertEquals(expected[row][col], cells[row][col].getValue(),  "Wrong value at " + row + "," + col + ": ");
             }
         }
     }
@@ -876,7 +868,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 0, list.size() );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testRuleFlowGroupInActiveMode() throws Exception {
         KieBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
         final KieSession ksession = kbase.newKieSession();

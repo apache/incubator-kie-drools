@@ -15,11 +15,6 @@
  */
 package org.drools.compiler.command;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +22,8 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
@@ -39,11 +34,16 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class MoreBatchExecutionTest extends CommonTestMethodBase {
 
     private KieSession ksession = null;
     
-    @After
+    @AfterEach
     public void disposeKSession() {
         if( ksession != null ) { 
             ksession.dispose();
@@ -71,10 +71,10 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         commands.add(CommandFactory.newFireAllRules("fired"));
         Command<?> cmds = CommandFactory.newBatchExecution(commands);
         ExecutionResults result = (ExecutionResults) ksession.execute(cmds);
-        assertNotNull("Batch execution result is null!", result);
+        assertNotNull(result, "Batch execution result is null!");
 
         Object firedObject = result.getValue("fired");
-        assertTrue("Retrieved object is null or incorrect!", firedObject != null && firedObject instanceof Integer);
+        assertTrue( firedObject != null && firedObject instanceof Integer, "Retrieved object is null or incorrect!");
         assertEquals(4, firedObject);
 
         list = (List<?>) ksession.getGlobal("list");
@@ -104,10 +104,10 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         commands.add(CommandFactory.newQuery("numStinkyCheeses", "simple query"));
         Command<?> cmds = CommandFactory.newBatchExecution(commands);
         ExecutionResults result = (ExecutionResults) ksession.execute(cmds);
-        assertNotNull("Batch execution result is null!", result);
+        assertNotNull(result, "Batch execution result is null!");
 
         Object queryResultsObject = result.getValue("numStinkyCheeses");
-        assertTrue("Retrieved object is null or incorrect!", queryResultsObject != null && queryResultsObject instanceof QueryResults);
+        assertTrue(queryResultsObject != null && queryResultsObject instanceof QueryResults, "Retrieved object is null or incorrect!");
         
         assertEquals( 1, ((QueryResults) queryResultsObject).size() );
     }

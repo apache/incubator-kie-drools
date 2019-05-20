@@ -15,13 +15,6 @@
 
 package org.drools.core.meta;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +39,14 @@ import org.drools.core.metadata.With;
 import org.drools.core.test.model.Person;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.drools.reflective.classloader.ProjectClassLoader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MetadataTest {
 

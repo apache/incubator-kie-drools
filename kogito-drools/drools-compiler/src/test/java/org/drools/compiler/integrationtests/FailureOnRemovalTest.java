@@ -15,9 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -28,7 +25,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
@@ -42,6 +39,9 @@ import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class FailureOnRemovalTest extends CommonTestMethodBase {
     
@@ -92,8 +92,7 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
         Reader drlReader = new StringReader( drl );
         kbuilder.add( ResourceFactory.newReaderResource( drlReader ),
                       ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
         return kbuilder.getKnowledgePackages();
     }
 

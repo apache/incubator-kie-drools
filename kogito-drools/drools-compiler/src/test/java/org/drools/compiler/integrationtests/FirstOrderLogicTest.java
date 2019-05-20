@@ -15,15 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +40,7 @@ import org.drools.core.ClockType;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.RemoveIdentitiesOption;
@@ -68,6 +59,13 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class FirstOrderLogicTest extends CommonTestMethodBase {
 
@@ -875,8 +873,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                                                             FirstOrderLogicTest.class ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -906,8 +903,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                                                             FirstOrderLogicTest.class ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );

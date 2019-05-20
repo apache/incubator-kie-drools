@@ -16,9 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
 import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -36,10 +33,13 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class NodesPartitioningTest {
 
@@ -117,8 +117,8 @@ public class NodesPartitioningTest {
                                              new ObjectSinkPropagator[] { sinkPropagator };
         for (int i = 0; i < propagators.length; i++) {
             for (ObjectSink sink : propagators[i].getSinks()) {
-                assertEquals( sink + " on " + sink.getPartitionId() + " is expcted to be on propagator " + i,
-                              i, sink.getPartitionId().getId() % propagators.length );
+                assertEquals(i, sink.getPartitionId().getId() % propagators.length,
+                             sink + " on " + sink.getPartitionId() + " is expcted to be on propagator " + i);
             }
         }
     }

@@ -16,8 +16,6 @@
 
 package org.drools.compiler.builder.impl;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.NoSuchAlgorithmException;
@@ -25,17 +23,18 @@ import java.security.Permission;
 import java.security.Policy;
 import java.security.ProtectionDomain;
 
-import org.drools.core.test.model.DroolsTestCase;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class KnowledgeBuilderWithSecurityManagerTest extends DroolsTestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class KnowledgeBuilderWithSecurityManagerTest {
 
     private static SecurityManager oldSecurityManager;
     private static Policy oldPolicy;
 
-    @BeforeClass
+    @BeforeAll
     public static void initSecurityManager() throws NoSuchAlgorithmException {
         oldSecurityManager = System.getSecurityManager();
         oldPolicy = Policy.getPolicy();
@@ -50,7 +49,7 @@ public class KnowledgeBuilderWithSecurityManagerTest extends DroolsTestCase {
         System.setSecurityManager(new SecurityManager());
     }
 
-    @AfterClass
+    @AfterAll
     public static void destroySecurityManager() {
         System.setSecurityManager(oldSecurityManager);
         Policy.setPolicy(oldPolicy);

@@ -15,13 +15,6 @@
 
 package org.drools.compiler.beliefsystem.abductive;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,8 +34,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -61,6 +54,13 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class AbductionTest extends CommonTestMethodBase {
 
@@ -1036,7 +1036,7 @@ public class AbductionTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore( "Not implemented yet" )
+    @Disabled( "Not implemented yet" )
     public void testGenesExplanationBackTracking() {
         // from wikipedia, abductive reasoning example
 
@@ -1122,7 +1122,7 @@ public class AbductionTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore( "Not implemented yet" )
+    @Disabled( "Not implemented yet" )
     public void testBacktracking() {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +

@@ -16,14 +16,9 @@
 
 package org.drools.compiler.oopath;
 
-import static org.drools.compiler.oopath.model.BodyMeasurement.CHEST;
-import static org.drools.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.oopath.model.Adult;
 import org.drools.compiler.oopath.model.Child;
@@ -43,7 +38,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.Iterator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -52,6 +47,13 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.drools.compiler.oopath.model.BodyMeasurement.CHEST;
+import static org.drools.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class OOPathReactiveTest {
 
@@ -90,13 +92,13 @@ public class OOPathReactiveTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         debbie.setAge( 11 );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
+        assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
     @Test
@@ -142,26 +144,26 @@ public class OOPathReactiveTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball", "doll");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball", "doll");
 
         final TupleMemory tupleMemory = betaMemory.getLeftTupleMemory();
-        Assertions.assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(2);
+        assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(2);
         Iterator<LeftTuple> it = tupleMemory.iterator();
         for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
             final Object obj = next.getFactHandle().getObject();
-            Assertions.assertThat(obj == charlie || obj == debbie).isTrue();
+            assertThat(obj == charlie || obj == debbie).isTrue();
         }
 
         list.clear();
         debbie.setAge( 10 );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).hasSize(0);;
-        Assertions.assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(1);
+        assertThat(list).hasSize(0);;
+        assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(1);
         it = tupleMemory.iterator();
         for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
             final Object obj = next.getFactHandle().getObject();
-            Assertions.assertThat(obj == charlie).isTrue();
+            assertThat(obj == charlie).isTrue();
         }
     }
 
@@ -425,13 +427,13 @@ public class OOPathReactiveTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         debbie.setAge( 11 );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
+        assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
     @Test
@@ -484,15 +486,15 @@ public class OOPathReactiveTest {
         ksession.insert( school );
         ksession.fireAllRules();
 
-        Assertions.assertThat(toyList).containsExactlyInAnyOrder("car", "ball");
-        Assertions.assertThat(teenagers).containsExactlyInAnyOrder("Charles");
+        assertThat(toyList).containsExactlyInAnyOrder("car", "ball");
+        assertThat(teenagers).containsExactlyInAnyOrder("Charles");
 
         toyList.clear();
         debbie.setAge( 13 );
         ksession.fireAllRules();
 
-        Assertions.assertThat(toyList).containsExactlyInAnyOrder("doll");
-        Assertions.assertThat(teenagers).containsExactlyInAnyOrder("Charles", "Debbie");
+        assertThat(toyList).containsExactlyInAnyOrder("doll");
+        assertThat(teenagers).containsExactlyInAnyOrder("Charles", "Debbie");
     }
 
     @Test
@@ -530,13 +532,13 @@ public class OOPathReactiveTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         charlie.addToy( new Toy( "gun" ) );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("gun");
+        assertThat(list).containsExactlyInAnyOrder("gun");
     }
 
     @Test
@@ -573,12 +575,12 @@ public class OOPathReactiveTest {
 
         ksession.insert(bob);
         ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder("flu", "asthma");
+        assertThat(list).containsExactlyInAnyOrder("flu", "asthma");
 
         list.clear();
         charlie.addDisease(new Disease("epilepsy"));
         ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder("epilepsy");
+        assertThat(list).containsExactlyInAnyOrder("epilepsy");
     }
 
     @Test
@@ -607,12 +609,12 @@ public class OOPathReactiveTest {
 
         ksession.insert(bob);
         ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder(80);
+        assertThat(list).containsExactlyInAnyOrder(80);
 
         list.clear();
         alice.putBodyMeasurement(RIGHT_FOREARM, 38);
         ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder(38, 80);
+        assertThat(list).containsExactlyInAnyOrder(38, 80);
     }
 
     @Test
@@ -650,13 +652,13 @@ public class OOPathReactiveTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         charlie.addToy( new Toy( "robot" ) );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).isEmpty();
+        assertThat(list).isEmpty();
     }
 
     @Test
@@ -694,13 +696,13 @@ public class OOPathReactiveTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         charlie.addToy( new Toy( "robot" ) );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).isEmpty();
+        assertThat(list).isEmpty();
     }
 
     @Test
@@ -756,13 +758,13 @@ public class OOPathReactiveTest {
 
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).hasSize(1);
+        assertThat(list).hasSize(1);
 
         list.clear();
 
         toy.setName( "eleonor toy 2" );
         ksession.fireAllRules();
-        Assertions.assertThat(list).hasSize(1);
+        assertThat(list).hasSize(1);
     }
 
     @Test
@@ -795,7 +797,7 @@ public class OOPathReactiveTest {
 
         ksession.insert(bob);
 
-        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(4);
+        assertThat(ksession.fireAllRules()).isEqualTo(4);
     }
 
     private List<?> factsCollection(KieSession ksession) {

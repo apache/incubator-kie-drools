@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 

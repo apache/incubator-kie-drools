@@ -15,20 +15,12 @@
 
 package org.drools.compiler.kie.util;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
@@ -42,6 +34,10 @@ import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChange.Type;
 import org.kie.internal.builder.ResourceChangeSet;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class ChangeSetBuilderTest {
 
@@ -64,7 +60,7 @@ public class ChangeSetBuilderTest {
 
         KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
         
-        assertThat( changes.getChanges().size(), is(0));
+        assertThat( changes.getChanges()).hasSize(0);
     }
 
     @Test
@@ -93,14 +89,14 @@ public class ChangeSetBuilderTest {
         KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
         
         String modifiedFile = (String) kieJar2.getFileNames().toArray()[1];
-        
-        assertThat( changes.getChanges().size(), is(1));
+
+        assertThat( changes.getChanges()).hasSize(1);
         ResourceChangeSet cs = changes.getChanges().get( modifiedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.UPDATED ) );
-        assertThat( cs.getChanges().size(), is(2) );
-        assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.ADDED, Type.RULE, "R3") ) );
-        assertThat( cs.getChanges().get( 0 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "R2") ) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.UPDATED);
+        assertThat( cs.getChanges()).hasSize(2);
+        assertThat( cs.getChanges().get( 1 )).isEqualTo(new ResourceChange(ChangeType.ADDED, Type.RULE, "R3"));
+        assertThat( cs.getChanges().get( 0 )).isEqualTo(new ResourceChange(ChangeType.REMOVED, Type.RULE, "R2"));
         
 //        ChangeSetBuilder builder = new ChangeSetBuilder();
 //        System.out.println( builder.toProperties( changes ) );
@@ -126,11 +122,11 @@ public class ChangeSetBuilderTest {
         KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
 
         String removedFile = (String) kieJar1.getFileNames().toArray()[1];
-        
-        assertThat( changes.getChanges().size(), is(1));
+
+        assertThat( changes.getChanges()).hasSize(1);
         ResourceChangeSet cs = changes.getChanges().get( removedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.REMOVED ) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.REMOVED);
     }
     
     @Test
@@ -186,26 +182,22 @@ public class ChangeSetBuilderTest {
         String modifiedFile = (String) kieJar2.getFileNames().toArray()[0];
         String addedFile = (String) kieJar2.getFileNames().toArray()[1];
         String removedFile = (String) kieJar1.getFileNames().toArray()[1];
-        
-        assertThat( changes.getChanges().size(), is(3));
+
+        assertThat(changes.getChanges()).hasSize(3);
 
         ResourceChangeSet cs = changes.getChanges().get( removedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.REMOVED) );
-        assertThat( cs.getChanges().size(), is(0) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.REMOVED);
+        assertThat(cs.getChanges()).hasSize(0);
 
         cs = changes.getChanges().get( addedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.ADDED ) );
-        assertThat( cs.getChanges().size(), is(0) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.ADDED);
+        assertThat(cs.getChanges()).hasSize(0);
 
         cs = changes.getChanges().get( modifiedFile );
-        assertThat( cs, not( nullValue() ) );
-        assertThat( cs.getChangeType(), is( ChangeType.UPDATED ) );
-//        assertThat( cs.getChanges().size(), is(3) );
-//        assertThat( cs.getChanges().get( 0 ), is( new ResourceChange(ChangeType.ADDED, Type.RULE, "An added rule") ) );
-//        assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "A removed rule") ) );
-//        assertThat( cs.getChanges().get( 2 ), is( new ResourceChange(ChangeType.UPDATED, Type.RULE, "An updated rule") ) );
+        assertThat(cs).isNotNull();
+        assertThat(cs.getChangeType()).isEqualTo(ChangeType.UPDATED);
     }
     
     @Test
@@ -230,10 +222,10 @@ public class ChangeSetBuilderTest {
         InternalKieModule kieJar2 = createKieJar( drl1 + drl3 );
 
         KieJarChangeSet changes = ChangeSetBuilder.build( kieJar1, kieJar2 );
-        assertEquals( 1, changes.getChanges().size() );
+        assertThat(changes.getChanges()).hasSize(1);
 
         ResourceChangeSet rcs = changes.getChanges().values().iterator().next();
-        assertEquals( 1, rcs.getChanges().size()  );
+        assertThat(rcs.getChanges()).hasSize(1);
         assertEquals( ChangeType.REMOVED, rcs.getChanges().get(0).getChangeType() );
     }    
     

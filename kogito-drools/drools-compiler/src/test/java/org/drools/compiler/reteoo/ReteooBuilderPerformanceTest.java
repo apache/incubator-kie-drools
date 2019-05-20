@@ -15,8 +15,6 @@
 
 package org.drools.compiler.reteoo;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -28,15 +26,17 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |
  * Settings | File Templates.
  */
-@Ignore
+@Disabled
 public class ReteooBuilderPerformanceTest {
     private static final int    RULE_COUNT  = Integer.parseInt(System.getProperty("rule.count", "1000"));
     private static final int    RETEBUILDER_COUNT  = Integer.parseInt(System.getProperty("retebuilder.count", "1"));

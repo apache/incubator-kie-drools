@@ -1,29 +1,30 @@
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.*;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class KieServicesTest extends CommonTestMethodBase {
 	
 	private KieServices ks;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		ks = KieServices.Factory.get();
 		((KieServicesImpl) ks).nullKieClasspathContainer(); 
 		((KieServicesImpl) ks).nullAllContainerIds();
 	}
 	
-	@After
+	@AfterEach
 	public void shutdown() {
 		((KieServicesImpl) ks).nullKieClasspathContainer(); 
 		((KieServicesImpl) ks).nullAllContainerIds();

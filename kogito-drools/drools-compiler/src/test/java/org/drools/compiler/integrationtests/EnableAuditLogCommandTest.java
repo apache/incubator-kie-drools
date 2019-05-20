@@ -1,26 +1,26 @@
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.Cheese;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class EnableAuditLogCommandTest {
 
     private String auditFileDir = "target";
     private String auditFileName = "EnableAuditLogCommandTest";
 
-    @After
+    @AfterEach
     public void cleanUp() {
         File file = new File( auditFileDir + File.separator + auditFileName + ".log" );
         if ( file.exists() ) {

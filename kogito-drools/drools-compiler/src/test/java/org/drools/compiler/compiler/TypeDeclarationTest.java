@@ -15,9 +15,6 @@
 
 package org.drools.compiler.compiler;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,8 +30,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.TypeDeclaration;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -58,6 +54,14 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
+
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TypeDeclarationTest {
 
@@ -109,10 +113,10 @@ public class TypeDeclarationTest {
 
         //No Warnings
         KnowledgeBuilderResults warnings = kbuilder.getResults(ResultSeverity.WARNING);
-        Assert.assertEquals(0, warnings.size());
+        assertEquals(0, warnings.size());
 
         //just 1 package was created
-        Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
+        assertEquals(1, kbuilder.getKnowledgePackages().size());
 
         //Get the Fact Type for org.kie.EventA
         FactType factType = ((KnowledgePackageImpl)kbuilder.getKnowledgePackages().iterator().next()).getFactType("org.kie.EventA");
@@ -306,22 +310,22 @@ public class TypeDeclarationTest {
         /*
         //1 Warning
         KnowledgeBuilderResults warnings = kbuilder.getResults( ResultSeverity.WARNING );
-        Assert.assertEquals(1, warnings.size());
+        assertEquals(1, warnings.size());
         System.out.println(warnings.iterator().next().getMessage());
 
         //just 1 package was created
-        Assert.assertEquals(1, kbuilder.getKnowledgePackages().size());
+        assertEquals(1, kbuilder.getKnowledgePackages().size());
 
         //Get the Fact Type for org.drools.ClassA
         FactType factType = ((KnowledgePackageImp)kbuilder.getKnowledgePackages().iterator().next()).pkg.getFactType("org.drools.ClassA");
-        Assert.assertNotNull(factType);
+        assertNotNull(factType);
 
         //'age' field must still be there
         FactField field = factType.getField("age");
-        Assert.assertNotNull(field);
+        assertNotNull(field);
 
         //Assert that the 'name' field must be String and not Long
-        Assert.assertEquals(Integer.class, field.getType());
+        assertEquals(Integer.class, field.getType());
         */
     }
 
@@ -754,7 +758,7 @@ public class TypeDeclarationTest {
         }
     }
 
-    @Test( expected = UnsupportedOperationException.class )
+    @Test
     public void testPreventReflectionAPIsOnJavaClasses() {
         String drl = "package org.test; " +
 
@@ -770,7 +774,8 @@ public class TypeDeclarationTest {
         assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
-        FactType type = kieBase.getFactType( "org.drools.compiler", "Person" );
+        assertThrows(UnsupportedOperationException.class,
+                     () -> kieBase.getFactType( "org.drools.compiler", "Person" ));
 
     }
 

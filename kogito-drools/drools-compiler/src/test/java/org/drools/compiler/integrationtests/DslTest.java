@@ -15,12 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -36,8 +30,8 @@ import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
@@ -47,6 +41,12 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DslTest extends CommonTestMethodBase {
    
@@ -175,7 +175,7 @@ public class DslTest extends CommonTestMethodBase {
                       messages.size() );
     }
 
-    @Test @Ignore("antlr cannot parse correctly if the file ends with a comment without a further line break")
+    @Test @Disabled("antlr cannot parse correctly if the file ends with a comment without a further line break")
     public void testEmptyDSL() throws Exception {
         // FIXME etirelli / mic_hat not sure what to do with this?
         final String DSL = "# This is an empty dsl file.";  // gives antlr <EOF> error

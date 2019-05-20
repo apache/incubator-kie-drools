@@ -18,7 +18,6 @@ package org.drools.compiler.oopath;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.oopath.model.Child;
 import org.drools.compiler.oopath.model.Man;
 import org.drools.compiler.oopath.model.Toy;
@@ -28,6 +27,8 @@ import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class OOPathBenchmarkTest {
 
@@ -169,7 +170,7 @@ public class OOPathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        Assertions.assertThat(n).isEqualTo(list.size());
+        assertThat(n).isEqualTo(list.size());
         ksession.dispose();
 
         return result;
@@ -202,7 +203,7 @@ public class OOPathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        Assertions.assertThat(n * 3).isEqualTo(list.size());
+        assertThat(n * 3).isEqualTo(list.size());
         ksession.dispose();
 
         return result;
@@ -232,7 +233,7 @@ public class OOPathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        Assertions.assertThat(n).isEqualTo(list.size());
+        assertThat(n).isEqualTo(list.size());
         ksession.dispose();
 
         return result;

@@ -15,10 +15,6 @@
 
 package org.drools.core.command.runtime.rule;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,14 +23,18 @@ import java.util.Random;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.RegistryContext;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("unchecked")
 public class GetFactHandlesCommandTest {
@@ -44,7 +44,7 @@ public class GetFactHandlesCommandTest {
     private Context context;
     private Random random = new Random();
     
-    @Before
+    @BeforeEach
     public void setup() { 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = kbase.newKieSession();
@@ -52,7 +52,7 @@ public class GetFactHandlesCommandTest {
         context = ( (RegistryContext) runner.createContext() ).register( KieSession.class, ksession );
     }
     
-    @After
+    @AfterEach
     public void cleanUp() { 
        ksession.dispose(); 
     }
@@ -218,14 +218,14 @@ public class GetFactHandlesCommandTest {
         if( collection instanceof Collection<?> ) { 
             Collection<FactHandle> factHandles = (Collection<FactHandle>) collection;
             assertTrue(! factHandles.isEmpty());
-            assertTrue(factSet.size() + "inserted but only " + factHandles.size() + " facts retrieved", factHandles.size() == factSet.size());
+            assertTrue(factHandles.size() == factSet.size(), factSet.size() + "inserted but only " + factHandles.size() + " facts retrieved");
             Object [] internalFactHandles = factHandles.toArray();
             for( int i = 0; i < internalFactHandles.length; ++i ) { 
                 Object factObject = ((InternalFactHandle) internalFactHandles[i]).getObject();
                 assertTrue(factSet.contains(factObject));
                 factSet.remove(factObject);
             }
-            assertTrue( "Additional facts found that weren't inserted.", factSet.isEmpty() );
+            assertTrue( factSet.isEmpty(), "Additional facts found that weren't inserted.");
         }
         else { 
             fail("result of command was NOT a collection of FactHandles"); 

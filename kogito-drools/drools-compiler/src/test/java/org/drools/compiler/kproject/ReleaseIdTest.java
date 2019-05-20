@@ -15,17 +15,17 @@
  */
 package org.drools.compiler.kproject;
 
-import static org.junit.Assert.assertSame;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
-import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.ReleaseIdComparator;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.kie.api.builder.ReleaseIdComparator.SortDirection.ASCENDING;
+import static org.kie.api.builder.ReleaseIdComparator.SortDirection.DESCENDING;
 
 public class ReleaseIdTest {
 

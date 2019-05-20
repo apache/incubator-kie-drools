@@ -16,11 +16,6 @@
 
 package org.drools.core.base.extractors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Vector;
 
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -29,8 +24,13 @@ import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.test.model.Address;
 import org.drools.core.test.model.Person;
 import org.drools.reflective.classloader.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MVELClassFieldExtractorTest {
 
@@ -40,7 +40,7 @@ public class MVELClassFieldExtractorTest {
     private final Address[] business = new Address[2];
     private final Address[] home     = new Address[2];
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );

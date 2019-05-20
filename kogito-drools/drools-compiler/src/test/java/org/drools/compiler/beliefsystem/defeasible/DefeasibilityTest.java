@@ -15,12 +15,6 @@
 */
 package org.drools.compiler.beliefsystem.defeasible;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +33,7 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.definition.type.FactType;
@@ -50,6 +44,12 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DefeasibilityTest {
 
@@ -121,7 +121,7 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testStrictEntailment() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strict.drl" );
         kSession.fireAllRules();
@@ -150,9 +150,7 @@ public class DefeasibilityTest {
         assertEquals( 5, kSession.getObjects().size() );
     }
 
-
-
-    @Test(timeout = 10000 )
+    @Test
     public void testDefeasibleEntailmentWithStrictOverride() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strictOverride.drl" );
         kSession.fireAllRules();
@@ -182,9 +180,7 @@ public class DefeasibilityTest {
 
     }
 
-
-
-    @Test(timeout = 10000 )
+    @Test
     public void defeasibleEntailmentMultiActivation() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeat.drl" );
         kSession.fireAllRules();
@@ -210,7 +206,7 @@ public class DefeasibilityTest {
         assertEquals( 3, kSession.getObjects().size() );
     }
 
-    @Test(timeout = 10000 )
+    @Test
     public void testDefeaterNeutrality() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeaterOnly.drl" );
         ArrayList list = new ArrayList();
@@ -242,7 +238,7 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testMultipleDefeats() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/multiDefeat.drl" );
         kSession.fireAllRules();
@@ -275,7 +271,7 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testRemoveDefiniteJustifier() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strictRetract.drl" );
 
@@ -320,7 +316,7 @@ public class DefeasibilityTest {
 
     }
 
-    @Test(timeout = 10000 )
+    @Test
     public void testRemoveDefeasibleJustifier() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeaterRetract.drl" );
 
@@ -367,7 +363,7 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testRemoveDefeasibleEntailmentMultiActivationWithDefeat() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeatDefeaterRetract.drl" );
         ArrayList list = new ArrayList();
@@ -450,7 +446,7 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testDefeaterPositiveVsNegative() {
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeatersPosNeg.drl" );
         ArrayList list = new ArrayList();
@@ -502,7 +498,7 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testDefeatOutcomePosNeg() {
 
         KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/negDefeatPos.drl" );
@@ -535,7 +531,7 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testPrimeJustificationWithEqualityMode() {
         String droolsSource =
                 "package org.drools.tms.test; \n" +
@@ -578,7 +574,7 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
+    @Test
     public void testWMStatusOnNegativeDefeat() {
         String droolsSource =
                 "package org.drools.tms.test; " +
@@ -675,9 +671,6 @@ public class DefeasibilityTest {
 
     }
 
-
-
-
     @Test
     public void testSelfDefeatWithRebuttal() {
         String droolsSource =
@@ -743,7 +736,6 @@ public class DefeasibilityTest {
 
     }
 
-
     @Test
     public void testDefeatersAndDefeasibles() {
         String droolsSource =
@@ -787,8 +779,7 @@ public class DefeasibilityTest {
         assertEquals( 1, posList.size() );
     }
 
-
-    @Test(timeout = 10000 )
+    @Test
     public void testManyDefeasibles() {
         String drl = "package org.drools.defeasible; " +
                      "declare Fact " +
@@ -848,8 +839,7 @@ public class DefeasibilityTest {
 
     }
 
-
-    @Test(timeout = 10000 )
+    @Test
     public void testRetractNegativeDefeaters() {
 
         String drl = "declare Foo end " +

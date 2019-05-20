@@ -15,18 +15,18 @@
  */
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests iteration through the list of KieSessions of a KieBase.
@@ -35,7 +35,7 @@ public class KieSessionIterationTest extends CommonTestMethodBase {
 
     private KieBase kieBase;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.kieBase = new KieHelper().build();
         // create several KieSessions
@@ -44,7 +44,7 @@ public class KieSessionIterationTest extends CommonTestMethodBase {
         this.kieBase.newKieSession();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.kieBase != null) {
             // copying the KieSession collection is also workaround for ConcurrentModificationException in the test
@@ -65,7 +65,7 @@ public class KieSessionIterationTest extends CommonTestMethodBase {
         for (KieSession kieSession : this.kieBase.getKieSessions()) {
             kieSession.dispose();
         }
-        assertTrue("All KieSessions of the KieBase should have been disposed.", this.kieBase.getKieSessions().isEmpty());
+        assertTrue(this.kieBase.getKieSessions().isEmpty(), "All KieSessions of the KieBase should have been disposed.");
     }
 
 }

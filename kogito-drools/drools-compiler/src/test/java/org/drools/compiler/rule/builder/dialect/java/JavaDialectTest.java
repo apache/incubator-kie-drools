@@ -15,8 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.*;
-
 import java.io.StringReader;
 import java.util.List;
 
@@ -35,12 +33,17 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.PredicateExpression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JavaDialectTest {
     

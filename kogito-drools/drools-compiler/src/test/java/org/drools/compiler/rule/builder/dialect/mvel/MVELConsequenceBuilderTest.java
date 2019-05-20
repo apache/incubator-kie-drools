@@ -15,8 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import static org.junit.Assert.*;
-
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -64,11 +62,18 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class MVELConsequenceBuilderTest {
 
@@ -259,8 +264,7 @@ public class MVELConsequenceBuilderTest {
             final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
 
             // just checking there is no parsing errors
-            assertFalse( parser.getErrors().toString(),
-                                parser.hasErrors() );
+            assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
             InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
 
@@ -278,8 +282,7 @@ public class MVELConsequenceBuilderTest {
 
             RuleBuilder.build( context );
 
-            assertTrue( context.getErrors().toString(),
-                               context.getErrors().isEmpty() );
+            assertTrue(context.getErrors().isEmpty(), context.getErrors().toString());
 
             final RuleImpl rule = context.getRule();
 
@@ -392,7 +395,7 @@ public class MVELConsequenceBuilderTest {
         		"c2 = new Cheese().{ type = $map[$cheese.type] };" +
         		"c3 = new Cheese().{ type = $map['key'] };";
         setupTest( consequence, new HashMap<String, Object>() );
-         assertNotNull( context.getRule().getConsequence() );
+        assertNotNull( context.getRule().getConsequence() );
         assertFalse( context.getRule().hasNamedConsequences() );
         assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
     }

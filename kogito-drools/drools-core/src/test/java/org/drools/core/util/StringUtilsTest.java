@@ -16,11 +16,12 @@
 package org.drools.core.util;
 
 
-import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StringUtilsTest {
 
@@ -60,36 +61,36 @@ public class StringUtilsTest {
 
     private void findEndOfMethodArgsIndexAndAssertItEqualsToExpected(String strExpr, int expectedIndex) {
         int actualIndex = StringUtils.findEndOfMethodArgsIndex(strExpr, strExpr.indexOf('('));
-        Assert.assertEquals("Expected and actual end of method args index for expr '" + strExpr + "' are not equal!",
-                expectedIndex, actualIndex);
+        assertEquals(expectedIndex, actualIndex,
+                     "Expected and actual end of method args index for expr '" + strExpr + "' are not equal!");
     }
     
     @Test
     public void test_codeAwareEqualsIgnoreSpaces() {
-        Assert.assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( null, null ) );
-        Assert.assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( "", "") );
-        Assert.assertFalse( StringUtils.codeAwareEqualsIgnoreSpaces( "", null ) );
-        Assert.assertFalse( StringUtils.codeAwareEqualsIgnoreSpaces( null, "" ) );
+        assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( null, null ) );
+        assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( "", "") );
+        assertFalse( StringUtils.codeAwareEqualsIgnoreSpaces( "", null ) );
+        assertFalse( StringUtils.codeAwareEqualsIgnoreSpaces( null, "" ) );
         
-        Assert.assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( " ", "" ) );
-        Assert.assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( "", " " ) );
+        assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( " ", "" ) );
+        assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( "", " " ) );
         
-        Assert.assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( " ", "  " ) );
+        assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( " ", "  " ) );
         
-        Assert.assertTrue(
+        assertTrue(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "rule Rx when then end",
                         " rule Rx  when then end " // <<- DIFF 3x 
                 )
             );
-        Assert.assertTrue(
+        assertTrue(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "rule Rx when then end\n",
                         " rule Rx  when then end\n " // <<- DIFF, both terminate with whitespace but different types
                 )
             );
         
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n",
                         
@@ -101,7 +102,7 @@ public class StringUtilsTest {
                 )
             );
         
-        Assert.assertTrue(
+        assertTrue(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -116,7 +117,7 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
-        Assert.assertTrue(
+        assertTrue(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -131,7 +132,7 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
-        Assert.assertTrue(
+        assertTrue(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -146,7 +147,7 @@ public class StringUtilsTest {
                         "end\n " // <<- DIFF 
                 )
             );
-        Assert.assertTrue(
+        assertTrue(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -161,7 +162,7 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -176,7 +177,7 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -191,7 +192,7 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -206,7 +207,7 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +
@@ -221,7 +222,7 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
-        Assert.assertFalse(
+        assertFalse(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n" +
                         "rule Rx when\n" +

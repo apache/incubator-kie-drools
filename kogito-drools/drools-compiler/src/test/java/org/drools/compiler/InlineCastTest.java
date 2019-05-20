@@ -15,14 +15,14 @@
 
 package org.drools.compiler;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InlineCastTest extends CommonTestMethodBase {
 
@@ -324,7 +324,7 @@ public class InlineCastTest extends CommonTestMethodBase {
             mark3.setAddress(new LongAddress("Czech Republic"));
             ksession.insert(mark3);
 
-            assertEquals("wrong number of rules fired", 1, ksession.fireAllRules());
+            assertEquals(1, ksession.fireAllRules(), "wrong number of rules fired");
         } finally {
             ksession.dispose();
         }
@@ -355,7 +355,7 @@ public class InlineCastTest extends CommonTestMethodBase {
             mark3.setAddress(new LongAddress("Czech Republic"));
             ksession.insert(mark3);
 
-            assertEquals("wrong number of rules fired", 2, ksession.fireAllRules());
+            assertEquals(2, ksession.fireAllRules(), "wrong number of rules fired");
         } finally {
             ksession.dispose();
         }
@@ -387,7 +387,7 @@ public class InlineCastTest extends CommonTestMethodBase {
             mark3.setAddress(new LongAddress("Czech Republic"));
             ksession.insert(mark3);
 
-            assertEquals( "wrong number of rules fired", 2, ksession.fireAllRules() );
+            assertEquals(2, ksession.fireAllRules(), "wrong number of rules fired");
         } finally {
             ksession.dispose();
         }
@@ -409,7 +409,7 @@ public class InlineCastTest extends CommonTestMethodBase {
             ksession.insert( "United States" );
             ksession.insert( "United Kingdom" );
             ksession.insert( "Italy" );
-            assertEquals( "wrong number of rules fired", 2, ksession.fireAllRules() );
+            assertEquals(2, ksession.fireAllRules(), "wrong number of rules fired");
         } finally {
             ksession.dispose();
         }

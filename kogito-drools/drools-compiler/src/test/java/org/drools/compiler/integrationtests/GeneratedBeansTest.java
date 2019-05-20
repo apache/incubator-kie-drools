@@ -16,20 +16,20 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeneratedBeansTest extends CommonTestMethodBase {
 
@@ -129,7 +129,7 @@ public class GeneratedBeansTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBase("test_GeneratedBeansSerializable.drl");
 
         final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");
-        assertTrue("Generated beans must be serializable", Serializable.class.isAssignableFrom(cheeseFact.getFactClass()));
+        assertTrue(Serializable.class.isAssignableFrom(cheeseFact.getFactClass()), "Generated beans must be serializable");
 
         final Object cheese = cheeseFact.newInstance();
         cheeseFact.set(cheese, "type", "stilton");

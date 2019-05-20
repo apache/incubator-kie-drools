@@ -16,13 +16,13 @@
 
 package org.drools.core.time.impl;
 
-import static org.junit.Assert.fail;
-
 import java.text.ParseException;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.kie.services.time.impl.CronExpression;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class Quartz601Test {
 

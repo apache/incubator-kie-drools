@@ -15,11 +15,10 @@
  */
 package org.drools.compiler.builder.impl;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class KnowledgeBuilderConfigurationImplTest {
 
@@ -28,7 +27,7 @@ public class KnowledgeBuilderConfigurationImplTest {
         try {
             System.getProperties().put(ParallelRulesBuildThresholdOption.PROPERTY_NAME, "20");
             KnowledgeBuilderConfigurationImpl kbConfigImpl = new KnowledgeBuilderConfigurationImpl();
-            assertThat(kbConfigImpl.getParallelRulesBuildThreshold(), is(20));
+            assertThat(kbConfigImpl.getParallelRulesBuildThreshold()).isEqualTo(20);
         } finally {
             System.getProperties().remove(ParallelRulesBuildThresholdOption.PROPERTY_NAME);
         }
@@ -39,7 +38,7 @@ public class KnowledgeBuilderConfigurationImplTest {
         try {
             System.getProperties().put(ParallelRulesBuildThresholdOption.PROPERTY_NAME, "-1");
             KnowledgeBuilderConfigurationImpl kbConfigImpl = new KnowledgeBuilderConfigurationImpl();
-            assertThat(kbConfigImpl.getParallelRulesBuildThreshold(), is(-1));
+            assertThat(kbConfigImpl.getParallelRulesBuildThreshold()).isEqualTo(-1);
         } finally {
             System.getProperties().remove(ParallelRulesBuildThresholdOption.PROPERTY_NAME); 
         }

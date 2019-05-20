@@ -1,8 +1,5 @@
 package org.drools.compiler.compiler;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import org.drools.compiler.lang.descr.AccessorDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -49,13 +46,16 @@ import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class PackageDescrResourceVisitor {
 
     private static final Logger logger = LoggerFactory.getLogger(PackageDescrResourceVisitor.class);
 
     private static void checkResource( BaseDescr descr ) {
         if( descr != null ) {
-            assertNotNull(descr.getClass().getSimpleName() + ".resource is null!", descr.getResource());
+            assertNotNull(descr.getResource(), descr.getClass().getSimpleName() + ".resource is null!");
         }
     }
 

@@ -15,15 +15,13 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Collection;
 
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
@@ -40,6 +38,8 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class DynamicEvalTest {
     KieBase kbase;
     KieSession session;
@@ -49,7 +49,7 @@ public class DynamicEvalTest {
     KieBaseConfiguration baseConfig;
     KieSessionConfiguration sessionConfig;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -83,7 +83,7 @@ public class DynamicEvalTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (session != null) {
             session.dispose();
@@ -113,7 +113,7 @@ public class DynamicEvalTest {
         int fired = session.fireAllRules(); // 1
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done"));
+        assertTrue(effects.contains("done"), "fired");
 
         // so the above works, let's try it again
         String test2 =
@@ -131,7 +131,7 @@ public class DynamicEvalTest {
         fired = session.fireAllRules(); // 0
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done2")); // fails
+        assertTrue(effects.contains("done2"), "fired"); // fails
     }
 
     @Test
@@ -164,7 +164,7 @@ public class DynamicEvalTest {
         int fired = session.fireAllRules(); // 1
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done"));
+        assertTrue(effects.contains("done"), "fired");
 
         // so the above works, let's try it again
         String test2 =
@@ -183,7 +183,7 @@ public class DynamicEvalTest {
         fired = session.fireAllRules(); // 0
         System.out.println(fired);
         effects = session.getObjects();
-        assertTrue("fired", effects.contains("done2")); // fails
+        assertTrue(effects.contains("done2"), "fired"); // fails
 
         for ( Object o : session.getObjects() ) {
             System.out.println( o );

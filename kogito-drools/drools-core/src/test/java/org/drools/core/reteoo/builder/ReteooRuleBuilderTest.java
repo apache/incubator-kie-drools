@@ -16,8 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -33,8 +31,10 @@ import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;
@@ -43,7 +43,7 @@ public class ReteooRuleBuilderTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.builder = new ReteooRuleBuilder();
         this.rulebase = new KnowledgeBaseImpl( "default", null );
@@ -90,9 +90,7 @@ public class ReteooRuleBuilderTest {
         final List terminals = this.builder.addRule( rule,
                                                this.rulebase );
 
-        assertEquals( "Rule must have a single terminal node",
-                             1,
-                             terminals.size() );
+        assertEquals(1, terminals.size(),  "Rule must have a single terminal node" );
 
         final RuleTerminalNode terminal = (RuleTerminalNode) terminals.get( 0 );
 

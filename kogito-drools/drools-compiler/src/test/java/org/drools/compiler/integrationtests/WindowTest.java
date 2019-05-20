@@ -15,17 +15,15 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -39,6 +37,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionPseudoClock;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WindowTest {
 
@@ -119,7 +119,7 @@ public class WindowTest {
             "        result.add($eventCount);\n" +
             "end\n";
 
-    @Before
+    @BeforeEach
     public void initialization() {
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
 
@@ -131,7 +131,7 @@ public class WindowTest {
 
         List<Message> res = kbuilder.getResults().getMessages(Level.ERROR);
 
-        assertEquals(res.toString(), 0, res.size());
+        assertEquals(0, res.size(), res.toString());
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory
                 .newKnowledgeBaseConfiguration();
@@ -151,7 +151,7 @@ public class WindowTest {
         clock = ksession.getSessionClock();
     }
 
-    @After
+    @AfterEach
     public void clean() {
         ksession.dispose();
     }

@@ -15,9 +15,6 @@
 
 package org.drools.compiler.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.LinkedList;
 
 import org.antlr.runtime.RecognitionException;
@@ -25,21 +22,24 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DRLIncompleteCodeTest {
 
-    @Before
+    @BeforeEach
     public void setup() {
         // just initialising the static operator definitions
         new EvaluatorRegistry();
     }
     
     @Test
-    @Ignore
+    @Disabled
     public void testIncompleteCode1() throws DroolsParserException,
             RecognitionException {
         String input = "package a.b.c import a.b.c.* rule MyRule when Class ( property memberOf collexction ";
@@ -158,7 +158,7 @@ public class DRLIncompleteCodeTest {
         assertEquals(true, parser.hasErrors());
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testIncompleteCode9() throws DroolsParserException,
             RecognitionException {
         String input = "package a.b.c import a.b.c.*"
@@ -175,7 +175,7 @@ public class DRLIncompleteCodeTest {
         assertEquals("MyQuery", descr.getRules().get(0).getName());
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testIncompleteCode10() throws DroolsParserException,
             RecognitionException {
         String input = "package a.b.c import a.b.c.*"

@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
@@ -36,13 +34,18 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SegmentCreationTest {
     
@@ -493,7 +496,7 @@ public class SegmentCreationTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );

@@ -16,12 +16,14 @@
 
 package org.drools.compiler.integrationtests.concurrency;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.AnEnum;
 import org.drools.compiler.integrationtests.facts.FactWithBigDecimal;
 import org.drools.compiler.integrationtests.facts.FactWithBoolean;
@@ -34,139 +36,152 @@ import org.drools.compiler.integrationtests.facts.FactWithInteger;
 import org.drools.compiler.integrationtests.facts.FactWithLong;
 import org.drools.compiler.integrationtests.facts.FactWithShort;
 import org.drools.compiler.integrationtests.facts.FactWithString;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import static org.assertj.core.api.Assertions.*;
+
 public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentTest {
 
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}, Share KieSession={3}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[]{false, false, false, false},
-                new Boolean[]{false, true, false, false},
-                new Boolean[]{true, false, false, false},
-                new Boolean[]{true, true, false, false},
-                new Boolean[]{false, false, true, false},
-                new Boolean[]{false, true, true, false},
-                new Boolean[]{true, false, true, false},
-                new Boolean[]{true, true, true, false},
-
-                new Boolean[]{false, false, false, true},
-                new Boolean[]{false, true, false, true},
-                new Boolean[]{true, false, false, true},
-                new Boolean[]{true, true, false, true},
-                new Boolean[]{false, false, true, true},
-                new Boolean[]{false, true, true, true},
-                new Boolean[]{true, false, true, true},
-                new Boolean[]{true, true, true, true});
+    static Stream<Arguments> parameters() {
+        return Stream.of(
+                new Parameters(true, true, true, true),
+                new Parameters(true, true, true, false),
+                new Parameters(true, true, false, false),
+                new Parameters(true, true, false, true),
+                new Parameters(true, false, true, true),
+                new Parameters(true, false, true, false),
+                new Parameters(true, false, false, false),
+                new Parameters(true, false, false, true),
+                new Parameters(false, true, true, true),
+                new Parameters(false, true, true, false),
+                new Parameters(false, true, false, false),
+                new Parameters(false, true, false, true),
+                new Parameters(false, false, true, true),
+                new Parameters(false, false, true, false),
+                new Parameters(false, false, false, false),
+                new Parameters(false, false, false, true)
+        ).map(Arguments::arguments);
     }
 
-    public DataTypeEvaluationConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
-                                                       final boolean sharedKieBase, final boolean sharedKieSession) {
-        super(enforcedJitting, serializeKieBase, sharedKieBase, sharedKieSession);
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testBooleanPrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithBoolean: FactWithBoolean(booleanValue == false) \n",
+                              new FactWithBoolean(false));
     }
 
-    @Test(timeout = 20000)
-    public void testBooleanPrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanValue == false) \n", new FactWithBoolean(false));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testBoolean(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithBoolean: FactWithBoolean(booleanObjectValue == false) \n",
+                              new FactWithBoolean(false));
     }
 
-    @Test(timeout = 20000)
-    public void testBoolean() throws InterruptedException {
-        testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanObjectValue == false) \n", new FactWithBoolean(false));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testBytePrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithByte: FactWithByte(byteValue == 15) \n",
+                              new FactWithByte((byte) 15));
     }
 
-    @Test(timeout = 20000)
-    public void testBytePrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithByte: FactWithByte(byteValue == 15) \n", new FactWithByte((byte) 15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testByte(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithByte: FactWithByte(byteObjectValue == 15) \n",
+                              new FactWithByte((byte) 15));
     }
 
-    @Test(timeout = 20000)
-    public void testByte() throws InterruptedException {
-        testFactAttributeType("    $factWithByte: FactWithByte(byteObjectValue == 15) \n", new FactWithByte((byte) 15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testShortPrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithShort: FactWithShort(shortValue == 15) \n",
+                              new FactWithShort((short) 15));
     }
 
-    @Test(timeout = 20000)
-    public void testShortPrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithShort: FactWithShort(shortValue == 15) \n", new FactWithShort((short) 15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testShort(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithShort: FactWithShort(shortObjectValue == 15) \n",
+                              new FactWithShort((short) 15));
     }
 
-    @Test(timeout = 20000)
-    public void testShort() throws InterruptedException {
-        testFactAttributeType("    $factWithShort: FactWithShort(shortObjectValue == 15) \n", new FactWithShort((short) 15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testIntPrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithInt: FactWithInteger(intValue == 15) \n", new FactWithInteger(15));
     }
 
-    @Test(timeout = 20000)
-    public void testIntPrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithInt: FactWithInteger(intValue == 15) \n", new FactWithInteger(15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testInteger(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithInteger: FactWithInteger(integerValue == 15) \n",
+                              new FactWithInteger(15));
     }
 
-    @Test(timeout = 20000)
-    public void testInteger() throws InterruptedException {
-        testFactAttributeType("    $factWithInteger: FactWithInteger(integerValue == 15) \n", new FactWithInteger(15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testLongPrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithLong: FactWithLong(longValue == 15) \n", new FactWithLong(15));
     }
 
-    @Test(timeout = 20000)
-    public void testLongPrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithLong: FactWithLong(longValue == 15) \n", new FactWithLong(15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testLong(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithLong: FactWithLong(longObjectValue == 15) \n",
+                              new FactWithLong(15));
     }
 
-    @Test(timeout = 20000)
-    public void testLong() throws InterruptedException {
-        testFactAttributeType("    $factWithLong: FactWithLong(longObjectValue == 15) \n", new FactWithLong(15));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testFloatPrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithFloat: FactWithFloat(floatValue == 15.1) \n",
+                              new FactWithFloat(15.1f));
     }
 
-    @Test(timeout = 20000)
-    public void testFloatPrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithFloat: FactWithFloat(floatValue == 15.1) \n", new FactWithFloat(15.1f));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testFloat(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithFloat: FactWithFloat(floatObjectValue == 15.1) \n",
+                              new FactWithFloat(15.1f));
     }
 
-    @Test(timeout = 20000)
-    public void testFloat() throws InterruptedException {
-        testFactAttributeType("    $factWithFloat: FactWithFloat(floatObjectValue == 15.1) \n", new FactWithFloat(15.1f));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testDoublePrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithDouble: FactWithDouble(doubleValue == 15.1) \n",
+                              new FactWithDouble(15.1d));
     }
 
-    @Test(timeout = 20000)
-    public void testDoublePrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithDouble: FactWithDouble(doubleValue == 15.1) \n", new FactWithDouble(15.1d));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testDouble(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithDouble: FactWithDouble(doubleObjectValue == 15.1) \n",
+                              new FactWithDouble(15.1d));
     }
 
-    @Test(timeout = 20000)
-    public void testDouble() throws InterruptedException {
-        testFactAttributeType("    $factWithDouble: FactWithDouble(doubleObjectValue == 15.1) \n", new FactWithDouble(15.1d));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testBigDecimal(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithBigDecimal: FactWithBigDecimal(bigDecimalValue == 10) \n",
+                              new FactWithBigDecimal(BigDecimal.TEN));
     }
 
-    @Test(timeout = 20000)
-    public void testBigDecimal() throws InterruptedException {
-        testFactAttributeType("    $factWithBigDecimal: FactWithBigDecimal(bigDecimalValue == 10) \n", new FactWithBigDecimal(BigDecimal.TEN));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testCharPrimitive(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithChar: FactWithCharacter(charValue == 'a') \n",
+                              new FactWithCharacter('a'));
     }
 
-    @Test(timeout = 20000)
-    public void testCharPrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithChar: FactWithCharacter(charValue == 'a') \n", new FactWithCharacter('a'));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testCharacter(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithChar: FactWithCharacter(characterValue == 'a') \n",
+                              new FactWithCharacter('a'));
     }
 
-    @Test(timeout = 20000)
-    public void testCharacter() throws InterruptedException {
-        testFactAttributeType("    $factWithChar: FactWithCharacter(characterValue == 'a') \n", new FactWithCharacter('a'));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testString(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithString: FactWithString(stringValue == \"test\") \n",
+                              new FactWithString("test"));
     }
 
-    @Test(timeout = 20000)
-    public void testString() throws InterruptedException {
-        testFactAttributeType("    $factWithString: FactWithString(stringValue == \"test\") \n", new FactWithString("test"));
+    @ParameterizedDataTypeEvaluationConcurrentSessionsTest
+    public void testEnum(Parameters params) throws InterruptedException {
+        testFactAttributeType(params, "    $factWithEnum: FactWithEnum(enumValue == AnEnum.FIRST) \n",
+                              new FactWithEnum(AnEnum.FIRST));
     }
 
-    @Test(timeout = 20000)
-    public void testEnum() throws InterruptedException {
-        testFactAttributeType("    $factWithEnum: FactWithEnum(enumValue == AnEnum.FIRST) \n", new FactWithEnum(AnEnum.FIRST));
-    }
-
-    private void testFactAttributeType(final String ruleConstraint, final Object factInserted) throws InterruptedException {
+    private void testFactAttributeType(final Parameters params, final String ruleConstraint,
+                                       final Object factInserted) throws InterruptedException {
         final String drl =
                 " import org.drools.compiler.integrationtests.facts.*;\n" +
                         " global " + AtomicInteger.class.getCanonicalName() + " numberOfFirings;\n" +
@@ -179,7 +194,8 @@ public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrent
 
         final AtomicInteger numberOfFirings = new AtomicInteger();
 
-        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+        boolean sharedKieSession = params.isSharedKieSession();
+        parallelTest(params, NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
             kieSession.insert(factInserted);
             final int rulesFired = kieSession.fireAllRules();
             return sharedKieSession || rulesFired == 1;
@@ -189,9 +205,17 @@ public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrent
             // This is 1 because engine doesn't insert an already existing object twice, so when sharing a session
             // the object should be present just once in the session. When not sharing a session, there is N separate
             // sessions, so each one should fire.
-            Assertions.assertThat(numberOfFirings.get()).isEqualTo(1);
+            assertThat(numberOfFirings.get()).isEqualTo(1);
         } else {
-            Assertions.assertThat(numberOfFirings.get()).isEqualTo(10);
+            assertThat(numberOfFirings.get()).isEqualTo(10);
         }
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public @interface ParameterizedDataTypeEvaluationConcurrentSessionsTest {
+
     }
 }

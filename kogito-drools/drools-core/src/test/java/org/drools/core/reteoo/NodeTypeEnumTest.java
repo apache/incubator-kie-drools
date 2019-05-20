@@ -15,15 +15,15 @@
 
 package org.drools.core.reteoo;
 
+import org.junit.jupiter.api.Test;
+
 import static org.drools.core.reteoo.NodeTypeEnums.isBetaNode;
 import static org.drools.core.reteoo.NodeTypeEnums.isLeftTupleSink;
 import static org.drools.core.reteoo.NodeTypeEnums.isLeftTupleSource;
 import static org.drools.core.reteoo.NodeTypeEnums.isObjectSink;
 import static org.drools.core.reteoo.NodeTypeEnums.isObjectSource;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NodeTypeEnumTest {
     EntryPointNode         epNode     = new EntryPointNode();

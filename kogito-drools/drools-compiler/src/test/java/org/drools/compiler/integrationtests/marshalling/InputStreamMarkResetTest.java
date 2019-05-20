@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests.marshalling;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +23,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Should Drools ever need it, this test shows who we can implement peak using a {@link BufferedInputStream} 
@@ -54,7 +54,7 @@ public class InputStreamMarkResetTest {
         unmaThingy.type = stream.readChar();
         unmaThingy.time = stream.readLong();
         
-        assertTrue( "Mark/reset is not supported", bis.markSupported() );
+        assertTrue( bis.markSupported(), "Mark/reset is not supported" );
         bis.mark(8);
         int [] intBytes = new int [4];
         intBytes[0] = bis.read();

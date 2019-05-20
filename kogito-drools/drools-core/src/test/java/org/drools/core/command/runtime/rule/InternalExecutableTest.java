@@ -15,9 +15,6 @@
 
 package org.drools.core.command.runtime.rule;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,9 +22,12 @@ import org.drools.core.command.impl.NotTransactionalCommand;
 import org.drools.core.fluent.impl.Batch;
 import org.drools.core.fluent.impl.BatchImpl;
 import org.drools.core.fluent.impl.InternalExecutable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InternalExecutableTest {
 

@@ -18,13 +18,14 @@ package org.drools.compiler.oopath;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.oopath.model.Child;
 import org.drools.compiler.oopath.model.Man;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class OOPathAccumulateTest {
 
@@ -88,9 +89,9 @@ public class OOPathAccumulateTest {
 
         final Number result = (Number) ksession.getGlobal("globalVar");
         if (result instanceof Double) {
-            Assertions.assertThat(expectedResult.doubleValue()).isEqualTo(result.doubleValue());
+            assertThat(expectedResult.doubleValue()).isEqualTo(result.doubleValue());
         } else {
-            Assertions.assertThat(expectedResult.longValue()).isEqualTo(result.longValue());
+            assertThat(expectedResult.longValue()).isEqualTo(result.longValue());
         }
     }
 
@@ -117,6 +118,6 @@ public class OOPathAccumulateTest {
         ksession.fireAllRules();
 
         final Collection<Integer> result = (Collection<Integer>) ksession.getGlobal("globalVar");
-        Assertions.assertThat(result).containsExactlyInAnyOrder(expectedResults);
+        assertThat(result).containsExactlyInAnyOrder(expectedResults);
     }
 }

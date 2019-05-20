@@ -16,10 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,9 +24,13 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class MergePackageTest extends CommonTestMethodBase {
 
@@ -60,7 +60,7 @@ public class MergePackageTest extends CommonTestMethodBase {
 
             ksession.fireAllRules();
 
-            assertEquals(results.toString(), 2, results.size());
+            assertEquals(2, results.size(), results.toString());
             assertTrue(results.contains("p1.r1"));
             assertTrue(results.contains("p2.r1"));
         } catch (final KnowledgeBuilderImpl.PackageMergeException e) {

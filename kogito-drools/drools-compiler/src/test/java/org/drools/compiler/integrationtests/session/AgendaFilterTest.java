@@ -16,22 +16,20 @@
 
 package org.drools.compiler.integrationtests.session;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.core.base.RuleNameStartsWithAgendaFilter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class AgendaFilterTest extends CommonTestMethodBase {
 
@@ -71,6 +69,6 @@ public class AgendaFilterTest extends CommonTestMethodBase {
 
         final ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael).afterMatchFired(arg.capture());
-        assertThat(arg.getValue().getMatch().getRule().getName(), is(expectedMatchingRuleName));
+        assertThat(arg.getValue().getMatch().getRule().getName()).isEqualTo(expectedMatchingRuleName);
     }
 }

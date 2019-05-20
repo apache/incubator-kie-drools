@@ -15,11 +15,6 @@
 
 package org.drools.compiler.phreak;
 
-import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +33,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
@@ -46,6 +41,14 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddRuleTest {
 
@@ -596,7 +599,7 @@ public class AddRuleTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -625,7 +628,7 @@ public class AddRuleTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         return kbuilder.getKnowledgePackages();
     }

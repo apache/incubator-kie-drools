@@ -16,47 +16,42 @@
 
 package org.drools.compiler.integrationtests.concurrency;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.compiler.integrationtests.facts.CategoryTypeEnum;
 import org.drools.compiler.integrationtests.facts.Product;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class EnumEvaluationConcurrentSessionsTest extends AbstractConcurrentTest {
 
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}, Share KieBase={2}")
-    public static List<Boolean[]> getTestParameters() {
-        return Arrays.asList(
-                new Boolean[]{false, false, false},
-                new Boolean[]{false, true, false},
-                new Boolean[]{true, false, false},
-                new Boolean[]{true, true, false},
-                new Boolean[]{false, false, true},
-                new Boolean[]{false, true, true},
-                new Boolean[]{true, false, true},
-                new Boolean[]{true, true, true});
+    static Stream<Arguments> parameters() {
+        return Stream.of(
+                new Parameters(true, true, true),
+                new Parameters(true, true, false),
+                new Parameters(true, false, true),
+                new Parameters(true, false, false),
+                new Parameters(false, true, true),
+                new Parameters(false, true, false),
+                new Parameters(false, false, true),
+                new Parameters(false, false, false)
+        ).map(Arguments::arguments);
     }
 
-    public EnumEvaluationConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase,
-                                                final boolean sharedKieBase) {
-        super(enforcedJitting, serializeKieBase, sharedKieBase, false);
-    }
-
-    @Test(timeout = 20000)
-    public void testEnum2() throws InterruptedException {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEnum2(Parameters params) throws InterruptedException {
         final String drl1 =
                 "import " + Product.class.getCanonicalName() + ";\n" +
                         "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
                         "rule R1 when\n" +
                         "  $s : String( this == \"odd\" )\n" +
-                        "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.ODD, firings not contains \"R1\" )\n" +
+                        "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.ODD, firings not contains" +
+                        " \"R1\" )\n" +
                         "then\n" +
                         "  $p.getFirings().add(\"R1\");\n" +
                         "  $p.appendDescription($s);\n" +
@@ -68,36 +63,38 @@ public class EnumEvaluationConcurrentSessionsTest extends AbstractConcurrentTest
                         "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
                         "rule R2 when\n" +
                         "  $s : String( this == \"pair\" )\n" +
-                        "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.PAIR, firings not contains \"R2\" )\n" +
+                        "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.PAIR, firings not " +
+                        "contains \"R2\" )\n" +
                         "then\n" +
                         "  $p.getFirings().add(\"R2\");\n" +
                         "  $p.appendDescription($s);\n" +
                         "  update($p);" +
                         "end\n";
 
-        parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
+        parallelTest(params, NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
             final Product[] products = new Product[10];
             final boolean pair = counter % 2 == 0;
             final String pairString = pair ? "pair" : "odd";
             for (int i = 0; i < 10; i++) {
-                products[i] = new Product( "" + i, pairString );
+                products[i] = new Product("" + i, pairString);
             }
 
-            kieSession.insert( pairString );
+            kieSession.insert(pairString);
             for (int i = 0; i < 10; i++) {
-                kieSession.insert( products[i] );
+                kieSession.insert(products[i]);
             }
 
             kieSession.fireAllRules();
 
             for (int i = 0; i < 10; i++) {
-                if ( products[i].getCategory().equals(pairString) && !products[i].getCategory().equals( products[i].getDescription() ) ) {
+                if (products[i].getCategory().equals(pairString) && !products[i].getCategory().equals(
+                        products[i].getDescription())) {
                     return false;
                 } else if (!products[i].getCategory().equals(pairString) && !products[i].getDescription().isEmpty()) {
                     return false;
                 }
             }
             return true;
-        }, null, null, drl1, drl2 );
+        }, null, null, drl1, drl2);
     }
 }

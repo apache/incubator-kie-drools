@@ -15,14 +15,14 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import org.drools.compiler.CommonTestMethodBase;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Testing use of default Package.
@@ -76,7 +76,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
     
 
     @Test
-    @Ignore("How do you access Type 'Smurf'? Test 1 - No import prefix")
+    @Disabled("How do you access Type 'Smurf'? Test 1 - No import prefix")
     public void testModelInDefaultPackage1() throws Exception {
         //This Model will be in the "default package"
         String model_drl = ""

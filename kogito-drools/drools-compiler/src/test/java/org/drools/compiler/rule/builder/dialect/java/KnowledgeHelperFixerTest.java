@@ -16,15 +16,16 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class KnowledgeHelperFixerTest {
 
     private static final KnowledgeHelperFixer fixer = new KnowledgeHelperFixer();
 
     private void assertEqualsIgnoreWhitespace(final String expected, final String actual) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
     @Test

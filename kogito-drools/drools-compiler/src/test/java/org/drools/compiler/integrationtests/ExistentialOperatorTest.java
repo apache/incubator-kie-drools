@@ -16,13 +16,14 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExistentialOperatorTest {
 
@@ -60,6 +61,6 @@ public class ExistentialOperatorTest {
         kieSession.insert(fact);
 
         int n = kieSession.fireAllRules();
-        Assert.assertEquals(1, n);
+        assertEquals(1, n);
     }
 }

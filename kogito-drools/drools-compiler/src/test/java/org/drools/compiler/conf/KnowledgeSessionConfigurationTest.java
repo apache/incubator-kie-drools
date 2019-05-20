@@ -15,15 +15,15 @@
  */
 package org.drools.compiler.conf;
 
-import static org.junit.Assert.*;
-
 import org.drools.core.BeliefSystemType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class KnowledgeSessionConfigurationTest {
@@ -33,7 +33,7 @@ public class KnowledgeSessionConfigurationTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         config = KieServices.Factory.get().newKieSessionConfiguration();
     }

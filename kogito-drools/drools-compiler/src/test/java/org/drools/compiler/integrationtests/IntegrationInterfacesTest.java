@@ -15,14 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -33,7 +25,7 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Channel;
@@ -41,6 +33,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.*;
 
 public class IntegrationInterfacesTest extends CommonTestMethodBase {
 
@@ -51,8 +47,7 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
                                                             getClass() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         KieBase kbase = getKnowledgeBase( kbuilder );
 
@@ -66,8 +61,7 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
             kbuilder.add( ResourceFactory.newReaderResource(reader),
                           ResourceType.DRL );
         }
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
         KieBase kbase = getKnowledgeBase( kbuilder );
         return kbase;
     }

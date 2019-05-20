@@ -15,14 +15,16 @@
 
 package org.drools.compiler.lang.dsl;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DSLTokenizedMappingFileTest {
 
@@ -43,8 +45,7 @@ public class DSLTokenizedMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
+            assertTrue(parsingResult, this.file.getErrors().toString());
             assertTrue( this.file.getErrors().isEmpty() );
 
             assertEquals( 31,
@@ -66,8 +67,7 @@ public class DSLTokenizedMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
+            assertTrue(parsingResult, this.file.getErrors().toString());
             assertTrue( this.file.getErrors().isEmpty() );
 
             assertEquals( 1,
@@ -101,8 +101,7 @@ public class DSLTokenizedMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
+            assertTrue(parsingResult, this.file.getErrors().toString());
             assertTrue( this.file.getErrors().isEmpty() );
 
             assertEquals( 1,
@@ -140,8 +139,7 @@ public class DSLTokenizedMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
+            assertTrue(parsingResult, this.file.getErrors().toString());
             assertTrue( this.file.getErrors().isEmpty() );
             
             final String LHS = "code 1041 occurs and sum of all digit not equal ( 1034 + 1035 )";
@@ -173,8 +171,7 @@ public class DSLTokenizedMappingFileTest {
             final boolean parsingResult = this.file.parseAndLoad( reader );
             reader.close();
 
-            assertTrue( this.file.getErrors().toString(),
-                        parsingResult );
+            assertTrue(parsingResult, this.file.getErrors().toString());
             assertTrue( this.file.getErrors().isEmpty() );
 
             assertEquals( 1,

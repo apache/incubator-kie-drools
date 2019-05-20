@@ -15,9 +15,6 @@
 
 package org.drools.compiler.util.debug;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
 import java.awt.Dimension;
 import java.util.ArrayList;
 
@@ -31,13 +28,16 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
 import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SessionInspectorTest extends CommonTestMethodBase {
 
@@ -53,8 +53,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_QueryMemoryLeak.drl" ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -137,8 +136,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/test_QueryMemoryLeak.drl"),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );

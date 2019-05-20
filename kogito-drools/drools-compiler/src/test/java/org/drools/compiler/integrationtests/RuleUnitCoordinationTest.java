@@ -16,13 +16,10 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.drools.reflective.util.ClassUtils.getCanonicalSimpleName;
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.DataSource;
@@ -30,6 +27,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.internal.utils.KieHelper;
+
+import static org.drools.reflective.util.ClassUtils.getCanonicalSimpleName;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RuleUnitCoordinationTest {
 

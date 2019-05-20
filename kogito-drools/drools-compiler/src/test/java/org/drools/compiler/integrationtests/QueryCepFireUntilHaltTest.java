@@ -15,16 +15,13 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
@@ -37,6 +34,9 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.io.ResourceFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class QueryCepFireUntilHaltTest {
 
     private KieSession ksession;
@@ -47,7 +47,7 @@ public class QueryCepFireUntilHaltTest {
 
     private ExecutorService executorService;
 
-    @Before
+    @BeforeEach
     public void prepare() {
         String drl = "package org.drools.compiler.integrationtests\n" + 
                 "import " + TestEvent.class.getCanonicalName() + "\n" +
@@ -98,13 +98,13 @@ public class QueryCepFireUntilHaltTest {
         executorService.shutdownNow();
     }
 
-    @Test(timeout = 10000L)
+    @Test
     public void noResultTest() {
         QueryResults results = ksession.getQueryResults("EventsFromStream");
         assertEquals(0, results.size());
     }
     
-    @Test(timeout = 10000L)
+    @Test
     public void withResultTest() {
         secondEntryPoint.insert(new TestEvent("minusOne"));
         clock.advanceTime(5, TimeUnit.SECONDS);
@@ -122,7 +122,7 @@ public class QueryCepFireUntilHaltTest {
         assertEquals(1, results.size());
     }
     
-    @Test(timeout = 10000L)
+    @Test
     public void withNoResultTest() {
         secondEntryPoint.insert(new TestEvent("minusOne"));
         clock.advanceTime(5, TimeUnit.SECONDS);
@@ -141,7 +141,7 @@ public class QueryCepFireUntilHaltTest {
         assertEquals(0, results.size());
     }
     
-    @After
+    @AfterEach
     public void cleanup() {
         this.stopEngine();
 

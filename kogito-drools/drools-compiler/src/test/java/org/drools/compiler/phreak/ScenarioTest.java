@@ -15,11 +15,6 @@
 
 package org.drools.compiler.phreak;
 
-import static org.drools.compiler.phreak.B.b;
-import static org.drools.compiler.phreak.Pair.t;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -35,7 +30,12 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.drools.compiler.phreak.B.b;
+import static org.drools.compiler.phreak.Pair.t;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ScenarioTest {
     BuildContext          buildContext;
@@ -119,7 +119,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert expected more" ) );
         }
     }  
     
@@ -231,7 +231,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert expected more" ) );
         }
     }    
     
@@ -252,7 +252,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert expected more" ) );
         }
     }        
 
@@ -429,7 +429,7 @@ public class ScenarioTest {
             fail("Should not reach here");
         } catch ( AssertionError e ) {
             System.out.println( e.getMessage() );
-            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert expected more" ) );
         }
     }    
     
@@ -581,7 +581,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert expected more" ) );
         }
     }
     
@@ -696,7 +696,7 @@ public class ScenarioTest {
             // @formatter:on            
             fail("Should not reach here");
         } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Insert excpected more" ) );
+            assertTrue( e.getMessage().contains( "Insert expected more" ) );
         }
     }    
     

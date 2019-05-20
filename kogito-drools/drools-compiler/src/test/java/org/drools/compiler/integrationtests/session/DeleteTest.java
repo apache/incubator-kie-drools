@@ -16,15 +16,9 @@
 
 package org.drools.compiler.integrationtests.session;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.integrationtests.SerializationHelper;
@@ -34,9 +28,9 @@ import org.drools.compiler.integrationtests.facts.InterfaceA;
 import org.drools.compiler.integrationtests.facts.InterfaceB;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -49,6 +43,12 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class DeleteTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(DeleteTest.class);
@@ -57,7 +57,7 @@ public class DeleteTest extends CommonTestMethodBase {
 
     private KieSession ksession;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
         kfs.write(KieServices.Factory.get().getResources()
@@ -67,7 +67,7 @@ public class DeleteTest extends CommonTestMethodBase {
         kbuilder.buildAll();
 
         List<Message> res = kbuilder.getResults().getMessages(Level.ERROR);
-        Assertions.assertThat(res).isEmpty();
+        assertThat(res).isEmpty();
 
         KieBase kbase = KieServices.Factory.get()
                 .newKieContainer(kbuilder.getKieModule().getReleaseId())
@@ -76,7 +76,7 @@ public class DeleteTest extends CommonTestMethodBase {
         ksession = kbase.newKieSession();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         ksession.dispose();
     }
@@ -87,35 +87,35 @@ public class DeleteTest extends CommonTestMethodBase {
 
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("informationAboutPersons");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(2L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(2L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("informationAboutPersons");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(1L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(1L);
     }
 
     @Test
     public void deleteFactTwiceTest() {
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
 
         ksession.delete(george);
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deleteNullFactTest() {
-        ksession.delete(null);
+        assertThatThrownBy(() -> ksession.delete(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -125,30 +125,30 @@ public class DeleteTest extends CommonTestMethodBase {
         ksession.update(person, new Person("John", 21));
 
         QueryResults results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
         ksession.delete(person);
         results = ksession.getQueryResults("countPerson");
-        Assertions.assertThat(results).isNotEmpty();
-        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+        assertThat(results).isNotEmpty();
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
     @Test
     public void deleteUpdatedFactDifferentClassTest() {
         FactHandle fact = ksession.insert(new Person("George", 18));
 
-        Assertions.assertThat(ksession.getObjects()).hasSize(1);
-        Assertions.assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
+        assertThat(ksession.getObjects()).hasSize(1);
+        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
 
         ksession.update(fact, new Cheese("Cheddar", 50));
 
-        Assertions.assertThat(ksession.getObjects()).hasSize(1);
-        Assertions.assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Cheese.class);
+        assertThat(ksession.getObjects()).hasSize(1);
+        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Cheese.class);
 
         ksession.delete(fact);
 
-        Assertions.assertThat(ksession.getObjects()).isEmpty();
+        assertThat(ksession.getObjects()).isEmpty();
     }
 
     @Test
@@ -262,7 +262,7 @@ public class DeleteTest extends CommonTestMethodBase {
 
         ksession.fireAllRules(2);
 
-        assertEquals("should have fired only once", 1, list.size());
+        assertEquals(1, list.size(), "should have fired only once");
     }
 
     @Test

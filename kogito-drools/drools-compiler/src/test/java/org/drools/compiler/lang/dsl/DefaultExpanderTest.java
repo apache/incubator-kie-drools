@@ -15,18 +15,21 @@
 
 package org.drools.compiler.lang.dsl;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.lang.ExpanderException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultExpanderTest {
 
@@ -36,7 +39,7 @@ public class DefaultExpanderTest {
     private DSLTokenizedMappingFile tokenizedFile = null;
     private DefaultExpander         expander      = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final String filename = "test_metainfo.dsl";
         final Reader reader = new InputStreamReader(this.getClass().getResourceAsStream(filename));
@@ -292,8 +295,7 @@ public class DefaultExpanderTest {
                 "applicant:Applicant(credit==AA)" + NL +
                 "then  " + NL + "end";
 
-        assertFalse(ex.getErrors().toString(),
-                ex.hasErrors());
+        assertFalse(ex.hasErrors(), ex.getErrors().toString());
         assertEquals(expected,
                 drl);
 
@@ -457,19 +459,21 @@ public class DefaultExpanderTest {
         assertEquals(expected, drl);
     }
 
-    @Test(timeout = 1000)
+    @Test
     public void testExpandInfiniteLoop() throws Exception {
-        // DROOLS-73
-        DSLMappingFile file = new DSLTokenizedMappingFile();
-        String dsl = "[when]Foo with {var} bars=Foo( bars == {var} )";
-        file.parseAndLoad(new StringReader(dsl));
-        assertEquals(0, file.getErrors().size());
+        assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
+            // DROOLS-73
+            DSLMappingFile file = new DSLTokenizedMappingFile();
+            String dsl = "[when]Foo with {var} bars=Foo( bars == {var} )";
+            file.parseAndLoad(new StringReader(dsl));
+            assertEquals(0, file.getErrors().size());
 
-        DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping(file.getMapping());
-        String source = "rule 'dsl rule'" + NL + "when" + NL + " Foo with {var} bars" + NL + "then" + NL + NL + "end";
-        ex.expand(source);
-        assertFalse(ex.hasErrors());
+            DefaultExpander ex = new DefaultExpander();
+            ex.addDSLMapping(file.getMapping());
+            String source = "rule 'dsl rule'" + NL + "when" + NL + " Foo with {var} bars" + NL + "then" + NL + NL + "end";
+            ex.expand(source);
+            assertFalse(ex.hasErrors());
+        });
     }
 
     @Test
@@ -515,9 +519,7 @@ public class DefaultExpanderTest {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(file.getErrors().toString(),
-                0,
-                file.getErrors().size());
+        assertEquals(0, file.getErrors().size(), file.getErrors().toString());
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());
@@ -554,9 +556,7 @@ public class DefaultExpanderTest {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         file.parseAndLoad(new StringReader(dsl));
-        assertEquals(file.getErrors().toString(),
-                0,
-                file.getErrors().size());
+        assertEquals(0, file.getErrors().size(), file.getErrors().toString());
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping(file.getMapping());

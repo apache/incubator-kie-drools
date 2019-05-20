@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 import org.drools.compiler.oopath.model.Room;
 import org.drools.compiler.oopath.model.SensorEvent;
 import org.drools.compiler.oopath.model.Thing;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;

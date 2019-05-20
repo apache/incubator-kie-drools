@@ -15,18 +15,20 @@
 
 package org.drools.compiler.compiler;
 
-import static org.junit.Assert.*;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeDeclaration.Format;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class TypeDeclarationMergingTest {
@@ -267,8 +269,7 @@ public class TypeDeclarationMergingTest {
                 fail( "Check the test, unexpected error message: " + msg );
             }
         }
-        assertFalse( "Check the test, unexpected error message: "
-                + kbuilder.getErrors(), kbuilder.hasErrors());
+        assertFalse(kbuilder.hasErrors(),  "Check the test, unexpected error message: " + kbuilder.getErrors());
     }
 
     public static class PositionAnnotatedEvent {

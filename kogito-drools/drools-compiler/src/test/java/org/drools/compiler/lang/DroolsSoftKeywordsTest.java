@@ -15,16 +15,14 @@
 
 package org.drools.compiler.lang;
 
-import static org.junit.Assert.*;
-
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DroolsSoftKeywordsTest {
 
-    /**
-     * Test method for {@link org.kie.lang.DroolsSoftKeywords#isOperator(java.lang.String, boolean)}.
-     */
     @Test
     public void testIsOperator() {
         // initializes the registry

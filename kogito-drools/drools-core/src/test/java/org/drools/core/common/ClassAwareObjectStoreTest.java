@@ -1,12 +1,9 @@
 package org.drools.core.common;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,162 +12,151 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
 import org.drools.core.ObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import static org.assertj.core.api.Assertions.*;
+
 public class ClassAwareObjectStoreTest {
 
-    private final ClassAwareObjectStore underTest;
-
-    @Test
-    public void iterateObjectsReturnsObjectsOfAllTypes() throws Exception {
+    @ClassAwareObjectStoreParameterizedTest
+    public void iterateObjectsReturnsObjectsOfAllTypes(final ClassAwareObjectStore underTest) throws Exception {
         String aStringValue = "a string";
         BigDecimal bigDecimalValue = new BigDecimal("1");
 
-        insertObjectWithFactHandle(aStringValue);
-        insertObjectWithFactHandle(bigDecimalValue);
+        insertObjectWithFactHandle(underTest, aStringValue);
+        insertObjectWithFactHandle(underTest, bigDecimalValue);
 
         Collection<Object> result = collect(underTest.iterateObjects());
-        assertThat(result.size(), is(equalTo(2)));
+        assertThat(result).hasSize(2);
     }
 
-    @Test
-    public void iterateByClassFiltersByClass() {
+    @ClassAwareObjectStoreParameterizedTest
+    public void iterateByClassFiltersByClass(final ClassAwareObjectStore underTest) {
         SimpleClass object = new SimpleClass();
 
-        insertObjectWithFactHandle("some string");
-        insertObjectWithFactHandle(object);
+        insertObjectWithFactHandle(underTest, "some string");
+        insertObjectWithFactHandle(underTest, object);
         Collection<Object> results = collect(underTest.iterateObjects(SimpleClass.class));
 
-        assertThat(results.size(), is(equalTo(1)));
-        assertThat(results, hasItem(object));
+        assertThat(results).hasSize(1);
+        assertThat(results).contains(object);
     }
 
-    @Test
-    public void queryBySuperTypeFindsSubType() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SuperClass());
+    @ClassAwareObjectStoreParameterizedTest
+    public void queryBySuperTypeFindsSubType(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SubClass());
+        insertObjectWithFactHandle(underTest, new SuperClass());
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
-        assertThat(result, hasItem(isA(SubClass.class)));
-        assertThat(result, hasItem(isA(SuperClass.class)));
+        assertThat(result).hasSize(2);
+        assertThat(result).anySatisfy(e -> assertThat(e).isInstanceOf(SubClass.class));
+        assertThat(result).anySatisfy(e -> assertThat(e).isInstanceOf(SuperClass.class));
     }
 
-    @Test
-    public void queryBySubtypeDoesNotReturnSuperType() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SuperClass());
+    @ClassAwareObjectStoreParameterizedTest
+    public void queryBySubtypeDoesNotReturnSuperType(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SubClass());
+        insertObjectWithFactHandle(underTest, new SuperClass());
 
         Collection<Object> result = collect(underTest.iterateObjects(SubClass.class));
 
-        assertThat(result.size(), is(equalTo(1)));
-        assertThat(result, hasItem(isA(SubClass.class)));
+        assertThat(result).hasSize(1);
+        assertThat(result).anySatisfy(e -> assertThat(e).isInstanceOf(SubClass.class));
     }
 
     /**
-     * Should have identical results to {@link #queryBySuperTypeFindsSubType()}
+     * Should have identical results to {@link #queryBySuperTypeFindsSubType(ClassAwareObjectStore)} )}
      */
-    @Test
-    public void queryBySubTypeDoesNotPreventInsertionsBeingPropogatedToSuperTypeQueries() throws Exception {
-        insertObjectWithFactHandle(new SuperClass());
+    @ClassAwareObjectStoreParameterizedTest
+    public void queryBySubTypeDoesNotPreventInsertionsBeingPropogatedToSuperTypeQueries(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SuperClass());
         collect(underTest.iterateObjects(SubClass.class));
-        insertObjectWithFactHandle(new SubClass());
+        insertObjectWithFactHandle(underTest, new SubClass());
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
-        assertThat(result, hasItem(isA(SubClass.class)));
-        assertThat(result, hasItem(isA(SuperClass.class)));
+        assertThat(result).hasSize(2);
+        assertThat(result).anySatisfy(e -> assertThat(e).isInstanceOf(SubClass.class));
+        assertThat(result).anySatisfy(e -> assertThat(e).isInstanceOf(SuperClass.class));
     }
 
-    @Test
-    public void queryBySuperTypeCanFindSubTypeWhenNoSuperTypeInstancesAreInStore() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
+    @ClassAwareObjectStoreParameterizedTest
+    public void queryBySuperTypeCanFindSubTypeWhenNoSuperTypeInstancesAreInStore(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SubClass());
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(1)));
-        assertThat(result, hasItem(isA(SubClass.class)));
+        assertThat(result).hasSize(1);
+        assertThat(result).anySatisfy(e -> assertThat(e).isInstanceOf(SubClass.class));
     }
 
-    @Test
-    public void isOkayToReinsertSameTypeThenQuery() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SubClass());
+    @ClassAwareObjectStoreParameterizedTest
+    public void isOkayToReinsertSameTypeThenQuery(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SubClass());
+        insertObjectWithFactHandle(underTest, new SubClass());
 
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
+        assertThat(result).hasSize(2);
         // Check there's no duplication of results
-        assertThat(new HashSet<Object>(result).size(), is(equalTo(2)));
+        assertThat(new HashSet<>(result)).hasSize(2);
     }
 
-    @Test
-    public void onceSuperClassIsSetUpForReadingItCanBecomeSetUpForWritingWithoutGettingDuplicateQueryReturns() throws Exception {
-        assertTrue(collect(underTest.iterateObjects(SuperClass.class)).isEmpty());
+    @ClassAwareObjectStoreParameterizedTest
+    public void onceSuperClassIsSetUpForReadingItCanBecomeSetUpForWritingWithoutGettingDuplicateQueryReturns(final ClassAwareObjectStore underTest) throws Exception {
+        assertThat(underTest.iterateObjects(SuperClass.class)).isEmpty();
 
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SuperClass());
+        insertObjectWithFactHandle(underTest, new SubClass());
+        insertObjectWithFactHandle(underTest, new SuperClass());
 
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
-        assertThat(result.size(), is(equalTo(2)));
+        assertThat(result).hasSize(2);
         // Check there's no duplication of results
-        assertThat(new HashSet<Object>(result).size(), is(equalTo(2)));
+        assertThat(new HashSet<>(result)).hasSize(2);
     }
 
-    @Test
-    public void clearRemovesInsertedObjects() throws Exception {
-        insertObjectWithFactHandle(new SimpleClass());
-        assertThat(collect(underTest.iterateObjects()).size(), is(equalTo(1)));
+    @ClassAwareObjectStoreParameterizedTest
+    public void clearRemovesInsertedObjects(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SimpleClass());
+        assertThat(underTest.iterateObjects()).hasSize(1);
 
         underTest.clear();
 
-        assertThat(collect(underTest.iterateObjects()).size(), is(equalTo(0)));
+        assertThat(underTest.iterateObjects()).isEmpty();
     }
 
-    @Test
-    public void canIterateOverObjectsUsingCustomFilter() throws Exception {
-        insertObjectWithFactHandle(new SuperClass());
-        insertObjectWithFactHandle(new SubClass());
+    @ClassAwareObjectStoreParameterizedTest
+    public void canIterateOverObjectsUsingCustomFilter(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SuperClass());
+        insertObjectWithFactHandle(underTest, new SubClass());
 
-        Collection<Object> result = collect(underTest.iterateObjects(new ObjectFilter() {
-            @Override
-            public boolean accept(Object o) {
-                return SubClass.class.isInstance(o);
-            }
-        }));
+        Collection<Object> result = collect(underTest.iterateObjects((ObjectFilter) SubClass.class::isInstance));
 
-        assertThat(result.size(), is(equalTo(1)));
-        assertThat(result, hasItem(isA(SubClass.class)));
+        assertThat(result).hasSize(1);
+        assertThat(result).anySatisfy(e -> assertThat(e).isInstanceOf(SubClass.class));
     }
 
-    @Test
-    public void iteratingOverFactHandlesHasSameNumberOfResultsAsIteratingOverObjects() throws Exception {
-        insertObjectWithFactHandle(new SuperClass());
-        insertObjectWithFactHandle(new SubClass());
+    @ClassAwareObjectStoreParameterizedTest
+    public void iteratingOverFactHandlesHasSameNumberOfResultsAsIteratingOverObjects(final ClassAwareObjectStore underTest) throws Exception {
+        insertObjectWithFactHandle(underTest, new SuperClass());
+        insertObjectWithFactHandle(underTest, new SubClass());
 
-        assertThat(collect(underTest.iterateFactHandles(SubClass.class)).size(), is(equalTo(1)));
-        assertThat(collect(underTest.iterateFactHandles(SuperClass.class)).size(), is(equalTo(2)));
+        assertThat(underTest.iterateFactHandles(SubClass.class)).hasSize(1);
+        assertThat(underTest.iterateFactHandles(SuperClass.class)).hasSize(2);
     }
 
 
-    private void insertObjectWithFactHandle(Object objectToInsert) {
+    private void insertObjectWithFactHandle(ClassAwareObjectStore underTest, Object objectToInsert) {
         underTest.addHandle(handleFor(objectToInsert), objectToInsert);
-    }
-
-    public ClassAwareObjectStore getUnderTest() {
-        return underTest;
     }
 
     private static <T> Collection<T> collect(Iterator<T> objects) {
@@ -179,22 +165,6 @@ public class ClassAwareObjectStoreTest {
             result.add(objects.next());
         }
         return result;
-    }
-
-    public ClassAwareObjectStoreTest(RuleBaseConfiguration ruleBaseConfiguration) {
-        underTest = new ClassAwareObjectStore(ruleBaseConfiguration, new ReentrantLock());
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> ruleBaseConfigurations() {
-        List<Object[]> configurations = new ArrayList<Object[]>(2);
-        configurations.add(new Object[]{new RuleBaseConfiguration() {{
-            setAssertBehaviour(AssertBehaviour.EQUALITY);
-        }}});
-        configurations.add(new Object[]{new RuleBaseConfiguration() {{
-            setAssertBehaviour(AssertBehaviour.IDENTITY);
-        }}});
-        return configurations;
     }
 
     private static final AtomicInteger factCounter = new AtomicInteger(0);
@@ -210,5 +180,22 @@ public class ClassAwareObjectStoreTest {
     }
 
     private static class SubClass extends SuperClass {
+    }
+
+    static Stream<ClassAwareObjectStore> dataProvider() {
+        return Stream.of(new RuleBaseConfiguration() {{
+                             setAssertBehaviour(AssertBehaviour.EQUALITY);
+                         }},
+                         new RuleBaseConfiguration() {{
+                             setAssertBehaviour(AssertBehaviour.IDENTITY);
+                         }})
+                .map(c -> new ClassAwareObjectStore(c, new ReentrantLock()));
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ParameterizedTest
+    @MethodSource("dataProvider")
+    public @interface ClassAwareObjectStoreParameterizedTest {
     }
 }

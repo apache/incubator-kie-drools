@@ -6,7 +6,7 @@ import java.util.List;
 import org.drools.model.datasources.DataSource;
 import org.drools.model.engine.BruteForceEngine;
 import org.drools.model.impl.DataSourceDefinitionImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.drools.model.FlowDSL.declarationOf;
 import static org.drools.model.FlowDSL.expr;
@@ -16,7 +16,7 @@ import static org.drools.model.FlowDSL.or;
 import static org.drools.model.FlowDSL.rule;
 import static org.drools.model.FlowDSL.storeOf;
 import static org.drools.model.FlowDSL.view;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FlowDSLTest {
 

@@ -15,20 +15,17 @@
 
 package org.drools.compiler.integrationtests;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.StockTick;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -38,6 +35,12 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NamedConsequencesTest extends CommonTestMethodBase {
 
@@ -505,7 +508,7 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+        assertThatThrownBy(() -> executeTestWithDRL(str))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
@@ -600,7 +603,7 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        Assertions.assertThatThrownBy(() -> executeTestWithDRL(str))
+        assertThatThrownBy(() -> executeTestWithDRL(str))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
@@ -818,7 +821,7 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         assertTrue(list.containsAll(asList("t1:YYY", "t0:ZZZ")));
     }
 
-    @Test(timeout = 10000L)
+    @Test
     public void testNoLoop() {
         // DROOLS-644
         String drl =
@@ -847,7 +850,7 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         Person mark = new Person("Mark", 37);
         ksession.insert(mario);
         ksession.insert(mark);
-        ksession.fireAllRules();
+        assertTimeoutPreemptively(Duration.ofSeconds(10), (ThrowingSupplier<Integer>) ksession::fireAllRules);
 
         assertEquals(35, mario.getAge());
         assertEquals(30, mark.getAge());

@@ -15,18 +15,18 @@
  */
 package org.drools.core.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.test.model.MockActivation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * <p>
@@ -45,7 +45,7 @@ public class LazyTMSEnablingTest {
     private StatefulKnowledgeSessionImpl ksession;
     private TruthMaintenanceSystem tms;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
@@ -61,24 +61,21 @@ public class LazyTMSEnablingTest {
 
         ksession.insert(fact1);
 
-        assertEquals(
-                "Shouldn't have anything, since no logical insert was performed.",
-                0, tms.getEqualityKeyMap().size());
+        assertEquals(0, (Object) tms.getEqualityKeyMap().size(),
+                                "Shouldn't have anything, since no logical insert was performed.");
 
         final String fact2 = "logical";
 
         ksession.getTruthMaintenanceSystem().insert( fact2, null, null, new MockActivation() );
 
-        assertEquals(
-                "Now that a logical insert was done, it should have an element.",
-                1, tms.getEqualityKeyMap().size());
+        assertEquals(1, (Object) tms.getEqualityKeyMap().size(),
+                                "Now that a logical insert was done, it should have an element.");
 
         // Make sure the internals are fine.
         ObjectTypeConf typeConf = ksession.getObjectTypeConfigurationRegistry()
                 .getObjectTypeConf(ksession.getEntryPoint(), fact1);
 
-        assertTrue("Should have enabled TMS", typeConf.isTMSEnabled());
-
+        assertTrue(typeConf.isTMSEnabled(), "Should have enabled TMS");
     }
 
     @Test
@@ -107,25 +104,22 @@ public class LazyTMSEnablingTest {
         for (ObjectTypeConf conf : ksession.getObjectTypeConfigurationRegistry()
                 .values()) {
 
-            assertFalse(
-                    "TMS shouldn't be enabled for any type, since no logical insert was done.",
-                    conf.isTMSEnabled());
-
+            assertFalse(conf.isTMSEnabled(),
+                                   "TMS shouldn't be enabled for any type, since no logical insert was done.");
         }
 
         ksession.getTruthMaintenanceSystem().insert( stringFact2, null, null, new MockActivation() );
 
-        assertTrue("Should have enabled TMS for Strings.", stringTypeConf
-                .isTMSEnabled());
+        assertTrue(stringTypeConf
+                .isTMSEnabled(), "Should have enabled TMS for Strings.");
 
-        assertFalse("Shouldn't have enabled TMS for Integers.", intTypeConf
-                .isTMSEnabled());
+        assertFalse(intTypeConf
+                .isTMSEnabled(), "Shouldn't have enabled TMS for Integers.");
 
         ksession.getTruthMaintenanceSystem().insert( intFact2, null, null, new MockActivation() );
 
-        assertTrue("Now it should have enabled TMS for Integers!.", intTypeConf
-                .isTMSEnabled());
-
+        assertTrue(intTypeConf
+                .isTMSEnabled(), "Now it should have enabled TMS for Integers!.");
     }
 
 }

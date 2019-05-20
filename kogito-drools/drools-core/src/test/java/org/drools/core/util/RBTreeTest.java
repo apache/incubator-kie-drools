@@ -15,10 +15,6 @@
 
 package org.drools.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +23,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.drools.core.util.RBTree.Node;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RBTreeTest {
 
@@ -128,7 +128,7 @@ public class RBTreeTest {
         assertEquals(ITEMS, i);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testLargeData() {
         int range = 6000000;
         for ( int i = 0; i < 10; i++ ) {
@@ -141,7 +141,7 @@ public class RBTreeTest {
         }
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testLargeData2() {
         int range = 6000000;
         for ( int i = 0; i < 10; i++ ) {

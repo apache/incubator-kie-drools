@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +43,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -53,6 +51,14 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LinkingTest {
     public static class A {
@@ -234,7 +240,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -305,7 +311,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -408,7 +414,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -501,7 +507,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -567,7 +573,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -629,7 +635,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -713,7 +719,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -818,7 +824,7 @@ public class LinkingTest {
         assertEquals(2, riaMem1.getRiaPathMemory().getLinkedSegmentMask()); // E deleted
 
         // assert e, f are in the same segment, and that this is the only segment in ria2 memory
-        assertNotNull( null, eMem.getSegmentMemory() ); //subnetworks are recursively created, so segment already exists
+        assertNotNull(eMem.getSegmentMemory()); //subnetworks are recursively created, so segment already exists
         assertSame( fMem.getSegmentMemory(), eMem.getSegmentMemory() );
 
         assertEquals( 3, riaMem2.getRiaPathMemory().getSegmentMemories().length );
@@ -888,7 +894,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -973,7 +979,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1024,7 +1030,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1091,7 +1097,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1175,7 +1181,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1234,7 +1240,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1286,7 +1292,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1356,7 +1362,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1417,7 +1423,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1479,7 +1485,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1552,7 +1558,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1602,7 +1608,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1656,7 +1662,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );
@@ -1717,7 +1723,7 @@ public class LinkingTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                       ResourceType.DRL );
 
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.hasErrors(), kbuilder.getErrors().toString());
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages( kbuilder.getKnowledgePackages() );

@@ -18,10 +18,13 @@ package org.drools.core.xml;
 import java.util.Collection;
 
 import org.drools.core.io.internal.InternalResource;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.ChangeSet;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  *
@@ -40,13 +43,13 @@ public class XmlChangeSetReaderTest {
         
         ChangeSet changeSet = changeSetReader.read(XmlChangeSetReaderTest.class.getClassLoader().getResourceAsStream("org/drools/core/xml/test-change-set.xml"));
         
-        Assert.assertNotNull(changeSet);
+        assertNotNull(changeSet);
         
         Collection<Resource> resourcesAdded = changeSet.getResourcesAdded();
         
-        Assert.assertNotNull(resourcesAdded);
+        assertNotNull(resourcesAdded);
         
-        Assert.assertEquals(4, resourcesAdded.size());
+        assertEquals(4, resourcesAdded.size());
         
         InternalResource resource1 = null;
         InternalResource resource2 = null;
@@ -66,18 +69,18 @@ public class XmlChangeSetReaderTest {
             }
         }
         
-        Assert.assertNotNull(resource1);
-        Assert.assertNotNull(resource2);
-        Assert.assertNotNull(resource3);
-        Assert.assertNotNull(secureResource);
+        assertNotNull(resource1);
+        assertNotNull(resource2);
+        assertNotNull(resource3);
+        assertNotNull(secureResource);
         
-        Assert.assertNull(resource1.getDescription());
+        assertNull(resource1.getDescription());
         
-        Assert.assertEquals("another description", resource2.getDescription());
+        assertEquals("another description", resource2.getDescription());
         
-        Assert.assertEquals("some useful description", secureResource.getDescription());
+        assertEquals("some useful description", secureResource.getDescription());
 
-        Assert.assertEquals(2, changeSetReader.getParser().getAttrs().getLength());
-        Assert.assertEquals("DRL", changeSetReader.getParser().getAttrs().getValue("type"));
+        assertEquals(2, changeSetReader.getParser().getAttrs().getLength());
+        assertEquals("DRL", changeSetReader.getParser().getAttrs().getValue("type"));
     }
 }

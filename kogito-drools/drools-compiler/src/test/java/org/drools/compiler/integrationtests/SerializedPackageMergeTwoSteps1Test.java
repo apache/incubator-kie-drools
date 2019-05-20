@@ -20,7 +20,7 @@ import java.io.FileOutputStream;
 import java.util.Collection;
 
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;

@@ -16,11 +16,10 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -31,13 +30,15 @@ import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.internal.io.ResourceFactory;
 import org.mvel2.PropertyAccessException;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 /**
  * This is a sample class to launch a rule.
  */
-@Ignore( "This test causes problems to surefire, so it will be disabled for now. It works when executed by itself.")
+@Disabled( "This test causes problems to surefire, so it will be disabled for now. It works when executed by itself.")
 public class SecurityPolicyTest extends CommonTestMethodBase {
 
-    @Before
+    @BeforeEach
     public void init() {
         String enginePolicy = SecurityPolicyTest.class.getResource("engine.policy").getFile();
         String kiePolicy = SecurityPolicyTest.class.getResource("rules.policy").getFile();
@@ -48,7 +49,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
         System.setSecurityManager(tsm);
     }
 
-    @After
+    @AfterEach
     public void close() {
         System.setSecurityManager(null);
         System.setProperty("java.security.policy", "");
@@ -74,9 +75,9 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (ConsequenceException e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
@@ -101,9 +102,9 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (ConsequenceException e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
@@ -130,7 +131,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
             kbase = SerializationHelper.serializeObject( kbase );
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail(e.toString());
+            fail(e.toString());
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
     }
@@ -155,9 +156,9 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (Exception e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
@@ -183,11 +184,11 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
             // weak way of testing but couldn't find a better way
             if( e.toString().contains( "The security policy should have prevented" ) ) {
-                Assert.fail("The security policy for the rule should have prevented this from executing...");
+                fail("The security policy for the rule should have prevented this from executing...");
             } else {
                 // test succeeded
             }
@@ -218,9 +219,9 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (Exception e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
@@ -250,11 +251,11 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
             // weak way of testing but couldn't find a better way
             if( e.toString().contains( "The security policy should have prevented" ) ) {
-                Assert.fail("The security policy for the rule should have prevented this from executing...");
+                fail("The security policy for the rule should have prevented this from executing...");
             } else {
                 // test succeeded
             }
@@ -290,11 +291,11 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
             KieSession ksession = kc.newKieSession();
             ksession.insert("foo");
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
             // weak way of testing but couldn't find a better way
             if( e.toString().contains( "The security policy should have prevented" ) ) {
-                Assert.fail("The security policy for the rule should have prevented this from executing...");
+                fail("The security policy for the rule should have prevented this from executing...");
             } else {
                 // test succeeded
             }
@@ -330,11 +331,11 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
             KieSession ksession = kc.newKieSession();
             ksession.insert("foo");
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
             // weak way of testing but couldn't find a better way
             if( e.toString().contains( "The security policy should have prevented" ) ) {
-                Assert.fail("The security policy for the rule should have prevented this from executing...");
+                fail("The security policy for the rule should have prevented this from executing...");
             } else {
                 // test succeeded
             }
@@ -367,9 +368,9 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (Exception e) {
             // test succeeded. the policy in place prevented the rule from executing the System.exit().
         }
@@ -395,11 +396,11 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
 
             KieSession ksession = kc.newKieSession();
             ksession.fireAllRules();
-            Assert.fail("The security policy for the rule should have prevented this from executing...");
+            fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
             // weak way of testing but couldn't find a better way
             if( e.toString().contains( "The security policy should have prevented" ) ) {
-                Assert.fail("The security policy for the rule should have prevented this from executing...");
+                fail("The security policy for the rule should have prevented this from executing...");
             } else {
                 // test succeeded
             }

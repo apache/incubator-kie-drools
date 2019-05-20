@@ -16,22 +16,22 @@
 
 package org.drools.core.base;
 
-import static org.junit.Assert.assertEquals;
-
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.asm.BeanInherit;
 import org.drools.core.util.asm.TestAbstract;
 import org.drools.core.util.asm.TestAbstractImpl;
 import org.drools.core.util.asm.TestInterface;
 import org.drools.core.util.asm.TestInterfaceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BaseClassFieldAccessorFactoryTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );

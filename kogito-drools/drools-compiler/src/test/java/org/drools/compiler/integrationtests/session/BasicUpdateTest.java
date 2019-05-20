@@ -16,18 +16,16 @@
 
 package org.drools.compiler.integrationtests.session;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -38,6 +36,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BasicUpdateTest {
 
@@ -45,7 +46,7 @@ public class BasicUpdateTest {
 
     private KieSession ksession;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
 
@@ -58,7 +59,7 @@ public class BasicUpdateTest {
 
         final List<Message> res = kbuilder.getResults().getMessages(Message.Level.ERROR);
 
-        assertEquals(res.toString(), 0, res.size());
+        assertEquals(0, res.size(), res.toString());
 
         final KieBase kbase = KieServices.Factory.get()
                 .newKieContainer(kbuilder.getKieModule().getReleaseId())
@@ -67,7 +68,7 @@ public class BasicUpdateTest {
         ksession = kbase.newKieSession();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         ksession.dispose();
     }
@@ -89,13 +90,13 @@ public class BasicUpdateTest {
         verifyPerson(person, personToBeVerified, 21, "Henry", false);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void updateWithNullTest() {
         final Person person = new Person("George", 18);
         final FactHandle factPerson = ksession.insert(person);
         verifyFactsPresentInSession(1, Person.class);
 
-        ksession.update(factPerson, null);
+        assertThrows(NullPointerException.class, () -> ksession.update(factPerson, null));
     }
 
     @Test

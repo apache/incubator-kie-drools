@@ -16,17 +16,17 @@
 
 package org.drools.compiler.compiler.io.memory;
 
-import static org.junit.Assert.*;
-
 import org.drools.compiler.compiler.io.File;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MemoryFileSystemTest {
 
     private MemoryFileSystem memoryFileSystem;
 
-    @Before
+    @BeforeEach
     public void setup() {
         memoryFileSystem = new MemoryFileSystem();
     }

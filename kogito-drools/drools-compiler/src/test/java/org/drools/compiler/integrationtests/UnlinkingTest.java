@@ -15,18 +15,18 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.common.InternalFactHandle;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UnlinkingTest extends CommonTestMethodBase {
 
@@ -72,9 +72,9 @@ public class UnlinkingTest extends CommonTestMethodBase {
 
         wmOne.fireAllRules();
 
-        assertEquals( "Should not have fired",
-                      0,
-                      listOne.size() );
+        assertEquals( 0,
+                      listOne.size(),
+                      "Should not have fired");
 
         // WM Two - first round o inserts
         wmTwo.insert( name );
@@ -83,9 +83,9 @@ public class UnlinkingTest extends CommonTestMethodBase {
 
         wmTwo.fireAllRules();
 
-        assertEquals( "Should not have fired",
-                      0,
-                      listTwo.size() );
+        assertEquals( 0,
+                      listTwo.size(),
+                      "Should not have fired");
         
         wmOne.insert( hair );
         wmOne.insert( happy );
@@ -93,18 +93,17 @@ public class UnlinkingTest extends CommonTestMethodBase {
         
         wmOne.fireAllRules();
         
-        assertTrue( "Should have fired",
-                      listOne.size() > 0);
+        assertTrue(listOne.size() > 0,  "Should have fired");
                 
-        assertEquals("Should have inserted the match Person",
-                     matchHandle.getObject(),
-                     listOne.get( 0 ));
+        assertEquals(matchHandle.getObject(),
+                     listOne.get( 0 ),
+                     "Should have inserted the match Person");
         
         wmTwo.fireAllRules();
         
-        assertEquals( "Should not have fired",
-                      0,
-                      listTwo.size() );
+        assertEquals(0,
+                     listTwo.size(),
+                     "Should not have fired");
         
         wmTwo.insert( hair );
         wmTwo.insert( happy );
@@ -112,8 +111,8 @@ public class UnlinkingTest extends CommonTestMethodBase {
         
         wmTwo.fireAllRules();
 
-        assertTrue( "Should have fired",
-                    listTwo.size() > 0);
+        assertTrue(listTwo.size() > 0,
+                   "Should have fired");
 
     }
 

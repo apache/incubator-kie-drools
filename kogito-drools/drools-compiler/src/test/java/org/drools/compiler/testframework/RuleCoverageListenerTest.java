@@ -15,8 +15,6 @@
 
 package org.drools.compiler.testframework;
 
-import static org.junit.Assert.*;
-
 import java.util.HashSet;
 import java.util.List;
 
@@ -36,8 +34,12 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RuleCoverageListenerTest {
 

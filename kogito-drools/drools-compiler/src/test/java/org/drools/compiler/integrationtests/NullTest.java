@@ -16,9 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +28,15 @@ import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Primitives;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NullTest extends CommonTestMethodBase {
 
@@ -54,8 +55,8 @@ public class NullTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals("Indexing with null values is not working correctly.", "OK", bob.getStatus());
-        assertEquals("Indexing with null values is not working correctly.", "OK", pete.getStatus());
+        assertEquals("OK", bob.getStatus(), "Indexing with null values is not working correctly.");
+        assertEquals("OK", pete.getStatus(), "Indexing with null values is not working correctly.");
     }
 
     @Test

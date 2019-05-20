@@ -15,17 +15,13 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -47,9 +43,13 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class DeclarativeAgendaTest extends CommonTestMethodBase {
     
-    @Test(timeout=10000)
+    @Test
     public void testSimpleBlockingUsingForall() {
         String str = "";
         str += "package org.domain.test \n";
@@ -89,7 +89,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testBasicBlockOnAnnotation() {
         String str = "";
         str += "package org.domain.test \n";
@@ -153,7 +153,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test//(timeout=10000)
+    @Test
     public void testApplyBlockerFirst() {
         KieSession ksession = getStatefulKnowledgeSession();
 
@@ -179,7 +179,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testApplyBlockerFirstWithFireAllRulesInbetween() {
         KieSession ksession = getStatefulKnowledgeSession();
 
@@ -208,7 +208,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testApplyBlockerSecond() {
         KieSession ksession = getStatefulKnowledgeSession();
 
@@ -233,7 +233,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testApplyBlockerSecondWithUpdate() {
         KieSession ksession = getStatefulKnowledgeSession();
 
@@ -267,7 +267,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testApplyBlockerSecondAfterUpdate() {
         KieSession ksession = getStatefulKnowledgeSession();
 
@@ -341,7 +341,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         return ksession;
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testMultipleBlockers() {
         String str = "";
         str += "package org.domain.test \n";
@@ -423,7 +423,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testMultipleBlockersWithUnblockAll() {
         // This test is a bit wierd as it recurses. Maybe unblockAll is not feasible...
         String str = "";
@@ -510,7 +510,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "blockerAllSalesRules3:rule0:go3" ) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testIterativeUpdate() {
         String str = "";
         str += "package org.domain.test \n";
@@ -655,7 +655,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "block:rule2" ) );
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testCancelActivation() {
         String str = "";
         str += "package org.domain.test \n";
@@ -733,7 +733,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testActiveInActiveChanges() {
         String str = "";
         str += "package org.domain.test \n";
@@ -790,7 +790,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testCancelMultipleActivations() {
         String str = "package org.domain.test\n" +
                 "import " + Match.class.getName() + "\n" +
@@ -832,7 +832,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testCancelActivationOnInsertAndUpdate() {
         String str = "package org.domain.test\n" +
                 "import " + Match.class.getName() + "\n" +

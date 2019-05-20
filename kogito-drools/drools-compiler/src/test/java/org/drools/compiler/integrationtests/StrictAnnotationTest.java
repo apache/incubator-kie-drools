@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,7 +27,7 @@ import java.util.Properties;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -44,6 +42,8 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StrictAnnotationTest extends CommonTestMethodBase {
 

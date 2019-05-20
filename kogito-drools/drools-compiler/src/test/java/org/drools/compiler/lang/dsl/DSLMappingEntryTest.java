@@ -15,14 +15,16 @@
 
 package org.drools.compiler.lang.dsl;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DSLMappingEntryTest {
 
@@ -173,9 +175,9 @@ public class DSLMappingEntryTest {
         String drl = ex.expand( dslr );
         System.out.println( dslr );
         System.out.println( drl );
-        assertTrue( "failure type1", drl.contains( "type1 == ClientServiceType.TypeGOLD" ) );
-        assertTrue( "failure type2", drl.contains( "type2 != ClientServiceType.TypeGOLD" ) );
-        assertTrue( "failure type3", drl.contains( "type3 != ClientServiceType.TypeGOLD" ) );
+        assertTrue(drl.contains( "type1 == ClientServiceType.TypeGOLD" ), "failure type1");
+        assertTrue(drl.contains( "type2 != ClientServiceType.TypeGOLD" ), "failure type2" );
+        assertTrue(drl.contains( "type3 != ClientServiceType.TypeGOLD" ), "failure type3");
     }
 
 
@@ -238,7 +240,7 @@ public class DSLMappingEntryTest {
                 "Cheese\n(price == 10)",
                 "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )" } ){
 
-            assertTrue( "failed to expand to: " + exp, drl.contains( exp ) );
+            assertTrue(drl.contains( exp ), "failed to expand to: " + exp);
         }
     }
     

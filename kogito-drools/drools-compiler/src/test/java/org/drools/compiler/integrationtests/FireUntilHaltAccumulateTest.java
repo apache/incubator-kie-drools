@@ -23,9 +23,9 @@ import java.util.concurrent.TimeUnit;
 import org.drools.core.ClockType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
@@ -70,7 +70,7 @@ public class FireUntilHaltAccumulateTest {
                                 "then\n" +
                                 "end";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
@@ -93,7 +93,7 @@ public class FireUntilHaltAccumulateTest {
         this.stockFactory = new StockFactory(kbase);
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         if (this.statefulSession != null) {
             this.statefulSession.dispose();

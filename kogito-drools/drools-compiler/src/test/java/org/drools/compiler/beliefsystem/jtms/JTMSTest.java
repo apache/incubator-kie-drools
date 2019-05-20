@@ -15,8 +15,6 @@
 
 package org.drools.compiler.beliefsystem.jtms;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,8 +31,8 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -45,6 +43,11 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JTMSTest {
 
@@ -92,7 +95,7 @@ public class JTMSTest {
         return kSession;
     }    
     
-    @Test(timeout = 10000 )
+    @Test
     public void testPosNegNonConflictingInsertions() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
         		"\n" + 
@@ -177,7 +180,7 @@ public class JTMSTest {
         assertEquals( 0, getNegativeObjects(kSession).size() );
     }
 
-    @Test(timeout = 10000 )
+    @Test
     public void testConflictToggleWithoutGoingEmpty() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                    "\n" +
@@ -265,8 +268,8 @@ public class JTMSTest {
         assertTrue( list.contains( "+xxx" ) );
     }
     
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
+    @Test
+    @Disabled("Currently cannot support updates")
     public void testChangeInPositivePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
@@ -360,8 +363,8 @@ public class JTMSTest {
         assertEquals( new Integer(2), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
     }    
     
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
+    @Test
+    @Disabled("Currently cannot support updates")
     public void testChangeInNegativePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
@@ -458,8 +461,8 @@ public class JTMSTest {
         assertEquals( new Integer(2), ((Person)((JTMSBeliefSetImpl)key.getBeliefSet()).getFactHandle().getObject()).getNotInEqualTestObject() );
     }
     
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
+    @Test
+    @Disabled("Currently cannot support updates")
     public void testRetractHandleWhenOnlyNeg() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
@@ -537,7 +540,7 @@ public class JTMSTest {
         assertEquals( 1, ep.getTruthMaintenanceSystem().getEqualityKeyMap().size() );
     }  
     
-    @Test(timeout = 10000 )
+    @Test
     public void testConflictStrict() {
         KieSession kSession = getSessionFromFile( "posNegConflict.drl" );
 
@@ -558,8 +561,8 @@ public class JTMSTest {
         }
     }   
 
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
+    @Test
+    @Disabled("Currently cannot support updates")
     public void testConflictTMS() {
         KieSession kSession = getSessionFromFile( "posNegTms.drl" );
 

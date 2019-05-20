@@ -16,19 +16,10 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -44,10 +35,10 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.ObjectFilter;
 import org.drools.core.base.ClassObjectType;
@@ -80,11 +71,11 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.CodedHierarchyImpl;
 import org.drools.core.util.HierarchyEncoder;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -111,25 +102,33 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
-@RunWith(Parameterized.class)
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
 public class TraitTest extends CommonTestMethodBase {
 
     private static long t0;
 
-
-    public VirtualPropertyMode mode;
-
-    @Parameterized.Parameters
-    public static Collection modes() {
-        return Arrays.asList( new VirtualPropertyMode[][]
-                                      {
-                                              { VirtualPropertyMode.MAP },
-                                              { VirtualPropertyMode.TRIPLES }
-                                      } );
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public @interface TraitParameterizedTest {
     }
 
-    public TraitTest( VirtualPropertyMode m ) {
-        this.mode = m;
+    static Stream<Arguments> parameters() {
+        return Stream.of(
+                arguments(VirtualPropertyMode.MAP),
+                arguments(VirtualPropertyMode.TRIPLES)
+        );
     }
 
     private KieSession getSession( String... ruleFiles ) {
@@ -148,9 +147,8 @@ public class TraitTest extends CommonTestMethodBase {
         return new KieHelper().addContent( drl, ResourceType.DRL ).build(options);
     }
 
-
-    @Test
-    public void testRetract( ) {
+    @TraitParameterizedTest
+    public void testRetract(VirtualPropertyMode mode) {
         String drl = "package org.drools.compiler.trait.test; \n" +
                 "import org.drools.core.factmodel.traits.Traitable; \n" +
                 "" +
@@ -180,9 +178,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals(0, ks.getObjects().size());
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitWrapGetAndSet() {
+    @TraitParameterizedTest
+    public void testTraitWrapGetAndSet(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -240,15 +237,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTraitShed() {
+    @TraitParameterizedTest
+    public void testTraitShed(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitShed.drl";
 
         KieSession ks = getSession( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
-
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -281,10 +275,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTraitDon() {
+    @TraitParameterizedTest
+    public void testTraitDon(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KieSession ks = getSession( source );
@@ -315,12 +307,8 @@ public class TraitTest extends CommonTestMethodBase {
         System.out.println( Arrays.asList( x.getClass().getInterfaces() ));
     }
 
-
-
-
-
-    @Test(timeout=10000)
-    public void testMixin() {
+    @TraitParameterizedTest
+    public void testMixin(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitMixin.drl";
 
         KieSession ks = getSession( source );
@@ -335,9 +323,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( info.contains( "27" ) );
     }
 
-
-    @Test(timeout=10000)
-    public void traitMethodsWithObjects() {
+    @TraitParameterizedTest
+    public void traitMethodsWithObjects(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitWrapping.drl";
 
         KieSession ks = getSession( source );
@@ -356,9 +343,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void traitMethodsWithPrimitives() {
+    @TraitParameterizedTest
+    public void traitMethodsWithPrimitives(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitWrappingPrimitives.drl";
 
         KieSession ks = getSession( source );
@@ -377,9 +363,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitProxy() {
+    @TraitParameterizedTest
+    public void testTraitProxy(VirtualPropertyMode mode) {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -456,9 +441,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-    @Test(timeout=10000)
-    public void testWrapperSize() {
+    @TraitParameterizedTest
+    public void testWrapperSize(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -474,7 +458,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         TraitFactory.setMode( mode, kb );
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
-
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -583,10 +566,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testWrapperEmpty() {
+    @TraitParameterizedTest
+    public void testWrapperEmpty(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -664,10 +645,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testWrapperContainsKey() {
+    @TraitParameterizedTest
+    public void testWrapperContainsKey(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -680,7 +659,6 @@ public class TraitTest extends CommonTestMethodBase {
         }
         InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addPackages( kbuilder.getKnowledgePackages() );
-
 
         TraitFactory.setMode( mode, kb );
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
@@ -789,9 +767,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void testInternalComponents1(  ) {
+    @TraitParameterizedTest
+    public void testInternalComponents1(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -807,7 +784,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         TraitFactory.setMode( mode, kb );
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
-
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -840,7 +816,6 @@ public class TraitTest extends CommonTestMethodBase {
                 assertTrue( coreProperties instanceof TripleBasedBean );
             }
 
-
             StudentProxy2 sp2 = new StudentProxy2( new Imp2(), null );
             System.out.println( sp2.toString() );
 
@@ -850,11 +825,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testWrapperKeySetAndValues() {
+    @TraitParameterizedTest
+    public void testWrapperKeySetAndValues(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -949,10 +921,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testWrapperClearAndRemove() {
+    @TraitParameterizedTest
+    public void testWrapperClearAndRemove(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -1071,12 +1041,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-
-    @Test(timeout=10000)
-    public void testIsAEvaluator( ) {
+    @TraitParameterizedTest
+    public void testIsAEvaluator(VirtualPropertyMode mode) {
         String source = "package org.drools.compiler.trait.test;\n" +
                         "\n" +
                         "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -1146,10 +1112,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( info.contains( "ok" ) );
     }
 
-
-
-    @Test(timeout=10000)
-    public void testIsA() {
+    @TraitParameterizedTest
+    public void testIsA(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitIsA.drl";
 
         KieSession ks = getSession( source );
@@ -1160,7 +1124,6 @@ public class TraitTest extends CommonTestMethodBase {
                       info );
 
         ks.fireAllRules();
-
 
         int num = 10;
 
@@ -1173,10 +1136,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testOverrideType() {
+    @TraitParameterizedTest
+    public void testOverrideType(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitOverride.drl";
 
         KieSession ks = getSession( source );
@@ -1194,11 +1155,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testOverrideType2( ) {
+    @TraitParameterizedTest
+    public void testOverrideType2(VirtualPropertyMode mode) {
         String drl = "package org.drools.compiler.trait.test; \n" +
                      "import org.drools.core.factmodel.traits.Traitable; \n" +
                      "" +
@@ -1224,10 +1182,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-
-    @Test(timeout=10000)
-    public void testOverrideType3( ) {
+    @TraitParameterizedTest
+    public void testOverrideType3(VirtualPropertyMode mode) {
         String drl = "package org.drools.compiler.trait.test; \n" +
                      "import org.drools.core.factmodel.traits.Traitable; \n" +
                      "" +
@@ -1253,14 +1209,12 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitLegacy() {
+    @TraitParameterizedTest
+    public void testTraitLegacy(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyTrait.drl";
 
         KieSession ks = getSession( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
-
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1286,16 +1240,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testTraitCollections() {
+    @TraitParameterizedTest
+    public void testTraitCollections(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitCollections.drl";
 
         KieSession ks = getSession( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
-
 
         List info = new ArrayList();
         ks.setGlobal( "list",
@@ -1317,11 +1267,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-    @Test()
-    public void testTraitCore() {
+    @TraitParameterizedTest()
+    public void testTraitCore(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyCore.drl";
 
         KieSession ks = getSession( source );
@@ -1348,11 +1295,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void traitWithEquality() {
+    @TraitParameterizedTest
+    public void traitWithEquality(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitWithEquality.drl";
 
         KieSession ks = getSession( source );
@@ -1369,10 +1313,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void traitDeclared() {
+    @TraitParameterizedTest
+    public void traitDeclared(VirtualPropertyMode mode) {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
         List<Integer> untrueTraits = new ArrayList<Integer>();
@@ -1394,10 +1336,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertFalse( untrueTraits.contains( 1 ) );
     }
 
-
-
-    @Test(timeout=10000)
-    public void traitPojo() {
+    @TraitParameterizedTest
+    public void traitPojo(VirtualPropertyMode mode) {
 
         List<Integer> trueTraits = new ArrayList<Integer>();
         List<Integer> untrueTraits = new ArrayList<Integer>();
@@ -1419,15 +1359,11 @@ public class TraitTest extends CommonTestMethodBase {
         assertFalse( untrueTraits.contains( 1 ) );
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testIsAOperator() {
+    @TraitParameterizedTest
+    public void testIsAOperator(VirtualPropertyMode mode) {
         String source = "org/drools/compiler/factmodel/traits/testTraitIsA2.drl";
         KieSession ksession = getSession( source );
         TraitFactory.setMode( mode, ksession.getKieBase() );
-
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -1443,19 +1379,13 @@ public class TraitTest extends CommonTestMethodBase {
 
         List<AfterMatchFiredEvent> values = cap.getAllValues();
 
-        assertThat( values.get( 0 ).getMatch().getRule().getName(),
-                    is( "create student" ) );
-        assertThat( values.get( 1 ).getMatch().getRule().getName(),
-                    is( "print student" ) );
-        assertThat( values.get( 2 ).getMatch().getRule().getName(),
-                    is( "print school" ) );
-
+        assertThat( values.get( 0 ).getMatch().getRule().getName()).isEqualTo("create student" );
+        assertThat( values.get( 1 ).getMatch().getRule().getName()).isEqualTo("print student" );
+        assertThat( values.get( 2 ).getMatch().getRule().getName()).isEqualTo("print school" );
     }
 
-
-
-    @Test(timeout=10000)
-    public void testManyTraits() {
+    @TraitParameterizedTest
+    public void testManyTraits(VirtualPropertyMode mode) {
         String source = "" +
                         "import org.drools.compiler.Message;" +
                         "" +
@@ -1500,7 +1430,6 @@ public class TraitTest extends CommonTestMethodBase {
         KieSession ksession = getSessionFromString( source );
         TraitFactory.setMode( mode, ksession.getKieBase() );
 
-
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -1514,9 +1443,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void traitManyTimes() {
+    @TraitParameterizedTest
+    public void traitManyTimes(VirtualPropertyMode mode) {
 
         KieSession ksession = getSession( "org/drools/compiler/factmodel/traits/testTraitDonMultiple.drl" );
         TraitFactory.setMode( mode, ksession.getKieBase() );
@@ -1538,14 +1466,11 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 3 ) );
         assertTrue( list.contains( 4 ) );
 
-
     }
 
-
-
     // BZ #748752
-    @Test(timeout=10000)
-    public void traitsInBatchExecution() {
+    @TraitParameterizedTest
+    public void traitsInBatchExecution(VirtualPropertyMode mode) {
         String str = "package org.jboss.qa.brms.traits\n" +
                      "import org.drools.compiler.Person;\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -1598,7 +1523,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         StatelessKieSession ksession = kbase.newStatelessKieSession();
 
-
         ksession.setGlobal( "list", list );
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -1616,12 +1540,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 2 ) );
     }
 
-
-
-
-
-    @Test(timeout=10000)
-    public void testManyTraitsStateless() {
+    @TraitParameterizedTest
+    public void testManyTraitsStateless(VirtualPropertyMode mode) {
         String source = "" +
                         "import org.drools.compiler.Message;" +
                         "" +
@@ -1678,10 +1598,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testAliasing() {
+    @TraitParameterizedTest
+    public void testAliasing(VirtualPropertyMode mode) {
         String drl = "package org.drools.traits\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
                      "import org.drools.core.factmodel.traits.Alias;\n" +
@@ -1752,10 +1670,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTraitLogicalRemoval() {
+    @TraitParameterizedTest
+    public void testTraitLogicalRemoval(VirtualPropertyMode mode) {
         String drl = "package org.drools.trait.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -1794,7 +1710,6 @@ public class TraitTest extends CommonTestMethodBase {
                      "  don( $p, Worker.class, true );\n" +
                      "end";
 
-
         KieSession ksession = getSessionFromString(drl);
         TraitFactory.setMode( mode, ksession.getKieBase() );
 
@@ -1828,9 +1743,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void testTMSConsistencyWithNonTraitableBeans() {
+    @TraitParameterizedTest
+    public void testTMSConsistencyWithNonTraitableBeans(VirtualPropertyMode mode) {
 
         String s1 = "package org.drools.test;\n" +
                     "import org.drools.compiler.Person; \n" +
@@ -1856,7 +1770,6 @@ public class TraitTest extends CommonTestMethodBase {
                     "    don( $p, Student.class, true );\n" +
                     "end\n";
 
-
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
@@ -1879,11 +1792,6 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-
-
-
-
-
     public static class TBean {
         private String fld;
         public String getFld() { return fld; }
@@ -1891,10 +1799,8 @@ public class TraitTest extends CommonTestMethodBase {
         public TBean( String fld ) { this.fld = fld; }
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTraitsLegacyWrapperCoherence() {
+    @TraitParameterizedTest
+    public void testTraitsLegacyWrapperCoherence(VirtualPropertyMode mode) {
         String str = "package org.drools.trait.test; \n" +
                      "global java.util.List list; \n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -1948,7 +1854,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-
         Collection yOld = ksession.getObjects();
         assertEquals( 2, yOld.size() );
 
@@ -1968,10 +1873,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, coreOld._getTraitMap().size() );
     }
 
-
-
-    @Test(timeout=10000)
-    public void testHasTypes() {
+    @TraitParameterizedTest
+    public void testHasTypes(VirtualPropertyMode mode) {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -2002,7 +1905,6 @@ public class TraitTest extends CommonTestMethodBase {
 
             TraitableBean core = (TraitableBean) proxy.getObject();
 
-
             TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy(imp, trait);
             Thing thing2 = traitBuilder.getProxy(imp, Thing.class);
 
@@ -2011,20 +1913,14 @@ public class TraitTest extends CommonTestMethodBase {
 
             assertEquals(2, core.getTraits().size());
 
-
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( e.getMessage() );
         }
     }
 
-
-
-
-
-
-    @Test(timeout=10000)
-    public void testTraitRedundancy() {
+    @TraitParameterizedTest
+    public void testTraitRedundancy(VirtualPropertyMode mode) {
         String str = "package org.drools.compiler.factmodel.traits; \n" +
                      "global java.util.List list; \n" +
                      "" +
@@ -2079,7 +1975,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         ksession.insert( new StudentImpl( "skool", "john", 27 ) );
 
-
         assertEquals( 3, ksession.fireAllRules() );
 
         for ( Object o : ksession.getObjects() ) {
@@ -2088,9 +1983,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void traitSimpleTypes() {
+    @TraitParameterizedTest
+    public void traitSimpleTypes(VirtualPropertyMode mode) {
 
         String s1 = "package org.drools.factmodel.traits;\n" +
                     "\n" +
@@ -2112,8 +2006,6 @@ public class TraitTest extends CommonTestMethodBase {
                     "end\n" +
                     "" +
                     "rule \"Init\" when then insert( new ExamMark() ); end \n";
-
-
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2143,10 +2035,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTraitEncoding() {
+    @TraitParameterizedTest
+    public void testTraitEncoding(VirtualPropertyMode mode) {
         String s1 = "package org.drools.core.factmodel.traits;\n" +
                     "declare trait A end\n" +
                     "declare trait B extends A end\n" +
@@ -2204,7 +2094,6 @@ public class TraitTest extends CommonTestMethodBase {
         TraitRegistry tr = ((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().getTraitRegistry();
         System.out.println( tr.getHierarchy() );
 
-
         Entity ent = new Entity( "x" );
         KieSession ksession = kbase.newKieSession();
         ksession.insert( ent );
@@ -2220,18 +2109,15 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTraitActualTypeCodeWithEntities() {
+    @TraitParameterizedTest
+    public void testTraitActualTypeCodeWithEntities(VirtualPropertyMode mode) {
         testTraitActualTypeCodeWithEntities( "ent", mode );
     }
 
-    @Test(timeout=10000)
-    public void testTraitActualTypeCodeWithCoreMap() {
+    @TraitParameterizedTest
+    public void testTraitActualTypeCodeWithCoreMap(VirtualPropertyMode mode) {
         testTraitActualTypeCodeWithEntities( "kor", mode );
     }
-
 
     void testTraitActualTypeCodeWithEntities( String trig, VirtualPropertyMode mode ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -2279,9 +2165,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitModifyCore() {
+    @TraitParameterizedTest
+    public void testTraitModifyCore(VirtualPropertyMode mode) {
         String s1 = "package test; " +
                     "import org.drools.core.factmodel.traits.*; " +
                     "" +
@@ -2370,7 +2255,6 @@ public class TraitTest extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-
         int k = ksession.fireAllRules();
 
         assertEquals( Arrays.asList( "john", "john", "john", "john", "alan", "alan", "alan", "alan" ), list );
@@ -2378,11 +2262,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-    @Test
-    public void testTraitModifyCore2() {
+    @TraitParameterizedTest
+    public void testTraitModifyCore2(VirtualPropertyMode mode) {
         String s1 = "package test; " +
                     "import org.drools.core.factmodel.traits.*; " +
                     "" +
@@ -2477,8 +2358,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
-    public void testTraitModifyCore2a() {
+    @TraitParameterizedTest
+    public void testTraitModifyCore2a(VirtualPropertyMode mode) {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
                     "global java.util.List list; \n" +
@@ -2539,11 +2420,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testTraitModifyCore3() {
+    @TraitParameterizedTest
+    public void testTraitModifyCore3(VirtualPropertyMode mode) {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
                     "global java.util.List list; \n" +
@@ -2644,17 +2522,10 @@ public class TraitTest extends CommonTestMethodBase {
             assertTrue( list.contains( j ) );
         }
 
-
     }
 
-
-
-
-
-
-
-    @Test(timeout=10000)
-    public void testTraitModifyCoreWithPropertyReactivity() {
+    @TraitParameterizedTest
+    public void testTraitModifyCoreWithPropertyReactivity(VirtualPropertyMode mode) {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
                     "global java.util.List list;\n" +
@@ -2766,13 +2637,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-    public static interface IntfParent {}
-
-    @Test(timeout=10000)
-    public void testTraitEncodeExtendingNonTrait() {
+    public void testTraitEncodeExtendingNonTrait(VirtualPropertyMode mode) {
 
         String s1 = "package test;\n" +
                     "import org.drools.compiler.factmodel.traits.TraitTest.IntfParent;\n" +
@@ -2783,7 +2648,6 @@ public class TraitTest extends CommonTestMethodBase {
                     "";
 
         String s2 = "package test; declare trait SomeThing end \n";
-
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
@@ -2805,10 +2669,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void isAWithBackChaining() {
+    @TraitParameterizedTest
+    public void isAWithBackChaining(VirtualPropertyMode mode) {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitIsAWithBC.drl";
         KieSession ksession = getSession( source );
@@ -2826,11 +2688,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( "Italy" ) );
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testIsAEvaluatorOnClassification( ) {
+    @TraitParameterizedTest
+    public void testIsAEvaluatorOnClassification(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "\n" +
                         "global java.util.List list; \n" +
@@ -2886,10 +2745,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testShedWithTMS( ) {
+    @TraitParameterizedTest
+    public void testShedWithTMS(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "\n" +
                         "global java.util.List list; \n" +
@@ -2966,10 +2823,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTraitInitialization() {
+    @TraitParameterizedTest
+    public void testTraitInitialization(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3041,11 +2896,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 0.421 ) );
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testUnTraitedBean() {
+    @TraitParameterizedTest
+    public void testUnTraitedBean(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3082,7 +2934,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "end\n" +
                         "";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3092,10 +2943,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testIsAOptimization(  ) {
+    @TraitParameterizedTest
+    public void testIsAOptimization(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3140,7 +2989,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "end\n" +
                         "";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3152,10 +3000,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTypeRefractionOnInsert(  ) {
+    @TraitParameterizedTest
+    public void testTypeRefractionOnInsert(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3205,7 +3051,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "end\n" +
                         "";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3217,10 +3062,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTypeRefractionOnQuery(  ) {
+    @TraitParameterizedTest
+    public void testTypeRefractionOnQuery(VirtualPropertyMode mode) {
         String source = "declare BaseObject\n" +
                         "@Traitable\n" +
                         "id : String @key\n" +
@@ -3249,7 +3092,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "a : A()\n" +
                         "end";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3261,8 +3103,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
-    public void testTypeRefractionOnQuery2(  ) {
+    @TraitParameterizedTest
+    public void testTypeRefractionOnQuery2(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3308,7 +3150,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "end\n" +
                         "";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3322,8 +3163,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
-    public void testNodePartitioningByProxies(  ) {
+    @TraitParameterizedTest
+    public void testNodePartitioningByProxies(VirtualPropertyMode mode) {
         String source = "package t.x  " +
                         "import java.util.*;  " +
                         "import org.drools.core.factmodel.traits.Thing  " +
@@ -3371,7 +3212,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "end " +
                         "";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3381,7 +3221,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         System.out.println( list );
         assertEquals( Arrays.asList( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z' ), list );
-
 
         for ( Object o : ks.getObjects( new ObjectFilter() {
             @Override
@@ -3395,8 +3234,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
-    public void testNodePartitioningByProxiesAfterShed(  ) {
+    @TraitParameterizedTest
+    public void testNodePartitioningByProxiesAfterShed(VirtualPropertyMode mode) {
         String source = "package t.x  " +
                         "import java.util.*;  " +
                         "import org.drools.core.factmodel.traits.Thing  " +
@@ -3445,7 +3284,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "end " +
                         "";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3455,7 +3293,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         System.out.println( list );
         assertEquals( Arrays.asList( 'A', 'D', 'G', 'Z' ), list );
-
 
         for ( Object o : ks.getObjects( new ObjectFilter() {
             @Override
@@ -3469,10 +3306,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testTypeRefractionOnQueryWithIsA(  ) {
+    @TraitParameterizedTest
+    public void testTypeRefractionOnQueryWithIsA(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3510,7 +3345,6 @@ public class TraitTest extends CommonTestMethodBase {
                         "end\n" +
                         "";
 
-
         KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
@@ -3527,10 +3361,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testCoreUpdate4(  ) {
+    @TraitParameterizedTest
+    public void testCoreUpdate4(VirtualPropertyMode mode) {
         String source = "package t.x \n" +
                         "import java.util.*; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3587,10 +3419,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
     }
 
-
-
-    @Test(timeout=10000)
-    public void traitLogicalSupportAnddelete() {
+    @TraitParameterizedTest
+    public void traitLogicalSupportAnddelete(VirtualPropertyMode mode) {
         String drl = "package org.drools.trait.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -3651,7 +3481,6 @@ public class TraitTest extends CommonTestMethodBase {
                      "  delete( $p ); \n" +
                      "end\n" +
                      "";
-
 
         KieSession ksession = getSessionFromString(drl);
         TraitFactory.setMode( mode, ksession.getKieBase() );
@@ -3721,10 +3550,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, ksession.getObjects().size() );
     }
 
-
-
-    @Test(timeout=10000)
-    public void testShedThing() {
+    @TraitParameterizedTest
+    public void testShedThing(VirtualPropertyMode mode) {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
                     "global java.util.List list; \n" +
@@ -3792,9 +3619,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, ksession.getObjects().size() );
     }
 
-
-    @Test(timeout=10000)
-    public void testdeleteThings() {
+    @TraitParameterizedTest
+    public void testdeleteThings(VirtualPropertyMode mode) {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
                     "global java.util.List list; \n" +
@@ -3862,8 +3688,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 0, ksession.getObjects().size() );
     }
 
-    @Test(timeout=10000)
-    public void traitLogicalRemovalSimple( ) {
+    @TraitParameterizedTest
+    public void traitLogicalRemovalSimple(VirtualPropertyMode mode) {
         String drl = "package org.drools.compiler.trait.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -3898,7 +3724,6 @@ public class TraitTest extends CommonTestMethodBase {
                      " don( p, Scholar.class );\n" +
                      "end";
 
-
         KieSession ksession = getSessionFromString(drl);
         TraitFactory.setMode( mode, ksession.getKieBase() );
 
@@ -3919,8 +3744,6 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 3, ksession.getObjects().size() );
 
     }
-
-
 
     @Traitable
     public static class TraitableFoo {
@@ -3949,9 +3772,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitDonLegacyClassWithoutEmptyConstructor( ) {
+    @TraitParameterizedTest
+    public void testTraitDonLegacyClassWithoutEmptyConstructor(VirtualPropertyMode mode) {
         String drl = "package org.drools.compiler.trait.test;\n" +
                      "\n" +
                      "import org.drools.compiler.factmodel.traits.TraitTest.TraitableFoo;\n" +
@@ -3969,7 +3791,6 @@ public class TraitTest extends CommonTestMethodBase {
                      "  Bar b = don( $f, Bar.class );\n" +
                      "end";
 
-
         KieSession ksession = getSessionFromString(drl);
         TraitFactory.setMode( mode, ksession.getKieBase() );
         ksession.addEventListener( new DebugAgendaEventListener(  ) );
@@ -3984,10 +3805,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 2, ksession.getObjects().size() );
     }
 
-
-
-    @Test(timeout=10000)
-    public void testdeleteCoreObjectChained(  ) {
+    @TraitParameterizedTest
+    public void testdeleteCoreObjectChained(VirtualPropertyMode mode) {
         String source = "package org.drools.test;\n" +
                         "import java.util.List; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -4053,9 +3872,8 @@ public class TraitTest extends CommonTestMethodBase {
         ks.dispose();
     }
 
-
-    @Test(timeout=10000)
-    public void testUpdateLegacyClass(  ) {
+    @TraitParameterizedTest
+    public void testUpdateLegacyClass(VirtualPropertyMode mode) {
         String source = "package org.drools.text;\n" +
                         "\n" +
                         "global java.util.List list;\n" +
@@ -4113,10 +3931,8 @@ public class TraitTest extends CommonTestMethodBase {
         ks.dispose();
     }
 
-
-
-    @Test(timeout=10000)
-    public void testSoftPropertyClash() {
+    @TraitParameterizedTest
+    public void testSoftPropertyClash(VirtualPropertyMode mode) {
         String source = "package org.drools.text;\n" +
                         "\n" +
                         "global java.util.List list;\n" +
@@ -4200,9 +4016,8 @@ public class TraitTest extends CommonTestMethodBase {
         ks.dispose();
     }
 
-
-    @Test
-    public void testMultipleModifications() {
+    @TraitParameterizedTest
+    public void testMultipleModifications(VirtualPropertyMode mode) {
         String drl = "package org.drools.traits.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -4315,8 +4130,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
-    public void testPropagation() {
+    @TraitParameterizedTest
+    public void testPropagation(VirtualPropertyMode mode) {
         String drl = "package org.drools.test;\n" +
                      "import org.drools.core.factmodel.traits.*; \n" +
                      "\n" +
@@ -4405,10 +4220,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testParentBlockers() {
+    @TraitParameterizedTest
+    public void testParentBlockers(VirtualPropertyMode mode) {
         String drl = "package org.drools.test;\n" +
                      "import org.drools.core.factmodel.traits.*; \n" +
                      "\n" +
@@ -4424,7 +4237,6 @@ public class TraitTest extends CommonTestMethodBase {
                      "rule Go when String( this == \"go\" ) $x : X() then don( $x, C.class); end \n" +
                      "rule Go2 when String( this == \"go2\" ) $x : C() then System.out.println( 1000 ); end \n" +
                      "";
-
 
         KieSession ks = getSessionFromString( drl );
         TraitFactory.setMode( mode, ks.getKieBase() );
@@ -4446,11 +4258,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testTraitLogicalTMS() {
+    @TraitParameterizedTest
+    public void testTraitLogicalTMS(VirtualPropertyMode mode) {
         String drl = "package org.drools.test;\n" +
                      "import org.drools.core.factmodel.traits.*; \n" +
                      "\n" +
@@ -4498,9 +4307,8 @@ public class TraitTest extends CommonTestMethodBase {
         ks.dispose();
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitNoType() {
+    @TraitParameterizedTest
+    public void testTraitNoType(VirtualPropertyMode mode) {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
@@ -4554,11 +4362,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue(list.contains("correct2"));
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testTraitdeleteOrder() {
+    @TraitParameterizedTest
+    public void testTraitdeleteOrder(VirtualPropertyMode mode) {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
@@ -4606,9 +4411,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( "B", "C", "A" ), list );
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitWithManySoftFields() {
+    @TraitParameterizedTest
+    public void testTraitWithManySoftFields(VirtualPropertyMode mode) {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
@@ -4642,8 +4446,6 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 2, ksession.getObjects().size() );
 
     }
-
-
 
     public static class CountingWorkingMemoryEventListener implements RuleRuntimeEventListener {
 
@@ -4690,9 +4492,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-    @Test(timeout=10000)
-    public void testDonManyTraitsAtOnce() {
+    @TraitParameterizedTest
+    public void testDonManyTraitsAtOnce(VirtualPropertyMode mode) {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
@@ -4810,13 +4611,12 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 0, cwm.getUpdates() );
         cwm.reset();
 
-
         assertEquals( 4, list.size() );
         assertTrue( list.containsAll( Arrays.asList( 0, 1, 2, 3 ) ) );
     }
 
-    @Test
-    public void testDonManyTraitsAtOnce2() {
+    @TraitParameterizedTest
+    public void testDonManyTraitsAtOnce2(VirtualPropertyMode mode) {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
@@ -4866,9 +4666,6 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
     @Traitable
     public static class Item {
         private String id;
@@ -4902,9 +4699,9 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
-    @Ignore("Triple Store is not thread safe and needs to be rewritten")
-    public void testMultithreadingTraits() throws InterruptedException {
+    @TraitParameterizedTest
+    @Disabled("Triple Store is not thread safe and needs to be rewritten")
+    public void testMultithreadingTraits(VirtualPropertyMode mode) throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.TraitTest.Item;\n" +
                           "declare Item end\n" +
@@ -4955,9 +4752,8 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-
-    @Test(timeout=10000)
-    public void testShedOneLastTrait() throws InterruptedException {
+    @TraitParameterizedTest
+    public void testShedOneLastTrait(VirtualPropertyMode mode) throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
                           "global java.util.List list;\n" +
@@ -5010,10 +4806,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "org.drools.core.factmodel.traits.Thing.test.Core_Proxy" ), list );
     }
 
-
-
-    @Test(timeout=10000)
-    public void testShedThingCompletelyThenDonAgain() throws InterruptedException {
+    @TraitParameterizedTest
+    public void testShedThingCompletelyThenDonAgain(VirtualPropertyMode mode) throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
                           "global java.util.List list;\n" +
@@ -5102,9 +4896,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void testTraitImplicitInsertionExceptionOnNonTraitable() throws InterruptedException {
+    @TraitParameterizedTest
+    public void testTraitImplicitInsertionExceptionOnNonTraitable(VirtualPropertyMode mode) throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
                           "global java.util.List list;\n" +
@@ -5137,15 +4930,14 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
     @Trait
     public static interface SomeTrait<K> extends Thing<K> {
         public String getFoo();
         public void setFoo( String foo );
     }
 
-    @Test(timeout=10000)
-    public void testTraitLegacyTraitableWithLegacyTrait() {
+    @TraitParameterizedTest
+    public void testTraitLegacyTraitableWithLegacyTrait(VirtualPropertyMode mode) {
         final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
                           "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
@@ -5169,8 +4961,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 2, knowledgeSession.getObjects().size() );
     }
 
-    @Test(timeout=10000)
-    public void testIsALegacyTrait() {
+    @TraitParameterizedTest
+    public void testIsALegacyTrait(VirtualPropertyMode mode) {
         final String s1 = "package org.drools.compiler.factmodel.traits;\n" +
                           "import " + TraitTest.class.getName() + ".SomeTrait; \n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
@@ -5205,9 +4997,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1 ), list );
     }
 
-    @Category(ReviseTraitTestWithPRAlwaysCategory.class)
-    @Test(timeout=10000)
-    public void testClassLiteralsWithOr() {
+    @TraitParameterizedTest
+    public void testClassLiteralsWithOr(VirtualPropertyMode mode) {
 
         String drl = "package org.drools.test; " +
                      "import org.drools.core.factmodel.traits.*; " +
@@ -5250,7 +5041,6 @@ public class TraitTest extends CommonTestMethodBase {
 
                      "";
 
-
         KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
         TraitFactory.setMode( mode, kbase );
         ArrayList list = new ArrayList();
@@ -5264,10 +5054,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-    @Test(timeout=10000)
-    public void testIsASwappedArg() {
+    @TraitParameterizedTest
+    public void testIsASwappedArg(VirtualPropertyMode mode) {
 
         String drl = "package org.drools.test; " +
                      "import org.drools.core.factmodel.traits.*; " +
@@ -5310,7 +5098,6 @@ public class TraitTest extends CommonTestMethodBase {
 
                      "";
 
-
         KieBase kbase = loadKnowledgeBaseFromString( drl );
         TraitFactory.setMode( mode, kbase );
         ArrayList list = new ArrayList();
@@ -5326,9 +5113,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test(timeout=10000)
-    public void testHierarchyEncodeOnPackageMerge() {
+    @TraitParameterizedTest
+    public void testHierarchyEncodeOnPackageMerge(VirtualPropertyMode mode) {
 
         String drl0 = "package org.drools.test; " +
                       "declare trait X end ";
@@ -5368,11 +5154,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-
-
-    @Test(timeout=10000)
-    public void testDonThenReinsert() throws InterruptedException {
+    @TraitParameterizedTest
+    public void testDonThenReinsert(VirtualPropertyMode mode) throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +
                           "import org.drools.compiler.factmodel.traits.TraitTest.TBean;\n" +
@@ -5432,8 +5215,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
-    public void testCastOnTheFly() throws InterruptedException {
+    @TraitParameterizedTest
+    public void testCastOnTheFly(VirtualPropertyMode mode) throws InterruptedException {
         final String s1 = "package test; " +
 
                           "import org.drools.core.factmodel.traits.*; " +
@@ -5485,10 +5268,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 42, 43 ), list );
     }
 
-
-
-    @Test
-    public void testDonModify() {
+    @TraitParameterizedTest
+    public void testDonModify(VirtualPropertyMode mode) {
         String drl =
                 "import org.drools.core.factmodel.traits.Entity;\n" +
                 "import org.drools.compiler.factmodel.traits.IPerson;\n" +
@@ -5532,8 +5313,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 3, kSession.fireAllRules() );
     }
 
-    @Test
-    public void testAlphaNodeSharing() {
+    @TraitParameterizedTest
+    public void testAlphaNodeSharing(VirtualPropertyMode mode) {
         String drl =
                 "package test; " +
                 "import " + Entity.class.getName() + " " +
@@ -5571,8 +5352,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, otn.getObjectSinkPropagator().getSinks().length );
     }
 
-    @Test
-    public void testPartitionWithSiblingsOnDelete() {
+    @TraitParameterizedTest
+    public void testPartitionWithSiblingsOnDelete(VirtualPropertyMode mode) {
         String drl =
                 "import " + Entity.class.getName() + ";" +
                 "global java.util.List list; " +
@@ -5623,9 +5404,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 'A', 'B', 'C' ), list );
     }
 
-
-    @Test
-    public void testTupleIntegrityOnModification() {
+    @TraitParameterizedTest
+    public void testTupleIntegrityOnModification(VirtualPropertyMode mode) {
         String drl = "package test " +
                      "import " + Entity.class.getName() + ";" +
                      "global java.util.List list; " +
@@ -5681,8 +5461,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 0, 42 ), list );
     }
 
-    @Test
-    public void testShedVacancy() {
+    @TraitParameterizedTest
+    public void testShedVacancy(VirtualPropertyMode mode) {
         String drl = "package org.drools.test " +
                      "import " + Entity.class.getName() + ";" +
                      "global java.util.List list; " +
@@ -5751,7 +5531,6 @@ public class TraitTest extends CommonTestMethodBase {
         }
         assertEquals( 3, counter );
 
-
         ksession.insert( "go" );
         ksession.fireAllRules();
 
@@ -5774,9 +5553,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 2, counter2 );
     }
 
-
-    @Test
-    public void testExternalUpdateWithProxyRefreshInEqualityMode() {
+    @TraitParameterizedTest
+    public void testExternalUpdateWithProxyRefreshInEqualityMode(VirtualPropertyMode mode) {
         String drl = "package org.drools.trait.test; " +
                      "import " + ExtEntity.class.getCanonicalName() + "; " +
                      "global " + List.class.getName() + " list; " +
@@ -5815,9 +5593,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( "x1", 42, "x1", 42 ), list );
     }
 
-
-    @Test(timeout=10000)
-    public void testIsAInstanceOf() {
+    @TraitParameterizedTest
+    public void testIsAInstanceOf(VirtualPropertyMode mode) {
 
         String drl = "package org.drools.test; " +
                      "import " + StudentImpl.class.getName() + "; " +
@@ -5848,9 +5625,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1, 2 ), list );
     }
 
-
-    @Test(timeout=10000)
-    public void testIsAInstanceOfNonTraitable() {
+    @TraitParameterizedTest
+    public void testIsAInstanceOfNonTraitable(VirtualPropertyMode mode) {
 
         String drl = "package org.drools.test; " +
                      "global java.util.List list; " +
@@ -5873,8 +5649,6 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, knowledgeSession.fireAllRules() );
         assertEquals( Arrays.asList( 1 ), list );
     }
-
-
 
     @Traitable
     @PropertyReactive
@@ -5911,8 +5685,8 @@ public class TraitTest extends CommonTestMethodBase {
         return otns;
     }
 
-    @Test(timeout=10000)
-    public void testSerializeKieBaseWithTraits() {
+    @TraitParameterizedTest
+    public void testSerializeKieBaseWithTraits(VirtualPropertyMode mode) {
         // DRL-1123
         String drl = "package org.drools.test; " +
                      "import " + StudentImpl.class.getName() + "; " +
@@ -5950,8 +5724,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1, 2 ), list );
     }
 
-    @Test(timeout=10000)
-    public void testMixin2() {
+    @TraitParameterizedTest
+    public void testMixin2(VirtualPropertyMode mode) {
         String drl =
                  "package org.drools.test.traits\n" +
                  "import " + Scholar.class.getCanonicalName() + ";\n" +
@@ -6055,13 +5829,13 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
-    public void testMixinWithConflictsUsingDeclarationOrder() {
-        checkMixinResolutionUsesOrder("Y,Z", "Y");
-        checkMixinResolutionUsesOrder("Z,Y", "Z");
+    @TraitParameterizedTest
+    public void testMixinWithConflictsUsingDeclarationOrder(VirtualPropertyMode mode) {
+        checkMixinResolutionUsesOrder(mode,"Y,Z", "Y");
+        checkMixinResolutionUsesOrder(mode,"Z,Y", "Z");
     }
 
-    private void checkMixinResolutionUsesOrder(String interfaces, String first) {
+    private void checkMixinResolutionUsesOrder(VirtualPropertyMode mode, String interfaces, String first) {
         String drl =
                 "package org.drools.test.traits\n" +
                 "import " + Y.class.getCanonicalName() + ";\n" +
@@ -6105,8 +5879,8 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( first, list.get(2) );
     }
 
-    @Test(timeout=10000)
-    public void testMixinWithConflictsThrowingError() {
+    @TraitParameterizedTest
+    public void testMixinWithConflictsThrowingError(VirtualPropertyMode mode) {
         String drl =
                 "package org.drools.test.traits\n" +
                 "import " + Y.class.getCanonicalName() + ";\n" +

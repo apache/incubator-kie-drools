@@ -15,12 +15,8 @@
 
 package org.drools.compiler.compiler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.StringReader;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
@@ -28,13 +24,17 @@ import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DrlParserTest {
 
@@ -47,7 +47,7 @@ public class DrlParserTest {
         
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, new StringReader(dsl));
-        Assertions.assertThat("rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end")
+        assertThat("rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end")
                   .isEqualToIgnoringWhitespace(result);
     }
     
@@ -71,7 +71,7 @@ public class DrlParserTest {
 
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         String result = parser.getExpandedDRL( drl, resolver);
-        Assertions.assertThat("rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end")
+        assertThat("rule 'foo' " + NL + " when " + NL + " Something() " + NL + " then " + NL + " another(); " + NL + "end")
                   .isEqualToIgnoringWhitespace(result);
     }
     
@@ -234,9 +234,7 @@ public class DrlParserTest {
 
     private void assertHasNoErrors(KnowledgeBuilder kbuilder) {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( "Expected no build errors, but got: " + errors.toString(),
-                      0,
-                      errors.size() );
+        assertEquals(0, errors.size(),  "Expected no build errors, but got: " + errors.toString());
     }
 
 }

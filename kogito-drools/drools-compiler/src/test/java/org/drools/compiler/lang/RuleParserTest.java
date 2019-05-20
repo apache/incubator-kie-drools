@@ -16,8 +16,6 @@
 
 package org.drools.compiler.lang;
 
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -29,7 +27,6 @@ import java.util.regex.Pattern;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
@@ -62,28 +59,27 @@ import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class RuleParserTest extends TestCase {
-
+public class RuleParserTest {
 
     private DRLParser parser;
 
-    @Before
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
         // initializes pluggable operators
         new EvaluatorRegistry();
-    }
-
-    @After
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     @Test
@@ -139,8 +135,7 @@ public class RuleParserTest extends TestCase {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertEquals( "foo",
                       pkg.getName() );
         assertEquals( 2,
@@ -171,8 +166,7 @@ public class RuleParserTest extends TestCase {
                               "import baz.Baz";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertEquals( "foo",
                       pkg.getName() );
         assertEquals( 2,
@@ -221,8 +215,7 @@ public class RuleParserTest extends TestCase {
                               "global Integer aNumber";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertEquals( "foo.bar.baz",
                       pkg.getName() );
         assertEquals( 1,
@@ -322,8 +315,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
 
-        assertFalse( parser.getErrorMessages().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( "Invalid customer id",
@@ -354,8 +346,7 @@ public class RuleParserTest extends TestCase {
                             "end \n";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( "XYZ",
@@ -379,8 +370,7 @@ public class RuleParserTest extends TestCase {
                         "end \n";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( "XYZ",
@@ -405,8 +395,7 @@ public class RuleParserTest extends TestCase {
                         "end \n";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( "XYZ",
@@ -444,8 +433,7 @@ public class RuleParserTest extends TestCase {
                         "end\n";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = pkg.getRules().get( 0 );
         AndDescr lhs = rule.getLhs();
@@ -568,8 +556,7 @@ public class RuleParserTest extends TestCase {
     public void testKeywordCollisions() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "eol_funny_business.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertEquals( 1,
                       pkg.getRules().size() );
@@ -639,8 +626,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "almost_empty_rule.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertNotNull( pkg );
 
         RuleDescr rule = pkg.getRules().get( 0 );
@@ -657,8 +643,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "quoted_string_name_rule.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                         parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertNotNull( rule );
 
         assertEquals( "quoted string name",
@@ -673,8 +658,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "no-loop.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertNotNull( rule );
 
         assertEquals( "rule1",
@@ -691,8 +675,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "autofocus.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -710,8 +693,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "ruleflowgroup.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -729,8 +711,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "declaration-in-consequence.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -756,8 +737,7 @@ public class RuleParserTest extends TestCase {
         final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
         RuleDescr rule = (RuleDescr) parse( "rule",
                                             text );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -773,8 +753,7 @@ public class RuleParserTest extends TestCase {
         final String text = "rule X when Person( location==\"atlanta\\\"\") then end\n";
         RuleDescr rule = (RuleDescr) parse( "rule",
                                                 text );
-        assertFalse( parser.getErrors().toString(),
-                         parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -790,8 +769,7 @@ public class RuleParserTest extends TestCase {
         final String text = "rule X when Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" ) then end\n";
         RuleDescr rule = (RuleDescr) parse( "rule",
                                              text );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -807,8 +785,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                               "literal_bool_and_negative.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                         parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -904,8 +881,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "test_EmptyPattern.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertEquals( 1,
                       pkg.getRules().size() );
@@ -927,8 +903,7 @@ public class RuleParserTest extends TestCase {
     public void testSimpleMethodCallWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_SimpleMethodCallWithFrom.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr method = (MVELExprDescr) from.getDataSource();
@@ -941,8 +916,7 @@ public class RuleParserTest extends TestCase {
     public void testSimpleFunctionCallWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_SimpleFunctionCallWithFrom.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr func = (MVELExprDescr) from.getDataSource();
@@ -955,8 +929,7 @@ public class RuleParserTest extends TestCase {
     public void testSimpleAccessorWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_SimpleAccessorWithFrom.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
@@ -969,8 +942,7 @@ public class RuleParserTest extends TestCase {
     public void testSimpleAccessorAndArgWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_SimpleAccessorArgWithFrom.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
@@ -983,8 +955,7 @@ public class RuleParserTest extends TestCase {
     public void testComplexChainedAcessor() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_ComplexChainedCallWithFrom.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
@@ -998,8 +969,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "from.drl" );
 
-        assertFalse( parser.getErrorMessages().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertNotNull( rule );
 
         assertEquals( "using_from",
@@ -1013,8 +983,7 @@ public class RuleParserTest extends TestCase {
     public void testSimpleRule() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "simple_rule.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -1080,8 +1049,7 @@ public class RuleParserTest extends TestCase {
     public void testRestrictionsMultiple() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "restrictions_test.drl" );
-        assertFalse( parser.getErrors().toString(),
-                         parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -1182,8 +1150,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "test_CommentLineNumbersInConsequence.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         final String rhs = (String) ((RuleDescr) pkg.getRules().get( 0 )).getConsequence();
         String expected = "\\s*//woot$\\s*first$\\s*$\\s*//$\\s*$\\s*/\\* lala$\\s*$\\s*\\*/$\\s*second$\\s*";
@@ -1196,8 +1163,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "lhs_semicolon_delim.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
 
@@ -1260,8 +1226,7 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_not.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertNotNull( rule );
         assertEquals( "simple_rule",
@@ -1293,8 +1258,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "not_exist_with_brackets.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
@@ -1445,8 +1409,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.dslr" ),
                                                this.getReader( "complex.dsl" ) );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( 1,
@@ -1465,8 +1428,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.dslr" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( 2,
@@ -1499,8 +1461,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.dslr" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( 1,
@@ -2110,8 +2071,7 @@ public class RuleParserTest extends TestCase {
     public void testAttributes2() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "rule_attributes2.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         List<RuleDescr> rules = pkg.getRules();
         assertEquals( 3,
@@ -2175,8 +2135,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         assertEquals( "Test",
@@ -2279,8 +2238,7 @@ public class RuleParserTest extends TestCase {
     public void testCalendars2() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_calendars_attribute2.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         assertEquals( "simple_rule",
                       rule.getName() );
         assertEqualsIgnoreWhitespace( "bar();",
@@ -2900,8 +2858,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "semicolon.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertEquals( "org.drools.compiler",
                       pkg.getName() );
@@ -3409,8 +3366,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "pluggable_operators.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         assertEquals( 1,
                       pkg.getRules().size() );
@@ -3477,8 +3433,7 @@ public class RuleParserTest extends TestCase {
     public void testRuleMetadata() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "Rule_with_Metadata.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         // @fooAttribute(barValue)
         // @fooAtt2(barVal2)
@@ -3498,8 +3453,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "Rule_with_Extends.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = pkg.getRules().get( 0 );
         assertTrue( rule.getParentName() != null );
@@ -3523,8 +3477,7 @@ public class RuleParserTest extends TestCase {
     public void testTypeDeclarationWithFields() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "declare_type_with_fields.drl" );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         List<TypeDeclarationDescr> td = pkg.getTypeDeclarations();
         assertEquals( 3,
@@ -3597,8 +3550,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "Rule_with_nested_LHS.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = pkg.getRules().get( 0 );
         assertEquals( "test",
@@ -3654,8 +3606,7 @@ public class RuleParserTest extends TestCase {
 
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                      text );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = pkg.getRules().get( 0 );
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
@@ -3678,8 +3629,7 @@ public class RuleParserTest extends TestCase {
 
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                      text );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = pkg.getRules().get( 0 );
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
@@ -3702,8 +3652,7 @@ public class RuleParserTest extends TestCase {
 
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  text );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         RuleDescr rule = pkg.getRules().get( 0 );
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
@@ -3734,8 +3683,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         assertEquals( "Test",
@@ -3762,8 +3710,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         assertEquals( "Test",
@@ -3786,8 +3733,7 @@ public class RuleParserTest extends TestCase {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "type_with_meta.drl" );
 
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
 
@@ -3869,8 +3815,7 @@ public class RuleParserTest extends TestCase {
         final String text = "rule X when Cheese() from $cheesery ?person( \"Mark\", 42; ) then end";
         RuleDescr rule = (RuleDescr) parse( "rule",
                                              text );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Cheese",
@@ -3893,8 +3838,7 @@ public class RuleParserTest extends TestCase {
         final String text = "rule X when Cheese() from (isFull ? $cheesery : $market) ?person( \"Mark\", 42; ) then end";
         RuleDescr rule = (RuleDescr) parse( "rule",
                                              text );
-        assertFalse( parser.getErrors().toString(),
-                     parser.hasErrors() );
+        assertFalse(parser.hasErrors(), parser.getErrors().toString());
 
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertEquals( "Cheese",
@@ -4301,7 +4245,7 @@ public class RuleParserTest extends TestCase {
 
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 
     private Reader getReader( final String name ) throws Exception {

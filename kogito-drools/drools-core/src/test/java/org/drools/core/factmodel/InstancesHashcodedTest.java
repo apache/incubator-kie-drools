@@ -26,7 +26,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
 import org.drools.reflective.classloader.ProjectClassLoader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @version $Id$

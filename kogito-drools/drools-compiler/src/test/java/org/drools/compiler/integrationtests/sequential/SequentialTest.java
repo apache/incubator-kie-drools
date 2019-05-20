@@ -15,10 +15,6 @@
 
 package org.drools.compiler.integrationtests.sequential;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +30,8 @@ import org.drools.compiler.phreak.A;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.IoUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -62,11 +58,15 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class SequentialTest extends CommonTestMethodBase {
 
     private KieBaseConfiguration kconf;
 
-    @Before
+    @BeforeEach
     public void setup() {
         kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
@@ -521,7 +521,7 @@ public class SequentialTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout = 10000L)
+    @Test
     public void testSequentialWithNoLoop() throws Exception {
         // BZ-1228098
         String str =

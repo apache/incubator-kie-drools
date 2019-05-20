@@ -15,23 +15,20 @@
 
 package org.drools.compiler;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.integrationtests.SerializationHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 public class NestedAccessorsTest extends CommonTestMethodBase {
 
@@ -202,8 +199,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         verify(ael, times(2)).afterMatchFired(captor.capture());
 
         final List<org.kie.api.event.rule.AfterMatchFiredEvent> values = captor.getAllValues();
-        assertThat(values.get(0).getMatch().getObjects().get(0), is(c1));
-        assertThat(values.get(1).getMatch().getObjects().get(0), is(c2));
+        assertThat(values.get(0).getMatch().getObjects()).first().isEqualTo(c1);
+        assertThat(values.get(1).getMatch().getObjects()).first().isEqualTo(c2);
 
         ksession.dispose();
     }

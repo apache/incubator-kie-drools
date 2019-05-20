@@ -16,8 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -33,13 +31,15 @@ import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.time.TimerServiceFactory;
+import org.junit.jupiter.api.Test;
 import org.kie.services.time.Job;
 import org.kie.services.time.JobContext;
 import org.kie.services.time.JobHandle;
 import org.kie.services.time.TimerService;
-import org.drools.core.time.TimerServiceFactory;
 import org.kie.services.time.Trigger;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JDKTimerServiceTest {
     

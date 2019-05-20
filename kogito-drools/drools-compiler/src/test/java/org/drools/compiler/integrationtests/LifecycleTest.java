@@ -15,16 +15,12 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.StockTick;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -37,6 +33,10 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Tests updating events using API.
  */
@@ -44,7 +44,7 @@ public class LifecycleTest {
 
     private KieSession kieSession;
     
-    @Before
+    @BeforeEach
     public void initSession() {
         String drlString = "package org.jboss.brms\n" + 
                 "import org.drools.compiler.StockTick\n" + 
@@ -81,7 +81,7 @@ public class LifecycleTest {
                 .getDefaultReleaseId()).newKieSession();        
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.kieSession != null) {
             this.kieSession.dispose();

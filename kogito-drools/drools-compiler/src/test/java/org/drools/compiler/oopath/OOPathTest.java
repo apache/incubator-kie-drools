@@ -15,9 +15,6 @@
 
 package org.drools.compiler.oopath;
 
-import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,7 +22,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.oopath.model.Adult;
 import org.drools.compiler.oopath.model.Child;
 import org.drools.compiler.oopath.model.Group;
@@ -40,7 +36,7 @@ import org.drools.compiler.oopath.model.Toy;
 import org.drools.compiler.oopath.model.Woman;
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
@@ -52,6 +48,12 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OOPathTest {
 
@@ -127,7 +129,7 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("ball");
+        assertThat(list).containsExactlyInAnyOrder("ball");
     }
 
     @Test
@@ -191,7 +193,7 @@ public class OOPathTest {
         ksession.insert(key);
 
         ksession.fireAllRules();
-        Assertions.assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
+        assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
     }
 
     @Test
@@ -230,7 +232,7 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
+        assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
     }
 
     @Test
@@ -260,7 +262,7 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        Assertions.assertThat(list).hasSize(2);
+        assertThat(list).hasSize(2);
     }
     
     @Test   

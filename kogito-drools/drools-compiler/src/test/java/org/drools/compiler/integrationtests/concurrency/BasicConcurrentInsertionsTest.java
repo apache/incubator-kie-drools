@@ -18,13 +18,13 @@ package org.drools.compiler.integrationtests.concurrency;
 
 import java.util.concurrent.Callable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsTest {
 
-    @Test(timeout = 10000)
+    @Test
     public void testConcurrentInsertionsFewObjectsManyThreads() throws InterruptedException {
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
                 "\n" +
@@ -36,7 +36,7 @@ public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsT
         testConcurrentInsertions(drl, 1, 1000, false, false);
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testConcurrentInsertionsManyObjectsFewThreads() throws InterruptedException {
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
                 "\n" +
@@ -48,7 +48,7 @@ public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsT
         testConcurrentInsertions(drl, 1000, 4, false, false);
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testConcurrentInsertionsNewSessionEachThreadUpdateFacts() throws InterruptedException {
         // This tests also ObjectTypeNode concurrency
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
@@ -70,7 +70,7 @@ public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsT
         testConcurrentInsertions(drl, 10, 1000, true, true);
     }
 
-    @Test(timeout = 10000)
+    @Test
     public void testConcurrentInsertionsNewSessionEachThread() throws InterruptedException {
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
                 " query existsBeanSeed5More() \n" +

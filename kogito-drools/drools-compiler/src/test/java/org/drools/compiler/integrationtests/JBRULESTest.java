@@ -16,14 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,8 +33,7 @@ import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.Primitives;
 import org.drools.core.rule.MapBackedClassLoader;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.ResourceType;
@@ -56,6 +47,12 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 import org.mvel2.MVEL;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class JBRULESTest extends CommonTestMethodBase {
 
@@ -213,13 +210,13 @@ public class JBRULESTest extends CommonTestMethodBase {
         verify(ael, times(2)).afterMatchFired(captor.capture());
         final List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat(aafe.get(0).getMatch().getRule().getName(), is("kickOff"));
-        Assert.assertThat(aafe.get(1).getMatch().getRule().getName(), is("r1"));
+        assertThat(aafe.get(0).getMatch().getRule().getName()).isEqualTo("kickOff");
+        assertThat(aafe.get(1).getMatch().getRule().getName()).isEqualTo("r1");
 
         final Object value = aafe.get(1).getMatch().getDeclarationValue("$t");
         final String name = (String) MVEL.eval("$t.name", Collections.singletonMap("$t", value));
 
-        Assert.assertThat(name, is("one"));
+        assertThat(name).isEqualTo("one");
     }
 
     @Test

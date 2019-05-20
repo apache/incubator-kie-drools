@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests.marshalling;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -47,14 +45,16 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.EntryPointId;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.marshalling.MarshallerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class FactHandleMarshallingTest {
 
@@ -129,7 +129,7 @@ public class FactHandleMarshallingTest {
             inContext.close();
         }
 
-        assertTrue( "Serialized FactHandle not the same as the original.", compareInstances(factHandle, newFactHandle) );
+        assertTrue(compareInstances(factHandle, newFactHandle),  "Serialized FactHandle not the same as the original.");
     }
 
     private boolean compareInstances(Object objA, Object objB) { 
@@ -161,7 +161,7 @@ public class FactHandleMarshallingTest {
             }
             catch( Exception e ) { 
                 same = false;
-                Assert.fail(e.getClass().getSimpleName() + ":" + e.getMessage() );
+                fail(e.getClass().getSimpleName() + ":" + e.getMessage() );
             }
         }
         else if( objA != objB ) { 

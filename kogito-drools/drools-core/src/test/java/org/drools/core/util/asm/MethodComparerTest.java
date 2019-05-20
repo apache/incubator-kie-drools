@@ -16,12 +16,12 @@
 
 package org.drools.core.util.asm;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mvel2.asm.ClassReader;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MethodComparerTest {
 
