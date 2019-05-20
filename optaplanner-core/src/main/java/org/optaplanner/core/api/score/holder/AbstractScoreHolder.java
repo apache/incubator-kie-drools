@@ -97,7 +97,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
         if (constraintMatchEnabled) {
             String constraintPackage = rule.getPackageName();
             String constraintName = rule.getName();
-            String constraintId = constraintPackage + "/" + constraintName;
+            String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
             constraintMatchTotalMap.put(constraintId,
                     new ConstraintMatchTotal(constraintPackage, constraintName, constraintWeight, zeroScore));
         }
@@ -132,7 +132,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>>
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
-        String constraintId = constraintPackage + "/" + constraintName;
+        String constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         return constraintMatchTotalMap.computeIfAbsent(constraintId,
                 k -> new ConstraintMatchTotal(constraintPackage, constraintName, null, zeroScore));
     }
