@@ -24,6 +24,9 @@ import org.drools.compiler.kie.builder.impl.InternalKieModuleProvider;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 
+import static org.drools.modelcompiler.CanonicalKieModule.create;
+import static org.drools.modelcompiler.CanonicalKieModule.createFromClasspath;
+
 public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBasedKieModuleProvider implements InternalKieModuleProvider {
 
     @Override
@@ -38,10 +41,10 @@ public class CanonicalKieModuleProvider extends InternalKieModuleProvider.DrlBas
 
     @Override
     public InternalKieModule createClasspathKieModule() {
-        return CanonicalKieModule.createFromClasspath();
+        return createFromClasspath();
     }
 
     private InternalKieModule createCanonicalKieModule( InternalKieModule internalKieModule ) {
-        return internalKieModule.hasResource( CanonicalKieModule.MODEL_FILE ) ? new CanonicalKieModule( internalKieModule ) : internalKieModule;
+        return create(internalKieModule);
     }
 }

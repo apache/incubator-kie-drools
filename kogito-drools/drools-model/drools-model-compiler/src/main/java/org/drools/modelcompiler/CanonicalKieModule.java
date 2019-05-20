@@ -134,6 +134,10 @@ public class CanonicalKieModule implements InternalKieModule {
         return kmodel == null ? null : new CanonicalKieModule( new CanonicalInternalKieModule(kmodel.getReleaseId(), kmodel.getKieModuleModel()) );
     }
 
+    public static CanonicalKieModule create(InternalKieModule kieModule) {
+        return kieModule instanceof CanonicalKieModule ? (( CanonicalKieModule ) kieModule) : createFromClassLoader(kieModule.getModuleClassLoader(), kieModule);
+    }
+
     public static CanonicalKieModule createFromClassLoader(ClassLoader classLoader, InternalKieModule kieModule) {
         CanonicalKieModule canonicalKieModule = createFromClassLoader(classLoader);
         if (canonicalKieModule == null) {
