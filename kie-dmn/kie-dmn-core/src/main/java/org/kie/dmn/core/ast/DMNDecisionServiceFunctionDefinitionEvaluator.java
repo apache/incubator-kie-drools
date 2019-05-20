@@ -104,6 +104,14 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
             DMNContext dmnContext = eventManager.getRuntime().newContext();
             try {
                 if (params.length != parameters.size()) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          resultContext,
+                                          null,
+                                          null,
+                                          Msg.PARAMETER_COUNT_MISMATCH_DS,
+                                          getName());
                     return null;
                 }
                 for (int i = 0; i < params.length; i++) {
@@ -149,6 +157,16 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                 if (dsFormalParameter.type.isAssignableValue(param)) {
                     return param;
                 } else {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.WARN,
+                                          null,
+                                          resultContext,
+                                          null,
+                                          null,
+                                          Msg.PARAMETER_TYPE_MISMATCH_DS,
+                                          dsFormalParameter.name,
+                                          dsFormalParameter.type,
+                                          MsgUtil.clipString(param.toString(), 50));
                     return null;
                 }
             } else {
