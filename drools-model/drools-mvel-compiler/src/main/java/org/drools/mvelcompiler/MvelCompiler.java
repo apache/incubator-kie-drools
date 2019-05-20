@@ -1,9 +1,11 @@
 package org.drools.mvelcompiler;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,13 +49,17 @@ public class MvelCompiler {
         }
 
         List<Statement> statements = new ArrayList<>();
+        Optional<Type> lastExpressionType = null;
         for (Statement s : preProcessedModifyStatements) {
             TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
             TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
             Statement expression = (Statement) lhs.toJavaExpression();
             statements.add(expression);
+            lastExpressionType = rhs.getType();
         }
 
-        return new ParsingResult(statements).setModifyProperties(modifiedProperties);
+        return new ParsingResult(statements)
+                .setLastExpressionType(lastExpressionType)
+                .setModifyProperties(modifiedProperties);
     }
 }

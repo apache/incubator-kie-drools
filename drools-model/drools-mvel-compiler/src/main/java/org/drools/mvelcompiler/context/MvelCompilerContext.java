@@ -1,5 +1,6 @@
 package org.drools.mvelcompiler.context;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.drools.mvelcompiler.MvelCompilerException;
@@ -19,19 +20,17 @@ public class MvelCompilerContext {
         return this;
     }
 
+    public MvelCompilerContext addCreatedDeclaration(String name, Class<?> clazz) {
+        declarations.addDeclarations(new Declaration(name, clazz, true));
+        return this;
+    }
+
     public Optional<Declaration> findDeclarations(String name) {
         return declarations.findDeclaration(name);
     }
 
-    public Declaration getDeclarations(String name) {
-        return declarations
-                .findDeclaration(name)
-                .orElseThrow(() -> new MvelCompilerException("No declaration found with name: " + name));
-    }
-
-    public Declaration getOrCreateDeclarations(String name, Class<?> clazz) {
-        return declarations
-                .getOrCreateDeclarations(name, clazz);
+    public Collection<Declaration> getCreatedDeclarsations() {
+        return declarations.getCreatedDeclarsations();
     }
 
     public void addCompilationError(String message) {
