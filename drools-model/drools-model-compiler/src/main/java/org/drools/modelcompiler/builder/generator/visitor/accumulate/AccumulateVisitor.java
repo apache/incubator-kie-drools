@@ -8,9 +8,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -44,6 +46,16 @@ import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.base.accumulators.CollectListAccumulateFunction;
 import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
 import org.drools.core.rule.Pattern;
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.core.base.accumulators.CollectAccumulator;
+import org.drools.core.base.accumulators.CollectListAccumulateFunction;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.core.rule.Pattern;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -61,11 +73,14 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.StringUtil;
+import org.drools.mvelcompiler.MvelCompiler;
+import org.drools.mvelcompiler.ParsingResult;
+import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static java.util.stream.Collectors.toList;
-
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
@@ -276,7 +291,7 @@ public abstract class AccumulateVisitor {
 
             } else if (accumulateFunctionParameter instanceof DrlNameExpr) {
                 final Class<?> declarationClass = context
-                        .getDeclarationById(PrintUtil.printConstraint(accumulateFunctionParameter))
+                        .getDeclarationById(printConstraint(accumulateFunctionParameter))
                         .orElseThrow(RuntimeException::new)
                         .getDeclarationClass();
 
@@ -421,7 +436,7 @@ public abstract class AccumulateVisitor {
         MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
         BlockStmt initBlock = StaticJavaParser.parseBlock("{" + descr.getInitCode() + "}");
         List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
-        Set<String> usedExtDeclrs = parseInitBlock( context2, descr, basePattern, templateContextClass, contextFieldNames, initMethod, initBlock, accumulateDeclarations );
+        Set<String> usedExtDeclrs = parseInitBlock(context2, templateContextClass, contextFieldNames, initMethod, initBlock, accumulateDeclarations );
 
         boolean useLegacyAccumulate = false;
         Type singleAccumulateType = null;
@@ -505,7 +520,7 @@ public abstract class AccumulateVisitor {
         context.popExprPointer();
     }
 
-    private Set<String> parseInitBlock( RuleContext context2, AccumulateDescr descr, PatternDescr basePattern, ClassOrInterfaceDeclaration templateContextClass, List<String> contextFieldNames, MethodDeclaration initMethod, BlockStmt initBlock, List<DeclarationSpec> accumulateDeclarations ) {
+    private Set<String> parseInitBlock(RuleContext context2, ClassOrInterfaceDeclaration templateContextClass, List<String> contextFieldNames, MethodDeclaration initMethod, BlockStmt initBlock, List<DeclarationSpec> accumulateDeclarations) {
         Set<String> externalDeclrs = new HashSet<>();
 
         for (Statement stmt : initBlock.getStatements()) {
@@ -518,7 +533,7 @@ public abstract class AccumulateVisitor {
                     templateContextClass.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
                     createInitializer(variableName, vd.getInitializer()).ifPresent(statement -> {
                         initMethodBody.addStatement(statement);
-                        statement.findAll(NameExpr.class).stream().map( n -> n.toString()).filter( context2::hasDeclaration ).forEach( externalDeclrs::add );
+                        statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context2::hasDeclaration ).forEach(externalDeclrs::add );
                     }
                     );
                     accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), vd.getType().asString()) ));
@@ -535,12 +550,12 @@ public abstract class AccumulateVisitor {
                             final String variableName = assignExpr.getTarget().toString();
                             final Expression initCreationExpression = assignExpr.getValue();
 
-                            final ExpressionTyper expressionTyper = new ExpressionTyper(context2, Object.class, "", false);
-                            final TypedExpressionResult typedExpressionResult = expressionTyper.toTypedExpression(initCreationExpression);
+                            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context2.getTypeResolver());
+                            ParsingResult compile = new MvelCompiler(mvelCompilerContext).compile(addCurlyBracesToBlock(printConstraint(stmt)));
 
-                            final Type type = typedExpressionResult
-                                    .getTypedExpression()
-                                    .map(t -> DrlxParseUtil.classToReferenceType(t.getRawClass()))
+                            final Type type =
+                                    compile.lastExpressionType()
+                                    .map(t -> DrlxParseUtil.classToReferenceType((Class<?>) t))
                                     .orElseThrow(() -> new RuntimeException("Unknown type: " + initCreationExpression));
 
                             templateContextClass.addField(type, variableName, Modifier.publicModifier().getKeyword());
