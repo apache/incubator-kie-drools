@@ -66,6 +66,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         String migrated = migrationInstance.from1_1to1_2().apply(toMigrate);
         assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.1\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
         assertTrue(migrated.contains("dmoSession></dmoSession>"));
         assertTrue(migrated.contains("<type>RULE</type>"));
     }
