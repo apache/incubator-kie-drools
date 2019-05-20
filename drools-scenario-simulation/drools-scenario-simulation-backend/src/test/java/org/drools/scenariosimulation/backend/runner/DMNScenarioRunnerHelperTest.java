@@ -41,6 +41,7 @@ import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
 import org.drools.scenariosimulation.backend.fluent.DMNScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.model.Dispute;
 import org.drools.scenariosimulation.backend.model.Person;
+import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
@@ -228,6 +229,21 @@ public class DMNScenarioRunnerHelperTest {
         assertEquals(1, scenarioResultMetadata.getExecuted().size());
         assertTrue(scenarioResultMetadata.getExecuted().contains("decision2"));
         assertFalse(scenarioResultMetadata.getExecuted().contains("decision3"));
+    }
+
+    @Test
+    public void getSingleFactValueResultFailDecision() {
+        DMNDecisionResult failedDecision = createDecisionResultMock("Test", false);
+        ResultWrapper<?> failedResult = runnerHelper.getSingleFactValueResult(null,
+                                                                              null,
+                                                                              failedDecision,
+                                                                              expressionEvaluator);
+        assertFalse(failedResult.isSatisfied());
+        assertEquals("The decision " +
+                             failedDecision.getDecisionName() +
+                             " has not been successfully evaluated: " +
+                             failedDecision.getEvaluationStatus(),
+                     failedResult.getErrorMessage().get());
     }
 
     private DecisionNode createDecisionMock(String decisionName) {

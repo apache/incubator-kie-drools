@@ -118,6 +118,11 @@ public class AbstractExpressionEvaluatorTest {
         }
 
         @Override
+        public String fromObjectToExpression(Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         protected Object extractFieldValue(Object result, String fieldName) {
             return result;
         }

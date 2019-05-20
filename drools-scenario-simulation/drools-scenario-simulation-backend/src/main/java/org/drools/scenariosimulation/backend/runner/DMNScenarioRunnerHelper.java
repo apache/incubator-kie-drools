@@ -44,6 +44,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
 
 import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResult;
+import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResultWithErrorMessage;
 import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createResult;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 
@@ -107,7 +108,10 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
                 FactMapping factMapping = simulationDescriptor.getFactMapping(factIdentifier, expressionIdentifier)
                         .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
-                ScenarioResult scenarioResult = fillResult(expectedResult, factIdentifier, () -> getSingleFactValueResult(factMapping, expectedResult, decisionResult, expressionEvaluator));
+                ScenarioResult scenarioResult = fillResult(expectedResult,
+                                                           factIdentifier,
+                                                           () -> getSingleFactValueResult(factMapping, expectedResult, decisionResult, expressionEvaluator),
+                                                           expressionEvaluator);
 
                 scenarioRunnerData.addResult(scenarioResult);
             }
@@ -122,7 +126,10 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         Object resultRaw = decisionResult.getResult();
         final DMNDecisionResult.DecisionEvaluationStatus evaluationStatus = decisionResult.getEvaluationStatus();
         if (!SUCCEEDED.equals(evaluationStatus)) {
-            return createErrorResult(SUCCEEDED, evaluationStatus);
+            return createErrorResultWithErrorMessage("The decision " +
+                                                             decisionResult.getDecisionName() +
+                                                             " has not been successfully evaluated: " +
+                                                             evaluationStatus);
         }
 
         for (ExpressionElement expressionElement : factMapping.getExpressionElementsWithoutClass()) {

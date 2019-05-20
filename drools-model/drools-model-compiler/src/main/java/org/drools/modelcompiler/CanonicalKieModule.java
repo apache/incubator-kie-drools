@@ -19,7 +19,6 @@ package org.drools.modelcompiler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +44,6 @@ import org.drools.compiler.kie.builder.impl.KnowledgePackagesBuildResult;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kie.util.KieJarChangeSet;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
@@ -54,6 +52,7 @@ import org.drools.core.common.ResourceProvider;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -82,7 +81,6 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
@@ -273,7 +271,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private Collection<String> getRuleClassNames() {
         if ( ruleClassesNames == null ) {
-            ruleClassesNames = findRuleClassesNames( getModuleClassLoader() );
+            ruleClassesNames = findRuleClassesNames();
         }
         return ruleClassesNames;
     }
@@ -296,15 +294,15 @@ public class CanonicalKieModule implements InternalKieModule {
         return models;
     }
 
-    private Collection<String> findRuleClassesNames(ClassLoader kieProjectCL) {
+    private Collection<String> findRuleClassesNames() {
         String modelFiles;
-        try (InputStream modelFileStream = kieProjectCL.getResourceAsStream(getModelFileWithGAV(internalKieModule.getReleaseId()))) {
-            if (modelFileStream == null) {
-                return Collections.emptyList();
-            }
-            modelFiles = new String( IoUtils.readBytesFromInputStream( modelFileStream ) );
+        ReleaseId releaseId = internalKieModule.getReleaseId();
+        String modelFileName = getModelFileWithGAV(releaseId);
+        try {
+            Resource modelFile = internalKieModule.getResource(modelFileName);
+            modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
         } catch (IOException e) {
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
 
         String[] lines = modelFiles.split( "\n" );
@@ -676,6 +674,6 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     public static String getModelFileWithGAV(ReleaseId releaseId) {
-        return MODEL_FILE_DIRECTORY + "/" + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + MODEL_FILE_NAME;
+        return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + MODEL_FILE_NAME;
     }
 }

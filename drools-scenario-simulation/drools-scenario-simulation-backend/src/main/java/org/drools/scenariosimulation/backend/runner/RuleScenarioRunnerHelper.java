@@ -119,7 +119,8 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                 ScenarioResult scenarioResult = fillResult(expectedResult,
                                                            factIdentifier,
                                                            () -> createExtractorFunction(expressionEvaluator, expectedResult, simulationDescriptor)
-                                                                   .apply(factInstance));
+                                                                   .apply(factInstance),
+                                                           expressionEvaluator);
 
                 scenarioResults.add(scenarioResult);
             }

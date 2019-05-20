@@ -327,5 +327,11 @@ public class RuleScenarioRunnerHelperTest {
         paramsToSet.put(Collections.emptyList(), null);
 
         assertNull(runnerHelper.getDirectMapping(paramsToSet).getResult());
+
+        paramsToSet.clear();
+
+        ResultWrapper<Object> directMapping = runnerHelper.getDirectMapping(paramsToSet);
+        assertFalse(directMapping.isSatisfied());
+        assertEquals("No direct mapping available", directMapping.getErrorMessage().get());
     }
 }

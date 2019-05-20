@@ -108,7 +108,7 @@ public abstract class AbstractRunnerHelper {
                 return ResultWrapper.createResult(entry.getValue());
             }
         }
-        return ResultWrapper.createErrorResult(null, null);
+        return ResultWrapper.createErrorResultWithErrorMessage("No direct mapping available");
     }
 
     public List<ScenarioExpect> extractExpectedValues(List<FactMappingValue> factMappingValues) {
@@ -200,12 +200,16 @@ public abstract class AbstractRunnerHelper {
         }
     }
 
-    protected ScenarioResult fillResult(FactMappingValue expectedResult, FactIdentifier factIdentifier, Supplier<ResultWrapper<?>> resultSupplier) {
+    protected ScenarioResult fillResult(FactMappingValue expectedResult,
+                                        FactIdentifier factIdentifier,
+                                        Supplier<ResultWrapper<?>> resultSupplier,
+                                        ExpressionEvaluator expressionEvaluator) {
         ResultWrapper<?> resultValue = resultSupplier.get();
 
-        if (!resultValue.isSatisfied()) {
-            expectedResult.setErrorValue(resultValue.getResult());
-
+        if (!resultValue.isSatisfied() && resultValue.getErrorMessage().isPresent()) {
+            expectedResult.setExceptionMessage(resultValue.getErrorMessage().get());
+        } else if (!resultValue.isSatisfied()) {
+            expectedResult.setErrorValue(expressionEvaluator.fromObjectToExpression(resultValue.getResult()));
         } else {
             expectedResult.resetStatus();
         }
