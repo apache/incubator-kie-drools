@@ -37,6 +37,10 @@ public interface RuleFluent<T, U> {
 
     T delete(FactHandle handle);
 
+    T setActiveRuleFlowGroup(String ruleFlowGroup);
+
+    T setActiveAgendaGroup(String agendaGroup);
+
     U dispose();
 
 }
