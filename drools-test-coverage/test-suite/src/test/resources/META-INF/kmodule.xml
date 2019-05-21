@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-	<kbase name="kbaseXsdResource" packages="org.drools.testcoverage.regression.xsd" />
+  <kbase name="kbaseXsdResource" packages="org.drools.testcoverage.regression.xsd"/>
+  <kbase name="csvwithtemplate"  packages="org.drools.testcoverage.functional.decisiontable">
+    <ruleTemplate dtable="org/drools/testcoverage/functional/decisiontable/PhoneNumberCategory.csv"
+                  template="org/drools/testcoverage/functional/decisiontable/PhoneNumberCategory.drt" row="2" col="1"/>
+    <ksession name="csvwithtemplatesession" default="true" type="stateless"></ksession>
+  </kbase>
 </kmodule>
