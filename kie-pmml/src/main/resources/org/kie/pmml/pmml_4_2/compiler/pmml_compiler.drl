@@ -33,9 +33,16 @@ global String ruleUnitClassName;
 dialect "mvel"
 
 // the function is repeated here because of rule processDerivedField_MapValues
-    function String format(String type, String val) {
-        if (type == null) {
+    function String format(Object obj, String val) {
+        if (obj == null) {
             return val;
+        }
+        String type = null;
+        if ( obj instanceof String ) {
+           type = (String)obj;
+        }
+        if (type == null) {
+           return val;
         } else if ("Integer".equalsIgnoreCase(type)) {
 			return val;
 		} else if ("Float".equalsIgnoreCase(type)) {
