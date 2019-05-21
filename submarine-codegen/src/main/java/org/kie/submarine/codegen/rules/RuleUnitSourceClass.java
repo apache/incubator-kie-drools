@@ -100,27 +100,14 @@ public class RuleUnitSourceClass {
     }
 
     private MethodCallExpr newKieSession() {
-        /*
-        KieBaseBuilder.createKieBaseFromModel(
-                asList(new $GENERATED_RULE_ID(), ...))
-                .newKieSession();
-         */
         MethodCallExpr createKieBaseFromModel = createKieBaseFromModel();
         return new MethodCallExpr(createKieBaseFromModel, "newKieSession");
     }
 
     private MethodCallExpr createKieBaseFromModel() {
-        MethodCallExpr args = args();
-
         return new MethodCallExpr(
                 new NameExpr("org.drools.modelcompiler.builder.KieBaseBuilder"),
-                "createKieBaseFromModel").addArgument(args);
-    }
-
-    private MethodCallExpr args() {
-        return new MethodCallExpr(
-                new NameExpr("java.util.Collections"),
-                "singletonList").addArgument(new ObjectCreationExpr().setType(generatedSourceFile));
+                "createKieBaseFromModel").addArgument(new ObjectCreationExpr().setType(generatedSourceFile));
     }
 
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {

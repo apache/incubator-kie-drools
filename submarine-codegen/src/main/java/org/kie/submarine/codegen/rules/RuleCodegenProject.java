@@ -15,9 +15,12 @@
 
 package org.kie.submarine.codegen.rules;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
@@ -52,29 +55,43 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
 
         moduleGenerator.withCdi(hasCdi());
 
+        boolean hasRuleUnits = false;
+
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
             List<PackageModel> packageModels = modelBuilder.getPackageModels();
             for (PackageModel packageModel : packageModels) {
-                for (Class<?> ruleUnit : packageModel.getRuleUnits()) {
+                Collection<Class<?>> ruleUnits = packageModel.getRuleUnits();
 
-                    moduleGenerator.addRuleUnit(
-                            new RuleUnitSourceClass(
-                                    ruleUnit.getPackage().getName(),
-                                    ruleUnit.getSimpleName(),
-                                    packageModel.getRulesFileName()).withCdi(hasCdi()));
+                if (!ruleUnits.isEmpty()) {
+                    hasRuleUnits = true;
+                    for (Class<?> ruleUnit : ruleUnits) {
+                        moduleGenerator.addRuleUnit(
+                                new RuleUnitSourceClass(
+                                        ruleUnit.getPackage().getName(),
+                                        ruleUnit.getSimpleName(),
+                                        packageModel.getRulesFileName() ).withCdi( hasCdi() ) );
+                    }
                 }
             }
         }
 
-        for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
-            trgMfs.write(
-                    ruleUnit.generatedFilePath(),
-                    ruleUnit.generate().getBytes());
+        if (hasRuleUnits) {
+            for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
+                trgMfs.write(
+                        ruleUnit.generatedFilePath(),
+                        ruleUnit.generate().getBytes() );
 
-            RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance();
+                RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance();
+                trgMfs.write(
+                        ruleUnitInstance.generatedFilePath(),
+                        ruleUnitInstance.generate().getBytes() );
+            }
+        } else if (hasCdi()) {
+            CompilationUnit compilationUnit =
+                    JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/SessionRuleUnitTemplate.java"));
             trgMfs.write(
-                    ruleUnitInstance.generatedFilePath(),
-                    ruleUnitInstance.generate().getBytes());
+                    "org/drools/project/model/SessionRuleUnit.java",
+                    compilationUnit.toString().getBytes() );
         }
     }
 

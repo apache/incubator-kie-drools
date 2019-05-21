@@ -17,7 +17,6 @@ package org.kie.submarine.rules.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 import org.kie.api.runtime.rule.FactHandle;
@@ -46,11 +45,7 @@ public class ListDataSource<T> implements DataSource<T> {
     }
 
     public void drainInto(Consumer<Object> sink) {
-        Iterator<T> iter = values.iterator();
-        while(iter.hasNext()) {
-            T t = iter.next();
-            sink.accept(t);
-            iter.remove();
-        }
+        values.forEach( sink );
+        values.clear();
     }
 }
