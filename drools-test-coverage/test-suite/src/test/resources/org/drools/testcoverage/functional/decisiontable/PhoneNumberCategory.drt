@@ -3,7 +3,7 @@ template header
 category
 phoneNumber
 
-package org.drools.testcoverage.functional.decisiontable
+package org.drools.testcoverage.functional.decisiontable;
 
 import org.drools.testcoverage.common.model.Record;
 
@@ -15,7 +15,6 @@ rule "category_phoneNumber_@{row.rowNumber}"
     then
         record.setPhoneNumber("@phoneNumber");
         update(record);
-    end
 end
 
 end template
