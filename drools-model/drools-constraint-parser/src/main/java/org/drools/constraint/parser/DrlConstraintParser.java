@@ -40,6 +40,8 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import org.drools.constraint.parser.printer.ConstraintPrintVisitor;
 
 import static com.github.javaparser.Problem.PROBLEM_BY_BEGIN_POSITION;
 import static com.github.javaparser.utils.Utils.assertNotNull;
@@ -63,6 +65,13 @@ public final class DrlConstraintParser {
 
     private GeneratedDrlConstraintParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
+
+    static {
+        PrettyPrinterConfiguration prettyPrinterConfiguration = new PrettyPrinterConfiguration();
+        // This is to support toString() on new Nodes in this parser
+        prettyPrinterConfiguration.setVisitorFactory(ConstraintPrintVisitor::new);
+        Node.setToStringPrettyPrinterConfiguration(prettyPrinterConfiguration);
+    }
 
     /**
      * Instantiate the parser with default configuration. Note that parsing can also be done with the static methods on
