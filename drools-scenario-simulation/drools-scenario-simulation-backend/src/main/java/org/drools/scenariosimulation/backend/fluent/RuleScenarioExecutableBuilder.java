@@ -25,6 +25,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.kie.api.builder.model.KieSessionModel;
@@ -43,26 +44,30 @@ public class RuleScenarioExecutableBuilder {
     private final ExecutableBuilder executableBuilder;
     private final Map<FactIdentifier, List<FactCheckerHandle>> internalConditions = new HashMap<>();
 
-    private static BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
+    protected static final BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
         KieSessionModel kieSessionModel = kc.getKieSessionModel(sessionName);
+        if (kieSessionModel == null) {
+            throw new ScenarioException("Impossible to find a KieSession with name " + sessionName);
+        }
         kieSessionModel.setClockType(ClockTypeOption.get("pseudo"));
         return kc;
     };
 
-    private RuleScenarioExecutableBuilder(KieContainer kieContainer, String name) {
+    private RuleScenarioExecutableBuilder(KieContainer kieContainer, String kieSessionName) {
         executableBuilder = ExecutableBuilder.create();
 
-        kieSessionFluent = executableBuilder.newApplicationContext(name)
+        kieSessionFluent = executableBuilder
+                .newApplicationContext(DEFAULT_APPLICATION)
                 .setKieContainer(kieContainer)
-                .newSessionCustomized(null, forcePseudoClock);
+                .newSessionCustomized(kieSessionName, forcePseudoClock);
     }
 
     private RuleScenarioExecutableBuilder(KieContainer kieContainer) {
-        this(kieContainer, DEFAULT_APPLICATION);
+        this(kieContainer, null);
     }
 
-    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String name) {
-        return new RuleScenarioExecutableBuilder(kieContainer, name);
+    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String kieSessionName) {
+        return new RuleScenarioExecutableBuilder(kieContainer, kieSessionName);
     }
 
     public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer) {
@@ -74,6 +79,14 @@ public class RuleScenarioExecutableBuilder {
                                      ScenarioResult scenarioResult) {
         internalConditions.computeIfAbsent(scenarioResult.getFactIdentifier(), key -> new ArrayList<>())
                 .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));
+    }
+
+    public void setActiveAgendaGroup(String agendaGroup) {
+        kieSessionFluent.setActiveAgendaGroup(agendaGroup);
+    }
+
+    public void setActiveRuleFlowGroup(String ruleFlowGroup) {
+        kieSessionFluent.setActiveRuleFlowGroup(ruleFlowGroup);
     }
 
     public void insert(Object element) {

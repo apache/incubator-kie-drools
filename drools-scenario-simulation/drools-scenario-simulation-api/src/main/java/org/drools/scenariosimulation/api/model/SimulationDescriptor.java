@@ -49,7 +49,7 @@ public class SimulationDescriptor {
 
     private String dmnName;
 
-    private boolean skipFromBuild;
+    private boolean skipFromBuild = false;
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
@@ -91,26 +91,32 @@ public class SimulationDescriptor {
         return factMappings;
     }
 
+    @Deprecated
     public String getFileName() {
         return fileName;
     }
 
+    @Deprecated
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    @Deprecated
     public String getKieSession() {
         return kieSession;
     }
 
+    @Deprecated
     public void setKieSession(String kieSession) {
         this.kieSession = kieSession;
     }
 
+    @Deprecated
     public String getKieBase() {
         return kieBase;
     }
 
+    @Deprecated
     public void setKieBase(String kieBase) {
         this.kieBase = kieBase;
     }

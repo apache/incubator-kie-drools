@@ -16,6 +16,7 @@
 
 package org.drools.core.fluent.impl;
 
+import org.drools.core.command.SetActiveAgendaGroup;
 import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
@@ -60,6 +61,17 @@ public class KieSessionFluentImpl extends BaseBatchWithProcessFluent<KieSessionF
 
     @Override
     public KieSessionFluent delete(FactHandle handle) {
+        return this;
+    }
+
+    @Override
+    public KieSessionFluent setActiveRuleFlowGroup(String ruleFlowGroup) {
+        return setActiveAgendaGroup(ruleFlowGroup);
+    }
+
+    @Override
+    public KieSessionFluent setActiveAgendaGroup(String agendaGroup) {
+        fluentCtx.addCommand(new SetActiveAgendaGroup(agendaGroup));
         return this;
     }
 

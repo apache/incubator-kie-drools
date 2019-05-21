@@ -45,7 +45,7 @@ public class DMNSimulationUtilsTest {
         List<String> impossibleToFind = Arrays.asList(new StringBuilder("not/find").reverse().toString().split("/"));
 
         Assertions.assertThatThrownBy(() -> DMNSimulationUtils.findDMNModel(models, impossibleToFind, 1))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ImpossibleToFindDMNException.class)
                 .hasMessage("Retrieving the DMNModel has failed. Make sure the used DMN asset does not " +
                                     "produce any compilation errors and that the project does not " +
                                     "contain multiple DMN assets with the same name and namespace. " +

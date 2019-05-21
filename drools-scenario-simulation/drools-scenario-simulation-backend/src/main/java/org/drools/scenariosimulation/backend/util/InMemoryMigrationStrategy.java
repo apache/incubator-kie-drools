@@ -26,16 +26,18 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
 
     @Override
     public Function<String, String> from1_0to1_1() {
-        return rawXml -> rawXml.replaceAll("EXPECTED", "EXPECT").replaceAll("<ScenarioSimulationModel version=\"1.0\">", "<ScenarioSimulationModel version=\"1.1\">");
+        return rawXml -> updateVersion(rawXml, "1.0", "1.1")
+                .replaceAll("EXPECTED", "EXPECT");
     }
 
     @Override
     public Function<String, String> from1_1to1_2() {
         return rawXml -> {
-            if ((rawXml.contains("<dmoSession>") || (rawXml.contains("<dmnFilePath>")) && (rawXml.contains("<type>")))) {
-                return rawXml.replaceAll("<ScenarioSimulationModel version=\"1.1\">", "<ScenarioSimulationModel version=\"1.2\">");
+            String updatedVersion = updateVersion(rawXml, "1.1", "1.2");
+            if ((updatedVersion.contains("<dmoSession>") || (updatedVersion.contains("<dmnFilePath>")) && (updatedVersion.contains("<type>")))) {
+                return updatedVersion;
             } else {
-                return rawXml.replaceAll("</simulationDescriptor>", "<dmoSession></dmoSession>\n<type>RULE</type>\n</simulationDescriptor>").replaceAll("<ScenarioSimulationModel version=\"1.1\">", "<ScenarioSimulationModel version=\"1.2\">");
+                return updatedVersion.replaceAll("</simulationDescriptor>", "<dmoSession></dmoSession>\n<type>RULE</type>\n</simulationDescriptor>");
             }
         };
     }
@@ -48,7 +50,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             for (FactMapping factMapping : model.getSimulation().getSimulationDescriptor().getUnmodifiableFactMappings()) {
                 factMapping.getExpressionElements().add(0, new ExpressionElement(factMapping.getFactIdentifier().getName()));
             }
-            return xmlPersistence.marshal(model).replaceAll("<ScenarioSimulationModel version=\"1.2\">", "<ScenarioSimulationModel version=\"1.3\">");
+            return updateVersion(xmlPersistence.marshal(model), "1.2", "1.3");
         };
     }
 
@@ -86,7 +88,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                     }
                     replacementBuilder.append("<type>DMN</type>");
                 }
-                String toReturn = rawXml.replaceAll("<ScenarioSimulationModel version=\"1.3\">", "<ScenarioSimulationModel version=\"1.4\">")
+                String toReturn = updateVersion(rawXml, "1.3", "1.4")
                         .replaceAll("<simulationDescriptor>", "<simulationDescriptor>\n  <fileName></fileName>");
                 String replacement = replacementBuilder.toString();
                 if (toReplace != null && !toReplace.equals(replacement)) {
@@ -96,6 +98,19 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             } else {
                 return rawXml;
             }
+        };
+    }
+
+    @Override
+    public Function<String, String> from1_4to1_5() {
+        return rawXml -> {
+            ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
+            ScenarioSimulationModel model = xmlPersistence.unmarshal(rawXml, false);
+            String dmoSession = model.getSimulation().getSimulationDescriptor().getDmoSession();
+            if ("default".equals(dmoSession) || "".equals(dmoSession)) {
+                model.getSimulation().getSimulationDescriptor().setDmoSession(null);
+            }
+            return updateVersion(xmlPersistence.marshal(model), "1.4", "1.5");
         };
     }
 }

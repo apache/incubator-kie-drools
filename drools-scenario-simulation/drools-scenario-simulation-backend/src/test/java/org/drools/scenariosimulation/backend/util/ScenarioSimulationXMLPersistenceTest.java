@@ -24,14 +24,14 @@ import org.kie.soup.project.datamodel.imports.Import;
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ScenarioSimulationXMLPersistenceTest {
 
-    ScenarioSimulationXMLPersistence instance = ScenarioSimulationXMLPersistence.getInstance();
+    protected ScenarioSimulationXMLPersistence instance = ScenarioSimulationXMLPersistence.getInstance();
+    protected String currentVersion = new ScenarioSimulationModel().getVersion();
+    protected MigrationStrategy migrationInstance = new InMemoryMigrationStrategy();
 
     @Test
     public void noFQCNUsed() throws Exception {
@@ -63,9 +63,10 @@ public class ScenarioSimulationXMLPersistenceTest {
     @Test
     public void migrateIfNecessary_1_1_to_1_2() throws Exception {
         String toMigrate = getFileContent("scesim-1-1.scesim");
-        String migrated = instance.migrateIfNecessary(toMigrate);
+        String migrated = migrationInstance.from1_1to1_2().apply(toMigrate);
         assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.1\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
         assertTrue(migrated.contains("dmoSession></dmoSession>"));
         assertTrue(migrated.contains("<type>RULE</type>"));
     }
@@ -89,7 +90,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     @Test
     public void migrateIfNecessary_1_3_to_1_4() throws Exception {
         String toMigrate = getFileContent("scesim-1-3-rule.scesim");
-        String migrated = instance.migrateIfNecessary(toMigrate);
+        String migrated = migrationInstance.from1_3to1_4().apply(toMigrate);
         assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.3\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
         assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
@@ -97,7 +98,7 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertTrue(migrated.contains("<kieSession>default</kieSession>"));
         assertTrue(migrated.contains("<kieBase>default</kieBase>"));
         assertTrue(migrated.contains("<ruleFlowGroup>default</ruleFlowGroup>"));
-        assertTrue(migrated.contains("<dmoSession></dmoSession>"));
+        assertTrue(migrated.contains("<dmoSession>default</dmoSession>"));
         assertTrue(migrated.contains("<skipFromBuild>false</skipFromBuild>"));
         assertTrue(migrated.contains("<type>RULE</type>"));
         try {
@@ -106,7 +107,7 @@ public class ScenarioSimulationXMLPersistenceTest {
             fail(e.getMessage());
         }
         toMigrate = getFileContent("scesim-1-3-dmn.scesim");
-        migrated = instance.migrateIfNecessary(toMigrate);
+        migrated = migrationInstance.from1_3to1_4().apply(toMigrate);
         assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.3\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
         assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
@@ -119,6 +120,17 @@ public class ScenarioSimulationXMLPersistenceTest {
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void migrateIfNecessary_1_4_to_1_5() throws Exception {
+        String toMigrate = getFileContent("scesim-1-3-rule.scesim");
+        assertTrue(toMigrate.contains("dmoSession"));
+        String migrated = instance.migrateIfNecessary(toMigrate);
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
+        assertTrue(!migrated.contains("dmoSession"));
     }
 
     @Test
@@ -143,8 +155,6 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toUnmarshal = getFileContent("scesim-rule.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.RULE);
-        assertNotNull(retrieved.getSimulation().getSimulationDescriptor().getDmoSession());
-        assertNull(retrieved.getSimulation().getSimulationDescriptor().getDmnFilePath());
     }
 
     @Test
@@ -152,7 +162,5 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toUnmarshal = getFileContent("scesim-dmn.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.DMN);
-        assertNotNull(retrieved.getSimulation().getSimulationDescriptor().getDmnFilePath());
-        assertNull(retrieved.getSimulation().getSimulationDescriptor().getDmoSession());
     }
 }

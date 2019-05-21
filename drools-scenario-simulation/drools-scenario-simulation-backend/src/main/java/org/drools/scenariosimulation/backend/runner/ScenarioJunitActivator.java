@@ -56,14 +56,9 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
 
     @Override
     protected List<SimulationWithFileName> getChildren() {
-        return getResources().map(elem -> {
-            try {
-                String rawFile = new Scanner(new File(elem)).useDelimiter("\\Z").next();
-                return new SimulationWithFileName(getXmlReader().unmarshal(rawFile).getSimulation(), elem);
-            } catch (FileNotFoundException e) {
-                throw new ScenarioException("File not found, this should not happen: " + elem, e);
-            }
-        }).collect(Collectors.toList());
+        return getResources().map(this::parseFile)
+                .filter(this::isNotSkipFromBuild)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -76,6 +71,19 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
         KieContainer kieClasspathContainer = getKieContainer();
         AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child.getSimulation(), child.getFileName());
         scenarioRunner.run(notifier);
+    }
+
+    protected SimulationWithFileName parseFile(String path) {
+        try {
+            String rawFile = new Scanner(new File(path)).useDelimiter("\\Z").next();
+            return new SimulationWithFileName(getXmlReader().unmarshal(rawFile).getSimulation(), path);
+        } catch (FileNotFoundException e) {
+            throw new ScenarioException("File not found, this should not happen: " + path, e);
+        }
+    }
+
+    protected boolean isNotSkipFromBuild(SimulationWithFileName simulationWithFileName) {
+        return !simulationWithFileName.getSimulation().getSimulationDescriptor().isSkipFromBuild();
     }
 
     ScenarioSimulationXMLPersistence getXmlReader() {
