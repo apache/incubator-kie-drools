@@ -1,12 +1,8 @@
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.QueryDescr;
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -20,11 +16,14 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.model.Query;
 import org.drools.model.QueryDef;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
@@ -48,7 +47,7 @@ public class QueryGenerator {
         }
         queryCall.addArgument(new StringLiteralExpr(queryName));
         for (QueryParameter qp : context.getQueryParameters()) {
-            queryCall.addArgument(new ClassExpr(JavaParser.parseType(qp.type.getCanonicalName())));
+            queryCall.addArgument(new ClassExpr(parseType(qp.type.getCanonicalName())));
             queryCall.addArgument(new StringLiteralExpr(qp.name));
         }
         packageModel.getQueryDefWithType().put(queryDefVariableName, new QueryDefWithType(queryDefType, queryCall, context));
@@ -85,7 +84,7 @@ public class QueryGenerator {
         context.setDialectFromAttributes(queryDescr.getAttributes().values());
 
         new ModelGeneratorVisitor(context, packageModel).visit(queryDescr.getLhs());
-        final Type queryType = JavaParser.parseType(Query.class.getCanonicalName());
+        final Type queryType = parseType(Query.class.getCanonicalName());
 
         MethodDeclaration queryMethod = new MethodDeclaration(NodeList.nodeList(Modifier.privateModifier()), queryType, "query_" + toId(queryDescr.getName()));
 

@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
@@ -81,6 +81,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
@@ -451,7 +452,7 @@ public class DrlxParseUtil {
     }
 
     public static BlockStmt parseBlock(String ruleConsequenceAsBlock) throws ParseProblemException {
-        return JavaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
+        return StaticJavaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending }
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {
@@ -566,14 +567,14 @@ public class DrlxParseUtil {
     }
 
     public static Type classToReferenceType(Class<?> declClass) {
-        Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
+        Type parsedType = parseType(declClass.getCanonicalName());
         return parsedType instanceof PrimitiveType ?
                 ((PrimitiveType) parsedType).toBoxedType() :
                 parsedType;
     }
 
     public static Type toType(Class<?> declClass) {
-        return JavaParser.parseType(declClass.getCanonicalName());
+        return parseType(declClass.getCanonicalName());
     }
 
     public static ClassOrInterfaceType toClassOrInterfaceType( Class<?> declClass ) {
@@ -581,7 +582,7 @@ public class DrlxParseUtil {
     }
 
     public static ClassOrInterfaceType toClassOrInterfaceType( String className ) {
-        return JavaParser.parseClassOrInterfaceType(className);
+        return StaticJavaParser.parseClassOrInterfaceType(className);
     }
 
     public static Optional<String> findBindingIdFromDotExpression(String expression) {

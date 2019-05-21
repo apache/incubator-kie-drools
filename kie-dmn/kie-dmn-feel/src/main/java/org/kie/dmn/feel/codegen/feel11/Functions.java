@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -37,11 +38,14 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+
 public class Functions {
     public static final ClassOrInterfaceType TYPE_CUSTOM_FEEL_FUNCTION =
-            JavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName());
+            parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName());
     private static final Expression ANONYMOUS_STRING_LITERAL = new StringLiteralExpr("<anonymous>");
-    private static final Expression EMPTY_LIST = JavaParser.parseExpression("java.util.Collections.emptyList()");
+    private static final Expression EMPTY_LIST = parseExpression("java.util.Collections.emptyList()");
 
     public static Expression external(List<String> paramNames, BaseNode body) {
         EvaluationContextImpl emptyEvalCtx =

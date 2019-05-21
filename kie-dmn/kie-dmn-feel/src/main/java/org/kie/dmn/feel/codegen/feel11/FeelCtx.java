@@ -18,19 +18,20 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+
 public class FeelCtx {
 
     public static final String FEELCTX_N = "feelExprCtx";
     public static final NameExpr FEELCTX = new NameExpr(FEELCTX_N);
     private static final String FEEL_SUPPORT = CompiledFEELSupport.class.getSimpleName();
-    private static final Expression EMPTY_MAP = JavaParser.parseExpression("java.util.Collections.emptyMap()");
+    private static final Expression EMPTY_MAP = parseExpression("java.util.Collections.emptyMap()");
 
     public static Expression emptyContext() {
         return EMPTY_MAP;

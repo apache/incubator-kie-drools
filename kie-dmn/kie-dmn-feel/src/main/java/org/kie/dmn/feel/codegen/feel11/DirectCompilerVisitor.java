@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.github.javaparser.StaticJavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import com.github.javaparser.JavaParser;
@@ -89,6 +90,8 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
@@ -97,26 +100,26 @@ import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 @Deprecated
 public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerResult> {
 
-    private static final Expression QUANTIFIER_SOME = JavaParser.parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.SOME");
-    private static final Expression QUANTIFIER_EVERY = JavaParser.parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.EVERY");
-    private static final Expression DASH_UNARY_TEST = JavaParser.parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
-    private static final Expression DECIMAL_128 = JavaParser.parseExpression("java.math.MathContext.DECIMAL128");
-    private static final Expression EMPTY_LIST = JavaParser.parseExpression("java.util.Collections.emptyList()");
-    private static final Expression EMPTY_MAP = JavaParser.parseExpression("java.util.Collections.emptyMap()");
+    private static final Expression QUANTIFIER_SOME = parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.SOME");
+    private static final Expression QUANTIFIER_EVERY = parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.EVERY");
+    private static final Expression DASH_UNARY_TEST = parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
+    private static final Expression DECIMAL_128 = parseExpression("java.math.MathContext.DECIMAL128");
+    private static final Expression EMPTY_LIST = parseExpression("java.util.Collections.emptyList()");
+    private static final Expression EMPTY_MAP = parseExpression("java.util.Collections.emptyMap()");
     private static final Expression ANONYMOUS_STRING_LITERAL = new StringLiteralExpr("<anonymous>");
-    private static final Expression BOUNDARY_CLOSED = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
-    private static final Expression BOUNDARY_OPEN = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
+    private static final Expression BOUNDARY_CLOSED = parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
+    private static final Expression BOUNDARY_OPEN = parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
 
     private static final com.github.javaparser.ast.type.Type TYPE_COMPARABLE =
-            JavaParser.parseType(Comparable.class.getCanonicalName());
+            parseType(Comparable.class.getCanonicalName());
     private static final com.github.javaparser.ast.type.Type TYPE_LIST =
-            JavaParser.parseType(List.class.getCanonicalName());
+            parseType(List.class.getCanonicalName());
     public static final ClassOrInterfaceType TYPE_CUSTOM_FEEL_FUNCTION =
-            JavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName());
+            StaticJavaParser.parseClassOrInterfaceType(CompiledCustomFEELFunction.class.getSimpleName());
     private static final com.github.javaparser.ast.type.Type TYPE_BIG_DECIMAL =
-            JavaParser.parseType(java.math.BigDecimal.class.getCanonicalName());
+            parseType(java.math.BigDecimal.class.getCanonicalName());
     private static final com.github.javaparser.ast.type.Type TYPE_BOOLEAN =
-            JavaParser.parseType(Boolean.class.getCanonicalName());
+            parseType(Boolean.class.getCanonicalName());
 
     private ScopeHelper scopeHelper; // as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but presently keeping the same strategy as interpreted-AST-visitor
     private boolean replaceEqualForUnaryTest = false;
@@ -179,7 +182,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     @Override
     public DirectCompilerResult visitNumberLiteral(FEEL_1_1Parser.NumberLiteralContext ctx) {
         ObjectCreationExpr result = new ObjectCreationExpr();
-        result.setType(JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()));
+        result.setType(StaticJavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()));
         String originalText = ParserHelper.getOriginalText(ctx);
         String constantName =  "K_" + CodegenStringUtil.escapeIdentifier(originalText);
         try {
@@ -190,7 +193,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
         result.addArgument(DECIMAL_128);
         VariableDeclarator vd = new VariableDeclarator(
-                JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), constantName);
+                StaticJavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), constantName);
         vd.setInitializer(result);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(publicModifier().getKeyword(), true);
@@ -336,7 +339,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 Expression result = groundToNullIfAnyIsNull(plusCall, left.getExpression(), right.getExpression());
                 return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.mergeFDs(left, right));
             } else {
-                Expression newStringBuilderExpr = JavaParser.parseExpression("new StringBuilder()");
+                Expression newStringBuilderExpr = parseExpression("new StringBuilder()");
                 MethodCallExpr appendL = new MethodCallExpr(newStringBuilderExpr, "append");
                 appendL.addArgument(left.getExpression());
                 MethodCallExpr appendR = new MethodCallExpr(appendL, "append");
@@ -622,7 +625,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         if (isNumericConstant(start) && isNumericConstant(end)) {
             ObjectCreationExpr initializer =
                     new ObjectCreationExpr()
-                            .setType(JavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()))
+                            .setType(StaticJavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()))
                             .addArgument(lowBoundary)
                             .addArgument(new CastExpr(TYPE_COMPARABLE, lowEndPoint))
                             .addArgument(new CastExpr(TYPE_COMPARABLE, highEndPoint))
@@ -666,7 +669,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return new FieldDeclaration(
                 NodeList.nodeList(publicModifier(), staticModifier(), finalModifier()),
                 new VariableDeclarator(
-                        JavaParser.parseClassOrInterfaceType(Range.class.getCanonicalName()),
+                        StaticJavaParser.parseClassOrInterfaceType(Range.class.getCanonicalName()),
                         constantName,
                         initializer))
                 .setJavadocComment(" FEEL range: " + originalText + " ");
@@ -777,7 +780,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
         initializer.setBody(lambdaBody);
         String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        VariableDeclarator vd = new VariableDeclarator(StaticJavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(Modifier.publicModifier().getKeyword(), true);
@@ -809,7 +812,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         initializer.setBody(lambdaBody);
         String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        VariableDeclarator vd = new VariableDeclarator(StaticJavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(Modifier.publicModifier().getKeyword(), true);
@@ -843,7 +846,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         initializer.setBody(lambdaBody);
         String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        VariableDeclarator vd = new VariableDeclarator(StaticJavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(Modifier.publicModifier().getKeyword(), true);
@@ -876,7 +879,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
         initializer.setBody(lambdaBody);
         String constantName = "UT_" + CodegenStringUtil.escapeIdentifier(originalText);
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        VariableDeclarator vd = new VariableDeclarator(StaticJavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(Modifier.publicModifier().getKeyword(), true);
@@ -900,7 +903,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         Statement lambdaBody = new ExpressionStmt(new BooleanLiteralExpr(true));
         initializer.setBody(lambdaBody);
         String constantName = "UT_EMPTY";
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        VariableDeclarator vd = new VariableDeclarator(StaticJavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(Modifier.publicModifier().getKeyword(), true);
@@ -1263,7 +1266,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
                 // setting next exprCursor
                 if (compositeType instanceof MapBackedType) {
-                    CastExpr castExpr = new CastExpr(JavaParser.parseType(Map.class.getCanonicalName()), exprCursor);
+                    CastExpr castExpr = new CastExpr(parseType(Map.class.getCanonicalName()), exprCursor);
                     EnclosedExpr enclosedExpr = new EnclosedExpr(castExpr);
                     MethodCallExpr getExpr = new MethodCallExpr(enclosedExpr, "get");
                     getExpr.addArgument(new StringLiteralExpr(accText));
@@ -1271,7 +1274,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 } else if (compositeType instanceof JavaBackedType) {
                     JavaBackedType javaBackedType = (JavaBackedType) compositeType;
                     Method accessor = EvalHelper.getGenericAccessor(javaBackedType.getWrapped(), accText);
-                    CastExpr castExpr = new CastExpr(JavaParser.parseType(javaBackedType.getWrapped().getCanonicalName()), exprCursor);
+                    CastExpr castExpr = new CastExpr(parseType(javaBackedType.getWrapped().getCanonicalName()), exprCursor);
                     EnclosedExpr enclosedExpr = new EnclosedExpr(castExpr);
                     exprCursor = new MethodCallExpr(enclosedExpr, accessor.getName());
                 } else {
@@ -1298,11 +1301,11 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult e = visit( ctx.e );
 
         // Instead of using Java operator `instanceof` and `cast` directly, safer to use this method-based version, to avoid issue with primitives (eg: true instanceof Boolean does not compile) 
-        MethodCallExpr castC = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "cast");
+        MethodCallExpr castC = new MethodCallExpr(new ClassExpr(parseType(Boolean.class.getSimpleName())), "cast");
         castC.addArgument(new EnclosedExpr(c.getExpression()));
         Expression safeInternal = new ConditionalExpr(castC, new EnclosedExpr(t.getExpression()), new EnclosedExpr(e.getExpression()));
         safeInternal = new EnclosedExpr(safeInternal);
-        MethodCallExpr instanceOfBoolean = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "isInstance");
+        MethodCallExpr instanceOfBoolean = new MethodCallExpr(new ClassExpr(parseType(Boolean.class.getSimpleName())), "isInstance");
         instanceOfBoolean.addArgument(new EnclosedExpr(c.getExpression()));
         ConditionalExpr result = new ConditionalExpr(instanceOfBoolean, safeInternal, e.getExpression());
         return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.mergeFDs(c, t, e));
@@ -1401,7 +1404,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     @Override
     public DirectCompilerResult visitParametersEmpty(FEEL_1_1Parser.ParametersEmptyContext ctx) {
-        return DirectCompilerResult.of(JavaParser.parseExpression("java.util.Collections.emptyList()"), BuiltInType.LIST);
+        return DirectCompilerResult.of(parseExpression("java.util.Collections.emptyList()"), BuiltInType.LIST);
     }
 
     @Override
@@ -1460,7 +1463,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     @Override
     public DirectCompilerResult visitType(FEEL_1_1Parser.TypeContext ctx) {
         String typeAsText = ParserHelper.getOriginalText(ctx);
-        Expression biT = JavaParser.parseExpression("org.kie.dmn.feel.lang.types.BuiltInType");
+        Expression biT = parseExpression("org.kie.dmn.feel.lang.types.BuiltInType");
         MethodCallExpr determineCall = new MethodCallExpr(biT, "determineTypeFromName");
         determineCall.addArgument(new StringLiteralExpr(typeAsText));
         return DirectCompilerResult.of(determineCall, BuiltInType.UNKNOWN);
@@ -1506,7 +1509,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     }
 
     private Expression anonFunctionEvaluationContext2Object(Expression expression) {
-        Expression anonFunctionClass = JavaParser.parseExpression("new java.util.function.Function<EvaluationContext, Object>() {\n" +
+        Expression anonFunctionClass = parseExpression("new java.util.function.Function<EvaluationContext, Object>() {\n" +
                                                                   "    @Override\n" +
                                                                   "    public Object apply(EvaluationContext feelExprCtx) {\n" +
                                                                   "        return null;\n" +

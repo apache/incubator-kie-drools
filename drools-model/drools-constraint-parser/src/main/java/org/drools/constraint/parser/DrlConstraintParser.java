@@ -135,8 +135,7 @@ public final class DrlConstraintParser {
         final GeneratedDrlConstraintParser parser = getParserForProvider(provider);
         try {
             N resultNode = start.parse(parser);
-            ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getTokens(),
-                    parser.getCommentsCollection());
+            ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getCommentsCollection());
 
             configuration.getPostProcessors().forEach(postProcessor ->
                     postProcessor.process(result, configuration));
@@ -147,7 +146,7 @@ public final class DrlConstraintParser {
         } catch (Exception e) {
             final String message = e.getMessage() == null ? "Unknown error" : e.getMessage();
             parser.problems.add(new Problem(message, null, e));
-            return new ParseResult<>(null, parser.problems, parser.getTokens(), parser.getCommentsCollection());
+            return new ParseResult<>(null, parser.problems, parser.getCommentsCollection());
         } finally {
             try {
                 provider.close();
