@@ -28,6 +28,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieSessionFluent;
 import org.kie.internal.builder.fluent.Scope;
@@ -44,15 +45,25 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
             "import " + Message.class.getCanonicalName() + "\n";
 
     String drl1 = "global String outS;\n" +
+            "global String outS2;\n" +
             "global Long timeNow;\n" +
-            "rule R1 when\n" +
+            "rule R1\n" +
+            "when\n" +
             "   s : String()\n" +
             "then\n" +
             "    kcontext.getKnowledgeRuntime().setGlobal(\"outS\", s);\n" +
             "    kcontext.getKnowledgeRuntime().setGlobal(\"timeNow\", kcontext.getKnowledgeRuntime().getSessionClock().getCurrentTime() );\n" +
+            "end\n\n" +
+            "rule R2\n" +
+            "agenda-group \"agenda2\"\n" +
+            "when\n" +
+            "   s : String()\n" +
+            "then\n" +
+            "    kcontext.getKnowledgeRuntime().setGlobal(\"outS2\", s);\n" +
             "end\n";
 
-    ReleaseId releaseId = SimulateTestBase.createKJarWithMultipleResources("org.kie", new String[]{header + drl1}, new ResourceType[]{ResourceType.DRL});
+    String id = "org.kie";
+    ReleaseId releaseId = SimulateTestBase.createKJarWithMultipleResources(id, new String[]{header + drl1}, new ResourceType[]{ResourceType.DRL});
 
     @Test
     public void testOutName() {
@@ -438,6 +449,60 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         RequestContext requestContext = runner.execute(f.getExecutable());
 
         assertEquals("h1", requestContext.getOutputs().get("outS1"));
+    }
+
+    @Test
+    public void testKieSessionByName() {
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
+
+        ExecutableBuilder f = ExecutableBuilder.create();
+
+        f.newApplicationContext("app1")
+                .getKieContainer(releaseId)
+                .newSession(id + ".KSession1")
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS").out("outS1")
+                .dispose();
+
+        RequestContext requestContext = runner.execute(f.getExecutable());
+
+        assertEquals("h1", requestContext.getOutputs().get("outS1"));
+    }
+
+    @Test
+    public void testAgendaGroup() {
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
+
+        ExecutableBuilder f = ExecutableBuilder.create();
+
+        f.newApplicationContext("app1")
+                .getKieContainer(releaseId)
+                .newSession()
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS2").out("outS2")
+                .dispose();
+
+        RequestContext requestContext = runner.execute(f.getExecutable());
+
+        assertNotEquals("h1", requestContext.getOutputs().get("outS2"));
+
+        // now set active agenda group
+        f = ExecutableBuilder.create();
+
+        f.newApplicationContext("app1")
+                .getKieContainer(releaseId)
+                .newSession()
+                .setActiveAgendaGroup("agenda2")
+                .insert("h1")
+                .fireAllRules()
+                .getGlobal("outS2").out("outS2")
+                .dispose();
+
+        requestContext = runner.execute(f.getExecutable());
+
+        assertEquals("h1", requestContext.getOutputs().get("outS2"));
     }
 
     public static KieModule createAndDeployJar(KieServices ks,

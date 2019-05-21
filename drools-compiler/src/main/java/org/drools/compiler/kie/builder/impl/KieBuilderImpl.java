@@ -374,7 +374,10 @@ public class KieBuilderImpl
             return true;
         } else {
             String folderNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
-            folderNameForFile = folderNameForFile.startsWith( RESOURCES_ROOT ) ? folderNameForFile.substring( RESOURCES_ROOT.length() ) : folderNameForFile;
+            int resourcesPos = folderNameForFile.indexOf( RESOURCES_ROOT );
+            if (resourcesPos >= 0) {
+                folderNameForFile = folderNameForFile.substring( resourcesPos + RESOURCES_ROOT.length() );
+            }
             String pkgNameForFile = packageNameForFile( fileName, folderNameForFile, !useFolders, file );
             return isPackageInKieBase( kieBase, pkgNameForFile );
         }

@@ -17,7 +17,7 @@
           <expressionAlias>lengthYears</expressionAlias>
         </FactMapping>
       </factMappings>
-      <dmoSession></dmoSession>
+      <dmoSession>default</dmoSession>
       <type>RULE</type>
     </simulationDescriptor>
     <scenarios>
