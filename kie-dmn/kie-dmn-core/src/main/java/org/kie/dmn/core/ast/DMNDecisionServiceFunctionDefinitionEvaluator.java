@@ -33,6 +33,7 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -86,6 +87,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
+        private final boolean typeCheck;
 
         public DMNDSFunction(String name, List<DSFormalParameter> parameters, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
             super(name);
@@ -93,6 +95,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
             this.evaluator = evaluator;
             this.eventManager = eventManager;
             this.resultContext = result;
+            typeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
         public Object invoke(EvaluationContext ctx, Object[] params) {
@@ -100,10 +103,21 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
 
             DMNContext dmnContext = eventManager.getRuntime().newContext();
             try {
+                if (params.length != parameters.size()) {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.ERROR,
+                                          null,
+                                          resultContext,
+                                          null,
+                                          null,
+                                          Msg.PARAMETER_COUNT_MISMATCH_DS,
+                                          getName());
+                    return null;
+                }
                 for (int i = 0; i < params.length; i++) {
                     DSFormalParameter formalParameter = parameters.get(i);
                     if (formalParameter.getImportName() == null) {
-                        dmnContext.set(formalParameter.name, params[i]);
+                        dmnContext.set(formalParameter.name, performTypeCheckIfNeeded(params[i], i));
                     } else {
                         Map<String, Object> importNameCtx = null;
                         if (dmnContext.isDefined(formalParameter.getImportName())) {
@@ -112,7 +126,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                             importNameCtx = new HashMap<>();
                             dmnContext.set(formalParameter.getImportName(), importNameCtx);
                         }
-                        importNameCtx.put(formalParameter.getElementName(), params[i]);
+                        importNameCtx.put(formalParameter.getElementName(), performTypeCheckIfNeeded(params[i], i));
                     }
                 }
                 resultContext.setContext(dmnContext);
@@ -134,6 +148,29 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                 return null;
             } finally {
                 resultContext.setContext(previousContext);
+            }
+        }
+
+        private Object performTypeCheckIfNeeded(Object param, int paramIndex) {
+            if (typeCheck) {
+                DSFormalParameter dsFormalParameter = parameters.get(paramIndex);
+                if (dsFormalParameter.type.isAssignableValue(param)) {
+                    return param;
+                } else {
+                    MsgUtil.reportMessage(LOG,
+                                          DMNMessage.Severity.WARN,
+                                          null,
+                                          resultContext,
+                                          null,
+                                          null,
+                                          Msg.PARAMETER_TYPE_MISMATCH_DS,
+                                          dsFormalParameter.name,
+                                          dsFormalParameter.type,
+                                          MsgUtil.clipString(param.toString(), 50));
+                    return null;
+                }
+            } else {
+                return param;
             }
         }
 
