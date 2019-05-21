@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
@@ -123,40 +123,40 @@ public class DMNFeelExpressionEvaluatorTest {
     }
 
     @Test
-    public void newEvaluationContextTest() {
+    public void listenerTest() {
         FEELEvent syntaxErrorEvent = new SyntaxErrorEvent(Severity.ERROR, "test", null, 0, 0, null);
         FEELEvent genericError = new FEELEventBase(Severity.ERROR, "error", null);
         FEELEvent notError = new FEELEventBase(Severity.INFO, "info", null);
 
         AtomicReference<FEELEvent> error = new AtomicReference<>();
-        EvaluationContext evaluationContext = expressionEvaluator.newEvaluationContext(error);
+        FEEL feel = expressionEvaluator.newFeelEvaluator(error);
 
         // Only a single error of type syntax
-        applyEvents(Collections.singletonList(syntaxErrorEvent), evaluationContext);
+        applyEvents(Collections.singletonList(syntaxErrorEvent), feel);
         assertEquals(syntaxErrorEvent, error.get());
 
         error.set(null);
 
         // Syntax error as second
-        applyEvents(Arrays.asList(genericError, syntaxErrorEvent), evaluationContext);
+        applyEvents(Arrays.asList(genericError, syntaxErrorEvent), feel);
         assertEquals(syntaxErrorEvent, error.get());
 
         error.set(null);
 
         // Syntax error as first
-        applyEvents(Arrays.asList(syntaxErrorEvent, genericError), evaluationContext);
+        applyEvents(Arrays.asList(syntaxErrorEvent, genericError), feel);
         assertEquals(syntaxErrorEvent, error.get());
 
         error.set(null);
 
         // Not error
-        applyEvents(Collections.singletonList(notError), evaluationContext);
+        applyEvents(Collections.singletonList(notError), feel);
         assertNull(error.get());
     }
 
-    private void applyEvents(List<FEELEvent> events, EvaluationContext evaluationContext) {
+    private void applyEvents(List<FEELEvent> events, FEEL feel) {
         for (FEELEvent event : events) {
-            evaluationContext.getListeners().forEach(listener -> listener.onEvent(event));
+            feel.getListeners().forEach(listener -> listener.onEvent(event));
         }
     }
 }
