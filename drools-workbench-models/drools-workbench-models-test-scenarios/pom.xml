@@ -80,6 +80,12 @@
       <artifactId>kie-pmml</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-guided-scorecard</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
