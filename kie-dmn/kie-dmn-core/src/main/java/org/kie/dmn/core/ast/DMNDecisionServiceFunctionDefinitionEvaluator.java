@@ -117,7 +117,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                 for (int i = 0; i < params.length; i++) {
                     DSFormalParameter formalParameter = parameters.get(i);
                     if (formalParameter.getImportName() == null) {
-                        dmnContext.set(formalParameter.name, typeCheck(params[i], i));
+                        dmnContext.set(formalParameter.name, performTypeCheckIfNeeded(params[i], i));
                     } else {
                         Map<String, Object> importNameCtx = null;
                         if (dmnContext.isDefined(formalParameter.getImportName())) {
@@ -126,7 +126,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                             importNameCtx = new HashMap<>();
                             dmnContext.set(formalParameter.getImportName(), importNameCtx);
                         }
-                        importNameCtx.put(formalParameter.getElementName(), typeCheck(params[i], i));
+                        importNameCtx.put(formalParameter.getElementName(), performTypeCheckIfNeeded(params[i], i));
                     }
                 }
                 resultContext.setContext(dmnContext);
@@ -151,7 +151,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
             }
         }
 
-        private Object typeCheck(Object param, int paramIndex) {
+        private Object performTypeCheckIfNeeded(Object param, int paramIndex) {
             if (typeCheck) {
                 DSFormalParameter dsFormalParameter = parameters.get(paramIndex);
                 if (dsFormalParameter.type.isAssignableValue(param)) {
