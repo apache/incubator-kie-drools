@@ -200,7 +200,7 @@ public class ScenarioBeanUtil {
             return String.valueOf(cleanValue);
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
             LocalDate localDate = (LocalDate) cleanValue;
-            return String.format("%2d-%2d-%4d", localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getYear());
+            return String.format("%02d-%02d-%04d", localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getYear());
         } else {
             return String.valueOf(cleanValue);
         }

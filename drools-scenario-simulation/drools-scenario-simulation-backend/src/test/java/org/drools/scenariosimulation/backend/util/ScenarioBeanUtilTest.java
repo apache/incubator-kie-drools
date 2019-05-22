@@ -145,7 +145,7 @@ public class ScenarioBeanUtilTest {
         assertEquals((short) 1, convertValue(Short.class.getCanonicalName(), "1", classLoader));
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), "0", classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), "0", classLoader));
-        assertEquals(LocalDate.of(2018, 10, 20), convertValue(LocalDate.class.getCanonicalName(), "10-20-2018", classLoader));
+        assertEquals(LocalDate.of(2018, 5, 20), convertValue(LocalDate.class.getCanonicalName(), "05-20-2018", classLoader));
         assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
     }
 
