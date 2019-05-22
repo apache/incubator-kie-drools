@@ -95,7 +95,7 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.LabeledStmt;
 import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.stmt.SwitchEntryStmt;
+import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.SynchronizedStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
@@ -496,7 +496,7 @@ public interface DrlGenericVisitor<R, A> extends GenericVisitor<R,A> {
     }
 
     @Override
-    default R visit(SwitchEntryStmt n, A arg) {
+    default R visit(SwitchEntry n, A arg) {
         return defaultMethod(n, arg);
     }
 
