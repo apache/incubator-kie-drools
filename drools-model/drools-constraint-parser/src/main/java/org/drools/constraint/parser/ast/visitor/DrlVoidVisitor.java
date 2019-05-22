@@ -95,7 +95,7 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.LabeledStmt;
 import com.github.javaparser.ast.stmt.LocalClassDeclarationStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.stmt.SwitchEntryStmt;
+import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.SynchronizedStmt;
 import com.github.javaparser.ast.stmt.ThrowStmt;
@@ -515,7 +515,7 @@ public interface DrlVoidVisitor<A> extends VoidVisitor<A> {
     }
 
     @Override
-    default void visit(SwitchEntryStmt n, A arg) {
+    default void visit(SwitchEntry n, A arg) {
 
     }
 

@@ -70,6 +70,7 @@ import com.github.javaparser.TokenRange;
 import com.github.javaparser.TokenRange;
 import org.drools.constraint.parser.Token;
 import com.github.javaparser.JavaToken;
+import static com.github.javaparser.ast.stmt.SwitchEntry.Type.*;
 
 import static com.github.javaparser.JavaToken.INVALID;
 import static com.github.javaparser.ast.Node.Parsedness.UNPARSABLE;
@@ -2302,8 +2303,8 @@ ExpressionStmt StatementExpression():
 SwitchStmt SwitchStatement():
 {
 	Expression selector;
-	SwitchEntryStmt entry;
-	NodeList<SwitchEntryStmt> entries = emptyList();
+	SwitchEntry entry;
+	NodeList<SwitchEntry> entries = emptyList();
 	JavaToken begin;
 }
 {
@@ -2317,8 +2318,8 @@ SwitchStmt SwitchStatement():
 SwitchExpr SwitchExpression():
 {
 	Expression selector;
-	SwitchEntryStmt entry;
-	NodeList<SwitchEntryStmt> entries = emptyList();
+	SwitchEntry entry;
+	NodeList<SwitchEntry> entries = emptyList();
 	JavaToken begin;
 }
 {
@@ -2329,21 +2330,48 @@ SwitchExpr SwitchExpression():
   { return new SwitchExpr(range(begin, token()), selector, entries); }
 }
 
-SwitchEntryStmt SwitchEntry():
+SwitchEntry SwitchEntry():
 {
 	Expression label = null;
-	NodeList<Statement> stmts;
+	NodeList<Expression> labels = emptyList();
+	NodeList<Statement> stmts = emptyList();
 	JavaToken begin;
+	SwitchEntry ret;
+	Expression expression = null;
+	Statement stmt = null;
 }
 {
-  (
-	  "case" {begin=token();} label = Expression()
+	(
+		"case" {begin=token();} label = ConditionalExpression() { labels = add(labels, label); }
+		( "," label = ConditionalExpression()  { labels = add(labels, label); } )*
 	|
-	  "default" {begin=token();}
-  )
-  ":" stmts = Statements()
-
-  { return new SwitchEntryStmt(range(begin, token()),label, stmts); }
+		"default" {begin=token();}
+	)
+    (
+        ":" stmts = Statements() { ret = new SwitchEntry(range(begin, token()), labels, STATEMENT_GROUP, stmts); }
+    |
+        "->"
+        (
+            expression = Expression() ";" {
+                TokenRange r=range(begin, token());
+				stmts.add(new ExpressionStmt(r, expression));
+				ret = new SwitchEntry(r, labels, EXPRESSION, stmts);
+            }
+		|
+			stmt = Block() {
+				TokenRange r=range(begin, token());
+				stmts.add(stmt);
+				ret = new SwitchEntry(r, labels, BLOCK, stmts);
+			}
+		|
+			stmt = ThrowStatement() {
+				TokenRange r=range(begin, token());
+				stmts.add(stmt);
+				ret = new SwitchEntry(r, labels, THROWS_STATEMENT, stmts);
+			}
+		)
+    )
+	{ return ret; }
 }
 
 IfStmt IfStatement():
