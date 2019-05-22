@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.backend.expression;
 
 import java.util.Arrays;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,7 +32,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class BaseExpressionOperatorTest {
 
@@ -43,12 +43,10 @@ public class BaseExpressionOperatorTest {
         Arrays.stream(values())
                 .filter(e -> !EQUALS.equals(e))
                 .forEach(operator -> {
-                    try {
-                        operator.evaluateLiteralExpression(String.class.getCanonicalName(), " Test ", classLoader);
-                        fail();
-                    } catch (IllegalStateException e) {
-                        assertTrue(e.getMessage().endsWith(" cannot be used into a Given clause"));
-                    }
+                    Assertions.assertThatThrownBy(
+                            () -> operator.evaluateLiteralExpression(String.class.getCanonicalName(), " Test ", classLoader))
+                            .isInstanceOf(IllegalStateException.class)
+                            .hasMessageEndingWith(" cannot be used into a Given clause");
                 });
 
         assertEquals("Test", EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= Test", classLoader));

@@ -31,6 +31,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -43,17 +44,18 @@ public class DMNFeelExpressionEvaluatorTest {
     public void evaluateUnaryExpression() {
         assertTrue(expressionEvaluator.evaluateUnaryExpression("not( true )", false, boolean.class));
         assertTrue(expressionEvaluator.evaluateUnaryExpression(">2, >5", BigDecimal.valueOf(6), BigDecimal.class));
-        try {
-            expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class);
-        } catch (IllegalArgumentException e) {
-            assertEquals("Raw expression should be a string", e.getMessage());
-        }
 
-        try {
-            expressionEvaluator.evaluateUnaryExpression("! true", null, null);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().startsWith("Impossible to parse the expression"));
-        }
+        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Raw expression should be a string");
+
+        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("variable", null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Error during evaluation:");
+
+        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Syntax error:");
     }
 
     @Test
@@ -62,17 +64,15 @@ public class DMNFeelExpressionEvaluatorTest {
         Object nonStringObject = new Object();
         assertEquals(nonStringObject, expressionEvaluator.evaluateLiteralExpression("class", null, nonStringObject));
 
-        try {
-            expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), null, "SPEED");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().startsWith("Error during evaluation:"));
-        }
+        assertThatThrownBy(() -> expressionEvaluator
+                .evaluateLiteralExpression(String.class.getCanonicalName(), null, "SPEED"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Error during evaluation:");
 
-        try {
-            expressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), null, "\"SPEED");
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().startsWith("Syntax error:"));
-        }
+        assertThatThrownBy(() -> expressionEvaluator
+                .evaluateLiteralExpression(String.class.getCanonicalName(), null, "\"SPEED"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("Syntax error:");
     }
 
     @SuppressWarnings("unchecked")

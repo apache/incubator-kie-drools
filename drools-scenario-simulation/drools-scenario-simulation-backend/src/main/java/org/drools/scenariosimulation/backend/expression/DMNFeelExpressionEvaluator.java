@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.FEEL;
@@ -91,11 +92,34 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
     @Override
     protected Object internalLiteralEvaluation(String raw, String className) {
+        EvaluationContext evaluationContext = newEvaluationContext();
+        return executeAndVerifyErrors(feel -> feel.evaluate(raw, evaluationContext));
+    }
+
+    @Override
+    protected boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString) {
+        if (rawExpression != null && skipEmptyString && rawExpression.isEmpty()) {
+            return true;
+        }
+        EvaluationContext evaluationContext = newEvaluationContext();
+        List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression));
+        return unaryTests.stream()
+                .allMatch(unaryTest -> Optional
+                        .ofNullable(unaryTest.apply(evaluationContext, resultValue))
+                        .orElse(false));
+    }
+
+    /**
+     * Common internal method that execute the command and manage error
+     * @param command
+     * @param <T>
+     * @return
+     */
+    protected <T> T executeAndVerifyErrors(Function<FEEL, T> command) {
         AtomicReference<FEELEvent> errorHolder = new AtomicReference<>();
         FEEL feel = newFeelEvaluator(errorHolder);
 
-        EvaluationContext evaluationContext = newEvaluationContext();
-        Object expressionResult = feel.evaluate(raw, evaluationContext);
+        T result = command.apply(feel);
         FEELEvent errorEvent = errorHolder.get();
         if (errorEvent != null) {
             if (errorEvent instanceof SyntaxErrorEvent) {
@@ -104,28 +128,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
                 throw new IllegalArgumentException("Error during evaluation: " + errorEvent.getMessage());
             }
         }
-        return expressionResult;
-    }
-
-    @Override
-    protected boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString) {
-        if (rawExpression != null && skipEmptyString && rawExpression.isEmpty()) {
-            return true;
-        }
-        AtomicReference<FEELEvent> errorHolder = new AtomicReference<>();
-        FEEL feel = newFeelEvaluator(errorHolder);
-
-        EvaluationContext evaluationContext = newEvaluationContext();
-        List<UnaryTest> unaryTests = feel.evaluateUnaryTests(rawExpression);
-        FEELEvent errorEvent = errorHolder.get();
-        if (errorEvent != null) {
-            String detailedError = errorEvent.getMessage();
-            throw new IllegalArgumentException("Impossible to parse the expression '" + rawExpression + "': " + detailedError);
-        }
-        return unaryTests.stream()
-                .allMatch(unaryTest -> Optional
-                        .ofNullable(unaryTest.apply(evaluationContext, resultValue))
-                        .orElse(false));
+        return result;
     }
 
     @Override
