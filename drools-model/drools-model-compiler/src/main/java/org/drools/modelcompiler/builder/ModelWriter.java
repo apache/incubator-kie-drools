@@ -7,13 +7,29 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
 import com.github.javaparser.ast.CompilationUnit;
@@ -24,6 +40,7 @@ import org.drools.core.util.Drools;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 import org.kie.api.builder.ReleaseId;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
@@ -113,11 +130,88 @@ public class ModelWriter {
         }
 
     }
-    private void debugPrettyPrinter(PrettyPrinter prettyPrinter, CompilationUnit cu) {
-//        Node node = cu.getChildNodes().get(13).getChildNodes().get(2).getChildNodes().get(4).getChildNodes().get(2).getChildNodes().get(0).getChildNodes().get(1).getChildNodes().get(4).getChildNodes().get(1).getChildNodes().get(1).getChildNodes().get(0).getChildNodes().get(0);
-//        node.remove();
-//        prettyPrinter.print(node);
+    private void debugPrettyPrinter(PrettyPrinter prettyPrinter, CompilationUnit bugCu) {
+        CompilationUnit cu = recreateAST();
+
+        prettyPrinter.print(cu);
+        prettyPrinter.print(bugCu);
 
 
+    }
+
+    private CompilationUnit recreateAST() {
+        CompilationUnit cu = new CompilationUnit();
+
+        cu.setPackageDeclaration("defaultpkg");
+        cu.addImport("defaultpkg.RulesBA68E888195AF4AC9A62AC70AB49A510", true, true);
+
+        ClassOrInterfaceDeclaration clazz = cu.addClass("RulesBA68E888195AF4AC9A62AC70AB49A510RuleMethods0", Modifier.Keyword.PUBLIC);
+
+        NodeList<Modifier> publicStatic = nodeList(Modifier.publicModifier(), Modifier.staticModifier());
+        ClassOrInterfaceType ruleType = new ClassOrInterfaceType(null, "org.drools.model.Rule");
+        MethodDeclaration look = new MethodDeclaration(publicStatic, ruleType, "rule_look");
+        BlockStmt lookstmt = new BlockStmt();
+
+        String variableName = "rule";
+        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ruleType, variableName);
+        ReturnStmt returnStmt1 = new ReturnStmt(new NameExpr(variableName));
+
+        MethodCallExpr ruleMethod = new MethodCallExpr(new NameExpr("D"), "rule", nodeList(new StringLiteralExpr("look")));
+
+        ClassOrInterfaceType droolsImpls = new ClassOrInterfaceType(null, "org.drools.modelcompiler.consequence.DroolsImpl");
+
+        Expression castExpr = new EnclosedExpr(new CastExpr(droolsImpls, new NameExpr("drools")));
+        MethodCallExpr asKnowledgeHelper = new MethodCallExpr(castExpr, "asKnowledgeHelper");
+
+        Expression insertLogical = new MethodCallExpr(asKnowledgeHelper, "insertLogical", nodeList(new IntegerLiteralExpr(1)));
+
+        NodeList<Statement> xes = nodeList(new ExpressionStmt(insertLogical));
+        Type unknownType = new UnknownType();
+        LambdaExpr droolsLambda = new LambdaExpr(new Parameter(unknownType, new SimpleName("drools")), new BlockStmt(xes));
+        droolsLambda.setEnclosingParameters(true);
+
+        MethodCallExpr executeMethod = new MethodCallExpr(new NameExpr("D"), "execute", nodeList(droolsLambda));
+        MethodCallExpr build = new MethodCallExpr(ruleMethod, "build", nodeList(executeMethod));
+
+        AssignExpr assignExpr = new AssignExpr(variableDeclarationExpr, build, AssignExpr.Operator.ASSIGN);
+        ExpressionStmt expressionStmt = new ExpressionStmt(assignExpr);
+
+        lookstmt.addStatement(expressionStmt);
+        lookstmt.addStatement(returnStmt1);
+
+        look.setBody(lookstmt);
+        clazz.addMember(look);
+
+        MethodDeclaration go1 = new MethodDeclaration(publicStatic, ruleType, "rule_go1");
+
+        BlockStmt gostmt = new BlockStmt();
+
+        VariableDeclarationExpr variableDeclarationExpr2 = new VariableDeclarationExpr(ruleType, variableName);
+        ReturnStmt returnStmt2 = new ReturnStmt(new NameExpr(variableName));
+
+        MethodCallExpr ruleMethod2 = new MethodCallExpr(new NameExpr("D"), "rule", nodeList(new StringLiteralExpr("go1")));
+
+        Expression castExpr2 = new EnclosedExpr(new CastExpr(droolsImpls, new NameExpr("drools")));
+        MethodCallExpr asKnowledgeHelper2 = new MethodCallExpr(castExpr2, "asKnowledgeHelper");
+
+        Expression getRuleExpr = new MethodCallExpr(asKnowledgeHelper2, "getRule");
+        Expression getNameExpr = new MethodCallExpr(getRuleExpr, "getName");
+
+        Expression listAdd = new MethodCallExpr(new NameExpr("list"), "add", nodeList(getNameExpr));
+
+        NodeList<Statement> xes2 = nodeList(new ExpressionStmt(listAdd));
+        LambdaExpr droolsLambda2 = new LambdaExpr(new Parameter(unknownType, new SimpleName("drools")), new BlockStmt(xes2));
+        droolsLambda2.setEnclosingParameters(true);
+        MethodCallExpr executeMethod2 = new MethodCallExpr(new NameExpr("D"), "execute", nodeList(droolsLambda2));
+        MethodCallExpr build2 = new MethodCallExpr(ruleMethod2, "build", nodeList(executeMethod2));
+        AssignExpr assignExpr2 = new AssignExpr(variableDeclarationExpr2, build2, AssignExpr.Operator.ASSIGN);
+        ExpressionStmt expressionStmt2 = new ExpressionStmt(assignExpr2);
+
+        gostmt.addStatement(expressionStmt2);
+        gostmt.addStatement(returnStmt2);
+        go1.setBody(gostmt);
+
+        clazz.addMember(go1);
+        return cu;
     }
 }
