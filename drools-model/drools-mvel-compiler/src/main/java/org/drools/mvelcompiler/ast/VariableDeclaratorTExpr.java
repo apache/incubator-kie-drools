@@ -3,7 +3,7 @@ package org.drools.mvelcompiler.ast;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -34,7 +34,7 @@ public class VariableDeclaratorTExpr implements TypedExpression {
     public Node toJavaExpression() {
         Optional<Type> optInitType = initExpression.flatMap(TypedExpression::getType);
         final Type ieType = optInitType.orElse(this.type);
-        com.github.javaparser.ast.type.Type jpType = JavaParser.parseType(ieType.getTypeName());
+        com.github.javaparser.ast.type.Type jpType = StaticJavaParser.parseType(ieType.getTypeName());
 
         return initExpression.map(ie -> {
 

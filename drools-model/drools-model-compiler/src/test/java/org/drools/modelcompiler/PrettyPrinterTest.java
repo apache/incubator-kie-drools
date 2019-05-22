@@ -1,6 +1,7 @@
 package org.drools.modelcompiler;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
@@ -65,6 +66,6 @@ public class PrettyPrinterTest {
                 "    }\n" +
                 "}\n";
 
-        return JavaParser.parse(input);
+        return StaticJavaParser.parse(input);
     }
 }
