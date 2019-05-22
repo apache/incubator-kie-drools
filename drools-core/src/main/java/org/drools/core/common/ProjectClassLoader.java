@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import org.drools.core.util.ClassUtils;
 import org.kie.internal.utils.KieTypeResolver;
@@ -345,12 +346,16 @@ public class ProjectClassLoader extends ClassLoader implements KieTypeResolver {
     }
 
     public void setDroolsClassLoader(ClassLoader droolsClassLoader) {
-        if (getParent() != droolsClassLoader) {
+        if (getParent() != droolsClassLoader && isOsgiClassLoader(droolsClassLoader)) {
             this.droolsClassLoader = droolsClassLoader;
             if (CACHE_NON_EXISTING_CLASSES) {
                 nonExistingClasses.clear();
             }
         }
+    }
+
+    private boolean isOsgiClassLoader(ClassLoader cl) {
+        return Stream.of( cl.getClass().getInterfaces() ).map( i -> i.getSimpleName() ).anyMatch( name -> name.equals( "BundleReference" ) );
     }
 
     // WARNING: This is and should be used just for testing purposes.
