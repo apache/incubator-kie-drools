@@ -41,6 +41,7 @@ import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 import org.kie.api.builder.ReleaseId;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.assertj.core.api.Assertions.*;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
@@ -133,6 +134,8 @@ public class ModelWriter {
     private void debugPrettyPrinter(PrettyPrinter prettyPrinter, CompilationUnit bugCu) {
         CompilationUnit cu = recreateAST();
 
+        assertThat(cu).isEqualToComparingFieldByFieldRecursively(bugCu);
+
         prettyPrinter.print(cu);
         prettyPrinter.print(bugCu);
 
@@ -143,9 +146,9 @@ public class ModelWriter {
         CompilationUnit cu = new CompilationUnit();
 
         cu.setPackageDeclaration("defaultpkg");
-        cu.addImport("defaultpkg.RulesBA68E888195AF4AC9A62AC70AB49A510", true, true);
+        cu.addImport("defaultpkg.Rules", true, true);
 
-        ClassOrInterfaceDeclaration clazz = cu.addClass("RulesBA68E888195AF4AC9A62AC70AB49A510RuleMethods0", Modifier.Keyword.PUBLIC);
+        ClassOrInterfaceDeclaration clazz = cu.addClass("Rules", Modifier.Keyword.PUBLIC);
 
         NodeList<Modifier> publicStatic = nodeList(Modifier.publicModifier(), Modifier.staticModifier());
         ClassOrInterfaceType ruleType = new ClassOrInterfaceType(null, "org.drools.model.Rule");

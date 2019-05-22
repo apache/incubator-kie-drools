@@ -145,7 +145,8 @@ public class PackageModel {
         this.name = name;
         this.pkgUUID = (releaseId != null && !releaseId.isSnapshot()) ? md5Hash(releaseId.toString()+name) : generateUUID();
         this.isPattern = isPattern;
-        this.rulesFileName = RULES_FILE_NAME + pkgUUID;
+        // TODO UNCOMMENT THIS
+        this.rulesFileName = RULES_FILE_NAME;
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
@@ -584,30 +585,32 @@ public class PackageModel {
     }
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
-        // fixed part
-        cu.addImport("java.util.*");
-        cu.addImport("org.drools.model.*");
-        if(isPattern) {
-            cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
-        } else {
-            cu.addImport("org.drools.modelcompiler.dsl.flow.D");
-        }
-        cu.addImport("org.drools.model.Index.ConstraintType");
-        cu.addImport("java.time.*");
-        cu.addImport("java.time.format.*");
-        cu.addImport("java.text.*");
-        cu.addImport("org.drools.core.util.*");
+        // TODO UNCOMMENT THIS
 
-        // imports from DRL:
-        for ( String i : imports ) {
-            if ( i.equals(name+".*") ) {
-                continue; // skip same-package star import.
-            }
-            cu.addImport(i);
-        }
-        for (String i : staticImports) {
-            cu.addImport( i, true, false );
-        }
+        // fixed part
+//        cu.addImport("java.util.*");
+//        cu.addImport("org.drools.model.*");
+//        if(isPattern) {
+//            cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
+//        } else {
+//            cu.addImport("org.drools.modelcompiler.dsl.flow.D");
+//        }
+//        cu.addImport("org.drools.model.Index.ConstraintType");
+//        cu.addImport("java.time.*");
+//        cu.addImport("java.time.format.*");
+//        cu.addImport("java.text.*");
+//        cu.addImport("org.drools.core.util.*");
+//
+//        // imports from DRL:
+//        for ( String i : imports ) {
+//            if ( i.equals(name+".*") ) {
+//                continue; // skip same-package star import.
+//            }
+//            cu.addImport(i);
+//        }
+//        for (String i : staticImports) {
+//            cu.addImport( i, true, false );
+//        }
     }
 
     private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
