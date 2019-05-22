@@ -53,7 +53,9 @@ public class RuleCodegen implements Generator {
 
     public static RuleCodegen ofFiles(Path basePath, Collection<File> files) throws IOException {
         KieServices ks = KieServices.Factory.get();
-        return new RuleCodegen((KieBuilderImpl) ks.newKieBuilder(basePath.toFile()), true, files);
+        KieBuilderImpl kieBuilder = (KieBuilderImpl) ks.newKieBuilder(basePath.toFile());
+        kieBuilder.setEnforceResourceLocation(false);
+        return new RuleCodegen(kieBuilder, true, files);
     }
 
     private final boolean oneClassPerRule;

@@ -105,6 +105,8 @@ public class KieBuilderImpl
     private final ClassLoader classLoader;
 
     private PomModel pomModel;
+    
+    private boolean enforceResourceLocation = true;
 
     public KieBuilderImpl( File file ) {
         this( file, null );
@@ -302,18 +304,20 @@ public class KieBuilderImpl
 
         for ( String fileName : srcMfs.getFileNames() ) {
             String normalizedName = fileName.replace( File.separatorChar, '/' );
-            if ( fileName.startsWith( RESOURCES_ROOT ) && isFileInKieBase( kieBase, normalizedName, () -> srcMfs.getBytes( normalizedName ), useFolders ) ) {
+            if ( isFileInKieBase( kieBase, normalizedName, () -> srcMfs.getBytes( normalizedName ), useFolders ) ) {
                 copySourceToTarget( fileName );
             }
         }
     }
 
     String copySourceToTarget( String fileName ) {
-        if ( !fileName.startsWith( RESOURCES_ROOT ) ) {
-            return null;
+        if (enforceResourceLocation) {
+            if ( !fileName.startsWith( RESOURCES_ROOT ) ) {
+                return null;
+            }
         }
         byte[] bytes = srcMfs.getBytes( fileName );
-        String trgFileName = fileName.substring( RESOURCES_ROOT.length() );
+        String trgFileName = fileName.replace( RESOURCES_ROOT, "" );
         if ( bytes != null ) {
             trgMfs.write( trgFileName, bytes, true );
         } else {
@@ -765,5 +769,9 @@ public class KieBuilderImpl
     @Override
     public IncrementalResults incrementalBuild() {
         return new KieBuilderSetImpl( this ).build();
+    }
+    
+    public void setEnforceResourceLocation(boolean enforceResourceLocation) {
+        this.enforceResourceLocation = enforceResourceLocation;
     }
 }
