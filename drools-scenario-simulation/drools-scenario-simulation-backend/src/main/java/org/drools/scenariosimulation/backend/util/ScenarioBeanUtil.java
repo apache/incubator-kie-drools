@@ -166,7 +166,7 @@ public class ScenarioBeanUtil {
         } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
             return Short.parseShort(cleanStringForNumberParsing(value));
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
-            return LocalDate.parse(value, DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+            return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
 
         throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
@@ -200,7 +200,7 @@ public class ScenarioBeanUtil {
             return String.valueOf(cleanValue);
         } else if (clazz.isAssignableFrom(LocalDate.class)) {
             LocalDate localDate = (LocalDate) cleanValue;
-            return String.format("%02d-%02d-%04d", localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getYear());
+            return String.format("%04d-%02d-%02d", localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
         } else {
             return String.valueOf(cleanValue);
         }
