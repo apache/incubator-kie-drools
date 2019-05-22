@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_ECD4A4EA-F713-48CF-A7E4-A5AAFFA555DA" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:ac-data-types="https://kiegroup.org/dmn/_0DCAC99B-0CAF-44E8-923E-997CFA53D3BC" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_DCD3AF26-9D8A-48B2-B069-94C8B4E41CEC" name="air-conditioning-control" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_ECD4A4EA-F713-48CF-A7E4-A5AAFFA555DA">
+  <dmn:extensionElements/>
+  <dmn:import id="_FDE9CAC7-5F7D-4436-A972-41AF1BC9CA69" name="ac-data-types" namespace="https://kiegroup.org/dmn/_0DCAC99B-0CAF-44E8-923E-997CFA53D3BC" locationURI="default://master@bpms/dmn/src/main/resources/org/jboss/qa/bpms/dmn/air-conditioning-data-types.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:itemDefinition id="_BCE37CBF-BCA7-43E8-BBBD-DBFAF2DD9259" name="tMonth" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_85ECE5F5-6F36-439F-ADAB-660ECBC4406D">
+      <dmn:text>"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:businessKnowledgeModel id="_05139873-A562-44B8-B044-6AB268D6F672" name="Optimal Temperature">
+    <dmn:variable id="_FFBABBA1-0B2D-487A-AF2F-F619687870E1" name="Optimal Temperature" typeRef="Any"/>
+    <dmn:encapsulatedLogic id="_1516F5AC-9F89-4C9C-AF48-5B5B34FCB6B8" kind="FEEL">
+      <dmn:formalParameter id="_4A92607A-4EE1-404D-AD43-1D184FA0BADD" name="Month" typeRef="tMonth"/>
+      <dmn:decisionTable id="_918BC29A-9DD9-4EF7-A5B9-69757BA32510" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
+        <dmn:input id="_D9BCCF7D-70CB-4540-BC36-C169FFFC1CE9">
+          <dmn:inputExpression id="_51198C3F-B868-4D16-BC5E-7D19048DEDC7" typeRef="tMonth">
+            <dmn:text>Month</dmn:text>
+          </dmn:inputExpression>
+        </dmn:input>
+        <dmn:output id="_3C76D2FF-DB8E-4615-88FB-854EF38B3C5B" typeRef="Any"/>
+        <dmn:rule id="_24367B89-D76B-4096-BED2-DC8DF5F93947">
+          <dmn:inputEntry id="_3B7B2AF1-93CF-4B5E-8371-BA4A749D871E">
+            <dmn:text>"Jan"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_59A9CD3A-35C1-4A3B-8562-79ED39792272">
+            <dmn:text>20</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_AAB1792A-E137-4737-B302-6BE16EB5CB16">
+          <dmn:inputEntry id="_B373EACD-0508-48C0-94B9-DF68E2803586">
+            <dmn:text>"Feb"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_3F48B142-DC4F-421D-AD00-6AC2E6C1162C">
+            <dmn:text>20</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_910822D0-FB88-4D00-A377-49DBFD7284B3">
+          <dmn:inputEntry id="_E6B53F4F-B171-4BF8-98E4-9559443FA9AA">
+            <dmn:text>"Mar"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_3B0D771D-7259-4140-9F14-B85BB8E6E9A2">
+            <dmn:text>20</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_44265358-DBB7-488B-A1C2-2B1A6F00E705">
+          <dmn:inputEntry id="_4EB4FB6E-0392-4C69-923B-EC3AE9609E2B">
+            <dmn:text>"Apr"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_3B1C4B80-BEB6-4772-BD32-19E4CBE320F3">
+            <dmn:text>21</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_9E371B39-EE79-4B1C-BFC2-40335B0D771D">
+          <dmn:inputEntry id="_89E0913C-BEDF-45F5-9664-ED3176AAB4CE">
+            <dmn:text>"May"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_53896111-78A1-4C88-BE39-4E465CA355CE">
+            <dmn:text>22</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_5A8CB3A9-3E94-4452-A194-8E8FE7A1B3C8">
+          <dmn:inputEntry id="_8DBF4D19-9F78-44F3-92BC-3798A382FFD7">
+            <dmn:text>"Okt"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_71CB06C2-94AA-4FFF-9EF8-E0DB72702299">
+            <dmn:text>21</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_8FD7D71D-D9A4-41A3-94BF-2497143E14F2">
+          <dmn:inputEntry id="_5453DE60-E1A9-46D7-A016-9F54B20B8E5D">
+            <dmn:text>"Nov"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_4F2352B4-9C6A-443B-8FBF-EE9316714842">
+            <dmn:text>20</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_9B3F5BAC-EEDD-485C-A3EB-1C3259469478">
+          <dmn:inputEntry id="_91EFDEBC-84D2-4E50-81C2-67FD85C301E8">
+            <dmn:text>"Dec"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_FDF43C45-D909-4897-AA2E-D2EF0164A83F">
+            <dmn:text>20</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+        <dmn:rule id="_C3EA8FA5-C77F-4863-B820-F21CF677D6DC">
+          <dmn:description>To not waste energy</dmn:description>
+          <dmn:inputEntry id="_45C3B840-87B3-4C2A-ACAE-4FC0C7A36BAA">
+            <dmn:text>-</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_064D000C-42AF-4DAC-84A1-DE10E05D8594">
+            <dmn:text>25</dmn:text>
+          </dmn:outputEntry>
+        </dmn:rule>
+      </dmn:decisionTable>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmn:decision id="_1AF3E8CA-A5D7-4E50-8716-00CE7DE90F8A" name="ac-data-types.tAC">
+    <dmn:variable id="_8B0926E7-E99C-434F-81D5-23DE99E57092" name="ac-data-types.tAC" typeRef="context"/>
+    <dmn:informationRequirement id="_6DA4E081-850C-417C-BC5A-500EF180C4F3">
+      <dmn:requiredInput href="#_49EB3DD2-AAFA-476A-A9B2-DF1554F12F56"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_58509324-2E3B-4B99-BA51-B25F30B6C085">
+      <dmn:requiredInput href="#_B83EB714-CE7A-489F-B4A1-F882F1E7A568"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_75DE95CF-5DA5-4012-A11F-0EB603F5C60E">
+      <dmn:requiredKnowledge href="#_05139873-A562-44B8-B044-6AB268D6F672"/>
+    </dmn:knowledgeRequirement>
+    <dmn:context id="_BA857E22-96B3-4689-A7CE-8D5B6E698C06">
+      <dmn:contextEntry>
+        <dmn:variable id="_63D0758C-0AF7-4C25-A35E-87F5E5EB0718" name="current temperature" typeRef="ac-data-types.tTemperature"/>
+        <dmn:literalExpression id="_EC46ECAA-022D-4A00-A16A-612808C7DEC1">
+          <dmn:text>Outside Temperature</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_83CDD46C-D91E-4DA6-ACC7-EB6EA80C9EB2" name="mode" typeRef="ac-data-types.tMode"/>
+        <dmn:decisionTable id="_C73B4FB1-B67A-4D78-84C6-4DF9583DBFF8" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+          <dmn:input id="_E22FCA8C-BD10-4AD2-8E77-5A5856940C83">
+            <dmn:inputExpression id="_87FC6A23-1AE7-4B82-9DB4-614D79943B36" typeRef="number">
+              <dmn:text>Optimal Temperature(Month) - current temperature</dmn:text>
+            </dmn:inputExpression>
+          </dmn:input>
+          <dmn:output id="_8C9F8DA3-F288-4A7B-88FD-6AF35346F634" typeRef="ac-data-types.tMode"/>
+          <dmn:rule id="_BDFF2E43-8B07-4C5E-9036-C8A8F6E298F4">
+            <dmn:inputEntry id="_209F0892-7CC2-4CDB-930E-5EE900941E11">
+              <dmn:text>&lt; 0</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_F847584B-0288-49DC-B664-6B3C394C6278">
+              <dmn:text>"freeze"</dmn:text>
+            </dmn:outputEntry>
+          </dmn:rule>
+          <dmn:rule id="_36897B08-827D-4928-AF2D-8DF291AA404A">
+            <dmn:inputEntry id="_9FE94BBC-6055-4E86-ABC2-DD882D84C318">
+              <dmn:text>&gt; 0</dmn:text>
+            </dmn:inputEntry>
+            <dmn:outputEntry id="_1D66BB0E-54EE-4BB4-905D-1451B9F62576">
+              <dmn:text>"warm"</dmn:text>
+            </dmn:outputEntry>
+          </dmn:rule>
+        </dmn:decisionTable>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:inputData id="_49EB3DD2-AAFA-476A-A9B2-DF1554F12F56" name="Outside Temperature">
+    <dmn:variable id="_60EEDBFA-DB67-40F8-AD40-D4F28AB97924" name="Outside Temperature" typeRef="Any"/>
+  </dmn:inputData>
+  <dmn:inputData id="_B83EB714-CE7A-489F-B4A1-F882F1E7A568" name="Month">
+    <dmn:variable id="_5AF83E71-7C4E-4D38-98AF-F74B2AB0B543" name="Month" typeRef="tMonth"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_918BC29A-9DD9-4EF7-A5B9-69757BA32510">
+            <kie:width>50.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>171.0</kie:width>
+            <kie:width>242.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_BA857E22-96B3-4689-A7CE-8D5B6E698C06">
+            <kie:width>50.0</kie:width>
+            <kie:width>170.0</kie:width>
+            <kie:width>450.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_EC46ECAA-022D-4A00-A16A-612808C7DEC1">
+            <kie:width>450.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_C73B4FB1-B67A-4D78-84C6-4DF9583DBFF8">
+            <kie:width>50.0</kie:width>
+            <kie:width>180.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>100.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_05139873-A562-44B8-B044-6AB268D6F672" dmnElementRef="_05139873-A562-44B8-B044-6AB268D6F672" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="153" y="77" width="188" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_1AF3E8CA-A5D7-4E50-8716-00CE7DE90F8A" dmnElementRef="_1AF3E8CA-A5D7-4E50-8716-00CE7DE90F8A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="421" y="77" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_49EB3DD2-AAFA-476A-A9B2-DF1554F12F56" dmnElementRef="_49EB3DD2-AAFA-476A-A9B2-DF1554F12F56" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="173" y="279" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_B83EB714-CE7A-489F-B4A1-F882F1E7A568" dmnElementRef="_B83EB714-CE7A-489F-B4A1-F882F1E7A568" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="577" y="284" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_6DA4E081-850C-417C-BC5A-500EF180C4F3" dmnElementRef="_6DA4E081-850C-417C-BC5A-500EF180C4F3">
+        <di:waypoint x="223" y="279"/>
+        <di:waypoint x="471" y="127"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_58509324-2E3B-4B99-BA51-B25F30B6C085" dmnElementRef="_58509324-2E3B-4B99-BA51-B25F30B6C085">
+        <di:waypoint x="627" y="284"/>
+        <di:waypoint x="471" y="127"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_75DE95CF-5DA5-4012-A11F-0EB603F5C60E" dmnElementRef="_75DE95CF-5DA5-4012-A11F-0EB603F5C60E">
+        <di:waypoint x="341" y="102"/>
+        <di:waypoint x="421" y="102"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
