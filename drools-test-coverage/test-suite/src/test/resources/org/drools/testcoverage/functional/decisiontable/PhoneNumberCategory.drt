@@ -1,0 +1,20 @@
+template header
+
+category
+phoneNumber
+
+package org.drools.testcoverage.functional.decisiontable;
+
+import org.drools.testcoverage.common.model.Record;
+
+template "category_phoneNumber"
+
+rule "category_phoneNumber_@{row.rowNumber}"
+    when
+        record: Record(category == "@{category}", phoneNumber == null)
+    then
+        record.setPhoneNumber("@phoneNumber");
+        update(record);
+end
+
+end template

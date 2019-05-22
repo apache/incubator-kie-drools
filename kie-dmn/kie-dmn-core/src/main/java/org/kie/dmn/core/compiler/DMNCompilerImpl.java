@@ -276,7 +276,6 @@ public class DMNCompilerImpl implements DMNCompiler {
 
         // in DMN v1.1 the DecisionService is not on the DRGElement but as an extension
         if (dmndefs.getExtensionElements() != null) {
-            DecisionServiceCompiler compiler = new DecisionServiceCompiler();
             List<DecisionServices> decisionServices = dmndefs.getExtensionElements().getAny().stream().filter(DecisionServices.class::isInstance).map(DecisionServices.class::cast).collect(Collectors.toList());
             for (DecisionServices dss : decisionServices) {
                 for (DecisionService ds : dss.getDecisionService()) {
@@ -290,14 +289,23 @@ public class DMNCompilerImpl implements DMNCompiler {
                         ds.setVariable(variable);
                     }
                     // continuing with normal compilation of Decision Service:
-                    compiler.compileNode(ds, this, model);
+                    boolean foundIt = false;
+                    for (DRGElementCompiler dc : drgCompilers) {
+                        if (dc.accept(ds)) {
+                            foundIt = true;
+                            dc.compileNode(ds, this, model);
+                            continue;
+                        }
+                    }
                 }
             }
-            for (DecisionServiceNode ds : model.getDecisionServices()) {
-                DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) ds;
-                dsi.addModelImportAliases(model.getImportAliasesForNS());
-                if (dsi.getEvaluator() == null && compiler.accept(dsi)) { // will compile in fact all DS belonging to this model (not the imported ones).
-                    compiler.compileEvaluator(dsi, this, ctx, model);
+        }
+        for (DecisionServiceNode ds : model.getDecisionServices()) {
+            DecisionServiceNodeImpl dsi = (DecisionServiceNodeImpl) ds;
+            dsi.addModelImportAliases(model.getImportAliasesForNS());
+            for (DRGElementCompiler dc : drgCompilers) {
+                if (dsi.getEvaluator() == null && dc.accept(dsi)) { // will compile in fact all DS belonging to this model (not the imported ones).
+                    dc.compileEvaluator(dsi, this, ctx, model);
                 }
             }
         }

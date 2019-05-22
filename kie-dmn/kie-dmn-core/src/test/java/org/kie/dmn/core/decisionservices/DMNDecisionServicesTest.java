@@ -598,4 +598,20 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.getAll(), not(hasEntry(is("Invoke Decision B DS"), anything()))); // we invoked only the Decision Service, not this other Decision in the model.
         assertThat(result.get("Decision B"), is("input 1 value"));
     }
+
+    @Test
+    public void test20190520() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DStypecheck.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_6e76b9ca-ce06-426a-91c0-99b70665321a", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("my invoke DS1").getResult(), hasEntry(is("outDS1"), is(true)));
+    }
 }
