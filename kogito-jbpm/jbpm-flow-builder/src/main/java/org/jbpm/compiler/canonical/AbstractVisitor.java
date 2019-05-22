@@ -104,8 +104,13 @@ public abstract class AbstractVisitor {
     }
     
     protected Statement makeAssignmentFromModel(Variable v) {
+
+        return makeAssignmentFromModel(v, v.getName());
+    }
+    
+    protected Statement makeAssignmentFromModel(Variable v, String name) {
         ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(v.getType().getStringType());
-        String name = v.getName();
+        
 
         // `type` `name` = (`type`) `kcontext.getVariable
         AssignExpr assignExpr = new AssignExpr(

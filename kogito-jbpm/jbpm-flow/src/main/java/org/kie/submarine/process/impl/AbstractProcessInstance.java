@@ -25,12 +25,13 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
+import org.kie.submarine.Model;
 import org.kie.submarine.process.Process;
 import org.kie.submarine.process.ProcessInstance;
 import org.kie.submarine.process.Signal;
 import org.kie.submarine.process.WorkItem;
 
-public abstract class AbstractProcessInstance<T> implements ProcessInstance<T> {
+public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
 
     private final T variables;
     private final AbstractProcess<T> process;

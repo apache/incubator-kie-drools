@@ -22,11 +22,13 @@ import org.jbpm.process.instance.LightProcessRuntimeContext;
 import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.process.instance.ProcessRuntimeServiceProvider;
 import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.submarine.Model;
 import org.kie.submarine.process.Process;
 import org.kie.submarine.process.ProcessConfig;
+import org.kie.submarine.process.ProcessInstance;
 import org.kie.submarine.process.Signal;
 
-public abstract class AbstractProcess<T> implements Process<T> {
+public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
     private final MapProcessInstances<T> instances;
 
@@ -35,6 +37,16 @@ public abstract class AbstractProcess<T> implements Process<T> {
     protected AbstractProcess(ProcessRuntimeServiceProvider services) {
         this.services = services;
         this.instances = new MapProcessInstances<>();
+    }
+
+    @Override
+    public T createModel() {
+        return null;
+    }
+
+    @Override
+    public ProcessInstance<T> createInstance(Model m) {
+        return createInstance((T) m);
     }
 
     protected AbstractProcess() {

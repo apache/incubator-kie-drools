@@ -21,12 +21,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.kie.api.definition.process.Connection;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.dmn.api.core.DMNRuntime;
 
 /**
  * Default implementation of a RuleSet node.
@@ -56,6 +59,9 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
     
     private Map<String, Object> parameters = new HashMap<String, Object>();
+    
+    private Supplier<DMNRuntime> dmnRuntime;
+    private Supplier<KieRuntime> kieRuntime;
 
     public void setRuleFlowGroup(final String ruleFlowGroup) {
         this.ruleFlowGroup = ruleFlowGroup;
@@ -95,6 +101,22 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
     
     public void setDecision(String decision) {
         this.decision = decision;
+    }
+    
+    public Supplier<DMNRuntime> getDmnRuntime() {
+        return dmnRuntime;
+    }
+    
+    public void setDmnRuntime(Supplier<DMNRuntime> dmnRuntime) {
+        this.dmnRuntime = dmnRuntime;
+    }
+    
+    public Supplier<KieRuntime> getKieRuntime() {
+        return kieRuntime;
+    }
+    
+    public void setKieRuntime(Supplier<KieRuntime> kieRuntime) {
+        this.kieRuntime = kieRuntime;
     }
 
     public void validateAddIncomingConnection(final String type, final Connection connection) {

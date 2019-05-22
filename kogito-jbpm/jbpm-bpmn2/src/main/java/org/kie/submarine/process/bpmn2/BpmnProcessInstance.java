@@ -33,7 +33,7 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
         if (variables == null) {
             return null;
         }
-        return variables.asMap();
+        return variables.toMap();
     }
 
     @Override

@@ -16,12 +16,16 @@
 
 package org.jbpm.ruleflow.core.factory;
 
+import java.util.function.Supplier;
+
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.dmn.api.core.DMNRuntime;
 
 /**
  *
@@ -45,8 +49,19 @@ public class RuleSetNodeFactory extends NodeFactory {
         return this;
     }
 
-    public RuleSetNodeFactory ruleFlowGroup(String ruleFlowGroup) {
+    public RuleSetNodeFactory ruleFlowGroup(String ruleFlowGroup, Supplier<KieRuntime> supplier) {
         getRuleSetNode().setRuleFlowGroup(ruleFlowGroup);
+        getRuleSetNode().setLanguage(RuleSetNode.DRL_LANG);
+        getRuleSetNode().setKieRuntime(supplier);
+        return this;
+    }
+    
+    public RuleSetNodeFactory dmnGroup(String namespace, String model, String decision, Supplier<DMNRuntime> supplier) {
+        getRuleSetNode().setNamespace(namespace);
+        getRuleSetNode().setModel(model);
+        getRuleSetNode().setDecision(decision);
+        getRuleSetNode().setLanguage(RuleSetNode.DMN_LANG);
+        getRuleSetNode().setDmnRuntime(supplier);
         return this;
     }
     
@@ -56,6 +71,16 @@ public class RuleSetNodeFactory extends NodeFactory {
     	timer.setPeriod(period);
     	getRuleSetNode().addTimer(timer, new DroolsConsequenceAction(dialect, action));
     	return this;
+    }
+    
+    public RuleSetNodeFactory inMapping(String parameterName, String variableName) {
+        getRuleSetNode().addInMapping(parameterName, variableName);
+        return this;
+    }
+
+    public RuleSetNodeFactory outMapping(String parameterName, String variableName) {
+        getRuleSetNode().addOutMapping(parameterName, variableName);
+        return this;
     }
 
 }

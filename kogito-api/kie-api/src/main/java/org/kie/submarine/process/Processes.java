@@ -15,17 +15,13 @@
 
 package org.kie.submarine.process;
 
+import java.util.Collection;
+
 import org.kie.submarine.Model;
 
-public interface Process<T> {
+public interface Processes {
 
-    ProcessInstance<T> createInstance(T workingMemory);
-
-    ProcessInstances<T> instances();
-
-    <S> void send(Signal<S> sig);
+    Process<? extends Model> processById(String processId);
     
-    T createModel();
-
-    ProcessInstance<? extends Model> createInstance(Model m);
+    Collection<String> processIds();
 }

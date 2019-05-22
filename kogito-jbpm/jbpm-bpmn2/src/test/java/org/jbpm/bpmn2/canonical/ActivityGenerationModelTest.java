@@ -340,6 +340,16 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         assertEquals(STATE_COMPLETED, processInstance.status());
     }
     
+    @Test
+    public void testBusinessRuleTaskProcess() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-BusinessRuleTask.bpmn2")).get(0);        
+                
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
+        String content = metaData.getGeneratedClassModel().toString();
+        assertThat(content).isNotNull();
+        log(content);
+    }
+    
     /*
      * Helper methods
      */

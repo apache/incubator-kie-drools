@@ -88,8 +88,8 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         actionBody.addStatement(subProcessModel.newInstance("model"));
 
         for (Map.Entry<String, String> e : subProcessNode.getInMappings().entrySet()) {
-            actionBody.addStatement(makeAssignment(variableScope.findVariable(e.getKey())));
-            actionBody.addStatement(subProcessModel.callSetter("model", e.getValue(), new NameExpr(e.getKey())));
+            actionBody.addStatement(makeAssignment(variableScope.findVariable(e.getValue())));
+            actionBody.addStatement(subProcessModel.callSetter("model", e.getKey(), new NameExpr(e.getValue())));
         }
 
         actionBody.addStatement(new ReturnStmt(new NameExpr("model")));
@@ -111,7 +111,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         BlockStmt stmts = new BlockStmt();
 
         for (Map.Entry<String, String> e : subProcessNode.getOutMappings().entrySet()) {
-            stmts.addStatement(makeAssignmentFromModel(variableScope.findVariable(e.getKey())));
+            stmts.addStatement(makeAssignmentFromModel(variableScope.findVariable(e.getValue()), e.getKey()));
             stmts.addStatement(new MethodCallExpr()
                                        .setScope(new NameExpr("kcontext"))
                                        .setName("setVariable")

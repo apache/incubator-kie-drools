@@ -13,19 +13,22 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.process;
+package org.kie.submarine;
 
-import org.kie.submarine.Model;
+import java.util.Map;
 
-public interface Process<T> {
+/**
+ * Represents data model type of objects that are usually descriptor of data holders.
+ *
+ */
+public interface Model {
 
-    ProcessInstance<T> createInstance(T workingMemory);
-
-    ProcessInstances<T> instances();
-
-    <S> void send(Signal<S> sig);
+    /**
+     * Returns model representation as map of members of this model type
+     * @return non null map of data extracted from the model
+     */
+    Map<String, Object> toMap();
     
-    T createModel();
-
-    ProcessInstance<? extends Model> createInstance(Model m);
+    
+    void fromMap(Map<String, Object> params);
 }

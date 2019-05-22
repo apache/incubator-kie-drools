@@ -103,8 +103,7 @@ public class ModelMetaData {
                         new EnclosedExpr(value)));
     }
 
-    public MethodCallExpr callGetter(String targetVar, String field) {
-        String type = variableScope.getType(field);
+    public MethodCallExpr callGetter(String targetVar, String field) {        
         String getter = "get" + StringUtils.capitalize(field); // todo cache FieldDeclarations in compilationUnit()
         return new MethodCallExpr(new NameExpr(targetVar), getter);
     }
@@ -172,7 +171,7 @@ public class ModelMetaData {
         toMapMethod.get().setBody(toMapBody);
 
         modelClass.findFirst(
-                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap"))
+                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 2)// make sure to take only the method with two parameters (id and params)
                 .ifPresent(m -> m.setBody(staticFromMap));
 
         return compilationUnit;

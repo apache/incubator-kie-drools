@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -26,6 +27,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
@@ -40,6 +42,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.submarine.Model;
 import org.kie.submarine.process.impl.AbstractProcess;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -127,6 +130,21 @@ public class ProcessGenerator {
                                  .addStatement(returnStmt));
         return methodDeclaration;
     }
+    
+    private MethodDeclaration createInstanceGenericMethod(String processInstanceFQCN) {
+        MethodDeclaration methodDeclaration = new MethodDeclaration();
+
+        ReturnStmt returnStmt = new ReturnStmt(
+                new MethodCallExpr(new ThisExpr(), "createInstance").addArgument(new CastExpr(new ClassOrInterfaceType(null, modelTypeName), new NameExpr("value"))));
+
+        methodDeclaration.setName("createInstance")
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .addParameter(Model.class.getCanonicalName(), "value")
+                .setType(processInstanceFQCN)
+                .setBody(new BlockStmt()
+                                 .addStatement(returnStmt));
+        return methodDeclaration;
+    }
 
     private MethodDeclaration legacyProcess() {
         MethodDeclaration legacyProcess = legacyProcessGenerator.generate()
@@ -190,12 +208,25 @@ public class ProcessGenerator {
                                  .addStatement(
                                          new MethodCallExpr(null, "this").addArgument(new ObjectCreationExpr().setType(appCanonicalName))));
 
+        
+        MethodDeclaration createModelMethod = new MethodDeclaration()
+                .addModifier(Keyword.PUBLIC)
+                .setName("createModel")
+                .setType(modelTypeName)
+                .setBody(new BlockStmt()
+                         .addStatement(new ReturnStmt(new ObjectCreationExpr(null, 
+                                                                             new ClassOrInterfaceType(null, modelTypeName), 
+                                                                             NodeList.nodeList()))));
+        
         MethodDeclaration methodDeclaration = createInstanceMethod(processInstanceFQCN);
+        MethodDeclaration genericMethodDeclaration = createInstanceGenericMethod(processInstanceFQCN);
         cls.addExtendedType(abstractProcessType(modelTypeName))
                 .addMember(fieldDeclaration)
                 .addMember(emptyConstructorDeclaration)
                 .addMember(constructorDeclaration)
                 .addMember(methodDeclaration)
+                .addMember(createModelMethod)
+                .addMember(genericMethodDeclaration)
                 .addMember(legacyProcess());
         return cls;
     }
@@ -206,6 +237,10 @@ public class ProcessGenerator {
 
     public boolean isPublic() {
         return WorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
+    }
+    
+    public String processId() {
+        return process.getId();
     }
 
     public ProcessGenerator withCdi(boolean dependencyInjection) {

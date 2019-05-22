@@ -85,7 +85,7 @@ public class ApplicationGenerator {
                         .setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
         if (hasCdi) {
-            cls.addAnnotation("javax.inject.Singleton");
+            cls.addAnnotation("javax.inject.Singleton");                       
         }
 
         cls.addMember(new FieldDeclaration()
@@ -96,6 +96,8 @@ public class ApplicationGenerator {
                                                    .setInitializer(configGenerator.newInstance())));
 
         factoryMethods.forEach(cls::addMember);
+        
+        generators.forEach(gen -> gen.applicationBodyDeclaration().forEach(cls::addMember));
 
         return compilationUnit;
     }
@@ -111,7 +113,7 @@ public class ApplicationGenerator {
                         .flatMap(gen -> gen.generate().stream())
                         .collect(Collectors.toList());
         generators.forEach(gen -> gen.updateConfig(configGenerator));
-        generators.forEach(gen -> factoryMethods.addAll(gen.factoryMethods()));
+        generators.forEach(gen -> factoryMethods.addAll(gen.factoryMethods()));        
         generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
         generatedFiles.add(new GeneratedFile(GeneratedFile.Type.APPLICATION, generatedFilePath(), compilationUnit().toString().getBytes()));
         return generatedFiles;

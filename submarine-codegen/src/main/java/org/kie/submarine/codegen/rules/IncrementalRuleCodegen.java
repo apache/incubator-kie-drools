@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -158,5 +159,10 @@ public class IncrementalRuleCodegen implements Generator {
         public String getName() {
             return packageDescr.getName();
         }
+    }
+
+    @Override
+    public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
+        return Collections.emptyList();
     }
 }

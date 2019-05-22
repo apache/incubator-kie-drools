@@ -16,19 +16,25 @@
 package org.kie.submarine.codegen.rules;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.kie.submarine.rules.RuleUnit;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.kie.submarine.rules.RuleUnit;
 
 public class ModuleSourceClass {
 
@@ -85,6 +91,33 @@ public class ModuleSourceClass {
                                 .setType(r.targetCanonicalName()))));
         this.factoryMethods.add(methodDeclaration);
         return methodDeclaration;
+    }
+    
+    public Collection<BodyDeclaration<?>> getApplicationBodyDeclaration() {
+        List<BodyDeclaration<?>> declarations = new ArrayList<>();
+        FieldDeclaration kieRuntimeFieldDeclaration = new FieldDeclaration()
+                .addModifier(Modifier.Keyword.PACKAGE_PRIVATE);
+                
+        
+        if (hasCdi) {            
+            kieRuntimeFieldDeclaration.addAnnotation("javax.inject.Inject")
+            .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, org.drools.modelcompiler.KieRuntimeBuilder.class.getCanonicalName()), "ruleRuntimeBuilder"));
+        } else {
+            kieRuntimeFieldDeclaration.addVariable(new VariableDeclarator(
+                                                                          new ClassOrInterfaceType(null, org.drools.modelcompiler.KieRuntimeBuilder.class.getCanonicalName()), 
+                                                                          "ruleRuntimeBuilder",
+                                                                          new ObjectCreationExpr(null, new ClassOrInterfaceType(null, "org.drools.project.model.ProjectRuntime"), NodeList.nodeList())));
+        }        
+        declarations.add(kieRuntimeFieldDeclaration);
+        MethodDeclaration methodDeclaration = new MethodDeclaration()
+                .addModifier(Modifier.Keyword.PUBLIC)
+                .setName("ruleRuntimeBuilder")
+                .setType(org.drools.modelcompiler.KieRuntimeBuilder.class.getCanonicalName())
+                .setBody(new BlockStmt().addStatement(new ReturnStmt(new FieldAccessExpr(new ThisExpr(), "ruleRuntimeBuilder"))));
+        
+        declarations.add(methodDeclaration);
+        
+        return declarations;
     }
 
     public static ClassOrInterfaceType ruleUnitType( String canonicalName) {

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.text.rtf.RTFEditorKit;
 
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.util.StringUtils;
@@ -207,6 +208,8 @@ public class ProcessCodegen implements Generator {
             execModelGen.generate();
             processExecutableModelGenerators.add(execModelGen);
         }
+        
+        
 
         // generate Process, ProcessInstance classes and the REST resource
         for (ProcessExecutableModelGenerator execModelGen : processExecutableModelGenerators) {
@@ -315,6 +318,11 @@ public class ProcessCodegen implements Generator {
 
     public Map<String, String> getLabels() {
         return labels;
+    }
+
+    @Override
+    public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
+        return moduleGenerator.getApplicationBodyDeclaration();
     }
 
 }

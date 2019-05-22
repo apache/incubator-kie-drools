@@ -35,6 +35,7 @@ import org.kie.submarine.codegen.ConfigGenerator;
 import org.kie.submarine.codegen.GeneratedFile;
 import org.kie.submarine.codegen.Generator;
 
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class RuleCodegen implements Generator {
@@ -135,5 +136,10 @@ public class RuleCodegen implements Generator {
 
     public void setDependencyInjection(boolean di) {
         this.dependencyInjection = di;
+    }
+
+    @Override
+    public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
+        return moduleGenerator.getApplicationBodyDeclaration();
     }
 }

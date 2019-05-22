@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -100,15 +101,16 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 throw new IllegalArgumentException("A RuleSetNode only accepts default incoming connections!");
             }
             RuleSetNode ruleSetNode = getRuleSetNode();
-            KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+            
+            KieRuntime kruntime = Optional.ofNullable(getRuleSetNode().getKieRuntime()).orElse(() -> getProcessInstance().getKnowledgeRuntime()).get();
             Map<String, Object> inputs = evaluateParameters(ruleSetNode);
 
             if (ruleSetNode.isDMN()) {
                 String namespace = resolveVariable(ruleSetNode.getNamespace());
                 String model = resolveVariable(ruleSetNode.getModel());
                 String decision = resolveVariable(ruleSetNode.getDecision());
-
-                DMNRuntime runtime = ((KieSession) kruntime).getKieRuntime(DMNRuntime.class);
+                
+                DMNRuntime runtime = Optional.ofNullable(getRuleSetNode().getDmnRuntime()).orElse(() -> ((KieSession) kruntime).getKieRuntime(DMNRuntime.class)).get();
                 DMNModel dmnModel = runtime.getModel(namespace, model);
                 if (dmnModel == null) {
                     // if was not found by name try to look it up by id
@@ -159,7 +161,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
                 if (actAsWaitState()) {
                     addRuleSetListener();
-                    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                    ((InternalAgenda) kruntime.getAgenda())
                             .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
 
                 } else {
@@ -168,17 +170,17 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     if (inputs.containsKey(FIRE_RULE_LIMIT_PARAMETER)) {
                         fireLimit = Integer.parseInt(inputs.get(FIRE_RULE_LIMIT_PARAMETER).toString());
                     }
-                    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                    ((InternalAgenda) kruntime.getAgenda())
                             .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
 
-                    int fired = ((KieSession) getProcessInstance().getKnowledgeRuntime()).fireAllRules(fireLimit);
+                    int fired = ((KieSession) kruntime).fireAllRules(fireLimit);
                     if (fired == fireLimit) {
                         throw new RuntimeException("Fire rule limit reached " + fireLimit + ", limit can be set via system property " + FIRE_RULE_LIMIT_PROPERTY 
                                                    + " or via data input of business rule task named " + FIRE_RULE_LIMIT_PARAMETER);
                     }
 
                     removeEventListeners();
-                    retractFacts();
+                    retractFacts(kruntime);
                     triggerCompleted();
                 }
             }
@@ -254,15 +256,16 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     public void signalEvent(String type, Object event) {
         if (getRuleSetEventType().equals(type)) {
             removeEventListeners();
-            retractFacts();
+            KieRuntime kruntime = Optional.ofNullable(getRuleSetNode().getKieRuntime()).orElse(() -> getProcessInstance().getKnowledgeRuntime()).get();
+            retractFacts(kruntime);
             triggerCompleted();
         }
     }
 
 	
-	public void retractFacts() {
+	public void retractFacts(KieRuntime kruntime) {
 	    Map<String, Object> objects = new HashMap<String, Object>();
-        KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+        
 	    
 	    for (Entry<String, FactHandle> entry : factHandles.entrySet()) {
 	        

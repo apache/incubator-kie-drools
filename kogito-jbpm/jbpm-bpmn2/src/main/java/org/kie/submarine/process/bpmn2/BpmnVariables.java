@@ -19,7 +19,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BpmnVariables {
+import org.kie.submarine.Model;
+
+public class BpmnVariables implements Model {
 
     private final Map<String, Object> variables = new HashMap<>();
 
@@ -48,11 +50,12 @@ public class BpmnVariables {
         return this;
     }
 
-    public Map<String, Object> asMap() {
-        return Collections.unmodifiableMap(variables);
-    }
-
     public void fromMap(Map<String, Object> vs) {
         variables.putAll(vs);
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        return Collections.unmodifiableMap(variables);
     }
 }

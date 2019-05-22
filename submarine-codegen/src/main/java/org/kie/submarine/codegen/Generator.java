@@ -19,11 +19,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public interface Generator {
 
     Collection<MethodDeclaration> factoryMethods();
+    
+    Collection<BodyDeclaration<?>> applicationBodyDeclaration();
 
     Collection<GeneratedFile> generate();
 
