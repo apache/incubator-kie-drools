@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -115,7 +116,7 @@ public class ModelWriter {
     private void debugPrettyPrinter(PrettyPrinter prettyPrinter, CompilationUnit cu) {
         Node node = cu.getChildNodes().get(13).getChildNodes().get(2).getChildNodes().get(4).getChildNodes().get(2).getChildNodes().get(0).getChildNodes().get(1).getChildNodes().get(4).getChildNodes().get(1).getChildNodes().get(1).getChildNodes().get(0).getChildNodes().get(0);
 
-        CastExpr castExpr = new CastExpr(JavaParser.parseType("org.drools.modelcompiler.consequence.DroolsImpl"), new NameExpr("drools"));
+        CastExpr castExpr = new CastExpr(StaticJavaParser.parseType("org.drools.modelcompiler.consequence.DroolsImpl"), new NameExpr("drools"));
         EnclosedExpr enclosedExpr = new EnclosedExpr(castExpr);
         MethodCallExpr mc = new MethodCallExpr(enclosedExpr, "asKnowledgeHelper");
         MethodCallExpr insertLogical = new MethodCallExpr(mc, "insertLogical", NodeList.nodeList(new StringLiteralExpr("blah")));

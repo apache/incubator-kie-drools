@@ -3,7 +3,7 @@ package org.drools.mvelcompiler.ast;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -26,7 +26,7 @@ public class CastExprT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        com.github.javaparser.ast.type.Type type = JavaParser.parseType(this.type.getCanonicalName());
+        com.github.javaparser.ast.type.Type type = StaticJavaParser.parseType(this.type.getCanonicalName());
         Expression expression = (Expression) innerExpr.toJavaExpression();
         return new EnclosedExpr(new CastExpr(type, expression));
     }
