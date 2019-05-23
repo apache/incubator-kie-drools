@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_0DCAC99B-0CAF-44E8-923E-997CFA53D3BC" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_037DE113-066A-481A-8F9D-57018C56495C" name="air-conditioning-data-types" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_0DCAC99B-0CAF-44E8-923E-997CFA53D3BC">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_2498147F-48CB-425B-BD91-1AFD9013AFDE" name="tTemperature" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="range" id="_818D84EC-971F-460A-B8A9-A8D5AB9D5363">
+      <dmn:text>[10..30]</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_E553C6EF-2865-4AEB-B387-C4AA0A658158" name="tMode" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+    <dmn:allowedValues kie:constraintType="enumeration" id="_AEB6A704-F3F1-459C-82AF-D222B8BB81D5">
+      <dmn:text>"freeze", "warm"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_F417B404-70E8-4AFB-9650-5432BA7D0212" name="tAC" isCollection="false">
+    <dmn:itemComponent id="_BAD44AD6-5136-4E6A-8979-53CCAE6B9E55" name="mode" isCollection="false">
+      <dmn:typeRef>tMode</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_B44D74E7-3BD4-470C-BF04-1FF4ED4CAF4C" name="current temperature" isCollection="false">
+      <dmn:typeRef>tTemperature</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension/>
+      </di:extension>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

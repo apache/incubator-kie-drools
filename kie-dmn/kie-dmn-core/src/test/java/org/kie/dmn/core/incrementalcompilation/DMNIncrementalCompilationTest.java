@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTestCanonicalKieModule {
 
@@ -99,6 +99,33 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Say hello and age"), is(sayHelloAndAgeDecisionResultValue));// change v1.0 -> v1.1
+    }
+
+    @Test
+    public void testUpgradeWithImport() {
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-RHDM-965", "1.0");
+        KieHelper.createAndDeployJar(ks,
+                                     releaseId_v10,
+                                     wrapWithDroolsModelResource(ks,
+                                                                 ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-100/air-conditioning-control.dmn", this.getClass())
+                                                                   .setTargetPath("air-conditioning-control.dmn"),
+                                                                 ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-100/air-conditioning-data-types.dmn", this.getClass())
+                                                                   .setTargetPath("air-conditioning-data-types.dmn")));
+        final KieContainer kieContainer = ks.newKieContainer(releaseId_v10);
+        final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
+
+        final ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-RHDM-965", "1.1");
+        KieHelper.createAndDeployJar(ks,
+                                     releaseId_v11,
+                                     wrapWithDroolsModelResource(ks,
+                                                                 ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-101/air-conditioning-control.dmn", this.getClass())
+                                                                   .setTargetPath("air-conditioning-control.dmn"),
+                                                                 ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-101/air-conditioning-data-types.dmn", this.getClass())
+                                                                   .setTargetPath("air-conditioning-data-types.dmn")));
+        kieContainer.updateToVersion(releaseId_v11);
+
     }
 }
 
