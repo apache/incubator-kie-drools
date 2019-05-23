@@ -92,7 +92,6 @@ public class ModelWriter {
             for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
                 String addFileName = cu.findFirst( ClassOrInterfaceDeclaration.class ).get().getNameAsString();
                 String addSourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
-                debugPrettyPrinter(prettyPrinter, cu);
                 prettyPrinter.print(cu);
                 String addSource = prettyPrinter.print( cu );
                 pkgModel.logRule( addSource );
@@ -134,110 +133,5 @@ public class ModelWriter {
             return modelFiles;
         }
 
-    }
-    private void debugPrettyPrinter(PrettyPrinter prettyPrinter, CompilationUnit bugCu) {
-        CompilationUnit cu = recreateAST();
-
-
-
-        Consumer<Node> printNodeWithChildren = n -> {
-            String substring = n.toString().replace("\n", "");
-            int numChar = 20;
-            if(substring.length() > numChar) {
-                substring = substring.substring(0, numChar);
-            }
-            System.out.println(n.getClass().getName() + " " + substring + " " + n.getChildNodes().size());
-        };
-        System.out.println("----- NEW CU");
-        cu.walk(printNodeWithChildren);
-        System.out.println("----- BUG CU");
-        bugCu.walk(printNodeWithChildren);
-
-
-        assertThat(cu).isEqualToComparingFieldByFieldRecursively(bugCu);
-
-        prettyPrinter.print(cu);
-        prettyPrinter.print(bugCu);
-
-
-    }
-
-    private CompilationUnit recreateAST() {
-        CompilationUnit cu = new CompilationUnit();
-
-        cu.setPackageDeclaration("defaultpkg");
-        cu.addImport("defaultpkg.Rules", true, true);
-
-        ClassOrInterfaceDeclaration clazz = cu.addClass("RulesRuleMethods0", Modifier.Keyword.PUBLIC);
-
-        ClassOrInterfaceType ruleType = StaticJavaParser.parseClassOrInterfaceType("org.drools.model.Rule");
-        MethodDeclaration look = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier()), toClassOrInterfaceType( Rule.class ), "rule_look");
-
-        BlockStmt lookstmt = new BlockStmt();
-
-        String variableName = "rule";
-        VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ruleType, variableName);
-        ReturnStmt returnStmt1 = new ReturnStmt(new NameExpr(variableName));
-
-        MethodCallExpr ruleMethod = new MethodCallExpr(null, "D.rule", nodeList(new StringLiteralExpr("look")));
-
-        ClassOrInterfaceType droolsImpls = StaticJavaParser.parseClassOrInterfaceType("org.drools.modelcompiler.consequence.DroolsImpl");
-
-        Expression castExpr = new EnclosedExpr(new CastExpr(droolsImpls, new NameExpr("drools")));
-        MethodCallExpr asKnowledgeHelper = new MethodCallExpr(castExpr, "asKnowledgeHelper");
-
-        Expression insertLogical = new MethodCallExpr(asKnowledgeHelper, "insertLogical", nodeList(new IntegerLiteralExpr(1)));
-
-        NodeList<Statement> xes = nodeList(new ExpressionStmt(insertLogical));
-        LambdaExpr droolsLambda = new LambdaExpr(new Parameter(new UnknownType(), "drools"), new BlockStmt(xes));
-        droolsLambda.setEnclosingParameters(true);
-
-        MethodCallExpr executeMethod = new MethodCallExpr(null, "D.execute", nodeList(droolsLambda));
-        MethodCallExpr build = new MethodCallExpr(ruleMethod, "build", nodeList(executeMethod));
-
-        AssignExpr assignExpr = new AssignExpr(variableDeclarationExpr, build, AssignExpr.Operator.ASSIGN);
-        ExpressionStmt expressionStmt = new ExpressionStmt(assignExpr);
-
-        lookstmt.addStatement(expressionStmt);
-        lookstmt.addStatement(returnStmt1);
-
-        look.setBody(lookstmt);
-        clazz.addMember(look);
-
-
-        MethodDeclaration go1 = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier()), toClassOrInterfaceType( Rule.class ), "rule_go1");
-
-        ClassOrInterfaceType ruleType2 = StaticJavaParser.parseClassOrInterfaceType("org.drools.model.Rule");
-        ruleType2.setParentNode(go1);
-
-        BlockStmt gostmt = new BlockStmt();
-
-        VariableDeclarationExpr variableDeclarationExpr2 = new VariableDeclarationExpr(ruleType2, variableName);
-        ReturnStmt returnStmt2 = new ReturnStmt(new NameExpr(variableName));
-
-        MethodCallExpr ruleMethod2 = new MethodCallExpr(null, "D.rule", nodeList(new StringLiteralExpr("go1")));
-
-        Expression castExpr2 = new EnclosedExpr(new CastExpr(droolsImpls, new NameExpr("drools")));
-        MethodCallExpr asKnowledgeHelper2 = new MethodCallExpr(castExpr2, "asKnowledgeHelper");
-
-        Expression getRuleExpr = new MethodCallExpr(asKnowledgeHelper2, "getRule");
-        Expression getNameExpr = new MethodCallExpr(getRuleExpr, "getName");
-
-        Expression listAdd = new MethodCallExpr(new NameExpr("list"), "add", nodeList(getNameExpr));
-
-        NodeList<Statement> xes2 = nodeList(new ExpressionStmt(listAdd));
-        LambdaExpr droolsLambda2 = new LambdaExpr(new Parameter(new UnknownType(), "drools"), new BlockStmt(xes2));
-        droolsLambda2.setEnclosingParameters(true);
-        MethodCallExpr executeMethod2 = new MethodCallExpr(null, "D.execute", nodeList(droolsLambda2));
-        MethodCallExpr build2 = new MethodCallExpr(ruleMethod2, "build", nodeList(executeMethod2));
-        AssignExpr assignExpr2 = new AssignExpr(variableDeclarationExpr2, build2, AssignExpr.Operator.ASSIGN);
-        ExpressionStmt expressionStmt2 = new ExpressionStmt(assignExpr2);
-
-        gostmt.addStatement(expressionStmt2);
-        gostmt.addStatement(returnStmt2);
-        go1.setBody(gostmt);
-
-        clazz.addMember(go1);
-        return cu;
     }
 }
