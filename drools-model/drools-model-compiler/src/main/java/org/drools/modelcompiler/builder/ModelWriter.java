@@ -179,7 +179,7 @@ public class ModelWriter {
         VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ruleType, variableName);
         ReturnStmt returnStmt1 = new ReturnStmt(new NameExpr(variableName));
 
-        MethodCallExpr ruleMethod = new MethodCallExpr(new NameExpr("D"), "rule", nodeList(new StringLiteralExpr("look")));
+        MethodCallExpr ruleMethod = new MethodCallExpr(null, "D.rule", nodeList(new StringLiteralExpr("look")));
 
         ClassOrInterfaceType droolsImpls = StaticJavaParser.parseClassOrInterfaceType("org.drools.modelcompiler.consequence.DroolsImpl");
 
@@ -189,11 +189,10 @@ public class ModelWriter {
         Expression insertLogical = new MethodCallExpr(asKnowledgeHelper, "insertLogical", nodeList(new IntegerLiteralExpr(1)));
 
         NodeList<Statement> xes = nodeList(new ExpressionStmt(insertLogical));
-        Type unknownType = new UnknownType();
-        LambdaExpr droolsLambda = new LambdaExpr(new Parameter(unknownType, new SimpleName("drools")), new BlockStmt(xes));
+        LambdaExpr droolsLambda = new LambdaExpr(new Parameter(new UnknownType(), "drools"), new BlockStmt(xes));
         droolsLambda.setEnclosingParameters(true);
 
-        MethodCallExpr executeMethod = new MethodCallExpr(new NameExpr("D"), "execute", nodeList(droolsLambda));
+        MethodCallExpr executeMethod = new MethodCallExpr(null, "D.execute", nodeList(droolsLambda));
         MethodCallExpr build = new MethodCallExpr(ruleMethod, "build", nodeList(executeMethod));
 
         AssignExpr assignExpr = new AssignExpr(variableDeclarationExpr, build, AssignExpr.Operator.ASSIGN);
@@ -216,7 +215,7 @@ public class ModelWriter {
         VariableDeclarationExpr variableDeclarationExpr2 = new VariableDeclarationExpr(ruleType2, variableName);
         ReturnStmt returnStmt2 = new ReturnStmt(new NameExpr(variableName));
 
-        MethodCallExpr ruleMethod2 = new MethodCallExpr(new NameExpr("D"), "rule", nodeList(new StringLiteralExpr("go1")));
+        MethodCallExpr ruleMethod2 = new MethodCallExpr(null, "D.rule", nodeList(new StringLiteralExpr("go1")));
 
         Expression castExpr2 = new EnclosedExpr(new CastExpr(droolsImpls, new NameExpr("drools")));
         MethodCallExpr asKnowledgeHelper2 = new MethodCallExpr(castExpr2, "asKnowledgeHelper");
@@ -227,9 +226,9 @@ public class ModelWriter {
         Expression listAdd = new MethodCallExpr(new NameExpr("list"), "add", nodeList(getNameExpr));
 
         NodeList<Statement> xes2 = nodeList(new ExpressionStmt(listAdd));
-        LambdaExpr droolsLambda2 = new LambdaExpr(new Parameter(unknownType, new SimpleName("drools")), new BlockStmt(xes2));
+        LambdaExpr droolsLambda2 = new LambdaExpr(new Parameter(new UnknownType(), "drools"), new BlockStmt(xes2));
         droolsLambda2.setEnclosingParameters(true);
-        MethodCallExpr executeMethod2 = new MethodCallExpr(new NameExpr("D"), "execute", nodeList(droolsLambda2));
+        MethodCallExpr executeMethod2 = new MethodCallExpr(null, "D.execute", nodeList(droolsLambda2));
         MethodCallExpr build2 = new MethodCallExpr(ruleMethod2, "build", nodeList(executeMethod2));
         AssignExpr assignExpr2 = new AssignExpr(variableDeclarationExpr2, build2, AssignExpr.Operator.ASSIGN);
         ExpressionStmt expressionStmt2 = new ExpressionStmt(assignExpr2);
