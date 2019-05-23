@@ -480,13 +480,10 @@ public class PackageModel {
 
         ruleMethods.values().parallelStream().forEach(DrlxParseUtil::transformDrlNameExprToNameExpr);
 
-        List<String> rulemethods = ruleMethods
+        int maxLength = ruleMethods
                 .values()
                 .parallelStream()
-                .map(MethodDeclaration::toString).collect(Collectors.toList());
-
-
-        int maxLength = rulemethods.stream().mapToInt(String::length).max().orElse(1);
+                .map( MethodDeclaration::toString ).mapToInt( String::length ).max().orElse( 1 );
         int rulesPerClass = Math.max( 50000 / maxLength, 1 );
 
         // each method per Drlx parser result
@@ -573,7 +570,6 @@ public class PackageModel {
     }
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
-
         // fixed part
         cu.addImport("java.util.*");
         cu.addImport("org.drools.model.*");
