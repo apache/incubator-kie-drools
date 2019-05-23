@@ -23,8 +23,18 @@ import org.kie.api.runtime.rule.Match;
 
 public class BeforeActivationFiredEventImpl extends ActivationEventImpl implements BeforeMatchFiredEvent {
 
+    private long timestamp;
+
     public BeforeActivationFiredEventImpl(Match activation, KieRuntime kruntime ) {
         super( activation, kruntime );
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override

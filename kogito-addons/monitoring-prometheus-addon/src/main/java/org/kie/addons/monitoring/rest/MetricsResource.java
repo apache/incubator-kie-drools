@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ork.kie.addons.monitoring.rest;
+package org.kie.addons.monitoring.rest;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;

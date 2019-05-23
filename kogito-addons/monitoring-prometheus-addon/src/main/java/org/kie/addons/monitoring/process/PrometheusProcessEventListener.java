@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ork.kie.addons.monitoring.process;
+package org.kie.addons.monitoring.process;
 
 
 import io.prometheus.client.Counter;
