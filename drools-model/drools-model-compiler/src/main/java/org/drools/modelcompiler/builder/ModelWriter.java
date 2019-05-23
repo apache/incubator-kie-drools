@@ -3,6 +3,7 @@ package org.drools.modelcompiler.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.JavaParser;
@@ -30,6 +31,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import org.apache.commons.codec.binary.StringUtils;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
 import com.github.javaparser.ast.CompilationUnit;
@@ -37,6 +39,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
+import org.drools.model.Rule;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 import org.kie.api.builder.ReleaseId;
 
@@ -45,6 +48,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class ModelWriter {
 
@@ -134,6 +138,22 @@ public class ModelWriter {
     private void debugPrettyPrinter(PrettyPrinter prettyPrinter, CompilationUnit bugCu) {
         CompilationUnit cu = recreateAST();
 
+
+
+        Consumer<Node> printNodeWithChildren = n -> {
+            String substring = n.toString().replace("\n", "");
+            int numChar = 20;
+            if(substring.length() > numChar) {
+                substring = substring.substring(0, numChar);
+            }
+            System.out.println(n.getClass().getName() + " " + substring + " " + n.getChildNodes().size());
+        };
+        System.out.println("----- NEW CU");
+        cu.walk(printNodeWithChildren);
+        System.out.println("----- BUG CU");
+        bugCu.walk(printNodeWithChildren);
+
+
         assertThat(cu).isEqualToComparingFieldByFieldRecursively(bugCu);
 
         prettyPrinter.print(cu);
@@ -148,11 +168,11 @@ public class ModelWriter {
         cu.setPackageDeclaration("defaultpkg");
         cu.addImport("defaultpkg.Rules", true, true);
 
-        ClassOrInterfaceDeclaration clazz = cu.addClass("Rules", Modifier.Keyword.PUBLIC);
+        ClassOrInterfaceDeclaration clazz = cu.addClass("RulesRuleMethods0", Modifier.Keyword.PUBLIC);
 
-        NodeList<Modifier> publicStatic = nodeList(Modifier.publicModifier(), Modifier.staticModifier());
-        ClassOrInterfaceType ruleType = new ClassOrInterfaceType(null, "org.drools.model.Rule");
-        MethodDeclaration look = new MethodDeclaration(publicStatic, ruleType, "rule_look");
+        ClassOrInterfaceType ruleType = StaticJavaParser.parseClassOrInterfaceType("org.drools.model.Rule");
+        MethodDeclaration look = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier()), toClassOrInterfaceType( Rule.class ), "rule_look");
+
         BlockStmt lookstmt = new BlockStmt();
 
         String variableName = "rule";
@@ -161,7 +181,7 @@ public class ModelWriter {
 
         MethodCallExpr ruleMethod = new MethodCallExpr(new NameExpr("D"), "rule", nodeList(new StringLiteralExpr("look")));
 
-        ClassOrInterfaceType droolsImpls = new ClassOrInterfaceType(null, "org.drools.modelcompiler.consequence.DroolsImpl");
+        ClassOrInterfaceType droolsImpls = StaticJavaParser.parseClassOrInterfaceType("org.drools.modelcompiler.consequence.DroolsImpl");
 
         Expression castExpr = new EnclosedExpr(new CastExpr(droolsImpls, new NameExpr("drools")));
         MethodCallExpr asKnowledgeHelper = new MethodCallExpr(castExpr, "asKnowledgeHelper");
@@ -185,11 +205,15 @@ public class ModelWriter {
         look.setBody(lookstmt);
         clazz.addMember(look);
 
-        MethodDeclaration go1 = new MethodDeclaration(publicStatic, ruleType, "rule_go1");
+
+        MethodDeclaration go1 = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier()), toClassOrInterfaceType( Rule.class ), "rule_go1");
+
+        ClassOrInterfaceType ruleType2 = StaticJavaParser.parseClassOrInterfaceType("org.drools.model.Rule");
+        ruleType2.setParentNode(go1);
 
         BlockStmt gostmt = new BlockStmt();
 
-        VariableDeclarationExpr variableDeclarationExpr2 = new VariableDeclarationExpr(ruleType, variableName);
+        VariableDeclarationExpr variableDeclarationExpr2 = new VariableDeclarationExpr(ruleType2, variableName);
         ReturnStmt returnStmt2 = new ReturnStmt(new NameExpr(variableName));
 
         MethodCallExpr ruleMethod2 = new MethodCallExpr(new NameExpr("D"), "rule", nodeList(new StringLiteralExpr("go1")));
