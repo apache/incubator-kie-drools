@@ -174,8 +174,7 @@ public class ModelGenerator {
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
         MethodDeclaration ruleMethod = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier()), toClassOrInterfaceType( Rule.class ), ruleMethodName);
 
-        // TODO UNCOMMENT THIS
-//        ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
+        ruleMethod.setJavadocComment(" Rule name: " + ruleDescr.getName() + " ");
 
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(toClassOrInterfaceType( Rule.class ), "rule");
 
