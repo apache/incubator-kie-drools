@@ -131,7 +131,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
                         .withDependencyInjection(dependencyInjection);
 
         if (generateRuleUnits) {
-            appGen.withGenerator(RuleCodegen.ofPath(projectPath, false));
+            appGen.withGenerator(RuleCodegen.ofPath(projectPath, false))
+                .withRuleEventListenersConfig(customRuleEventListenerConfigExists(appPackageName));
         }
 
         if (generateProcesses) {
@@ -160,6 +161,14 @@ public class GenerateModelMojo extends AbstractKieMojo {
                            "main/java",
                            processEventListenerClass.replace('.', '/') + ".java");
         return Files.exists(p) ? processEventListenerClass : null;
+    }
+    private String customRuleEventListenerConfigExists(String appPackageName) {
+        String sourceDir = Paths.get(projectDir.getPath(), "src").toString();
+        String ruleEventListenerConfiglass = RuleCodegen.defaultRuleEventListenerConfigClass(appPackageName);
+        Path p = Paths.get(sourceDir,
+                           "main/java",
+                           ruleEventListenerConfiglass.replace('.', '/') + ".java");
+        return Files.exists(p) ? ruleEventListenerConfiglass : null;
     }
 
 

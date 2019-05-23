@@ -15,28 +15,41 @@
 
 package org.kie.submarine.codegen;
 
+import org.kie.submarine.codegen.process.config.ProcessConfigGenerator;
+import org.kie.submarine.codegen.rules.config.RuleConfigGenerator;
+
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.kie.submarine.codegen.process.config.ProcessConfigGenerator;
 
 public class ConfigGenerator {
 
     private ProcessConfigGenerator processConfig;
+    private RuleConfigGenerator ruleConfig;
 
     public ConfigGenerator withProcessConfig(ProcessConfigGenerator cfg) {
         this.processConfig = cfg;
+        return this;
+    }
+    
+    public ConfigGenerator withRuleConfig(RuleConfigGenerator cfg) {
+        this.ruleConfig = cfg;
         return this;
     }
 
     public ObjectCreationExpr newInstance() {
         return new ObjectCreationExpr()
                 .setType(org.kie.submarine.StaticConfig.class.getCanonicalName())
-                .addArgument(/* first arg is process config */ processConfig());
+                .addArgument(/* first arg is process config */ processConfig())
+                .addArgument(/* second arg is rule config */ ruleConfig());
 
     }
 
     private Expression processConfig() {
         return processConfig == null ? new NullLiteralExpr() : processConfig.newInstance();
+    }
+    
+    private Expression ruleConfig() {
+        return ruleConfig == null ? new NullLiteralExpr() : ruleConfig.newInstance();
     }
 }

@@ -18,8 +18,12 @@ package org.kie.submarine.codegen.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.core.config.DefaultRuleEventListenerConfig;
+import org.drools.core.event.DefaultAgendaEventListener;
 import org.junit.Test;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.submarine.Application;
 import org.kie.submarine.Model;
 import org.kie.submarine.codegen.AbstractCodegenTest;
@@ -49,5 +53,35 @@ public class BusinessRuleTaskTest extends AbstractCodegenTest {
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
+    }
+    
+    @Test
+    public void testBasicBusinessRuleTaskWithAgendaListener() throws Exception {
+        
+        Application app = generateCode(Collections.singletonList("ruletask/BusinessRuleTask.bpmn2"), Collections.singletonList("ruletask/BusinessRuleTask.drl"));        
+        assertThat(app).isNotNull();
+        final AtomicInteger counter = new AtomicInteger();
+        ((DefaultRuleEventListenerConfig)app.config().rule().ruleEventListeners()).register(new DefaultAgendaEventListener() {
+
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                counter.incrementAndGet();
+            }
+            
+        });                
+        Process<? extends Model> p = app.processes().processById("BusinessRuleTask");
+        
+        Model m = p.createModel();
+        m.fromMap(Collections.singletonMap("person", new Person("john", 25)));
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED);
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(1).containsKey("person");
+        assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
+        
+        assertThat(counter.get()).isEqualTo(1);
     }
 }

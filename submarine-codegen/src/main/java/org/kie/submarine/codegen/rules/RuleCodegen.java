@@ -34,6 +34,7 @@ import org.kie.api.KieServices;
 import org.kie.submarine.codegen.ConfigGenerator;
 import org.kie.submarine.codegen.GeneratedFile;
 import org.kie.submarine.codegen.Generator;
+import org.kie.submarine.codegen.rules.config.RuleConfigGenerator;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -68,6 +69,8 @@ public class RuleCodegen implements Generator {
     private final Predicate<String> fileFilter;
 
     private boolean dependencyInjection;
+    
+    private String ruleEventListenersConfigClass = null;
 
     public RuleCodegen( KieBuilderImpl kieBuilder, boolean oneClassPerRule, Collection<File> files ) {
         this.kieBuilder = kieBuilder;
@@ -80,6 +83,10 @@ public class RuleCodegen implements Generator {
                             .map(f -> f.getPath())
                             .anyMatch(f -> f.contains(fname));
         }
+    }
+    
+    public static String defaultRuleEventListenerConfigClass(String packageName) {
+        return packageName + ".RuleEventListenerConfig";
     }
 
     public void setPackageName(String packageName) {
@@ -99,6 +106,10 @@ public class RuleCodegen implements Generator {
     }
 
     public List<GeneratedFile> generate() {
+        if (ruleEventListenersConfigClass != null) {
+            moduleGenerator.setRuleEventListenersConfigClass(ruleEventListenersConfigClass);
+        }
+        
         kieBuilder.buildAll(
                 (km, cl) ->
                         new RuleCodegenProject(km, cl)
@@ -128,10 +139,16 @@ public class RuleCodegen implements Generator {
     @Override
     public void updateConfig(ConfigGenerator cfg) {
         // no config yet
+        cfg.withRuleConfig(new RuleConfigGenerator().ruleEventListenersConfig(moduleGenerator.ruleEventListenersConfigClass()));
     }
 
     public ModuleSourceClass moduleGenerator() {
         return moduleGenerator;
+    }
+    
+    public RuleCodegen withRuleEventListenersConfig(String ruleEventListenersConfigClass) {
+        this.ruleEventListenersConfigClass = ruleEventListenersConfigClass;
+        return this;
     }
 
     public void setDependencyInjection(boolean di) {

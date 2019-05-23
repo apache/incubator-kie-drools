@@ -16,17 +16,25 @@
 package org.kie.submarine;
 
 import org.kie.submarine.process.ProcessConfig;
+import org.kie.submarine.rules.RuleConfig;
 
 public class StaticConfig implements Config {
 
     private final ProcessConfig processConfig;
+    private final RuleConfig ruleConfig;
 
-    public StaticConfig(ProcessConfig processConfig) {
+    public StaticConfig(ProcessConfig processConfig, RuleConfig ruleConfig) {
         this.processConfig = processConfig;
+        this.ruleConfig = ruleConfig;
     }
 
     @Override
     public ProcessConfig process() {
         return this.processConfig;
+    }
+
+    @Override
+    public RuleConfig rule() {
+        return this.ruleConfig;
     }
 }

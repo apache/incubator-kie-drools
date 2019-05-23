@@ -50,7 +50,7 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         
         if (ruleSetNode.getLanguage().equals(RuleSetNode.DRL_LANG)) {
             MethodCallExpr ruleRuntimeBuilder = new MethodCallExpr(new NameExpr("app"), "ruleRuntimeBuilder");
-            MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(ruleRuntimeBuilder, "newKieSession", NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession")));
+            MethodCallExpr ruleRuntimeSupplier = new MethodCallExpr(ruleRuntimeBuilder, "newKieSession", NodeList.nodeList(new StringLiteralExpr("defaultStatelessKieSession"), new NameExpr("app.config().rule()")));
             actionBody.addStatement(new ReturnStmt(ruleRuntimeSupplier));
             addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "ruleFlowGroup", new StringLiteralExpr(ruleSetNode.getRuleFlowGroup()), lambda);
             

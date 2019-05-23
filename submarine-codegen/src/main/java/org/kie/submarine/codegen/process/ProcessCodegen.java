@@ -15,8 +15,6 @@
 
 package org.kie.submarine.codegen.process;
 
-import static org.kie.submarine.codegen.GeneratedFile.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,10 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.swing.text.rtf.RTFEditorKit;
-
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.SemanticModules;
@@ -49,10 +43,13 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
 import org.kie.submarine.codegen.ConfigGenerator;
 import org.kie.submarine.codegen.GeneratedFile;
+import org.kie.submarine.codegen.GeneratedFile.Type;
 import org.kie.submarine.codegen.Generator;
 import org.kie.submarine.codegen.process.config.ProcessConfigGenerator;
-import org.kie.submarine.process.impl.DefaultProcessEventListenerConfig;
 import org.xml.sax.SAXException;
+
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class ProcessCodegen implements Generator {
 

@@ -17,8 +17,10 @@
 package org.drools.modelcompiler;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.submarine.rules.RuleConfig;
 
 public interface KieRuntimeBuilder {
     KieSession newKieSession();
     KieSession newKieSession(String sessionName);
+    KieSession newKieSession(String sessionName, RuleConfig ruleConfig);
 }

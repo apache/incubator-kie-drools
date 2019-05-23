@@ -74,7 +74,15 @@ public class KieModuleModelMethod {
                 "\n" +
                 "    @Override\n" +
                 "    public KieSession newKieSession(String sessionName) {\n" +
-                "        return getKieBaseForSession(sessionName).newKieSession(getConfForSession(sessionName), null);\n" +
+                "        return newKieSession(sessionName, new org.drools.core.config.StaticRuleConfig(new org.drools.core.config.DefaultRuleEventListenerConfig()));\n" +
+                "    }\n" +
+                "\n" +
+                "    @Override\n" +
+                "    public KieSession newKieSession(String sessionName, org.kie.submarine.rules.RuleConfig ruleConfig) {\n" +
+                "        return java.util.Optional.ofNullable(getKieBaseForSession(sessionName).newKieSession(getConfForSession(sessionName), null)).map(k -> {\nruleConfig.ruleEventListeners().agendaListeners().forEach( l -> k.addEventListener(l));\n" + 
+                "            ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( l -> k.addEventListener(l));\n" + 
+                "            return k;\n" + 
+                "        }).get();" +
                 "    }\n";
     }
 

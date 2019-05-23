@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.kie.submarine.rules.RuleUnit;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -45,6 +46,8 @@ public class ModuleSourceClass {
     private String targetTypeName;
     private boolean hasCdi;
     private List<MethodDeclaration> factoryMethods = new ArrayList<>();
+    
+    private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
 
     public ModuleSourceClass(String packageName) {
         this.packageName = packageName;
@@ -132,5 +135,14 @@ public class ModuleSourceClass {
 
     public List<RuleUnitSourceClass> getRuleUnits() {
         return ruleUnits;
+    }    
+    
+    public void setRuleEventListenersConfigClass(String ruleEventListenersConfigClass) {
+        this.ruleEventListenersConfigClass = ruleEventListenersConfigClass;
     }
+
+    public String ruleEventListenersConfigClass() {
+        return ruleEventListenersConfigClass;
+    }
+    
 }

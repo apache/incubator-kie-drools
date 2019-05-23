@@ -13,12 +13,10 @@
  * limitations under the License.
  */
 
-package org.kie.submarine;
+package org.kie.submarine.rules;
 
-import org.kie.submarine.process.ProcessConfig;
-import org.kie.submarine.rules.RuleConfig;
 
-public interface Config {
-    ProcessConfig process();
-    RuleConfig rule();
+public interface RuleConfig {
+
+    RuleEventListenerConfig ruleEventListeners();
 }

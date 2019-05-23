@@ -13,12 +13,22 @@
  * limitations under the License.
  */
 
-package org.kie.submarine;
+package org.drools.core.config;
 
-import org.kie.submarine.process.ProcessConfig;
 import org.kie.submarine.rules.RuleConfig;
+import org.kie.submarine.rules.RuleEventListenerConfig;
 
-public interface Config {
-    ProcessConfig process();
-    RuleConfig rule();
+public class StaticRuleConfig implements RuleConfig {
+    
+    private final RuleEventListenerConfig ruleEventListenerConfig; 
+
+    public StaticRuleConfig(RuleEventListenerConfig ruleEventListenerConfig) {
+        this.ruleEventListenerConfig = ruleEventListenerConfig;
+    }
+
+    @Override
+    public RuleEventListenerConfig ruleEventListeners() {
+        return ruleEventListenerConfig;
+    }
+
 }
