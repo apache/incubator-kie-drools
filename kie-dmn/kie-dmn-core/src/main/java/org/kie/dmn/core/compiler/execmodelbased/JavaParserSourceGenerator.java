@@ -19,6 +19,7 @@ package org.kie.dmn.core.compiler.execmodelbased;
 import java.util.List;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -35,6 +36,8 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.type.ArrayType;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 public class JavaParserSourceGenerator {
 
     private ClassOrInterfaceDeclaration firstClass;
@@ -43,7 +46,7 @@ public class JavaParserSourceGenerator {
     public static NodeList<Modifier> PUBLIC_STATIC_FINAL = NodeList.nodeList(Modifier.publicModifier(), Modifier.staticModifier(), Modifier.finalModifier());
 
     public JavaParserSourceGenerator(String className, String namespace, String packageName) {
-        this.compilationUnit = JavaParser.parse("public class " + className + namespace + "{ }");
+        this.compilationUnit = parse("public class " + className + namespace + "{ }");
         this.compilationUnit.setPackageDeclaration(packageName);
         firstClass = this.compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new RuntimeException("Cannot find Class"));
     }
@@ -94,11 +97,11 @@ public class JavaParserSourceGenerator {
 
 
     private ClassOrInterfaceType getType(String canonicalName) {
-        return JavaParser.parseClassOrInterfaceType(canonicalName);
+        return StaticJavaParser.parseClassOrInterfaceType(canonicalName);
     }
 
     private ClassOrInterfaceType getType(Class<?> clazz) {
-        return JavaParser.parseClassOrInterfaceType(clazz.getCanonicalName());
+        return StaticJavaParser.parseClassOrInterfaceType(clazz.getCanonicalName());
     }
 
     private void renameFeelExpressionClass(String testClass, ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {

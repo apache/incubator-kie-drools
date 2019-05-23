@@ -4,22 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.AnnotationDeclarationError;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.TypeDeclarationDescr;
-import org.drools.compiler.lang.descr.TypeFieldDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.GeneratedFact;
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -42,6 +32,14 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.PrimitiveType.Primitive;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.AnnotationDeclarationError;
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.TypeFieldDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.GeneratedFact;
 import org.drools.modelcompiler.builder.GeneratedClassWithPackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -55,12 +53,12 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static com.github.javaparser.StaticJavaParser.parseStatement;
+import static com.github.javaparser.StaticJavaParser.parseType;
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
 import static java.util.stream.Collectors.joining;
-
-import static com.github.javaparser.JavaParser.parseExpression;
-import static com.github.javaparser.JavaParser.parseStatement;
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
@@ -199,7 +197,7 @@ public class POJOGenerator {
             int position = inheritedFields.size();
             for (TypeFieldDescr typeFieldDescr : typeFields) {
                 String fieldName = typeFieldDescr.getFieldName();
-                Type returnType = JavaParser.parseType( typeFieldDescr.getPattern().getObjectType() );
+                Type returnType = parseType( typeFieldDescr.getPattern().getObjectType() );
                 if (createFullArgsConstructor) {
                     addCtorArg( fullArgumentsCtor, returnType, fieldName );
                     ctorFieldStatement.add( replaceFieldName( parseStatement( "this.__fieldName = __fieldName;" ), fieldName ) );
@@ -329,7 +327,7 @@ public class POJOGenerator {
     }
 
     private static void addCtorArg( ConstructorDeclaration fullArgumentsCtor, String typeName, String fieldName ) {
-        addCtorArg( fullArgumentsCtor, JavaParser.parseType( typeName ), fieldName );
+        addCtorArg(fullArgumentsCtor, parseType(typeName ), fieldName );
     }
 
     private static void addCtorArg( ConstructorDeclaration fullArgumentsCtor, Type fieldType, String fieldName ) {
@@ -363,7 +361,7 @@ public class POJOGenerator {
         equalsStatements.addAll(equalsFieldStatement);
         equalsStatements.add(parseStatement("return true;"));
 
-        final Type returnType = JavaParser.parseType(boolean.class.getSimpleName());
+        final Type returnType = parseType(boolean.class.getSimpleName());
         final MethodDeclaration equals = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier()), returnType, EQUALS);
         equals.addParameter(Object.class, "o");
         equals.addAnnotation("Override");
@@ -419,7 +417,7 @@ public class POJOGenerator {
         hashCodeStatements.addAll(hashCodeFieldStatement);
         hashCodeStatements.add(parseStatement("return result;"));
 
-        final Type returnType = JavaParser.parseType(int.class.getSimpleName());
+        final Type returnType = parseType(int.class.getSimpleName());
         final MethodDeclaration equals = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier()), returnType, HASH_CODE);
         equals.addAnnotation("Override");
         equals.setBody(new BlockStmt(hashCodeStatements));
@@ -467,7 +465,7 @@ public class POJOGenerator {
 
         final Statement toStringStatement = parseStatement(header + body + close);
 
-        final Type returnType = JavaParser.parseType(String.class.getSimpleName());
+        final Type returnType = parseType(String.class.getSimpleName());
         final MethodDeclaration equals = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier()), returnType, TO_STRING);
         equals.addAnnotation("Override");
         equals.setBody(new BlockStmt(NodeList.nodeList(toStringStatement)));

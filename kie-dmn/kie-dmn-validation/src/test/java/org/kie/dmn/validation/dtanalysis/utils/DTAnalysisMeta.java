@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
@@ -36,11 +35,13 @@ import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 import org.kie.dmn.validation.dtanalysis.model.Overlap;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+
 public class DTAnalysisMeta {
 
     public static Expression printGaps(DTAnalysis analysis) {
         Collection<Hyperrectangle> gaps = analysis.getGaps();
-        MethodCallExpr parseExpression = JavaParser.parseExpression("Arrays.asList()");
+        MethodCallExpr parseExpression = parseExpression("Arrays.asList()");
         for (Hyperrectangle gap : gaps) {
             Expression gapAsExpression = hrAsExpression(gap);
             parseExpression.addArgument(gapAsExpression);
@@ -50,7 +51,7 @@ public class DTAnalysisMeta {
 
     public static Expression printOverlaps(DTAnalysis analysis) {
         Collection<Overlap> overlaps = analysis.getOverlaps();
-        MethodCallExpr parseExpression = JavaParser.parseExpression("Arrays.asList()");
+        MethodCallExpr parseExpression = parseExpression("Arrays.asList()");
         for (Overlap overlap : overlaps) {
             Expression overlapAsExpression = overlapAsExpression(overlap);
             parseExpression.addArgument(overlapAsExpression);
@@ -59,11 +60,11 @@ public class DTAnalysisMeta {
     }
 
     private static Expression overlapAsExpression(Overlap overlap) {
-        MethodCallExpr edgesExpression = JavaParser.parseExpression("Arrays.asList()");
+        MethodCallExpr edgesExpression = parseExpression("Arrays.asList()");
         for (Number edge : overlap.getRules()) {
             edgesExpression.addArgument(new IntegerLiteralExpr(edge.intValue()));
         }
-        ObjectCreationExpr newExpression = JavaParser.parseExpression("new Overlap()");
+        ObjectCreationExpr newExpression = parseExpression("new Overlap()");
         newExpression.addArgument(edgesExpression);
         newExpression.addArgument(hrAsExpression(overlap.getOverlap()));
         return newExpression;
@@ -71,19 +72,19 @@ public class DTAnalysisMeta {
 
     private static Expression hrAsExpression(Hyperrectangle gap) {
         int dimensions = gap.getDimensions();
-        MethodCallExpr edgesExpression = JavaParser.parseExpression("Arrays.asList()");
+        MethodCallExpr edgesExpression = parseExpression("Arrays.asList()");
         for (Interval edge : gap.getEdges()) {
             Expression intervalAsExpression = intervalAsExpression(edge);
             edgesExpression.addArgument(intervalAsExpression);
         }
-        ObjectCreationExpr newExpression = JavaParser.parseExpression("new Hyperrectangle()");
+        ObjectCreationExpr newExpression = parseExpression("new Hyperrectangle()");
         newExpression.addArgument(new IntegerLiteralExpr(dimensions));
         newExpression.addArgument(edgesExpression);
         return newExpression;
     }
 
     private static Expression intervalAsExpression(Interval edge) {
-        MethodCallExpr newExpression = JavaParser.parseExpression("Interval.newFromBounds()");
+        MethodCallExpr newExpression = parseExpression("Interval.newFromBounds()");
         Expression lowerAsExpression = boundAsExpression(edge.getLowerBound());
         newExpression.addArgument(lowerAsExpression);
         Expression upperAsExpression = boundAsExpression(edge.getUpperBound());
@@ -95,12 +96,12 @@ public class DTAnalysisMeta {
         Comparable<?> value = bound.getValue();
         Expression valueExpr = null;
         if (value == Interval.NEG_INF) {
-            valueExpr = JavaParser.parseExpression("Interval.NEG_INF");
+            valueExpr = parseExpression("Interval.NEG_INF");
         } else if (value == Interval.POS_INF) {
-            valueExpr = JavaParser.parseExpression("Interval.POS_INF");
+            valueExpr = parseExpression("Interval.POS_INF");
         } else if (value instanceof BigDecimal) {
             BigDecimal bigDecimal = (BigDecimal) value;
-            ObjectCreationExpr newExpression = JavaParser.parseExpression("new BigDecimal()");
+            ObjectCreationExpr newExpression = parseExpression("new BigDecimal()");
             StringLiteralExpr stringRep = new StringLiteralExpr(bigDecimal.toString());
             newExpression.addArgument(stringRep);
             valueExpr = newExpression;
@@ -114,13 +115,13 @@ public class DTAnalysisMeta {
             valueExpr = new BooleanLiteralExpr(b);
         } else if (value instanceof LocalDate) {
             LocalDate localDateTime = (LocalDate) value;
-            MethodCallExpr newExpression = JavaParser.parseExpression("java.time.LocalDate.parse()");
+            MethodCallExpr newExpression = parseExpression("java.time.LocalDate.parse()");
             StringLiteralExpr stringRep = new StringLiteralExpr(localDateTime.toString());
             newExpression.addArgument(stringRep);
             valueExpr = newExpression;
         } else if (value instanceof ComparablePeriod) {
             ComparablePeriod comparablePeriod = (ComparablePeriod) value;
-            MethodCallExpr newExpression = JavaParser.parseExpression("org.kie.dmn.feel.lang.types.impl.ComparablePeriod.parse()");
+            MethodCallExpr newExpression = parseExpression("org.kie.dmn.feel.lang.types.impl.ComparablePeriod.parse()");
             StringLiteralExpr stringRep = new StringLiteralExpr(comparablePeriod.asPeriod().toString());
             newExpression.addArgument(stringRep);
             valueExpr = newExpression;
@@ -129,13 +130,13 @@ public class DTAnalysisMeta {
         }
         Expression typeExpr = null;
         if (bound.getBoundaryType() == RangeBoundary.OPEN) {
-            typeExpr = JavaParser.parseExpression("RangeBoundary.OPEN");
+            typeExpr = parseExpression("RangeBoundary.OPEN");
         } else if (bound.getBoundaryType() == RangeBoundary.CLOSED) {
-            typeExpr = JavaParser.parseExpression("RangeBoundary.CLOSED");
+            typeExpr = parseExpression("RangeBoundary.CLOSED");
         } else {
             throw new IllegalStateException("illegal getBoundaryType");
         }
-        ObjectCreationExpr newExpression = JavaParser.parseExpression("new Bound()");
+        ObjectCreationExpr newExpression = parseExpression("new Bound()");
         newExpression.addArgument(valueExpr);
         newExpression.addArgument(typeExpr);
         newExpression.addArgument(new NullLiteralExpr());

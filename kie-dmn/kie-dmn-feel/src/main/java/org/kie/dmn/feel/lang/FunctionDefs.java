@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -31,6 +32,8 @@ import com.github.javaparser.ast.type.Type;
 import org.kie.dmn.feel.codegen.feel11.FEELCompilationError;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.util.Msg;
+
+import static com.github.javaparser.StaticJavaParser.parseType;
 
 public class FunctionDefs {
 
@@ -51,7 +54,7 @@ public class FunctionDefs {
                     String paramName = params.get(i);
                     String paramTypeName = paramTypeNames[i];
                     Type paramTypeCanonicalName =
-                            JavaParser.parseType(
+                            parseType(
                                     FunctionDefNode.getType(paramTypeName).getCanonicalName());
 
                     Expression param =
