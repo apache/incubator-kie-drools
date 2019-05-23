@@ -3,52 +3,19 @@ package org.drools.modelcompiler.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.Type;
-import com.github.javaparser.ast.type.UnknownType;
-import org.apache.commons.codec.binary.StringUtils;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.Drools;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
-import org.drools.model.Rule;
 import org.drools.modelcompiler.builder.PackageModel.RuleSourceResult;
 import org.kie.api.builder.ReleaseId;
 
-import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.assertj.core.api.Assertions.*;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class ModelWriter {
 
@@ -92,7 +59,6 @@ public class ModelWriter {
             for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
                 String addFileName = cu.findFirst( ClassOrInterfaceDeclaration.class ).get().getNameAsString();
                 String addSourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
-                prettyPrinter.print(cu);
                 String addSource = prettyPrinter.print( cu );
                 pkgModel.logRule( addSource );
                 byte[] addBytes = addSource.getBytes();
@@ -132,6 +98,5 @@ public class ModelWriter {
         public List<String> getModelFiles() {
             return modelFiles;
         }
-
     }
 }
