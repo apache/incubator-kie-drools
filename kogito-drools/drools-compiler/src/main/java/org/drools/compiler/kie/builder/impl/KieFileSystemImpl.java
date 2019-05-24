@@ -15,10 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.JAVA_ROOT;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,6 +34,10 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.JAVA_ROOT;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class KieFileSystemImpl
         implements
@@ -81,13 +81,15 @@ public class KieFileSystemImpl
             String target = resource.getTargetPath() != null ? resource.getTargetPath() : resource.getSourcePath();
             if( target != null ) {
                 String prefix = resource.getResourceType() == ResourceType.JAVA ? JAVA_ROOT : RESOURCES_ROOT;
-                write( prefix + target, readBytesFromInputStream(resource.getInputStream()) );
+                int prefixPos = target.indexOf( prefix );
+                String path = prefixPos >= 0 ? target.substring( prefixPos ) : prefix + target;
+                write( path, readBytesFromInputStream(resource.getInputStream()) );
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
                     Properties prop = ResourceTypeImpl.toProperties(conf);
                     ByteArrayOutputStream buff = new ByteArrayOutputStream();
                     prop.store( buff, "Configuration properties for resource: " + target );
-                    write( prefix + target + ".properties", buff.toByteArray() );
+                    write( path + ".properties", buff.toByteArray() );
                 }
                 return this;
             } else {

@@ -21,6 +21,8 @@ import java.util.function.BiFunction;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
@@ -29,6 +31,7 @@ import org.drools.modelcompiler.builder.CanonicalModelCodeGenerationKieProject;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.model.KieBaseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,12 +90,17 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                         ruleUnitInstance.generate().getBytes() );
             }
         } else if (hasCdi()) {
-            CompilationUnit compilationUnit =
-                    JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/SessionRuleUnitTemplate.java"));
-            trgMfs.write(
-                    "org/drools/project/model/SessionRuleUnit.java",
-                    compilationUnit.toString().getBytes() );
+            for (KieBaseModel kBaseModel : kBaseModels.values()) {
+                for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
+                    CompilationUnit cu = JavaParser.parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
+                    ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
+                    template.setName( "SessionRuleUnit_" + sessionName );
+                    template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
+                    trgMfs.write(
+                            "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
+                            cu.toString().getBytes() );
+                }
+            }
         }
     }
-
 }

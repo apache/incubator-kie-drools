@@ -24,4 +24,8 @@ public class SessionMemory {
     public ListDataSource<Object> getDataSource() {
         return dataSource;
     }
+
+    public void add(Object obj) {
+        dataSource.add( obj );
+    }
 }

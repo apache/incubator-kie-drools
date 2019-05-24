@@ -15,8 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kproject.ReleaseIdImpl.adaptAll;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import com.google.protobuf.ExtensionRegistry;
 import org.drools.compiler.addon.DependencyFilter;
 import org.drools.compiler.addon.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -37,7 +36,6 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
@@ -74,7 +72,7 @@ import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.protobuf.ExtensionRegistry;
+import static org.drools.compiler.kproject.ReleaseIdImpl.adaptAll;
 
 public abstract class AbstractKieModule
         implements
@@ -315,25 +313,27 @@ public abstract class AbstractKieModule
         if (conf != null) {
             return conf;
         }
+        Properties prop = new Properties();
         if (isAvailable(fileName + ".properties")) {
             // configuration file available
-            Properties prop = new Properties();
             try {
                 prop.load(new ByteArrayInputStream(getBytes(fileName + ".properties")));
             } catch (IOException e) {
                 log.error("Error loading resource configuration from file: " + fileName + ".properties");
             }
-            conf = ResourceTypeImpl.fromProperties(prop);
-        } else if (ResourceType.DTABLE.matchesExtension(fileName)) {
+        }
+        if (ResourceType.DTABLE.matchesExtension(fileName)) {
             int lastDot = fileName.lastIndexOf( '.' );
             if (lastDot >= 0 && fileName.length() > lastDot+1) {
                 String extension = fileName.substring( lastDot+1 );
-                Properties prop = new Properties();
-                prop.setProperty(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName());
+                Object confClass = prop.get(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS);
+                if (confClass == null || confClass.toString().equals( ResourceConfigurationImpl.class.getCanonicalName() )) {
+                    prop.setProperty( ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName() );
+                }
                 prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.valueOf( extension.toUpperCase() ).toString());
-                conf = ResourceTypeImpl.fromProperties(prop);
             }
         }
+        conf = prop.isEmpty() ? null : ResourceTypeImpl.fromProperties(prop);
         resourceConfigurationCache.put(fileName, conf);
         return conf;
     }
@@ -379,11 +379,6 @@ public abstract class AbstractKieModule
         if (pomModel == null) {
             try {
                 byte[] pomXml = getPomXml();
-                if( pomXml != null ) {
-//                    PomModel tempPomModel = PomModel.Parser.parse("pom.xml", new ByteArrayInputStream(pomXml));
-//                    validatePomModel(tempPomModel); // throws an exception if invalid
-//                    pomModel = tempPomModel;
-                }
             } catch( Exception e ) {
                 // nothing to do as it was not possible to retrieve pom.xml
             }

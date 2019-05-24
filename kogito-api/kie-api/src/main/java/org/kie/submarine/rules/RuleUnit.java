@@ -18,7 +18,9 @@ package org.kie.submarine.rules;
 public interface RuleUnit<T> {
     RuleUnitInstance<T> createInstance(T workingMemory);
 
-    default void evaluate(T workingMemory) {
-        createInstance(workingMemory).fire();
+    default RuleUnitInstance<T> evaluate(T workingMemory) {
+        RuleUnitInstance<T> instance = createInstance(workingMemory);
+        instance.fire();
+        return instance;
     }
 }
