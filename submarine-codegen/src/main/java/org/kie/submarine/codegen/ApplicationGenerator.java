@@ -17,6 +17,7 @@ package org.kie.submarine.codegen;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,6 +59,9 @@ public class ApplicationGenerator {
     private List<Generator> generators = new ArrayList<>();
 
     public ApplicationGenerator(String packageName, File targetDirectory) {
+        if (packageName == null) {
+            throw new IllegalArgumentException("Package name cannot be undefined (null), please specify a package name!");
+        }
         this.packageName = packageName;
         this.targetDirectory = targetDirectory;
         this.targetTypeName = "Application";
@@ -115,7 +119,9 @@ public class ApplicationGenerator {
         generators.forEach(gen -> gen.updateConfig(configGenerator));
         generators.forEach(gen -> factoryMethods.addAll(gen.factoryMethods()));        
         generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
-        generatedFiles.add(new GeneratedFile(GeneratedFile.Type.APPLICATION, generatedFilePath(), compilationUnit().toString().getBytes()));
+        generatedFiles.add(new GeneratedFile(GeneratedFile.Type.APPLICATION,
+                                             generatedFilePath(),
+                                             compilationUnit().toString().getBytes(StandardCharsets.UTF_8)));
         return generatedFiles;
     }
 
@@ -127,10 +133,9 @@ public class ApplicationGenerator {
     }
     
     protected void writeLabelsImageMetadata(Map<String, String> labels) {
-        
         try {
             Path imageMetaDataFile = Paths.get(targetDirectory.getAbsolutePath(), "image_metadata.json");
-            ImageMetaData imageMetadata = null;
+            ImageMetaData imageMetadata;
             if (Files.exists(imageMetaDataFile)) {
                 // read the file to merge the content
                 imageMetadata =  mapper.readValue(imageMetaDataFile.toFile(), ImageMetaData.class);
@@ -138,10 +143,12 @@ public class ApplicationGenerator {
                 imageMetadata = new ImageMetaData();            
             }
             imageMetadata.add(labels);
-            
-            Files.write(imageMetaDataFile, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(imageMetadata).getBytes());
+
+            Files.createDirectories(imageMetaDataFile.getParent());
+            Files.write(imageMetaDataFile,
+                        mapper.writerWithDefaultPrettyPrinter().writeValueAsString(imageMetadata).getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            
+            throw new RuntimeException(e);
         }
                
     }

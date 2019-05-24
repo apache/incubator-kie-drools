@@ -51,7 +51,7 @@
     </dependencies>
   </dependencyManagement>
 
-  
+
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -69,7 +69,7 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
-    
+
     <!-- image metadata handling -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -79,7 +79,7 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
-    
+
     <!-- test -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
@@ -96,7 +96,7 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-        
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core-static</artifactId>
@@ -117,7 +117,15 @@
       <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
-
 </project>

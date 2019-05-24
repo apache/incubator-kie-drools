@@ -1,0 +1,66 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.submarine.codegen;
+
+import java.util.Collection;
+import java.util.Map;
+
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
+
+public class GeneratorInterfaceTest {
+
+    @Test
+    public void getLabels() {
+        Assertions.assertThat(getAnonymousGeneratorInstance().getLabels()).isEmpty();
+    }
+
+    private Generator getAnonymousGeneratorInstance() {
+        return new Generator() {
+            @Override
+            public Collection<MethodDeclaration> factoryMethods() {
+                return null;
+            }
+
+            @Override
+            public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
+                return null;
+            }
+
+            @Override
+            public Collection<GeneratedFile> generate() {
+                return null;
+            }
+
+            @Override
+            public void updateConfig(ConfigGenerator cfg) {
+
+            }
+
+            @Override
+            public void setPackageName(String packageName) {
+
+            }
+
+            @Override
+            public void setDependencyInjection(boolean dependencyInjection) {
+
+            }
+        };
+    }
+}
