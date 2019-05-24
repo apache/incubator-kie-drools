@@ -15,8 +15,8 @@
 
 package org.drools.core.config;
 
-import org.kie.submarine.rules.RuleConfig;
-import org.kie.submarine.rules.RuleEventListenerConfig;
+import org.kie.kogito.rules.RuleConfig;
+import org.kie.kogito.rules.RuleEventListenerConfig;
 
 public class StaticRuleConfig implements RuleConfig {
     

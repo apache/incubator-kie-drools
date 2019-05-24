@@ -15,9 +15,9 @@
 
 package org.jbpm.process.instance;
 
+import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.services.time.impl.JDKTimerService;
-import org.kie.submarine.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.submarine.process.impl.DefaultWorkItemHandlerConfig;
 
 public class LightProcessRuntimeServiceProvider extends AbstractProcessRuntimeServiceProvider {
 

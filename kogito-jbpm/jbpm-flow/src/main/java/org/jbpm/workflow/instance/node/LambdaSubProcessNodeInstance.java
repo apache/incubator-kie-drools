@@ -92,7 +92,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         context.setNodeInstance(this);
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
         Object o = subProcessFactory.bind(context);
-        org.kie.submarine.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
+        org.kie.kogito.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
         
 
 //            KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();

@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
+    <groupId>org.kie.kogito</groupId>
     <artifactId>drools</artifactId>
     <version>8.0.0-SNAPSHOT</version>
   </parent>
@@ -16,7 +16,7 @@
   <name>Drools :: Compiler</name>
 
   <properties>
-    <java.module.name>org.drools.compiler</java.module.name>
+    <java.module.name>org.kie.kogito.drools.compiler</java.module.name>
     <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
@@ -24,26 +24,26 @@
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-reflective</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-internal</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-internal</artifactId>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
@@ -94,13 +94,8 @@
 
     <!-- test -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -139,7 +134,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
@@ -202,7 +197,7 @@
                       value="-Xconversiontimeout 32000 -debug" else="">
                       <isset property="debugParser" />
                     </condition>
-                    <!-- path id="antlr.path"> <path refid="maven.compile.classpath"/> 
+                    <!-- path id="antlr.path"> <path refid="maven.compile.classpath"/>
                       </path -->
                     <echo
                       message="Generating Lexer (${antlr.debugParser})" />

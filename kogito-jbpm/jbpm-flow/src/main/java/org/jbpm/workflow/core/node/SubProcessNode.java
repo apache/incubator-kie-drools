@@ -32,7 +32,7 @@ import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.kie.api.runtime.process.ProcessContext;
-import org.kie.submarine.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstance;
 
 /**
  * Default implementation of a sub-flow node.

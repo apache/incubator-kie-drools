@@ -12,8 +12,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.kie.submarine.rules.RuleUnit;
-import org.kie.submarine.rules.impl.AbstractRuleUnit;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.impl.AbstractRuleUnit;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 

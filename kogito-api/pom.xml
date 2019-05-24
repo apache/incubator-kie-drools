@@ -4,16 +4,16 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>submarine-bom</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-runtimes</artifactId>
     <version>8.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-api-parent</artifactId>
+  <artifactId>kogito-api-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE :: API Parent</name>
-  <description>The common API for KIE (Drools, jBPM and OptaPlanner)</description>
+  <name>Kogito :: API Parent</name>
+  <description>The common API for Kogito</description>
 
   <properties>
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
@@ -39,17 +39,17 @@
   </repositories>
 
   <modules>
-    <module>kie-api</module>
-    <module>kie-internal</module>
-    <module>kie-services</module>
+    <module>kogito-api</module>
+    <module>kogito-internal</module>
+    <module>kogito-services</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-bom</artifactId>
-        <version>${version.org.kie}</version>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-bom</artifactId>
+        <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

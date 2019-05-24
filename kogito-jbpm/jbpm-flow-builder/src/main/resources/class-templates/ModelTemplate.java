@@ -3,7 +3,7 @@ package org.jbpm.process.codegen;
 import java.util.Map;
 import java.util.HashMap;
 
-public class XXXModel implements org.kie.submarine.Model {
+public class XXXModel implements org.kie.kogito.Model {
     
     private Long id;
     

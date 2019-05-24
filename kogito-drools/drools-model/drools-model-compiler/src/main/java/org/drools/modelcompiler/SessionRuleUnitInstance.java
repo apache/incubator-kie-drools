@@ -17,8 +17,8 @@
 package org.drools.modelcompiler;
 
 import org.kie.api.runtime.KieSession;
-import org.kie.submarine.rules.RuleUnit;
-import org.kie.submarine.rules.impl.AbstractRuleUnitInstance;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.impl.AbstractRuleUnitInstance;
 
 public class SessionRuleUnitInstance extends AbstractRuleUnitInstance<SessionMemory> {
 

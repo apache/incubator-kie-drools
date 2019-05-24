@@ -78,7 +78,7 @@ public class KieModuleModelMethod {
                 "    }\n" +
                 "\n" +
                 "    @Override\n" +
-                "    public KieSession newKieSession(String sessionName, org.kie.submarine.rules.RuleConfig ruleConfig) {\n" +
+                "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
                 "        return java.util.Optional.ofNullable(getKieBaseForSession(sessionName).newKieSession(getConfForSession(sessionName), null)).map(k -> {\nruleConfig.ruleEventListeners().agendaListeners().forEach( l -> k.addEventListener(l));\n" + 
                 "            ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( l -> k.addEventListener(l));\n" + 
                 "            return k;\n" + 

@@ -9,7 +9,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.api.runtime.KieSession;
-import org.kie.submarine.rules.impl.AbstractRuleUnitInstance;
+import org.kie.kogito.rules.impl.AbstractRuleUnitInstance;
 
 public class RuleUnitInstanceSourceClass {
 

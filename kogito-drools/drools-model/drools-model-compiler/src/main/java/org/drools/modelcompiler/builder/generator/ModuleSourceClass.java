@@ -13,7 +13,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.modelcompiler.builder.ModelWriter;
-import org.kie.submarine.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnit;
 
 public class ModuleSourceClass {
 

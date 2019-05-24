@@ -49,13 +49,13 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.submarine.process.ProcessConfig;
-import org.kie.submarine.process.ProcessInstance;
+import org.kie.kogito.process.ProcessConfig;
+import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.submarine.process.bpmn2.BpmnProcess;
 import org.kie.submarine.process.bpmn2.BpmnVariables;
-import org.kie.submarine.process.impl.CachedWorkItemHandlerConfig;
-import org.kie.submarine.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.submarine.process.impl.StaticProcessConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

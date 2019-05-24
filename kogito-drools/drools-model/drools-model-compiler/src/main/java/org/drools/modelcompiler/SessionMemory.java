@@ -16,7 +16,7 @@
 
 package org.drools.modelcompiler;
 
-import org.kie.submarine.rules.impl.ListDataSource;
+import org.kie.kogito.rules.impl.ListDataSource;
 
 public class SessionMemory {
     private final ListDataSource<Object> dataSource = new ListDataSource<>();

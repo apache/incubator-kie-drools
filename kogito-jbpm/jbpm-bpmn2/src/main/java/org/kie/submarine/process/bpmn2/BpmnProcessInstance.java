@@ -18,8 +18,8 @@ package org.kie.submarine.process.bpmn2;
 import java.util.Map;
 
 import org.kie.api.runtime.process.ProcessRuntime;
-import org.kie.submarine.process.impl.AbstractProcess;
-import org.kie.submarine.process.impl.AbstractProcessInstance;
+import org.kie.kogito.process.impl.AbstractProcess;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> {
 

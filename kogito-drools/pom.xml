@@ -4,14 +4,11 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>submarine-bom</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-runtimes</artifactId>
     <version>8.0.0-SNAPSHOT</version>
-    <!-- relativePath causes out-of-date problems on hudson slaves -->
-    <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
   </parent>
 
-  <groupId>org.drools</groupId>
   <artifactId>drools</artifactId>
   <packaging>pom</packaging>
 
@@ -25,23 +22,6 @@
     <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
   </properties>
 
-  <repositories>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
   <modules>
     <module>drools-core-reflective</module>
     <module>drools-core-static</module>
@@ -50,17 +30,14 @@
     <module>drools-compiler</module>
     <module>drools-model</module>
     <module>kie-dmn</module>
-    </modules>
+  </modules>
 
   <dependencyManagement>
-    <!-- Important: Do not add any additional dependency versions here!
-         The dependency management should only import drools-bom and kie-third-party-bom to get the proper versions
-         it needs. Any additional 3rd party dependency versions need to go directly into kie-third-party-bom. -->
     <dependencies>
       <dependency>
-        <groupId>org.drools</groupId>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
+        <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

@@ -21,11 +21,11 @@ import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.process.ProcessEventListenerConfig;
+import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.services.signal.LightSignalManager;
 import org.kie.services.signal.SignalManager;
 import org.kie.services.time.TimerService;
-import org.kie.submarine.process.ProcessEventListenerConfig;
-import org.kie.submarine.process.WorkItemHandlerConfig;
 
 public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServiceProvider {
 

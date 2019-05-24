@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.jbpm</groupId>
+    <groupId>org.kie.kogito</groupId>
     <artifactId>jbpm</artifactId>
     <version>8.0.0-SNAPSHOT</version>
   </parent>
@@ -17,29 +17,29 @@
   <description>jBPM Flow Builder</description>
 
   <properties>
-    <java.module.name>org.jbpm.flow.builder</java.module.name>
+    <java.module.name>org.kie.kogito.jbpm.flow.builder</java.module.name>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.jbpm</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-internal</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-internal</artifactId>
     </dependency>
     <dependency>
       <groupId>org.mvel</groupId>
@@ -49,7 +49,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    
+
     <!-- code generation for executable model -->
     <dependency>
       <groupId>com.github.javaparser</groupId>
@@ -58,7 +58,7 @@
 
     <!--  test -->
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>
       <scope>test</scope>
     </dependency>
@@ -78,7 +78,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-compiler</artifactId>
       <type>test-jar</type>
       <scope>test</scope>

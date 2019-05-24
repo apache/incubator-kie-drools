@@ -31,7 +31,7 @@ import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.runtime.process.ProcessContext;
-import org.kie.submarine.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstance;
 
 /**
  *
