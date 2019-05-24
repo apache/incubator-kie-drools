@@ -15,6 +15,17 @@
 
 package org.drools.compiler.compiler;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
@@ -47,18 +58,13 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TypeDeclarationTest {
 
@@ -1274,4 +1280,27 @@ public class TypeDeclarationTest {
         assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
     }
 
+    @Test
+    public void testDeclaredSlidingWindowOnEventInTypeDeclaration() throws Exception {
+        String str =
+                "package org.test;\n" +
+                "declare MyPojo\n" +
+                "  @serialVersionUID( 42 )\n" +
+                "end\n" +
+                "rule R when then insert(new MyPojo()); end\n";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( str, ResourceType.DRL );
+
+        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
+        assertEquals( 0, kh.verify().getMessages( Message.Level.WARNING ).size() );
+
+        KieSession ksession = kh.build().newKieSession();
+        ksession.fireAllRules();
+
+        Object pojo = ksession.getObjects().iterator().next();
+        Field f = pojo.getClass().getDeclaredField( "serialVersionUID" );
+        f.setAccessible( true );
+        assertEquals(42L, (long)f.get( pojo ));
+    }
 }
