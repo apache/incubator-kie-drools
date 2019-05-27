@@ -17,6 +17,8 @@
 package org.drools.scenariosimulation.backend.util;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,6 +165,8 @@ public class ScenarioBeanUtil {
             return parseByte(value);
         } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
             return Short.parseShort(cleanStringForNumberParsing(value));
+        } else if (clazz.isAssignableFrom(LocalDate.class)) {
+            return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
 
         throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
@@ -194,6 +198,9 @@ public class ScenarioBeanUtil {
             return String.valueOf(cleanValue);
         } else if (clazz.isAssignableFrom(Short.class) || clazz.isAssignableFrom(short.class)) {
             return String.valueOf(cleanValue);
+        } else if (clazz.isAssignableFrom(LocalDate.class)) {
+            LocalDate localDate = (LocalDate) cleanValue;
+            return String.format("%04d-%02d-%02d", localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
         } else {
             return String.valueOf(cleanValue);
         }
