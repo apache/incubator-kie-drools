@@ -124,10 +124,6 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-transport-wagon</artifactId>
     </dependency>
     <dependency>
