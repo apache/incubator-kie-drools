@@ -13,10 +13,9 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.codegen;
+package org.kie.kogito.codegen;
 
 import java.util.Collection;
-import java.util.Map;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;

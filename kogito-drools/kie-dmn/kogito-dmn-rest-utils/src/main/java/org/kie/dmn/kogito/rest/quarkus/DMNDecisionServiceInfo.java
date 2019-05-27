@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.submarine.rest.quarkus;
+package org.kie.dmn.kogito.rest.quarkus;
 
 import java.io.Serializable;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.DecisionServiceNode;
 
-public class DMNDecisionInfo implements Serializable {
+public class DMNDecisionServiceInfo implements Serializable {
 
     private String id;
     private String name;
 
-    public DMNDecisionInfo() {
+    public DMNDecisionServiceInfo() {
         // Intentionally blank.
     }
 
-    public static DMNDecisionInfo of(DecisionNode decisionNode) {
-        DMNDecisionInfo res = new DMNDecisionInfo();
-        res.setName(decisionNode.getName());
-        res.setId(decisionNode.getId());
+    public static DMNDecisionServiceInfo of(DecisionServiceNode dsNode) {
+        DMNDecisionServiceInfo res = new DMNDecisionServiceInfo();
+        res.setName(dsNode.getName());
+        res.setId(dsNode.getId());
         return res;
     }
 
-    @JsonbProperty("decision-id")
+    @JsonbProperty("decision-service-id")
     public String getId() {
         return id;
     }
@@ -47,7 +47,7 @@ public class DMNDecisionInfo implements Serializable {
         this.id = id;
     }
 
-    @JsonbProperty("decision-name")
+    @JsonbProperty("decision-service-name")
     public String getName() {
         return name;
     }

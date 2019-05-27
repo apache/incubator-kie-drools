@@ -56,7 +56,11 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
     public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
         super.writeProjectOutput(trgMfs, messages);
 
-        moduleGenerator.withCdi(hasCdi());
+        if (moduleGenerator == null) {
+            throw new IllegalStateException("Module generator is not specified!");
+        } else {
+            moduleGenerator.withCdi(hasCdi());
+        }
 
         boolean hasRuleUnits = false;
 

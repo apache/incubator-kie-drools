@@ -14,36 +14,45 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.submarine.rest.quarkus;
+package org.kie.dmn.kogito.rest.quarkus;
 
 import java.io.Serializable;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class DMNUnaryTestsInfo implements Serializable {
+import org.kie.dmn.api.core.ast.DecisionNode;
 
-    private String text;
-    private String expressionLanguage;
+public class DMNDecisionInfo implements Serializable {
 
-    public DMNUnaryTestsInfo() {
+    private String id;
+    private String name;
+
+    public DMNDecisionInfo() {
         // Intentionally blank.
     }
 
-    @JsonbProperty("unarytests-text")
-    public String getText() {
-        return text;
+    public static DMNDecisionInfo of(DecisionNode decisionNode) {
+        DMNDecisionInfo res = new DMNDecisionInfo();
+        res.setName(decisionNode.getName());
+        res.setId(decisionNode.getId());
+        return res;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    @JsonbProperty("decision-id")
+    public String getId() {
+        return id;
     }
 
-    @JsonbProperty("unarytests-expressionLanguage")
-    public String getExpressionLanguage() {
-        return expressionLanguage;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setExpressionLanguage(String expressionLanguage) {
-        this.expressionLanguage = expressionLanguage;
+    @JsonbProperty("decision-name")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

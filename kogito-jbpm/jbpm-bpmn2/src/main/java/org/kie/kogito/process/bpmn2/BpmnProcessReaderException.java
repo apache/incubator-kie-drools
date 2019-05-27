@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.process.bpmn2;
+package org.kie.kogito.process.bpmn2;
 
 public class BpmnProcessReaderException extends RuntimeException {
 

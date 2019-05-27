@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.codegen.metadata;
+package org.kie.kogito.codegen.metadata;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -67,7 +67,7 @@ public class IncrementalRuleCodegen implements Generator {
         } else if ( resourceType == ResourceType.DTABLE ) {
             pkgDescrConverter = KnowledgeBuilderUtil::dtableToPackageDescr;
         } else {
-            throw new RuntimeException( "Unknown resource type " + resourceType );
+            throw new IllegalArgumentException( "Unknown resource type " + resourceType );
         }
     }
 

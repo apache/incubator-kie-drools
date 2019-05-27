@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.codegen;
+package org.kie.kogito.codegen;
 
 import java.nio.charset.StandardCharsets;
 

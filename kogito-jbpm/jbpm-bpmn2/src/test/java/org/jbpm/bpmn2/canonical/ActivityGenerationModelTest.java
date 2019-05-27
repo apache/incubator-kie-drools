@@ -54,8 +54,8 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
-import org.kie.submarine.process.bpmn2.BpmnProcess;
-import org.kie.submarine.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.bpmn2.BpmnProcess;
+import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

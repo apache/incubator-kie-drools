@@ -11,7 +11,7 @@ To merge upstream v7 repos used the following commands, for example:
 (fix conflicts in .gitignore)
  1118  git add .gitignore 
  1119  git merge --continue
-then moved the relevant directories from merge into its relevant submarine/subdirectory,
+then moved the relevant directories from merge into its relevant kogito/subdirectory,
 for example /bom
 and commit the move.
 

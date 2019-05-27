@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.codegen;
+package org.kie.kogito.codegen;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.kie.kogito.Config;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -180,7 +181,7 @@ public class ApplicationGeneratorTest {
 
         assertThat(compilationUnit.getImports()).isNotNull();
         assertThat(compilationUnit.getImports()).hasSize(2);
-        assertThat(compilationUnit.getImports().get(0).getName().toString()).isEqualTo("org.kie.submarine.Config");
+        assertThat(compilationUnit.getImports().get(0).getName().toString()).isEqualTo(Config.class.getCanonicalName());
 
         assertThat(compilationUnit.getTypes()).isNotNull();
         assertThat(compilationUnit.getTypes()).hasSize(1);

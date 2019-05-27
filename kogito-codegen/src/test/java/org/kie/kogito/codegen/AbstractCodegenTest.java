@@ -59,7 +59,7 @@ public class AbstractCodegenTest {
     
     protected Application generateCode(List<String> processResources, List<String> rulesResources) throws Exception {
         ApplicationGenerator appGen =
-                new ApplicationGenerator("org.kie.submarine.test", new File("target/codegen-tests"))
+                new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
                                                                                                     .withDependencyInjection(false);
 
         if (!rulesResources.isEmpty()) {
@@ -98,7 +98,7 @@ public class AbstractCodegenTest {
         TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 
         @SuppressWarnings("unchecked")
-        Class<Application> app = (Class<Application>) Class.forName("org.kie.submarine.test.Application", true, cl);
+        Class<Application> app = (Class<Application>) Class.forName(this.getClass().getPackage().getName() + ".Application", true, cl);
         
         return app.newInstance();
     }
@@ -109,7 +109,7 @@ public class AbstractCodegenTest {
 
         public TestClassLoader(ClassLoader parent, Map<String, byte[]> extraClassDefs) {
             super(new URL[0], parent);
-            this.extraClassDefs = new HashMap<String, byte[]>();
+            this.extraClassDefs = new HashMap<>();
 
             for (Entry<String, byte[]> entry : extraClassDefs.entrySet()) {
                 this.extraClassDefs.put(entry.getKey().replaceAll("/", ".").replaceFirst("\\.class", ""), entry.getValue());

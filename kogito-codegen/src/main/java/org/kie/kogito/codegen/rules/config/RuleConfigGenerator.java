@@ -21,10 +21,13 @@ import org.drools.core.config.StaticRuleConfig;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 public class RuleConfigGenerator {
-    private String ruleEventListenersConfigCLass = DefaultRuleEventListenerConfig.class.getCanonicalName();
+    private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
     
     public RuleConfigGenerator ruleEventListenersConfig(String cfg) {
-        this.ruleEventListenersConfigCLass = cfg;
+        if (cfg == null) {
+            throw new IllegalArgumentException("Specified rule listeners config class is undefined (null)!");
+        }
+        this.ruleEventListenersConfigClass = cfg;
         return this;
     }
 
@@ -32,6 +35,6 @@ public class RuleConfigGenerator {
     public ObjectCreationExpr newInstance() {
         return new ObjectCreationExpr()
                 .setType(StaticRuleConfig.class.getCanonicalName())
-                .addArgument(new ObjectCreationExpr().setType(ruleEventListenersConfigCLass));
+                .addArgument(new ObjectCreationExpr().setType(ruleEventListenersConfigClass));
     }
 }
