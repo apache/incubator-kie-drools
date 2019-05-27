@@ -16,6 +16,7 @@
 
 package org.drools.scenariosimulation.backend.util;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -144,6 +145,7 @@ public class ScenarioBeanUtilTest {
         assertEquals((short) 1, convertValue(Short.class.getCanonicalName(), "1", classLoader));
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), "0", classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), "0", classLoader));
+        assertEquals(LocalDate.of(2018, 5, 20), convertValue(LocalDate.class.getCanonicalName(), "2018-05-20", classLoader));
         assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
     }
 
@@ -159,6 +161,7 @@ public class ScenarioBeanUtilTest {
         assertEquals("1", revertValue((short) 1));
         assertEquals(String.valueOf("0".getBytes()[0]), revertValue("0".getBytes()[0]));
         assertEquals("null", revertValue(null));
+        assertEquals("2018-10-20", revertValue(LocalDate.of(2018, 10, 20)));
     }
 
     @Test(expected = IllegalArgumentException.class)

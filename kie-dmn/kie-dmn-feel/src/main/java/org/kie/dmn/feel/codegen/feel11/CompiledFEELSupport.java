@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import com.github.javaparser.StaticJavaParser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Modifier;
@@ -70,6 +71,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
+
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class CompiledFEELSupport {
 
@@ -481,7 +484,7 @@ public class CompiledFEELSupport {
         ));
         initializer.setBody(lambdaBody);
         String constantName = "UT_EMPTY";
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
+        VariableDeclarator vd = new VariableDeclarator(parseClassOrInterfaceType(UnaryTest.class.getCanonicalName()), constantName);
         vd.setInitializer(initializer);
         FieldDeclaration fd = new FieldDeclaration();
         fd.setModifier(Modifier.publicModifier().getKeyword(), true);

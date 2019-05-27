@@ -6,6 +6,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
@@ -14,17 +21,9 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
-import com.github.javaparser.JavaParser;
 import org.drools.constraint.parser.DrlxParser;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
-import com.github.javaparser.ast.expr.ClassExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.type.Type;
 import org.drools.model.Window;
 import org.drools.model.WindowDefinition;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -36,8 +35,8 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
@@ -95,7 +94,7 @@ public class WindowReferenceGenerator {
 
         final Class<?> initClass = DrlxParseUtil.getClassFromContext(typeResolver, pattern.getObjectType());
 
-        final Type initType = JavaParser.parseType(initClass.getCanonicalName());
+        final Type initType = parseType(initClass.getCanonicalName());
         initializer.addArgument(new ClassExpr(initType));
 
         if (pattern.getSource() != null) {

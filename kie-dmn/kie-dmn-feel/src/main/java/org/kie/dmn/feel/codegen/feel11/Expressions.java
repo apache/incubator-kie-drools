@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -45,6 +46,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.util.EvalHelper;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BigDecimalT;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BuiltInTypeT;
 import static org.kie.dmn.feel.codegen.feel11.Constants.DECIMAL_128;
@@ -52,7 +54,7 @@ import static org.kie.dmn.feel.codegen.feel11.Constants.DECIMAL_128;
 public class Expressions {
 
     public static final ClassOrInterfaceType NamedParamterT = new ClassOrInterfaceType(null, NamedParameter.class.getCanonicalName());
-    private static final Expression DASH_UNARY_TEST = JavaParser.parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
+    private static final Expression DASH_UNARY_TEST = parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
 
     public static class NamedLambda {
 
@@ -80,8 +82,8 @@ public class Expressions {
         }
     }
 
-    private static final Expression QUANTIFIER_SOME = JavaParser.parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.SOME");
-    private static final Expression QUANTIFIER_EVERY = JavaParser.parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.EVERY");
+    private static final Expression QUANTIFIER_SOME = parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.SOME");
+    private static final Expression QUANTIFIER_EVERY = parseExpression("org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode.Quantifier.EVERY");
 
     public static final String LEFT = "left";
     public static final NameExpr LEFT_EXPR = new NameExpr(LEFT);

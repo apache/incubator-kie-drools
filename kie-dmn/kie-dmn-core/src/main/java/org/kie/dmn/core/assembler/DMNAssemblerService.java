@@ -97,6 +97,17 @@ public class DMNAssemblerService implements KieAssemblerService {
         }
 
         Collection<DMNModel> dmnModels = new ArrayList<>();
+        // KIE API: KieContainer upgrade using KieContainer#updateToVersion -based DMN Import resolution strategy
+        if (kbuilderImpl.getKnowledgeBase() != null) {
+            for (InternalKnowledgePackage pr : kbuilderImpl.getKnowledgeBase().getPackagesMap().values()) {
+                ResourceTypePackage resourceTypePackage = pr.getResourceTypePackages().get(ResourceType.DMN);
+                if (resourceTypePackage != null) {
+                    DMNPackageImpl dmnpkg = (DMNPackageImpl) resourceTypePackage;
+                    dmnModels.addAll(dmnpkg.getAllModels().values());
+                }
+            }
+        }
+        // Workbench: InternalKieBuilder#createFileSet#build -based DMN Import resolution strategy
         for (PackageRegistry pr : kbuilderImpl.getPackageRegistry().values()) {
             ResourceTypePackage resourceTypePackage = pr.getPackage().getResourceTypePackages().get(ResourceType.DMN);
             if (resourceTypePackage != null) {

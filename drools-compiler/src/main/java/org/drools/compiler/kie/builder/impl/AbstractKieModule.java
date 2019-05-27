@@ -282,6 +282,8 @@ public abstract class AbstractKieModule
                         Resource templateResource = getResource( template.getTemplate() );
                         if ( templateResource != null ) {
                             ( (DecisionTableConfiguration) conf ).addRuleTemplateConfiguration( templateResource, template.getRow(), template.getCol() );
+                        } else {
+                            throw new RuntimeException( "Cannot find resource: '" + template.getTemplate() + "'" );
                         }
                     }
                 }
@@ -315,25 +317,27 @@ public abstract class AbstractKieModule
         if (conf != null) {
             return conf;
         }
+        Properties prop = new Properties();
         if (isAvailable(fileName + ".properties")) {
             // configuration file available
-            Properties prop = new Properties();
             try {
                 prop.load(new ByteArrayInputStream(getBytes(fileName + ".properties")));
             } catch (IOException e) {
                 log.error("Error loading resource configuration from file: " + fileName + ".properties");
             }
-            conf = ResourceTypeImpl.fromProperties(prop);
-        } else if (ResourceType.DTABLE.matchesExtension(fileName)) {
+        }
+        if (ResourceType.DTABLE.matchesExtension(fileName)) {
             int lastDot = fileName.lastIndexOf( '.' );
             if (lastDot >= 0 && fileName.length() > lastDot+1) {
                 String extension = fileName.substring( lastDot+1 );
-                Properties prop = new Properties();
-                prop.setProperty(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName());
+                Object confClass = prop.get(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS);
+                if (confClass == null || confClass.toString().equals( ResourceConfigurationImpl.class.getCanonicalName() )) {
+                    prop.setProperty( ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName() );
+                }
                 prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.valueOf( extension.toUpperCase() ).toString());
-                conf = ResourceTypeImpl.fromProperties(prop);
             }
         }
+        conf = prop.isEmpty() ? null : ResourceTypeImpl.fromProperties(prop);
         resourceConfigurationCache.put(fileName, conf);
         return conf;
     }
