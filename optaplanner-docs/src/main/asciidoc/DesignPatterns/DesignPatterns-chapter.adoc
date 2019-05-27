@@ -220,6 +220,21 @@ Between planning entities, there are three ways to create gaps:
 (besides impacting the <<searchSpaceSize,search space>> too).
 
 
+[[chainedThroughTimeAutomaticCollapse]]
+==== Chained Through Time: Automatic Collapse
+
+In some use case there is an overhead time for certain tasks,
+which can be shared by multiple tasks, of those are consecutively scheduled.
+For example when delivering pizza to two different customers,
+a food delivery service combines both deliveries into a single trip,
+if both customers ordered from the same restaurant around the same time and live in the same part of the city.
+
+image::DesignPatterns/chainedThroughTimeAutomaticCollapse.png[align="center"]
+
+Implement the automatic collapse in the <<customVariableListener,customer variable listener>>
+that calculates the start and end times of each task.
+
+
 [[timeBucketPattern]]
 === Time Bucket Pattern: Assign to a Capacitated Bucket per Time Period
 
