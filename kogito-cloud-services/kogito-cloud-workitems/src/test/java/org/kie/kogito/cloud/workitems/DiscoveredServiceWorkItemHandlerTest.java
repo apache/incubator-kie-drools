@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.submarine.cloud.workitems;
+package org.kie.kogito.cloud.workitems;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
