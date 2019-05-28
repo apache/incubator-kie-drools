@@ -194,7 +194,7 @@ public enum BaseExpressionOperator {
     protected abstract boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader);
 
     protected Object evaluateLiteralExpression(String className, String value, ClassLoader classLoader) {
-        throw new IllegalStateException(toString() + " operator cannot be used into a Given clause");
+        throw new IllegalStateException(toString() + " operator cannot be used in a GIVEN clause");
     }
 
     protected Optional<String> match(String value) {

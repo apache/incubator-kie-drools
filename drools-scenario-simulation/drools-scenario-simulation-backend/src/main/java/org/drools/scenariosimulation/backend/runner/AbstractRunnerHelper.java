@@ -178,7 +178,7 @@ public abstract class AbstractRunnerHelper {
                                                                              factMapping.getGenericTypes(),
                                                                              factMappingValue.getRawValue());
                 paramsForBean.put(pathToField, value);
-            } catch (IllegalArgumentException | IllegalStateException e) {
+            } catch (RuntimeException e) {
                 factMappingValue.setExceptionMessage(e.getMessage());
                 throw new ScenarioException(e.getMessage(), e);
             }

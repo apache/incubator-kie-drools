@@ -46,7 +46,7 @@ public class BaseExpressionOperatorTest {
                     Assertions.assertThatThrownBy(
                             () -> operator.evaluateLiteralExpression(String.class.getCanonicalName(), " Test ", classLoader))
                             .isInstanceOf(IllegalStateException.class)
-                            .hasMessageEndingWith(" cannot be used into a Given clause");
+                            .hasMessageEndingWith(" operator cannot be used in a GIVEN clause");
                 });
 
         assertEquals("Test", EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= Test", classLoader));
