@@ -92,18 +92,18 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 
     public ProcessMetaData generate(WorkflowProcess process) {
 
-        CompilationUnit clazz = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));
-        clazz.setPackageDeclaration(process.getPackageName());
-        Optional<ClassOrInterfaceDeclaration> processMethod = clazz.findFirst(ClassOrInterfaceDeclaration.class, sl -> true);
+        CompilationUnit parsedClazzFile = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));
+        parsedClazzFile.setPackageDeclaration(process.getPackageName());
+        Optional<ClassOrInterfaceDeclaration> processClazzOptional = parsedClazzFile.findFirst(ClassOrInterfaceDeclaration.class, sl -> true);
 
         String extractedProcessId = extractProcessId(process.getId());
 
-        if (!processMethod.isPresent()) {
+        if (!processClazzOptional.isPresent()) {
             throw new RuntimeException("Cannot find class declaration in the template");
         }
-        ClassOrInterfaceDeclaration processClazz = processMethod.get();
+        ClassOrInterfaceDeclaration processClazz = processClazzOptional.get();
         processClazz.setName(StringUtils.capitalize(extractedProcessId + PROCESS_CLASS_SUFFIX));
-        String packageName = clazz.getPackageDeclaration().map(NodeWithName::getNameAsString).orElse(null);
+        String packageName = parsedClazzFile.getPackageDeclaration().map(NodeWithName::getNameAsString).orElse(null);
         ProcessMetaData metadata = new ProcessMetaData(process.getId(),
                                                        extractedProcessId,
                                                        process.getName(),
@@ -111,11 +111,11 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
                                                        packageName,
                                                        processClazz.getNameAsString());
 
-        Optional<MethodDeclaration> pmethod = clazz.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("process"));
+        Optional<MethodDeclaration> processMethod = parsedClazzFile.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("process"));
 
-        visitProcess(process, pmethod.get(), metadata);
+        visitProcess(process, processMethod.get(), metadata);
 
-        metadata.setGeneratedClassModel(clazz);
+        metadata.setGeneratedClassModel(parsedClazzFile);
         return metadata;
     }
 

@@ -112,7 +112,7 @@ public abstract class AbstractVisitor {
         ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(v.getType().getStringType());
         
 
-        // `type` `name` = (`type`) `kcontext.getVariable
+        // `type` `name` = (`type`) `model.get<Name>
         AssignExpr assignExpr = new AssignExpr(
                                                new VariableDeclarationExpr(type, name),
                                                new CastExpr(
@@ -121,24 +121,6 @@ public abstract class AbstractVisitor {
                                                                                new NameExpr("model"),
                                                                                "get" + StringUtils.capitalize(name))),
                                                AssignExpr.Operator.ASSIGN);
-
-        return new ExpressionStmt(assignExpr);
-    }
-
-    protected Statement makeVariableAssignment(Variable v) {
-        ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(v.getType().getStringType());
-        String name = v.getName();
-
-        // `type` `name` = (`type`) `kcontext.getVariable
-        AssignExpr assignExpr = new AssignExpr(
-                new VariableDeclarationExpr(type, name),
-                new CastExpr(
-                        type,
-                        new MethodCallExpr(
-                                new NameExpr("kcontext"),
-                                "getVariable")
-                                .addArgument(new StringLiteralExpr(name))),
-                AssignExpr.Operator.ASSIGN);
 
         return new ExpressionStmt(assignExpr);
     }
