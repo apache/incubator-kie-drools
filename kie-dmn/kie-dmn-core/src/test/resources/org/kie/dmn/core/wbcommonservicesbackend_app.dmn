@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_B2585232-1873-43C5-9D9D-BFD7A93BC51B" xmlns:routes="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_03C5216B-FB6F-4DB2-A94B-479CEB5FCDA6" name="app" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_B2585232-1873-43C5-9D9D-BFD7A93BC51B">
+  <dmn:extensionElements/>
+  <dmn:import id="_8D0C0DEB-D75D-4083-9EB3-B3D9F0716970" name="routes" namespace="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E" locationURI="default://master@MySpace/routes/src/main/resources/com/myspace/routes/route.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:inputData id="_516156F6-68C1-4E2E-BFEA-AE494716D054" name="local">
+    <dmn:variable id="_88C36760-283E-401F-A34A-873C879890C0" name="local" typeRef="routes.tRoute"/>
+  </dmn:inputData>
+  <dmn:decision id="_E83649CD-2F8F-4738-85C8-DA39CCEFE44A" name="the shortest distance">
+    <dmn:variable id="_C9EB9D0F-BC61-48AA-B73F-83D412FDBCD6" name="the shortest distance" typeRef="number"/>
+    <dmn:informationRequirement id="_ACBC826D-DF5E-436B-8BDE-C8DABC6A0603">
+      <dmn:requiredInput href="#_CE87A817-96B6-40D1-B731-8043B5E5D9F5"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_0299D9B2-0943-48EE-9D24-5C135FF279F0">
+      <dmn:requiredInput href="#_516156F6-68C1-4E2E-BFEA-AE494716D054"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="_C7E854EA-FF87-45F4-AB63-D4E9A3AA4369">
+      <dmn:requiredKnowledge href="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E#_EE9CAB62-F704-4923-B09A-17D0A389EFDB"/>
+    </dmn:knowledgeRequirement>
+    <dmn:context id="_34E0F09F-2EE4-41DE-B7C8-680C3066F00D">
+      <dmn:contextEntry>
+        <dmn:variable id="_A70048D2-3F27-4195-B175-8A2168A149C6" name="good route" typeRef="routes.tRoute"/>
+        <dmn:invocation id="_77AA9798-A8FB-4603-82AA-45D4B52F4C24">
+          <dmn:literalExpression id="_D795F31E-C7E0-4BE4-9277-1A29C758E686">
+            <dmn:text>routes.shorter route</dmn:text>
+          </dmn:literalExpression>
+          <dmn:binding>
+            <dmn:parameter id="_DDC6BB36-4859-42BC-8823-6366FD0A89AB" name="route a" typeRef="routes.tRoute"/>
+            <dmn:literalExpression id="_D018CB4C-8802-407D-A84A-33A5516321CA">
+              <dmn:text>highway</dmn:text>
+            </dmn:literalExpression>
+          </dmn:binding>
+          <dmn:binding>
+            <dmn:parameter id="_F94A612D-645C-4921-B8E4-C3AF1FA1883A" name="route b" typeRef="routes.tRoute"/>
+            <dmn:literalExpression id="_8983562D-1A58-4E0E-8729-D7C77C824EAE">
+              <dmn:text>local</dmn:text>
+            </dmn:literalExpression>
+          </dmn:binding>
+        </dmn:invocation>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_FE25BAA1-BBB8-43D5-B780-40E245D2CEFB">
+          <dmn:text>good route.distance</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:inputData id="_CE87A817-96B6-40D1-B731-8043B5E5D9F5" name="highway">
+    <dmn:variable id="_5D7878FF-A47E-4CF1-A824-C179592FCE1F" name="highway" typeRef="routes.tRoute"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_34E0F09F-2EE4-41DE-B7C8-680C3066F00D">
+            <kie:width>50.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>320.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_77AA9798-A8FB-4603-82AA-45D4B52F4C24">
+            <kie:width>50.0</kie:width>
+            <kie:width>100.0</kie:width>
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_D795F31E-C7E0-4BE4-9277-1A29C758E686"/>
+          <kie:ComponentWidths dmnElementRef="_D018CB4C-8802-407D-A84A-33A5516321CA">
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_8983562D-1A58-4E0E-8729-D7C77C824EAE">
+            <kie:width>150.0</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_FE25BAA1-BBB8-43D5-B780-40E245D2CEFB">
+            <kie:width>320.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_E83649CD-2F8F-4738-85C8-DA39CCEFE44A" dmnElementRef="_E83649CD-2F8F-4738-85C8-DA39CCEFE44A" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="320" y="121" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-routes:_EE9CAB62-F704-4923-B09A-17D0A389EFDB" dmnElementRef="routes:_EE9CAB62-F704-4923-B09A-17D0A389EFDB" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="107" y="120" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_516156F6-68C1-4E2E-BFEA-AE494716D054" dmnElementRef="_516156F6-68C1-4E2E-BFEA-AE494716D054" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="414" y="265" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_CE87A817-96B6-40D1-B731-8043B5E5D9F5" dmnElementRef="_CE87A817-96B6-40D1-B731-8043B5E5D9F5" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="186" y="250" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_ACBC826D-DF5E-436B-8BDE-C8DABC6A0603" dmnElementRef="_ACBC826D-DF5E-436B-8BDE-C8DABC6A0603">
+        <di:waypoint x="286" y="275"/>
+        <di:waypoint x="320" y="146"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_0299D9B2-0943-48EE-9D24-5C135FF279F0" dmnElementRef="_0299D9B2-0943-48EE-9D24-5C135FF279F0">
+        <di:waypoint x="464" y="265"/>
+        <di:waypoint x="370" y="171"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_C7E854EA-FF87-45F4-AB63-D4E9A3AA4369" dmnElementRef="_C7E854EA-FF87-45F4-AB63-D4E9A3AA4369">
+        <di:waypoint x="207" y="145"/>
+        <di:waypoint x="320" y="146"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
