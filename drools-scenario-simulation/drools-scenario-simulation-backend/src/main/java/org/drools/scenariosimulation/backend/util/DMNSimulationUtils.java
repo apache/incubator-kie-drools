@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 
@@ -39,7 +40,7 @@ public class DMNSimulationUtils {
     }
 
     public static DMNRuntime extractDMNRuntime(KieContainer kieContainer) {
-        return kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        return KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
     }
 
     public static DMNModel findDMNModel(List<DMNModel> dmnModels, List<String> pathToFind, int step) {

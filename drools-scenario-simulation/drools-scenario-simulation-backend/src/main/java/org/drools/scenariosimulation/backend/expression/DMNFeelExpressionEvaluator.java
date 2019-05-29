@@ -22,18 +22,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 
+import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
+
 public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
-    private final FEEL feel = FEEL.newInstance();
     private final ClassLoader classLoader;
     private final CodeFunction codeFunction = new CodeFunction();
 
@@ -66,14 +71,29 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
                                                                                feelEvent.getSourceException()));
     }
 
-    private EvaluationContext newEvaluationContext() {
-        return new EvaluationContextImpl(classLoader, new FEELEventListenersManager());
+    protected EvaluationContext newEvaluationContext() {
+        final FEELEventListenersManager eventsManager = new FEELEventListenersManager();
+        return new EvaluationContextImpl(classLoader, eventsManager);
+    }
+
+    protected FEEL newFeelEvaluator(AtomicReference<FEELEvent> errorHolder) {
+        // cleanup existing error
+        errorHolder.set(null);
+        FEEL feel = FEEL.newInstance();
+        feel.addListener(event -> {
+            FEELEvent feelEvent = errorHolder.get();
+            if (!(feelEvent instanceof SyntaxErrorEvent) &&
+                    ERROR.equals(event.getSeverity())) {
+                errorHolder.set(event);
+            }
+        });
+        return feel;
     }
 
     @Override
     protected Object internalLiteralEvaluation(String raw, String className) {
         EvaluationContext evaluationContext = newEvaluationContext();
-        return feel.evaluate(raw, evaluationContext);
+        return executeAndVerifyErrors(feel -> feel.evaluate(raw, evaluationContext));
     }
 
     @Override
@@ -82,14 +102,33 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
             return true;
         }
         EvaluationContext evaluationContext = newEvaluationContext();
-        List<UnaryTest> unaryTests = feel.evaluateUnaryTests(rawExpression);
-        if (unaryTests.size() < 1) {
-            throw new IllegalArgumentException("Impossible to parse the expression '" + rawExpression + "'");
-        }
+        List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression));
         return unaryTests.stream()
                 .allMatch(unaryTest -> Optional
                         .ofNullable(unaryTest.apply(evaluationContext, resultValue))
                         .orElse(false));
+    }
+
+    /**
+     * Common internal method that execute the command and manage error
+     * @param command
+     * @param <T>
+     * @return
+     */
+    protected <T> T executeAndVerifyErrors(Function<FEEL, T> command) {
+        AtomicReference<FEELEvent> errorHolder = new AtomicReference<>();
+        FEEL feel = newFeelEvaluator(errorHolder);
+
+        T result = command.apply(feel);
+        FEELEvent errorEvent = errorHolder.get();
+        if (errorEvent != null) {
+            if (errorEvent instanceof SyntaxErrorEvent) {
+                throw new IllegalArgumentException("Syntax error: " + errorEvent.getMessage());
+            } else {
+                throw new IllegalArgumentException("Error during evaluation: " + errorEvent.getMessage());
+            }
+        }
+        return result;
     }
 
     @Override

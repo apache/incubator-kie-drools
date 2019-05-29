@@ -132,12 +132,17 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
                                                              evaluationStatus);
         }
 
-        for (ExpressionElement expressionElement : factMapping.getExpressionElementsWithoutClass()) {
-            if (!(resultRaw instanceof Map)) {
-                throw new ScenarioException("Wrong resultRaw structure because it is not a complex type as expected");
+        List<ExpressionElement> elementsWithoutClass = factMapping.getExpressionElementsWithoutClass();
+
+        // DMN engine doesn't generate the whole object when no entry of the decision table match
+        if(resultRaw != null) {
+            for (ExpressionElement expressionElement : elementsWithoutClass) {
+                if (!(resultRaw instanceof Map)) {
+                    throw new ScenarioException("Wrong resultRaw structure because it is not a complex type as expected");
+                }
+                Map<String, Object> result = (Map<String, Object>) resultRaw;
+                resultRaw = result.get(expressionElement.getStep());
             }
-            Map<String, Object> result = (Map<String, Object>) resultRaw;
-            resultRaw = result.get(expressionElement.getStep());
         }
 
         Class<?> resultClass = resultRaw != null ? resultRaw.getClass() : null;

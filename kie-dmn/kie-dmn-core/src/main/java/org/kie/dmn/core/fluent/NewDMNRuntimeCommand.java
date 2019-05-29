@@ -19,6 +19,7 @@ package org.kie.dmn.core.fluent;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.command.RegistryContext;
 
@@ -31,7 +32,7 @@ public class NewDMNRuntimeCommand implements ExecutableCommand<DMNRuntime> {
         if (kieContainer == null) {
             throw new IllegalStateException("There is no existing KieContainer assigned to the Registry");
         }
-        DMNRuntime dmnRuntime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        DMNRuntime dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
 
         registryContext.register(DMNRuntime.class, dmnRuntime);
         return dmnRuntime;

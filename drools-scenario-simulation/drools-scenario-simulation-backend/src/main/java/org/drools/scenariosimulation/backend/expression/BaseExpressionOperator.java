@@ -46,6 +46,11 @@ public enum BaseExpressionOperator {
                     .collect(Collectors.toList());
             return results.size() != 0 && results.stream().allMatch(a -> a);
         }
+
+        @Override
+        public String toString() {
+            return "AND ( ; )";
+        }
     },
     LIST_OF_VALUES(1, "[") {
         @Override
@@ -66,6 +71,11 @@ public enum BaseExpressionOperator {
             return Stream.of(rawValue.substring(1, ((String) raw).length() - 1).split(","))
                     .map(String::trim)
                     .collect(Collectors.toList());
+        }
+
+        @Override
+        public String toString() {
+            return "OR ( [ ] )";
         }
     },
     EQUALS(2, "=") {
@@ -94,6 +104,11 @@ public enum BaseExpressionOperator {
             }
             return Objects.equals(resultValue, parsedResults);
         }
+
+        @Override
+        public String toString() {
+            return "Equal ( = )";
+        }
     },
     NOT_EQUALS(3, "!", "!=", "<>") {
         @SuppressWarnings("unchecked")
@@ -109,6 +124,11 @@ public enum BaseExpressionOperator {
             }
 
             return !operator.eval(valueToTest, resultValue, resultClass, classLoader);
+        }
+
+        @Override
+        public String toString() {
+            return "Not Equal ( !, !=, <> )";
         }
     },
     RANGE(4, "<", ">", "<=", ">=") {
@@ -140,6 +160,11 @@ public enum BaseExpressionOperator {
                     throw new IllegalStateException(new StringBuilder().append("This should not happen ").append(operator).toString());
             }
         }
+
+        @Override
+        public String toString() {
+            return "Range ( <, >, <=, >= )";
+        }
     };
 
     final List<String> symbols;
@@ -169,7 +194,7 @@ public enum BaseExpressionOperator {
     protected abstract boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader);
 
     protected Object evaluateLiteralExpression(String className, String value, ClassLoader classLoader) {
-        throw new IllegalStateException("This operator cannot be used into a Given clause");
+        throw new IllegalStateException(toString() + " operator cannot be used in a GIVEN clause");
     }
 
     protected Optional<String> match(String value) {
