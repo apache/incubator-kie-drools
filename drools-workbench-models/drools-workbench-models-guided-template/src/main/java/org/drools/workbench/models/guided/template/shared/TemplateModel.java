@@ -20,10 +20,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.util.InterpolationVariableCollector;
 import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
@@ -42,7 +46,6 @@ public class TemplateModel
 
     /**
      * Append a row of data
-     *
      * @param rowId
      * @param row
      * @return
@@ -79,7 +82,6 @@ public class TemplateModel
 
     /**
      * Add a row of data at the specified index
-     *
      * @param index
      * @param row
      * @return
@@ -134,8 +136,11 @@ public class TemplateModel
     }
 
     private Map<InterpolationVariable, Integer> getInterpolationVariables() {
-        Map<InterpolationVariable, Integer> result = new HashMap<InterpolationVariable, Integer>();
-        new RuleModelVisitor(result).visit(this);
+        final Map<InterpolationVariable, Integer> variables = new HashMap<InterpolationVariable, Integer>();
+
+        new RuleModelVisitor(variables).visit(this);
+
+        final Map<InterpolationVariable, Integer> result = new InterpolationVariableCollector(variables).getMap();
 
         InterpolationVariable id = new InterpolationVariable(ID_COLUMN_NAME,
                                                              DataType.TYPE_NUMERIC_LONG);
@@ -256,4 +261,5 @@ public class TemplateModel
     public void setIdCol(final int idCol) {
         this.idCol = idCol;
     }
+
 }

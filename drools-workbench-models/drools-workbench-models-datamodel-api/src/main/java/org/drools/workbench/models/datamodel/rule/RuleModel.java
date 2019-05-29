@@ -28,6 +28,8 @@ import org.kie.soup.project.datamodel.packages.HasPackageName;
 public class RuleModel implements HasImports,
                                   HasPackageName {
 
+    public static final String DEFAULT_TYPE = "DEFAULT_TYPE";
+
     /**
      * This name is generally not used - the asset name or the file name is
      * preferred (ie it could get out of sync with the name of the file it is
