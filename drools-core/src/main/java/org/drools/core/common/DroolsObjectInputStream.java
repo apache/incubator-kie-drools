@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,13 +49,19 @@ public class DroolsObjectInputStream extends ObjectInputStream
     
     private Map<String, Object> customExtensions = new HashMap<>();
 
+    private final Map<String, Object> clonedByIdentity;
+
     public DroolsObjectInputStream(InputStream inputStream) throws IOException {
-        this( inputStream,
-              null );
+        this( inputStream, null );
     }
 
     public DroolsObjectInputStream(InputStream inputStream,
                                    ClassLoader classLoader) throws IOException {
+        this( inputStream, classLoader, null );
+    }
+
+    public DroolsObjectInputStream(InputStream inputStream, ClassLoader classLoader,
+                                   Map<String, Object> clonedByIdentity) throws IOException {
         super( inputStream );
         if ( classLoader == null ) {
             classLoader = Thread.currentThread().getContextClassLoader();
@@ -66,7 +71,16 @@ public class DroolsObjectInputStream extends ObjectInputStream
         }
 
         this.classLoader = classLoader;
+        this.clonedByIdentity = clonedByIdentity;
 
+    }
+
+    public boolean isCloning() {
+        return clonedByIdentity != null;
+    }
+
+    public <T> T getCloneByKey(String key) {
+        return (T) clonedByIdentity.get(key);
     }
 
     protected Class resolveClass(String className) throws ClassNotFoundException {

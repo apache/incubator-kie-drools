@@ -650,11 +650,11 @@ public final class ClassUtils {
         }
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DroolsObjectOutputStream oos = new DroolsObjectOutputStream(baos);
+            DroolsObjectOutputStream oos = new DroolsObjectOutputStream(baos, true);
             if ( cloningResources != null ) { cloningResources.forEach( (k, v) -> oos.addCustomExtensions(k, v) ); }
             oos.writeObject(origin);
             ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            DroolsObjectInputStream ois = new DroolsObjectInputStream(bais, classLoader);
+            DroolsObjectInputStream ois = new DroolsObjectInputStream(bais, classLoader, oos.getClonedByIdentity());
             if ( cloningResources != null ) { cloningResources.forEach( (k, v) -> ois.addCustomExtensions(k, v) ); }
             Object deepCopy = ois.readObject();
             return (T)deepCopy;

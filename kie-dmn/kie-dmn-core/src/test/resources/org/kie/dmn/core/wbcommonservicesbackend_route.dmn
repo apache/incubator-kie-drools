@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_55427E43-E60F-4AA8-B88D-8159AEEE0F7E" name="route" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_68BFD4F6-B486-4A1F-9C5B-4BBF1718614E">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_965B9DF9-651B-4813-AA6C-E966715B8681" name="tRoute" isCollection="false">
+    <dmn:itemComponent id="_1B90C15E-0918-4076-9D3C-404D2EF89C5F" name="distance" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:businessKnowledgeModel id="_EE9CAB62-F704-4923-B09A-17D0A389EFDB" name="shorter route">
+    <dmn:variable id="_23EE2841-94F4-4972-8BD0-0A6E419805FC" name="shorter route" typeRef="tRoute"/>
+    <dmn:encapsulatedLogic id="_22E9658F-92F9-4645-A7C8-412C933BF6FA" kind="FEEL">
+      <dmn:formalParameter id="_A2A52111-80F7-4D19-8443-A893F07F2222" name="route a" typeRef="tRoute"/>
+      <dmn:formalParameter id="_3ACDCBFE-8E57-4AF9-A89D-F58FBD06328E" name="route b" typeRef="tRoute"/>
+      <dmn:literalExpression id="_5E598EC4-6271-45DF-ADA6-6416859B14D6">
+        <dmn:text>if route a.distance &lt; route b.distance
+then route a
+else route b</dmn:text>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_5E598EC4-6271-45DF-ADA6-6416859B14D6">
+            <kie:width>337.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_EE9CAB62-F704-4923-B09A-17D0A389EFDB" dmnElementRef="_EE9CAB62-F704-4923-B09A-17D0A389EFDB" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="82" y="144" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

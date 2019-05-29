@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNModel;
@@ -111,13 +113,22 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.namespace );
-        out.writeObject( this.models );
+        if (out instanceof DroolsObjectOutputStream && (( DroolsObjectOutputStream ) out).isCloning()) {
+            (( DroolsObjectOutputStream ) out).addCloneByIdentity( namespace, this );
+        } else {
+            out.writeObject( this.models );
+        }
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         this.namespace = (String) in.readObject();
-        this.models = (Map<String, DMNModel>) in.readObject();
+        if (in instanceof DroolsObjectInputStream && (( DroolsObjectInputStream ) in).isCloning()) {
+            DMNPackageImpl clone = (( DroolsObjectInputStream ) in).getCloneByKey( this.namespace );
+            this.models = clone.models;
+        } else {
+            this.models = ( Map<String, DMNModel> ) in.readObject();
+        }
     }
 
     public void addProfiles(List<DMNProfile> profiles) {
