@@ -165,6 +165,7 @@ public class DroolsScoreDirector<Solution_>
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");
         }
+        // Notice that we don't trigger the variable listeners
         kieSession.fireAllRules();
         return workingScoreHolder.getIndictmentMap();
     }

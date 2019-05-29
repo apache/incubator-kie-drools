@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
+import java.util.function.Consumer;
+
 import org.junit.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
@@ -27,21 +30,24 @@ public class SimpleLongScoreInlinerTest {
 
     @Test
     public void buildLongWeightedScoreImpacter() {
-        SimpleLongScoreInliner scoreInliner = new SimpleLongScoreInliner();
+        boolean constraintMatchEnabled = false;
+        Consumer<Score<?>> scoreConsumer = null;
+
+        SimpleLongScoreInliner scoreInliner = new SimpleLongScoreInliner(constraintMatchEnabled);
         assertEquals(SimpleLongScore.ZERO, scoreInliner.extractScore(0));
 
         LongWeightedScoreImpacter impacter1 = scoreInliner.buildLongWeightedScoreImpacter(SimpleLongScore.of(-90L));
-        UndoScoreImpacter undo1 = impacter1.impactScore(1L);
+        UndoScoreImpacter undo1 = impacter1.impactScore(1L, scoreConsumer);
         assertEquals(SimpleLongScore.of(-90L), scoreInliner.extractScore(0));
-        scoreInliner.buildLongWeightedScoreImpacter(SimpleLongScore.of(-800L)).impactScore(1L);
+        scoreInliner.buildLongWeightedScoreImpacter(SimpleLongScore.of(-800L)).impactScore(1L, scoreConsumer);
         assertEquals(SimpleLongScore.of(-890L), scoreInliner.extractScore(0));
         undo1.undoScoreImpact();
         assertEquals(SimpleLongScore.of(-800L), scoreInliner.extractScore(0));
 
         LongWeightedScoreImpacter impacter2 = scoreInliner.buildLongWeightedScoreImpacter(SimpleLongScore.of(-1L));
-        UndoScoreImpacter undo2 = impacter2.impactScore(3L);
+        UndoScoreImpacter undo2 = impacter2.impactScore(3L, scoreConsumer);
         assertEquals(SimpleLongScore.of(-803L), scoreInliner.extractScore(0));
-        impacter2.impactScore(10L);
+        impacter2.impactScore(10L, scoreConsumer);
         assertEquals(SimpleLongScore.of(-813L), scoreInliner.extractScore(0));
         undo2.undoScoreImpact();
         assertEquals(SimpleLongScore.of(-810L), scoreInliner.extractScore(0));

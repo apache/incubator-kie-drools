@@ -70,8 +70,8 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
-    public ScoreInliner<HardMediumSoftLongScore> buildScoreInliner() {
-        return new HardMediumSoftLongScoreInliner();
+    public ScoreInliner<HardMediumSoftLongScore> buildScoreInliner(boolean constraintMatchEnabled) {
+        return new HardMediumSoftLongScoreInliner(constraintMatchEnabled);
     }
 
     @Override

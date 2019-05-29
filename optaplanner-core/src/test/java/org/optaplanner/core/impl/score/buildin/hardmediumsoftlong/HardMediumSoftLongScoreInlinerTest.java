@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftlong;
 
+import java.util.function.Consumer;
+
 import org.junit.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
@@ -27,33 +30,36 @@ public class HardMediumSoftLongScoreInlinerTest {
 
     @Test
     public void buildLongWeightedScoreImpacter() {
-        HardMediumSoftLongScoreInliner scoreInliner = new HardMediumSoftLongScoreInliner();
+        boolean constraintMatchEnabled = false;
+        Consumer<Score<?>> scoreConsumer = null;
+
+        HardMediumSoftLongScoreInliner scoreInliner = new HardMediumSoftLongScoreInliner(constraintMatchEnabled);
         assertEquals(HardMediumSoftLongScore.ZERO, scoreInliner.extractScore(0));
 
         LongWeightedScoreImpacter hardImpacter = scoreInliner.buildLongWeightedScoreImpacter(HardMediumSoftLongScore.ofHard(-90L));
-        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L);
+        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-90L, 0L, 0L), scoreInliner.extractScore(0));
-        scoreInliner.buildLongWeightedScoreImpacter(HardMediumSoftLongScore.ofHard(-800L)).impactScore(1L);
+        scoreInliner.buildLongWeightedScoreImpacter(HardMediumSoftLongScore.ofHard(-800L)).impactScore(1L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-890L, 0L, 0L), scoreInliner.extractScore(0));
         hardUndo.undoScoreImpact();
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, 0L), scoreInliner.extractScore(0));
 
         LongWeightedScoreImpacter mediumImpacter = scoreInliner.buildLongWeightedScoreImpacter(HardMediumSoftLongScore.ofMedium(-7L));
-        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1L);
+        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-800L, -7L, 0L), scoreInliner.extractScore(0));
         mediumUndo.undoScoreImpact();
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, 0L), scoreInliner.extractScore(0));
 
         LongWeightedScoreImpacter softImpacter = scoreInliner.buildLongWeightedScoreImpacter(HardMediumSoftLongScore.ofSoft(-1L));
-        UndoScoreImpacter softUndo = softImpacter.impactScore(3L);
+        UndoScoreImpacter softUndo = softImpacter.impactScore(3L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, -3L), scoreInliner.extractScore(0));
-        softImpacter.impactScore(10L);
+        softImpacter.impactScore(10L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, -13L), scoreInliner.extractScore(0));
         softUndo.undoScoreImpact();
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, -10L), scoreInliner.extractScore(0));
 
         LongWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildLongWeightedScoreImpacter(HardMediumSoftLongScore.of(-1000L, -2000L, -3000L));
-        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L);
+        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L, scoreConsumer);
         assertEquals(HardMediumSoftLongScore.of(-1800L, -2000L, -3010L), scoreInliner.extractScore(0));
         allLevelsUndo.undoScoreImpact();
         assertEquals(HardMediumSoftLongScore.of(-800L, 0L, -10L), scoreInliner.extractScore(0));

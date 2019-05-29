@@ -20,6 +20,12 @@ import org.optaplanner.core.api.score.Score;
 
 public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
+    protected final boolean constraintMatchEnabled;
+
+    protected ScoreInliner(boolean constraintMatchEnabled) {
+        this.constraintMatchEnabled = constraintMatchEnabled;
+    }
+
     public abstract Score_ extractScore(int initScore);
 
     public IntWeightedScoreImpacter buildIntWeightedScoreImpacter(Score_ constraintWeight) {

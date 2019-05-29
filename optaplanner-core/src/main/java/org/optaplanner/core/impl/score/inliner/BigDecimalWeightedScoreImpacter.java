@@ -17,10 +17,19 @@
 package org.optaplanner.core.impl.score.inliner;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
+
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 
 @FunctionalInterface
 public interface BigDecimalWeightedScoreImpacter {
 
-    UndoScoreImpacter impactScore(BigDecimal matchWeight);
+    /**
+     * @param matchWeight never null
+     * @param scoreConsumer null if {@link ScoreHolder#isConstraintMatchEnabled()} is false
+     * @return never null
+     */
+    UndoScoreImpacter impactScore(BigDecimal matchWeight, Consumer<Score<?>> scoreConsumer);
 
 }

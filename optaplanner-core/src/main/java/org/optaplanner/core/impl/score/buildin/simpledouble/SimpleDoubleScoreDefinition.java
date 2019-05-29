@@ -65,7 +65,7 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     }
 
     @Override
-    public ScoreInliner<SimpleDoubleScore> buildScoreInliner() {
+    public ScoreInliner<SimpleDoubleScore> buildScoreInliner(boolean constraintMatchEnabled) {
         throw new IllegalStateException("ConstraintStreams don't support a " + SimpleDoubleScore.class.getSimpleName()
                 + ") because it is error prone.");
     }

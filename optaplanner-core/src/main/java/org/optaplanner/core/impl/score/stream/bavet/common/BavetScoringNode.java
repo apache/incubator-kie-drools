@@ -14,21 +14,37 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.inliner;
-
-import java.util.function.Consumer;
+package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-@FunctionalInterface
-public interface LongWeightedScoreImpacter {
+public interface BavetScoringNode {
 
     /**
-     * @param matchWeight never null
-     * @param scoreConsumer null if {@link ScoreHolder#isConstraintMatchEnabled()} is false
      * @return never null
      */
-    UndoScoreImpacter impactScore(long matchWeight, Consumer<Score<?>> scoreConsumer);
+    String getConstraintPackage();
+
+    /**
+     * @return never null
+     */
+    String getConstraintName();
+
+    /**
+     * @return never null
+     */
+    String getConstraintId();
+
+    /**
+     * @return never null
+     */
+    Score<?> getConstraintWeight();
+
+    /**
+     * @param zeroScore never null
+     * @return never null
+     */
+    ConstraintMatchTotal buildConstraintMatchTotal(Score<?> zeroScore);
 
 }

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
+import java.util.function.Consumer;
+
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -24,6 +27,10 @@ public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
 
     protected int score;
 
+    protected SimpleScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
+
     @Override
     public IntWeightedScoreImpacter buildIntWeightedScoreImpacter(SimpleScore constraintWeight) {
         if (constraintWeight.equals(SimpleScore.ZERO)) {
@@ -31,9 +38,12 @@ public class SimpleScoreInliner extends ScoreInliner<SimpleScore> {
                     + " this constraint should have been culled during node creation.");
         }
         int simpleConstraintWeight = constraintWeight.getScore();
-        return (int matchWeight) -> {
+        return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
             int impact = simpleConstraintWeight * matchWeight;
             this.score += impact;
+            if (constraintMatchEnabled) {
+                matchScoreConsumer.accept(SimpleScore.of(impact));
+            }
             return () -> this.score -= impact;
         };
     }

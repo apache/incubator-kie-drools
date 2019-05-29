@@ -98,8 +98,8 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
-    public BendableBigDecimalScoreInliner buildScoreInliner() {
-        return new BendableBigDecimalScoreInliner(hardLevelsSize, softLevelsSize);
+    public BendableBigDecimalScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
+        return new BendableBigDecimalScoreInliner(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override

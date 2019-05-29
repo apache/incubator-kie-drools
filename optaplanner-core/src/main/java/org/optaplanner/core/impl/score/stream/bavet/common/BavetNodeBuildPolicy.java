@@ -17,21 +17,42 @@
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
 public class BavetNodeBuildPolicy<Solution_> {
 
-    private BavetConstraintSession session;
+    private final BavetConstraintSession session;
 
     private int nodeOrderMaximum = 0;
+    private Map<String, BavetScoringNode> constraintIdToScoringNodeMap;
     private Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractNode> streamToNodeMap = new HashMap<>();
     private Map<BavetAbstractNode, BavetAbstractNode> sharableNodeMap = new HashMap<>();
 
-    public BavetNodeBuildPolicy(BavetConstraintSession session) {
+    public BavetNodeBuildPolicy(BavetConstraintSession session, int constraintCount) {
         this.session = session;
+        constraintIdToScoringNodeMap = new LinkedHashMap<>(constraintCount);
     }
+
+    public void updateNodeOrderMaximum(int nodeOrder) {
+        if (nodeOrderMaximum < nodeOrder) {
+            nodeOrderMaximum = nodeOrder;
+        }
+    }
+
+    public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
+        return (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
+    }
+
+    public void addScoringNode(BavetScoringNode scoringNode) {
+        constraintIdToScoringNodeMap.put(scoringNode.getConstraintId(), scoringNode);
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
 
     public BavetConstraintSession getSession() {
         return session;
@@ -41,18 +62,12 @@ public class BavetNodeBuildPolicy<Solution_> {
         return nodeOrderMaximum;
     }
 
-    public void updateNodeOrderMaximum(int nodeOrder) {
-        if (nodeOrderMaximum < nodeOrder) {
-            nodeOrderMaximum = nodeOrder;
-        }
+    public Map<String, BavetScoringNode> getConstraintIdToScoringNodeMap() {
+        return constraintIdToScoringNodeMap;
     }
 
     public Map<BavetAbstractConstraintStream<Solution_>, BavetAbstractNode> getStreamToNodeMap() {
         return streamToNodeMap;
-    }
-
-    public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
-        return (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
     }
 
 }

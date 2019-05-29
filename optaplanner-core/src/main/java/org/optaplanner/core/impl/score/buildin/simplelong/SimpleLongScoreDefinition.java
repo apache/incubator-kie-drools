@@ -59,8 +59,8 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     }
 
     @Override
-    public SimpleLongScoreInliner buildScoreInliner() {
-        return new SimpleLongScoreInliner();
+    public SimpleLongScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
+        return new SimpleLongScoreInliner(constraintMatchEnabled);
     }
 
     @Override

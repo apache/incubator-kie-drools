@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
+import java.util.function.Consumer;
+
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -25,6 +28,10 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
     protected int hardScore;
     protected int mediumScore;
     protected int softScore;
+
+    protected HardMediumSoftScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
 
     @Override
     public IntWeightedScoreImpacter buildIntWeightedScoreImpacter(HardMediumSoftScore constraintWeight) {
@@ -36,31 +43,43 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
         int mediumConstraintWeight = constraintWeight.getMediumScore();
         int softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight) -> {
+            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftScore.ofHard(hardImpact));
+                }
                 return () -> this.hardScore -= hardImpact;
             };
         } else if (hardConstraintWeight == 0 && softConstraintWeight == 0) {
-            return (int matchWeight) -> {
+            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 this.mediumScore += mediumImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftScore.ofMedium(mediumImpact));
+                }
                 return () -> this.mediumScore -= mediumImpact;
             };
         } else if (hardConstraintWeight == 0 && mediumConstraintWeight == 0) {
-            return (int matchWeight) -> {
+            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 int softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftScore.ofSoft(softImpact));
+                }
                 return () -> this.softScore -= softImpact;
             };
         } else {
-            return (int matchWeight) -> {
+            return (int matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 int hardImpact = hardConstraintWeight * matchWeight;
                 int mediumImpact = mediumConstraintWeight * matchWeight;
                 int softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 this.mediumScore += mediumImpact;
                 this.softScore += softImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftScore.of(hardImpact, mediumImpact, softImpact));
+                }
                 return () -> {
                     this.hardScore -= hardImpact;
                     this.mediumScore -= mediumImpact;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.api.score.stream.tri;
+package org.optaplanner.core.api.function;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  *
  * @param <A> the type of the first argument to the predicate
  * @param <B> the type of the second argument the predicate
- * @param <C> the type of the second argument the predicate
+ * @param <C> the type of the third argument the predicate
  *
  * @see Predicate
  */

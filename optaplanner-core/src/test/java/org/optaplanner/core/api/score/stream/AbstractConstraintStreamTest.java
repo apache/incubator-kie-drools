@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.inliner;
+package org.optaplanner.core.api.score.stream;
 
-import java.util.function.Consumer;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
+@RunWith(Parameterized.class)
+public abstract class AbstractConstraintStreamTest {
 
-@FunctionalInterface
-public interface LongWeightedScoreImpacter {
+    @Parameterized.Parameters(name = "constraintMatchEnabled={0}")
+    public static Object[] data() {
+        return new Object[]{
+                false, true
+        };
+    }
 
-    /**
-     * @param matchWeight never null
-     * @param scoreConsumer null if {@link ScoreHolder#isConstraintMatchEnabled()} is false
-     * @return never null
-     */
-    UndoScoreImpacter impactScore(long matchWeight, Consumer<Score<?>> scoreConsumer);
+    protected boolean constraintMatchEnabled;
+
+    public AbstractConstraintStreamTest(boolean constraintMatchEnabled) {
+        this.constraintMatchEnabled = constraintMatchEnabled;
+    }
 
 }

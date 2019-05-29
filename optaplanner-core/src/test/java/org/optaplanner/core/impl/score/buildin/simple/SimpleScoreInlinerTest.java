@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
+import java.util.function.Consumer;
+
 import org.junit.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
@@ -27,21 +30,24 @@ public class SimpleScoreInlinerTest {
 
     @Test
     public void buildIntWeightedScoreImpacter() {
-        SimpleScoreInliner scoreInliner = new SimpleScoreInliner();
+        boolean constraintMatchEnabled = false;
+        Consumer<Score<?>> scoreConsumer = null;
+
+        SimpleScoreInliner scoreInliner = new SimpleScoreInliner(constraintMatchEnabled);
         assertEquals(SimpleScore.ZERO, scoreInliner.extractScore(0));
 
         IntWeightedScoreImpacter impacter1 = scoreInliner.buildIntWeightedScoreImpacter(SimpleScore.of(-90));
-        UndoScoreImpacter undo1 = impacter1.impactScore(1);
+        UndoScoreImpacter undo1 = impacter1.impactScore(1, scoreConsumer);
         assertEquals(SimpleScore.of(-90), scoreInliner.extractScore(0));
-        scoreInliner.buildIntWeightedScoreImpacter(SimpleScore.of(-800)).impactScore(1);
+        scoreInliner.buildIntWeightedScoreImpacter(SimpleScore.of(-800)).impactScore(1, scoreConsumer);
         assertEquals(SimpleScore.of(-890), scoreInliner.extractScore(0));
         undo1.undoScoreImpact();
         assertEquals(SimpleScore.of(-800), scoreInliner.extractScore(0));
 
         IntWeightedScoreImpacter impacter2 = scoreInliner.buildIntWeightedScoreImpacter(SimpleScore.of(-1));
-        UndoScoreImpacter undo2 = impacter2.impactScore(3);
+        UndoScoreImpacter undo2 = impacter2.impactScore(3, scoreConsumer);
         assertEquals(SimpleScore.of(-803), scoreInliner.extractScore(0));
-        impacter2.impactScore(10);
+        impacter2.impactScore(10, scoreConsumer);
         assertEquals(SimpleScore.of(-813), scoreInliner.extractScore(0));
         undo2.undoScoreImpact();
         assertEquals(SimpleScore.of(-810), scoreInliner.extractScore(0));

@@ -17,7 +17,9 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -26,6 +28,10 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
 
     protected BigDecimal score = BigDecimal.ZERO;
 
+    protected SimpleBigDecimalScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
+
     @Override
     public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore constraintWeight) {
         if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
@@ -33,9 +39,12 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
                     + " this constraint should have been culled during node creation.");
         }
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return (BigDecimal matchWeight) -> {
+        return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
             BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
             this.score = this.score.add(impact);
+            if (constraintMatchEnabled) {
+                matchScoreConsumer.accept(SimpleBigDecimalScore.of(impact));
+            }
             return () -> this.score = this.score.subtract(impact);
         };
     }

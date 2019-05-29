@@ -78,11 +78,16 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
 
     @Override
     public Constraint newConstraintWithWeight(String constraintName, Score<?> constraintWeight) {
-        return newConstraintWithWeight(null, constraintName, constraintWeight);
+        String constraintPackage = solutionDescriptor.getSolutionClass().getPackage().getName();
+        return newConstraintWithWeight(constraintPackage, constraintName, constraintWeight);
     }
 
     @Override
     public Constraint newConstraintWithWeight(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        if (constraintPackage == null) {
+            throw new IllegalStateException("The constraint with package (" + constraintPackage
+                    + ") and name (" + constraintName + ") must have a non-null package.");
+        }
         // Duplicates validation when the session is build, but this fail-faster when weights are hard coded
         solutionDescriptor.validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
         Function<Solution_, Score<?>> constraintWeightExtractor = solution -> constraintWeight;
@@ -97,7 +102,7 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
     }
 
     @Override
-    public ConstraintSession<Solution_> buildSession(Solution_ workingSolution) {
+    public ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
         Score<?> zeroScore = solutionDescriptor.getScoreDefinition().getZeroScore();
         Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap = new LinkedHashMap<>(constraintList.size());
         for (BavetConstraint<Solution_> constraint : constraintList) {
@@ -106,8 +111,8 @@ public final class BavetConstraintFactory<Solution_> implements InnerConstraintF
                 constraintToWeightMap.put(constraint, constraintWeight);
             }
         }
-        return new BavetConstraintSession<>(constraintToWeightMap,
-                solutionDescriptor.getScoreDefinition().buildScoreInliner());
+        return new BavetConstraintSession<>(constraintMatchEnabled, solutionDescriptor.getScoreDefinition(),
+                constraintToWeightMap);
     }
 
     // ************************************************************************

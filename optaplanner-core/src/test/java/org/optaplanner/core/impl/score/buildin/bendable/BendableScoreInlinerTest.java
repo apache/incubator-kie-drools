@@ -16,7 +16,10 @@
 
 package org.optaplanner.core.impl.score.buildin.bendable;
 
+import java.util.function.Consumer;
+
 import org.junit.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.inliner.IntWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
@@ -27,33 +30,36 @@ public class BendableScoreInlinerTest {
 
     @Test
     public void buildIntWeightedScoreImpacter() {
-        BendableScoreInliner scoreInliner = new BendableScoreInliner(1, 2);
+        boolean constraintMatchEnabled = false;
+        Consumer<Score<?>> scoreConsumer = null;
+
+        BendableScoreInliner scoreInliner = new BendableScoreInliner(constraintMatchEnabled, 1, 2);
         assertEquals(BendableScore.zero(1, 2), scoreInliner.extractScore(0));
 
         IntWeightedScoreImpacter hardImpacter = scoreInliner.buildIntWeightedScoreImpacter(BendableScore.ofHard(1, 2, 0, -90));
-        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1);
+        UndoScoreImpacter hardUndo = hardImpacter.impactScore(1, scoreConsumer);
         assertEquals(BendableScore.of(new int[]{-90}, new int[]{0, 0}), scoreInliner.extractScore(0));
-        scoreInliner.buildIntWeightedScoreImpacter(BendableScore.ofHard(1, 2, 0, -800)).impactScore(1);
+        scoreInliner.buildIntWeightedScoreImpacter(BendableScore.ofHard(1, 2, 0, -800)).impactScore(1, scoreConsumer);
         assertEquals(BendableScore.of(new int[]{-890}, new int[]{0, 0}), scoreInliner.extractScore(0));
         hardUndo.undoScoreImpact();
         assertEquals(BendableScore.of(new int[]{-800}, new int[]{0, 0}), scoreInliner.extractScore(0));
 
         IntWeightedScoreImpacter mediumImpacter = scoreInliner.buildIntWeightedScoreImpacter(BendableScore.ofSoft(1, 2, 0, -7));
-        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1);
+        UndoScoreImpacter mediumUndo = mediumImpacter.impactScore(1, scoreConsumer);
         assertEquals(BendableScore.of(new int[]{-800}, new int[]{-7, 0}), scoreInliner.extractScore(0));
         mediumUndo.undoScoreImpact();
         assertEquals(BendableScore.of(new int[]{-800}, new int[]{0, 0}), scoreInliner.extractScore(0));
 
         IntWeightedScoreImpacter softImpacter = scoreInliner.buildIntWeightedScoreImpacter(BendableScore.ofSoft(1, 2, 1, -1));
-        UndoScoreImpacter softUndo = softImpacter.impactScore(3);
+        UndoScoreImpacter softUndo = softImpacter.impactScore(3, scoreConsumer);
         assertEquals(BendableScore.of(new int[]{-800}, new int[]{0, -3}), scoreInliner.extractScore(0));
-        softImpacter.impactScore(10);
+        softImpacter.impactScore(10, scoreConsumer);
         assertEquals(BendableScore.of(new int[]{-800}, new int[]{0, -13}), scoreInliner.extractScore(0));
         softUndo.undoScoreImpact();
         assertEquals(BendableScore.of(new int[]{-800}, new int[]{0, -10}), scoreInliner.extractScore(0));
 
         IntWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildIntWeightedScoreImpacter(BendableScore.of(new int[]{-1000}, new int[]{-2000, -3000}));
-        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1);
+        UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1, scoreConsumer);
         assertEquals(BendableScore.of(new int[]{-1800}, new int[]{-2000, -3010}), scoreInliner.extractScore(0));
         allLevelsUndo.undoScoreImpact();
         assertEquals(BendableScore.of(new int[]{-800}, new int[]{0, -10}), scoreInliner.extractScore(0));

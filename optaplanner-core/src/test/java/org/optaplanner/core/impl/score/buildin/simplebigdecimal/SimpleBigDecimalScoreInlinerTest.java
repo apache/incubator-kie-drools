@@ -17,8 +17,10 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
 import org.junit.Test;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
@@ -29,21 +31,24 @@ public class SimpleBigDecimalScoreInlinerTest {
 
     @Test
     public void buildBigDecimalWeightedScoreImpacter() {
-        SimpleBigDecimalScoreInliner scoreInliner = new SimpleBigDecimalScoreInliner();
+        boolean constraintMatchEnabled = false;
+        Consumer<Score<?>> scoreConsumer = null;
+
+        SimpleBigDecimalScoreInliner scoreInliner = new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
         assertEquals(SimpleBigDecimalScore.ZERO, scoreInliner.extractScore(0));
 
         BigDecimalWeightedScoreImpacter impacter1 = scoreInliner.buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
-        UndoScoreImpacter undo1 = impacter1.impactScore(new BigDecimal("1.0"));
+        UndoScoreImpacter undo1 = impacter1.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("90.0")), scoreInliner.extractScore(0));
-        scoreInliner.buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("800.0"))).impactScore(new BigDecimal("1.0"));
+        scoreInliner.buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("800.0"))).impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("890.0")), scoreInliner.extractScore(0));
         undo1.undoScoreImpact();
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("800.0")), scoreInliner.extractScore(0));
 
         BigDecimalWeightedScoreImpacter impacter2 = scoreInliner.buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("1.0")));
-        UndoScoreImpacter undo2 = impacter2.impactScore(new BigDecimal("3.0"));
+        UndoScoreImpacter undo2 = impacter2.impactScore(new BigDecimal("3.0"), scoreConsumer);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("803.0")), scoreInliner.extractScore(0));
-        impacter2.impactScore(new BigDecimal("10.0"));
+        impacter2.impactScore(new BigDecimal("10.0"), scoreConsumer);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("813.0")), scoreInliner.extractScore(0));
         undo2.undoScoreImpact();
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("810.0")), scoreInliner.extractScore(0));

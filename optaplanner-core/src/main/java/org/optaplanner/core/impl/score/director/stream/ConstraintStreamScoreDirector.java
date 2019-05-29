@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.score.stream.ConstraintSession;
 public class ConstraintStreamScoreDirector<Solution_>
         extends AbstractScoreDirector<Solution_, ConstraintStreamScoreDirectorFactory<Solution_>> {
 
-    protected ConstraintSession session;
+    protected ConstraintSession<Solution_> session;
 
     public ConstraintStreamScoreDirector(ConstraintStreamScoreDirectorFactory<Solution_> scoreDirectorFactory,
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
@@ -57,10 +57,7 @@ public class ConstraintStreamScoreDirector<Solution_>
     }
 
     private void resetConstraintStreamingSession() {
-        session = scoreDirectorFactory.newConstraintStreamingSession(workingSolution);
-        // TODO hook in @ConstraintWeights to disable streams and inline the weight numbers
-
-
+        session = scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
             session.insert(fact);
@@ -75,38 +72,36 @@ public class ConstraintStreamScoreDirector<Solution_>
         return score;
     }
 
-//    @Override
-//    public boolean isConstraintMatchEnabled() {
-//        return constraintMatchEnabledPreference;
-//    }
-
-    @Override // TODO REMOVE ME
+    @Override
     public boolean isConstraintMatchEnabled() {
-        return false;
+        return constraintMatchEnabledPreference;
     }
 
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        // TODO change isConstraintMatchEnabled() too
-
-
-        throw new UnsupportedOperationException();
+        if (workingSolution == null) {
+            throw new IllegalStateException(
+                    "The method setWorkingSolution() must be called before the method getConstraintMatchTotals().");
+        }
+        return session.getConstraintMatchTotalMap().values();
     }
 
     @Override
     public Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap() {
-        // TODO change isConstraintMatchEnabled() too
-
-
-        throw new UnsupportedOperationException();
+        if (workingSolution == null) {
+            throw new IllegalStateException(
+                    "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
+        }
+        return session.getConstraintMatchTotalMap();
     }
 
     @Override
     public Map<Object, Indictment> getIndictmentMap() {
-        // TODO change isConstraintMatchEnabled() too
-
-
-        throw new UnsupportedOperationException();
+        if (workingSolution == null) {
+            throw new IllegalStateException(
+                    "The method setWorkingSolution() must be called before the method getIndictmentMap().");
+        }
+        return session.getIndictmentMap();
     }
 
     @Override

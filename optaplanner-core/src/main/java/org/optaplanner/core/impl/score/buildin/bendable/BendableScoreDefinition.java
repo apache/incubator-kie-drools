@@ -98,8 +98,8 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
     }
 
     @Override
-    public BendableScoreInliner buildScoreInliner() {
-        return new BendableScoreInliner(hardLevelsSize, softLevelsSize);
+    public BendableScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
+        return new BendableScoreInliner(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
     @Override

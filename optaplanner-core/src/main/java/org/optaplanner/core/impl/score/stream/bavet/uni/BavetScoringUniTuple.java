@@ -16,14 +16,19 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringTuple;
 
-public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
+public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> implements BavetScoringTuple {
 
     private final BavetScoringUniNode<A> node;
     private final BavetAbstractUniTuple<A> parentTuple;
 
     private UndoScoreImpacter undoScoreImpacter = null;
+    /** Always null if {@link BavetConstraintSession#constraintMatchEnabled} is false. */
+    private Score<?> matchScore = null;
 
     public BavetScoringUniTuple(BavetScoringUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {
         this.node = node;
@@ -54,12 +59,24 @@ public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> {
         return parentTuple.getFactA();
     }
 
+    @Override
     public UndoScoreImpacter getUndoScoreImpacter() {
         return undoScoreImpacter;
     }
 
+    @Override
     public void setUndoScoreImpacter(UndoScoreImpacter undoScoreImpacter) {
         this.undoScoreImpacter = undoScoreImpacter;
+    }
+
+    @Override
+    public Score<?> getMatchScore() {
+        return matchScore;
+    }
+
+    @Override
+    public void setMatchScore(Score<?> matchScore) {
+        this.matchScore = matchScore;
     }
 
 }

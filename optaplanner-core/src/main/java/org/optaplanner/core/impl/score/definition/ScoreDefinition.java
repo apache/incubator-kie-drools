@@ -113,9 +113,10 @@ public interface ScoreDefinition<S extends Score<S>> {
 
     /**
      * Used by {@link BavetConstraintFactory}
+     * @param constraintMatchEnabled true if {@link ScoreHolder#isConstraintMatchEnabled()} should be true
      * @return never null
      */
-    ScoreInliner<S> buildScoreInliner();
+    ScoreInliner<S> buildScoreInliner(boolean constraintMatchEnabled);
 
     /**
      * Used by {@link DroolsScoreDirector}.

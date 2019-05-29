@@ -16,7 +16,12 @@
 
 package org.optaplanner.core.impl.score.stream;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * An instance of this class must be used in only one thread.
@@ -30,5 +35,19 @@ public interface ConstraintSession<Solution_>  {
     void retract(Object fact);
 
     Score<?> calculateScore(int initScore);
+
+    /**
+     * As defined by {@link ScoreDirector#getConstraintMatchTotalMap()}.
+     * @return never null
+     * @see ScoreDirector#getConstraintMatchTotalMap()
+     */
+    Map<String, ConstraintMatchTotal> getConstraintMatchTotalMap();
+
+    /**
+     * As defined by {@link ScoreDirector#getIndictmentMap()}.
+     * @return never null
+     * @see ScoreDirector#getIndictmentMap()
+     */
+    Map<Object, Indictment> getIndictmentMap();
 
 }

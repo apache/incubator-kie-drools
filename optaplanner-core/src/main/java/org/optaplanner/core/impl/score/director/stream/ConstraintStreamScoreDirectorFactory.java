@@ -52,8 +52,8 @@ public class ConstraintStreamScoreDirectorFactory<Solution_> extends AbstractSco
         return new ConstraintStreamScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
-    public ConstraintSession newConstraintStreamingSession(Solution_ workingSolution) {
-        return constraintFactory.buildSession(workingSolution);
+    public ConstraintSession<Solution_> newConstraintStreamingSession(boolean constraintMatchEnabled, Solution_ workingSolution) {
+        return constraintFactory.buildSession(constraintMatchEnabled, workingSolution);
     }
 
 }

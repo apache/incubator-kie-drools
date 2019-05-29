@@ -70,7 +70,7 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public ScoreInliner<HardSoftDoubleScore> buildScoreInliner() {
+    public ScoreInliner<HardSoftDoubleScore> buildScoreInliner(boolean constraintMatchEnabled) {
         throw new IllegalStateException("ConstraintStreams don't support a " + HardSoftDoubleScore.class.getSimpleName()
                 + ") because it is error prone.");
     }

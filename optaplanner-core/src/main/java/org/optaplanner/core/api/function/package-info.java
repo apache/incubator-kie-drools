@@ -14,21 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.inliner;
-
-import java.util.function.Consumer;
-
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
-
-@FunctionalInterface
-public interface LongWeightedScoreImpacter {
-
-    /**
-     * @param matchWeight never null
-     * @param scoreConsumer null if {@link ScoreHolder#isConstraintMatchEnabled()} is false
-     * @return never null
-     */
-    UndoScoreImpacter impactScore(long matchWeight, Consumer<Score<?>> scoreConsumer);
-
-}
+/**
+ * Functions that are not available in {@link java.util.function}.
+ */
+package org.optaplanner.core.api.function;

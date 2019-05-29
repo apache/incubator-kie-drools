@@ -17,7 +17,9 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -26,6 +28,10 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
 
     protected BigDecimal hardScore = BigDecimal.ZERO;
     protected BigDecimal softScore = BigDecimal.ZERO;
+
+    protected HardSoftBigDecimalScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
 
     @Override
     public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(HardSoftBigDecimalScore constraintWeight) {
@@ -36,23 +42,32 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
         BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftBigDecimalScore.ofHard(hardImpact));
+                }
                 return () -> this.hardScore = this.hardScore.subtract(hardImpact);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.softScore = this.softScore.add(softImpact);
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftBigDecimalScore.ofSoft(softImpact));
+                }
                 return () -> this.softScore = this.softScore.subtract(softImpact);
             };
         } else {
-            return (BigDecimal matchWeight) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
                 this.softScore = this.softScore.add(softImpact);
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftBigDecimalScore.of(hardImpact, softImpact));
+                }
                 return () -> {
                     this.hardScore = this.hardScore.subtract(hardImpact);
                     this.softScore = this.softScore.subtract(softImpact);

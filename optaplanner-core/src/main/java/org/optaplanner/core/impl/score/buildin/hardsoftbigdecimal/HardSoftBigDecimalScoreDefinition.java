@@ -69,8 +69,8 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
-    public HardSoftBigDecimalScoreInliner buildScoreInliner() {
-        return new HardSoftBigDecimalScoreInliner();
+    public HardSoftBigDecimalScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
+        return new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
     }
 
     @Override

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 
+import java.util.function.Consumer;
+
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.inliner.LongWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -24,6 +27,10 @@ public class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
 
     protected long hardScore;
     protected long softScore;
+
+    protected HardSoftLongScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
 
     @Override
     public LongWeightedScoreImpacter buildLongWeightedScoreImpacter(HardSoftLongScore constraintWeight) {
@@ -34,23 +41,32 @@ public class HardSoftLongScoreInliner extends ScoreInliner<HardSoftLongScore> {
         long hardConstraintWeight = constraintWeight.getHardScore();
         long softConstraintWeight = constraintWeight.getSoftScore();
         if (softConstraintWeight == 0L) {
-            return (long matchWeight) -> {
+            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftLongScore.ofHard(hardImpact));
+                }
                 return () -> this.hardScore -= hardImpact;
             };
         } else if (hardConstraintWeight == 0L) {
-            return (long matchWeight) -> {
+            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 long softImpact = softConstraintWeight * matchWeight;
                 this.softScore += softImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftLongScore.ofSoft(softImpact));
+                }
                 return () -> this.softScore -= softImpact;
             };
         } else {
-            return (long matchWeight) -> {
+            return (long matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 long hardImpact = hardConstraintWeight * matchWeight;
                 long softImpact = softConstraintWeight * matchWeight;
                 this.hardScore += hardImpact;
                 this.softScore += softImpact;
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardSoftLongScore.of(hardImpact, softImpact));
+                }
                 return () -> {
                     this.hardScore -= hardImpact;
                     this.softScore -= softImpact;

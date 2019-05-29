@@ -17,7 +17,9 @@
 package org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal;
 
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.inliner.BigDecimalWeightedScoreImpacter;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
@@ -27,6 +29,10 @@ public class HardMediumSoftBigDecimalScoreInliner extends ScoreInliner<HardMediu
     protected BigDecimal hardScore = BigDecimal.ZERO;
     protected BigDecimal mediumScore = BigDecimal.ZERO;
     protected BigDecimal softScore = BigDecimal.ZERO;
+
+    protected HardMediumSoftBigDecimalScoreInliner(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
 
     @Override
     public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(HardMediumSoftBigDecimalScore constraintWeight) {
@@ -38,31 +44,43 @@ public class HardMediumSoftBigDecimalScoreInliner extends ScoreInliner<HardMediu
         BigDecimal mediumConstraintWeight = constraintWeight.getMediumScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
         if (mediumConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.ofHard(hardImpact));
+                }
                 return () -> this.hardScore = this.hardScore.subtract(hardImpact);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
                 this.mediumScore = this.mediumScore.add(mediumImpact);
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.ofMedium(mediumImpact));
+                }
                 return () -> this.mediumScore = this.mediumScore.subtract(mediumImpact);
             };
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && mediumConstraintWeight.equals(BigDecimal.ZERO)) {
-            return (BigDecimal matchWeight) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.softScore = this.softScore.add(softImpact);
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.ofSoft(softImpact));
+                }
                 return () -> this.softScore = this.softScore.subtract(softImpact);
             };
         } else {
-            return (BigDecimal matchWeight) -> {
+            return (BigDecimal matchWeight, Consumer<Score<?>> matchScoreConsumer) -> {
                 BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
                 BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
                 BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
                 this.hardScore = this.hardScore.add(hardImpact);
                 this.mediumScore = this.mediumScore.add(mediumImpact);
                 this.softScore = this.softScore.add(softImpact);
+                if (constraintMatchEnabled) {
+                    matchScoreConsumer.accept(HardMediumSoftBigDecimalScore.of(hardImpact, mediumImpact, softImpact));
+                }
                 return () -> {
                     this.hardScore = this.hardScore.subtract(hardImpact);
                     this.mediumScore = this.mediumScore.subtract(mediumImpact);

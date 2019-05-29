@@ -64,8 +64,8 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     }
 
     @Override
-    public SimpleBigDecimalScoreInliner buildScoreInliner() {
-        return new SimpleBigDecimalScoreInliner();
+    public SimpleBigDecimalScoreInliner buildScoreInliner(boolean constraintMatchEnabled) {
+        return new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
     }
 
     @Override

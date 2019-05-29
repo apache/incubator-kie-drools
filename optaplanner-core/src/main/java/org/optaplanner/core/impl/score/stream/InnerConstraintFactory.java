@@ -25,6 +25,6 @@ public interface InnerConstraintFactory<Solution_> extends ConstraintFactory {
      * @param workingSolution never null
      * @return never null
      */
-    ConstraintSession<Solution_> buildSession(Solution_ workingSolution);
+    ConstraintSession<Solution_> buildSession(boolean constraintMatchEnabled, Solution_ workingSolution);
 
 }
