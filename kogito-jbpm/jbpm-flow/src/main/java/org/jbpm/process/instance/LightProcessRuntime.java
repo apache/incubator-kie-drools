@@ -76,6 +76,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     private SignalManager signalManager;
     private TimerManager timerManager;
     private ProcessEventSupport processEventSupport;
+    private final WorkItemManager workItemManager;
 
     public static LightProcessRuntime ofProcess(Process p) {
         LightProcessRuntimeServiceProvider services =
@@ -90,7 +91,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     public LightProcessRuntime(
             ProcessRuntimeContext runtimeContext,
             ProcessRuntimeServiceProvider services) {
-        this.knowledgeRuntime = new DummyKnowledgeRuntime(this, services.getWorkItemManager());
+        this.knowledgeRuntime = new DummyKnowledgeRuntime(this);
         TimerService timerService = services.getTimerService();
         if (!(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager)) {
             timerService.setTimerJobFactoryManager(new ThreadSafeTrackableTimeJobFactoryManager());
@@ -104,6 +105,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         this.signalManager = services.getSignalManager();
         this.timerManager = new TimerManager(timerManagerRuntime, timerService);
         this.processEventSupport = services.getEventSupport();
+        this.workItemManager = services.getWorkItemManager();
         if (isActive()) {
             initProcessEventListeners();
             initStartTimers();
@@ -451,7 +453,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     }
 
     public WorkItemManager getWorkItemManager() {
-        return knowledgeRuntime.getWorkItemManager();
+        return workItemManager;
     }
 
     public void signalEvent(String type, Object event) {

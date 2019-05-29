@@ -66,11 +66,6 @@ public class LightProcessRuntimeContext implements ProcessRuntimeContext {
     }
 
     @Override
-    public WorkItemManager getWorkItemManager() {
-        return null;
-    }
-
-    @Override
     public void addEventListener(DefaultAgendaEventListener conditional) {
 
     }

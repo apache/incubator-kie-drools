@@ -39,11 +39,9 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
 
     private final EnvironmentImpl environment;
     private InternalProcessRuntime processRuntime;
-    private final WorkItemManager workItemManager;
 
-    DummyKnowledgeRuntime(InternalProcessRuntime processRuntime, WorkItemManager workItemManager) {
+    DummyKnowledgeRuntime(InternalProcessRuntime processRuntime) {
         this.processRuntime = processRuntime;
-        this.workItemManager = workItemManager;
         this.environment = new EnvironmentImpl();
         // register codegen-based node instances factories
         environment.set("NodeInstanceFactoryRegistry", new CodegenNodeInstanceFactoryRegistry());
@@ -256,7 +254,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
 
     @Override
     public WorkItemManager getWorkItemManager() {
-        return workItemManager;
+        return this.processRuntime.getWorkItemManager();
     }
 
     @Override

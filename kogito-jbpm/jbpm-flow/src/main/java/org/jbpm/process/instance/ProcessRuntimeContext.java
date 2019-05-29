@@ -22,8 +22,6 @@ public interface ProcessRuntimeContext {
 
     void queueWorkingMemoryAction(WorkingMemoryAction action);
 
-    WorkItemManager getWorkItemManager();
-
     void addEventListener(DefaultAgendaEventListener conditional);
 
     boolean isActive();
