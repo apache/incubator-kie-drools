@@ -30,6 +30,7 @@
     <module>drools-compiler</module>
     <module>drools-model</module>
     <module>kie-dmn</module>
+    <module>drools-decisiontables</module>
   </modules>
 
   <dependencyManagement>
