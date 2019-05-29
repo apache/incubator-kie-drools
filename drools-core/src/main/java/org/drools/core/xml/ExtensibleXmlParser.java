@@ -22,17 +22,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.NoSuchElementException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -707,8 +706,9 @@ public class ExtensibleXmlParser extends DefaultHandler {
         try {
             if ( getTimeout() >= 0 ) {
                 final URL url = new URL( systemId );
-                URLConnection conn = url.openConnection();
-                    conn.setConnectTimeout( getTimeout() );
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(getTimeout());
+                conn.setInstanceFollowRedirects(true);
                 return new InputSource( conn.getInputStream() );
             }
         } catch ( final Exception e ) {
