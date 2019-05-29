@@ -16,8 +16,12 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.time.Duration;
+import java.time.chrono.ChronoPeriod;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
@@ -53,7 +57,18 @@ public class InstanceOfNode
     public Object evaluate(EvaluationContext ctx) {
         Object value = expression.evaluate( ctx );
         Type t = type.evaluate( ctx );
-        return t.isInstanceOf( value );
+        if (t != BuiltInType.DURATION) {
+            return t.isInstanceOf(value);
+        } else {
+            switch (type.getText()) {
+                case SimpleType.YEARS_AND_MONTHS_DURATION:
+                    return value instanceof ChronoPeriod;
+                case SimpleType.DAYS_AND_TIME_DURATION:
+                    return value instanceof Duration;
+                default:
+                    return t.isInstanceOf(value);
+            }
+        }
     }
 
     @Override
