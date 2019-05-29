@@ -22,8 +22,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -700,18 +698,6 @@ public class ExtensibleXmlParser extends DefaultHandler {
         // Schema files must end with xsd
         if ( !systemId.toLowerCase().endsWith( "xsd" ) ) {
             return null;
-        }
-
-        // try the actual location given by systemId
-        try {
-            if ( getTimeout() >= 0 ) {
-                final URL url = new URL( systemId );
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(getTimeout());
-                conn.setInstanceFollowRedirects(true);
-                return new InputSource( conn.getInputStream() );
-            }
-        } catch ( final Exception e ) {
         }
 
         // Try and get the index for the filename, else return null
