@@ -37,7 +37,6 @@ import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class RuleCodegen implements Generator {
 
@@ -101,7 +100,7 @@ public class RuleCodegen implements Generator {
     }
 
     @Override
-    public Collection<MethodDeclaration> factoryMethods() {
+    public Collection<BodyDeclaration<?>> factoryMethods() {
         return moduleGenerator.factoryMethods();
     }
 

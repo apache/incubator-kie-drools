@@ -23,7 +23,8 @@ public class GeneratedFile {
         PROCESS_INSTANCE,
         REST,
         RULE,
-        MODEL;
+        MODEL,
+        CLASS;
     }
     
     private final String relativePath;

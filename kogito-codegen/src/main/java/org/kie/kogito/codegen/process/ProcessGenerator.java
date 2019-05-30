@@ -15,11 +15,16 @@
 
 package org.kie.kogito.codegen.process;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.impl.AbstractProcess;
 
@@ -31,20 +36,25 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.AssignExpr.Operator;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.UnknownType;
 
 public class ProcessGenerator {
 
@@ -60,7 +70,9 @@ public class ProcessGenerator {
     private final String targetCanonicalName;
     private final String appCanonicalName;
     private String targetTypeName;
-    private boolean hasCdi = false;
+    private boolean hasCdi = false;   
+    
+    private List<CompilationUnit> additionalClasses = new ArrayList<>();
 
     public ProcessGenerator(
             WorkflowProcess process,
@@ -94,7 +106,7 @@ public class ProcessGenerator {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(completePath, generate().getBytes());
+        srcMfs.write(completePath, generate().getBytes());                
     }
 
     public String generate() {
@@ -145,9 +157,8 @@ public class ProcessGenerator {
         return methodDeclaration;
     }
 
-    private MethodDeclaration legacyProcess() {
-        MethodDeclaration legacyProcess = legacyProcessGenerator.generate()
-                .getGeneratedClassModel()
+    private MethodDeclaration legacyProcess(ProcessMetaData processMetaDate) {
+        MethodDeclaration legacyProcess = processMetaDate.getGeneratedClassModel()
                 .findFirst(MethodDeclaration.class).get()
                 .setModifiers(Modifier.Keyword.PROTECTED)
                 .setType(Process.class.getCanonicalName())
@@ -159,6 +170,84 @@ public class ProcessGenerator {
         return new MethodCallExpr(
                 new ThisExpr(),
                 "createLegacyProcessRuntime");
+    }
+    
+    private MethodDeclaration internalConfigure(ProcessMetaData processMetaData) {
+        BlockStmt body = new BlockStmt();
+        MethodDeclaration internalConfigure = new MethodDeclaration()
+                .setModifiers(Modifier.Keyword.PUBLIC)
+                .setType(targetTypeName)
+                .setName("configure")
+                .setBody(body);                
+
+        if (!processMetaData.getGeneratedHandlers().isEmpty()) {
+            
+            processMetaData.getGeneratedHandlers().forEach((name, handler) -> {
+                ClassOrInterfaceDeclaration clazz = handler.findFirst(ClassOrInterfaceDeclaration.class).get();
+                if (hasCdi) {
+                    
+                    
+                    clazz.addAnnotation("javax.enterprise.context.ApplicationScoped");
+                    BlockStmt actionBody = new BlockStmt();
+                    LambdaExpr forachBody = new LambdaExpr(new Parameter(new UnknownType(), "h"), actionBody);
+                    MethodCallExpr forachHandler = new MethodCallExpr(new NameExpr("handlers"), "forEach");                    
+                    forachHandler.addArgument(forachBody);
+                    
+                    MethodCallExpr workItemManager = new MethodCallExpr(new NameExpr("services"), "getWorkItemManager");            
+                    MethodCallExpr registerHandler = new MethodCallExpr(workItemManager, "registerWorkItemHandler").addArgument(new MethodCallExpr(new NameExpr("h"), "getName")).addArgument(new NameExpr("h"));
+                    
+                    actionBody.addStatement(registerHandler);
+                    
+                    body.addStatement(forachHandler);
+                } else {
+                
+                    String packageName = handler.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
+                    String clazzName = clazz.getName().toString();
+                    
+                    MethodCallExpr workItemManager = new MethodCallExpr(new NameExpr("services"), "getWorkItemManager");            
+                    MethodCallExpr registerHandler = new MethodCallExpr(workItemManager, "registerWorkItemHandler").addArgument(new StringLiteralExpr(name)).addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, packageName + "." + clazzName), NodeList.nodeList()));
+                    
+                    body.addStatement(registerHandler);
+                }
+                // annotate for injection or add constructor for initialization
+                handler.findAll(FieldDeclaration.class).forEach(fd -> {
+                    if (hasCdi) {
+                        fd.addAnnotation("javax.inject.Inject");
+                    } else {
+                        BlockStmt constructorBody = new BlockStmt();
+                        AssignExpr assignExpr = new AssignExpr(
+                                                               new FieldAccessExpr(new ThisExpr(), fd.getVariable(0).getNameAsString()),
+                                                               new ObjectCreationExpr().setType(fd.getVariable(0).getType().toString()),
+                                                               AssignExpr.Operator.ASSIGN);
+                        
+                        constructorBody.addStatement(assignExpr);
+                        clazz.addConstructor(Keyword.PUBLIC).setBody(constructorBody);
+                    }
+                });
+                
+                
+                additionalClasses.add(handler);
+            });
+        }
+        if (!processMetaData.getGeneratedListeners().isEmpty()) {
+            
+            processMetaData.getGeneratedListeners().forEach(listener -> {
+                
+                ClassOrInterfaceDeclaration clazz = listener.findFirst(ClassOrInterfaceDeclaration.class).get();
+                String packageName = listener.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
+                String clazzName = clazz.getName().toString();
+                
+                MethodCallExpr eventSupport = new MethodCallExpr(new NameExpr("services"), "getEventSupport");            
+                MethodCallExpr registerListener = new MethodCallExpr(eventSupport, "addEventListener").addArgument(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, packageName + "." + clazzName), NodeList.nodeList()));
+                
+                body.addStatement(registerListener);
+                
+                additionalClasses.add(listener);
+            });
+        }
+        body.addStatement(new ReturnStmt(new ThisExpr()));
+        
+        return internalConfigure;
     }
 
     public static ClassOrInterfaceType processType(String canonicalName) {
@@ -177,9 +266,14 @@ public class ProcessGenerator {
 
         if (hasCdi) {
             cls.addAnnotation("javax.inject.Singleton")
-                    .addAnnotation(new SingleMemberAnnotationExpr(
-                            new Name("javax.inject.Named"),
-                            new StringLiteralExpr(process.getId())));
+            .addAnnotation(new SingleMemberAnnotationExpr(
+                    new Name("javax.inject.Named"),
+                    new StringLiteralExpr(process.getId())));
+            FieldDeclaration handlersInjectFieldDeclaration = new FieldDeclaration()
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName("javax.enterprise.inject.Instance"), NodeList.nodeList(new ClassOrInterfaceType(null, WorkItemHandler.class.getCanonicalName()))), "handlers"))
+                    .addAnnotation("javax.inject.Inject");
+            
+            cls.addMember(handlersInjectFieldDeclaration);
         }
 
         String processInstanceFQCN = ProcessInstanceGenerator.qualifiedName(packageName, typeName);
@@ -215,7 +309,9 @@ public class ProcessGenerator {
                 .setBody(new BlockStmt()
                          .addStatement(new ReturnStmt(new ObjectCreationExpr(null, 
                                                                              new ClassOrInterfaceType(null, modelTypeName), 
-                                                                             NodeList.nodeList()))));
+                                                                             NodeList.nodeList()))));               
+        
+        ProcessMetaData processMetaData = legacyProcessGenerator.generate();
         
         MethodDeclaration methodDeclaration = createInstanceMethod(processInstanceFQCN);
         MethodDeclaration genericMethodDeclaration = createInstanceGenericMethod(processInstanceFQCN);
@@ -226,7 +322,46 @@ public class ProcessGenerator {
                 .addMember(methodDeclaration)
                 .addMember(createModelMethod)
                 .addMember(genericMethodDeclaration)
-                .addMember(legacyProcess());
+                .addMember(internalConfigure(processMetaData))
+                .addMember(legacyProcess(processMetaData));
+        
+        if (hasCdi) {
+            MethodDeclaration initMethod = new MethodDeclaration()
+                    .addModifier(Keyword.PUBLIC)
+                    .setName("init")
+                    .setType(void.class)
+                    .addAnnotation("javax.annotation.PostConstruct")
+                    .setBody(new BlockStmt().addStatement(new MethodCallExpr(new ThisExpr(), "configure")));
+            
+            cls.addMember(initMethod);
+        }
+        
+        
+        if (!processMetaData.getSubProcesses().isEmpty()) {
+            
+            for (String subProcessId : processMetaData.getSubProcesses()) {
+                FieldDeclaration subprocessFieldDeclaration = new FieldDeclaration();                    
+
+                String fieldName = "process" + subProcessId;
+                if (hasCdi) {
+                    subprocessFieldDeclaration
+                        .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName))
+                        .addAnnotation("javax.inject.Inject");
+                } else {
+                    MethodCallExpr initSubProcessField = new MethodCallExpr(new NameExpr("app"), "create" + StringUtils.capitalize(subProcessId) + "Process");
+                    
+                    subprocessFieldDeclaration
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName));
+                
+                    constructorDeclaration.getBody().addStatement(new AssignExpr(new FieldAccessExpr(new ThisExpr(), fieldName), initSubProcessField, Operator.ASSIGN));
+                    
+                }
+                
+                cls.addMember(subprocessFieldDeclaration);
+                                
+            }
+        }
+        
         return cls;
     }
 
@@ -240,6 +375,10 @@ public class ProcessGenerator {
     
     public String processId() {
         return process.getId();
+    }
+    
+    public List<CompilationUnit> getAdditionalClasses() {
+        return additionalClasses;
     }
 
     public ProcessGenerator withCdi(boolean dependencyInjection) {

@@ -15,6 +15,10 @@
 
 package org.kie.kogito.codegen;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,20 +33,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.kogito.Config;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
 
 public class ApplicationGeneratorTest {
 
@@ -114,7 +116,7 @@ public class ApplicationGeneratorTest {
         final Generator mockGenerator = Mockito.mock(Generator.class);
 
         final MethodDeclaration mockMethod = new MethodDeclaration();
-        final Collection<MethodDeclaration> mockedMethods = Collections.singleton(mockMethod);
+        final Collection<BodyDeclaration<?>> mockedMethods = Collections.singleton(mockMethod);
         when(mockGenerator.factoryMethods()).thenReturn(mockedMethods);
 
         final GeneratedFile generatedFile = mock(GeneratedFile.class);

@@ -324,7 +324,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
-        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Service Task", workItemHandler));                
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("org.jbpm.bpmn2.objects.HelloService.hello", workItemHandler));                
         ProcessInstance<BpmnVariables> processInstance = processes.get("ServiceProcess").createInstance(BpmnVariables.create(params));
         
         processInstance.start();
@@ -348,6 +348,20 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
+    }
+    
+    @Test
+    public void testServiceTaskProcess() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-ServiceProcess.bpmn2")).get(0);        
+                
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());        
+        String content = metaData.getGeneratedClassModel().toString();
+        assertThat(content).isNotNull();
+        log(content);
+        
+        assertThat(metaData.getWorkItems())
+        .hasSize(1)
+        .contains("org.jbpm.bpmn2.objects.HelloService.hello");
     }
     
     /*

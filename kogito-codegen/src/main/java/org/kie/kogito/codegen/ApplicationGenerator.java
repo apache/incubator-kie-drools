@@ -27,13 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.kie.kogito.codegen.metadata.ImageMetaData;
 import org.kie.kogito.Config;
+import org.kie.kogito.codegen.metadata.ImageMetaData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -54,7 +55,7 @@ public class ApplicationGenerator {
 
     private String targetTypeName;
     private boolean hasCdi;
-    private final List<MethodDeclaration> factoryMethods;
+    private final List<BodyDeclaration<?>> factoryMethods;
     private ConfigGenerator configGenerator = new ConfigGenerator();
     private List<Generator> generators = new ArrayList<>();
 

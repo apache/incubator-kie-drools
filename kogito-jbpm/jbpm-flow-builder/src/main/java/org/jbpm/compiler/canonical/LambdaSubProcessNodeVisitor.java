@@ -23,10 +23,12 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -75,7 +77,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         retValue.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
                 .ifPresent(m -> m.setBody(bind(variableScope, subProcessNode, subProcessModel)));
         retValue.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("createInstance"))
-                .ifPresent(m -> m.setBody(createInstance(subProcessNode)));
+                .ifPresent(m -> m.setBody(createInstance(subProcessNode, metadata)));
         retValue.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
                 .ifPresent(m -> m.setBody(unbind(variableScope, subProcessNode, subProcessModel)));
 
@@ -96,14 +98,15 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         return actionBody;
     }
 
-    private BlockStmt createInstance(SubProcessNode subProcessNode) {
+    private BlockStmt createInstance(SubProcessNode subProcessNode, ProcessMetaData metadata) {
 
         String processId = ProcessToExecModelGenerator.extractProcessId(subProcessNode.getProcessId());
-        String factoryMethodName = String.format("create%sProcess", StringUtils.capitalize(processId));
+        String processFielName = "process" + processId;
 
-        MethodCallExpr processSupplier = new MethodCallExpr(new NameExpr("app"), factoryMethodName);
-        MethodCallExpr processInstanceSupplier = new MethodCallExpr(processSupplier, "createInstance").addArgument("model");
+        MethodCallExpr processInstanceSupplier = new MethodCallExpr(new NameExpr(processFielName), "createInstance").addArgument("model");
 
+        metadata.getSubProcesses().add(processId);
+        
         return new BlockStmt().addStatement(new ReturnStmt(processInstanceSupplier));
     }
 

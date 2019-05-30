@@ -16,7 +16,9 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -38,6 +40,10 @@ public class ProcessMetaData {
     private CompilationUnit generatedClassModel;
 
     private Set<String> workItems = new HashSet<>();
+    private Set<String> subProcesses = new HashSet<>();
+    
+    private Map<String, CompilationUnit> generatedHandlers = new HashMap<>();
+    private Set<CompilationUnit> generatedListeners = new HashSet<>();
 
     public ProcessMetaData(String processId, String extractedProcessId, String processName, String processVersion, String processPackageName, String processClassName) {
         super();
@@ -114,6 +120,30 @@ public class ProcessMetaData {
 
     public void setWorkItems(Set<String> workItems) {
         this.workItems = workItems;
+    }    
+    
+    public Set<String> getSubProcesses() {
+        return subProcesses;
+    }
+    
+    public void setSubProcesses(Set<String> subProcesses) {
+        this.subProcesses = subProcesses;
+    }
+
+    public Map<String, CompilationUnit> getGeneratedHandlers() {
+        return generatedHandlers;
+    }
+    
+    public void setGeneratedHandlers(Map<String, CompilationUnit> generatedHandlers) {
+        this.generatedHandlers = generatedHandlers;
+    }
+    
+    public Set<CompilationUnit> getGeneratedListeners() {
+        return generatedListeners;
+    }
+    
+    public void setGeneratedListeners(Set<CompilationUnit> generatedListeners) {
+        this.generatedListeners = generatedListeners;
     }
 
     @Override

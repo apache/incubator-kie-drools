@@ -17,10 +17,10 @@ package org.kie.kogito.codegen;
 
 import java.util.Collection;
 
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import com.github.javaparser.ast.body.BodyDeclaration;
 
 public class GeneratorInterfaceTest {
 
@@ -32,7 +32,7 @@ public class GeneratorInterfaceTest {
     private Generator getAnonymousGeneratorInstance() {
         return new Generator() {
             @Override
-            public Collection<MethodDeclaration> factoryMethods() {
+            public Collection<BodyDeclaration<?>> factoryMethods() {
                 return null;
             }
 

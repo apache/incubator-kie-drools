@@ -3,8 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process.impl;
+package org.kie.kogito.codegen.data;
 
-import org.jbpm.process.instance.AbstractProcessRuntimeServiceProvider;
-import org.kie.kogito.process.ProcessConfig;
-import org.kie.services.time.impl.JDKTimerService;
-
-public class ConfiguredProcessServices extends AbstractProcessRuntimeServiceProvider {
-
-    public ConfiguredProcessServices(ProcessConfig config) {
-        super(new JDKTimerService(),
-              config.workItemHandlers(),
-              config.processEventListeners());
-
+public class HelloService {
+	
+    public String hello(String name) {
+        System.out.println("Service invoked with " + name + " on service " + this.toString());
+        return "Hello " + name + "!";
+    }
+    
+    public String goodbye(String name) {
+        System.out.println("Service invoked with " + name + " on service " + this.toString());
+        return "Goodbye " + name + "!";
     }
 }

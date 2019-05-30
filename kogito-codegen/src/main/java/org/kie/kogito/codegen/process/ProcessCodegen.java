@@ -43,12 +43,13 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.GeneratedFile.Type;
+import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.xml.sax.SAXException;
 
 import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class ProcessCodegen implements Generator {
@@ -159,7 +160,7 @@ public class ProcessCodegen implements Generator {
 
 
     @Override
-    public Collection<MethodDeclaration> factoryMethods() {
+    public Collection<BodyDeclaration<?>> factoryMethods() {
         return moduleGenerator.factoryMethods();
     }
 
@@ -270,6 +271,13 @@ public class ProcessCodegen implements Generator {
 
         for (ProcessGenerator p : ps) {
             storeFile(Type.PROCESS, p.generatedFilePath(), p.generate().getBytes());
+            
+            p.getAdditionalClasses().forEach(cp -> {
+                String packageName = cp.getPackageDeclaration().map(pd -> pd.getName().toString()).orElse("");
+                String clazzName = cp.findFirst(ClassOrInterfaceDeclaration.class).map(cls -> cls.getName().toString()).get();
+                String path = (packageName + "." + clazzName).replace('.', '/') + ".java";
+                storeFile(Type.CLASS, path, cp.toString().getBytes());
+            });
         }
 
         for (ProcessInstanceGenerator pi : pis) {

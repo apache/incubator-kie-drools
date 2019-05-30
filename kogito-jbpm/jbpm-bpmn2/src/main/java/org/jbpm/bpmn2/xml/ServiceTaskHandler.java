@@ -66,7 +66,8 @@ public class ServiceTaskHandler extends TaskHandler {
 	        }
 	        // avoid overriding parameters set by data input associations
 	        if (workItemNode.getWork().getParameter("Interface") == null) {
-	            workItemNode.getWork().setParameter("Interface", operation.getInterface().getName());
+	            String interfaceRef = operation.getInterface().getImplementationRef();
+	            workItemNode.getWork().setParameter("Interface", interfaceRef != null && !interfaceRef.isEmpty() ? interfaceRef : operation.getInterface().getName());
 	        }
 	        if (workItemNode.getWork().getParameter("Operation") == null) {
 	            workItemNode.getWork().setParameter("Operation", operation.getName());

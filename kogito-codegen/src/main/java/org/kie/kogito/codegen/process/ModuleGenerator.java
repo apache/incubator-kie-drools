@@ -57,7 +57,7 @@ public class ModuleGenerator {
     private final String targetCanonicalName;
     private final List<ProcessGenerator> processes;
     private final List<ProcessInstanceGenerator> processInstances;
-    private final List<MethodDeclaration> factoryMethods;
+    private final List<BodyDeclaration<?>> factoryMethods;
     private String targetTypeName;
     private boolean hasCdi;
     private String workItemConfigClass = DefaultWorkItemHandlerConfig.class.getCanonicalName();
@@ -97,7 +97,7 @@ public class ModuleGenerator {
         applicationDeclarations.add(processesMethodDeclaration);
     }
 
-    public List<MethodDeclaration> factoryMethods() {
+    public List<BodyDeclaration<?>> factoryMethods() {
         return factoryMethods;
     }
 
@@ -144,15 +144,19 @@ public class ModuleGenerator {
     }
 
     public MethodDeclaration addProcessFactoryMethod(ProcessGenerator r) {
+        ObjectCreationExpr newProcess = new ObjectCreationExpr()
+                .setType(r.targetCanonicalName())
+                .addArgument(new ThisExpr());
         MethodDeclaration methodDeclaration = new MethodDeclaration()
                 .addModifier(Modifier.Keyword.PUBLIC)
                 .setName("create" + r.targetTypeName())
                 .setType(r.targetCanonicalName())
-                .setBody(new BlockStmt().addStatement(new ReturnStmt(
-                        new ObjectCreationExpr()
-                                .setType(r.targetCanonicalName())
-                                .addArgument(new ThisExpr()))));
+                .setBody(new BlockStmt().addStatement(new ReturnStmt(new MethodCallExpr(
+                                                                             newProcess,
+                                                                             "configure"))));
+        
         this.factoryMethods.add(methodDeclaration);
+        
         return methodDeclaration;
     }
     

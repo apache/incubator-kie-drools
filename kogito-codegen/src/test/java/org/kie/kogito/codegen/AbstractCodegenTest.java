@@ -61,7 +61,6 @@ public class AbstractCodegenTest {
         ApplicationGenerator appGen =
                 new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
                                                                                                     .withDependencyInjection(false);
-
         if (!rulesResources.isEmpty()) {
             appGen.withGenerator(RuleCodegen.ofFiles(Paths.get("src", "test", "resources"),
                                                      rulesResources

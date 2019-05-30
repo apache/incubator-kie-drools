@@ -15,6 +15,9 @@
 
 package org.kie.kogito.codegen.rules;
 
+import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_CLASS;
+import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,10 +30,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderUtil;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -46,8 +45,9 @@ import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
 
-import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_CLASS;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 public class IncrementalRuleCodegen implements Generator {
 
@@ -77,7 +77,7 @@ public class IncrementalRuleCodegen implements Generator {
     }
 
     @Override
-    public Collection<MethodDeclaration> factoryMethods() {
+    public Collection<BodyDeclaration<?>> factoryMethods() {
         return null;
     }
 

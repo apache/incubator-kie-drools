@@ -45,7 +45,7 @@ public class ModuleSourceClass {
     private final List<RuleUnitSourceClass> ruleUnits;
     private String targetTypeName;
     private boolean hasCdi;
-    private List<MethodDeclaration> factoryMethods = new ArrayList<>();
+    private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
     
     private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
 
@@ -57,7 +57,7 @@ public class ModuleSourceClass {
         this.ruleUnits = new ArrayList<>();
     }
 
-    public List<MethodDeclaration> factoryMethods() {
+    public List<BodyDeclaration<?>> factoryMethods() {
         return factoryMethods;
     }
 

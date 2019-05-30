@@ -30,13 +30,13 @@ import org.kie.kogito.process.Signal;
 
 public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
-    private final MapProcessInstances<T> instances;
+    protected final MapProcessInstances<T> instances;
 
-    private final ProcessRuntimeServiceProvider services;
+    protected final ProcessRuntimeServiceProvider services;
 
     protected AbstractProcess(ProcessRuntimeServiceProvider services) {
         this.services = services;
-        this.instances = new MapProcessInstances<>();
+        this.instances = new MapProcessInstances<>();        
     }
 
     @Override
@@ -66,10 +66,17 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     public final <S> void send(Signal<S> signal) {
         instances().values().forEach(pi -> pi.send(signal));
     }
+    
+    public Process<T> configure() {
+        //services.getWorkItemManager().registerWorkItemHandler(name, handlerConfig.forName(name)
+        //services.getEventSupport().addEventListener(listener)
+        
+        return this;
+    }
 
     protected abstract org.kie.api.definition.process.Process legacyProcess();
 
-    protected ProcessRuntime createLegacyProcessRuntime() {
+    protected ProcessRuntime createLegacyProcessRuntime() {        
         return new LightProcessRuntime(
                 new LightProcessRuntimeContext(Collections.singletonList(legacyProcess())),
                 services);
