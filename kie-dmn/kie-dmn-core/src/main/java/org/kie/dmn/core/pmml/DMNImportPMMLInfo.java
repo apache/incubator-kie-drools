@@ -97,7 +97,6 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
             DMNImportPMMLInfo info = new DMNImportPMMLInfo(i, models, h);
             return Either.ofRight(info);
         } catch (Throwable e) {
-            e.printStackTrace();
             return Either.ofLeft(new Exception(e));
         }
     }
