@@ -53,6 +53,14 @@ public class FactIdentifier {
         }
     }
 
+    public String getPackageWithoutClassName() {
+        if (className.contains(".")) {
+            return className.substring(0, className.lastIndexOf("."));
+        } else {
+            return "";
+        }
+    }
+
     public static FactIdentifier create(String name, String className) {
         return new FactIdentifier(name, className);
     }
