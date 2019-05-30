@@ -8,18 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.rule.builder.util.AccumulateUtil;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
-import org.drools.core.base.accumulators.CollectAccumulator;
-import org.drools.core.base.accumulators.CollectListAccumulateFunction;
-import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
-import org.drools.core.rule.Pattern;
-import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -44,6 +33,17 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.rule.builder.util.AccumulateUtil;
+import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.core.base.accumulators.CollectAccumulator;
+import org.drools.core.base.accumulators.CollectListAccumulateFunction;
+import org.drools.core.base.accumulators.CollectSetAccumulateFunction;
+import org.drools.core.rule.Pattern;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -63,8 +63,8 @@ import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.drools.modelcompiler.util.StringUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
+import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
@@ -411,13 +411,13 @@ public abstract class AccumulateVisitor {
         String targetClassName = StringUtil.toId(context2.getRuleDescr().getName()) + "Accumulate" + descr.getLine();
         String code = ACCUMULATE_INLINE_FUNCTION.replaceAll("AccumulateInlineFunction", targetClassName);
 
-        CompilationUnit templateCU = JavaParser.parse(code);
+        CompilationUnit templateCU = StaticJavaParser.parse(code);
         ClassOrInterfaceDeclaration templateClass = templateCU.getClassByName(targetClassName).orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
         ClassOrInterfaceDeclaration templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration) m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
 
         List<String> contextFieldNames = new ArrayList<>();
         MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
-        BlockStmt initBlock = JavaParser.parseBlock("{" + descr.getInitCode() + "}");
+        BlockStmt initBlock = StaticJavaParser.parseBlock("{" + descr.getInitCode() + "}");
         List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
         Set<String> usedExtDeclrs = parseInitBlock( context2, descr, basePattern, templateContextClass, contextFieldNames, initMethod, initBlock, accumulateDeclarations );
 
@@ -464,8 +464,8 @@ public abstract class AccumulateVisitor {
 
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
         MethodDeclaration resultMethod = templateClass.getMethodsByName("getResult").get(0);
-        Type returnExpressionType = JavaParser.parseType("java.lang.Object");
-        Expression returnExpression = JavaParser.parseExpression(descr.getResultCode());
+        Type returnExpressionType = StaticJavaParser.parseType("java.lang.Object");
+        Expression returnExpression = StaticJavaParser.parseExpression(descr.getResultCode());
         if (returnExpression instanceof NameExpr) {
             returnExpression = new EnclosedExpr(returnExpression);
         }
@@ -476,23 +476,23 @@ public abstract class AccumulateVisitor {
 
         if (optReverseMethod.isPresent()) {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
-            supportsReverseMethod.getBody().get().addStatement(JavaParser.parseStatement("return true;"));
+            supportsReverseMethod.getBody().get().addStatement(parseStatement("return true;"));
 
             BlockStmt reverseBlock = parseBlock(descr.getReverseCode());
             writeAccumulateMethod(contextFieldNames, singleAccumulateType, optReverseMethod.get(), reverseBlock);
         } else {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
-            supportsReverseMethod.getBody().get().addStatement(JavaParser.parseStatement("return false;"));
+            supportsReverseMethod.getBody().get().addStatement(parseStatement("return false;"));
 
             MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
-            reverseMethod.getBody().get().addStatement(JavaParser.parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
+            reverseMethod.getBody().get().addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
         }
 
         // add resulting accumulator class into the package model
         this.packageModel.addGeneratedPOJO(templateClass);
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
-        functionDSL.addArgument(new ClassExpr(JavaParser.parseType(targetClassName)));
+        functionDSL.addArgument(new ClassExpr(StaticJavaParser.parseType(targetClassName)));
         functionDSL.addArgument(context.getVarExpr(inputDescr.getIdentifier()));
 
         final String bindingId = basePattern.getIdentifier();
@@ -559,7 +559,7 @@ public abstract class AccumulateVisitor {
 
     private BlockStmt parseBlock(String block) {
         final String withTerminator = block.endsWith(";") ? block : block + ";";
-        return JavaParser.parseBlock("{" + withTerminator + "}");
+        return StaticJavaParser.parseBlock("{" + withTerminator + "}");
     }
 
     private Optional<Statement> createInitializer(String variableName, Optional<Expression> optInitializer) {

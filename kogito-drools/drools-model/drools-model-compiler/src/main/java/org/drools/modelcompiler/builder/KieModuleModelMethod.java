@@ -3,7 +3,6 @@ package org.drools.modelcompiler.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -19,6 +18,8 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -124,9 +125,9 @@ public class KieModuleModelMethod {
     }
 
     private void init() {
-        stmt.addStatement( JavaParser.parseStatement(String.format("%s %s = org.kie.api.KieServices.get().newKieModuleModel();", kieModuleModelCanonicalName, KMODULE_MODEL_NAME)));
+        stmt.addStatement(parseStatement(String.format("%s %s = org.kie.api.KieServices.get().newKieModuleModel();", kieModuleModelCanonicalName, KMODULE_MODEL_NAME)));
         kBaseModels.values().forEach( kBaseModel -> new BaseModelGenerator(kBaseModel).toSourceCode() );
-        stmt.addStatement(JavaParser.parseStatement(String.format("return %s;", KMODULE_MODEL_NAME)));
+        stmt.addStatement(parseStatement(String.format("return %s;", KMODULE_MODEL_NAME)));
     }
 
     private class BaseModelGenerator {
@@ -238,7 +239,7 @@ public class KieModuleModelMethod {
 
     private void createEnum( BlockStmt stmt, Expression expr, String enumType, String enumName, String enumSetter) {
         String sessionType = enumType + "." + enumName;
-        FieldAccessExpr sessionTypeEnum = JavaParser.parseExpression(sessionType);
+        FieldAccessExpr sessionTypeEnum = parseExpression(sessionType);
         stmt.addStatement(new MethodCallExpr(expr, enumSetter, nodeList(sessionTypeEnum)));
     }
 

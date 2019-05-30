@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.Parameter;
@@ -41,9 +40,9 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toSet;
 
-import static com.github.javaparser.JavaParser.parseExpression;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -251,7 +250,7 @@ public class Consequence {
                 sb.append(consequence.substring(lastCopiedEnd, modifyPos));
             }
 
-            Expression declAsExpr = JavaParser.parseExpression( decl );
+            Expression declAsExpr = parseExpression(decl );
             if (decl.indexOf( '(' ) >= 0) {
                 declAsExpr = new EnclosedExpr( declAsExpr );
             }

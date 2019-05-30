@@ -99,7 +99,7 @@ public class ModuleSourceClass {
     public Collection<BodyDeclaration<?>> getApplicationBodyDeclaration() {
         List<BodyDeclaration<?>> declarations = new ArrayList<>();
         FieldDeclaration kieRuntimeFieldDeclaration = new FieldDeclaration()
-                .addModifier(Modifier.Keyword.PACKAGE_PRIVATE);
+                .addModifier(Modifier.Keyword.PRIVATE);
                 
         
         if (hasCdi) {            

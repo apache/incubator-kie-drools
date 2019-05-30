@@ -11,7 +11,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
 
-import static com.github.javaparser.JavaParser.parseType;
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class FunctionGenerator {

@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
-import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
@@ -35,7 +35,7 @@ public class DrlxParseUtilTest {
     @Test
     public void prependTest() {
 
-        final Expression expr = JavaParser.parseExpression("getAddressName().startsWith(\"M\")");
+        final Expression expr = StaticJavaParser.parseExpression("getAddressName().startsWith(\"M\")");
         final NameExpr nameExpr = new NameExpr("_this");
 
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
@@ -46,7 +46,7 @@ public class DrlxParseUtilTest {
     @Test(expected = UnsupportedOperationException.class)
     public void throwExceptionWhenMissingNode() {
 
-        final Expression expr = JavaParser.parseExpression("this");
+        final Expression expr = StaticJavaParser.parseExpression("this");
 
         DrlxParseUtil.prepend(null, expr);
     }
@@ -56,11 +56,11 @@ public class DrlxParseUtilTest {
     @Test
     public void transformMethodExpressionToMethodCallExpressionTypeSafe() {
 
-        final Expression expr = JavaParser.parseExpression("address.city.startsWith(\"M\")");
-        final Expression expr1 = JavaParser.parseExpression("getAddress().city.startsWith(\"M\")");
-        final Expression expr2 = JavaParser.parseExpression("address.getCity().startsWith(\"M\")");
+        final Expression expr = StaticJavaParser.parseExpression("address.city.startsWith(\"M\")");
+        final Expression expr1 = StaticJavaParser.parseExpression("getAddress().city.startsWith(\"M\")");
+        final Expression expr2 = StaticJavaParser.parseExpression("address.getCity().startsWith(\"M\")");
 
-        final MethodCallExpr expected = JavaParser.parseExpression("getAddress().getCity().startsWith(\"M\")");
+        final MethodCallExpr expected = StaticJavaParser.parseExpression("getAddress().getCity().startsWith(\"M\")");
 
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr, null, Person.class, typeResolver).getExpression().toString());
         assertEquals(expected.toString(), DrlxParseUtil.toMethodCallWithClassCheck(null, expr1, null, Person.class, typeResolver).getExpression().toString());
@@ -69,8 +69,8 @@ public class DrlxParseUtilTest {
 
     @Test
     public void getExpressionTypeTest() {
-        assertEquals(Double.class, getExpressionType(null, typeResolver, JavaParser.parseExpression("new Double[]{2.0d, 3.0d}[1]"), null));
-        assertEquals(Float.class, getExpressionType(null, typeResolver, JavaParser.parseExpression("new Float[]{2.0d, 3.0d}"), null));
+        assertEquals(Double.class, getExpressionType(null, typeResolver, StaticJavaParser.parseExpression("new Double[]{2.0d, 3.0d}[1]"), null));
+        assertEquals(Float.class, getExpressionType(null, typeResolver, StaticJavaParser.parseExpression("new Float[]{2.0d, 3.0d}"), null));
         assertEquals(boolean.class, getExpressionType(null, typeResolver, new BooleanLiteralExpr(true), null));
         assertEquals(char.class, getExpressionType(null, typeResolver, new CharLiteralExpr('a'), null));
         assertEquals(double.class, getExpressionType(null, typeResolver, new DoubleLiteralExpr(2.0d), null));
@@ -83,8 +83,8 @@ public class DrlxParseUtilTest {
     @Test
     public void test_forceCastForName() {
         Function<String, String> c = (String input) -> {
-            Expression expr = JavaParser.parseExpression(input);
-            DrlxParseUtil.forceCastForName("$my", JavaParser.parseType("Integer"), expr);
+            Expression expr = StaticJavaParser.parseExpression(input);
+            DrlxParseUtil.forceCastForName("$my", StaticJavaParser.parseType("Integer"), expr);
             return expr.toString();
         };
         assertEquals("ciao += ((Integer) $my)", c.apply("ciao += $my"));
@@ -95,7 +95,7 @@ public class DrlxParseUtilTest {
     @Test
     public void test_rescopeNamesToNewScope() {
         Function<String, String> c = (String input) -> {
-            Expression expr = JavaParser.parseExpression(input);
+            Expression expr = StaticJavaParser.parseExpression(input);
             DrlxParseUtil.rescopeNamesToNewScope(new NameExpr("nscope"), Arrays.asList("name", "surname"), expr);
             return expr.toString();
         };
@@ -106,7 +106,7 @@ public class DrlxParseUtilTest {
     @Test
     public void test_rescopeAlsoArgumentsToNewScope() {
         Function<String, String> c = (String input) -> {
-            Expression expr = JavaParser.parseExpression(input);
+            Expression expr = StaticJavaParser.parseExpression(input);
             DrlxParseUtil.rescopeNamesToNewScope(new NameExpr("nscope"), Collections.singletonList("total"), expr);
             return expr.toString();
         };
@@ -123,6 +123,6 @@ public class DrlxParseUtilTest {
     }
 
     private Expression expr(String $a) {
-        return parseExpression($a).getExpr();
+        return DrlxParseUtil.parseExpression($a).getExpr();
     }
 }

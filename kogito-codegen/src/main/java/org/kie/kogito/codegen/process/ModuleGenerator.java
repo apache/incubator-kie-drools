@@ -22,12 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.kie.kogito.Model;
-import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
-
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -47,6 +41,12 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.WildcardType;
+import org.kie.kogito.Model;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 
 public class ModuleGenerator {
 
@@ -125,7 +125,7 @@ public class ModuleGenerator {
 
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit =
-                JavaParser.parse(this.getClass().getResourceAsStream(RESOURCE))
+                parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
         if (hasCdi) {

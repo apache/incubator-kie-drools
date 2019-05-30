@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -45,6 +44,9 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.core.context.variable.Variable;
+
+import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class ModelMetaData {
 
@@ -113,7 +115,7 @@ public class ModelMetaData {
     }
 
     private CompilationUnit compilationUnit() {
-        CompilationUnit compilationUnit = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/ModelTemplate.java"));
+        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/ModelTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
         Optional<ClassOrInterfaceDeclaration> processMethod = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, sl1 -> true);
 
@@ -153,7 +155,7 @@ public class ModelMetaData {
             putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), vname));
             toMapBody.addStatement(putVariable);
 
-            ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(vtype);
+            ClassOrInterfaceType type = parseClassOrInterfaceType(vtype);
 
             // from map instance method body
             FieldAccessExpr instanceField = new FieldAccessExpr(new ThisExpr(), vname);

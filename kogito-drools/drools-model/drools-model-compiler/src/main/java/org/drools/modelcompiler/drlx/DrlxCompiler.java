@@ -25,7 +25,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -38,6 +37,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 
+import static com.github.javaparser.StaticJavaParser.parse;
 
 public class DrlxCompiler {
 
@@ -70,7 +70,7 @@ public class DrlxCompiler {
         } else {
             CompilationUnit compilationUnit;
             try {
-                compilationUnit = JavaParser.parse( new FileReader( file ) );
+                compilationUnit = parse( new FileReader( file ) );
             } catch (FileNotFoundException e) {
                 throw new RuntimeException( e );
             }
@@ -96,7 +96,7 @@ public class DrlxCompiler {
     }
 
     public static CompiledUnit compileSingleSource( Reader source ) {
-        CompilationUnit compilationUnit = JavaParser.parse( source );
+        CompilationUnit compilationUnit = parse(source );
 
         ClassOrInterfaceDeclaration unitClass = (ClassOrInterfaceDeclaration) compilationUnit.getType( 0 );
         String pkg = compilationUnit.getPackageDeclaration().map( PackageDeclaration::getNameAsString ).orElse( "defaultpkg" );

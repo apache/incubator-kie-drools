@@ -26,38 +26,25 @@ package org.drools.constraint.parser.ast.expr;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.AllFieldsConstructor;
 import com.github.javaparser.ast.Generated;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
-import com.github.javaparser.ast.observer.ObservableProperty;
-import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
-import com.github.javaparser.ast.visitor.CloneVisitor;
-import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
-import com.github.javaparser.metamodel.JavaParserMetaModel;
-import com.github.javaparser.metamodel.NameExprMetaModel;
 import com.github.javaparser.resolution.Resolvable;
-import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
-
-import static com.github.javaparser.utils.Utils.assertNotNull;
+import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.constraint.parser.ast.visitor.DrlVoidVisitor;
 
 /**
  * Whenever a SimpleName is used in an expression, it is wrapped in DrlNameExpr.
  * <br/>In <code>int x = a + 3;</code> a is a SimpleName inside a DrlNameExpr.
- *
  * @author Julio Vilmar Gesser
  */
-public final class DrlNameExpr extends Expression implements NodeWithSimpleName<DrlNameExpr>, Resolvable<ResolvedValueDeclaration> {
+public final class DrlNameExpr extends NameExpr implements NodeWithSimpleName<NameExpr>,
+                                                           Resolvable<ResolvedValueDeclaration> {
 
-    private SimpleName name;
+    private int backReferencesCount = 0;
 
     public DrlNameExpr() {
         this(null, new SimpleName(), 0);
@@ -82,7 +69,7 @@ public final class DrlNameExpr extends Expression implements NodeWithSimpleName<
      */
     @Generated("com.github.javaparser.generator.core.node.MainConstructorGenerator")
     public DrlNameExpr(TokenRange tokenRange, SimpleName name, int backReferencesCount) {
-        super(tokenRange);
+        super(tokenRange, name);
         setName(name);
         customInitialization();
         this.backReferencesCount = backReferencesCount;
@@ -90,104 +77,16 @@ public final class DrlNameExpr extends Expression implements NodeWithSimpleName<
 
     @Override
     public <R, A> R accept(GenericVisitor<R, A> v, A arg) {
-        return ((DrlGenericVisitor<R, A>)v).visit(this, arg);
+        return ((DrlGenericVisitor<R, A>) v).visit(this, arg);
     }
 
     @Override
     public <A> void accept(VoidVisitor<A> v, A arg) {
-        ((DrlVoidVisitor<A>)v).visit(this, arg);
+        ((DrlVoidVisitor<A>) v).visit(this, arg);
     }
-
-    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
-    public SimpleName getName() {
-        return name;
-    }
-
-    @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
-    public DrlNameExpr setName(final SimpleName name) {
-        assertNotNull(name);
-        if (name == this.name) {
-            return (DrlNameExpr) this;
-        }
-        notifyPropertyChange(ObservableProperty.NAME, this.name, name);
-        if (this.name != null) {
-            this.name.setParentNode(null);
-        }
-        this.name = name;
-        setAsParentNodeOf(name);
-        return this;
-    }
-
-    @Override
-    @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
-    public boolean remove(Node node) {
-        if (node == null) {
-            return false;
-        }
-        return super.remove(node);
-    }
-
-    @Override
-    @Generated("com.github.javaparser.generator.core.node.CloneGenerator")
-    public DrlNameExpr clone() {
-        return (DrlNameExpr) accept(new CloneVisitor(), null);
-    }
-
-    @Override
-    @Generated("com.github.javaparser.generator.core.node.GetMetaModelGenerator")
-    public NameExprMetaModel getMetaModel() {
-        return JavaParserMetaModel.nameExprMetaModel;
-    }
-
-    @Override
-    @Generated("com.github.javaparser.generator.core.node.ReplaceMethodGenerator")
-    public boolean replace(Node node, Node replacementNode) {
-        if (node == null) {
-            return false;
-        }
-        if (node == name) {
-            setName((SimpleName) replacementNode);
-            return true;
-        }
-        return super.replace(node, replacementNode);
-    }
-
-    @Override
-    @Generated("com.github.javaparser.generator.core.node.TypeCastingGenerator")
-    public boolean isNameExpr() {
-        return true;
-    }
-
-    /**
-     * Attempts to resolve the declaration corresponding to the accessed name. If successful, a
-     * {@link ResolvedValueDeclaration} representing the declaration of the value accessed by this {@code DrlNameExpr} is
-     * returned. Otherwise, an {@link UnsolvedSymbolException} is thrown.
-     *
-     * @return a {@link ResolvedValueDeclaration} representing the declaration of the accessed value.
-     * @throws UnsolvedSymbolException if the declaration corresponding to the name expression could not be resolved.
-     * @see FieldAccessExpr#resolve()
-     * @see MethodCallExpr#resolve()
-     * @see ObjectCreationExpr#resolve()
-     * @see ExplicitConstructorInvocationStmt#resolve()
-     */
-    @Override
-    public ResolvedValueDeclaration resolve() {
-        return getSymbolResolver().resolveDeclaration(this, ResolvedValueDeclaration.class);
-    }
-
-
-    private int backReferencesCount = 0;
 
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public int getBackReferencesCount() {
         return backReferencesCount;
-    }
-
-    public static DrlNameExpr fromNameExpr(NameExpr nameExpr) {
-        return new DrlNameExpr(nameExpr.toString());
-    }
-
-    public NameExpr safeToNameExpr() {
-        return new NameExpr(getName());
     }
 }

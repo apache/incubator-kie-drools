@@ -40,6 +40,8 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import org.drools.constraint.parser.printer.ConstraintPrintVisitor;
 
 import static com.github.javaparser.Problem.PROBLEM_BY_BEGIN_POSITION;
 import static com.github.javaparser.utils.Utils.assertNotNull;
@@ -63,6 +65,13 @@ public final class DrlConstraintParser {
 
     private GeneratedDrlConstraintParser astParser = null;
     private static ParserConfiguration staticConfiguration = new ParserConfiguration();
+
+    static {
+        PrettyPrinterConfiguration prettyPrinterConfiguration = new PrettyPrinterConfiguration();
+        // This is to support toString() on new Nodes in this parser
+        prettyPrinterConfiguration.setVisitorFactory(ConstraintPrintVisitor::new);
+        Node.setToStringPrettyPrinterConfiguration(prettyPrinterConfiguration);
+    }
 
     /**
      * Instantiate the parser with default configuration. Note that parsing can also be done with the static methods on
@@ -135,8 +144,7 @@ public final class DrlConstraintParser {
         final GeneratedDrlConstraintParser parser = getParserForProvider(provider);
         try {
             N resultNode = start.parse(parser);
-            ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getTokens(),
-                    parser.getCommentsCollection());
+            ParseResult<N> result = new ParseResult<>(resultNode, parser.problems, parser.getCommentsCollection());
 
             configuration.getPostProcessors().forEach(postProcessor ->
                     postProcessor.process(result, configuration));
@@ -147,7 +155,7 @@ public final class DrlConstraintParser {
         } catch (Exception e) {
             final String message = e.getMessage() == null ? "Unknown error" : e.getMessage();
             parser.problems.add(new Problem(message, null, e));
-            return new ParseResult<>(null, parser.problems, parser.getTokens(), parser.getCommentsCollection());
+            return new ParseResult<>(null, parser.problems, parser.getCommentsCollection());
         } finally {
             try {
                 provider.close();

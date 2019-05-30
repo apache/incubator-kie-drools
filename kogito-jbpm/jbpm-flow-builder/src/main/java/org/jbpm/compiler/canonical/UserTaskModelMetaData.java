@@ -4,15 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 
-import org.drools.core.util.StringUtils;
-import org.jbpm.process.core.context.variable.Variable;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.workflow.core.node.HumanTaskNode;
-
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -34,6 +28,13 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.util.StringUtils;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+
+import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class UserTaskModelMetaData {
 
@@ -128,7 +129,7 @@ public class UserTaskModelMetaData {
 
     private CompilationUnit compilationUnitInput() {
         // task input handling
-        CompilationUnit compilationUnit = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/TaskInputTemplate.java"));
+        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskInputTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
         Optional<ClassOrInterfaceDeclaration> processMethod = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, sl1 -> true);
 
@@ -172,7 +173,7 @@ public class UserTaskModelMetaData {
             // fromMap static method body
             FieldAccessExpr field = new FieldAccessExpr(item, entry.getKey());
 
-            ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(variable.getType().getStringType());
+            ClassOrInterfaceType type = parseClassOrInterfaceType(variable.getType().getStringType());
             staticFromMap.addStatement(new AssignExpr(field, new CastExpr(
                                                                           type,
                                                                           new MethodCallExpr(
@@ -200,7 +201,7 @@ public class UserTaskModelMetaData {
             // fromMap static method body
             FieldAccessExpr field = new FieldAccessExpr(item, entry.getKey());
 
-            ClassOrInterfaceType type = JavaParser.parseClassOrInterfaceType(entry.getValue().getClass().getCanonicalName());
+            ClassOrInterfaceType type = parseClassOrInterfaceType(entry.getValue().getClass().getCanonicalName());
             staticFromMap.addStatement(new AssignExpr(field, new CastExpr(
                                                                           type,
                                                                           new MethodCallExpr(
@@ -220,7 +221,7 @@ public class UserTaskModelMetaData {
     }
 
     private CompilationUnit compilationUnitOutput() {
-        CompilationUnit compilationUnit = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/TaskOutputTemplate.java"));
+        CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskOutputTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
         Optional<ClassOrInterfaceDeclaration> processMethod = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class, sl1 -> true);
 

@@ -17,11 +17,6 @@ package org.kie.kogito.codegen.process;
 
 import java.util.List;
 
-import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.UserTaskModelMetaData;
-import org.kie.api.definition.process.WorkflowProcess;
-
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
@@ -38,6 +33,11 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.UserTaskModelMetaData;
+import org.kie.api.definition.process.WorkflowProcess;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 
 public class ResourceGenerator {
 
@@ -86,7 +86,7 @@ public class ResourceGenerator {
     }
 
     public String generate() {
-        CompilationUnit clazz = JavaParser.parse(
+        CompilationUnit clazz = parse(
                 this.getClass().getResourceAsStream("/class-templates/RestResourceTemplate.java"));
         clazz.setPackageDeclaration(process.getPackageName());
         clazz.addImport(modelfqcn);
@@ -98,7 +98,7 @@ public class ResourceGenerator {
         
         if (userTasks != null) {
 
-            CompilationUnit userTaskClazz = JavaParser.parse(
+            CompilationUnit userTaskClazz = parse(
                                                      this.getClass().getResourceAsStream("/class-templates/RestResourceUserTaskTemplate.java"));
             
             

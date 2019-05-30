@@ -28,8 +28,11 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import com.github.javaparser.ast.stmt.SwitchEntryStmt;
+import com.github.javaparser.ast.stmt.SwitchEntry;
 import com.github.javaparser.ast.stmt.SwitchStmt;
+
+import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class WorkItemConfigGenerator {
 
@@ -44,7 +47,7 @@ public class WorkItemConfigGenerator {
     }
 
     public ClassOrInterfaceDeclaration generate() {
-        ClassOrInterfaceDeclaration cls = JavaParser.parse(this.getClass().getResourceAsStream(RESOURCE))
+        ClassOrInterfaceDeclaration cls = parse(this.getClass().getResourceAsStream(RESOURCE))
                 .findFirst(ClassOrInterfaceDeclaration.class).get();
 
         cls.findFirst(VariableDeclarator.class).ifPresent(this::handlerList);
@@ -54,14 +57,15 @@ public class WorkItemConfigGenerator {
     }
 
     private void generateSwitch(SwitchStmt switchStmt) {
+        NodeList<SwitchEntry> entries = nodeList();
         for (Map.Entry<String, String> e : workItemHandlers.entrySet()) {
-            switchStmt.addEntry(
-                    new SwitchEntryStmt()
-                            .setLabel(new StringLiteralExpr(e.getKey()))
-                            .addStatement(
+            entries.add(new SwitchEntry()
+                            .setLabels(nodeList(new StringLiteralExpr(e.getKey())))
+                            .setStatements(nodeList(
                                     new ReturnStmt(
-                                            new ObjectCreationExpr().setType(e.getValue()))));
+                                            new ObjectCreationExpr().setType(e.getValue())))));
         }
+        switchStmt.setEntries(entries);
     }
 
     private void handlerList(VariableDeclarator vd) {

@@ -35,6 +35,8 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject implements KieBuilder.ProjectType {
 
     public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = RuleCodegenProject::new;
@@ -96,7 +98,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
         } else if (hasCdi()) {
             for (KieBaseModel kBaseModel : kBaseModels.values()) {
                 for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
-                    CompilationUnit cu = JavaParser.parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
+                    CompilationUnit cu = parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
                     ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
                     template.setName( "SessionRuleUnit_" + sessionName );
                     template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );

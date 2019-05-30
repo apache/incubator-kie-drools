@@ -31,7 +31,6 @@ import org.kie.kogito.Config;
 import org.kie.kogito.codegen.metadata.ImageMetaData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -39,6 +38,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+
+import static com.github.javaparser.StaticJavaParser.parse;
 
 public class ApplicationGenerator {
 
@@ -86,7 +87,7 @@ public class ApplicationGenerator {
 
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit =
-                JavaParser.parse(this.getClass().getResourceAsStream(RESOURCE))
+                parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
         if (hasCdi) {

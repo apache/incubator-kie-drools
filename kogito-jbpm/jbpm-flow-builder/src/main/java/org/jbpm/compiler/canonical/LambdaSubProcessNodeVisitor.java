@@ -19,7 +19,6 @@ package org.jbpm.compiler.canonical;
 import java.io.InputStream;
 import java.util.Map;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -38,6 +37,8 @@ import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.kie.api.definition.process.Node;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
 
     private final Map<String, ModelMetaData> processToModel;
@@ -50,7 +51,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
     public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
 
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/SubProcessFactoryTemplate.java");
-        Expression retValue = JavaParser.parse(resourceAsStream).findFirst(Expression.class).get();
+        Expression retValue = parse(resourceAsStream).findFirst(Expression.class).get();
 
         SubProcessNode subProcessNode = (SubProcessNode) node;
         String subProcessId = subProcessNode.getProcessId();

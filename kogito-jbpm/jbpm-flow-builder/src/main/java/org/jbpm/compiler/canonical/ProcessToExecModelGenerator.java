@@ -66,6 +66,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 public class ProcessToExecModelGenerator extends AbstractVisitor {
 
 	public static final ProcessToExecModelGenerator INSTANCE = new ProcessToExecModelGenerator(Collections.emptyMap());
@@ -92,7 +94,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 
     public ProcessMetaData generate(WorkflowProcess process) {
 
-        CompilationUnit parsedClazzFile = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));
+        CompilationUnit parsedClazzFile = parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));
         parsedClazzFile.setPackageDeclaration(process.getPackageName());
         Optional<ClassOrInterfaceDeclaration> processClazzOptional = parsedClazzFile.findFirst(ClassOrInterfaceDeclaration.class, sl -> true);
 
@@ -122,7 +124,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 
     public MethodDeclaration generateMethod(WorkflowProcess process) {
 
-        CompilationUnit clazz = JavaParser.parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));
+        CompilationUnit clazz = parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));
         clazz.setPackageDeclaration(process.getPackageName());
 
         String extractedProcessId = extractProcessId(process.getId());
