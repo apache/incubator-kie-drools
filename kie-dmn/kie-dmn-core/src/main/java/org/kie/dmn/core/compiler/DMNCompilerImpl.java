@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.drools.core.io.impl.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -232,13 +233,18 @@ public class DMNCompilerImpl implements DMNCompiler {
         URI pmmlURI = null;
         try {
             pmmlURI = resolveRelativeURI(model, i.getLocationURI());
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             logger.warn("Error inspecting the imported PMML model", e);
         }
         if (pmmlURI == null) {
             return;
         }
-        InputStream pmmlIS = ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader().getResourceAsStream(pmmlURI.toString());
+        InputStream pmmlIS = null;
+        try {
+            pmmlIS = pmmlURI.isAbsolute() ? pmmlURI.toURL().openStream() : ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader().getResourceAsStream(pmmlURI.toString());
+        } catch (IOException e) {
+            logger.warn("Error inspecting the imported PMML model", e);
+        }
         Either<Exception, DMNImportPMMLInfo> pmml = DMNImportPMMLInfo.from(pmmlIS, model, i).cata(x -> {
             logger.warn("Error inspecting the imported PMML model", x);
             return null;
@@ -248,10 +254,16 @@ public class DMNCompilerImpl implements DMNCompiler {
         });
     }
 
-    protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException {
-        URI dmnModelURI = new URI(model.getResource().getSourcePath());
-        URI relativeURI = dmnModelURI.resolve(relative);
-        return relativeURI;
+    protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException, IOException {
+        if (model.getResource() instanceof FileSystemResource) {
+            FileSystemResource fsr = (FileSystemResource) model.getResource();
+            URI resolve = fsr.getURL().toURI().resolve(relative);
+            return resolve;
+        } else {
+            URI dmnModelURI = new URI(model.getResource().getSourcePath());
+            URI relativeURI = dmnModelURI.resolve(relative);
+            return relativeURI;
+        }
     }
 
     private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
