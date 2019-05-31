@@ -245,9 +245,6 @@ public class DMNCompilerImpl implements DMNCompiler {
         } catch (IOException e) {
             logger.warn("Error inspecting the imported PMML model", e);
         }
-        if (null instanceof Object) {
-            throw new RuntimeException();
-        }
         DMNImportPMMLInfo.from(pmmlIS, model, i).cata(x -> {
             logger.warn("Error inspecting the imported PMML model", x);
             return null;
