@@ -1477,8 +1477,8 @@ namespace="http://www.trisotech.com/definitions/_3068644b-d2c7-4b81-ab9d-64f011f
     </semantic:businessKnowledgeModel>
     <semantic:businessKnowledgeModel id="b_RoutingRules" name="Routing rules">
         <semantic:description>&lt;p align="LEFT"&gt;&lt;span style="font-family: arial,helvetica,sans-serif; font-size: 10pt;"&gt;&lt;span lang="JA"&gt;The &lt;/span&gt;&lt;strong&gt;&lt;span lang="JA"&gt;Routing Rules &lt;/span&gt;&lt;/strong&gt;&lt;span lang="JA"&gt;decision logic defines a complete, priority-ordered single hit decision table &lt;/span&gt;deriving Routing from Post-Bureau Risk Category, Post-Bureau Affordability, Bankrupt and Credit Score.&lt;/span&gt;&lt;/p&gt;</semantic:description>
-        <semantic:variable name="Routing rules" id="_56e3cd3e-0b85-46f0-9638-882029662e12" typeRef="number"/>
-        <semantic:encapsulatedLogic typeRef="number">
+        <semantic:variable name="Routing rules" id="_56e3cd3e-0b85-46f0-9638-882029662e12" typeRef="tRouting"/>
+        <semantic:encapsulatedLogic typeRef="tRouting">
             <semantic:formalParameter name="Post-Bureau Risk Category" typeRef="tRiskCategory"/>
             <semantic:formalParameter name="Post-Bureau Affordability" typeRef="boolean"/>
             <semantic:formalParameter name="Bankrupt" typeRef="boolean"/>
