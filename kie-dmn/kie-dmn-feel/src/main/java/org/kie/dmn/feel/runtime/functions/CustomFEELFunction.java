@@ -16,37 +16,35 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.runtime.events.FEELEventBase;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CustomFEELFunction
-        extends BaseFEELFunction {
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class CustomFEELFunction extends BaseFEELFunction {
 
     private static final Logger logger = LoggerFactory.getLogger( CustomFEELFunction.class );
 
-    private final List<String> parameters;
+    private final List<BaseFEELFunction.Param> parameters;
     private final BaseNode     body;
 
-    public CustomFEELFunction(String name, List<String> parameters, BaseNode body) {
+    public CustomFEELFunction(String name, List<BaseFEELFunction.Param> parameters, BaseNode body) {
         super( name );
         this.parameters = parameters;
         this.body = body;
     }
 
     public List<List<String>> getParameterNames() {
-        return Arrays.asList( parameters );
+        return Arrays.asList(parameters.stream().map(BaseFEELFunction.Param::getName).collect(Collectors.toList()));
     }
 
     public FEELFnResult<Object> invoke(EvaluationContext ctx, Object[] params ) {
@@ -58,7 +56,7 @@ public class CustomFEELFunction
         try {
             ctx.enterFrame();
             for ( int i = 0; i < parameters.size(); i++ ) {
-                ctx.setValue( parameters.get( i ), params[i] );
+                ctx.setValue(parameters.get(i).name, typeCheck(params[i], parameters.get(i).type));
             }
             Object result = this.body.evaluate( ctx );
             return FEELFnResult.ofResult( result );
@@ -70,8 +68,16 @@ public class CustomFEELFunction
         return FEELFnResult.ofError( capturedException );
     }
 
+    private Object typeCheck(Object value, Type type) {
+        if (type.isInstanceOf(value)) {
+            return value;
+        } else {
+            return null;
+        }
+    }
+
     private String getSignature() {
-        return getName()+"( "+parameters.stream().collect( Collectors.joining(", ") ) +" )";
+        return getName() + "( " + parameters.stream().map(p -> p.name + " : " + p.type).collect(Collectors.joining(", ")) + " )";
     }
 
     @Override

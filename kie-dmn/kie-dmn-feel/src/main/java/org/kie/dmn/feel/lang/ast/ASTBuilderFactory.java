@@ -92,6 +92,10 @@ public class ASTBuilderFactory {
         return new FunctionDefNode( ctx, parameters, external, body );
     }
 
+    public static FormalParameterNode newFormalParameter(ParserRuleContext ctx, NameDefNode name, TypeNode type) {
+        return new FormalParameterNode(ctx, name, type);
+    }
+
     public static IterationContextNode newIterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expr) {
         return new IterationContextNode( ctx, name, expr );
     }

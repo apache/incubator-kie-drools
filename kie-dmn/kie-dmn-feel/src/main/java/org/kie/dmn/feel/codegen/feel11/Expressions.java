@@ -21,8 +21,6 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.Collection;
 import java.util.List;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -44,16 +42,18 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.util.EvalHelper;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BigDecimalT;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BuiltInTypeT;
-import static org.kie.dmn.feel.codegen.feel11.Constants.DECIMAL_128;
 
 public class Expressions {
 
-    public static final ClassOrInterfaceType NamedParamterT = new ClassOrInterfaceType(null, NamedParameter.class.getCanonicalName());
+    public static final ClassOrInterfaceType NamedParamterT = parseClassOrInterfaceType(NamedParameter.class.getCanonicalName());
+    public static final ClassOrInterfaceType FormalParamterT = parseClassOrInterfaceType(BaseFEELFunction.Param.class.getCanonicalName());
     private static final Expression DASH_UNARY_TEST = parseExpression(org.kie.dmn.feel.lang.ast.DashNode.DashUnaryTest.class.getCanonicalName() + ".INSTANCE");
 
     public static class NamedLambda {
@@ -331,6 +331,10 @@ public class Expressions {
 
     public static ObjectCreationExpr namedParameter(Expression name, Expression value) {
         return new ObjectCreationExpr(null, NamedParamterT, new NodeList<>(name, value));
+    }
+
+    public static ObjectCreationExpr formalParameter(Expression name, Expression type) {
+        return new ObjectCreationExpr(null, FormalParamterT, new NodeList<>(name, type));
     }
 
     public static MethodCallExpr invoke(Expression functionName, Expression params) {
