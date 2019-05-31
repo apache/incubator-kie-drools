@@ -15,16 +15,16 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -108,6 +108,34 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testNullSafeWithMethod() {
+        // DROOLS-4095
+        String str = "import org.drools.compiler.*;\n" +
+                     "rule R1 when\n" +
+                     " $street : String()\n"+
+                     " Person( getAddress()!.street == $street ) \n" +
+                     "then\n" +
+                     "end";
+
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
+
+        ksession.insert(new Person("Mario", 38));
+
+        ksession.insert("Main Street");
+        Person mark = new Person("Mark", 37);
+        mark.setAddress(new Address("Main Street"));
+        ksession.insert(mark);
+
+        Person edson = new Person("Edson", 34);
+        edson.setAddress(new Address(null));
+        ksession.insert(edson);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
     public void testNullSafeNullComparisonReverse() {
         // DROOLS-82
         String str =
@@ -119,6 +147,7 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = kbase.newKieSession();
+
         ksession.insert(new Person("Mario", 38));
 
         Person mark = new Person("Mark", 37);
@@ -145,6 +174,7 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = kbase.newKieSession();
+
         ksession.insert(new Person("Mario", 38));
 
         Person mark = new Person("Mark", 37);

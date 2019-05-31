@@ -699,6 +699,9 @@ selector
     |   (DOT ID)=>DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); }
                   ID { helper.emit($ID, DroolsEditorType.IDENTIFIER); }
                   ((LEFT_PAREN) => arguments)?
+    |   (NULL_SAFE_DOT ID)=>NULL_SAFE_DOT { helper.emit($NULL_SAFE_DOT, DroolsEditorType.SYMBOL); }
+                  ID { helper.emit($ID, DroolsEditorType.IDENTIFIER); }
+                  ((LEFT_PAREN) => arguments)?
     //|   DOT this_key
     |   (LEFT_SQUARE)=>LEFT_SQUARE { helper.emit($LEFT_SQUARE, DroolsEditorType.SYMBOL); }
                        expression
