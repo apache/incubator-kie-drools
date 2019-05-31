@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.models.guided.scorecard.backend.base;
 
+import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.drools.scorecards.StringUtil;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
@@ -109,17 +110,14 @@ public class GuidedScoreCardDRLPersistenceTest {
         model.getImports().addImport(new Import("org.smurf.Pupa"));
         model.setFactName("org.drools.MoreCheese");
 
+        PMML pmmlDocument = GuidedScoreCardDRLPersistence.createPMMLDocument(model);
         final String drl = GuidedScoreCardDRLPersistence.marshal(model);
         assertNotNull(drl);
 
         assertTrue(drl.contains("package org.drools.workbench.models.guided.scorecard.backend"));
-        assertEquals(16,
-                     StringUtil.countMatches(drl,
-                                             "rule \""));
 
-        assertEquals(14,
-                     StringUtil.countMatches(drl,
-                                             "import "));
+        assertTrue(drl.contains("import org.smurf.Pupa"));
+        assertTrue(drl.contains("import org.drools.MoreCheese"));
     }
 
     @Test
