@@ -607,7 +607,7 @@
         </rule>
       </decisionTable>
     </encapsulatedLogic>
-    <variable name="CreditContingencyFactorTable" typeRef="feel:string"/>
+    <variable name="CreditContingencyFactorTable" typeRef="feel:number"/> <!-- the output of this table is actually a number. -->
   </businessKnowledgeModel>
   <businessKnowledgeModel id="b_EligibilityRules" name="EligibilityRules">
     <encapsulatedLogic>

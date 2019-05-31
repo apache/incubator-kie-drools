@@ -31,6 +31,7 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNContextFEELCtxWrapper;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -107,6 +108,7 @@ public class DMNFunctionDefinitionEvaluator
         private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
         private final FunctionDefinition functionDefinition;
+        private final boolean performRuntimeTypeCheck;
 
         public DMNFunction(String name, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
             super( name );
@@ -115,6 +117,7 @@ public class DMNFunctionDefinitionEvaluator
             this.evaluator = evaluator;
             this.eventManager = eventManager;
             this.resultContext = result;
+            performRuntimeTypeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
         public Object invoke(EvaluationContext ctx, Object[] params) {
@@ -127,7 +130,7 @@ public class DMNFunctionDefinitionEvaluator
                 if( evaluator != null ) {
                     previousContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
-                        dmnContext.set( parameters.get( i ).name, params[i] );
+                        dmnContext.set(parameters.get(i).name, typeChek(params[i], parameters.get(i).type));
                     }
                     resultContext.setContext( dmnContext );
                     EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
@@ -160,6 +163,15 @@ public class DMNFunctionDefinitionEvaluator
             } finally {
                 resultContext.setContext( previousContext );
                 dmnContext.exitFrame();
+            }
+        }
+
+        private Object typeChek(Object object, DMNType type) {
+            if (type.isAssignableValue(object)) {
+                return object;
+            } else {
+                // TODO msg
+                return null;
             }
         }
 

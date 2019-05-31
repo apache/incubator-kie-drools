@@ -598,6 +598,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set( "BureauData", bureau );
         context.set( "SupportingDocuments", "yes" );
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
+        LOG.debug("{}", dmnResult);
         final DMNContext ctx = dmnResult.getContext();
 
         assertThat( ctx.get( "ApplicationRiskScore" ), is( BigDecimal.valueOf( 130 ) ) );

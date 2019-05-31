@@ -18,7 +18,6 @@ package org.kie.dmn.core.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,12 +30,7 @@ import javax.xml.namespace.QName;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.kie.api.KieBase;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -44,6 +38,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNPackage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -64,6 +59,8 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -379,7 +376,45 @@ public class DMNRuntimeImpl
 
             EvaluatorResult er = bkm.getEvaluator().evaluate( this, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
+                FEELFunction fn = (FEELFunction) er.getResult();
                 FEELFunction resultFn = (FEELFunction) er.getResult();
+                if (typeCheck) {
+                    DMNType resultType = b.getResultType();
+                    resultFn = new FEELFunction() {
+                        @Override
+                        public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
+                            Object result = fn.invokeReflectively(ctx, params);
+                            if (!resultType.isCollection() && result instanceof Collection && ((Collection<?>) result).size() == 1) {
+                                // as per Decision evaluation result.
+                                result = ((Collection<?>) result).toArray()[0];
+                            }
+                            if (resultType.isAssignableValue(result)) {
+                                return result;
+                            } else {
+                                return null;
+                            }
+                        }
+
+                        @Override
+                        public Symbol getSymbol() {
+                            return fn.getSymbol();
+                        }
+
+                        @Override
+                        public List<List<String>> getParameterNames() {
+                            return fn.getParameterNames();
+                        }
+
+                        @Override
+                        public String getName() {
+                            return fn.getName();
+                        }
+
+                        public String toString() {
+                            return fn.toString();
+                        }
+                    };
+                }
                 result.getContext().set(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
             }
         } catch( Throwable t ) {
