@@ -18,15 +18,20 @@ package org.drools.scenariosimulation.api.model;
 
 import org.junit.Test;
 
-import static org.drools.scenariosimulation.api.model.FactIdentifier.DESCRIPTION;
 import static org.junit.Assert.assertEquals;
 
 public class FactIdentifierTest {
 
     @Test
     public void getClassNameWithoutPackage() {
-        FactIdentifier factIdentifier = DESCRIPTION;
-        assertEquals(factIdentifier.getClassNameWithoutPackage(), String.class.getSimpleName());
+        FactIdentifier factIdentifier = new FactIdentifier("test", "com.Test");
+        assertEquals(factIdentifier.getClassNameWithoutPackage(), "Test");
+    }
+
+    @Test
+    public void getClassNameWithoutPackage_LongPackage() {
+        FactIdentifier factIdentifier = new FactIdentifier("test", "com.project.Test");
+        assertEquals(factIdentifier.getClassNameWithoutPackage(), "Test");
     }
 
     @Test
@@ -37,8 +42,14 @@ public class FactIdentifierTest {
 
     @Test
     public void getPackageWithoutClassName() {
-        FactIdentifier factIdentifier = DESCRIPTION;
-        assertEquals(factIdentifier.getPackageWithoutClassName(), String.class.getPackage().getName());
+        FactIdentifier factIdentifier = new FactIdentifier("test", "com.Test");
+        assertEquals(factIdentifier.getPackageWithoutClassName(), "com");
+    }
+
+    @Test
+    public void getPackageWithoutClassName_LongPackage() {
+        FactIdentifier factIdentifier = new FactIdentifier("test", "com.project.Test");
+        assertEquals(factIdentifier.getPackageWithoutClassName(), "com.project");
     }
 
     @Test
