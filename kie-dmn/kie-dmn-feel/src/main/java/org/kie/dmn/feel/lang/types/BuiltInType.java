@@ -45,18 +45,18 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 
 public enum BuiltInType implements SimpleType {
 
-    UNKNOWN("Any", "unknown", "any"), // updated FEEL lattice of types from DMN v1.2
-    NUMBER("number"),
-    STRING("string"),
-    DATE("date"),
-    TIME("time"),
-    DATE_TIME("date and time", "dateTime"),
-    DURATION("duration", "days and time duration", "years and months duration", "dayTimeDuration", "yearMonthDuration"),
-    BOOLEAN("boolean"),
+    UNKNOWN(SimpleType.ANY, "unknown", "any"), // updated FEEL lattice of types from DMN v1.2
+    NUMBER(SimpleType.NUMBER),
+    STRING(SimpleType.STRING),
+    DATE(SimpleType.DATE),
+    TIME(SimpleType.TIME),
+    DATE_TIME(SimpleType.DATE_AND_TIME, "dateTime"),
+    DURATION("duration", SimpleType.DAYS_AND_TIME_DURATION, SimpleType.YEARS_AND_MONTHS_DURATION, "dayTimeDuration", "yearMonthDuration"),
+    BOOLEAN(SimpleType.BOOLEAN),
     RANGE("range"),
-    FUNCTION("function"),         // TODO be parametrized as FUNCTION<type>
-    LIST("list"),
-    CONTEXT("context"),
+    FUNCTION(SimpleType.FUNCTION), // TODO be parametrized as FUNCTION<type>
+    LIST(SimpleType.LIST),
+    CONTEXT(SimpleType.CONTEXT),
     UNARY_TEST("unary test");
 
     private final String[] names;

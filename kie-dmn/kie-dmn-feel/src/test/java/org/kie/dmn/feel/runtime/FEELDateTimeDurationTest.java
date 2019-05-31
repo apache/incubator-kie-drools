@@ -206,7 +206,11 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8) , null},
                 { "date and time(\"2017-05-14\")", LocalDateTime.of( 2017, 5, 14, 0, 0, 0, 0 ) , null},
                 { "date(\"2017-05-12\")-date(\"2017-04-25\")", Duration.ofDays( 17 ) , null},
-                { "time(date(\"2017-08-10\"))", DateTimeFormatter.ISO_TIME.parse( "00:00:00z", OffsetTime::from ) , null }
+                { "time(date(\"2017-08-10\"))", DateTimeFormatter.ISO_TIME.parse( "00:00:00z", OffsetTime::from ) , null },
+                { "duration(\"P1Y\") instance of years and months duration", Boolean.TRUE , null },
+                { "duration(\"P1Y\") instance of days and time duration", Boolean.FALSE , null },
+                { "duration(\"P1D\") instance of years and months duration", Boolean.FALSE , null },
+                { "duration(\"P1D\") instance of days and time duration", Boolean.TRUE , null }
         };
         return addAdditionalParameters(cases, false);
     }
