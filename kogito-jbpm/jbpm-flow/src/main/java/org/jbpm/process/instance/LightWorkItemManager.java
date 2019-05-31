@@ -30,7 +30,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.internal.runtime.Closeable;
-import org.kie.services.signal.SignalManager;
+import org.kie.kogito.signal.SignalManager;
 
 public class LightWorkItemManager implements WorkItemManager{
 

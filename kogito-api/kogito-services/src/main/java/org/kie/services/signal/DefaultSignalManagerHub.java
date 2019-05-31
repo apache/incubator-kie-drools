@@ -1,0 +1,68 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.services.signal;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.kie.kogito.signal.SignalManager;
+import org.kie.kogito.signal.SignalManagerHub;
+
+
+public class DefaultSignalManagerHub implements SignalManagerHub {
+    
+    
+    private ConcurrentHashMap<String, List<SignalManager>> signalManagers = new ConcurrentHashMap<>();
+
+    @Override
+    public void publish(String type, Object signalData) {
+        signalManagers.getOrDefault(type, Collections.emptyList())
+        .forEach(e -> e.signalEvent(type, signalData));
+    }
+
+    @Override
+    public void publishTargeting(long id, String type, Object signalData) {
+        signalManagers.getOrDefault(type, Collections.emptyList())
+            .forEach(e -> e.signalEvent(id, type, signalData));
+    }
+
+    @Override
+    public void subscribe(String type, SignalManager signalManager) {
+        this.signalManagers.compute(type, (k, v) -> {
+            if (v == null) {
+                v = new CopyOnWriteArrayList<>();
+            }
+            v.add(signalManager);
+            return v;
+        });
+    }
+
+    @Override
+    public void unsubscribe(String type, SignalManager signalManager) {
+        this.signalManagers.computeIfPresent(type, (k, v) -> {
+            v.remove(signalManager);
+            if (v.isEmpty()) {
+                signalManagers.remove(type);
+            }
+            return v;
+        });
+    }
+
+
+
+}

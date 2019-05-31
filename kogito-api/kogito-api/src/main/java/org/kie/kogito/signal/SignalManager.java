@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.services.signal;
+package org.kie.kogito.signal;
 
 import org.kie.api.runtime.process.EventListener;
 

@@ -13,19 +13,16 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process.impl;
+package org.kie.kogito.signal;
 
-import org.jbpm.process.instance.AbstractProcessRuntimeServiceProvider;
-import org.kie.kogito.process.ProcessConfig;
-import org.kie.services.time.impl.JDKTimerService;
 
-public class ConfiguredProcessServices extends AbstractProcessRuntimeServiceProvider {
+public interface SignalManagerHub {
 
-    public ConfiguredProcessServices(ProcessConfig config) {
-        super(new JDKTimerService(),
-              config.workItemHandlers(),
-              config.processEventListeners(),
-              config.signalManagerHub());
-
-    }
+    void publish(String type, Object signalData);
+    
+    void publishTargeting(long id, String type, Object signalData);
+    
+    void subscribe(String type, SignalManager signalManager);
+    
+    void unsubscribe(String type, SignalManager signalManager);
 }

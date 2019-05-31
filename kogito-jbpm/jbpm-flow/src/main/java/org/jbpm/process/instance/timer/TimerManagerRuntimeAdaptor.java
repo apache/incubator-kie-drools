@@ -7,9 +7,9 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.kie.services.time.manager.TimerManager;
 import org.kie.services.time.manager.TimerManagerRuntime;
-import org.kie.services.signal.SignalManager;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.kogito.signal.SignalManager;
 
 public class TimerManagerRuntimeAdaptor implements TimerManagerRuntime {
     private final InternalKnowledgeRuntime kruntime;

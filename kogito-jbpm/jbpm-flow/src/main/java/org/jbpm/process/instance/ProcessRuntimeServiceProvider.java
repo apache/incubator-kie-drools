@@ -18,7 +18,7 @@ package org.jbpm.process.instance;
 
 import org.drools.core.event.ProcessEventSupport;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.services.signal.SignalManager;
+import org.kie.kogito.signal.SignalManager;
 import org.kie.services.time.TimerService;
 
 public interface ProcessRuntimeServiceProvider {

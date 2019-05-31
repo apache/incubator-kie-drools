@@ -134,6 +134,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
 
         processInstance.start();
+        this.processInstanceId = processInstance.id();
         
         subProcessFactory.unbind(context, processInstance.variables());
         

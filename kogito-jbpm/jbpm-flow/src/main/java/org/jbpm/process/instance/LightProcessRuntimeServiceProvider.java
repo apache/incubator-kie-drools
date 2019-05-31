@@ -17,6 +17,7 @@ package org.jbpm.process.instance;
 
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.services.signal.DefaultSignalManagerHub;
 import org.kie.services.time.impl.JDKTimerService;
 
 public class LightProcessRuntimeServiceProvider extends AbstractProcessRuntimeServiceProvider {
@@ -24,6 +25,7 @@ public class LightProcessRuntimeServiceProvider extends AbstractProcessRuntimeSe
     public LightProcessRuntimeServiceProvider() {
         super(new JDKTimerService(),
               new DefaultWorkItemHandlerConfig(),
-              new DefaultProcessEventListenerConfig());
+              new DefaultProcessEventListenerConfig(),
+              new DefaultSignalManagerHub());
     }
 }

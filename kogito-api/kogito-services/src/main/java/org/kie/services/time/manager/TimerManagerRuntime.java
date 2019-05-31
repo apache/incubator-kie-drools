@@ -2,8 +2,8 @@ package org.kie.services.time.manager;
 
 import java.util.Map;
 
-import org.kie.services.signal.SignalManager;
 import org.kie.api.time.SessionClock;
+import org.kie.kogito.signal.SignalManager;
 
 /**
  * A smaller API surface than StatefulSession/KieRuntime

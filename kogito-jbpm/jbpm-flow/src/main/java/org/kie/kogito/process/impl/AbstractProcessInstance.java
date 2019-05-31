@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
+import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Model;
@@ -37,7 +38,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     private final AbstractProcess<T> process;
     private final ProcessRuntime rt;
     private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance;
-    private int status;
+    
+    private CompletionEventListener completionEventListener = new CompletionEventListener();
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this.process = process;
@@ -50,12 +52,13 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         String id = process.legacyProcess().getId();
         this.legacyProcessInstance = rt.createProcessInstance(id, map);
         long pid = legacyProcessInstance.getId();
+        
+        ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+pid, completionEventListener, false);
+        
         process.instances().update(pid, this);
         org.kie.api.runtime.process.ProcessInstance pi = this.rt.startProcessInstance(pid);
         unbind(variables, pi.getVariables());
         
-        this.status = pi.getState();
-        removeOnFinish();
     }
 
     public void abort() {
@@ -66,16 +69,13 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         unbind(variables, legacyProcessInstance.getVariables());
         process.instances().remove(pid);
         this.rt.abortProcessInstance(pid);
-        
-        this.status = legacyProcessInstance.getState();
+ 
     }
 
     @Override
     public <S> void send(Signal<S> signal) {
         legacyProcessInstance.signalEvent(signal.channel(), signal.payload());
-        
-        this.status = legacyProcessInstance.getState();
-        removeOnFinish();
+       
     }
 
     @Override
@@ -90,7 +90,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public int status() {
-        return status;
+        return legacyProcessInstance.getState();
     }
 
     @Override
@@ -122,24 +122,21 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     public void completeWorkItem(long id, Map<String, Object> variables) {
         this.rt.getWorkItemManager().completeWorkItem(id, variables);
         unbind(this.variables, legacyProcessInstance.getVariables());
-        this.status = legacyProcessInstance.getState();
         
-        removeOnFinish();
     }
     
     @Override
     public void abortWorkItem(long id) {
         this.rt.getWorkItemManager().abortWorkItem(id);
         unbind(this.variables, legacyProcessInstance.getVariables());
-        this.status = legacyProcessInstance.getState();
         
-        removeOnFinish();
     }
     
     protected void removeOnFinish() {
 
-        if (this.status != org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {
+        if (status() != org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {
             process.instances().remove(legacyProcessInstance.getId());
+            ((WorkflowProcessInstance)legacyProcessInstance).removeEventListener("processInstanceCompleted:"+legacyProcessInstance.getId(), completionEventListener, false);
         }
     }
 
@@ -173,5 +170,18 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             throw new Error(e);
         }
         vmap.put("$v", variables);
+    }
+    
+    private class CompletionEventListener implements EventListener {
+        
+        @Override
+        public void signalEvent(String type, Object event) {
+            removeOnFinish();
+        }
+        
+        @Override
+        public String[] getEventTypes() {
+            return new String[] {"processInstanceCompleted:"+legacyProcessInstance.getId()};
+        }
     }
 }

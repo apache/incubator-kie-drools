@@ -15,8 +15,12 @@
 
 package org.kie.kogito.process;
 
+import org.kie.kogito.signal.SignalManagerHub;
+
 public interface ProcessConfig {
     WorkItemHandlerConfig workItemHandlers();
     
     ProcessEventListenerConfig processEventListeners();
+    
+    SignalManagerHub signalManagerHub();
 }

@@ -16,44 +16,57 @@
 
 package org.kie.services.signal;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.kie.api.runtime.process.EventListener;
+import org.kie.kogito.signal.SignalManager;
+import org.kie.kogito.signal.SignalManagerHub;
 
 public class LightSignalManager implements SignalManager {
 
+    private SignalManagerHub signalManagerHub;
 	private final EventListenerResolver instanceResolver;
-	private ConcurrentHashMap<String, List<EventListener>> listeners =
-			new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, List<EventListener>> listeners = new ConcurrentHashMap<>();
 
-	public LightSignalManager(EventListenerResolver instanceResolver) {
+	public LightSignalManager(EventListenerResolver instanceResolver, SignalManagerHub signalManagerHub) {
 		this.instanceResolver = instanceResolver;
+		this.signalManagerHub = signalManagerHub;
 	}
 	
 	public void addEventListener(String type, EventListener eventListener) {
 		listeners.compute(type, (k, v) -> {
 			if (v == null) {
-				v = new ArrayList<>();
+				v = new CopyOnWriteArrayList<>();
 			}
 			v.add(eventListener);
 			return v;
 		});
+		signalManagerHub.subscribe(type, this);
 	}
 	
 	public void removeEventListener(String type, EventListener eventListener) {
 		listeners.computeIfPresent(type, (k, v) -> {
 			v.remove(eventListener);
+			if (v.isEmpty()) {
+			    listeners.remove(type);
+			}
 			return v;
 		});
+		signalManagerHub.unsubscribe(type, this);
 	}
 	
 	public void signalEvent(String type, Object event) {
-		listeners.getOrDefault(type, Collections.emptyList())
+	    if (!listeners.containsKey(type)) {
+	        signalManagerHub.publish(type, event);
+	    }
+	    
+	    listeners.getOrDefault(type, Collections.emptyList())
 				.forEach(e -> e.signalEvent(type, event));
+	    
+
 	}
 
 	public void signalEvent(long processInstanceId, String type, Object event) {

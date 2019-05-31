@@ -24,9 +24,9 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.jbpm.process.instance.InternalProcessRuntime;
-import org.kie.services.signal.SignalManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.signal.SignalManager;
 
 import java.io.IOException;
 import java.io.ObjectInput;

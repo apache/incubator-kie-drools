@@ -18,15 +18,19 @@ package org.kie.kogito.process.impl;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
+import org.kie.kogito.signal.SignalManagerHub;
+import org.kie.services.signal.DefaultSignalManagerHub;
 
 public class StaticProcessConfig implements ProcessConfig {
 
     private final WorkItemHandlerConfig workItemHandlerConfig;
     private final ProcessEventListenerConfig processEventListenerConfig;
+    private final SignalManagerHub signalManager;
 
     public StaticProcessConfig(WorkItemHandlerConfig workItemHandlerConfig, ProcessEventListenerConfig processEventListenerConfig) {
         this.workItemHandlerConfig = workItemHandlerConfig;
         this.processEventListenerConfig = processEventListenerConfig;
+        this.signalManager = new DefaultSignalManagerHub();
     }
 
     @Override
@@ -37,5 +41,10 @@ public class StaticProcessConfig implements ProcessConfig {
     @Override
     public ProcessEventListenerConfig processEventListeners() {
         return this.processEventListenerConfig;
+    }
+
+    @Override
+    public SignalManagerHub signalManagerHub() {
+        return this.signalManager;
     }
 }

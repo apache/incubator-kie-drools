@@ -380,6 +380,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
             if (isSignalCompletion()) {
                 
+                List<EventListener> listeners = eventListeners.get("processInstanceCompleted:" + getId());
+                if (listeners != null) {
+                    for (EventListener listener : listeners) {
+                        listener.signalEvent("processInstanceCompleted:" + getId(), this);
+                    }
+                }
+                
                 processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
                 
             }

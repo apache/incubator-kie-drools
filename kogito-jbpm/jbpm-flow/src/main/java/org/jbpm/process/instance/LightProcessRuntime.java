@@ -59,7 +59,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.services.signal.SignalManager;
+import org.kie.kogito.signal.SignalManager;
 import org.kie.services.time.TimerService;
 import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
 import org.kie.services.time.impl.CronExpression;

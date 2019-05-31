@@ -17,10 +17,10 @@ package org.jbpm.process.instance;
 
 import java.util.Map;
 
-import org.kie.services.signal.SignalManager;
 import org.kie.services.time.manager.TimerManager;
 import org.kie.services.time.manager.TimerManagerRuntime;
 import org.kie.api.time.SessionClock;
+import org.kie.kogito.signal.SignalManager;
 
 class LightTimerManagerRuntime implements TimerManagerRuntime {
 

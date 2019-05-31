@@ -23,8 +23,9 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
+import org.kie.kogito.signal.SignalManager;
+import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.services.signal.LightSignalManager;
-import org.kie.services.signal.SignalManager;
 import org.kie.services.time.TimerService;
 
 public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServiceProvider {
@@ -38,11 +39,14 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     public AbstractProcessRuntimeServiceProvider(
             TimerService timerService,
             WorkItemHandlerConfig workItemHandlerProvider,
-            ProcessEventListenerConfig processEventListenerProvider) {
+            ProcessEventListenerConfig processEventListenerProvider,
+            SignalManagerHub compositeSignalManager) {
         processInstanceManager = new DefaultProcessInstanceManager();
         signalManager = new LightSignalManager(
                 id -> Optional.ofNullable(
-                        processInstanceManager.getProcessInstance(id)));
+                        processInstanceManager.getProcessInstance(id)),
+                compositeSignalManager);
+        
         this.timerService = timerService;
         this.workItemManager = new LightWorkItemManager(processInstanceManager, signalManager);
 
