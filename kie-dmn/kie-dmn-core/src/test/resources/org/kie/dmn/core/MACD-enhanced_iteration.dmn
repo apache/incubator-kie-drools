@@ -135,7 +135,7 @@
         </semantic:contextEntry>
       </semantic:context>
     </semantic:encapsulatedLogic>
-    <semantic:variable id="_a409c4a9-ac11-481b-a62f-50eca84f5f8a" name="MACDRow" typeRef="tDailyPrice"/>
+    <semantic:variable id="_a409c4a9-ac11-481b-a62f-50eca84f5f8a" name="MACDRow" typeRef="tMACDRow"/>
   </semantic:businessKnowledgeModel>
   <semantic:inputData id="_5c7b0249-b284-481a-b177-a2b46c7ac2ef" name="DailyTable">
     <semantic:variable id="_33289174-544e-4b97-8d48-aab2bf4b4add" name="DailyTable" typeRef="tDailyPriceTable"/>
