@@ -25,13 +25,16 @@ import java.util.UUID;
 
 import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
-import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
+import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
@@ -90,7 +93,16 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
                         Object value = method.invoke(r);
                         result.put(name, value);
                     } catch (Throwable e) {
-                        e.printStackTrace();
+                        MsgUtil.reportMessage(LOG,
+                                              DMNMessage.Severity.WARN,
+                                              node,
+                                              ((DMNResultImpl) result),
+                                              e,
+                                              null,
+                                              Msg.INVALID_NAME,
+                                              name,
+                                              e.getMessage());
+                        result.put(name, null);
                     }
                 }
             }
