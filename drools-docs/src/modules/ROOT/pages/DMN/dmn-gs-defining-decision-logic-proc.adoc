@@ -29,7 +29,7 @@ image::dmn/dmn-gs-context-table.png[]
 Right-click the first row and select `Insert rule below` to add another row.
 . Enter the following values in the second row of the decision table:
 * *Violation.Type*: `"speed"`
-* *Violation.Actual Speed - Violation.Speed Limit*: `>= 30`
+* *Violation.Actual Speed - Violation.Speed Limit*: `> 30`
 * *Amount*: `1000`
 * *Points*: `7`
 +
@@ -51,7 +51,7 @@ Right-click the third row and select `Insert rule below` to add another row.
 . Click *Select expression* -> *Context*.
 . Click *ContextEntry-1*, enter `Total Points` as the *Name*, and select `number` as the *Data Type*.
 . Click the cell next to *Total Points*, select `Literal Expression` from the context menu, and enter `Driver.Points + Fine.Points` as the expression.
-. In the parameter cell below *Driver.Points + Fine.Points*, enter `if Total Points >= 20 "Yes" else "No"`.
+. In the cell below *Driver.Points + Fine.Points*, select `Literal Expression` from the context menu, and enter `if Total Points >= 20 then "Yes" else "No"`.
 . Click *Save* to open the *Confirm Save* dialog box and click *Save* again.
 +
-You have defined how to calculate the fine and the context for deciding when to suspend the driver. You can navigate to the *traffic_violations* project page and click *Build* to build the example project and address any errors noted in the *Alerts* panel.
+You have defined how to calculate the fine and the context for deciding when to suspend the driver. You can navigate to the *traffic-violation* project page and click *Build* to build the example project and address any errors noted in the *Alerts* panel.
