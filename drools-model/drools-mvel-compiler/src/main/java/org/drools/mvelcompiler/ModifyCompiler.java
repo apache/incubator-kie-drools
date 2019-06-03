@@ -9,7 +9,6 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.EmptyStmt;
 import org.drools.constraint.parser.DrlConstraintParser;
 import org.drools.constraint.parser.ast.expr.ModifyStatement;
 
@@ -27,10 +26,8 @@ public class ModifyCompiler {
 
         BlockStmt mvelExpression = DrlConstraintParser.parseBlock(mvelBlock);
 
-        // TODO: remove duplication in MvelCompiler and ModifyCompiler in removing empty stmt
-        mvelExpression
-                .findAll(EmptyStmt.class)
-                .forEach(Node::remove);
+        preprocessPhase.removeEmptyStmt(mvelExpression);
+
 
         // TODO: This preprocessing will change the order of the modify statments Write a test for that
 

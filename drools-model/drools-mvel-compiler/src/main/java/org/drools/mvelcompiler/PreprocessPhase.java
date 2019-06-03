@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -19,6 +20,8 @@ import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.EmptyStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -210,5 +213,11 @@ public class PreprocessPhase {
         assignExpr.setTarget(fieldAccessWithScope);
 
         return assignExpr;
+    }
+
+    public void removeEmptyStmt(BlockStmt blockStmt) {
+        blockStmt
+                .findAll(EmptyStmt.class)
+                .forEach(Node::remove);
     }
 }
