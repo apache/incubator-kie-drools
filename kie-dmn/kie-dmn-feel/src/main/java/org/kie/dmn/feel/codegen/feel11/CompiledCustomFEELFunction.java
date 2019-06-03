@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
@@ -70,7 +70,19 @@ public class CompiledCustomFEELFunction extends BaseFEELFunction {
         try {
             ctx.enterFrame();
             for ( int i = 0; i < parameters.size(); i++ ) {
-                ctx.setValue(parameters.get(i).name, typeCheck(params[i], parameters.get(i).type));
+                final String paramName = parameters.get(i).name;
+                if (parameters.get(i).type.isAssignableValue(params[i])) {
+                    ctx.setValue(paramName, params[i]);
+                } else {
+                    ctx.setValue(paramName, null);
+                    ctx.notifyEvt(() -> {
+                        InvalidParametersEvent evt = new InvalidParametersEvent(Severity.WARN, paramName, "not conformant");
+                        evt.setNodeName(getName());
+                        evt.setActualParameters(parameters.stream().map(BaseFEELFunction.Param::getName).collect(Collectors.toList()),
+                                                Arrays.asList(params));
+                        return evt;
+                    });
+                }
             }
             Object result = this.body.apply(ctx);
             return FEELFnResult.ofResult( result );
@@ -80,14 +92,6 @@ public class CompiledCustomFEELFunction extends BaseFEELFunction {
             ctx.exitFrame();
         }
         return FEELFnResult.ofError( capturedException );
-    }
-
-    private Object typeCheck(Object value, Type type) {
-        if (type.isInstanceOf(value)) {
-            return value;
-        } else {
-            return null;
-        }
     }
 
     private String getSignature() {
