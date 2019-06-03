@@ -31,6 +31,9 @@ public class MvelCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
+        // TODO: Preprocessor does not recurse see MapInitializationDrools3800Test.testPropertyReactivityHanging
+        // or put a modify into a in if branch
+
         List<Statement> preProcessedModifyStatements = new ArrayList<>();
         // TODO: This preprocessing will change the order of the modify statments
         // Write a test for that

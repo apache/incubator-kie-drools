@@ -28,13 +28,9 @@ public class ModifyCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-
         // TODO: This preprocessing will change the order of the modify statments Write a test for that
 
-        // TODO: Preprocessor does not recurse see MapInitializationDrools3800Test.testPropertyReactivityHanging
-        // or put a modify into a in if branch
         Map<String, Set<String>> modifiedProperties = new HashMap<>();
-
         mvelExpression.findAll(ModifyStatement.class)
                 .forEach(s -> {
                     PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
