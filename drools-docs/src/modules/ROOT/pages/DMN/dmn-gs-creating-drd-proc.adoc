@@ -10,7 +10,7 @@ image::dmn/dmn-traffic-violations-drd.png[]
 * You have created the traffic violations project in {CENTRAL}.
 
 .Procedure
-. On the *traffic-violations* project's home screen, click *Add Asset* to open the *Add Asset* screen.
+. On the *traffic-violation* project's home screen, click *Add Asset* to open the *Add Asset* screen.
 . Click *DMN* to open the *Create new DMN* dialog.
 .. Enter `Traffic Violation` in the *Name* field.
 .. From the *Package* list, select `org.kie.example.traffic.traffic_violations`.
