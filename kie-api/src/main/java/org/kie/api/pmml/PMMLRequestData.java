@@ -81,6 +81,7 @@ public class PMMLRequestData {
     }
 
     public synchronized boolean addRequestParam(ParameterInfo parameter) {
+        this.requestParams.removeIf(pi -> parameter.getName().equals(pi.getName()));
         return this.requestParams.add(parameter);
     }
 
