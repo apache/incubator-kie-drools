@@ -16,24 +16,14 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.events.FEELEventBase;
-import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.functions.AbstractCustomFEELFunction;
 
-public class CompiledCustomFEELFunction extends BaseFEELFunction {
+public class CompiledCustomFEELFunction extends AbstractCustomFEELFunction<Function<EvaluationContext, Object>> {
 
-    private final List<Param> parameters;
-    private final Function<EvaluationContext, Object> body;
     private final EvaluationContext ctx;
 
     public CompiledCustomFEELFunction(String name, List<Param> parameters, Function<EvaluationContext, Object> body) {
@@ -41,15 +31,8 @@ public class CompiledCustomFEELFunction extends BaseFEELFunction {
     }
 
     public CompiledCustomFEELFunction(String name, List<Param> parameters, Function<EvaluationContext, Object> body, EvaluationContext ctx) {
-        super( name );
-        this.parameters = parameters;
-        this.body = body;
+        super(name, parameters, body);
         this.ctx = ctx;
-    }
-
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(parameters.stream().map(BaseFEELFunction.Param::getName).collect(Collectors.toList()));
     }
 
     public boolean isProperClosure() {
@@ -61,50 +44,7 @@ public class CompiledCustomFEELFunction extends BaseFEELFunction {
     }
 
     @Override
-    public FEELFnResult<Object> invoke(EvaluationContext ctx, Object[] params ) {
-        if( params.length != parameters.size() ) {
-            return FEELFnResult.ofError(new InvalidInputEvent(Severity.ERROR, "Illegal invocation of function", getName(), getName() + "( " + Arrays.asList(params)+" )", getSignature()));
-        }
-        
-        FEELEvent capturedException = null;
-        try {
-            ctx.enterFrame();
-            for ( int i = 0; i < parameters.size(); i++ ) {
-                final String paramName = parameters.get(i).name;
-                if (parameters.get(i).type.isAssignableValue(params[i])) {
-                    ctx.setValue(paramName, params[i]);
-                } else {
-                    ctx.setValue(paramName, null);
-                    ctx.notifyEvt(() -> {
-                        InvalidParametersEvent evt = new InvalidParametersEvent(Severity.WARN, paramName, "not conformant");
-                        evt.setNodeName(getName());
-                        evt.setActualParameters(parameters.stream().map(BaseFEELFunction.Param::getName).collect(Collectors.toList()),
-                                                Arrays.asList(params));
-                        return evt;
-                    });
-                }
-            }
-            Object result = this.body.apply(ctx);
-            return FEELFnResult.ofResult( result );
-        } catch( Exception e ) {
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking function", new RuntimeException("Error invoking function " + getSignature() + ".", e));
-        } finally {
-            ctx.exitFrame();
-        }
-        return FEELFnResult.ofError( capturedException );
-    }
-
-    private String getSignature() {
-        return getName() + "( " + parameters.stream().map(p -> p.name + " : " + p.type).collect(Collectors.joining(", ")) + " )";
-    }
-
-    @Override
-    protected boolean isCustomFunction() {
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "function "+getSignature();
+    protected Object internalInvoke(EvaluationContext ctx) {
+        return this.body.apply(ctx);
     }
 }
