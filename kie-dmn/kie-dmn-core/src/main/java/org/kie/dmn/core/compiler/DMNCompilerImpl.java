@@ -245,13 +245,8 @@ public class DMNCompilerImpl implements DMNCompiler {
         } catch (IOException e) {
             logger.warn("Error inspecting the imported PMML model", e);
         }
-        DMNImportPMMLInfo.from(pmmlIS, model, i).cata(x -> {
-            logger.warn("Error inspecting the imported PMML model", x);
-            return null;
-        }, x -> {
-            model.addPMMLImportInfo(x);
-            return null;
-        });
+        DMNImportPMMLInfo.from(pmmlIS, model, i).consume(x -> logger.warn("Error inspecting the imported PMML model", x),
+                                                         model::addPMMLImportInfo);
     }
 
     protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException, IOException {
