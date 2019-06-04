@@ -53,6 +53,7 @@ import org.kie.dmn.feel.lang.ast.ContextNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.lang.ast.FilterExpressionNode;
 import org.kie.dmn.feel.lang.ast.ForExpressionNode;
+import org.kie.dmn.feel.lang.ast.FormalParameterNode;
 import org.kie.dmn.feel.lang.ast.FunctionDefNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.IfExpressionNode;
@@ -396,6 +397,16 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
     }
 
     @Override
+    public DirectCompilerResult visit(FormalParameterNode n) {
+        DirectCompilerResult name = n.getName().accept(this);
+        DirectCompilerResult type = n.getType().accept(this);
+        return DirectCompilerResult.of(Expressions.formalParameter(name.getExpression(), type.getExpression()),
+                                       BuiltInType.UNKNOWN)
+                                   .withFD(name)
+                                   .withFD(type);
+    }
+
+    @Override
     public DirectCompilerResult visit(FunctionDefNode n) {
         MethodCallExpr list = Expressions.list();
         n.getFormalParameters()
@@ -407,8 +418,9 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
         if (n.isExternal()) {
             List<String> paramNames =
                     n.getFormalParameters().stream()
-                            .map(BaseNode::getText)
-                            .collect(Collectors.toList());
+                     .map(FormalParameterNode::getName)
+                     .map(BaseNode::getText)
+                     .collect(Collectors.toList());
 
             return Functions.declaration(
                     n, list,

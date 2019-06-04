@@ -338,7 +338,9 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitFormalParameter(FEEL_1_1Parser.FormalParameterContext ctx) {
-        return visit(ctx.nameDefinition());
+        NameDefNode name = (NameDefNode) visit(ctx.nameDefinition());
+        TypeNode type = ctx.type() != null ? (TypeNode) visit(ctx.type()) : null;
+        return ASTBuilderFactory.newFormalParameter(ctx, name, type);
     }
 
     @Override

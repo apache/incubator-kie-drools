@@ -29,6 +29,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.functions.BaseFEELFunction.Param;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.kie.dmn.feel.util.Msg;
@@ -41,7 +42,7 @@ public class FunctionDefNode
     private static final Pattern PARAMETER_PARSER = Pattern.compile( "([^, ]+)" );
 
 
-    private List<NameDefNode> formalParameters;
+    private List<FormalParameterNode> formalParameters;
     private boolean external;
     private BaseNode body;
 
@@ -52,16 +53,16 @@ public class FunctionDefNode
         this.body = body;
         if( formalParameters != null ) {
             for( BaseNode name : formalParameters.getElements() ) {
-                this.formalParameters.add( (NameDefNode) name );
+                this.formalParameters.add((FormalParameterNode) name);
             }
         }
     }
 
-    public List<NameDefNode> getFormalParameters() {
+    public List<FormalParameterNode> getFormalParameters() {
         return formalParameters;
     }
 
-    public void setFormalParameters(List<NameDefNode> formalParameters) {
+    public void setFormalParameters(List<FormalParameterNode> formalParameters) {
         this.formalParameters = formalParameters;
     }
 
@@ -83,7 +84,7 @@ public class FunctionDefNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        List<String> params = formalParameters.stream().map( p -> p.evaluate( ctx ) ).collect( Collectors.toList() );
+        List<Param> params = formalParameters.stream().map(p -> p.evaluate(ctx)).collect(Collectors.toList());
         if( external ) {
             try {
                 // creating a simple algorithm to find the method in java
@@ -109,7 +110,7 @@ public class FunctionDefNode
                                         paramTypes[i] = getType( paramTypeNames[i] );
                                     }
                                     Method method = clazz.getMethod( methodName, paramTypes );
-                                    return new JavaFunction( ANONYMOUS, params, clazz, method );
+                                    return new JavaFunction(ANONYMOUS, params.stream().map(Param::getName).collect(Collectors.toList()), clazz, method);
                                 } else {
                                     ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION, getText()) ) );
                                     return null;

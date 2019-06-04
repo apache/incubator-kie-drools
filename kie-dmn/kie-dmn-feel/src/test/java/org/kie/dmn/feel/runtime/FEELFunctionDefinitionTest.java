@@ -31,6 +31,10 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                 {"{ hello : function() \"Hello World!\"}.hello()", "Hello World!", null},
                 {"{ hello : function(n) \"Hello \"+n+\"!\"}.hello(\"John\")", "Hello John!", null},
                 {"{ hello : function( n : string ) \"Hello \"+n+\"!\"}.hello(\"John\")", "Hello John!", null},
+                {"{ idfn : function( arg ) arg, r : idfn(\"asd\") }.r", "asd", null},
+                {"{ idfn : function( arg ) arg, r : idfn(123) }.r", BigDecimal.valueOf(123), null},
+                {"{ idfn : function( arg : string ) arg, r : idfn(\"asd\") }.r", "asd", null},
+                {"{ idfn : function( arg : string ) arg, r : idfn(123) }.r", null, FEELEvent.Severity.WARN},
                 {"{ hello world : function() \"Hello World!\", message : hello world() }.message", "Hello World!", null},
                 {"{ functioncontext: { innercontext: {hello world : function() \"Hello World!\"}}, " +
                         " message : functioncontext.innercontext.hello world() }.message", "Hello World!", null },

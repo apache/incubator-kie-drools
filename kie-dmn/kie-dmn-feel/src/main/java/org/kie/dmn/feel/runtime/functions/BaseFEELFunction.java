@@ -34,6 +34,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -412,6 +413,27 @@ public abstract class BaseFEELFunction
             return score;
         }
 
+    }
+
+    public static class Param {
+    
+        public final String name;
+        public final Type type;
+    
+        public Param(String name, Type type) {
+            super();
+            this.name = name;
+            this.type = type;
+        }
+    
+        public String getName() {
+            return name;
+        }
+    
+        public Type getType() {
+            return type;
+        }
+    
     }
 
 }
