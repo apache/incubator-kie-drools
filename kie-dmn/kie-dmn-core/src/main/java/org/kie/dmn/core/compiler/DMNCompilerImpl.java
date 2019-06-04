@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -230,23 +232,63 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     private void processPMMLImport(DMNModelImpl model, Import i) {
-        URI pmmlURI = null;
-        try {
-            pmmlURI = resolveRelativeURI(model, i.getLocationURI());
-        } catch (Exception e) {
-            logger.warn("Error inspecting the imported PMML model", e);
-        }
-        if (pmmlURI == null) {
+        URL pmmlURL = pmmlImportURL(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader(), model, i, i);
+        if (pmmlURL == null) {
             return;
         }
         InputStream pmmlIS = null;
         try {
-            pmmlIS = pmmlURI.isAbsolute() ? pmmlURI.toURL().openStream() : ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader().getResourceAsStream(pmmlURI.toString());
+            pmmlIS = pmmlURL.openStream();
         } catch (IOException e) {
-            logger.warn("Error inspecting the imported PMML model", e);
+            new PMMLImportErrConsumer(model, i).accept(e);
         }
-        DMNImportPMMLInfo.from(pmmlIS, model, i).consume(x -> logger.warn("Error inspecting the imported PMML model", x),
+        DMNImportPMMLInfo.from(pmmlIS, model, i).consume(x -> new PMMLImportErrConsumer(model, i),
                                                          model::addPMMLImportInfo);
+    }
+
+    public static class PMMLImportErrConsumer implements Consumer<Exception> {
+
+        private final DMNModelImpl model;
+        private final Import i;
+        private final DMNModelInstrumentedBase node;
+
+        public PMMLImportErrConsumer(DMNModelImpl model, Import i) {
+            this(model, i, i);
+        }
+
+        public PMMLImportErrConsumer(DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
+            this.model = model;
+            this.i = i;
+            this.node = node;
+        }
+
+        @Override
+        public void accept(Exception t) {
+            logger.error("Unable to locate pmml model from locationURI {}.", i.getLocationURI(), t);
+            MsgUtil.reportMessage(logger,
+                                  DMNMessage.Severity.ERROR,
+                                  i,
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.FUNC_DEF_PMML_ERR_LOCATIONURI,
+                                  i.getLocationURI());
+        }
+
+    }
+
+    protected static URL pmmlImportURL(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
+        String locationURI = i.getLocationURI();
+        logger.trace("locationURI: {}", locationURI);
+        URL pmmlURL = null;
+        try {
+            URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
+            pmmlURL = resolveRelativeURI.isAbsolute() ? resolveRelativeURI.toURL() : classLoader.getResource(resolveRelativeURI.toString());
+        } catch (URISyntaxException | IOException e) {
+            new PMMLImportErrConsumer(model, i, node).accept(e);
+        }
+        logger.trace("pmmlURL: {}", pmmlURL);
+        return pmmlURL;
     }
 
     protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException, IOException {

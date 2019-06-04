@@ -1,8 +1,5 @@
 package org.kie.dmn.core.compiler;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +34,6 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
-import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -452,40 +448,19 @@ public class DMNEvaluatorCompiler {
                         }
                     }
                 }
-                String locationURI = null;
-                DMNImportPMMLInfo pmmlInfo = null;
-                if (pmmlDocument != null ) {
-                    for (Import i : model.getDefinitions().getImport()) {
-                        if (i.getName().equals(pmmlDocument)) {
-                            locationURI = i.getLocationURI();
-                            pmmlInfo = model.getPmmlImportInfo().get(pmmlDocument);
-                        }
-                    }
-                }
-                if (locationURI != null) {
-                    logger.trace("{}", locationURI);
-                    URL pmmlURL = null;
-                    try {
-                        URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
-                        pmmlURL = resolveRelativeURI.isAbsolute() ? resolveRelativeURI.toURL() : getRootClassLoader().getResource(resolveRelativeURI.toString());
-                    } catch (URISyntaxException | IOException e) {
-                        logger.error("Unable to locate pmml model from locationURI {}.", locationURI, e);
-                        MsgUtil.reportMessage(logger,
-                                              DMNMessage.Severity.ERROR,
-                                              expression,
-                                              model,
-                                              null,
-                                              null,
-                                              Msg.FUNC_DEF_PMML_ERR_LOCATIONURI,
-                                              locationURI);
-                    }
-                    logger.trace("{}", pmmlURL);
+                final String nameLookup = pmmlDocument;
+                Optional<Import> lookupImport = model.getDefinitions().getImport().stream().filter(x -> x.getName().equals(nameLookup)).findFirst();
+                if (lookupImport.isPresent()) {
+                    Import theImport = lookupImport.get();
+                    logger.trace("theImport: {}", theImport);
+                    URL pmmlURL = DMNCompilerImpl.pmmlImportURL(getRootClassLoader(), model, theImport, expression);
+                    logger.trace("pmmlURL: {}", pmmlURL);
                     AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
                                                                                                          getRootClassLoader(),
                                                                                                          funcDef,
                                                                                                          pmmlURL,
                                                                                                          pmmlModel,
-                                                                                                         pmmlInfo);
+                                                                                                         model.getPmmlImportInfo().get(pmmlDocument));
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
                     for (InformationItem p : funcDef.getFormalParameter()) {
                         DMNCompilerHelper.checkVariableName(model, p, p.getName());
