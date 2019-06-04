@@ -192,7 +192,7 @@ public class DTAnalysis {
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE,
                                                                        masked.maskedRule,
                                                                        masked.maskedBy),
-                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType()));
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MASKED_RULE.getType(), Collections.singletonList(masked.maskedRule)));
         }
         for (MisleadingRule misleading : misleadingRules) {
             results.add(new DMNDTAnalysisMessage(this,
@@ -200,7 +200,7 @@ public class DTAnalysis {
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE,
                                                                        misleading.misleadingRule,
                                                                        misleading.misleadRule),
-                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType()));
+                                                 Msg.DTANALYSIS_HITPOLICY_PRIORITY_MISLEADING_RULE.getType(), Collections.singletonList(misleading.misleadingRule)));
         }
         return results;
     }
@@ -215,7 +215,7 @@ public class DTAnalysis {
                                                                        s.includedRule,
                                                                        s.rule,
                                                                        s.includedRule),
-                                                 Msg.DTANALYSIS_SUBSUMPTION_RULE.getType()));
+                                                 Msg.DTANALYSIS_SUBSUMPTION_RULE.getType(), Collections.singletonList(s.rule)));
         }
         return results;
     }
@@ -229,7 +229,7 @@ public class DTAnalysis {
                                                                        x.rule,
                                                                        x.pairedRule,
                                                                        x.adjacentDimension),
-                                                 Msg.DTANALYSIS_CONTRACTION_RULE.getType()));
+                                                 Msg.DTANALYSIS_CONTRACTION_RULE.getType(), Collections.singletonList(x.rule)));
         }
         return results;
     }
@@ -256,7 +256,7 @@ public class DTAnalysis {
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES,
                                                                        duplicateRulesTuple),
-                                                 Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType()));
+                                                 Msg.DTANALYSIS_1STNFVIOLATION_DUPLICATE_RULES.getType(), duplicateRulesTuple));
         }
         return results;
     }
@@ -273,7 +273,7 @@ public class DTAnalysis {
                                                                        c.adjacentDimension,
                                                                        c.rule,
                                                                        c.pairedRule),
-                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType()));
+                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), Collections.singletonList(c.rule)));
         }
         return results;
     }
@@ -301,7 +301,7 @@ public class DTAnalysis {
                                                          Severity.ERROR,
                                                          MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE,
                                                                                overlap.asHumanFriendly(ddtaTable)),
-                                                         Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType()));
+                                                         Msg.DTANALYSIS_OVERLAP_HITPOLICY_UNIQUE.getType(), overlap.getRules()));
                     break;
                 case ANY:
                     List<Comparable<?>> prevValue = ddtaTable.getRule().get(overlap.getRules().get(0) - 1).getOutputEntry();
@@ -313,7 +313,7 @@ public class DTAnalysis {
                                                                  Severity.ERROR,
                                                                  MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY,
                                                                                        overlap.asHumanFriendly(ddtaTable)),
-                                                                 Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY.getType()));
+                                                                 Msg.DTANALYSIS_OVERLAP_HITPOLICY_ANY.getType(), overlap.getRules()));
                             break;
                         } else {
                             prevValue = curValue;
@@ -333,7 +333,7 @@ public class DTAnalysis {
                                         Severity.WARN,
                                         MsgUtil.createMessage(Msg.DTANALYSIS_OVERLAP,
                                                               overlap.asHumanFriendly(ddtaTable)),
-                                        Msg.DTANALYSIS_OVERLAP.getType());
+                                        Msg.DTANALYSIS_OVERLAP.getType(), overlap.getRules());
     }
 
     private Collection gapsAsMessages() {
@@ -383,7 +383,7 @@ public class DTAnalysis {
                                                                               MsgUtil.createMessage(Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED,
                                                                                                     sourceDT.getOutputLabel(),
                                                                                                     ruleId, otherRuleID),
-                                                                              Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED.getType()));
+                                                                              Msg.DTANALYSIS_HITPOLICY_PRIORITY_ANALYSIS_SKIPPED.getType(), Collections.singletonList(ruleId)));
                             }
                         }
                     }
