@@ -9,8 +9,8 @@
 
   <properties>
     <quarkus.version>@version.io.quarkus@</quarkus.version>
-    <kogito.version>8.0.0-SNAPSHOT</kogito.version>
-    <swagger.version>1.5.21</swagger.version>
+    <kogito.version>@version.org.kie.kogito@</kogito.version>
+    <swagger.version>@version.swagger@</swagger.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>

@@ -58,12 +58,12 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     }
 
     @Override
-    public final MapProcessInstances<T> instances() {
+    public MapProcessInstances<T> instances() {
         return instances;
     }
 
     @Override
-    public final <S> void send(Signal<S> signal) {
+    public <S> void send(Signal<S> signal) {
         instances().values().forEach(pi -> pi.send(signal));
     }
     

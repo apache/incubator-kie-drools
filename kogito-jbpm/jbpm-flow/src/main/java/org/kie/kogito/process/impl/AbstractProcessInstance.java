@@ -122,14 +122,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     public void completeWorkItem(long id, Map<String, Object> variables) {
         this.rt.getWorkItemManager().completeWorkItem(id, variables);
         unbind(this.variables, legacyProcessInstance.getVariables());
-        
+        removeOnFinish();
     }
     
     @Override
     public void abortWorkItem(long id) {
         this.rt.getWorkItemManager().abortWorkItem(id);
         unbind(this.variables, legacyProcessInstance.getVariables());
-        
+        removeOnFinish();
     }
     
     protected void removeOnFinish() {

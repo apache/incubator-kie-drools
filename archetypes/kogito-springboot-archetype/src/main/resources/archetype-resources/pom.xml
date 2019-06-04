@@ -17,8 +17,8 @@
 
   <properties>
     <java.version>1.8</java.version>
-    <kogito.version>8.0.0-SNAPSHOT</kogito.version>
-    <swagger.version>1.5.21</swagger.version>
+    <kogito.version>@version.org.kie.kogito@</kogito.version>
+    <swagger.version>@version.swagger@</swagger.version>
     <cxf.version>3.2.6</cxf.version>
     <dependencyInjection>false</dependencyInjection>
   </properties>

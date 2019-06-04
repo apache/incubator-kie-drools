@@ -108,7 +108,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
                                       type,
                                       configuration);
             } else {
-                log.warn("KieAssemblers: ignored " + type);
+                log.debug("KieAssemblers: ignored " + type);
             }
         }
 
@@ -118,7 +118,7 @@ public class StaticServiceRegistry implements ServiceRegistry {
             if (assembler != null) {
                 assembler.addResources(knowledgeBuilder, resources, type);
             } else {
-                log.warn("KieAssemblers: ignored " + type);
+                log.debug("KieAssemblers: ignored " + type);
             }
         }
     }
