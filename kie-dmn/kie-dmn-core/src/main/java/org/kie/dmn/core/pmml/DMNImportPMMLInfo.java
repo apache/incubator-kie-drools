@@ -23,17 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.Extension;
 import org.dmg.pmml.MiningField.UsageType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
-import org.dmg.pmml.OpType;
 import org.dmg.pmml.PMML;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Import;
 import org.slf4j.Logger;
@@ -69,30 +65,6 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 Collection<String> outputFields = new ArrayList<>();
                 pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
                 models.add(new DMNPMMLModelInfo(pm.getModelName(), inputFields, outputFields));
-            }
-
-            DataDictionary dd = pmml.getDataDictionary();
-            for (DataField df : dd.getDataFields()) {
-                BuiltInType baseFeelType = BuiltInType.UNKNOWN;
-                switch (df.getDataType()) {
-                    case BOOLEAN:
-                        baseFeelType = BuiltInType.BOOLEAN;
-                        break;
-                    case DOUBLE:
-                    case FLOAT:
-                    case INTEGER:
-                        baseFeelType = BuiltInType.NUMBER;
-                        break;
-                    case STRING:
-                        baseFeelType = BuiltInType.STRING;
-                        break;
-                    default:
-                        LOG.warn("{}", df.getDataType());
-                        break;
-                }
-                if (df.getOpType() == OpType.CATEGORICAL) {
-
-                }
             }
             DMNImportPMMLInfo info = new DMNImportPMMLInfo(i, models, h);
             return Either.ofRight(info);
