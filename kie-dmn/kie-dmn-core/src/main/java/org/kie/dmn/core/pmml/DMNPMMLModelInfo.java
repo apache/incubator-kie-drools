@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.impl.DMNModelImpl;
 
 public class DMNPMMLModelInfo extends PMMLModelInfo {
 
@@ -30,6 +31,14 @@ public class DMNPMMLModelInfo extends PMMLModelInfo {
     public DMNPMMLModelInfo(String name, Map<String, DMNType> inputFields, Collection<String> outputFields) {
         super(name, inputFields.keySet(), outputFields);
         this.inputFields = Collections.unmodifiableMap(new HashMap<>(inputFields));
+    }
+
+    public static DMNPMMLModelInfo from(PMMLModelInfo info, DMNModelImpl model) {
+        Map<String, DMNType> inputFields = new HashMap<>();
+        for (String name : info.inputFieldNames) {
+            inputFields.put(name, model.getTypeRegistry().unknown());
+        }
+        return new DMNPMMLModelInfo(info.name, inputFields, info.outputFieldNames);
     }
 
     public Map<String, DMNType> getInputFields() {

@@ -23,8 +23,8 @@ import java.util.Collections;
 public class PMMLModelInfo {
 
     protected final String name;
-    private final Collection<String> inputFieldNames;
-    private final Collection<String> outputFieldNames;
+    protected final Collection<String> inputFieldNames;
+    protected final Collection<String> outputFieldNames;
 
     public PMMLModelInfo(String name, Collection<String> inputFieldNames, Collection<String> outputFieldNames) {
         this.name = name;

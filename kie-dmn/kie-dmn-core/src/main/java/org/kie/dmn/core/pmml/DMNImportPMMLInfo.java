@@ -17,18 +17,10 @@
 package org.kie.dmn.core.pmml;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.dmg.pmml.Extension;
-import org.dmg.pmml.MiningField.UsageType;
-import org.dmg.pmml.MiningSchema;
-import org.dmg.pmml.Model;
-import org.dmg.pmml.PMML;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Import;
@@ -48,24 +40,9 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
 
     public static Either<Exception, DMNImportPMMLInfo> from(InputStream is, DMNModelImpl model, Import i) {
         try {
-            PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
-            Map<String, String> headerExtensions = new HashMap<>();
-            for (Extension ex : pmml.getHeader().getExtensions()) {
-                headerExtensions.put(ex.getName(), ex.getValue());
-            }
-            PMMLHeaderInfo h = new PMMLHeaderInfo("http://www.dmg.org/PMML-" + pmml.getBaseVersion().replace(".", "_"), headerExtensions);
-            List<DMNPMMLModelInfo> models = new ArrayList<>();
-            for (Model pm : pmml.getModels()) {
-                MiningSchema miningSchema = pm.getMiningSchema();
-                Map<String, DMNType> inputFields = new HashMap<>();
-                miningSchema.getMiningFields()
-                            .stream()
-                            .filter(mf -> mf.getUsageType() == UsageType.ACTIVE)
-                            .forEach(fn -> inputFields.put(fn.getName().getValue(), model.getTypeRegistry().unknown()));
-                Collection<String> outputFields = new ArrayList<>();
-                pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
-                models.add(new DMNPMMLModelInfo(pm.getModelName(), inputFields, outputFields));
-            }
+            PMMLInfo<?> prototype = PMMLInfo.from(is);
+            PMMLHeaderInfo h = prototype.getHeader();
+            List<DMNPMMLModelInfo> models = prototype.getModels().stream().map(proto -> DMNPMMLModelInfo.from(proto, model)).collect(Collectors.toList());
             DMNImportPMMLInfo info = new DMNImportPMMLInfo(i, models, h);
             return Either.ofRight(info);
         } catch (Throwable e) {
