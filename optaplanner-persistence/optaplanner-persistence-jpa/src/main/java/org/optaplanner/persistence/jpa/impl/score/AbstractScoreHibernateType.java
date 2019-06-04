@@ -105,7 +105,7 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
                     + ") must be lower than the levelsSize for score (" + score + ").");
         }
         Number[] levelNumbers = score.toLevelNumbers();
-        return levelNumbers[propertyIndex];
+        return levelNumbers[propertyIndex - 1];
     }
 
     @Override
