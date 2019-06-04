@@ -25,6 +25,7 @@
     <module>kie-dmn-validation</module>
     <module>kie-dmn-tck</module>
     <module>kie-dmn-signavio</module>
+    <module>kie-dmn-core-osgi</module>
   </modules>
 
   <dependencyManagement>
