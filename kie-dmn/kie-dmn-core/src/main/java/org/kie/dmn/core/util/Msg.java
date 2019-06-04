@@ -117,6 +117,7 @@ public final class Msg {
     public static final Message3 FUNC_DEF_COMPILATION_ERR                            = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling Java function '%s' on node '%s': %s" );
     public static final Message2 FUNC_DEF_MISSING_ENTRY                              = new Message2( DMNMessageType.INVALID_SYNTAX, "A Java function definition requires both the 'class' and the 'method signature' attributes. Invalid definition for function '%s' on node '%s'" );
     public static final Message2 FUNC_DEF_PMML_MISSING_ENTRY                         = new Message2( DMNMessageType.INVALID_SYNTAX, "A PMML function definition requires both the 'document' and the 'model' attributes. Invalid definition for function '%s' on node '%s'" );
+    public static final Message1 FUNC_DEF_PMML_ERR_LOCATIONURI                       = new Message1( DMNMessageType.IMPORT_NOT_FOUND, "Unable to locate pmml model from locationURI '%s'");
     public static final Message2 ERROR_CHECKING_ALLOWED_VALUES                       = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error checking allowed values for node '%s': %s" );
     public static final Message1 DTANALYSISRESULT                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis results: %s");
     public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
