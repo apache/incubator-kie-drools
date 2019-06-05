@@ -4,15 +4,15 @@ To generate new project for KaaS (Kjar as a Service) based on Quarkus use follow
 
     ```
      mvn archetype:generate 
-    -DarchetypeGroupId=org.kie
-    -DarchetypeArtifactId=kaas-quarkus-archetype 
+    -DarchetypeGroupId=org.kie.kogito
+    -DarchetypeArtifactId=kogito-quarkus-archetype
     -DarchetypeVersion=8.0.0-SNAPSHOT 
     -DgroupId=com.company 
-    -DartifactId=sample-kaas     
+    -DartifactId=sample-kogito     
     ```
 
 or cut/paste this one-liner
 
     ```
-     mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kaas-quarkus-archetype -DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=sample-kaas     
+     mvn archetype:generate -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-quarkus-archetype -DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=sample-kogito     
     ```
