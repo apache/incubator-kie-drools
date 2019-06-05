@@ -351,7 +351,9 @@ public class KnowledgePackageImpl
 
     public void addImport(final ImportDeclaration importDecl) {
         this.imports.put(importDecl.getTarget(), importDecl);
-        this.typeResolver.addImport(importDecl.getTarget());
+        if (this.typeResolver != null) {
+            this.typeResolver.addImport( importDecl.getTarget() );
+        }
     }
 
     public Map<String, ImportDeclaration> getImports() {
@@ -830,10 +832,12 @@ public class KnowledgePackageImpl
         KnowledgePackageImpl clonedPkg = ClassUtils.deepClone(this, classLoader, cloningResources);
         clonedPkg.setClassLoader( classLoader );
 
-        for (String ruleUnit : ruleUnitDescriptionLoader.getDescriptions().keySet()) {
-            clonedPkg.getRuleUnitDescriptionLoader().getDescription(ruleUnit);
+        if (ruleUnitDescriptionLoader != null) {
+            for (String ruleUnit : ruleUnitDescriptionLoader.getDescriptions().keySet()) {
+                clonedPkg.getRuleUnitDescriptionLoader().getDescription( ruleUnit );
+            }
         }
-
+        
         return clonedPkg;
     }
 
