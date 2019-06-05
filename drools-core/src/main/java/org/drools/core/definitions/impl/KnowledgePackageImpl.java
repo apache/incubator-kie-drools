@@ -829,6 +829,11 @@ public class KnowledgePackageImpl
 
         KnowledgePackageImpl clonedPkg = ClassUtils.deepClone(this, classLoader, cloningResources);
         clonedPkg.setClassLoader( classLoader );
+
+        for (String ruleUnit : ruleUnitDescriptionLoader.getDescriptions().keySet()) {
+            clonedPkg.getRuleUnitDescriptionLoader().getDescription(ruleUnit);
+        }
+
         return clonedPkg;
     }
 
