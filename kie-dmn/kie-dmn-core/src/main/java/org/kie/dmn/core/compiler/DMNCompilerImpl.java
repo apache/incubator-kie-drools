@@ -236,14 +236,12 @@ public class DMNCompilerImpl implements DMNCompiler {
         if (pmmlURL == null) {
             return;
         }
-        InputStream pmmlIS = null;
-        try {
-            pmmlIS = pmmlURL.openStream();
+        try (InputStream pmmlIS = pmmlURL.openStream();) {
+            DMNImportPMMLInfo.from(pmmlIS, model, i).consume(x -> new PMMLImportErrConsumer(model, i),
+                                                             model::addPMMLImportInfo);
         } catch (IOException e) {
             new PMMLImportErrConsumer(model, i).accept(e);
         }
-        DMNImportPMMLInfo.from(pmmlIS, model, i).consume(x -> new PMMLImportErrConsumer(model, i),
-                                                         model::addPMMLImportInfo);
     }
 
     public static class PMMLImportErrConsumer implements Consumer<Exception> {
