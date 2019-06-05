@@ -51,6 +51,7 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
+import org.kie.dmn.core.ast.DMNFunctionWithReturnType;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
@@ -59,8 +60,6 @@ import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -376,44 +375,11 @@ public class DMNRuntimeImpl
 
             EvaluatorResult er = bkm.getEvaluator().evaluate( this, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
-                FEELFunction fn = (FEELFunction) er.getResult();
-                FEELFunction resultFn = (FEELFunction) er.getResult();
+                final FEELFunction original_fn = (FEELFunction) er.getResult();
+                FEELFunction resultFn = original_fn;
                 if (typeCheck) {
                     DMNType resultType = b.getResultType();
-                    resultFn = new FEELFunction() {
-                        @Override
-                        public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
-                            Object result = fn.invokeReflectively(ctx, params);
-                            if (!resultType.isCollection() && result instanceof Collection && ((Collection<?>) result).size() == 1) {
-                                // as per Decision evaluation result.
-                                result = ((Collection<?>) result).toArray()[0];
-                            }
-                            if (resultType.isAssignableValue(result)) {
-                                return result;
-                            } else {
-                                return null;
-                            }
-                        }
-
-                        @Override
-                        public Symbol getSymbol() {
-                            return fn.getSymbol();
-                        }
-
-                        @Override
-                        public List<List<String>> getParameterNames() {
-                            return fn.getParameterNames();
-                        }
-
-                        @Override
-                        public String getName() {
-                            return fn.getName();
-                        }
-
-                        public String toString() {
-                            return fn.toString();
-                        }
-                    };
+                    resultFn = new DMNFunctionWithReturnType(original_fn, resultType, result, b);
                 }
                 result.getContext().set(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
             }

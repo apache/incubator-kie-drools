@@ -130,7 +130,22 @@ public class DMNFunctionDefinitionEvaluator
                 if( evaluator != null ) {
                     previousContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
-                        dmnContext.set(parameters.get(i).name, typeChek(params[i], parameters.get(i).type));
+                        final String paramName = parameters.get(i).name;
+                        if ((!performRuntimeTypeCheck) || parameters.get(i).type.isAssignableValue(params[i])) {
+                            ctx.setValue(paramName, params[i]);
+                        } else {
+                            ctx.setValue(paramName, null);
+                            MsgUtil.reportMessage(logger,
+                                                  DMNMessage.Severity.WARN,
+                                                  functionDefinition,
+                                                  resultContext,
+                                                  null,
+                                                  null,
+                                                  Msg.PARAMETER_TYPE_MISMATCH,
+                                                  paramName,
+                                                  parameters.get(i).type,
+                                                  params[i]);
+                        }
                     }
                     resultContext.setContext( dmnContext );
                     EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
@@ -163,15 +178,6 @@ public class DMNFunctionDefinitionEvaluator
             } finally {
                 resultContext.setContext( previousContext );
                 dmnContext.exitFrame();
-            }
-        }
-
-        private Object typeChek(Object object, DMNType type) {
-            if (type.isAssignableValue(object)) {
-                return object;
-            } else {
-                // TODO msg
-                return null;
             }
         }
 

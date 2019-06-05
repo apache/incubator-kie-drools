@@ -75,6 +75,7 @@ public final class Msg {
     public static final Message3 UNKNOWN_PARAMETER                                   = new Message3( DMNMessageType.PARAMETER_MISMATCH, "Unknown parameter '%s' invoking function '%s' on node '%s'" );
     public static final Message2 PARAMETER_COUNT_MISMATCH                            = new Message2( DMNMessageType.PARAMETER_MISMATCH, "Parameter count mismatch invoking function '%s' on node '%s'" );
     public static final Message1 PARAMETER_COUNT_MISMATCH_DS                         = new Message1( DMNMessageType.PARAMETER_MISMATCH, "Parameter count mismatch invoking decision service function '%s' " );
+    public static final Message3 PARAMETER_TYPE_MISMATCH                             = new Message3( DMNMessageType.PARAMETER_MISMATCH, "Parameter '%s' is of type '%s' but the actual value '%s' is not an instance of that type; setting as null" );
     public static final Message3 PARAMETER_TYPE_MISMATCH_DS                          = new Message3( DMNMessageType.PARAMETER_MISMATCH, "Decision Service parameter '%s' is of type '%s' but the actual value '%s' is not an instance of that type; setting as null" );
     public static final Message2 DUPLICATED_ITEM_COMPONENT                           = new Message2( DMNMessageType.DUPLICATED_ITEM_DEF, "Item Component '%s' is duplicated on Item Definition '%s'" );
     public static final Message1 DUPLICATED_ITEM_DEFINITION                          = new Message1( DMNMessageType.DUPLICATED_ITEM_DEF, "Item Definition '%s' is duplicated in the model" );
