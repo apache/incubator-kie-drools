@@ -12,6 +12,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
@@ -21,6 +22,7 @@ import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
+import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
@@ -151,6 +153,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         }
     }
 
+    @Override
+    public TypedExpression visit(IfStmt n, Context arg) {
+        return new UnalteredTypedExpression(n);
+    }
 
     private TypedExpression rhsOrNull() {
         return rhs.orElse(null);

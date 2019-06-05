@@ -193,4 +193,24 @@ public class MvelCompilerTest implements CompilerTest {
         test(" { int i; }",
              " { int i; }" );
     }
+
+    @Test
+    public void testNestedModify() {
+        test(            "{    if ($fact.getResult() != null) {\n" +
+                                 "        $fact.setResult(\"OK\");\n" +
+                                 "    } else {\n" +
+                                 "        modify ($fact) {\n" +
+                                 "            result = \"FIRST\"" +
+                                 "        }\n" +
+                                 "    }}",
+                         " { " +
+                                 "if ($fact.getResult() != null) { " +
+                                 "  $fact.setResult(\"OK\"); " +
+                                 "} else { " +
+                                 "($fact).setResult(\"FIRST\"); " +
+                                 "update($fact); " +
+                                 "} " +
+                                 "} ",
+                         result -> assertThat(allModifiedProperties(result), containsInAnyOrder("result")));
+    }
 }
