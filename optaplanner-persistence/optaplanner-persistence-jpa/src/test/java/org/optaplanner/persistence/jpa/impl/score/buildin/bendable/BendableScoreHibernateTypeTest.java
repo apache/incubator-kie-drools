@@ -35,6 +35,22 @@ public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTe
                 BendableScore.ofUninitialized(-7, new int[]{10000, 2000, 300}, new int[]{40, 5}));
     }
 
+    @Test
+    public void persistUninitializedScoreThenFind() {
+        BendableScore uninitializedScore = BendableScore.ofUninitialized(-7, new int[]{10000, 2000, 300}, new int[]{40, 5});
+        TestJpaEntity uninitializedScoreEntity = new TestJpaEntity(uninitializedScore);
+        Long uninitializedId = persistAndAssert(uninitializedScoreEntity);
+        findAndAssert(TestJpaEntity.class, uninitializedId, uninitializedScore);
+    }
+
+    @Test
+    public void persistInitializedScoreThenFind() {
+        BendableScore initializedScore = BendableScore.of(new int[]{10000, 2000, 300}, new int[]{40, 5});
+        TestJpaEntity initializedScoreEntity = new TestJpaEntity(initializedScore);
+        Long initializedScoreId = persistAndAssert(initializedScoreEntity);
+        findAndAssert(TestJpaEntity.class, initializedScoreId, initializedScore);
+    }
+
     @Entity
     @TypeDef(defaultForType = BendableScore.class, typeClass = BendableScoreHibernateType.class,
             parameters = {@Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2")})
