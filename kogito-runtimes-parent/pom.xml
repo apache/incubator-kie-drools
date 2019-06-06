@@ -34,6 +34,12 @@
       </snapshots>
     </repository>
   </repositories>
+  
+  <scm>
+    <connection>scm:git:https://github.com/kiegroup/kogito-runtimes.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/kogito-runtimes.git</developerConnection>
+    <url>https://github.com/kiegroup/kogito-runtimes</url>
+  </scm>
 
   <modules>
     <module>api</module>
