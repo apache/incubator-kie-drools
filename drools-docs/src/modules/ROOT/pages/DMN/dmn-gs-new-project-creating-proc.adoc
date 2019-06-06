@@ -1,7 +1,7 @@
 [id='dmn-gs-new-project-creating-proc']
 = Creating the traffic violations project
 
-For this example, create a new project called `traffic-violation`. A project is a container for assets such as data objects, DMN assets, and test scenarios.
+For this example, create a new project called `traffic-violation`. A project is a container for assets such as data objects, DMN assets, and test scenarios. This example project that you are creating is similar to the existing *Traffic_Violation* sample project in {CENTRAL}.
 
 .Procedure
 . Log in to {CENTRAL}.
