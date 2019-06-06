@@ -55,7 +55,6 @@ public class MvelCompilerTest implements CompilerTest {
              "{ System.out.println(\"Hello World\"); }");
     }
 
-
     @Test
     public void testStringLength() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
@@ -89,7 +88,6 @@ public class MvelCompilerTest implements CompilerTest {
                      "delete($pet);\n" +
                      "}");
     }
-
 
     @Test
     public void testInitializerArrayAccess() {
@@ -185,32 +183,52 @@ public class MvelCompilerTest implements CompilerTest {
     public void testVariableDeclarationUntyped() {
         test(ctx -> ctx.addDeclaration("$map", Map.class),
              " { Map pMap = map.get( $r.getName() ); }",
-             " { java.util.Map pMap = (java.util.Map) (map.get($r.getName())); }" );
+             " { java.util.Map pMap = (java.util.Map) (map.get($r.getName())); }");
     }
 
     @Test
     public void testSimpleVariableDeclaration() {
         test(" { int i; }",
-             " { int i; }" );
+             " { int i; }");
     }
 
     @Test
     public void testNestedModify() {
-        test(            "{    if ($fact.getResult() != null) {\n" +
-                                 "        $fact.setResult(\"OK\");\n" +
-                                 "    } else {\n" +
-                                 "        modify ($fact) {\n" +
-                                 "            result = \"FIRST\"" +
-                                 "        }\n" +
-                                 "    }}",
-                         " { " +
-                                 "if ($fact.getResult() != null) { " +
-                                 "  $fact.setResult(\"OK\"); " +
-                                 "} else { " +
-                                 "($fact).setResult(\"FIRST\"); " +
-                                 "update($fact); " +
-                                 "} " +
-                                 "} ",
-                         result -> assertThat(allModifiedProperties(result), containsInAnyOrder("result")));
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{    if ($p.getParent() != null) {\n" +
+                     "        $p.setName(\"with_parent\");\n" +
+                     "    } else {\n" +
+                     "        modify ($p) {\n" +
+                     "            name = \"without_parent\"" +
+                     "        }\n" +
+                     "    }}", "{ if ($p.getParent() != null) { " +
+                     "$p.setName(\"with_parent\"); " +
+                     "} else { " +
+                     "$p.setName(\"without_parent\"); " +
+                     "} " +
+                     "}",
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("name")));
+    }
+
+    @Test
+    public void testWithOrdering() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ with( s0 = new Person() ) {\n" +
+                     "            age = 0\n" +
+                     "        }\n" +
+                     "        insertLogical(s0);\n" +
+                     "        with( s1 = new Person() ) {\n" +
+                     "            age = 1\n" +
+                     "        }\n" +
+                     "        insertLogical(s1);\n }",
+
+             "{ " +
+                     "insertLogical(s0); " +
+                     "insertLogical(s1); " +
+                     "org.drools.Person s0 = new Person(); " +
+                     "s0.setAge(0); " +
+                     "org.drools.Person s1 = new Person(); " +
+                     "s1.setAge(1); " +
+                     "}");
     }
 }

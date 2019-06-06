@@ -7,10 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.constraint.parser.DrlConstraintParser;
+import org.drools.constraint.parser.ast.expr.ModifyStatement;
+import org.drools.constraint.parser.ast.expr.WithStatement;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
@@ -31,31 +37,63 @@ public class MvelCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        // TODO: Preprocessor does not recurse see MapInitializationDrools3800Test.testPropertyReactivityHanging
-        // or put a modify into a in if branch
-
-        List<Statement> preProcessedModifyStatements = new ArrayList<>();
         // TODO: This preprocessing will change the order of the modify statments
         // Write a test for that
+
         Map<String, Set<String>> modifiedProperties = new HashMap<>();
-        for(Statement t : mvelExpression.getStatements()) {
-            PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(t);
-            modifiedProperties.putAll(invoke.getModifyProperties());
-            preProcessedModifyStatements.addAll(invoke.getStatements());
-        }
+        Consumer<Statement> preprocessStatement = preprocessStatementCurried(modifiedProperties);
+        mvelExpression.findAll(ModifyStatement.class).forEach(preprocessStatement);
+        mvelExpression.findAll(WithStatement.class).forEach(preprocessStatement);
 
         List<Statement> statements = new ArrayList<>();
         Optional<Type> lastExpressionType = Optional.empty();
-        for (Statement s : preProcessedModifyStatements) {
-            TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
-            TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
-            Statement expression = (Statement) lhs.toJavaExpression();
-            statements.add(expression);
-            lastExpressionType = ofNullable(rhs).flatMap(TypedExpression::getType);
+        for (Statement s : mvelExpression.getStatements()) {
+            lastExpressionType = processWithMvelCompiler(statements, s);
         }
 
         return new ParsingResult(statements)
                 .setLastExpressionType(lastExpressionType)
                 .setModifyProperties(modifiedProperties);
+    }
+
+    private Consumer<Statement> preprocessStatementCurried(Map<String, Set<String>> modifiedProperties) {
+        return s -> {
+            PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
+            modifiedProperties.putAll(invoke.getModifyProperties());
+            Optional<Node> parentNode = s.getParentNode();
+            parentNode.ifPresent(p -> {
+                BlockStmt p1 = (BlockStmt) p;
+                p1.getStatements().addAll(invoke.getStatements());
+            });
+            s.remove();
+        };
+    }
+
+    private Optional<Type> processWithMvelCompiler(List<Statement> statements, Statement s) {
+        if (s.isBlockStmt()) {
+            BlockStmt body = s.asBlockStmt();
+            for (Statement children : body.getStatements()) {
+                processWithMvelCompiler(statements, children);
+            }
+        } else if (s instanceof IfStmt) {
+            IfStmt ifStmt = s.asIfStmt();
+            NodeList<Statement> thenStmts = NodeList.nodeList();
+            processWithMvelCompiler(thenStmts, ifStmt.getThenStmt());
+
+            NodeList<Statement> elseStmts = NodeList.nodeList();
+            ifStmt.getElseStmt().ifPresent(elseStmt -> processWithMvelCompiler(elseStmts, elseStmt));
+
+            statements.add(new IfStmt(ifStmt.getCondition(), new BlockStmt(thenStmts), new BlockStmt(elseStmts)));
+
+        } else {
+            Optional<Type> lastExpressionType;
+            TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
+            TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
+            Statement expression = (Statement) lhs.toJavaExpression();
+            statements.add(expression);
+            lastExpressionType = ofNullable(rhs).flatMap(TypedExpression::getType);
+            return lastExpressionType;
+        }
+        return Optional.empty();
     }
 }
