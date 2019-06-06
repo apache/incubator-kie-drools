@@ -19,6 +19,18 @@ package org.kie.dmn.feel.runtime.functions;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.extended.AbsFunction;
+import org.kie.dmn.feel.runtime.functions.extended.EvenFunction;
+import org.kie.dmn.feel.runtime.functions.extended.ExpFunction;
+import org.kie.dmn.feel.runtime.functions.extended.LogFunction;
+import org.kie.dmn.feel.runtime.functions.extended.MedianFunction;
+import org.kie.dmn.feel.runtime.functions.extended.ModeFunction;
+import org.kie.dmn.feel.runtime.functions.extended.ModuloFunction;
+import org.kie.dmn.feel.runtime.functions.extended.OddFunction;
+import org.kie.dmn.feel.runtime.functions.extended.ProductFunction;
+import org.kie.dmn.feel.runtime.functions.extended.SplitFunction;
+import org.kie.dmn.feel.runtime.functions.extended.SqrtFunction;
+import org.kie.dmn.feel.runtime.functions.extended.StddevFunction;
 
 public class BuiltInFunctions {
 
@@ -47,8 +59,6 @@ public class BuiltInFunctions {
             new MaxFunction(),
             new SumFunction(),
             new MeanFunction(),
-            new AllFunction(),
-            new AnyFunction(),
             new SublistFunction(),
             new AppendFunction(),
             new ConcatenateFunction(),
@@ -66,7 +76,23 @@ public class BuiltInFunctions {
             new NotFunction(),
             new SortFunction(),
             new GetEntriesFunction(),
-            new GetValueFunction()
+            new GetValueFunction(),
+            
+            new AllFunction(),
+            new AnyFunction(),
+            AbsFunction.INSTANCE,
+            ModuloFunction.INSTANCE,
+            ProductFunction.INSTANCE,
+            SplitFunction.INSTANCE,
+            StddevFunction.INSTANCE,
+            ModeFunction.INSTANCE,
+            AbsFunction.INSTANCE,
+            SqrtFunction.INSTANCE,
+            LogFunction.INSTANCE,
+            ExpFunction.INSTANCE,
+            EvenFunction.INSTANCE,
+            OddFunction.INSTANCE,
+            MedianFunction.INSTANCE,
             };
 
     public static FEELFunction[] getFunctions() {

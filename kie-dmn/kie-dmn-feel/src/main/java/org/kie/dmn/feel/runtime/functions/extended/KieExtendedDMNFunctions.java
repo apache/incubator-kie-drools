@@ -19,8 +19,27 @@ package org.kie.dmn.feel.runtime.functions.extended;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.interval.*;
-import org.kie.dmn.feel.runtime.functions.twovaluelogic.*;
+import org.kie.dmn.feel.runtime.functions.interval.AfterFunction;
+import org.kie.dmn.feel.runtime.functions.interval.BeforeFunction;
+import org.kie.dmn.feel.runtime.functions.interval.CoincidesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.DuringFunction;
+import org.kie.dmn.feel.runtime.functions.interval.FinishedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.FinishesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.IncludesFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlappedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsFunction;
+import org.kie.dmn.feel.runtime.functions.interval.StartedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.StartsFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNAllFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNAnyFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNCountFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNMaxFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNMeanFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNMedianFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNMinFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNModeFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNStddevFunction;
+import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNSumFunction;
 
 /**
  * additional functions not part of the spec version 1.1
@@ -35,21 +54,8 @@ public class KieExtendedDMNFunctions {
                                                                          // additional functions not part of the spec version 1.1
                                                                          new NowFunction(),
                                                                          new TodayFunction(),
-                                                                         new AbsFunction(),
-                                                                         ModuloFunction.INSTANCE,
-                                                                         new ProductFunction(),
                                                                          new CodeFunction(),
                                                                          new InvokeFunction(),
-                                                                         SplitFunction.INSTANCE,
-                                                                         StddevFunction.INSTANCE,
-                                                                         ModeFunction.INSTANCE,
-                                                                         AbsFunction.INSTANCE,
-                                                                         SqrtFunction.INSTANCE,
-                                                                         LogFunction.INSTANCE,
-                                                                         ExpFunction.INSTANCE,
-                                                                         EvenFunction.INSTANCE,
-                                                                         OddFunction.INSTANCE,
-                                                                         MedianFunction.INSTANCE,
 
                                                                          // CQL based, two value logic functions
                                                                         NNAnyFunction.INSTANCE,
