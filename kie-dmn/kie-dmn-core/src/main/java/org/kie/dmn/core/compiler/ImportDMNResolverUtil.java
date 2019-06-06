@@ -9,8 +9,8 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.NamespaceConsts;
 import org.kie.dmn.model.v1_1.TImport;
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 
 public class ImportDMNResolverUtil {
 
@@ -62,15 +62,15 @@ public class ImportDMNResolverUtil {
         switch (_import.getImportType()) {
             case org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN:
             case "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL":
-            case KieDMNModelInstrumentedBase.URI_DMN:
+            case org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN:
                 return ImportType.DMN;
-            case "http://www.dmg.org/PMML-3_0":
-            case "http://www.dmg.org/PMML-3_1":
-            case "http://www.dmg.org/PMML-3_2":
-            case "http://www.dmg.org/PMML-4_0":
-            case "http://www.dmg.org/PMML-4_1":
-            case "http://www.dmg.org/PMML-4_2":
-            case "http://www.dmg.org/PMML-4_3":
+            case NamespaceConsts.PMML_3_0:
+            case NamespaceConsts.PMML_3_1:
+            case NamespaceConsts.PMML_3_2:
+            case NamespaceConsts.PMML_4_0:
+            case NamespaceConsts.PMML_4_1:
+            case NamespaceConsts.PMML_4_2:
+            case NamespaceConsts.PMML_4_3:
                 return ImportType.PMML;
             default:
                 return ImportType.UNKNOWN;
