@@ -1,7 +1,6 @@
 package org.drools.mvelcompiler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,17 +27,17 @@ public class ModifyCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        Map<String, Set<String>> modifiedProperties = new HashMap<>();
+        Set<String> modifiedProperties = new HashSet<>();
         mvelExpression.findAll(ModifyStatement.class)
                 .forEach(s -> {
                     PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
-                    modifiedProperties.putAll(invoke.getModifyProperties());
+                    modifiedProperties.addAll(invoke.getModifyProperties());
                     Optional<Node> parentNode = s.getParentNode();
                     parentNode.ifPresent(p -> {
                         BlockStmt p1 = (BlockStmt) p;
                         p1.getStatements().addAll(invoke.getNewObjectStatements());
                         p1.getStatements().addAll(invoke.getOtherStatements());
-                        for (String modifiedProperty : invoke.getModifyProperties().keySet()) {
+                        for (String modifiedProperty : invoke.getModifyProperties()) {
                             p1.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedProperty))));
                         }
                     });

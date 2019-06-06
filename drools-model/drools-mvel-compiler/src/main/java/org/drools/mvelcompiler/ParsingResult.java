@@ -2,6 +2,7 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,7 +17,7 @@ import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 public class ParsingResult {
 
     private List<Statement> statements;
-    private Map<String, Set<String>> modifyProperties = new HashMap<>();
+    private Set<String> modifyProperties = new HashSet<>();
     private Optional<Type> lastExpressionType;
 
     public ParsingResult(List<Statement> statements) {
@@ -31,12 +32,12 @@ public class ParsingResult {
         return new BlockStmt(NodeList.nodeList(statements));
     }
 
-    public ParsingResult setModifyProperties(Map<String, Set<String>> modifyProperties) {
+    public ParsingResult setModifyProperties(Set<String> modifyProperties) {
         this.modifyProperties = modifyProperties;
         return this;
     }
 
-    public Map<String, Set<String>> getModifyProperties() {
+    public Set<String> getModifyProperties() {
         return modifyProperties;
     }
 

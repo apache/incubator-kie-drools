@@ -126,7 +126,7 @@ public class Consequence {
         }
         MethodCallExpr executeCall = null;
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
-            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptyMap());
+            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             executeCall = createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
         }
@@ -194,16 +194,13 @@ public class Consequence {
         return m.find();
     }
 
-    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Map<String, Set<String>> modifyProperties) {
+    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Set<String> modifyProperties) {
 
-        // TODO: refactor this
-        for(Map.Entry<String, Set<String>> modifiedProperty : modifyProperties.entrySet()) {
-            for(String s : modifiedProperty.getValue()) {
-                NodeList<Expression> arguments = nodeList(new NameExpr(modifiedProperty.getKey()));
-                MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update",
-                                                           arguments);
-                ruleConsequence.getStatements().add(new ExpressionStmt(update));
-            }
+        for (String modifiedProperty : modifyProperties) {
+            NodeList<Expression> arguments = nodeList(new NameExpr(modifiedProperty));
+            MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update",
+                                                       arguments);
+            ruleConsequence.getStatements().add(new ExpressionStmt(update));
         }
 
 

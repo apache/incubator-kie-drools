@@ -2,10 +2,8 @@ package org.drools.mvelcompiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -32,13 +30,12 @@ import org.drools.constraint.parser.ast.expr.WithStatement;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
-import static org.drools.core.util.StringUtils.lcFirst;
 
 public class PreprocessPhase {
 
     interface PreprocessPhaseResult {
-        Map<String, Set<String>> getModifyProperties();
-        PreprocessPhaseResult addModifyProperties(String name, String p);
+        Set<String> getModifyProperties();
+        PreprocessPhaseResult addModifyProperties(String name);
         List<Statement> getNewObjectStatements();
         List<Statement> getOtherStatements();
 
@@ -52,25 +49,17 @@ public class PreprocessPhase {
         final List<Statement> newObjectStatements = new ArrayList<>();
         final List<Statement> otherStatements = new ArrayList<>();
 
-        // TODO: Refactor this
-        final Map<String, Set<String>> modifyProperties = new HashMap<>();
+        final Set<String> modifyProperties = new HashSet<>();
 
         PreprocessedResult() {
         }
 
-        public PreprocessPhaseResult addModifyProperties(String name, String p) {
-            Set<String> modifiedPropertiesSet = modifyProperties.get(name);
-            if (modifiedPropertiesSet == null) {
-                HashSet<String> value = new HashSet<>();
-                value.add(p);
-                modifyProperties.put(name, value);
-            } else {
-                modifiedPropertiesSet.add(p);
-            }
+        public PreprocessPhaseResult addModifyProperties(String name) {
+            modifyProperties.add(name);
             return this;
         }
 
-        public Map<String, Set<String>> getModifyProperties() {
+        public Set<String> getModifyProperties() {
             return modifyProperties;
         }
 
@@ -99,12 +88,12 @@ public class PreprocessPhase {
         final List<Statement> otherStatements = new ArrayList<>();
 
         @Override
-        public Map<String, Set<String>> getModifyProperties() {
-            return new HashMap<>();
+        public Set<String> getModifyProperties() {
+            return new HashSet<>();
         }
 
         @Override
-        public PreprocessPhaseResult addModifyProperties(String name, String p) {
+        public PreprocessPhaseResult addModifyProperties(String name) {
             return this;
         }
 
@@ -218,7 +207,7 @@ public class PreprocessPhase {
                 final String methodName = mcExpr.getName().asString();
                 String set = methodName.replace("set", "");
                 if(scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
-                    result.addModifyProperties(printConstraint(scope), "".equals(set) ? "" : lcFirst(set));
+                    result.addModifyProperties(printConstraint(scope));
                 }
 
                 return new ExpressionStmt(mcExpr);
@@ -230,7 +219,7 @@ public class PreprocessPhase {
     private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
         DrlNameExpr originalFieldAccess = (DrlNameExpr) assignExpr.getTarget();
         String propertyName = originalFieldAccess.getName().asString();
-        result.addModifyProperties(printConstraint(scope), propertyName);
+        result.addModifyProperties(printConstraint(scope));
 
         FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
         assignExpr.setTarget(fieldAccessWithScope);

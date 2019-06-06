@@ -2,9 +2,8 @@ package org.drools.mvelcompiler;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -37,7 +36,7 @@ public class MvelCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        Map<String, Set<String>> modifiedProperties = new HashMap<>();
+        Set<String> modifiedProperties = new HashSet<>();
         Consumer<Statement> preprocessStatement = preprocessStatementCurried(modifiedProperties);
         mvelExpression.findAll(ModifyStatement.class).forEach(preprocessStatement);
         mvelExpression.findAll(WithStatement.class).forEach(preprocessStatement);
@@ -53,10 +52,10 @@ public class MvelCompiler {
                 .setModifyProperties(modifiedProperties);
     }
 
-    private Consumer<Statement> preprocessStatementCurried(Map<String, Set<String>> modifiedProperties) {
+    private Consumer<Statement> preprocessStatementCurried(Set<String> modifiedProperties) {
         return s -> {
             PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
-            modifiedProperties.putAll(invoke.getModifyProperties());
+            modifiedProperties.addAll(invoke.getModifyProperties());
             Optional<Node> parentNode = s.getParentNode();
             parentNode.ifPresent(p -> {
                 BlockStmt p1 = (BlockStmt) p;

@@ -145,7 +145,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
              "{ $p.setName(\"Luca\"); $p.setAge(35); }",
-             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("name", "age")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("$p")));
     }
 
     @Test
@@ -153,7 +153,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { setAge(1); }; }",
              "{ $p.setAge(1); }",
-             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("age")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("$p")));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify($p) { age = $p.age+1 }; }",
              "{ $p.setAge($p.getAge() + 1); }",
-             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("age")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("$p")));
     }
 
     @Test
@@ -207,7 +207,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "$p.setName(\"without_parent\"); " +
                      "} " +
                      "}",
-             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("name")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("$p")));
     }
 
     @Test

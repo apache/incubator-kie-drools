@@ -38,7 +38,7 @@ public class ModifyCompilerTest implements CompilerTest {
                          "update($fact); " +
                      "} " +
                      "} ",
-             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("result")));
+             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("$fact")));
     }
 
     @Override

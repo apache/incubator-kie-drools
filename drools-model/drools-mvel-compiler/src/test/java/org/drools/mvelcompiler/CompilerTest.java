@@ -2,9 +2,7 @@ package org.drools.mvelcompiler;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -59,10 +57,6 @@ interface CompilerTest {
     }
 
     default Collection<String> allModifiedProperties(ParsingResult result) {
-        List<String> results = new ArrayList<>();
-        for (Set<String> values : result.getModifyProperties().values()) {
-            results.addAll(values);
-        }
-        return results;
+        return new ArrayList<>(result.getModifyProperties());
     }
 }
