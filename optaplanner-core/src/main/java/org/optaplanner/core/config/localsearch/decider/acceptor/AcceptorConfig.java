@@ -39,6 +39,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.ValueTabuAcce
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRatioTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRatioTabuSizeStrategy;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 
 import static org.apache.commons.lang3.ObjectUtils.*;
 
@@ -73,6 +74,10 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     protected Integer stepCountingHillClimbingSize = null;
     protected StepCountingHillClimbingType stepCountingHillClimbingType = null;
+
+    protected String greatDelugeStartingWaterLevel = null;
+    protected Double greatDelugeRainSpeed = null;
+    protected Double greatDelugeRainSpeedRatio = null;
 
     @Deprecated
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
@@ -234,6 +239,30 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     public void setStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
         this.stepCountingHillClimbingType = stepCountingHillClimbingType;
+    }
+
+    public String getGreatDelugeStartingWaterLevel() {
+        return greatDelugeStartingWaterLevel;
+    }
+
+    public void setGreatDelugeStartingWaterLevel(String greatDelugeStartingWaterLevel) {
+        this.greatDelugeStartingWaterLevel = greatDelugeStartingWaterLevel;
+    }
+
+    public Double getGreatDelugeRainSpeed() {
+        return greatDelugeRainSpeed;
+    }
+
+    public void setGreatDelugeRainSpeed(Double greatDelugeRainSpeed) {
+        this.greatDelugeRainSpeed = greatDelugeRainSpeed;
+    }
+
+    public Double getGreatDelugeRainSpeedRatio() {
+        return greatDelugeRainSpeedRatio;
+    }
+
+    public void setGreatDelugeRainSpeedRatio(Double greatDelugeRainSpeedRatio) {
+        this.greatDelugeRainSpeedRatio = greatDelugeRainSpeedRatio;
     }
 
     // ************************************************************************
@@ -495,6 +524,27 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                     stepCountingHillClimbingSize_, stepCountingHillClimbingType_);
             acceptorList.add(acceptor);
         }
+        if ((acceptorTypeList!= null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
+                || greatDelugeRainSpeed != null || greatDelugeRainSpeedRatio != null) {
+            GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
+
+            if (greatDelugeRainSpeed != null && greatDelugeRainSpeedRatio != null) {
+                throw new IllegalArgumentException("You can use only rainSpeed or rainSpeedRatio at a time.");
+            }
+
+            if (greatDelugeRainSpeed != null) {
+                acceptor.setRainSpeed(greatDelugeRainSpeed);
+            }
+            if (greatDelugeRainSpeedRatio != null) {
+                acceptor.setRainSpeedRatio(greatDelugeRainSpeedRatio);
+            }
+
+            if (greatDelugeStartingWaterLevel != null) {
+                acceptor.setInitialLevels(configPolicy.getScoreDefinition()
+                        .parseScore(greatDelugeStartingWaterLevel));
+            }
+            acceptorList.add(acceptor);
+        }
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
         } else if (acceptorList.size() > 1) {
@@ -554,6 +604,12 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                 inheritedConfig.getStepCountingHillClimbingSize());
         stepCountingHillClimbingType = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingType,
                 inheritedConfig.getStepCountingHillClimbingType());
+        greatDelugeStartingWaterLevel = ConfigUtils.inheritOverwritableProperty(greatDelugeStartingWaterLevel,
+                inheritedConfig.getGreatDelugeStartingWaterLevel());
+        greatDelugeRainSpeed = ConfigUtils.inheritOverwritableProperty(greatDelugeRainSpeed,
+                inheritedConfig.getGreatDelugeRainSpeed());
+        greatDelugeRainSpeedRatio = ConfigUtils.inheritOverwritableProperty(greatDelugeRainSpeedRatio,
+                inheritedConfig.getGreatDelugeRainSpeedRatio());
     }
 
 }
