@@ -38,7 +38,8 @@ public class ModifyCompiler {
                     Optional<Node> parentNode = s.getParentNode();
                     parentNode.ifPresent(p -> {
                         BlockStmt p1 = (BlockStmt) p;
-                        p1.getStatements().addAll(invoke.getStatements());
+                        p1.getStatements().addAll(invoke.getNewObjectStatements());
+                        p1.getStatements().addAll(invoke.getOtherStatements());
                         for (String modifiedProperty : invoke.getModifyProperties().keySet()) {
                             p1.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedProperty))));
                         }

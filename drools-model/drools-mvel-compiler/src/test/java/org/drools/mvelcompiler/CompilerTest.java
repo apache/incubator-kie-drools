@@ -2,6 +2,7 @@ package org.drools.mvelcompiler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,7 @@ interface CompilerTest {
         imports.add("java.util.ArrayList");
         imports.add("java.util.HashMap");
         imports.add("java.util.Map");
+        imports.add("org.drools.Address");
         imports.add(Person.class.getCanonicalName());
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);

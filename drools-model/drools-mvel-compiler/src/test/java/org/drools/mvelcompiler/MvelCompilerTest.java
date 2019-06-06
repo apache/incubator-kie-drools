@@ -224,11 +224,29 @@ public class MvelCompilerTest implements CompilerTest {
 
              "{ " +
                      "org.drools.Person s1 = new Person(); " +
-                     "s1.setAge(1); " +
                      "org.drools.Person s0 = new Person(); " +
-                     "s0.setAge(0); " +
                      "insertLogical(s0); " +
                      "insertLogical(s1); " +
+                     "s0.setAge(0); " +
+                     "s1.setAge(1); " +
+                     "}");
+    }
+
+    @Test
+    public void testModifyOrdering() {
+        test(ctx -> ctx.addDeclaration("$person", Person.class),
+             "{Address $newAddress = new Address();\n" +
+                     "    $newAddress.setCity( \"Brno\" );\n" +
+                     "    insert( $newAddress );\n" +
+                     "    modify( $person ) {\n" +
+                     "        setAddress( $newAddress )\n" +
+                     "    }}",
+
+             "{ " +
+                     "org.drools.Address $newAddress = new Address(); " +
+                     "$newAddress.setCity(\"Brno\"); " +
+                     "insert($newAddress); " +
+                     "$person.setAddress($newAddress); " +
                      "}");
     }
 }

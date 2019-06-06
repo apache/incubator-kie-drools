@@ -6,6 +6,7 @@ public class Person {
     private int age;
 
     private Person parent;
+    private Address address;
 
     public Person parentPublic;
 

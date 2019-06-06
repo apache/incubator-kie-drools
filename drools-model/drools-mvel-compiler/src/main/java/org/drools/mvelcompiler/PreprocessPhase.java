@@ -29,7 +29,6 @@ import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.expr.ModifyStatement;
 import org.drools.constraint.parser.ast.expr.WithStatement;
 
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
@@ -38,27 +37,25 @@ import static org.drools.core.util.StringUtils.lcFirst;
 public class PreprocessPhase {
 
     interface PreprocessPhaseResult {
-        List<Statement> getStatements();
         Map<String, Set<String>> getModifyProperties();
         PreprocessPhaseResult addModifyProperties(String name, String p);
-        PreprocessPhaseResult addStatements(List<Statement> statements);
-    }
+        List<Statement> getNewObjectStatements();
+        List<Statement> getOtherStatements();
 
-    static class ModifyResult implements PreprocessPhaseResult {
+        PreprocessPhaseResult addOtherStatements(List<Statement> statements);
+        PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt);
 
-        final List<Statement> statements = new ArrayList<>();
+        }
+
+    static class PreprocessedResult implements PreprocessPhaseResult {
+
+        final List<Statement> newObjectStatements = new ArrayList<>();
+        final List<Statement> otherStatements = new ArrayList<>();
+
         // TODO: Refactor this
         final Map<String, Set<String>> modifyProperties = new HashMap<>();
 
-        ModifyResult() {
-        }
-
-        public List<Statement> getStatements() {
-            return statements;
-        }
-
-        public Map<String, Set<String>> getModifyProperties() {
-            return modifyProperties;
+        PreprocessedResult() {
         }
 
         public PreprocessPhaseResult addModifyProperties(String name, String p) {
@@ -73,20 +70,33 @@ public class PreprocessPhase {
             return this;
         }
 
-        public PreprocessPhaseResult addStatements(List<Statement> statements) {
-            this.statements.addAll(statements);
+        public Map<String, Set<String>> getModifyProperties() {
+            return modifyProperties;
+        }
+
+        public List<Statement> getNewObjectStatements() {
+            return newObjectStatements;
+        }
+
+        public List<Statement> getOtherStatements() {
+            return otherStatements;
+        }
+
+        public PreprocessPhaseResult addOtherStatements(List<Statement> statements) {
+            otherStatements.addAll(statements);
+            return this;
+        }
+
+        public PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt) {
+            newObjectStatements.add(expressionStmt);
             return this;
         }
     }
 
     static class StatementResult implements  PreprocessPhaseResult {
 
-        final List<Statement> statements = new ArrayList<>();
-
-        @Override
-        public List<Statement> getStatements() {
-            return statements;
-        }
+        final List<Statement> newObjectStatements = new ArrayList<>();
+        final List<Statement> otherStatements = new ArrayList<>();
 
         @Override
         public Map<String, Set<String>> getModifyProperties() {
@@ -98,9 +108,22 @@ public class PreprocessPhase {
             return this;
         }
 
-        @Override
-        public PreprocessPhaseResult addStatements(List<Statement> statements) {
-            this.statements.addAll(statements);
+
+        public List<Statement> getNewObjectStatements() {
+            return newObjectStatements;
+        }
+
+        public List<Statement> getOtherStatements() {
+            return otherStatements;
+        }
+
+        public PreprocessPhaseResult addOtherStatements(List<Statement> statements) {
+            otherStatements.addAll(statements);
+            return this;
+        }
+
+        public PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt) {
+            newObjectStatements.add(expressionStmt);
             return this;
         }
     }
@@ -112,12 +135,12 @@ public class PreprocessPhase {
         } else if (statement instanceof WithStatement) {
             return withPreprocessor((WithStatement)statement);
         } else {
-            return new StatementResult().addStatements(Collections.singletonList(statement));
+            return new StatementResult().addOtherStatements(Collections.singletonList(statement));
         }
     }
 
     private PreprocessPhaseResult modifyPreprocessor(ModifyStatement modifyStatement) {
-        PreprocessPhaseResult result = new ModifyResult();
+        PreprocessPhaseResult result = new PreprocessedResult();
 
         final Expression scope = modifyStatement.getModifyObject();
         modifyStatement
@@ -130,7 +153,7 @@ public class PreprocessPhase {
                 .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e));
 
         List<Statement> statements = wrapToExpressionStmt(modifyStatement.getExpressions());
-        return result.addStatements(statements);
+        return result.addOtherStatements(statements);
     }
 
     private PreprocessPhaseResult withPreprocessor(WithStatement withStatement) {
@@ -150,7 +173,7 @@ public class PreprocessPhase {
 
         List<Statement> statements = wrapToExpressionStmt(withStatement.getExpressions());
 
-        return result.addStatements(statements);
+        return result.addOtherStatements(statements);
     }
 
     private Optional<Expression> addTypeToInitialization(WithStatement withStatement, PreprocessPhaseResult result) {
@@ -167,7 +190,7 @@ public class PreprocessPhase {
                 VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
                 AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
                 ExpressionStmt expressionStmt = new ExpressionStmt(withTypeAssignmentExpr);
-                result.addStatements(nodeList(expressionStmt));
+                result.addNewObjectStatements(expressionStmt);
                 return of(new DrlNameExpr(targetVariableName));
             }
         }

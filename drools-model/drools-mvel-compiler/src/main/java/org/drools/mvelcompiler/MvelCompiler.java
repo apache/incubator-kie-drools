@@ -63,7 +63,8 @@ public class MvelCompiler {
             Optional<Node> parentNode = s.getParentNode();
             parentNode.ifPresent(p -> {
                 BlockStmt p1 = (BlockStmt) p;
-                p1.getStatements().addAll(0, invoke.getStatements());
+                p1.getStatements().addAll(0, invoke.getNewObjectStatements());
+                p1.getStatements().addAll(invoke.getOtherStatements());
             });
             s.remove();
         };
