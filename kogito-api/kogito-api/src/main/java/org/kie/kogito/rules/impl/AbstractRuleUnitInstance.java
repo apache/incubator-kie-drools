@@ -20,8 +20,9 @@ import java.lang.reflect.Field;
 import org.kie.api.runtime.KieSession;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
+import org.kie.kogito.rules.RuleUnitMemory;
 
-public class AbstractRuleUnitInstance<T> implements RuleUnitInstance<T> {
+public class AbstractRuleUnitInstance<T extends RuleUnitMemory> implements RuleUnitInstance<T> {
 
     private final T workingMemory;
     private final RuleUnit<T> unit;
@@ -33,9 +34,9 @@ public class AbstractRuleUnitInstance<T> implements RuleUnitInstance<T> {
         this.workingMemory = workingMemory;
     }
 
-    public void fire() {
+    public int fire() {
         bind(rt, workingMemory);
-        rt.fireAllRules();
+        return rt.fireAllRules();
     }
 
     @Override

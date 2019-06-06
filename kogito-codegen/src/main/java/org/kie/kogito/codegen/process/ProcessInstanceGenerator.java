@@ -15,10 +15,7 @@
 
 package org.kie.kogito.codegen.process;
 
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.jbpm.compiler.canonical.ModelMetaData;
-import org.kie.api.runtime.process.ProcessRuntime;
-import org.kie.kogito.process.impl.AbstractProcessInstance;
+import java.nio.charset.StandardCharsets;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -31,6 +28,10 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.jbpm.compiler.canonical.ModelMetaData;
+import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 public class ProcessInstanceGenerator {
 
@@ -59,7 +60,7 @@ public class ProcessInstanceGenerator {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(completePath, generate().getBytes());
+        srcMfs.write(completePath, generate().getBytes( StandardCharsets.UTF_8 ));
     }
 
     public String generate() {

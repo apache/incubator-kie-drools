@@ -15,7 +15,7 @@
 
 package org.kie.kogito.rules;
 
-public interface RuleUnitInstance<T> {
+public interface RuleUnitInstance<T extends RuleUnitMemory> {
     RuleUnit<T> unit();
-    void fire();
+    int fire();
 }

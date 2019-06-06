@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.kie.kogito.Config;
-import org.kie.kogito.codegen.metadata.ImageMetaData;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -37,11 +34,27 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.CatchClause;
+import com.github.javaparser.ast.stmt.TryStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.kie.kogito.Config;
+import org.kie.kogito.codegen.metadata.ImageMetaData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_FQN;
 
 public class ApplicationGenerator {
+
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationGenerator.class);
 
     private static final String RESOURCE = "/class-templates/ApplicationTemplate.java";
     private final static String LABEL_PREFIX = "org.kie/";
@@ -56,6 +69,7 @@ public class ApplicationGenerator {
 
     private String targetTypeName;
     private boolean hasCdi;
+    private boolean hasRuleUnits;
     private final List<BodyDeclaration<?>> factoryMethods;
     private ConfigGenerator configGenerator = new ConfigGenerator();
     private List<Generator> generators = new ArrayList<>();
@@ -90,8 +104,27 @@ public class ApplicationGenerator {
                 parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
+
         if (hasCdi) {
             cls.addAnnotation("javax.inject.Singleton");                       
+        }
+
+        if (hasRuleUnits) {
+            // static {
+            //    try {
+            //        Class.forName( RULE_UNIT_REGISTER_FQN );
+            //    } catch (ClassNotFoundException e) { }
+            // }
+
+            BlockStmt blockStmt = cls.addStaticInitializer();
+            TryStmt tryStmt = new TryStmt();
+            blockStmt.addStatement( tryStmt );
+
+            tryStmt.getTryBlock().addStatement( new MethodCallExpr( new NameExpr("Class"), "forName" )
+                    .addArgument( new StringLiteralExpr( RULE_UNIT_REGISTER_FQN ) ) );
+
+            tryStmt.getCatchClauses().add( new CatchClause()
+                    .setParameter( new Parameter( new ClassOrInterfaceType("ClassNotFoundException"), new SimpleName( "e" ) ) ) );
         }
 
         cls.addMember(new FieldDeclaration()
@@ -113,6 +146,11 @@ public class ApplicationGenerator {
         return this;
     }
 
+   public ApplicationGenerator withRuleUnits(boolean hasRuleUnits) {
+        this.hasRuleUnits = hasRuleUnits;
+        return this;
+    }
+
     public Collection<GeneratedFile> generate() {
         List<GeneratedFile> generatedFiles =
                 generators.stream()
@@ -123,7 +161,7 @@ public class ApplicationGenerator {
         generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
         generatedFiles.add(new GeneratedFile(GeneratedFile.Type.APPLICATION,
                                              generatedFilePath(),
-                                             compilationUnit().toString().getBytes(StandardCharsets.UTF_8)));
+                                             log( compilationUnit().toString() ).getBytes(StandardCharsets.UTF_8)));
         return generatedFiles;
     }
 
@@ -152,6 +190,14 @@ public class ApplicationGenerator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-               
+    }
+
+    public static String log(String source) {
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "=====" );
+            logger.debug( source );
+            logger.debug( "=====" );
+        }
+        return source;
     }
 }

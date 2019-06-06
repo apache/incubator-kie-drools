@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler;
+package org.kie.kogito.rules.impl;
 
-import org.kie.kogito.rules.impl.ListDataSource;
+import org.kie.kogito.rules.RuleUnitMemory;
 
-public class SessionMemory {
+public class SessionMemory implements RuleUnitMemory {
     private final ListDataSource<Object> dataSource = new ListDataSource<>();
 
     public ListDataSource<Object> getDataSource() {

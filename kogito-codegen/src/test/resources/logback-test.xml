@@ -12,7 +12,9 @@
   <logger name="org.jbpm" level="info"/>
   <logger name="com.arjuna" level="error"/>
   <logger name="org.hibernate" level="warn"/>
-  
+<!--  <logger name="org.kie.kogito.codegen" level="debug"/>-->
+<!--  <logger name="org.drools.modelcompiler.builder" level="debug"/>-->
+
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

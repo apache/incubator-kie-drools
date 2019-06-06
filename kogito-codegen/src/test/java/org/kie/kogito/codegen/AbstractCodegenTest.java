@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -36,16 +34,13 @@ import org.drools.compiler.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Application;
-import org.kie.kogito.codegen.ApplicationGenerator;
-import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegen;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractCodegenTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractCodegenTest.class);
     @SuppressWarnings("deprecation")
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
 
@@ -54,13 +49,19 @@ public class AbstractCodegenTest {
     }
     
     protected Application generateCodeRulesOnly(String... rules) throws Exception {
-        return generateCode(Collections.emptyList(), Arrays.asList(rules));
+        return generateCode( Collections.emptyList(), Arrays.asList(rules), true );
     }
     
     protected Application generateCode(List<String> processResources, List<String> rulesResources) throws Exception {
+        return generateCode( processResources, rulesResources, false );
+    }
+
+    protected Application generateCode(List<String> processResources, List<String> rulesResources, boolean hasRuleUnit) throws Exception {
         ApplicationGenerator appGen =
                 new ApplicationGenerator(this.getClass().getPackage().getName(), new File("target/codegen-tests"))
-                                                                                                    .withDependencyInjection(false);
+                        .withRuleUnits(hasRuleUnit)
+                        .withDependencyInjection(false);
+
         if (!rulesResources.isEmpty()) {
             appGen.withGenerator(RuleCodegen.ofFiles(Paths.get("src", "test", "resources"),
                                                      rulesResources
@@ -86,7 +87,6 @@ public class AbstractCodegenTest {
         for (GeneratedFile entry : generatedFiles) {
             String fileName = entry.relativePath();
             sources[index++] = fileName;
-            LOG.debug(new String(entry.contents()));
             srcMfs.write(fileName, entry.contents());
         }
 

@@ -1,8 +1,9 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -13,14 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.rules;
+package org.kie.kogito.codegen.data;
 
-public interface RuleUnit<T extends RuleUnitMemory> {
-    RuleUnitInstance<T> createInstance(T workingMemory);
+import java.util.ArrayList;
+import java.util.List;
 
-    default RuleUnitInstance<T> evaluate(T workingMemory) {
-        RuleUnitInstance<T> instance = createInstance(workingMemory);
-        instance.fire();
-        return instance;
+public class Results {
+
+    private final List<String> results = new ArrayList<>();
+
+    public void add(String s) {
+        results.add(s);
+    }
+
+    public List<String> getResults() {
+        return results;
     }
 }

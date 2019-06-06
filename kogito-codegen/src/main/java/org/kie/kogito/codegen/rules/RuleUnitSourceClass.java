@@ -15,11 +15,6 @@
 
 package org.kie.kogito.codegen.rules;
 
-import static com.github.javaparser.ast.NodeList.nodeList;
-
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.impl.AbstractRuleUnit;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -31,6 +26,10 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.impl.AbstractRuleUnit;
+
+import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class RuleUnitSourceClass {
 
@@ -125,7 +124,11 @@ public class RuleUnitSourceClass {
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
                 .setName(targetTypeName)
                 .setModifiers(Modifier.Keyword.PUBLIC);
-        cls.addAnnotation("javax.inject.Singleton");
+
+        if (hasCdi) {
+            cls.addAnnotation( "javax.inject.Singleton" );
+        }
+
         String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);
 
         MethodDeclaration methodDeclaration = createInstanceMethod(ruleUnitInstanceFQCN);

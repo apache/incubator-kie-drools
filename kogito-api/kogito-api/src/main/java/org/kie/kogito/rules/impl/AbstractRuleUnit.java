@@ -16,7 +16,8 @@
 package org.kie.kogito.rules.impl;
 
 import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnitMemory;
 
-public abstract class AbstractRuleUnit<T> implements RuleUnit<T> {
+public abstract class AbstractRuleUnit<T extends RuleUnitMemory> implements RuleUnit<T> {
 
 }

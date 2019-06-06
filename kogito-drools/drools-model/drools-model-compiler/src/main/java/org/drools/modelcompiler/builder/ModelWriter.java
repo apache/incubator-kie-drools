@@ -68,7 +68,7 @@ public class ModelWriter {
     }
 
     private void addSource( MemoryFileSystem srcMfs, List<String> sourceFiles, PackageModel pkgModel, String sourceName, String source ) {
-        pkgModel.logRule( source );
+        pkgModel.log( source );
         srcMfs.write( sourceName, source.getBytes() );
         sourceFiles.add( sourceName );
     }

@@ -15,11 +15,13 @@
 
 package org.kie.kogito.codegen.rules;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -32,16 +34,14 @@ import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.model.KieBaseModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
+import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_SOURCE;
 
 public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject implements KieBuilder.ProjectType {
 
     public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = RuleCodegenProject::new;
-
-    private static final Logger log = LoggerFactory.getLogger(KieModuleKieProject.class);
 
     private ModuleSourceClass moduleGenerator;
 
@@ -65,6 +65,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
         }
 
         boolean hasRuleUnits = false;
+        Map<Class<?>, String> unitsMap = new HashMap<>();
 
         for (ModelBuilderImpl modelBuilder : modelBuilders) {
             List<PackageModel> packageModels = modelBuilder.getPackageModels();
@@ -74,26 +75,31 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                 if (!ruleUnits.isEmpty()) {
                     hasRuleUnits = true;
                     for (Class<?> ruleUnit : ruleUnits) {
-                        moduleGenerator.addRuleUnit(
-                                new RuleUnitSourceClass(
-                                        ruleUnit.getPackage().getName(),
-                                        ruleUnit.getSimpleName(),
-                                        packageModel.getRulesFileName() ).withCdi( hasCdi() ) );
+                        RuleUnitSourceClass ruSource = new RuleUnitSourceClass( ruleUnit.getPackage().getName(),
+                                                                                ruleUnit.getSimpleName(),
+                                                                                packageModel.getRulesFileName() )
+                                .withCdi( hasCdi() );
+                        moduleGenerator.addRuleUnit( ruSource );
+                        unitsMap.put(ruleUnit, ruSource.targetCanonicalName());
                     }
                 }
             }
         }
 
         if (hasRuleUnits) {
+            trgMfs.write(
+                    RULE_UNIT_REGISTER_SOURCE,
+                    log( new RuleUnitsRegisterClass(unitsMap).generate() ).getBytes( StandardCharsets.UTF_8 ) );
+
             for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
                 trgMfs.write(
                         ruleUnit.generatedFilePath(),
-                        ruleUnit.generate().getBytes() );
+                        log( ruleUnit.generate() ).getBytes( StandardCharsets.UTF_8 ) );
 
                 RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance();
                 trgMfs.write(
                         ruleUnitInstance.generatedFilePath(),
-                        ruleUnitInstance.generate().getBytes() );
+                        log( ruleUnitInstance.generate() ).getBytes( StandardCharsets.UTF_8 ) );
             }
         } else if (hasCdi()) {
             for (KieBaseModel kBaseModel : kBaseModels.values()) {
@@ -104,7 +110,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                     template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
                     trgMfs.write(
                             "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
-                            cu.toString().getBytes() );
+                            log( cu.toString() ).getBytes( StandardCharsets.UTF_8 ) );
                 }
             }
         }

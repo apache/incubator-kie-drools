@@ -15,18 +15,10 @@
 
 package org.kie.kogito.codegen.process;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.kie.api.definition.process.Process;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.kogito.Model;
-import org.kie.kogito.process.impl.AbstractProcess;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -55,6 +47,14 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.Model;
+import org.kie.kogito.process.impl.AbstractProcess;
 
 public class ProcessGenerator {
 
@@ -106,7 +106,7 @@ public class ProcessGenerator {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(completePath, generate().getBytes());                
+        srcMfs.write(completePath, generate().getBytes( StandardCharsets.UTF_8 ));
     }
 
     public String generate() {

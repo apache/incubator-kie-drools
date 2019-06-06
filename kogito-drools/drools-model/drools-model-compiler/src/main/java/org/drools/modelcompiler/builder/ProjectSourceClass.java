@@ -6,6 +6,8 @@ import org.kie.api.KieBase;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieSession;
 
+import static org.drools.modelcompiler.builder.PackageModel.log;
+
 public class ProjectSourceClass {
 
     final KieModuleModelMethod modelMethod;
@@ -44,6 +46,6 @@ public class ProjectSourceClass {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(CanonicalModelKieProject.PROJECT_RUNTIME_SOURCE, generate().getBytes());
+        srcMfs.write(CanonicalModelKieProject.PROJECT_RUNTIME_SOURCE, log( generate() ).getBytes());
     }
 }

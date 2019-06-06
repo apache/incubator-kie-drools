@@ -15,10 +15,8 @@
 
 package org.kie.kogito.codegen.rules;
 
-import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_CLASS;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
-
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +28,9 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderUtil;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -45,9 +46,8 @@ import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_CLASS;
+import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 
 public class IncrementalRuleCodegen implements Generator {
 
@@ -123,7 +123,7 @@ public class IncrementalRuleCodegen implements Generator {
     private GeneratedFile toGeneratedFile( String folderName, CompilationUnit cu ) {
         String addFileName = cu.findFirst( ClassOrInterfaceDeclaration.class ).get().getNameAsString();
         String sourceName = folderName + "/" + addFileName + ".java";
-        return new GeneratedFile( GeneratedFile.Type.RULE, sourceName, getPrettyPrinter().print( cu ).getBytes() );
+        return new GeneratedFile( GeneratedFile.Type.RULE, sourceName, getPrettyPrinter().print( cu ).getBytes( StandardCharsets.UTF_8 ) );
     }
 
     private PackageDescrForResource createPackageDescr( File file ) {
