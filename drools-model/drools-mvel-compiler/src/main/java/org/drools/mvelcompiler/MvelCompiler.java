@@ -37,9 +37,6 @@ public class MvelCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        // TODO: This preprocessing will change the order of the modify statments
-        // Write a test for that
-
         Map<String, Set<String>> modifiedProperties = new HashMap<>();
         Consumer<Statement> preprocessStatement = preprocessStatementCurried(modifiedProperties);
         mvelExpression.findAll(ModifyStatement.class).forEach(preprocessStatement);

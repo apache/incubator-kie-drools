@@ -28,8 +28,6 @@ public class ModifyCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        // TODO: This preprocessing will change the order of the modify statments Write a test for that
-
         Map<String, Set<String>> modifiedProperties = new HashMap<>();
         mvelExpression.findAll(ModifyStatement.class)
                 .forEach(s -> {
