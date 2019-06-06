@@ -27,17 +27,23 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.RuleTemplateConfiguration;
+import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl implements DecisionTableConfiguration {
     public static final String DROOLS_DT_TYPE = "drools.dt.type";
     public static final String DROOLS_DT_WORKSHEET = "drools.dt.worksheet";
+    public static final int DROOLS_DT_TEMPLATE_MAX_TEMPLATES = 999;
+    public static final String DROOLS_DT_TEMPLATE_FILE_PREFIX = "drools.dt.template.file";
+    public static final String DROOLS_DT_TEMPLATE_ROW_PREFIX = "drools.dt.template.row";
+    public static final String DROOLS_DT_TEMPLATE_COL_PREFIX = "drools.dt.template.col";
+    public static final String DROOLS_DT_TRIM_CELL = "drools.dt.trimCell";
 
-    private final Logger logger = LoggerFactory.getLogger( DecisionTableConfigurationImpl.class ); 
-    
+    private final Logger logger = LoggerFactory.getLogger( DecisionTableConfigurationImpl.class );
+
     private DecisionTableInputType inputType = DecisionTableInputType.XLS;
-    
+
     private String worksheetName;
 
     private Set<RuleTemplateConfiguration> templates = new HashSet<RuleTemplateConfiguration>();
@@ -60,7 +66,7 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     public void setInputType(DecisionTableInputType inputType) {
         this.inputType = inputType;
     }
-    
+
     public DecisionTableInputType getInputType() {
         return this.inputType;
     }
@@ -89,6 +95,14 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
         if( worksheetName != null ) {
             prop.setProperty( DROOLS_DT_WORKSHEET, worksheetName );
         }
+        prop.setProperty( DROOLS_DT_TRIM_CELL, Boolean.toString( trimCell ) );
+        int i = 0;
+        for ( RuleTemplateConfiguration ruleTemplateConfiguration : templates ) {
+            prop.setProperty( DROOLS_DT_TEMPLATE_FILE_PREFIX + i, ruleTemplateConfiguration.getTemplate().getSourcePath() );
+            prop.setProperty( DROOLS_DT_TEMPLATE_ROW_PREFIX + i, Integer.toString( ruleTemplateConfiguration.getRow() ) );
+            prop.setProperty( DROOLS_DT_TEMPLATE_COL_PREFIX + i, Integer.toString( ruleTemplateConfiguration.getCol() ) );
+            i += 1;
+        }
         return prop;
     }
 
@@ -96,6 +110,19 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
         super.fromProperties(prop);
         inputType = DecisionTableInputType.valueOf( prop.getProperty( DROOLS_DT_TYPE, DecisionTableInputType.XLS.toString() ) );
         worksheetName = prop.getProperty( DROOLS_DT_WORKSHEET, null );
+        trimCell = Boolean.parseBoolean( prop.getProperty( DROOLS_DT_TRIM_CELL, Boolean.toString( trimCell ) ) );
+        int i = 0;
+        do {
+            String file = prop.getProperty( DROOLS_DT_TEMPLATE_FILE_PREFIX + i, null );
+            if ( file == null ) {
+                break;
+            }
+            int row = Integer.parseInt( prop.getProperty( DROOLS_DT_TEMPLATE_ROW_PREFIX + i ) );
+            int col = Integer.parseInt( prop.getProperty( DROOLS_DT_TEMPLATE_COL_PREFIX + i ) );
+            Resource resource = ResourceFactory.newFileResource( file ).setSourcePath( file );
+            addRuleTemplateConfiguration( resource, row, col );
+            i++;
+        } while ( i < DROOLS_DT_TEMPLATE_MAX_TEMPLATES );
         return this;
     }
 
