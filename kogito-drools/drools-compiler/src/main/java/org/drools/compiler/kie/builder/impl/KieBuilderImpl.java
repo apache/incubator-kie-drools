@@ -305,7 +305,7 @@ public class KieBuilderImpl
         for ( String fileName : srcMfs.getFileNames() ) {
             String normalizedName = fileName.replace( File.separatorChar, '/' );
             if ( isFileInKieBase( kieBase, normalizedName, () -> srcMfs.getBytes( normalizedName ), useFolders ) ) {
-                copySourceToTarget( fileName );
+                copySourceToTarget( normalizedName );
             }
         }
     }
