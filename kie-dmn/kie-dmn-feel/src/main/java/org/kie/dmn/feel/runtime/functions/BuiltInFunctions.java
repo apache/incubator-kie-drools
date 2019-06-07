@@ -19,18 +19,6 @@ package org.kie.dmn.feel.runtime.functions;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.extended.AbsFunction;
-import org.kie.dmn.feel.runtime.functions.extended.EvenFunction;
-import org.kie.dmn.feel.runtime.functions.extended.ExpFunction;
-import org.kie.dmn.feel.runtime.functions.extended.LogFunction;
-import org.kie.dmn.feel.runtime.functions.extended.MedianFunction;
-import org.kie.dmn.feel.runtime.functions.extended.ModeFunction;
-import org.kie.dmn.feel.runtime.functions.extended.ModuloFunction;
-import org.kie.dmn.feel.runtime.functions.extended.OddFunction;
-import org.kie.dmn.feel.runtime.functions.extended.ProductFunction;
-import org.kie.dmn.feel.runtime.functions.extended.SplitFunction;
-import org.kie.dmn.feel.runtime.functions.extended.SqrtFunction;
-import org.kie.dmn.feel.runtime.functions.extended.StddevFunction;
 
 public class BuiltInFunctions {
 

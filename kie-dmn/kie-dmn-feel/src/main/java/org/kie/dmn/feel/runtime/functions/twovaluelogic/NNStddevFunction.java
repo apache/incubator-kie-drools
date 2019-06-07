@@ -27,7 +27,7 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.runtime.functions.extended.SqrtFunction;
+import org.kie.dmn.feel.runtime.functions.SqrtFunction;
 import org.kie.dmn.feel.util.EvalHelper;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
