@@ -16,13 +16,13 @@
 
 package org.kie.dmn.core.ast;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.api.DMNMessageManager;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -57,25 +57,19 @@ public class DMNFunctionWithReturnType extends BaseFEELFunction {
     @Override
     public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
         Object result = wrapped.invokeReflectively(ctx, params);
-        if (!returnType.isCollection() && result instanceof Collection && ((Collection<?>) result).size() == 1) {
-            // as per Decision evaluation result.
-            result = ((Collection<?>) result).toArray()[0];
-        }
-        if (returnType.isAssignableValue(result)) {
-            return result;
-        } else {
-            MsgUtil.reportMessage(LOG,
-                                  DMNMessage.Severity.WARN,
-                                  node.getBusinessKnowledModel(),
-                                  msgMgr,
-                                  null,
-                                  null,
-                                  Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
-                                  node.getName() != null ? node.getName() : node.getId(),
-                                  returnType,
-                                  result);
-            return null;
-        }
+        result = DMNRuntimeImpl.coerceUsingType(result,
+                                                returnType,
+                                                (r, t) -> MsgUtil.reportMessage(LOG,
+                                                                                DMNMessage.Severity.WARN,
+                                                                                node.getBusinessKnowledModel(),
+                                                                                msgMgr,
+                                                                                null,
+                                                                                null,
+                                                                                Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                                                                node.getName() != null ? node.getName() : node.getId(),
+                                                                                t,
+                                                                                MsgUtil.clipString(r.toString(), 50)));
+        return result;
     }
 
     @Override
