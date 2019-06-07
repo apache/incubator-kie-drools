@@ -59,6 +59,7 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
@@ -103,6 +104,11 @@ public class DMNModelImpl
         this.definitions = definitions;
         wireTypeRegistry(definitions);
         importChain = new ImportChain(this);
+    }
+
+    public DMNModelImpl(Definitions dmndefs, Resource resource) {
+        this(dmndefs);
+        this.setResource(resource);
     }
 
     private void wireTypeRegistry(Definitions definitions) {
@@ -532,4 +538,15 @@ public class DMNModelImpl
     public void addAllUnfiltered(List<? extends DMNMessage> messages) {
         this.messages.addAllUnfiltered( messages );
     }
+
+    private Map<String, DMNImportPMMLInfo> pmmlImportInfo = new HashMap<>();
+
+    public void addPMMLImportInfo(DMNImportPMMLInfo info) {
+        this.pmmlImportInfo.put(info.getImportName(), info);
+    }
+
+    public Map<String, DMNImportPMMLInfo> getPmmlImportInfo() {
+        return Collections.unmodifiableMap(pmmlImportInfo);
+    }
+
 }

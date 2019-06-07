@@ -91,8 +91,9 @@ public class DMNFunctionDefinitionEvaluator
     }
 
     public static class FormalParameter {
-        final String name;
-        final DMNType type;
+
+        public final String name;
+        public final DMNType type;
 
         public FormalParameter(String name, DMNType type) {
             this.name = name;

@@ -1,5 +1,6 @@
 package org.kie.dmn.core.compiler;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map.Entry;
@@ -31,6 +32,8 @@ import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
+import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -55,6 +58,7 @@ import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.Invocation;
@@ -306,11 +310,8 @@ public class DMNEvaluatorCompiler {
         return ctxEval;
     }
 
-    private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition expression) {
-        FunctionDefinition funcDef = expression;
-
+    private DMNExpressionEvaluator compileFunctionDefinition(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
         FunctionKind kind = funcDef.getKind();
-
         if( kind == null ) {
             // unknown function kind
             MsgUtil.reportMessage( logger,
@@ -324,121 +325,11 @@ public class DMNEvaluatorCompiler {
                                    node.getIdentifierString() );
             return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
         } else if (kind.equals(FunctionKind.FEEL)) {
-            ctx.enterFrame();
-            try {
-                DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
-                for ( InformationItem p : funcDef.getFormalParameter() ) {
-                    DMNCompilerHelper.checkVariableName( model, p, p.getName() );
-                    DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
-                    func.addParameter( p.getName(), dmnType );
-                    ctx.setVariable( p.getName(), dmnType );
-                }
-
-                DMNExpressionEvaluator eval = compileExpression( ctx, model, node, functionName, funcDef.getExpression() );
-                if( eval instanceof DMNLiteralExpressionEvaluator && ((DMNLiteralExpressionEvaluator)eval).isFunctionDefinition() ) {
-                    // we need to resolve the function and eliminate the indirection
-                    CompiledExpression fexpr = ((DMNLiteralExpressionEvaluator) eval).getExpression();
-                    FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, fexpr, model, funcDef,
-                                                                          Msg.FUNC_DEF_COMPILATION_ERR,
-                                                                          functionName,
-                                                                          node.getIdentifierString() );
-                    DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
-                                                                                (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
-
-                    for( InformationItem p : funcDef.getFormalParameter() ) {
-                        invoker.addParameter( p.getName(), func.getParameterType( p.getName() ), (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
-                    }
-                    eval = invoker;
-                }
-
-                func.setEvaluator( eval );
-                return func;
-            } finally {
-                ctx.exitFrame();
-            }
+            return compileFunctionDefinitionFEEL(ctx, model, node, functionName, funcDef);
         } else if (kind.equals(FunctionKind.JAVA)) {
-            if( funcDef.getExpression() instanceof Context ) {
-                // proceed
-                Context context = (Context) funcDef.getExpression();
-                String clazz = null;
-                String method = null;
-                for( ContextEntry ce : context.getContextEntry() ) {
-                    if( ce.getVariable() != null && ce.getVariable().getName() != null && ce.getExpression() != null && ce.getExpression() instanceof LiteralExpression ) {
-                        if( ce.getVariable().getName().equals( "class" )  ) {
-                            clazz = stripQuotes( ((LiteralExpression) ce.getExpression()).getText().trim() );
-                        } else if( ce.getVariable().getName().equals( "method signature" ) ) {
-                            method = stripQuotes( ((LiteralExpression) ce.getExpression()).getText().trim() );
-                        }
-                    }
-                }
-                if( clazz != null && method != null ) {
-                    String params = funcDef.getFormalParameter().stream().map( p -> p.getName() ).collect( Collectors.joining(",") );
-                    String expr = String.format( "function(%s) external { java: { class: \"%s\", method signature: \"%s\" }}", params, clazz, method );
-
-                    try {
-                        FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, expr, model, funcDef,
-                                                                              Msg.FUNC_DEF_COMPILATION_ERR,
-                                                                              functionName,
-                                                                              node.getIdentifierString() );
-                        if( feelFunction != null ) {
-                            ((BaseFEELFunction)feelFunction).setName( functionName );
-                        }
-
-                        DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
-                                                                                    (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
-
-                        DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
-                        for ( InformationItem p : funcDef.getFormalParameter() ) {
-                            DMNCompilerHelper.checkVariableName( model, p, p.getName() );
-                            DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
-                            func.addParameter( p.getName(), dmnType );
-                            invoker.addParameter( p.getName(), dmnType, (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
-                        }
-                        func.setEvaluator( invoker );
-                        return func;
-                    } catch ( Throwable e ) {
-                        MsgUtil.reportMessage( logger,
-                                               DMNMessage.Severity.ERROR,
-                                               expression,
-                                               model,
-                                               e,
-                                               null,
-                                               Msg.FUNC_DEF_COMPILATION_ERR,
-                                               functionName,
-                                               node.getIdentifierString(),
-                                               "Exception raised: "+e.getClass().getSimpleName());
-                    }
-                } else {
-                    MsgUtil.reportMessage( logger,
-                                           DMNMessage.Severity.ERROR,
-                                           expression,
-                                           model,
-                                           null,
-                                           null,
-                                           Msg.FUNC_DEF_MISSING_ENTRY,
-                                           functionName,
-                                           node.getIdentifierString());
-                }
-            } else {
-                // error, java function definitions require a context
-                MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
-                                       funcDef,
-                                       model,
-                                       null,
-                                       null,
-                                       Msg.FUNC_DEF_BODY_NOT_CONTEXT,
-                                       node.getIdentifierString() );
-            }
+            return compileFunctionDefinitionJAVA(ctx, model, node, functionName, funcDef);
         } else if (kind.equals(FunctionKind.PMML)) {
-            MsgUtil.reportMessage( logger,
-                                   DMNMessage.Severity.WARN,
-                                   funcDef,
-                                   model,
-                                   null,
-                                   null,
-                                   Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
-                                   node.getIdentifierString() );
+            return compileFunctionDefinitionPMML(ctx, model, node, functionName, funcDef);
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
@@ -451,6 +342,179 @@ public class DMNEvaluatorCompiler {
                                    node.getIdentifierString() );
         }
         return new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
+    }
+
+    private DMNExpressionEvaluator compileFunctionDefinitionFEEL(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
+        ctx.enterFrame();
+        try {
+            DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+            for (InformationItem p : funcDef.getFormalParameter()) {
+                DMNCompilerHelper.checkVariableName(model, p, p.getName());
+                DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
+                func.addParameter(p.getName(), dmnType);
+                ctx.setVariable(p.getName(), dmnType);
+            }
+
+            DMNExpressionEvaluator eval = compileExpression(ctx, model, node, functionName, funcDef.getExpression());
+            if (eval instanceof DMNLiteralExpressionEvaluator && ((DMNLiteralExpressionEvaluator) eval).isFunctionDefinition()) {
+                // we need to resolve the function and eliminate the indirection
+                CompiledExpression fexpr = ((DMNLiteralExpressionEvaluator) eval).getExpression();
+                FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, fexpr, model, funcDef,
+                                                                                    Msg.FUNC_DEF_COMPILATION_ERR,
+                                                                                    functionName,
+                                                                                    node.getIdentifierString());
+                DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
+                                                                            (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
+
+                for (InformationItem p : funcDef.getFormalParameter()) {
+                    invoker.addParameter(p.getName(), func.getParameterType(p.getName()), (em, dr) -> new EvaluatorResultImpl(dr.getContext().get(p.getName()), EvaluatorResult.ResultType.SUCCESS));
+                }
+                eval = invoker;
+            }
+
+            func.setEvaluator(eval);
+            return func;
+        } finally {
+            ctx.exitFrame();
+        }
+    }
+
+    private DMNExpressionEvaluator compileFunctionDefinitionJAVA(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
+        if( funcDef.getExpression() instanceof Context ) {
+            // proceed
+            Context context = (Context) funcDef.getExpression();
+            String clazz = null;
+            String method = null;
+            for( ContextEntry ce : context.getContextEntry() ) {
+                if( ce.getVariable() != null && ce.getVariable().getName() != null && ce.getExpression() != null && ce.getExpression() instanceof LiteralExpression ) {
+                    if( ce.getVariable().getName().equals( "class" )  ) {
+                        clazz = stripQuotes( ((LiteralExpression) ce.getExpression()).getText().trim() );
+                    } else if( ce.getVariable().getName().equals( "method signature" ) ) {
+                        method = stripQuotes( ((LiteralExpression) ce.getExpression()).getText().trim() );
+                    }
+                }
+            }
+            if( clazz != null && method != null ) {
+                String params = funcDef.getFormalParameter().stream().map( p -> p.getName() ).collect( Collectors.joining(",") );
+                String expr = String.format( "function(%s) external { java: { class: \"%s\", method signature: \"%s\" }}", params, clazz, method );
+
+                try {
+                    FEELFunction feelFunction = ctx.getFeelHelper().evaluateFunctionDef(ctx, expr, model, funcDef,
+                                                                          Msg.FUNC_DEF_COMPILATION_ERR,
+                                                                          functionName,
+                                                                          node.getIdentifierString() );
+                    if( feelFunction != null ) {
+                        ((BaseFEELFunction)feelFunction).setName( functionName );
+                    }
+
+                    DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
+                                                                                (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
+
+                    DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
+                    for ( InformationItem p : funcDef.getFormalParameter() ) {
+                        DMNCompilerHelper.checkVariableName( model, p, p.getName() );
+                        DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
+                        func.addParameter( p.getName(), dmnType );
+                        invoker.addParameter( p.getName(), dmnType, (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
+                    }
+                    func.setEvaluator( invoker );
+                    return func;
+                } catch ( Throwable e ) {
+                    MsgUtil.reportMessage( logger,
+                                           DMNMessage.Severity.ERROR,
+                                          funcDef,
+                                           model,
+                                           e,
+                                           null,
+                                           Msg.FUNC_DEF_COMPILATION_ERR,
+                                           functionName,
+                                           node.getIdentifierString(),
+                                           "Exception raised: "+e.getClass().getSimpleName());
+                }
+            } else {
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                      funcDef,
+                                       model,
+                                       null,
+                                       null,
+                                       Msg.FUNC_DEF_MISSING_ENTRY,
+                                       functionName,
+                                       node.getIdentifierString());
+            }
+        } else {
+            // error, java function definitions require a context
+            MsgUtil.reportMessage( logger,
+                                   DMNMessage.Severity.ERROR,
+                                   funcDef,
+                                   model,
+                                   null,
+                                   null,
+                                   Msg.FUNC_DEF_BODY_NOT_CONTEXT,
+                                   node.getIdentifierString() );
+        }
+        return new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+    }
+
+    private DMNExpressionEvaluator compileFunctionDefinitionPMML(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition funcDef) {
+        if (funcDef.getExpression() instanceof Context) {
+            Context context = (Context) funcDef.getExpression();
+            String pmmlDocument = null;
+            String pmmlModel = null;
+            for (ContextEntry ce : context.getContextEntry()) {
+                if (ce.getVariable() != null && ce.getVariable().getName() != null && ce.getExpression() instanceof LiteralExpression) {
+                    if (ce.getVariable().getName().equals("document")) {
+                        pmmlDocument = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                    } else if (ce.getVariable().getName().equals("model")) {
+                        pmmlModel = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                    }
+                }
+            }
+            final String nameLookup = pmmlDocument;
+            Optional<Import> lookupImport = model.getDefinitions().getImport().stream().filter(x -> x.getName().equals(nameLookup)).findFirst();
+            if (lookupImport.isPresent()) {
+                Import theImport = lookupImport.get();
+                logger.trace("theImport: {}", theImport);
+                URL pmmlURL = DMNCompilerImpl.pmmlImportURL(getRootClassLoader(), model, theImport, funcDef);
+                logger.trace("pmmlURL: {}", pmmlURL);
+                AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
+                                                                                                     getRootClassLoader(),
+                                                                                                     funcDef,
+                                                                                                     pmmlURL,
+                                                                                                     pmmlModel,
+                                                                                                     model.getPmmlImportInfo().get(pmmlDocument));
+                DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+                for (InformationItem p : funcDef.getFormalParameter()) {
+                    DMNCompilerHelper.checkVariableName(model, p, p.getName());
+                    DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
+                    func.addParameter(p.getName(), dmnType);
+                    invoker.addParameter(p.getName(), dmnType);
+                }
+                func.setEvaluator(invoker);
+                return func;
+            } else {
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      funcDef,
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.FUNC_DEF_PMML_MISSING_ENTRY,
+                                      functionName,
+                                      node.getIdentifierString());
+            }
+        } else {
+            // error, PMML function definitions require a context
+            MsgUtil.reportMessage(logger,
+                                  DMNMessage.Severity.ERROR,
+                                  funcDef,
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.FUNC_DEF_BODY_NOT_CONTEXT,
+                                  node.getIdentifierString());
+        }
+        return new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
     }
 
     private String stripQuotes(String trim) {
