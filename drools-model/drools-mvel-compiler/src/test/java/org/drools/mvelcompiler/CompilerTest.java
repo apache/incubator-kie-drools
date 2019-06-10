@@ -22,7 +22,6 @@ interface CompilerTest {
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
         Set<String> imports = new HashSet<>();
-        // TODO: find which are the mvel implicit imports
         imports.add("java.util.List");
         imports.add("java.util.ArrayList");
         imports.add("java.util.HashMap");
