@@ -738,6 +738,21 @@ public class DroolsConstraintParserTest {
     }
 
     @Test
+    public void testWithoutSemicolonMethodCommentWindows() {
+        String expr = "{             " +
+                "delete($person) // comment\r\n" +
+                "delete($pet) // comment\r\n" +
+                "}";
+
+        BlockStmt expression = DrlConstraintParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    delete($person);\n" +
+                             "    delete($pet);\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
     public void statementsWithComments() {
         String expr = "{             " +
                 "delete($person); // comment\n" +

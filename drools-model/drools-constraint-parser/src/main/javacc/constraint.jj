@@ -122,7 +122,6 @@ SPECIAL_TOKEN :
 {
   <SPACE: [" ", "\t", "\f", "\u0085", "\u00A0", "\u1680", "\u180e", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005",
       "\u2006", "\u2007", "\u2008", "\u2009", "\u200a", "\u200b", "\u200c", "\u200d", "\u2028", "\u2029", "\u202f", "\u205f", "\u2060", "\u3000", "\ufeff"]>
-| <WINDOWS_EOL : "\r\n">
 | <OLD_MAC_EOL: "\r">
 }
 
@@ -297,6 +296,8 @@ TOKEN :
 | < MVEL_ENDS_WITH: "str[endsWith]" >
 | < MVEL_LENGTH: "str[length]" >
 | <UNIX_EOL: "\n">
+| <WINDOWS_EOL : "\r\n">
+
 }
 
 /* LITERALS */
@@ -1478,7 +1479,7 @@ Expression ConditionalAndExpression():
 	Expression right;
 }
 {
-  ret = InclusiveOrExpression() ( "&&" (<UNIX_EOL>)* right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
+  ret = InclusiveOrExpression() ( "&&" (EOL())* right = InclusiveOrExpression() { ret = new BinaryExpr(range(ret, token()), ret, right, BinaryExpr.Operator.AND); } )*
   { return ret; }
 }
 
@@ -1624,7 +1625,7 @@ Expression UnaryExpression():
 	  ( "+" { op = UnaryExpr.Operator.PLUS; begin=token();} |
 	    "-" { op = UnaryExpr.Operator.MINUS; begin=token();}
 	  ) ret = UnaryExpression()
-	  (<UNIX_EOL>)*
+	  (EOL())*
 	  {
         ret = new UnaryExpr(range(begin, token()), ret, op);
 	  }
@@ -2047,10 +2048,10 @@ NodeList<Expression> ArgumentList():
 	Expression expr;
 }
 {
-  (<UNIX_EOL>)*
+  (EOL())*
   expr = Expression() { ret.add(expr); }
-  (<UNIX_EOL>)*
-  ( "," (<UNIX_EOL>)* expr = Expression() { ret.add(expr); } )*
+  (EOL())*
+  ( "," (EOL())* expr = Expression() { ret.add(expr); } )*
   { return ret; }
 }
 
@@ -2249,7 +2250,7 @@ VariableDeclarationExpr VariableDeclarationExpression():
 EmptyStmt EmptyStatement():
 {}
 {
-    (";"|<UNIX_EOL>)
+    (";"|EOL())
     { return new EmptyStmt(tokenRange()); }
 }
 
@@ -2296,7 +2297,7 @@ ExpressionStmt StatementExpression():
         ]
     )
     (";")*
-    (<UNIX_EOL>)* // TODO: should support also windows EOL
+    (EOL())* // TODO: should support also windows EOL
     { return new ExpressionStmt(range(expr, token()), expr); }
 }
 
@@ -2592,13 +2593,13 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|<UNIX_EOL>)?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
             (
-                          (<COMMA>|<UNIX_EOL>)
+                          (<COMMA>|EOL())
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|<UNIX_EOL>)*
+            (<SEMICOLON>|EOL())*
             {
                 return new ModifyStatement(range(begin, token()), modifyObject, all);
             }
@@ -2620,13 +2621,13 @@ WithStatement WithStatement():
     (
         (
             <WITH><LPAREN> (withObject = Expression())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>|<UNIX_EOL>)?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
             (
-                          (<COMMA>|<UNIX_EOL>)
+                          (<COMMA>|EOL())
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
-            (<SEMICOLON>|<UNIX_EOL>)*
+            (<SEMICOLON>|EOL())*
             {
                 return new WithStatement(range(begin, token()), withObject, all);
             }
@@ -3337,4 +3338,11 @@ TemporalLiteralChunkExpr TemporalLiteralChunk():
 	  }
   )
   { return ret; }
+}
+
+void EOL():
+{
+}
+{
+    <UNIX_EOL>|<WINDOWS_EOL>
 }

@@ -61,7 +61,7 @@ abstract class GeneratedDrlConstraintParserTokenManagerBase {
             return new JavadocComment(tokenRange(token), commentText.substring(3, commentText.length() - 2));
         } else if (token.kind == MULTI_LINE_COMMENT) {
             return new BlockComment(tokenRange(token), commentText.substring(2, commentText.length() - 2));
-        } else if (token.kind == SINGLE_LINE_COMMENT || token.kind == 4) {
+        } else if (token.kind == SINGLE_LINE_COMMENT || token.kind == 4 || token.kind == 3 || token.kind == 7) {
             // line comments have their end of line character(s) included, and we don't want that.
             Range range = new Range(pos(token.beginLine, token.beginColumn), pos(token.endLine, token.endColumn));
             while (commentText.endsWith("\r") || commentText.endsWith("\n")) {
