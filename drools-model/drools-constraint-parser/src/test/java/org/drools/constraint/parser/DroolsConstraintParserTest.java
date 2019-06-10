@@ -86,8 +86,7 @@ public class DroolsConstraintParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test
-    @Ignore("unsupported, TODO")
+    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineBeginning() {
         Expression or = parseExpression(parser, "(\naddresses == 2 || addresses == 3  )").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
@@ -96,8 +95,7 @@ public class DroolsConstraintParserTest {
         assertEquals("(addresses == 2 && addresses == 3)", printConstraint(and));
     }
 
-    @Test
-    @Ignore("unsupported, TODO")
+    @Test(expected = ParseProblemException.class)
     public void testBinaryWithNewLineEnd() {
         Expression or = parseExpression(parser, "(addresses == 2 || addresses == 3 \n)").getExpr();
         assertEquals("(addresses == 2 || addresses == 3)", printConstraint(or));
