@@ -9,6 +9,7 @@ public class Person {
     private Address address;
 
     public Person parentPublic;
+    public String nicknamePublic;
 
     public Person(String name) {
         this.name = name;

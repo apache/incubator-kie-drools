@@ -77,6 +77,13 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testSetterPublicField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.nickamePublic = \"Luca\"; } ",
+             "{ $p.nickamePublic = \"Luca\"; } ");
+    }
+
+    @Test
     public void withoutSemicolonAndComment() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{             " +

@@ -18,7 +18,6 @@ import org.drools.constraint.parser.ast.expr.DrlNameExpr;
 import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
-import org.drools.mvelcompiler.ast.FieldAccessTExpr;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.TypedExpression;
@@ -30,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getSetter;
 
@@ -84,23 +84,23 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
         }
 
         TypedExpression scope = n.getScope().accept(this, arg);
-        TypedExpression name = n.getName().accept(this, arg);
+        n.getName().accept(this, arg);
 
         Class<?> setterArgumentType = getRHSType();
 
         return tryParseItAsSetter(n, scope, setterArgumentType)
-                .orElse(new FieldAccessTExpr(scope, null)); // TODO public field access
+                .orElse(new UnalteredTypedExpression(n));
     }
 
     private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
-        return scope.getType().map(scopeType -> {
+        return scope.getType().flatMap(scopeType -> {
             String setterName = printConstraint(n.getName());
-            Method accessor = getSetter((Class<?>) scopeType, setterName, setterArgumentType);
+            Optional<Method> optAccessor = ofNullable(getSetter((Class<?>) scopeType, setterName, setterArgumentType));
 
             List<TypedExpression> arguments = rhs.map(Collections::singletonList)
                     .orElse(emptyList());
 
-            return new FieldToAccessorTExpr(scope, accessor, arguments);
+            return optAccessor.map(accessor -> new FieldToAccessorTExpr(scope, accessor, arguments));
         });
     }
 
@@ -135,7 +135,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     public TypedExpression visit(ExpressionStmt n, Context arg) {
         logger.debug("ExpressionStmt:\t\t" + printConstraint(n));
 
-        Optional<TypedExpression> expression = Optional.ofNullable(n.getExpression().accept(this, arg));
+        Optional<TypedExpression> expression = ofNullable(n.getExpression().accept(this, arg));
         return new ExpressionStmtT(expression.orElseGet(this::rhsOrError));
     }
 
