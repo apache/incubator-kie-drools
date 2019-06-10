@@ -4,7 +4,7 @@
 
 Hit policies determine how to reach an outcome when multiple rules in a decision table match the provided input values. For example, if one rule in a decision table applies a sales discount to military personnel and another rule applies a discount to students, then when a customer is both a student and in the military, the decision table hit policy must indicate whether to apply one discount or the other (*Unique*, *First*) or both discounts (*Collect Sum*). You specify the single character of the hit policy (*U*, *F*, *C+*) in the upper-left corner of the decision table.
 
-The following are supported DMN decision table hit policies:
+The following decision table hit policies are supported in DMN:
 
 * *Unique (U):* Permits only one rule to match. Any overlap raises an error.
 * *Any (A):* Permits multiple rules to match, but they must all have the same output. If multiple matching rules do not have the same output, an error is raised.

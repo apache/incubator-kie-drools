@@ -17,7 +17,7 @@ The new DMN file is now listed in the *DMN* panel of the *Project Explorer*, and
 NOTE: If you imported a DMN file that does not contain layout information, the imported decision requirements diagram (DRD) is formatted automatically in the DMN designer. Click *Save* in the DMN designer to save the DRD layout.
 
 --
-. Begin adding components to your new or imported DMN decision requirements diagram (DRD) by clicking and dragging one of the DMN nodes from the left toolbar.
+. Begin adding components to your new or imported DMN decision requirements diagram (DRD) by clicking and dragging one of the DMN nodes from the left toolbar:
 +
 --
 image::dmn/dmn-drag-decision-node.png[]
@@ -74,7 +74,7 @@ For more details about the types of boxed expressions, see xref:dmn-boxed-expres
 For more details about defining decision logic in boxed expressions, see xref:dmn-defining-logic-proc_dmn-models[].
 ////
 --
-. After you define the decision logic for the selected node, click *Back to "<NODE_NAME>"* to return to the DRD view.
+. After you define the decision logic for the selected node, click *Back to "<MODEL_NAME>"* to return to the DRD view.
 . For the selected DRD node, use the available connection options to create and connect to the next node in the DRD, or click and drag a new node onto the DRD canvas from the left toolbar.
 +
 --

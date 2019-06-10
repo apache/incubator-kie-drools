@@ -23,7 +23,7 @@ image::dmn/dmn-decision-boxed-expression-options.png[]
 --
 image::dmn/dmn-manage-data-types.png[]
 
-You can also set and manage custom output data types for a specified decision node or business knowledge model node by selecting the *Diagram properties* icon in the upper-right corner of the DMN designer:
+You can also set and manage custom data types for a specified decision node or business knowledge model node by selecting the *Diagram properties* icon in the upper-right corner of the DMN designer:
 
 image::dmn/dmn-manage-data-types1a.png[]
 
@@ -31,7 +31,7 @@ The data type that you define for a specified cell in a boxed expression determi
 
 In this example, an output column *Credit Score Rating* for a DMN decision table defines a set of custom credit score ratings based on an applicant's credit score.
 --
-. On the *Data Types* page, click *Add* and create a *Credit_Score_Rating* data type as a `string`.
+. On the *Data Types* page, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
 +
 --
 image::dmn/dmn-custom-data-type-add.png[]
@@ -52,7 +52,7 @@ image::dmn/dmn-custom-data-type-constraints.png[]
 For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
 --
 
-. Click *Ok* to save the constraints and click *Save* to save the data type.
+. Click *OK* to save the constraints and click *Save* to save the data type.
 
 . Return to the *Credit Score Rating* decision table, click the *Credit Score Rating* column header, set the data type to this new custom data type, and define the rule values for that column with the rating constraints that you specified.
 +
@@ -65,12 +65,13 @@ In the DMN decision model for this scenario, the *Credit Score Rating* decision 
 image::dmn/dmn-manage-data-types-blank.png[]
 --
 . Continuing with this example, return to the *Data Types* window, click *Add*, and create a *Loan_Qualification* data type as a `Structure` with no constraints.
-. Next to the *Loan_Qualification* data type, select the settings icon (three vertical dots) and select *Insert nested field* to insert sub-fields within this parent data type.
 +
 --
-image::dmn/dmn-manage-data-types-structured.png[]
+When you save the new structured data type, the first sub-field appears so that you can begin defining nested data fields in this parent data type. You can use these sub-fields in association with the parent structured data type in boxed expressions, such as nested column headers in decision tables or nested table parameters in context or function expressions.
 
-You can use these sub-fields in association with the parent structured data type in boxed expressions, such as nested column headers in decision tables or nested table parameters in context or function expressions.
+For additional sub-fields, next to the *Loan_Qualification* data type, select the settings icon (three vertical dots) and select *Insert nested field*:
+
+image::dmn/dmn-manage-data-types-structured.png[]
 --
 . For this example, under the structured *Loan_Qualification* data type, add a *Qualification* field with `"Qualified"` and `"Not Qualified"` enumeration constraints, and a *Reason* field with no constraints. Add also a simple *Back_End_Ratio* and a *Front_End_Ratio* data type, both with `"Sufficient"` and `"Insufficient"` enumeration constraints.
 +

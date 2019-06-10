@@ -18,7 +18,7 @@ Friendly Enough Expression Language (FEEL) supports the following data types:
 
 NOTE: The DMN specification currently does not provide an explicit way of declaring a variable as a `function`, `context`, `range`, or `list`, but {PRODUCT} extends the DMN built-in types to support variables of these types.
 
-The following are descriptions of each data type:
+The following list describes each data type:
 
 Numbers::
 Numbers in FEEL are based on the http://ieeexplore.ieee.org/document/4610935/[IEEE 754-2008] Decimal 128 format, with 34 digits of precision. Internally, numbers are represented in Java as https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html[`BigDecimals`] with `MathContext DECIMAL128`. FEEL supports only one number data type, so the same type is used to represent both integers and floating
