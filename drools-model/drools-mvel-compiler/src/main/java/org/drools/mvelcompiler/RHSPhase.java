@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
@@ -205,11 +206,14 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
-        // TODO: Need a better type check here, check ExpressionTyper
-        if(type.filter(t -> of("ArrayList", "Map").anyMatch(typeEnd -> t.getTypeName().endsWith(typeEnd))).isPresent()) {
+        if(type.filter(this::isCollection).isPresent()) {
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));
+    }
+
+    public boolean isCollection(Type t) {
+        return of(List.class, Map.class).anyMatch(cls -> (cls).isAssignableFrom((Class<?>)(t)));
     }
 
     @Override
