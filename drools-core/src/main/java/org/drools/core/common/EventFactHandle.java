@@ -21,9 +21,11 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.LinkedList;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
+public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle>,
+                                                                  Serializable {
 
     private static final long serialVersionUID = 510l;
 
