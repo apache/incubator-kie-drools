@@ -8,8 +8,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.drools.constraint.parser.DrlConstraintParser;
-import org.drools.constraint.parser.ast.expr.ModifyStatement;
+import org.drools.mvel.parser.MvelParser;
+import org.drools.mvel.parser.ast.expr.ModifyStatement;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -23,7 +23,7 @@ public class ModifyCompiler {
 
     public ParsingResult compile(String mvelBlock) {
 
-        BlockStmt mvelExpression = DrlConstraintParser.parseBlock(mvelBlock);
+        BlockStmt mvelExpression = MvelParser.parseBlock(mvelBlock);
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 

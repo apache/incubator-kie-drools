@@ -13,9 +13,9 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.drools.constraint.parser.DrlConstraintParser;
-import org.drools.constraint.parser.ast.expr.ModifyStatement;
-import org.drools.constraint.parser.ast.expr.WithStatement;
+import org.drools.mvel.parser.MvelParser;
+import org.drools.mvel.parser.ast.expr.ModifyStatement;
+import org.drools.mvel.parser.ast.expr.WithStatement;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
@@ -32,7 +32,7 @@ public class MvelCompiler {
 
     public ParsingResult compile(String mvelBlock) {
 
-        BlockStmt mvelExpression = DrlConstraintParser.parseBlock(mvelBlock);
+        BlockStmt mvelExpression = MvelParser.parseBlock(mvelBlock);
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 

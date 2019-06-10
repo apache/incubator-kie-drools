@@ -8,7 +8,7 @@ import java.util.Map;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.RuleDescr;
 import com.github.javaparser.ast.NodeList;
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;

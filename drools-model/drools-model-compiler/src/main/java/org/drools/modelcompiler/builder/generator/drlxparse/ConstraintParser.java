@@ -8,18 +8,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.core.util.DateUtils;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.drools.constraint.parser.ast.expr.OOPathExpr;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
-import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
-import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.mvel.parser.ast.expr.OOPathExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -46,7 +45,7 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.StringUtils.lcFirst;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;

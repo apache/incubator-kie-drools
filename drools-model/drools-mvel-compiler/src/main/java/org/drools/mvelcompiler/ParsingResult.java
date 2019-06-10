@@ -1,10 +1,8 @@
 package org.drools.mvelcompiler;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +10,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class ParsingResult {
 

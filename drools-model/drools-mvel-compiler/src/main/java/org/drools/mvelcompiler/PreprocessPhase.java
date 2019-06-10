@@ -23,13 +23,13 @@ import com.github.javaparser.ast.stmt.EmptyStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.ModifyStatement;
-import org.drools.constraint.parser.ast.expr.WithStatement;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.ModifyStatement;
+import org.drools.mvel.parser.ast.expr.WithStatement;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class PreprocessPhase {
 

@@ -15,7 +15,7 @@ import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.core.util.ClassUtils;
-import org.drools.constraint.parser.ast.expr.OOPathExpr;
+import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.PackageModel;

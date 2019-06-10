@@ -1,10 +1,10 @@
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
-import org.drools.constraint.parser.ast.expr.TemporalChunkExpr;
-import org.drools.constraint.parser.ast.expr.TemporalLiteralChunkExpr;
-import org.drools.constraint.parser.ast.expr.TemporalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.ast.expr.TemporalChunkExpr;
+import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
+import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;

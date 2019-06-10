@@ -2,7 +2,7 @@ package org.drools.modelcompiler.builder.generator.operatorspec;
 
 import java.util.Optional;
 
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;

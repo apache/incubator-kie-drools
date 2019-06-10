@@ -48,7 +48,7 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toSet;
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;

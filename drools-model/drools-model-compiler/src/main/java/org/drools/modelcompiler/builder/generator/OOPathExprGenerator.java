@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.drools.constraint.parser.ast.expr.OOPathChunk;
-import org.drools.constraint.parser.ast.expr.OOPathExpr;
+import org.drools.mvel.parser.ast.expr.OOPathChunk;
+import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;

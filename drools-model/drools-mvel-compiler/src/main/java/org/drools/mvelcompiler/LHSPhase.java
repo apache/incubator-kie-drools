@@ -14,8 +14,8 @@ import com.github.javaparser.ast.nodeTypes.NodeWithType;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getSetter;
 
 public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Context> {
