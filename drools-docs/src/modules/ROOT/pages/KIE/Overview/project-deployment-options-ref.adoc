@@ -16,19 +16,17 @@ ifdef::DM,PAM[]
 |Deployment to an OpenShift environment
 |{OPENSHIFT} combines Docker and Kubernetes and enables you to create and manage containers. You can install both {CENTRAL} and {KIE_SERVER} on OpenShift. {PRODUCT} provides templates that you can use to deploy a {PRODUCT} authoring environment, managed server environment, immutable server environment, or trial environment on OpenShift. With OpenShift, components of {PRODUCT} are deployed as separate OpenShift pods. You can scale each of the pods up and down individually, providing as few or as many containers as necessary for a particular component. You can use standard OpenShift methods to manage the pods and balance the load.
 a|
+* {URL_DEPLOYING_IMMUTABLE_ON_OPENSHIFT}[_{DEPLOYING_IMMUTABLE_ON_OPENSHIFT}_]
 ifdef::PAM[]
-{URL_DEPLOYING_AUTHORING_ON_OPENSHIFT}[_{DEPLOYING_AUTHORING_ON_OPENSHIFT}_]
-
-{URL_DEPLOYING_MANAGED_ON_OPENSHIFT}[_{DEPLOYING_MANAGED_ON_OPENSHIFT}_]
+* {URL_DEPLOYING_AUTHORING_ON_OPENSHIFT}[_{DEPLOYING_AUTHORING_ON_OPENSHIFT}_]
+* {URL_DEPLOYING_MANAGED_FREEFORM_ON_OPENSHIFT}[_{DEPLOYING_MANAGED_FREEFORM_ON_OPENSHIFT}_]
 endif::[]
 ifdef::DM[]
-{URL_DEPLOYING_AUTHORING_MANAGED_ON_OPENSHIFT}[_{DEPLOYING_AUTHORING_MANAGED_ON_OPENSHIFT}_]
+* {URL_DEPLOYING_AUTHORING_MANAGED_ON_OPENSHIFT}[_{DEPLOYING_AUTHORING_MANAGED_ON_OPENSHIFT}_]
 endif::[]
-
-{URL_DEPLOYING_IMMUTABLE_ON_OPENSHIFT}[_{DEPLOYING_IMMUTABLE_ON_OPENSHIFT}_]
-
-{URL_DEPLOYING_TRIAL_ON_OPENSHIFT}[_{DEPLOYING_TRIAL_ON_OPENSHIFT}_]
-endif::[]
+* {URL_DEPLOYING_OPENSHIFT_AUTOMATION_BROKER}[_{DEPLOYING_OPENSHIFT_AUTOMATION_BROKER}_]
+* {URL_DEPLOYING_OPENSHIFT_OPERATOR}[_{DEPLOYING_OPENSHIFT_OPERATOR}_]
+* {URL_DEPLOYING_TRIAL_ON_OPENSHIFT}[_{DEPLOYING_TRIAL_ON_OPENSHIFT}_]
 
 |Deployment to {KIE_SERVER}
 |{KIE_SERVER} is the server provided with {PRODUCT} that runs the decision services, process applications, and other deployable assets from a packaged and deployed {PRODUCT} project (KJAR file). These services are consumed at run time through an instantiated KIE container, or _deployment unit_. You can deploy and maintain deployment units in {KIE_SERVER} using {CENTRAL} or using a {HEADLESS_CONTROLLER} with its associated REST API (considered a _managed_ {KIE_SERVER} instance). You can also deploy and maintain deployment units using the {KIE_SERVER} REST API or Java client API from a standalone Maven project, an embedded Java application, or other custom environment (considered an _unmanaged_ {KIE_SERVER} instance).
