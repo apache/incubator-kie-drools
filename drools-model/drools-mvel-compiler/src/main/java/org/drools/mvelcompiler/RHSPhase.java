@@ -43,7 +43,6 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.util.OptionalUtils;
 
 import static java.util.stream.Stream.of;
 import static org.drools.core.util.ClassUtils.getAccessor;
@@ -65,7 +64,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private final MvelCompilerContext mvelCompilerContext;
 
-    public RHSPhase(MvelCompilerContext mvelCompilerContext) {
+    RHSPhase(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;
     }
 
@@ -111,10 +110,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             return Optional.ofNullable(field);
         });
 
-        return OptionalUtils.map2(lastTypedExpression, fieldType, (te, ft) -> {
-            Node parent = n.getParentNode().get(); // TODO fix this
-            return new FieldAccessTExpr(te, ft);
-        });
+        return map2(lastTypedExpression, fieldType, FieldAccessTExpr::new);
     }
 
     private Optional<TypedExpression> asDeclaration(SimpleName n) {
@@ -130,7 +126,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> scopeType = arg.getScopeType();
         Optional<Method> optAccessor = scopeType.flatMap(t -> Optional.ofNullable(getAccessor((Class) t, n.asString())));
 
-        return map2(lastTypedExpression, optAccessor, (lt, accessor) -> new FieldToAccessorTExpr(lt, accessor));
+        return map2(lastTypedExpression, optAccessor, FieldToAccessorTExpr::new);
     }
 
     @Override
