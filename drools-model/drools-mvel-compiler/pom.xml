@@ -58,7 +58,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              org.drools.model.*
+              org.drools.mvelcompiler.*
             </Export-Package>
           </instructions>
         </configuration>
