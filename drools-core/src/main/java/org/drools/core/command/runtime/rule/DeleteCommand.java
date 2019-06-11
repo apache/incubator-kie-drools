@@ -72,7 +72,7 @@ public class DeleteCommand
 
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        ksession.getEntryPoint( handle.getEntryPointId() ).delete( handle, fhState );
+        ksession.getEntryPoint( handle.getEntryPointName() ).delete( handle, fhState );
         return null;
     }
 

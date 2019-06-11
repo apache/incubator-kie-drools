@@ -137,8 +137,8 @@ public class DynamicEntryPoint extends NamedEntryPoint {
                     handle = this.objectStore.reconnect(handle);
                 }
 
-                if (handle.getEntryPoint() != this) {
-                    throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
+                if (!handle.getEntryPointId().equals( entryPoint )) {
+                    throw new IllegalArgumentException("Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPointId() + "' instead of '" + getEntryPointId() + "'");
                 }
 
                 this.objectStore.removeHandle(handle);

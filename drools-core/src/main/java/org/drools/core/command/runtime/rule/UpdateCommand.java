@@ -96,7 +96,7 @@ public class UpdateCommand implements ExecutableCommand<Void> {
 
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        EntryPoint ep = ksession.getEntryPoint( handle.getEntryPointId() );
+        EntryPoint ep = ksession.getEntryPoint( handle.getEntryPointName() );
         if (modifiedProperties != null) {
             ep.update( handle, object, modifiedProperties );
         } else {

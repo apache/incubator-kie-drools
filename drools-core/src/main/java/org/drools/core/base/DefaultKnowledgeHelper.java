@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.ModedAssertion;
@@ -384,7 +383,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void update(final FactHandle handle,
                        final Object newObject){
         InternalFactHandle h = (InternalFactHandle) handle;
-        h.getEntryPoint().update( h,
+        h.getEntryPoint(workingMemory).update( h,
                                   newObject,
                                   onlyTraitBitSetMask(),
                                   newObject.getClass(),
@@ -408,7 +407,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             return;
         }
 
-        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint(workingMemory)).update( h,
                                                                       ((InternalFactHandle)handle).getObject(),
                                                                       mask,
                                                                       modifiedClass,
@@ -453,7 +452,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             return;
         }
 
-        ((InternalFactHandle) handle).getEntryPoint().delete(handle,
+        ((InternalFactHandle) handle).getEntryPoint(workingMemory).delete(handle,
                                                              this.activation.getRule(),
                                                              this.activation.getTuple().getTupleSink(),
                                                              fhState);
@@ -484,11 +483,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public Object get(final Declaration declaration) {
-        WorkingMemoryEntryPoint wmTmp = (this.tuple.get( declaration )).getEntryPoint();
-        return wmTmp != null ?
-               declaration.getValue( wmTmp.getInternalWorkingMemory(),
-                                                     this.tuple.getObject( declaration ) )
-                             : null;
+        return declaration.getValue( workingMemory, this.tuple.getObject( declaration ) );
     }
 
     public Declaration getDeclaration(final String identifier) {

@@ -15,16 +15,12 @@
 
 package org.drools.core.common;
 
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.base.ArrayElements;
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.spi.Tuple;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
-import org.kie.api.runtime.rule.FactHandle;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,12 +30,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.ArrayElements;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.Tuple;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.kie.api.runtime.rule.FactHandle;
 
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -96,11 +97,7 @@ public class DisconnectedFactHandle
         this.objectHashCode = objectHashCode;
         this.recency = recency;
         this.entryPointId = entryPointId;
-        if( object instanceof DroolsQuery ) {
-            this.object = (ArrayElements) object;
-        } else {
-            this.object = object;
-        }
+        this.object = object;
         this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
 
@@ -148,8 +145,7 @@ public class DisconnectedFactHandle
         this.objectHashCode = Integer.parseInt(elements[3]);
         this.recency = Long.parseLong( elements[4] );
         this.entryPointId = elements[5].trim();
-        this.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
-        // TODO: this method does NOT set the this.object field, which impacts the value of the toExternalForm() method!
+        this.traitType = TraitTypeEnum.valueOf( elements[6] );
     }
 
     @Override
@@ -386,8 +382,14 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public String getEntryPointId() {
-        return entryPointId;
+    public EntryPointId getEntryPointId() {
+        return new EntryPointId(entryPointId);
+    }
+
+    @Override
+    public WorkingMemoryEntryPoint getEntryPoint( InternalWorkingMemory wm ) {
+        throw new UnsupportedOperationException( "org.drools.core.common.DisconnectedFactHandle.getEntryPoint -> TODO" );
+
     }
 
     public static DisconnectedFactHandle newFrom( FactHandle handle ) {
@@ -399,7 +401,7 @@ public class DisconnectedFactHandle
                                               ifh.getIdentityHashCode(),
                                               ifh.getObjectHashCode(),
                                               ifh.getRecency(),
-                                              ifh.getEntryPoint() != null ? ifh.getEntryPoint().getEntryPointId() : null,
+                                              ifh.getEntryPointName(),
                                               ifh.getObject(),
                                               ifh.isTraitOrTraitable() );
         }

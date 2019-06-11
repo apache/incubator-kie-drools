@@ -123,7 +123,7 @@ public class ModifyCommand implements ExecutableCommand<Object> {
 
     public Object execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        EntryPoint wmep = ksession.getEntryPoint( factHandle.getEntryPointId() );
+        EntryPoint wmep = ksession.getEntryPoint( factHandle.getEntryPointName() );
 
         Object object = wmep.getObject( this.factHandle );
         MVELSafeHelper.getEvaluator().eval( getMvelExpr(), object );

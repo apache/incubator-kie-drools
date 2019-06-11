@@ -16,12 +16,14 @@
 
 package org.drools.core.common;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.LinkedList;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 
@@ -88,6 +90,20 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         if ( wmEntryPoint.getKnowledgeBase() != null && wmEntryPoint.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() ) {
             notExpiredPartitions = new AtomicInteger( RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER );
         }
+    }
+
+    protected EventFactHandle(int id,
+                              int identityHashCode,
+                              Object object,
+                              long recency,
+                              long timestamp,
+                              long duration,
+                              EntryPointId entryPointId,
+                              TraitTypeEnum traitType ) {
+
+        super( id, identityHashCode, object, recency, entryPointId, traitType );
+        this.startTimestamp = timestamp;
+        this.duration = duration;
     }
 
     protected String getFormatVersion() {
@@ -252,36 +268,39 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
 
     public EventFactHandle clone() {
         EventFactHandle clone = new EventFactHandle( getId(),
+                                                      getIdentityHashCode(),
                                                       getObject(),
                                                       getRecency(),
                                                       getStartTimestamp(),
                                                       getDuration(),
-                                                      getEntryPoint(),
-                                                      isTraitOrTraitable() );
+                                                      getEntryPointId(),
+                                                      getTraitType() );
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
-        clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
         clone.linkedTuples = this.linkedTuples.clone();
         clone.setObjectHashCode(getObjectHashCode());
+        clone.wmEntryPoint = this.wmEntryPoint;
         return clone;
     }
 
     private EventFactHandle cloneWithoutTuples() {
         EventFactHandle clone = new EventFactHandle( getId(),
-                                                     getObject(),
-                                                     getRecency(),
-                                                     getStartTimestamp(),
-                                                     getDuration(),
-                                                     getEntryPoint(),
-                                                     isTraitOrTraitable() );
+                getIdentityHashCode(),
+                getObject(),
+                getRecency(),
+                getStartTimestamp(),
+                getDuration(),
+                getEntryPointId(),
+                getTraitType() );
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
-        clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
+        clone.linkedTuples = this.linkedTuples.newInstance();
         clone.setObjectHashCode(getObjectHashCode());
+        clone.wmEntryPoint = this.wmEntryPoint;
         return clone;
     }
 

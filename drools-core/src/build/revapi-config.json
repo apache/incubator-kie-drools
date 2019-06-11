@@ -54,6 +54,47 @@
           "methodName": "<init>",
           "elementKind": "constructor",
           "justification": "Added new parameter for external objects to be passed in"
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method org.drools.core.WorkingMemoryEntryPoint org.drools.core.common.DefaultFactHandle::getEntryPoint()",
+          "new": "method org.drools.core.WorkingMemoryEntryPoint org.drools.core.common.DefaultFactHandle::getEntryPoint(org.drools.core.common.InternalWorkingMemory)",
+          "package": "org.drools.core.common",
+          "classSimpleName": "DefaultFactHandle",
+          "methodName": "getEntryPoint",
+          "elementKind": "method",
+          "justification": "Allow serialization of fact handles"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void org.drools.core.common.DefaultFactHandle::setEntryPoint(org.drools.core.WorkingMemoryEntryPoint)",
+          "package": "org.drools.core.common",
+          "classSimpleName": "DefaultFactHandle",
+          "methodName": "setEntryPoint",
+          "elementKind": "method",
+          "justification": "Allow serialization of fact handles"
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method java.lang.String org.drools.core.common.DisconnectedFactHandle::getEntryPointId()",
+          "new": "method org.drools.core.rule.EntryPointId org.drools.core.common.DisconnectedFactHandle::getEntryPointId()",
+          "oldType": "java.lang.String",
+          "newType": "org.drools.core.rule.EntryPointId",
+          "package": "org.drools.core.common",
+          "classSimpleName": "DisconnectedFactHandle",
+          "methodName": "getEntryPointId",
+          "elementKind": "method",
+          "justification": "Allow serialization of fact handles"
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method org.drools.core.WorkingMemoryEntryPoint org.drools.core.common.QueryElementFactHandle::getEntryPoint()",
+          "new": "method org.drools.core.WorkingMemoryEntryPoint org.drools.core.common.QueryElementFactHandle::getEntryPoint(org.drools.core.common.InternalWorkingMemory)",
+          "package": "org.drools.core.common",
+          "classSimpleName": "QueryElementFactHandle",
+          "methodName": "getEntryPoint",
+          "elementKind": "method",
+          "justification": "Allow serialization of fact handles"
         }
       ]
     }

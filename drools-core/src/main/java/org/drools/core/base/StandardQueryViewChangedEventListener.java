@@ -25,7 +25,7 @@ public class StandardQueryViewChangedEventListener
     public InternalFactHandle getHandle(InternalFactHandle originalHandle) {
         // can be null for eval, not and exists that have no right input
         return new DefaultFactHandle( originalHandle.getId(),
-                                      ( originalHandle.getEntryPoint() != null ) ?  originalHandle.getEntryPoint().getEntryPointId() : null,
+                                      originalHandle.getEntryPointId() != null ? originalHandle.getEntryPointId().getEntryPointId() : null,
                                       originalHandle.getIdentityHashCode(),
                                       originalHandle.getObjectHashCode(),
                                       originalHandle.getRecency(),
