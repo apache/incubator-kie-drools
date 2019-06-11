@@ -116,7 +116,7 @@ public class FEELParser {
         return errorChecker.getErrors();
     }
 
-    private static void defineVariables(Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
+    public static void defineVariables(Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
         inputVariableTypes.forEach( (name, type) -> {
             parser.getHelper().defineVariable( name, type );
             if (type.getName() != null) {

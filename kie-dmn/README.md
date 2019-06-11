@@ -131,3 +131,31 @@ according to the FEEL grammar, these are not valid function names, as `and` and 
 2. __TypeRef link between Decision Tables and Item Definitions__: on decision tables/input clause,
   if no values list is defined, the engine automatically checks the type reference and apply the
   allowed values check if it is defined.
+  
+# Developer tooling: Using ANTLR's "grun"
+
+Experimentally, a test rig tailored to the characteristics of the FEEL non-context free semantics is provided.
+
+Ensure the `kie-dmn` is fully build correctly.
+
+From inside `kie-dmn-feel` project, execute `mvn dependency:copy-dependencies` to copy project dependencies inside the target directory.
+This will help launching the tool from command line.
+
+To input the expression via standard input, execute `java -cp "target/*:target/dependency/*" org.kie.dmn.feel.parser.feel11.FEELTestRig FEEL_1_1 compilation_unit -gui`.
+Enter the expression as usual for Antlr's `grun` with standard input.
+On Linux, you can use CTRL+D to send EOF to trigger the parser.
+
+To input the expression via text file, execute `java -cp "target/*:target/dependency/*" org.kie.dmn.feel.parser.feel11.FEELTestRig FEEL_1_1 compilation_unit -gui input.txt`.
+
+For instance:
+
+```
+echo "sum(1+2)" > target/input.txt
+java -cp "target/*:target/dependency/*" org.kie.dmn.feel.parser.feel11.FEELTestRig FEEL_1_1 compilation_unit -gui target/input.txt
+
+```
+
+The above allow to run the usual ANTLR's "grun" test rig with the FEEL grammar.
+
+However, in order to fully leverage the non-context-free characteristics as dictated by the DMN specification is necessary to provide the variable names in scope.
+Please reference specific utility class inside the test suite for more details.
