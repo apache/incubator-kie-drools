@@ -12,6 +12,10 @@
     <semantic:itemDefinition name="tBooleanList" isCollection="true" label="tBooleanList">
         <semantic:typeRef>boolean</semantic:typeRef>
     </semantic:itemDefinition>
+    
+    <semantic:itemDefinition name="tNumberList" isCollection="true" label="tNumberList">
+        <semantic:typeRef>number</semantic:typeRef>
+    </semantic:itemDefinition>
 
     <semantic:businessKnowledgeModel id="_tvl_all" name="all">
         <semantic:variable name="all" id="_tvl_all_1" typeRef="Any"/>
@@ -58,7 +62,7 @@
     <semantic:businessKnowledgeModel id="_tvl_sum" name="sum">
         <semantic:variable name="sum" id="_tvl_sum_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_sum_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_sum_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_sum_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_sum_4">
                     <semantic:variable name="class" id="_tvl_sum_5" typeRef="string"/>
@@ -79,7 +83,7 @@
     <semantic:businessKnowledgeModel id="_tvl_mean" name="mean">
         <semantic:variable name="mean" id="_tvl_mean_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_mean_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_mean_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_mean_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_mean_4">
                     <semantic:variable name="class" id="_tvl_mean_5" typeRef="string"/>
@@ -100,7 +104,7 @@
     <semantic:businessKnowledgeModel id="_tvl_count" name="count">
         <semantic:variable name="count" id="_tvl_count_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_count_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_count_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_count_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_count_4">
                     <semantic:variable name="class" id="_tvl_count_5" typeRef="string"/>
@@ -121,7 +125,7 @@
     <semantic:businessKnowledgeModel id="_tvl_max" name="max">
         <semantic:variable name="max" id="_tvl_max_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_max_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_max_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_max_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_max_4">
                     <semantic:variable name="class" id="_tvl_max_5" typeRef="string"/>
@@ -142,7 +146,7 @@
     <semantic:businessKnowledgeModel id="_tvl_min" name="min">
         <semantic:variable name="min" id="_tvl_min_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_min_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_min_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_min_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_min_4">
                     <semantic:variable name="class" id="_tvl_min_5" typeRef="string"/>
@@ -163,7 +167,7 @@
     <semantic:businessKnowledgeModel id="_tvl_median" name="median">
         <semantic:variable name="median" id="_tvl_median_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_median_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_median_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_median_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_median_4">
                     <semantic:variable name="class" id="_tvl_median_5" typeRef="string"/>
@@ -184,7 +188,7 @@
     <semantic:businessKnowledgeModel id="_tvl_mode" name="mode">
         <semantic:variable name="mode" id="_tvl_mode_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_mode_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_mode_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_mode_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_mode_4">
                     <semantic:variable name="class" id="_tvl_mode_5" typeRef="string"/>
@@ -205,7 +209,7 @@
     <semantic:businessKnowledgeModel id="_tvl_stddev" name="stddev">
         <semantic:variable name="stddev" id="_tvl_stddev_1" typeRef="Any"/>
         <semantic:encapsulatedLogic id="_tvl_stddev_2" kind="Java" typeRef="Any" >
-            <semantic:formalParameter name="list" typeRef="tBooleanList" id="_tvl_stddev_3"/>
+            <semantic:formalParameter name="list" typeRef="tNumberList" id="_tvl_stddev_3"/>
             <semantic:context>
                 <semantic:contextEntry id="_tvl_stddev_4">
                     <semantic:variable name="class" id="_tvl_stddev_5" typeRef="string"/>

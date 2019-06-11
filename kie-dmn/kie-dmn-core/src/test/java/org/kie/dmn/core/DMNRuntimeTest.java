@@ -599,6 +599,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         context.set( "BureauData", bureau );
         context.set( "SupportingDocuments", "yes" );
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context );
+        LOG.debug("{}", dmnResult);
         final DMNContext ctx = dmnResult.getContext();
 
         assertThat( ctx.get( "ApplicationRiskScore" ), is( BigDecimal.valueOf( 130 ) ) );
@@ -1947,6 +1948,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        LOG.debug("{}", dmnResult);
 
         final DMNContext resultContext = dmnResult.getContext();
         assertThat(((Map<String, Object>) ((List) resultContext.get("MACDTable")).get(0)).get("aDate"), is(LocalDate.of(2018, 3, 5)));

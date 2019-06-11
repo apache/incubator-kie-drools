@@ -31,6 +31,7 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNContextFEELCtxWrapper;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -108,6 +109,7 @@ public class DMNFunctionDefinitionEvaluator
         private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
         private final FunctionDefinition functionDefinition;
+        private final boolean performRuntimeTypeCheck;
 
         public DMNFunction(String name, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
             super( name );
@@ -116,6 +118,7 @@ public class DMNFunctionDefinitionEvaluator
             this.evaluator = evaluator;
             this.eventManager = eventManager;
             this.resultContext = result;
+            performRuntimeTypeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         }
 
         public Object invoke(EvaluationContext ctx, Object[] params) {
@@ -128,7 +131,22 @@ public class DMNFunctionDefinitionEvaluator
                 if( evaluator != null ) {
                     previousContext.getAll().forEach(dmnContext::set);
                     for( int i = 0; i < params.length; i++ ) {
-                        dmnContext.set( parameters.get( i ).name, params[i] );
+                        final String paramName = parameters.get(i).name;
+                        if ((!performRuntimeTypeCheck) || parameters.get(i).type.isAssignableValue(params[i])) {
+                            ctx.setValue(paramName, params[i]);
+                        } else {
+                            ctx.setValue(paramName, null);
+                            MsgUtil.reportMessage(logger,
+                                                  DMNMessage.Severity.WARN,
+                                                  functionDefinition,
+                                                  resultContext,
+                                                  null,
+                                                  null,
+                                                  Msg.PARAMETER_TYPE_MISMATCH,
+                                                  paramName,
+                                                  parameters.get(i).type,
+                                                  params[i]);
+                        }
                     }
                     resultContext.setContext( dmnContext );
                     EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );

@@ -18,7 +18,6 @@ package org.kie.dmn.core.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,12 +30,7 @@ import javax.xml.namespace.QName;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.kie.api.KieBase;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -44,6 +38,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNPackage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -56,6 +51,7 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
+import org.kie.dmn.core.ast.DMNFunctionWithReturnType;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
@@ -379,7 +375,12 @@ public class DMNRuntimeImpl
 
             EvaluatorResult er = bkm.getEvaluator().evaluate( this, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
-                FEELFunction resultFn = (FEELFunction) er.getResult();
+                final FEELFunction original_fn = (FEELFunction) er.getResult();
+                FEELFunction resultFn = original_fn;
+                if (typeCheck) {
+                    DMNType resultType = b.getResultType();
+                    resultFn = new DMNFunctionWithReturnType(original_fn, resultType, result, b);
+                }
                 result.getContext().set(bkm.getBusinessKnowledModel().getVariable().getName(), resultFn);
             }
         } catch( Throwable t ) {
