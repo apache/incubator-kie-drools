@@ -42,11 +42,13 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.compiler.CoerceDecisionServiceSingletonOutputOption;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
@@ -243,6 +245,11 @@ public class DMNAssemblerService implements KieAssemblerService {
             compilerConfiguration = compilerConfigWithKModulePrefs(kbuilderImpl.getRootClassLoader(), kbuilderImpl.getBuilderConfiguration().getChainedProperties(), dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
         } else {
             compilerConfiguration = externalCompilerConfiguration;
+        }
+
+        if (isStrictMode(kbuilderImpl.getBuilderConfiguration().getChainedProperties())) {
+            compilerConfiguration.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
+            compilerConfiguration.setProperty(CoerceDecisionServiceSingletonOutputOption.PROPERTY_NAME, "false");
         }
 
         return DMNFactory.newCompiler(compilerConfiguration);

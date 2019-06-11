@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
-public class KieExtendedForLoopTest extends BaseFEELTest {
+public class FEEL12ExtendedForLoopTest extends BaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
@@ -50,7 +50,7 @@ public class KieExtendedForLoopTest extends BaseFEELTest {
             {"for i in 0..10 return if i = 0 then 1 else i * partial[-1]", Stream.of(1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 ).map(BigDecimal::valueOf).collect(Collectors.toList() ), null},
 
         };
-        return addAdditionalParameters(cases, true);
+        return addAdditionalParameters(cases, false);
     }
 
     private static List<Object> l(final Object... args) {

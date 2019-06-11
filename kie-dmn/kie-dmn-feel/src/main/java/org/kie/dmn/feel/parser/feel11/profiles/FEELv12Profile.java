@@ -21,13 +21,13 @@ import java.util.List;
 
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
+import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 
 public class FEELv12Profile implements FEELProfile {
 
     @Override
     public List<FEELFunction> getFEELFunctions() {
-        return Arrays.asList(KieExtendedDMNFunctions.getFunctions());
+        return Arrays.asList(BuiltInFunctions.getFunctions());
     }
 
 }

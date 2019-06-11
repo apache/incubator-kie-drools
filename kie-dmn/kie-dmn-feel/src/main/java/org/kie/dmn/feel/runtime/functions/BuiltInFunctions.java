@@ -47,8 +47,6 @@ public class BuiltInFunctions {
             new MaxFunction(),
             new SumFunction(),
             new MeanFunction(),
-            new AllFunction(),
-            new AnyFunction(),
             new SublistFunction(),
             new AppendFunction(),
             new ConcatenateFunction(),
@@ -66,7 +64,23 @@ public class BuiltInFunctions {
             new NotFunction(),
             new SortFunction(),
             new GetEntriesFunction(),
-            new GetValueFunction()
+            new GetValueFunction(),
+            
+            new AllFunction(),
+            new AnyFunction(),
+            AbsFunction.INSTANCE,
+            ModuloFunction.INSTANCE,
+            ProductFunction.INSTANCE,
+            SplitFunction.INSTANCE,
+            StddevFunction.INSTANCE,
+            ModeFunction.INSTANCE,
+            AbsFunction.INSTANCE,
+            SqrtFunction.INSTANCE,
+            LogFunction.INSTANCE,
+            ExpFunction.INSTANCE,
+            EvenFunction.INSTANCE,
+            OddFunction.INSTANCE,
+            MedianFunction.INSTANCE,
             };
 
     public static FEELFunction[] getFunctions() {

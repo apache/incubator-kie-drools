@@ -73,7 +73,6 @@ import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.parser.feel11.profiles.FEELv12Profile;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.DMNElementReference;
@@ -182,11 +181,6 @@ public class DMNCompilerImpl implements DMNCompiler {
         model.setRuntimeTypeCheck(((DMNCompilerConfigurationImpl) dmnCompilerConfig).getOption(RuntimeTypeCheckOption.class).isRuntimeTypeCheck());
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
         List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
-        if (dmndefs instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase && !helperFEELProfiles.stream().anyMatch(FEELv12Profile.class::isInstance)) {
-            helperFEELProfiles.clear();
-            helperFEELProfiles.add(new FEELv12Profile());
-            helperFEELProfiles.addAll(cc.getFeelProfiles());
-        }
         DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
         DMNCompilerContext ctx = new DMNCompilerContext(feel);
 

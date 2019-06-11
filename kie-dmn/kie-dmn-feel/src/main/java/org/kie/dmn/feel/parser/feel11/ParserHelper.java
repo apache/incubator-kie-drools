@@ -63,8 +63,8 @@ public class ParserHelper {
     private Scope         currentScope = symbols.getGlobalScope();
     private Stack<String> currentName  = new Stack<>();
     private int dynamicResolution = 0;
-    private boolean featDMN12EnhancedForLoopEnabled = false; // DROOLS-2307 DMN enhanced for loop
-    private boolean featDMN12weekday = false; // DROOLS-2648 DMN v1.2 weekday on 'date', 'date and time'
+    private boolean featDMN12EnhancedForLoopEnabled = true; // DROOLS-2307 DMN enhanced for loop
+    private boolean featDMN12weekday = true; // DROOLS-2648 DMN v1.2 weekday on 'date', 'date and time'
 
     public ParserHelper() {
         this( null );

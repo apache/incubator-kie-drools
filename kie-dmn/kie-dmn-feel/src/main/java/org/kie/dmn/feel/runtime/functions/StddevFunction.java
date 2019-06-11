@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -23,9 +23,6 @@ import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.util.EvalHelper;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
