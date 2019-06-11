@@ -40,5 +40,12 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Fabric8 client used exclusively for tests purposes only -->
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-server-mock</artifactId>
+      <version>${version.kubernetes-client}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
