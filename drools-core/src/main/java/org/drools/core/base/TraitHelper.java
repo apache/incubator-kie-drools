@@ -59,9 +59,9 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.internal.runtime.beliefs.Mode;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
@@ -133,7 +133,7 @@ public class TraitHelper implements Externalizable {
             if ( ! originators.contains( t ) ) {
                 InternalFactHandle h = (InternalFactHandle) lookupFactHandle( t );
                 if ( h != null ) {
-                    NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
+                    NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint(workingMemory);
                     PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                                            PropagationContext.Type.MODIFICATION,
                                                                                                            activation != null ? activation.getRule() : null,
@@ -166,7 +166,7 @@ public class TraitHelper implements Externalizable {
             if ( x != x.getCore() ) {
                 Object core = x.getCore();
                 InternalFactHandle coreHandle = (InternalFactHandle) getFactHandle( core );
-                ((NamedEntryPoint) coreHandle.getEntryPoint()).update(
+                ((NamedEntryPoint) coreHandle.getEntryPoint(workingMemory)).update(
                         coreHandle,
                         core,
                         mask,
@@ -289,7 +289,7 @@ public class TraitHelper implements Externalizable {
             BitMask mask = fieldTMS == null ? onlyTraitBitSetMask() : fieldTMS.getModificationMask();
 
             Object o = h.getObject();
-            NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
+            NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint(workingMemory);
             PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                                    PropagationContext.Type.MODIFICATION,
                                                                                                    activation.getRule(),
@@ -455,7 +455,7 @@ public class TraitHelper implements Externalizable {
         TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? builder.asTraitable( core, coreDef ) : (TraitableBean<K,? extends TraitableBean>) core;
         if ( needsWrapping ) {
             InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
-            WorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint() : ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint( "DEFAULT" );
+            WorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint(workingMemory) : ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint( "DEFAULT" );
             ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
 
             ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
@@ -570,7 +570,7 @@ public class TraitHelper implements Externalizable {
                        final Object newObject,
                        final Activation activation ){
         InternalFactHandle h = (InternalFactHandle) handle;
-        h.getEntryPoint().update( h,
+        h.getEntryPoint(workingMemory).update( h,
                                   newObject,
                                   onlyTraitBitSetMask(),
                                   newObject.getClass(),
@@ -582,7 +582,7 @@ public class TraitHelper implements Externalizable {
                         Class<?> modifiedClass,
                         Activation activation ) {
         InternalFactHandle h = (InternalFactHandle) handle;
-        ((NamedEntryPoint) h.getEntryPoint()).update( h,
+        ((NamedEntryPoint) h.getEntryPoint(workingMemory)).update( h,
                                                       ((InternalFactHandle)handle).getObject(),
                                                       mask,
                                                       modifiedClass,
@@ -593,7 +593,7 @@ public class TraitHelper implements Externalizable {
     }
 
     public void delete( final FactHandle handle, Activation activation ) {
-        ((InternalFactHandle) handle).getEntryPoint().delete( handle,
+        ((InternalFactHandle) handle).getEntryPoint(workingMemory).delete( handle,
                                                               activation.getRule(),
                                                               activation.getTuple().getTupleSink() );
     }

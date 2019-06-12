@@ -16,18 +16,19 @@
 
 package org.drools.core.common;
 
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.spi.Tuple;
+import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.factmodel.traits.TraitTypeEnum;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.Tuple;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class QueryElementFactHandle
@@ -97,9 +98,13 @@ public class QueryElementFactHandle
         this.object = object;
     }    
 
-    public WorkingMemoryEntryPoint getEntryPoint() {
+    public EntryPointId getEntryPointId() {
         return null;
-        //throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    @Override
+    public WorkingMemoryEntryPoint getEntryPoint( InternalWorkingMemory wm ) {
+        return null;
     }
 
     public EqualityKey getEqualityKey() {

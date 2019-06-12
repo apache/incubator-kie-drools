@@ -41,13 +41,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private final    LeftTupleNode      rootNode;
+    private          LeftTupleNode      rootNode;
     private          LeftTupleNode      tipNode;
-    private final    LinkedList<Memory> nodeMemories;
+    private          LinkedList<Memory> nodeMemories;
     private          long               linkedNodeMask;
     private          long               dirtyNodeMask;
     private          long               allLinkedMaskTest;
-    private final    List<PathMemory>   pathMemories;
+    private          List<PathMemory>   pathMemories;
     private          long               segmentPosMaskBit;
     private          int                pos = -1;
     private          TupleSets<LeftTuple> stagedLeftTuples;
@@ -56,6 +56,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          SegmentMemory      next;
 
     private transient List<PathMemory>  dataDrivenPathMemories;
+
+    public SegmentMemory() { }
 
     public SegmentMemory(LeftTupleNode rootNode) {
         this.rootNode = rootNode;

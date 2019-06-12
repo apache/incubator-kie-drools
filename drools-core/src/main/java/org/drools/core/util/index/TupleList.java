@@ -16,6 +16,8 @@
 
 package org.drools.core.util.index;
 
+import java.io.Serializable;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
@@ -24,7 +26,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 
-public class TupleList implements TupleMemory, Entry<TupleList> {
+public class TupleList implements TupleMemory, Entry<TupleList>, Serializable {
 
     public static final long       serialVersionUID = 510l;
 

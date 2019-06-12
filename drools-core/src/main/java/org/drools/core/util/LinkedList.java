@@ -81,7 +81,9 @@ public class LinkedList<T extends LinkedListNode<T>>
         }     
         
         // current equals last Node, so set previous (this avoids the null writting in stream
-        current.setPrevious( previous );        
+        if (current != null) {
+            current.setPrevious( previous );
+        }
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

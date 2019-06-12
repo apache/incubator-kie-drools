@@ -170,7 +170,7 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
 
         BetaNode betaNode = ( (BetaNode) getTupleSink() );
         BetaConstraints constraints = betaNode.getRawConstraints();
-        InternalWorkingMemory wm = getFactHandle().getEntryPoint().getInternalWorkingMemory();
+        InternalWorkingMemory wm = getFactHandle().getWorkingMemory();
         BetaMemory bm = (BetaMemory) wm.getNodeMemory( (MemoryFactory) getTupleSink() );
         TupleMemory rtm = bm.getRightTupleMemory();
         FastIterator it = betaNode.getRightIterator( rtm );

@@ -29,9 +29,12 @@ import org.slf4j.LoggerFactory;
 public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<RuleAgendaItem> {
 
     private static final Logger log = LoggerFactory.getLogger(RuleAgendaItem.class);
-    public           RuleExecutor   executor;
-    private          RuleAgendaItem previous;
-    private          RuleAgendaItem next;
+
+    private transient RuleExecutor executor;
+    private RuleAgendaItem previous;
+    private RuleAgendaItem next;
+    private PathMemory pmem;
+    private boolean declarativeAgendaEnabled;
 
     public RuleAgendaItem() {
 
@@ -46,10 +49,14 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
                           boolean declarativeAgendaEnabled,
                           InternalAgendaGroup agendaGroup) {
         super(activationNumber, tuple, salience, context, rtn, agendaGroup);
-        executor = new RuleExecutor(pmem, this, declarativeAgendaEnabled);
+        this.pmem = pmem;
+        this.declarativeAgendaEnabled = declarativeAgendaEnabled;
     }
 
     public RuleExecutor getRuleExecutor() {
+        if (executor == null) {
+            executor = new RuleExecutor(pmem, this, declarativeAgendaEnabled);
+        }
         return executor;
     }
 

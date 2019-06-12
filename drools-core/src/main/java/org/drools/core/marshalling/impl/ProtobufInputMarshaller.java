@@ -453,7 +453,7 @@ public class ProtobufInputMarshaller {
                                             InternalFactHandle handle,
                                             List<PropagationContext> pctxs) {
         Object object = handle.getObject();
-        WorkingMemoryEntryPoint ep = handle.getEntryPoint();
+        WorkingMemoryEntryPoint ep = handle.getEntryPoint(wm);
         ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
 
         PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
@@ -558,7 +558,7 @@ public class ProtobufInputMarshaller {
             InternalFactHandle handle = (InternalFactHandle) context.handles.get( _key.getHandleId() );
 
             // ObjectTypeConf state is not marshalled, so it needs to be re-determined
-            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint) handle.getEntryPoint()).getEntryPoint(),
+            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getEntryPointId(),
                                                                                                          handle.getObject() );
             if ( !typeConf.isTMSEnabled() && (!wasOTCSerialized || tmsEnabled.contains(typeConf.getTypeName()) ) ) {
                 typeConf.enableTMS();
@@ -570,8 +570,8 @@ public class ProtobufInputMarshaller {
 
             if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                 // not yet added to the object stores
-                ((NamedEntryPoint) handle.getEntryPoint()).getObjectStore().addHandle( handle,
-                                                                                       handle.getObject() );
+                ((NamedEntryPoint) handle.getEntryPoint((( NamedEntryPoint ) wmep).getInternalWorkingMemory())).getObjectStore()
+                        .addHandle( handle, handle.getObject() );
                 // add handle to object type node
                 assertHandleIntoOTN( context,
                                      context.wm,
@@ -628,7 +628,7 @@ public class ProtobufInputMarshaller {
                                                     (context.kBase == null) ? null : context.kBase.getRootClassLoader() );
                     }
 
-                    ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint) handle.getEntryPoint()).getEntryPoint(),
+                    ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getEntryPointId(),
                                                                                                                  handle.getObject() );
                     tms.readLogicalDependency( handle,
                                                object,

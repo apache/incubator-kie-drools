@@ -54,7 +54,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     private           LinkedList<LogicalDependency<T>>               justified;
     private           LinkedList<LogicalDependency<SimpleMode>>      blocked;
     private           LinkedList<SimpleMode>                         blockers;
-    private           InternalAgendaGroup                            agendaGroup;
+    private transient InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
     private           InternalFactHandle                             activationFactHandle;

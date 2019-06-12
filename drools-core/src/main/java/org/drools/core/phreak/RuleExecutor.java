@@ -391,7 +391,7 @@ public class RuleExecutor {
                         if ( handle.expirePartition() && handle.isExpired() ) {
                             if ( handle.getActivationsCount() <= 0 ) {
                                 // and if no more activations, retract the handle
-                                handle.getEntryPoint().delete( handle );
+                                handle.getEntryPoint(wm).delete( handle );
                             }
                         }
                     }

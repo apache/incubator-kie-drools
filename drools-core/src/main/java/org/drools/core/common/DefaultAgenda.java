@@ -1500,7 +1500,7 @@ public class DefaultAgenda
         ObjectTypeNode.retractLeftTuples( factHandle, ectx, workingMemory );
         ObjectTypeNode.retractRightTuples( factHandle, ectx, workingMemory );
         if ( factHandle.isPendingRemoveFromStore() ) {
-            String epId = factHandle.getEntryPoint().getEntryPointId();
+            String epId = factHandle.getEntryPointName();
             ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
         }
     }

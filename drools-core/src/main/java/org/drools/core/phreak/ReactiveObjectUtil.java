@@ -53,15 +53,10 @@ public class ReactiveObjectUtil {
             ReactiveFromNode node = (ReactiveFromNode)leftTuple.getTupleSink();
 
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
-            InternalWorkingMemory wm = getInternalWorkingMemory(propagationContext);
+            InternalWorkingMemory wm = propagationContext.getFactHandle().getWorkingMemory();
 
             wm.addPropagation(new ReactivePropagation(object, (ReactiveFromNodeLeftTuple)leftTuple, propagationContext, node, sink, type));
         }
-    }
-
-    private static InternalWorkingMemory getInternalWorkingMemory(PropagationContext propagationContext) {
-        InternalFactHandle fh = propagationContext.getFactHandle();
-        return fh.getEntryPoint().getInternalWorkingMemory();
     }
 
     static class ReactivePropagation extends PropagationEntry.AbstractPropagationEntry {

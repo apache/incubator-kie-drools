@@ -1796,7 +1796,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             if (factHandle.getOtnCount() == 0) {
                 factHandle.setExpired( true );
                 if (factHandle.getActivationsCount() == 0) {
-                    String epId = factHandle.getEntryPoint().getEntryPointId();
+                    String epId = factHandle.getEntryPointName();
                     ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
                 } else {
                     factHandle.setPendingRemoveFromStore( true );
