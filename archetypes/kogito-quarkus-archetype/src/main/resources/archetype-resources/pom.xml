@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
-  <version>${version}</version>
+  <groupId>\${groupId}</groupId>
+  <artifactId>\${artifactId}</artifactId>
+  <version>\${version}</version>
 
-  <description>Generated project ${artifactId}</description>
+  <description>Generated project \${artifactId}</description>
 
   <properties>
-    <quarkus.version>@version.io.quarkus@</quarkus.version>
-    <kogito.version>@version.org.kie.kogito@</kogito.version>
-    <swagger.version>@version.swagger@</swagger.version>
+    <quarkus.version>${version.io.quarkus}</quarkus.version>
+    <kogito.version>${version.org.kie.kogito}</kogito.version>
+    <swagger.version>${version.swagger}</swagger.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -100,16 +100,16 @@
             <apiSource>
               <springmvc>false</springmvc>
               <locations>
-                <location>${groupId}</location>
+                <location>\${groupId}</location>
               </locations>
               <schemes>http,https</schemes>
               <info>
-                <title>${project.description}</title>
-                <version>${project.version}</version>
+                <title>\${project.description}</title>
+                <version>\${project.version}</version>
               </info>
-              <outputPath>${basedir}/target/classes/META-INF/resources/docs/</outputPath>
+              <outputPath>\${basedir}/target/classes/META-INF/resources/docs/</outputPath>
               <outputFormats>json,yaml</outputFormats>
-              <swaggerDirectory>${basedir}/target/classes/META-INF/resources/docs/</swaggerDirectory>
+              <swaggerDirectory>\${basedir}/target/classes/META-INF/resources/docs/</swaggerDirectory>
               <swaggerFileName>swagger</swaggerFileName>
             </apiSource>
           </apiSources>

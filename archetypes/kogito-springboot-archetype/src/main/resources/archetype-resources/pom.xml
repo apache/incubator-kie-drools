@@ -9,16 +9,16 @@
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
 
-  <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
-  <version>${version}</version>
+  <groupId>\${groupId}</groupId>
+  <artifactId>\${artifactId}</artifactId>
+  <version>\${version}</version>
 
-  <description>Generated project ${artifactId}</description>
+  <description>Generated project \${artifactId}</description>
 
   <properties>
-    <java.version>1.8</java.version>
-    <kogito.version>@version.org.kie.kogito@</kogito.version>
-    <swagger.version>@version.swagger@</swagger.version>
+    <java.version>1.8</java.version>    
+    <kogito.version>${version.org.kie.kogito}</kogito.version>
+    <swagger.version>${version.swagger}</swagger.version>
     <cxf.version>3.2.6</cxf.version>
     <dependencyInjection>false</dependencyInjection>
   </properties>
@@ -93,16 +93,16 @@
             <apiSource>
               <springmvc>false</springmvc>
               <locations>
-                <location>${groupId}</location>
+                <location>\${groupId}</location>
               </locations>
               <schemes>http,https</schemes>
               <info>
-                <title>${project.description}</title>
-                <version>${project.version}</version>
+                <title>\${project.description}</title>
+                <version>\${project.version}</version>
               </info>
-              <outputPath>${basedir}/target/classes/static/</outputPath>
+              <outputPath>\${basedir}/target/classes/static/</outputPath>
               <outputFormats>json,yaml</outputFormats>
-              <swaggerDirectory>${basedir}/target/classes/static/</swaggerDirectory>
+              <swaggerDirectory>\${basedir}/target/classes/static/</swaggerDirectory>
               <swaggerFileName>swagger</swaggerFileName>
             </apiSource>
           </apiSources>
