@@ -8,7 +8,6 @@
   </appender>
 
   <logger name="org.kie" level="info"/>
-  <logger name="org.drools.mvelcompiler.LHSPhase" level="DEBUG" />
   <logger name="org.drools" level="info"/>
 
   <root level="warn">
