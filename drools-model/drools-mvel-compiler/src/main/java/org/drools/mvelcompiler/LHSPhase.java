@@ -50,14 +50,14 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     }
 
     public TypedExpression invoke(Statement statement) {
-        logger.debug("RHS phase on:\t\t" + printConstraint(statement));
+        logger.debug("LHS phase on:\t\t" + printConstraint(statement));
         Context ctx = new Context();
 
         TypedExpression typedExpression = statement.accept(this, ctx);
         if (typedExpression == null) {
             throw new MvelCompilerException("Type check of " + printConstraint(statement) + " failed.");
         }
-        logger.debug("RHS phase completed");
+        logger.debug("LHS phase completed");
         return typedExpression;
     }
 
