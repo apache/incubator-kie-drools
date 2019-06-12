@@ -51,12 +51,12 @@ import static org.junit.Assert.fail;
 
 public class DefaultPartitionedSearchPhaseTest {
 
-    @Test(timeout = 1000)
+    @Test(timeout = 5_000L)
     public void partCount() {
         partCount(SolverConfig.MOVE_THREAD_COUNT_NONE);
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 5_000L)
     public void partCountAndMoveThreadCount() {
         partCount("2");
     }
@@ -117,7 +117,7 @@ public class DefaultPartitionedSearchPhaseTest {
         phaseConfig.setSolutionPartitionerCustomProperties(map);
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 5_000L)
     public void exceptionPropagation() {
         final int partSize = 7;
         final int partCount = 3;
@@ -138,7 +138,7 @@ public class DefaultPartitionedSearchPhaseTest {
         }
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 5_000L)
     public void terminateEarly() throws InterruptedException, ExecutionException {
         final int partSize = 1;
         final int partCount = 2;
@@ -172,7 +172,7 @@ public class DefaultPartitionedSearchPhaseTest {
         assertNotNull(solutionFuture.get());
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 5_000L)
     public void shutdownMainThreadAbruptly() throws InterruptedException {
         final int partSize = 5;
         final int partCount = 3;
