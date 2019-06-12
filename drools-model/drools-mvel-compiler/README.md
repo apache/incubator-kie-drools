@@ -15,6 +15,6 @@ The idea of the algorithm is split into three phases
 3. Use the expression type to set the type of the undeclared variables in an assignment expression and transform field accessor 
 to setters in [LHSPhase](src/main/java/org/drools/mvelcompiler/LHSPhase.java)
 
-The 2. and 3. phases uses explicit navigation of the ASTs returned by `drools-mvel-parser`, while the preprocessing phase uses JavaParser's utilities to 
+The 2. and 3. phases use explicit navigation of the ASTs returned by `drools-mvel-parser`, while the preprocessing phase uses JavaParser's utilities to 
 replace specific nodes.
 
