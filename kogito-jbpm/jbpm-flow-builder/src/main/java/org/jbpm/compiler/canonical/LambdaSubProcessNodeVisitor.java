@@ -83,6 +83,9 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
                 .ifPresent(m -> m.setBody(unbind(variableScope, subProcessNode, subProcessModel)));
 
         addFactoryMethodWithArgs(body, nodeVar, "subProcessFactory", retValue);
+        
+        visitMetaData(subProcessNode.getMetaData(), body, "subProcessNode" + node.getId());
+        
         addFactoryMethodWithArgs(body, nodeVar, "done");
     }
 

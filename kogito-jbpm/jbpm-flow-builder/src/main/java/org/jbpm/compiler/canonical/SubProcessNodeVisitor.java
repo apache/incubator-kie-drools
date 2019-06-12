@@ -46,6 +46,8 @@ public class SubProcessNodeVisitor extends AbstractVisitor {
         for (Entry<String, String> entry : subProcessNode.getOutMappings().entrySet()) {
             addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
+        
+        visitMetaData(subProcessNode.getMetaData(), body, "subProcessNode" + node.getId());
 
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "done");
     }

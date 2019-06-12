@@ -57,6 +57,8 @@ public class WorkItemNodeVisitor extends AbstractVisitor {
         
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "done");
         
+        visitMetaData(workItemNode.getMetaData(), body, "workItemNode" + node.getId());
+        
         metadata.getWorkItems().add(workName);
     }
     

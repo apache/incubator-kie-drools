@@ -75,7 +75,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     @Override
     public <S> void send(Signal<S> signal) {
         legacyProcessInstance.signalEvent(signal.channel(), signal.payload());
-       
+        unbind(variables, legacyProcessInstance.getVariables());
     }
 
     @Override

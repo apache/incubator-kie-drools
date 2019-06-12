@@ -42,6 +42,8 @@ public class ProcessMetaData {
     private Set<String> workItems = new HashSet<>();
     private Set<String> subProcesses = new HashSet<>();
     
+    private Map<String, String> signals = new HashMap<>();
+    
     private Map<String, CompilationUnit> generatedHandlers = new HashMap<>();
     private Set<CompilationUnit> generatedListeners = new HashSet<>();
 
@@ -146,6 +148,14 @@ public class ProcessMetaData {
         this.generatedListeners = generatedListeners;
     }
 
+    public Map<String, String> getSignals() {
+        return signals;
+    }
+
+    public void setSignals(Map<String, String> signals) {
+        this.signals = signals;
+    }
+    
     @Override
     public String toString() {
         return "ProcessMetaData [processClassName=" + processClassName +
@@ -153,4 +163,5 @@ public class ProcessMetaData {
                 ", processName=" + processName + ", processVersion=" + processVersion +
                 ", workItems=" + workItems + "]";
     }
+
 }

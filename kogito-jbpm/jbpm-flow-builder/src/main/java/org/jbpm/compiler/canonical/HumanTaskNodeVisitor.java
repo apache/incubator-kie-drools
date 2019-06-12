@@ -41,6 +41,8 @@ public class HumanTaskNodeVisitor extends AbstractVisitor {
         
         addFactoryMethodWithArgs(body, "humanTaskNode" + node.getId(), "done");
         
+        visitMetaData(humanTaskNode.getMetaData(), body, "humanTaskNode" + node.getId());    
+        
         metadata.getWorkItems().add(work.getName());
     }
 }

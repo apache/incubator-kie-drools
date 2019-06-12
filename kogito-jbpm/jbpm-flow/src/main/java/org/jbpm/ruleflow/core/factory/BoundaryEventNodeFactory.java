@@ -41,6 +41,13 @@ public class BoundaryEventNodeFactory extends NodeFactory {
         getBoundaryEventNode().setMetaData("AttachedTo", attachedToUniqueId);
         return this;
     }
+    
+    public BoundaryEventNodeFactory attachedTo(String attachedToId) {
+        attachedToUniqueId = attachedToId;
+        getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
+        getBoundaryEventNode().setMetaData("AttachedTo", attachedToUniqueId);
+        return this;
+    }
 
     protected Node createNode() {
         return new BoundaryEventNode();

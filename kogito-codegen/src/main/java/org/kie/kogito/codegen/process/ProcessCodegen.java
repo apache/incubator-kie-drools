@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen.process;
 
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.SemanticModules;
@@ -37,6 +38,7 @@ import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.compiler.canonical.ModelMetaData;
+import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -51,7 +53,7 @@ import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.xml.sax.SAXException;
 
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 /**
  * Entry point to process code generation
@@ -176,6 +178,7 @@ public class ProcessCodegen implements Generator {
         Map<String, ModelClassGenerator> processIdToModelGenerator = new HashMap<>();
         
         Map<String, List<UserTaskModelMetaData>> processIdToUserTaskModel = new HashMap<>();
+        Map<String, ProcessMetaData> processIdToMetadata = new HashMap<>();
 
         // first we generate all the data classes from variable declarations
         for (WorkflowProcess workFlowProcess : processes.values()) {
@@ -199,7 +202,7 @@ public class ProcessCodegen implements Generator {
         for (WorkflowProcess workFlowProcess : processes.values()) {
             ProcessExecutableModelGenerator execModelGen =
                     new ProcessExecutableModelGenerator(workFlowProcess, execModelGenerator);
-            execModelGen.generate();
+            processIdToMetadata.put(workFlowProcess.getId(), execModelGen.generate());
             processExecutableModelGenerators.add(execModelGen);
         }
         
@@ -234,8 +237,9 @@ public class ProcessCodegen implements Generator {
                         modelClassGenerator.className(),
                         execModelGen.className())
                         .withCdi(dependencyInjection)
-                        .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()));
-
+                        .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
+                        .withSignals(processIdToMetadata.get(workFlowProcess.getId()).getSignals());
+                
                 rgs.add(resourceGenerator);
             }
 

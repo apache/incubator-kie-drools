@@ -15,7 +15,17 @@
 
 package org.kie.kogito.codegen.process;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.UserTaskModelMetaData;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.impl.Sig;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -23,21 +33,24 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BinaryExpr.Operator;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.UserTaskModelMetaData;
-import org.kie.api.definition.process.WorkflowProcess;
-
-import static com.github.javaparser.StaticJavaParser.parse;
 
 public class ResourceGenerator {
 
@@ -54,7 +67,8 @@ public class ResourceGenerator {
     private boolean hasCdi;
     
     private List<UserTaskModelMetaData> userTasks;
-
+    private Map<String, String> signals;
+    
     public ResourceGenerator(
             WorkflowProcess process,
             String modelfqcn,
@@ -78,6 +92,11 @@ public class ResourceGenerator {
     
     public ResourceGenerator withUserTasks(List<UserTaskModelMetaData> userTasks) {
         this.userTasks = userTasks;
+        return this;
+    }
+    
+    public ResourceGenerator withSignals(Map<String, String> signals) {
+        this.signals = signals;
         return this;
     }
 
@@ -121,6 +140,54 @@ public class ResourceGenerator {
                 template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, userTask.getInputMoodelClassSimpleName(), userTask.getOutputMoodelClassSimpleName()));
                 template.findAll(NameExpr.class).forEach(c -> interpolateUserTaskNameExp(c, userTask));
                 
+            }
+        }
+        
+        if (signals != null) {
+            
+            int index = 0;
+            for (Entry<String, String> entry : signals.entrySet()) {
+                MethodDeclaration signalMethod = new MethodDeclaration()
+                        .setName("signal_" + index)
+                        .setType(modelfqcn)
+                        .setModifiers(Keyword.PUBLIC)
+                        .addAnnotation("POST")
+                        .addSingleMemberAnnotation("Path", new StringLiteralExpr("/{id}/" + entry.getKey()))
+                        .addSingleMemberAnnotation("Produces", "MediaType.APPLICATION_JSON");
+                
+                signalMethod.addAndGetParameter("Long", "id").addSingleMemberAnnotation("PathParam", new StringLiteralExpr("id"));
+                
+                if (entry.getValue() != null) {
+                    signalMethod.addSingleMemberAnnotation("Consumes", "MediaType.APPLICATION_JSON");                    
+                    signalMethod.addAndGetParameter(entry.getValue(), "data");
+                }
+                
+                // method body to signal process instance                
+                MethodCallExpr newSignal = new MethodCallExpr(new NameExpr(Sig.class.getCanonicalName()), "of")
+                        .addArgument(new StringLiteralExpr(entry.getKey()))
+                        .addArgument(entry.getValue() != null ? new NameExpr("data") : new NullLiteralExpr());
+                MethodCallExpr instances = new MethodCallExpr(new NameExpr("process"), "instances");
+                MethodCallExpr findById = new MethodCallExpr(instances, "findById").addArgument(new NameExpr("id"));
+                MethodCallExpr getOptional = new MethodCallExpr(findById, "orElse").addArgument(new NullLiteralExpr());
+                
+                VariableDeclarator processInstance = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(ProcessInstance.class.getCanonicalName()), 
+                                                                                                     NodeList.nodeList(new ClassOrInterfaceType(null, modelfqcn))),
+                                                                                                     "pi",
+                                                                                                     getOptional);
+                // local variable for process instance
+                VariableDeclarationExpr processInstanceField = new VariableDeclarationExpr(processInstance);
+                // signal only when there is non null process instance
+                IfStmt processInstanceExists = new IfStmt(new BinaryExpr(new NameExpr("pi"), new NullLiteralExpr(), Operator.EQUALS), 
+                                                new ReturnStmt(new NullLiteralExpr()), 
+                                                 null);
+                
+                MethodCallExpr send = new MethodCallExpr(new NameExpr("pi"), "send").addArgument(newSignal);
+                // return current state of variables after the signal
+                MethodCallExpr variables = new MethodCallExpr(new NameExpr("pi"), "variables");
+                signalMethod.createBody().addStatement(processInstanceField).addStatement(processInstanceExists).addStatement(send).addStatement(new ReturnStmt(variables));  
+                
+                
+                template.addMember(signalMethod);
             }
         }
         

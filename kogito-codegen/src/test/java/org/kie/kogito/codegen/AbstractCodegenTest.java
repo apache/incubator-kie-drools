@@ -47,11 +47,11 @@ public class AbstractCodegenTest {
     protected Application generateCodeProcessesOnly(String... processes) throws Exception {
         return generateCode(Arrays.asList(processes), Collections.emptyList());
     }
-    
+
     protected Application generateCodeRulesOnly(String... rules) throws Exception {
         return generateCode( Collections.emptyList(), Arrays.asList(rules), true );
     }
-    
+
     protected Application generateCode(List<String> processResources, List<String> rulesResources) throws Exception {
         return generateCode( processResources, rulesResources, false );
     }
@@ -93,12 +93,12 @@ public class AbstractCodegenTest {
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).as(Arrays.toString(result.getErrors())).hasSize(0);
-        
+
         TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 
         @SuppressWarnings("unchecked")
         Class<Application> app = (Class<Application>) Class.forName(this.getClass().getPackage().getName() + ".Application", true, cl);
-        
+
         return app.newInstance();
     }
 
