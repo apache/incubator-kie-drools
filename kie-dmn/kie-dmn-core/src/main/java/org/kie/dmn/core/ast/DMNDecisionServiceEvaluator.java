@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.ast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.slf4j.Logger;
@@ -63,20 +65,42 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         List<String> decisionIDs = dsNode.getDecisionService().getOutputDecision().stream().map(er -> DMNCompilerImpl.getId(er)).collect(Collectors.toList());
         DMNResult evaluateById = dmnRuntime.evaluateById(dmnModel, result.getContext().clone(), decisionIDs.toArray(new String[]{}));
         Map<String, Object> ctx = new HashMap<String, Object>();
+        List<DMNDecisionResult> decisionResults = new ArrayList<>();
         for (String id : decisionIDs) {
             DMNDecisionResult decisionResultById = evaluateById.getDecisionResultById(id);
             String decisionName = dmnModel.getDecisionById(id).getName();
             ctx.put(decisionName, decisionResultById.getResult());
-            result.getContext().set(decisionName, decisionResultById.getResult());
-            if (transferResult) {
-                result.addDecisionResult(decisionResultById);
-            }
+            decisionResults.add(decisionResultById);
         }
         boolean errors = false;
         for (DMNMessage m : evaluateById.getMessages()) {
             result.addMessage(m);
             if (m.getSeverity() == Severity.ERROR) {
                 errors = true;
+            }
+        }
+        if (((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel())) {
+            Object c = DMNRuntimeImpl.coerceUsingType(ctx,
+                                                      dsNode.getResultType(),
+                                                      (rx, tx) -> MsgUtil.reportMessage(LOG,
+                                                                                        DMNMessage.Severity.WARN,
+                                                                                        dsNode.getDecisionService(),
+                                                                                        result,
+                                                                                        null,
+                                                                                        null,
+                                                                                        Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                                                                        dsNode.getDecisionService().getName() != null ? dsNode.getDecisionService().getName() : dsNode.getDecisionService().getId(),
+                                                                                        tx,
+                                                                                        MsgUtil.clipString(rx.toString(), 50)));
+            if (c == null) {
+                ctx.clear();
+                decisionResults.clear();
+            }
+        }
+        for (DMNDecisionResult dr : decisionResults) {
+            result.getContext().set(dr.getDecisionName(), dr.getResult());
+            if (transferResult) {
+                result.addDecisionResult(dr);
             }
         }
         DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionService(eventManager, dsNode, result);

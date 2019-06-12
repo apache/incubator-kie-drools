@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -266,7 +267,38 @@ public class DMNRuntimeImpl
                                                                Msg.REQ_INPUT_NOT_FOUND_FOR_DS,
                                                                getDependencyIdentifier(decisionService, dep),
                                                                getIdentifier(decisionService));
+                    final boolean walkingIntoScope = walkIntoImportScope(result, decisionService, dep);
                     result.getContext().set(dep.getName(), null);
+                    if (walkingIntoScope) {
+                        result.getContext().popScope();
+                    }
+                } else {
+                    final boolean walkingIntoScope = walkIntoImportScope(result, decisionService, dep);
+                    final Object originalValue = result.getContext().get(dep.getName());
+                    DMNType depType = ((DMNModelImpl) model).getTypeRegistry().unknown();
+                    if (dep instanceof InputDataNode) {
+                        depType = ((InputDataNode) dep).getType();
+                    } else if (dep instanceof DecisionNode) {
+                        depType = ((DecisionNode) dep).getResultType();
+                    }
+                    Object c = coerceUsingType(originalValue,
+                                               depType,
+                                               (r, t) -> MsgUtil.reportMessage(logger,
+                                                                               DMNMessage.Severity.WARN,
+                                                                               decisionService.getDecisionService(),
+                                                                               result,
+                                                                               null,
+                                                                               null,
+                                                                               Msg.PARAMETER_TYPE_MISMATCH_DS,
+                                                                               getIdentifier(decisionService),
+                                                                               t,
+                                                                               MsgUtil.clipString(r.toString(), 50)));
+                    if (c != originalValue) { //intentional by-reference
+                        result.getContext().set(dep.getName(), c);
+                    }
+                    if (walkingIntoScope) {
+                        result.getContext().popScope();
+                    }
                 }
             }
             EvaluatorResult evaluate = new DMNDecisionServiceEvaluator(decisionService, true, false).evaluate(this, result); // please note singleton output coercion does not influence anyway when invoked DS on a model.
@@ -395,6 +427,20 @@ public class DMNRuntimeImpl
                                    t.getMessage() );
         } finally {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateBKM( eventManager, bkm, result );
+        }
+    }
+
+    public static Object coerceUsingType(Object value, DMNType type, BiConsumer<Object, DMNType> nullCallback) {
+        Object result = value;
+        if (!type.isCollection() && value instanceof Collection && ((Collection<?>) value).size() == 1) {
+            // as per Decision evaluation result.
+            result = ((Collection<?>) value).toArray()[0];
+        }
+        if (type.isAssignableValue(result)) {
+            return result;
+        } else {
+            nullCallback.accept(value, type);
+            return null;
         }
     }
 

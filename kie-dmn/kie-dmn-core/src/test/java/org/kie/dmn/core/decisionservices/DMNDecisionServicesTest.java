@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.junit.Test;
+import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -344,7 +345,9 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DS given inputdata");
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()),
+                   dmnResult.getMessages().stream().anyMatch(m -> m.getSourceId().equals("_cf49add9-84a4-40ac-8306-1eea599ff43c") && m.getLevel() == Level.WARNING),
+                   is(true));
     }
 
     @Test

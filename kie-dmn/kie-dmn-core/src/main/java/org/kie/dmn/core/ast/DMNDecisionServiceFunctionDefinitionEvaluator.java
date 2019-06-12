@@ -154,21 +154,19 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
         private Object performTypeCheckIfNeeded(Object param, int paramIndex) {
             if (typeCheck) {
                 DSFormalParameter dsFormalParameter = parameters.get(paramIndex);
-                if (dsFormalParameter.type.isAssignableValue(param)) {
-                    return param;
-                } else {
-                    MsgUtil.reportMessage(LOG,
-                                          DMNMessage.Severity.WARN,
-                                          null,
-                                          resultContext,
-                                          null,
-                                          null,
-                                          Msg.PARAMETER_TYPE_MISMATCH_DS,
-                                          dsFormalParameter.name,
-                                          dsFormalParameter.type,
-                                          MsgUtil.clipString(param.toString(), 50));
-                    return null;
-                }
+                Object result = DMNRuntimeImpl.coerceUsingType(param, 
+                                                               dsFormalParameter.type, 
+                                                               (rx, tx) -> MsgUtil.reportMessage(LOG,
+                                                                                                 DMNMessage.Severity.WARN,
+                                                                                                 null,
+                                                                                                 resultContext,
+                                                                                                 null,
+                                                                                                 null,
+                                                                                                 Msg.PARAMETER_TYPE_MISMATCH_DS,
+                                                                                                 dsFormalParameter.name,
+                                                                                                 tx,
+                                                                                                 MsgUtil.clipString(rx.toString(), 50)));
+                return result;
             } else {
                 return param;
             }
