@@ -67,8 +67,8 @@ public class Consequence {
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
     public static final Set<String> implicitDroolsMethods = new HashSet<>();
 
-    private Expression createAsKnoledgeHelperExpression() {
-        return parseExpression("((" + DroolsImpl.class.getCanonicalName() + ") drools).asKnowledgeHelper()");
+    private Expression createAsKnowledgeHelperExpression() {
+        return parseExpression(String.format("((%s) drools).asKnowledgeHelper()", DroolsImpl.class.getCanonicalName()));
     }
 
     static {
@@ -255,7 +255,7 @@ public class Consequence {
                     methodCallExpr.setScope(new NameExpr("drools"));
                 }
                 if (knowledgeHelperMethods.contains(methodCallExpr.getNameAsString())) {
-                    methodCallExpr.setScope(createAsKnoledgeHelperExpression());
+                    methodCallExpr.setScope(createAsKnowledgeHelperExpression());
                 } else if (methodCallExpr.getNameAsString().equals("update")) {
                     if (methodCallExpr.toString().contains( "FactHandle" )) {
                         methodCallExpr.setScope( new NameExpr( "((org.drools.modelcompiler.consequence.DroolsImpl) drools)" ) );
