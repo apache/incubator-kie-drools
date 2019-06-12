@@ -16,17 +16,17 @@
 package org.kie.kogito;
 
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.rules.RuleUnits;
 
 /**
  * Entry point for accessing business automation components
  * such as processes, rules, decisions, etc.
- * 
+ * <p>
  * It should be considered as singleton kind of object that can be safely
  * used across entire application.
- *
  */
 public interface Application {
-    
+
     /**
      * Returns configuration of the application
      * @return current configuration
@@ -38,6 +38,10 @@ public interface Application {
      * @return processes information or null of non found
      */
     default Processes processes() {
+        return null;
+    }
+
+    default RuleUnits ruleUnits() {
         return null;
     }
 }

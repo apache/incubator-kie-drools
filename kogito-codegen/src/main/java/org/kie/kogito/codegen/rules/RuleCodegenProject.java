@@ -43,13 +43,13 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
 
     public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = RuleCodegenProject::new;
 
-    private ModuleSourceClass moduleGenerator;
+    private RuleUnitContainerGenerator moduleGenerator;
 
     public RuleCodegenProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule, classLoader);
     }
 
-    public RuleCodegenProject withModuleGenerator(ModuleSourceClass moduleGenerator) {
+    public RuleCodegenProject withModuleGenerator(RuleUnitContainerGenerator moduleGenerator) {
         this.moduleGenerator = moduleGenerator;
         return this;
     }

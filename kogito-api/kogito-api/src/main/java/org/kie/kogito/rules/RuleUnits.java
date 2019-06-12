@@ -1,9 +1,8 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,13 +13,8 @@
  * limitations under the License.
  */
 
-package org.drools.modelcompiler;
+package org.kie.kogito.rules;
 
-import org.kie.api.runtime.KieSession;
-import org.kie.kogito.rules.RuleConfig;
-
-public interface KieRuntimeBuilder {
-    KieSession newKieSession();
-    KieSession newKieSession(String sessionName);
-    KieSession newKieSession(String sessionName, RuleConfig ruleConfig);
+public interface RuleUnits {
+    KieRuntimeBuilder ruleRuntimeBuilder();
 }

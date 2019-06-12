@@ -88,11 +88,12 @@ public class AbstractCodegenTest {
             String fileName = entry.relativePath();
             sources[index++] = fileName;
             srcMfs.write(fileName, entry.contents());
+            System.out.println(new String(entry.contents()));
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
-        assertThat(result.getErrors()).hasSize(0);
+        assertThat(result.getErrors()).as(Arrays.toString(result.getErrors())).hasSize(0);
         
         TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 

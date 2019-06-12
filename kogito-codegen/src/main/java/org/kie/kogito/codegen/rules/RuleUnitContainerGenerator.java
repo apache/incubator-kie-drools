@@ -16,11 +16,7 @@
 package org.kie.kogito.codegen.rules;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import org.drools.core.config.DefaultRuleEventListenerConfig;
-import org.kie.kogito.rules.RuleUnit;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -36,8 +32,13 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.config.DefaultRuleEventListenerConfig;
+import org.kie.kogito.codegen.ApplicationSection;
+import org.kie.kogito.rules.KieRuntimeBuilder;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnits;
 
-public class ModuleSourceClass {
+public class RuleUnitContainerGenerator implements ApplicationSection {
 
     private final String packageName;
     private final String generatedFilePath;
@@ -46,10 +47,10 @@ public class ModuleSourceClass {
     private String targetTypeName;
     private boolean hasCdi;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
-    
+
     private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
 
-    public ModuleSourceClass(String packageName) {
+    public RuleUnitContainerGenerator(String packageName) {
         this.packageName = packageName;
         this.targetTypeName = "Module";
         this.targetCanonicalName = packageName + "." + targetTypeName;
@@ -84,7 +85,7 @@ public class ModuleSourceClass {
         return compilationUnit;
     }
 
-    public MethodDeclaration addRuleUnitFactoryMethod( RuleUnitSourceClass r) {
+    public MethodDeclaration addRuleUnitFactoryMethod(RuleUnitSourceClass r) {
         MethodDeclaration methodDeclaration = new MethodDeclaration()
                 .addModifier(Modifier.Keyword.PUBLIC)
                 .setName("create" + r.targetTypeName())
@@ -95,47 +96,64 @@ public class ModuleSourceClass {
         this.factoryMethods.add(methodDeclaration);
         return methodDeclaration;
     }
-    
-    public Collection<BodyDeclaration<?>> getApplicationBodyDeclaration() {
-        List<BodyDeclaration<?>> declarations = new ArrayList<>();
+
+    public MethodDeclaration factoryMethod() {
+        return new MethodDeclaration()
+                .setType(RuleUnits.class.getCanonicalName())
+                .setName("ruleUnits")
+                .setModifiers(Modifier.Keyword.PUBLIC)
+                .setBody(new BlockStmt().addStatement(new ReturnStmt().setExpression(
+                        new ObjectCreationExpr().setType("RuleUnits")
+                )));
+    }
+
+    @Override
+    public ClassOrInterfaceDeclaration classDeclaration() {
+
+        NodeList<BodyDeclaration<?>> declarations = new NodeList<>();
         FieldDeclaration kieRuntimeFieldDeclaration = new FieldDeclaration();
-                
-        
-        if (hasCdi) {            
+
+        if (hasCdi) {
             kieRuntimeFieldDeclaration.addAnnotation("javax.inject.Inject")
-            .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, org.drools.modelcompiler.KieRuntimeBuilder.class.getCanonicalName()), "ruleRuntimeBuilder"));
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()), "ruleRuntimeBuilder"));
         } else {
             kieRuntimeFieldDeclaration.addVariable(new VariableDeclarator(
-                                                                          new ClassOrInterfaceType(null, org.drools.modelcompiler.KieRuntimeBuilder.class.getCanonicalName()), 
-                                                                          "ruleRuntimeBuilder",
-                                                                          new ObjectCreationExpr(null, new ClassOrInterfaceType(null, "org.drools.project.model.ProjectRuntime"), NodeList.nodeList())));
-        }        
+                    new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()),
+                    "ruleRuntimeBuilder",
+                    new ObjectCreationExpr(null, new ClassOrInterfaceType(null, "org.drools.project.model.ProjectRuntime"), NodeList.nodeList())));
+        }
         declarations.add(kieRuntimeFieldDeclaration);
         MethodDeclaration methodDeclaration = new MethodDeclaration()
                 .addModifier(Modifier.Keyword.PUBLIC)
                 .setName("ruleRuntimeBuilder")
-                .setType(org.drools.modelcompiler.KieRuntimeBuilder.class.getCanonicalName())
+                .setType(KieRuntimeBuilder.class.getCanonicalName())
                 .setBody(new BlockStmt().addStatement(new ReturnStmt(new FieldAccessExpr(new ThisExpr(), "ruleRuntimeBuilder"))));
-        
+
         declarations.add(methodDeclaration);
-        
-        return declarations;
+
+        declarations.addAll(factoryMethods);
+
+        return new ClassOrInterfaceDeclaration()
+                .setModifiers(Modifier.Keyword.PUBLIC)
+                .setName("RuleUnits")
+                .addImplementedType(RuleUnits.class.getCanonicalName())
+                .setMembers(declarations);
     }
 
-    public static ClassOrInterfaceType ruleUnitType( String canonicalName) {
+    public static ClassOrInterfaceType ruleUnitType(String canonicalName) {
         return new ClassOrInterfaceType(null, RuleUnit.class.getCanonicalName())
                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName));
     }
 
-    public ModuleSourceClass withCdi(boolean hasCdi) {
+    public RuleUnitContainerGenerator withCdi(boolean hasCdi) {
         this.hasCdi = hasCdi;
         return this;
     }
 
     public List<RuleUnitSourceClass> getRuleUnits() {
         return ruleUnits;
-    }    
-    
+    }
+
     public void setRuleEventListenersConfigClass(String ruleEventListenersConfigClass) {
         this.ruleEventListenersConfigClass = ruleEventListenersConfigClass;
     }
@@ -143,5 +161,4 @@ public class ModuleSourceClass {
     public String ruleEventListenersConfigClass() {
         return ruleEventListenersConfigClass;
     }
-    
 }

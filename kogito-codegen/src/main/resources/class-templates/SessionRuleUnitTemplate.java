@@ -1,6 +1,6 @@
 package org.drools.project.model;
 
-import org.drools.modelcompiler.KieRuntimeBuilder;
+import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.impl.SessionMemory;
 import org.drools.modelcompiler.SessionRuleUnitInstance;
 import org.kie.kogito.rules.RuleUnit;

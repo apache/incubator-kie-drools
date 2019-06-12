@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderUtil;
@@ -42,6 +41,7 @@ import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
@@ -77,7 +77,7 @@ public class IncrementalRuleCodegen implements Generator {
     }
 
     @Override
-    public Collection<BodyDeclaration<?>> factoryMethods() {
+    public ApplicationSection section() {
         return null;
     }
 
@@ -161,8 +161,4 @@ public class IncrementalRuleCodegen implements Generator {
         }
     }
 
-    @Override
-    public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
-        return Collections.emptyList();
-    }
 }

@@ -56,6 +56,12 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.impl.AbstractProcess;
 
+/**
+ * Generates the Process&lt;T&gt; container
+ * for a process, which encapsulates its "executable model".
+ *
+ * @see org.kie.kogito.process.Process
+ */
 public class ProcessGenerator {
 
     private final String packageName;
@@ -348,7 +354,10 @@ public class ProcessGenerator {
                         .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName))
                         .addAnnotation("javax.inject.Inject");
                 } else {
-                    MethodCallExpr initSubProcessField = new MethodCallExpr(new NameExpr("app"), "create" + StringUtils.capitalize(subProcessId) + "Process");
+                    // app.processes().create$Subprocess()
+                    MethodCallExpr initSubProcessField = new MethodCallExpr(
+                            new MethodCallExpr(new NameExpr("app"), "processes"),
+                            "create" + StringUtils.capitalize(subProcessId) + "Process");
                     
                     subprocessFieldDeclaration
                     .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName));

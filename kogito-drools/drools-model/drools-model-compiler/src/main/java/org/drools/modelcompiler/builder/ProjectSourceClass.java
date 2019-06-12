@@ -5,6 +5,7 @@ import org.drools.model.Model;
 import org.kie.api.KieBase;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieSession;
+import org.kie.kogito.rules.KieRuntimeBuilder;
 
 import static org.drools.modelcompiler.builder.PackageModel.log;
 
@@ -32,7 +33,7 @@ public class ProjectSourceClass {
                         "import " + KieSession.class.getCanonicalName()  + ";\n" +
                         "\n" +
                         ( hasCdi ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
-                        "public class ProjectRuntime implements org.drools.modelcompiler.KieRuntimeBuilder {\n" +
+                        "public class ProjectRuntime implements " + KieRuntimeBuilder.class.getCanonicalName() + " {\n" +
                         "\n");
         sb.append(modelMethod.getConstructor());
         sb.append("\n");

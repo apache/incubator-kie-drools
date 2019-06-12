@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.kogito.Config;
@@ -115,9 +116,25 @@ public class ApplicationGeneratorTest {
     public void generateWithOtherGenerator() throws IOException {
         final Generator mockGenerator = Mockito.mock(Generator.class);
 
-        final MethodDeclaration mockMethod = new MethodDeclaration();
-        final Collection<BodyDeclaration<?>> mockedMethods = Collections.singleton(mockMethod);
-        when(mockGenerator.factoryMethods()).thenReturn(mockedMethods);
+        ApplicationSection appSection = new ApplicationSection() {
+
+            private ClassOrInterfaceDeclaration classOrInterfaceDeclaration =
+                    new ClassOrInterfaceDeclaration().setName("Foo");
+            private MethodDeclaration methodDeclaration =
+                    new MethodDeclaration().setType("void");
+
+            @Override
+            public MethodDeclaration factoryMethod() {
+                return methodDeclaration;
+            }
+
+            @Override
+            public ClassOrInterfaceDeclaration classDeclaration() {
+                return classOrInterfaceDeclaration;
+            }
+        };
+
+        when(mockGenerator.section()).thenReturn(appSection);
 
         final GeneratedFile generatedFile = mock(GeneratedFile.class);
         when(generatedFile.getType()).thenReturn(GeneratedFile.Type.RULE);
@@ -135,9 +152,10 @@ public class ApplicationGeneratorTest {
         final CompilationUnit compilationUnit = appGenerator.compilationUnit();
         assertGeneratedFiles(generatedFiles, compilationUnit.toString().getBytes(StandardCharsets.UTF_8), 2);
 
-        assertCompilationUnit(compilationUnit, false, 1);
+        assertCompilationUnit(compilationUnit, false, 2);
         final TypeDeclaration mainAppClass = compilationUnit.getTypes().get(0);
-        assertThat(mainAppClass.getMembers()).filteredOn(member -> member == mockMethod).hasSize(1);
+        assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.factoryMethod()).hasSize(1);
+        assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.classDeclaration()).hasSize(1);
 
         assertImageMetadata(Paths.get("target"), mockLabels);
     }
@@ -172,6 +190,10 @@ public class ApplicationGeneratorTest {
             assertThat(listWithLabelsMap).hasSize(1);
             assertThat(listWithLabelsMap.get(0)).containsAllEntriesOf(expectedLabels);
         }
+    }
+
+    private void assertCompilationUnit(final CompilationUnit compilationUnit, final boolean checkCDI) {
+        assertCompilationUnit(compilationUnit, checkCDI, 0);
     }
 
     private void assertCompilationUnit(final CompilationUnit compilationUnit, final boolean checkCDI,

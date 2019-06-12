@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.util.StringUtils;
@@ -44,6 +43,7 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
+import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFile.Type;
@@ -53,6 +53,9 @@ import org.xml.sax.SAXException;
 
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
+/**
+ * Entry point to process code generation
+ */
 public class ProcessCodegen implements Generator {
 
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
@@ -108,7 +111,7 @@ public class ProcessCodegen implements Generator {
     private String workItemHandlerConfigClass = null;
     private String processEventListenerConfigClass = null;
     private boolean dependencyInjection;
-    private ModuleGenerator moduleGenerator;
+    private ProcessesContainerGenerator moduleGenerator;
 
     private final Map<String, WorkflowProcess> processes;
     private final Map<String, String> labels = new HashMap<>();
@@ -133,19 +136,16 @@ public class ProcessCodegen implements Generator {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-        this.moduleGenerator = new ModuleGenerator(packageName)
+        this.moduleGenerator = new ProcessesContainerGenerator(packageName)
                 .withCdi(dependencyInjection);
         this.applicationCanonicalName = packageName + ".Application";
     }
 
     public void setDependencyInjection(boolean di) {
         dependencyInjection = di;
-        if (moduleGenerator != null) {
-            moduleGenerator.withCdi(di);
-        }
     }
 
-    public ModuleGenerator moduleGenerator() {
+    public ProcessesContainerGenerator moduleGenerator() {
         return moduleGenerator;
     }
 
@@ -159,11 +159,6 @@ public class ProcessCodegen implements Generator {
         return this;
     }
 
-
-    @Override
-    public Collection<BodyDeclaration<?>> factoryMethods() {
-        return moduleGenerator.factoryMethods();
-    }
 
     public List<GeneratedFile> generate() {
         if (processes.isEmpty()) {
@@ -327,8 +322,8 @@ public class ProcessCodegen implements Generator {
     }
 
     @Override
-    public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
-        return moduleGenerator.getApplicationBodyDeclaration();
+    public ApplicationSection section() {
+        return moduleGenerator;
     }
 
 }

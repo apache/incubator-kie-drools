@@ -135,8 +135,9 @@ public class ApplicationGenerator {
                                                    .setInitializer(configGenerator.newInstance())));
 
         factoryMethods.forEach(cls::addMember);
-        
-        generators.forEach(gen -> gen.applicationBodyDeclaration().forEach(cls::addMember));
+
+        generators.stream().map(Generator::section).forEach(sect -> cls.addMember(sect.factoryMethod()));
+        generators.stream().map(Generator::section).forEach(sect -> cls.addMember(sect.classDeclaration()));
 
         return compilationUnit;
     }
@@ -157,7 +158,6 @@ public class ApplicationGenerator {
                         .flatMap(gen -> gen.generate().stream())
                         .collect(Collectors.toList());
         generators.forEach(gen -> gen.updateConfig(configGenerator));
-        generators.forEach(gen -> factoryMethods.addAll(gen.factoryMethods()));        
         generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
         generatedFiles.add(new GeneratedFile(GeneratedFile.Type.APPLICATION,
                                              generatedFilePath(),

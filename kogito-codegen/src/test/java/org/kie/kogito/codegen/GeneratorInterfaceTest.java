@@ -20,8 +20,6 @@ import java.util.Collection;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import com.github.javaparser.ast.body.BodyDeclaration;
-
 public class GeneratorInterfaceTest {
 
     @Test
@@ -31,13 +29,9 @@ public class GeneratorInterfaceTest {
 
     private Generator getAnonymousGeneratorInstance() {
         return new Generator() {
-            @Override
-            public Collection<BodyDeclaration<?>> factoryMethods() {
-                return null;
-            }
 
             @Override
-            public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
+            public ApplicationSection section() {
                 return null;
             }
 

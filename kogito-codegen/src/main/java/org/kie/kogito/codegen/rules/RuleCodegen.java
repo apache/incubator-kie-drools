@@ -31,17 +31,16 @@ import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieServices;
+import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
-import com.github.javaparser.ast.body.BodyDeclaration;
-
 public class RuleCodegen implements Generator {
 
     private String packageName;
-    private ModuleSourceClass moduleGenerator;
+    private RuleUnitContainerGenerator moduleGenerator;
 
     public static RuleCodegen ofPath(Path path) throws IOException {
         return ofPath( path, false );
@@ -90,18 +89,13 @@ public class RuleCodegen implements Generator {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-        this.moduleGenerator = new ModuleSourceClass(packageName);
+        this.moduleGenerator = new RuleUnitContainerGenerator(packageName);
     }
 
     private MemoryFileSystem getMemoryFileSystem(InternalKieModule kieModule) {
         return kieModule instanceof CanonicalKieModule ?
                 ((MemoryKieModule) ((CanonicalKieModule) kieModule).getInternalKieModule()).getMemoryFileSystem() :
                 ((MemoryKieModule) kieModule).getMemoryFileSystem();
-    }
-
-    @Override
-    public Collection<BodyDeclaration<?>> factoryMethods() {
-        return moduleGenerator.factoryMethods();
     }
 
     public List<GeneratedFile> generate() {
@@ -141,7 +135,7 @@ public class RuleCodegen implements Generator {
         cfg.withRuleConfig(new RuleConfigGenerator().ruleEventListenersConfig(moduleGenerator.ruleEventListenersConfigClass()));
     }
 
-    public ModuleSourceClass moduleGenerator() {
+    public RuleUnitContainerGenerator moduleGenerator() {
         return moduleGenerator;
     }
     
@@ -155,7 +149,7 @@ public class RuleCodegen implements Generator {
     }
 
     @Override
-    public Collection<BodyDeclaration<?>> applicationBodyDeclaration() {
-        return moduleGenerator.getApplicationBodyDeclaration();
+    public ApplicationSection section() {
+        return moduleGenerator;
     }
 }
