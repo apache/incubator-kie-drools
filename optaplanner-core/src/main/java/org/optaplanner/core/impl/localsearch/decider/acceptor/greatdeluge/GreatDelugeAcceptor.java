@@ -21,6 +21,8 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     private double levelMinimum = 0;
     private final double THRESHOLD = .0000001;
+
+    // Good value to come out from
     private final double DEFAULTRAINSPEEDRATIO = 0.99999995;
 
     public void setInitialLevels(Score initialLevel) { this.initialLevel = initialLevel; }
