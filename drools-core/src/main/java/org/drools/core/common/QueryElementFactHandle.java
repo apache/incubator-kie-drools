@@ -100,13 +100,11 @@ public class QueryElementFactHandle
 
     public EntryPointId getEntryPointId() {
         return null;
-        //throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
     @Override
     public WorkingMemoryEntryPoint getEntryPoint( InternalWorkingMemory wm ) {
         return null;
-        //throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
     public EqualityKey getEqualityKey() {

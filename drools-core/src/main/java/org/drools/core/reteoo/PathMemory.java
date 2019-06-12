@@ -15,6 +15,8 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Serializable;
+
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.InternalAgenda;
@@ -29,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
-        Memory {
+        Serializable, Memory {
 
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
