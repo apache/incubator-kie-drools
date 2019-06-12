@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.core.command.NewKnowledgeBuilderConfigurationCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.KBuilderSetPropertyCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
