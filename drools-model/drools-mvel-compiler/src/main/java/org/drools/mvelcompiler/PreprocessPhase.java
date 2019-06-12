@@ -34,15 +34,19 @@ import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 public class PreprocessPhase {
 
     interface PreprocessPhaseResult {
+
         Set<String> getModifyProperties();
+
         PreprocessPhaseResult addModifyProperties(String name);
+
         List<Statement> getNewObjectStatements();
+
         List<Statement> getOtherStatements();
 
         PreprocessPhaseResult addOtherStatements(List<Statement> statements);
-        PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt);
 
-        }
+        PreprocessPhaseResult addNewObjectStatements(ExpressionStmt expressionStmt);
+    }
 
     static class PreprocessedResult implements PreprocessPhaseResult {
 
@@ -82,7 +86,7 @@ public class PreprocessPhase {
         }
     }
 
-    static class StatementResult implements  PreprocessPhaseResult {
+    static class StatementResult implements PreprocessPhaseResult {
 
         final List<Statement> newObjectStatements = new ArrayList<>();
         final List<Statement> otherStatements = new ArrayList<>();
@@ -96,7 +100,6 @@ public class PreprocessPhase {
         public PreprocessPhaseResult addModifyProperties(String name) {
             return this;
         }
-
 
         public List<Statement> getNewObjectStatements() {
             return newObjectStatements;
@@ -122,7 +125,7 @@ public class PreprocessPhase {
         if (statement instanceof ModifyStatement) {
             return modifyPreprocessor((ModifyStatement) statement);
         } else if (statement instanceof WithStatement) {
-            return withPreprocessor((WithStatement)statement);
+            return withPreprocessor((WithStatement) statement);
         } else {
             return new StatementResult().addOtherStatements(Collections.singletonList(statement));
         }
@@ -175,7 +178,7 @@ public class PreprocessPhase {
                 ObjectCreationExpr constructor = assignExprValue.asObjectCreationExpr();
                 ClassOrInterfaceType ctorType = constructor.getType();
 
-                String targetVariableName = ((DrlNameExpr)assignExprTarget).getNameAsString();
+                String targetVariableName = ((DrlNameExpr) assignExprTarget).getNameAsString();
                 VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
                 AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
                 ExpressionStmt expressionStmt = new ExpressionStmt(withTypeAssignmentExpr);
@@ -188,25 +191,25 @@ public class PreprocessPhase {
 
     private List<Statement> wrapToExpressionStmt(NodeList<Statement> expressions) {
         return expressions
-                    .stream()
-                    .filter(Objects::nonNull)
-                    .filter(Statement::isExpressionStmt)
-                    .map(s -> s.asExpressionStmt().getExpression())
-                    .map(ExpressionStmt::new)
-                    .collect(Collectors.toList());
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(Statement::isExpressionStmt)
+                .map(s -> s.asExpressionStmt().getExpression())
+                .map(ExpressionStmt::new)
+                .collect(Collectors.toList());
     }
 
     private Statement addScopeToMethodCallExpr(PreprocessPhaseResult result, Expression scope, Statement e) {
-        if(e != null && e.isExpressionStmt()) {
+        if (e != null && e.isExpressionStmt()) {
             Expression expression = e.asExpressionStmt().getExpression();
-            if(expression.isMethodCallExpr()) {
+            if (expression.isMethodCallExpr()) {
                 MethodCallExpr mcExpr = expression.asMethodCallExpr();
                 Expression enclosed = new EnclosedExpr(scope);
                 mcExpr.setScope(enclosed);
 
                 final String methodName = mcExpr.getName().asString();
                 String set = methodName.replace("set", "");
-                if(scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
+                if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
                     result.addModifyProperties(printConstraint(scope));
                 }
 
