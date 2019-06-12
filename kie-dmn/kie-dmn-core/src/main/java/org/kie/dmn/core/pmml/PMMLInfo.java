@@ -53,9 +53,14 @@ public class PMMLInfo<M extends PMMLModelInfo> {
                         .stream()
                         .filter(mf -> mf.getUsageType() == UsageType.ACTIVE)
                         .forEach(fn -> inputFields.add(fn.getName().getValue()));
+            Collection<String> targetFields = new ArrayList<>();
+            miningSchema.getMiningFields()
+                        .stream()
+                        .filter(mf -> mf.getUsageType() == UsageType.PREDICTED)
+                        .forEach(fn -> targetFields.add(fn.getName().getValue()));
             Collection<String> outputFields = new ArrayList<>();
             pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
-            models.add(new PMMLModelInfo(pm.getModelName(), inputFields, outputFields));
+            models.add(new PMMLModelInfo(pm.getModelName(), inputFields, targetFields, outputFields));
         }
         Map<String, String> headerExtensions = new HashMap<>();
         for (Extension ex : pmml.getHeader().getExtensions()) {

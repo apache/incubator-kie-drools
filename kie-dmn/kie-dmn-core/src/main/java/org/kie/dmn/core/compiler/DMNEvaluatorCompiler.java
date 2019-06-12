@@ -463,10 +463,15 @@ public class DMNEvaluatorCompiler {
             String pmmlModel = null;
             for (ContextEntry ce : context.getContextEntry()) {
                 if (ce.getVariable() != null && ce.getVariable().getName() != null && ce.getExpression() instanceof LiteralExpression) {
+                    LiteralExpression ceLitExpr = (LiteralExpression) ce.getExpression();
                     if (ce.getVariable().getName().equals("document")) {
-                        pmmlDocument = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                        if (ceLitExpr.getText() != null) {
+                            pmmlDocument = stripQuotes(ceLitExpr.getText().trim());
+                        }
                     } else if (ce.getVariable().getName().equals("model")) {
-                        pmmlModel = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                        if (ceLitExpr.getText() != null) {
+                            pmmlModel = stripQuotes(ceLitExpr.getText().trim());
+                        }
                     }
                 }
             }
