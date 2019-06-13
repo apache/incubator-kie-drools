@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -20,6 +20,7 @@ import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 public class MvelCompiler {
 
@@ -36,10 +37,19 @@ public class MvelCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        Set<String> modifiedProperties = new HashSet<>();
-        Consumer<Statement> preprocessStatement = preprocessStatementCurried(modifiedProperties);
-        mvelExpression.findAll(ModifyStatement.class).forEach(preprocessStatement);
-        mvelExpression.findAll(WithStatement.class).forEach(preprocessStatement);
+        Set<String> allProperties = new HashSet<>();
+        List<String> modifyProperties = mvelExpression.findAll(ModifyStatement.class)
+                .stream()
+                .flatMap(this::transformStatementWithPreprocessing)
+                .collect(toList());
+
+        List<String> withProperties = mvelExpression.findAll(WithStatement.class)
+                .stream()
+                .flatMap(this::transformStatementWithPreprocessing)
+                .collect(toList());
+
+        allProperties.addAll(modifyProperties);
+        allProperties.addAll(withProperties);
 
         List<Statement> statements = new ArrayList<>();
         Optional<Type> lastExpressionType = Optional.empty();
@@ -49,21 +59,20 @@ public class MvelCompiler {
 
         return new ParsingResult(statements)
                 .setLastExpressionType(lastExpressionType)
-                .setModifyProperties(modifiedProperties);
+                .setModifyProperties(allProperties);
     }
 
-    private Consumer<Statement> preprocessStatementCurried(Set<String> modifiedProperties) {
-        return s -> {
-            PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
-            modifiedProperties.addAll(invoke.getModifyProperties());
-            Optional<Node> parentNode = s.getParentNode();
-            parentNode.ifPresent(p -> {
-                BlockStmt p1 = (BlockStmt) p;
-                p1.getStatements().addAll(0, invoke.getNewObjectStatements());
-                p1.getStatements().addAll(invoke.getOtherStatements());
-            });
-            s.remove();
-        };
+    private Stream<String> transformStatementWithPreprocessing(Statement s) {
+        PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
+        List<String> modifiedProperties = new ArrayList<>(invoke.getModifyProperties());
+        Optional<Node> parentNode = s.getParentNode();
+        parentNode.ifPresent(p -> {
+            BlockStmt p1 = (BlockStmt) p;
+            p1.getStatements().addAll(0, invoke.getNewObjectStatements());
+            p1.getStatements().addAll(invoke.getOtherStatements());
+        });
+        s.remove();
+        return modifiedProperties.stream();
     }
 
     private Optional<Type> processWithMvelCompiler(List<Statement> statements, Statement s) {
