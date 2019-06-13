@@ -10,7 +10,7 @@ Transformation rules are described in the [MvelCompilerTest](src/test/java/org/d
 
 The idea of the algorithm is split into three phases
 
-1. Preprocess `modify` and with `statements` and transform that to java-like (see [PreprocessPhase](src/main/java/org/drools/mvelcompiler/PreprocessPhase.java)
+1. Preprocess `modify` and with `statements` and transform that to java-like (see [PreprocessPhase](src/main/java/org/drools/mvelcompiler/PreprocessPhase.java))
 2. Get the return type of every expression and transform accessors to getter in [RHSPhase](src/main/java/org/drools/mvelcompiler/RHSPhase.java)
 3. Use the expression type to set the type of the undeclared variables in an assignment expression and transform field accessor 
 to setters in [LHSPhase](src/main/java/org/drools/mvelcompiler/LHSPhase.java)
