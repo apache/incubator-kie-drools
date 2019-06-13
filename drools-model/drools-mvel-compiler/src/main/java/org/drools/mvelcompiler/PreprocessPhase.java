@@ -207,8 +207,6 @@ public class PreprocessPhase {
                 Expression enclosed = new EnclosedExpr(scope);
                 mcExpr.setScope(enclosed);
 
-                final String methodName = mcExpr.getName().asString();
-                String set = methodName.replace("set", "");
                 if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
                     result.addUsedBinding(printConstraint(scope));
                 }
