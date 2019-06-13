@@ -49,6 +49,20 @@ import static java.util.stream.Stream.of;
 import static org.drools.core.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
+/**
+ * This phase processes the right hand side of a Java Expression and creates a new AST
+ * with the transformation rules applied i.e.
+ *
+ * person.name;
+ *
+ * becomes
+ *
+ * person.getName();
+ *
+ * It also returns the type of the expression, useful in the subsequent phase in which we
+ * might need to create new variables accordingly.
+ *
+ */
 public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
     static class Context {

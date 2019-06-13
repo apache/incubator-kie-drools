@@ -31,6 +31,12 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
+/**
+ * This phase transforms modify and with statements in valid Java code
+ *
+ * It's used both in the MVEL Compiler and also to preprocess Drools' Java consequences that
+ * use modify and with blocks.
+ */
 public class PreprocessPhase {
 
     interface PreprocessPhaseResult {

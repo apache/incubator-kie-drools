@@ -33,6 +33,21 @@ import static java.util.Optional.ofNullable;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getSetter;
 
+/**
+ * This phase processes the left hand side of a MVEL target expression, if present, such as
+ *
+ * int a = 0
+ *
+ * b = 2
+ *
+ * It also creates a new AST with the transformation rules applied i.e.
+ *
+ * person.name = "Name";
+ *
+ * becomes
+ *
+ * person.setName("Name");
+ */
 public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Context> {
 
     Logger logger = LoggerFactory.getLogger(LHSPhase.class);

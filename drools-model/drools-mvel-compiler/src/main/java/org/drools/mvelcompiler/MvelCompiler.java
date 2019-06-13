@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
@@ -38,18 +37,18 @@ public class MvelCompiler {
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
         Set<String> allUsedBindings = new HashSet<>();
-        List<String> modifyBindings = mvelExpression.findAll(ModifyStatement.class)
+        List<String> modifyUsedBindings = mvelExpression.findAll(ModifyStatement.class)
                 .stream()
                 .flatMap(this::transformStatementWithPreprocessing)
                 .collect(toList());
 
-        List<String> withBindings = mvelExpression.findAll(WithStatement.class)
+        List<String> withUsedBindings = mvelExpression.findAll(WithStatement.class)
                 .stream()
                 .flatMap(this::transformStatementWithPreprocessing)
                 .collect(toList());
 
-        allUsedBindings.addAll(modifyBindings);
-        allUsedBindings.addAll(withBindings);
+        allUsedBindings.addAll(modifyUsedBindings);
+        allUsedBindings.addAll(withUsedBindings);
 
         List<Statement> statements = new ArrayList<>();
         Optional<Type> lastExpressionType = Optional.empty();
@@ -58,17 +57,16 @@ public class MvelCompiler {
         }
 
         return new ParsingResult(statements)
-                .setLastExpressionType(lastExpressionType)
-                .setUsedBindings(allUsedBindings);
+                .setUsedBindings(allUsedBindings)
+                .setLastExpressionType(lastExpressionType); // Used in the inline accumulate definition
     }
 
     private Stream<String> transformStatementWithPreprocessing(Statement s) {
         PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
-        Optional<Node> parentNode = s.getParentNode();
-        parentNode.ifPresent(p -> {
-            BlockStmt p1 = (BlockStmt) p;
-            p1.getStatements().addAll(0, invoke.getNewObjectStatements());
-            p1.getStatements().addAll(invoke.getOtherStatements());
+        s.getParentNode().ifPresent(p -> {
+            BlockStmt parentBlockStmt = (BlockStmt) p;
+            parentBlockStmt.getStatements().addAll(0, invoke.getNewObjectStatements());
+            parentBlockStmt.getStatements().addAll(invoke.getOtherStatements());
         });
         s.remove();
         return invoke.getUsedBindings().stream();
