@@ -2501,5 +2501,25 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("my decision"), is(new BigDecimal("2019")));
     }
+
+    @Test
+    public void testcItemDef() {
+        // DROOLS-4173 DMN composite recursive ItemDefinition
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("cItemDef.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f776b6fb-31bc-43b6-9c89-2bbc2973babf", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat((Map<?, ?>) result.get("hardcoded decision"), hasEntry(is("full name"), is("John Doe")));
+        assertThat((Map<?, ?>) result.get("hardcoded decision"), hasEntry(is("supervisor"), anything()));
+        assertThat((Map<?, ?>) ((Map<?, ?>) result.get("hardcoded decision")).get("supervisor"), hasEntry(is("full name"), is("supervisor of John")));
+        assertThat((Map<?, ?>) ((Map<?, ?>) result.get("hardcoded decision")).get("supervisor"), hasEntry(is("supervisor"), nullValue()));
+    }
 }
 
