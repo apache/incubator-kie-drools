@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.domain;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,8 @@ public class Person extends AbstractReactiveObject {
 
 
     private BigDecimal money;
+
+    private BigInteger ageInSeconds;
 
     private Map<Integer, Integer> items = new HashMap<>();
 
@@ -137,8 +140,9 @@ public class Person extends AbstractReactiveObject {
         return money;
     }
 
-    public void setMoney(BigDecimal money) {
+    public Person setMoney(BigDecimal money) {
         this.money = money;
+        return this;
     }
 
     public void setItems(Map<Integer, Integer> items) {
@@ -167,6 +171,15 @@ public class Person extends AbstractReactiveObject {
 
     public Person setParentP(Person parentP) {
         ParentP = parentP;
+        return this;
+    }
+
+    public BigInteger getAgeInSeconds() {
+        return ageInSeconds;
+    }
+
+    public Person setAgeInSeconds(BigInteger ageInSeconds) {
+        this.ageInSeconds = ageInSeconds;
         return this;
     }
 
