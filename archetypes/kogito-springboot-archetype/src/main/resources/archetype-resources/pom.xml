@@ -20,7 +20,7 @@
     <kogito.version>${version.org.kie.kogito}</kogito.version>
     <swagger.version>${version.swagger}</swagger.version>
     <cxf.version>3.2.6</cxf.version>
-    <dependencyInjection>false</dependencyInjection>
+    <kogito.di.enabled>false</kogito.di.enabled>
   </properties>
 
   <dependencies>

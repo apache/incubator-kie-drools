@@ -1,7 +1,5 @@
 package org.kie.kogito.maven.plugin;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -43,6 +41,8 @@ import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegen;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+
 @Mojo(name = "generateModel",
         requiresDependencyResolution = ResolutionScope.NONE,
         requiresProject = true,
@@ -72,13 +72,21 @@ public class GenerateModelMojo extends AbstractKieMojo {
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/kogito")
     private File generatedSources;
 
-    @Parameter(property = "generateModel", defaultValue = "no")
-    private String generateModel;
+    // due to a limitation of the injector, the following 2 params have to be Strings
+    // otherwise we cannot get the default value to null
+    // when the value is null, the semantics is to enable the corresponding
+    // codegen backend only if at least one file of the given type exist
+    
+    @Parameter(property = "kogito.codegen.rules", defaultValue = "")
+    private String generateRules; // defaults to true iff there exist DRL files
 
-    @Parameter(property = "generateProcessModel", defaultValue = "yes")
-    private String generateProcessModel;
+    @Parameter(property = "kogito.codegen.processes", defaultValue = "")
+    private String generateProcesses; // defaults to true iff there exist BPMN files
 
-    @Parameter(property = "dependencyInjection", defaultValue = "true")
+    @Parameter(property = "kogito.sources.keep", defaultValue = "false")
+    private boolean keepSources;
+
+    @Parameter(property = "kogito.di.enabled", defaultValue = "true")
     private boolean dependencyInjection;
 
     @Override
@@ -91,11 +99,10 @@ public class GenerateModelMojo extends AbstractKieMojo {
     }
 
     private void generateModel() throws MojoExecutionException, IOException {
-        // these should be probably substituted by boolean params
-        boolean generateRuleUnits =
-                ExecModelMode.shouldGenerateModel(generateModel);
-        boolean generateProcesses =
-                BPMNModelMode.shouldGenerateBPMNModel(generateProcessModel);
+        // if unspecified, then default to checking for file type existence
+        // if not null, the property has been overridden, and we should use the specified value
+        boolean genRules = generateRules == null ? rulesExist() : Boolean.parseBoolean(generateRules);
+        boolean genProcesses = generateProcesses == null ? processesExist() : Boolean.parseBoolean(generateProcesses);
 
         project.addCompileSourceRoot(generatedSources.getPath());
 
@@ -108,13 +115,13 @@ public class GenerateModelMojo extends AbstractKieMojo {
             Thread.currentThread().setContextClassLoader(projectClassLoader);
 
             ApplicationGenerator appGen = createApplicationGenerator(
-                    generateRuleUnits, generateProcesses);
+                    genRules, genProcesses);
 
             for (GeneratedFile generatedFile : appGen.generate()) {
                 writeGeneratedFile(generatedFile);
             }
 
-            if (ExecModelMode.shouldDeleteFile(generateModel)) {
+            if (!keepSources) {
                 deleteDrlFiles();
             }
         } finally {
@@ -122,12 +129,23 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
     }
 
+    private boolean processesExist() throws IOException {
+        return Files.walk(projectDir.toPath())
+                .map(p -> p.toString().toLowerCase())
+                .anyMatch(p -> p.endsWith(".bpmn") || p.endsWith(".bpmn2"));
+    }
+
+    private boolean rulesExist() throws IOException {
+        return Files.walk(projectDir.toPath())
+                .anyMatch(p -> p.toString().toLowerCase().endsWith(".drl"));
+    }
+
     private ApplicationGenerator createApplicationGenerator(boolean generateRuleUnits, boolean generateProcesses) throws IOException {
         String appPackageName = project.getGroupId();
         Path projectPath = projectDir.toPath();
         // safe guard to not generate application classes that would clash with interfaces
         if (appPackageName.equals("org.kie.kogito")) {
-        	appPackageName = "org.kie.kogito.app";
+            appPackageName = "org.kie.kogito.app";
         }
 
         ApplicationGenerator appGen =
@@ -136,7 +154,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         if (generateRuleUnits) {
             appGen.withGenerator(RuleCodegen.ofPath(projectPath, false))
-                .withRuleEventListenersConfig(customRuleEventListenerConfigExists(appPackageName));
+                    .withRuleEventListenersConfig(customRuleEventListenerConfigExists(appPackageName));
         }
 
         if (generateProcesses) {
@@ -158,6 +176,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                            workItemHandlerConfigClass.replace('.', '/') + ".java");
         return Files.exists(p) ? workItemHandlerConfigClass : null;
     }
+
     private String customProcessListenerConfigExists(String appPackageName) {
         String sourceDir = Paths.get(projectDir.getPath(), "src").toString();
         String processEventListenerClass = ProcessCodegen.defaultProcessListenerConfigClass(appPackageName);
@@ -166,6 +185,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
                            processEventListenerClass.replace('.', '/') + ".java");
         return Files.exists(p) ? processEventListenerClass : null;
     }
+
     private String customRuleEventListenerConfigExists(String appPackageName) {
         String sourceDir = Paths.get(projectDir.getPath(), "src").toString();
         String ruleEventListenerConfiglass = RuleCodegen.defaultRuleEventListenerConfigClass(appPackageName);
@@ -174,7 +194,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
                            ruleEventListenerConfiglass.replace('.', '/') + ".java");
         return Files.exists(p) ? ruleEventListenerConfiglass : null;
     }
-
 
     private void writeAll(List<GeneratedFile> generatedFiles) throws IOException {
         for (GeneratedFile f : generatedFiles) {
