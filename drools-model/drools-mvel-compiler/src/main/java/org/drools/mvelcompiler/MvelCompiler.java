@@ -37,19 +37,19 @@ public class MvelCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        Set<String> allProperties = new HashSet<>();
-        List<String> modifyProperties = mvelExpression.findAll(ModifyStatement.class)
+        Set<String> allUsedBindings = new HashSet<>();
+        List<String> modifyBindings = mvelExpression.findAll(ModifyStatement.class)
                 .stream()
                 .flatMap(this::transformStatementWithPreprocessing)
                 .collect(toList());
 
-        List<String> withProperties = mvelExpression.findAll(WithStatement.class)
+        List<String> withBindings = mvelExpression.findAll(WithStatement.class)
                 .stream()
                 .flatMap(this::transformStatementWithPreprocessing)
                 .collect(toList());
 
-        allProperties.addAll(modifyProperties);
-        allProperties.addAll(withProperties);
+        allUsedBindings.addAll(modifyBindings);
+        allUsedBindings.addAll(withBindings);
 
         List<Statement> statements = new ArrayList<>();
         Optional<Type> lastExpressionType = Optional.empty();
@@ -59,12 +59,11 @@ public class MvelCompiler {
 
         return new ParsingResult(statements)
                 .setLastExpressionType(lastExpressionType)
-                .setModifyProperties(allProperties);
+                .setUsedBindings(allUsedBindings);
     }
 
     private Stream<String> transformStatementWithPreprocessing(Statement s) {
         PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
-        List<String> modifiedProperties = new ArrayList<>(invoke.getModifyProperties());
         Optional<Node> parentNode = s.getParentNode();
         parentNode.ifPresent(p -> {
             BlockStmt p1 = (BlockStmt) p;
@@ -72,7 +71,7 @@ public class MvelCompiler {
             p1.getStatements().addAll(invoke.getOtherStatements());
         });
         s.remove();
-        return modifiedProperties.stream();
+        return invoke.getUsedBindings().stream();
     }
 
     private Optional<Type> processWithMvelCompiler(List<Statement> statements, Statement s) {

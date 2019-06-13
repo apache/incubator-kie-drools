@@ -18,7 +18,7 @@ public class ModifyCompilerTest implements CompilerTest {
     public void testUncompiledMethod() {
         test("{modify( (List)$toEdit.get(0) ){ setEnabled( true ) }}",
              "{ ((List) $toEdit.get(0)).setEnabled(true); }",
-             result -> assertThat(allModifiedProperties(result), is(empty())));
+             result -> assertThat(allUsedBindings(result), is(empty())));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ModifyCompilerTest implements CompilerTest {
                          "update($fact); " +
                      "} " +
                      "} ",
-             result -> assertThat(allModifiedProperties(result), containsInAnyOrder("$fact")));
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$fact")));
     }
 
     @Override

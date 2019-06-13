@@ -55,7 +55,7 @@ interface CompilerTest {
         });
     }
 
-    default Collection<String> allModifiedProperties(ParsingResult result) {
-        return new ArrayList<>(result.getModifyProperties());
+    default Collection<String> allUsedBindings(ParsingResult result) {
+        return new ArrayList<>(result.getUsedBindings());
     }
 }

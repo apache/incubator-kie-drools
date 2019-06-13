@@ -27,23 +27,23 @@ public class ModifyCompiler {
 
         preprocessPhase.removeEmptyStmt(mvelExpression);
 
-        Set<String> modifiedProperties = new HashSet<>();
+        Set<String> usedBindings = new HashSet<>();
         mvelExpression.findAll(ModifyStatement.class)
                 .forEach(s -> {
                     PreprocessPhase.PreprocessPhaseResult invoke = preprocessPhase.invoke(s);
-                    modifiedProperties.addAll(invoke.getModifyProperties());
+                    usedBindings.addAll(invoke.getUsedBindings());
                     Optional<Node> parentNode = s.getParentNode();
                     parentNode.ifPresent(p -> {
                         BlockStmt p1 = (BlockStmt) p;
                         p1.getStatements().addAll(invoke.getNewObjectStatements());
                         p1.getStatements().addAll(invoke.getOtherStatements());
-                        for (String modifiedProperty : invoke.getModifyProperties()) {
+                        for (String modifiedProperty : invoke.getUsedBindings()) {
                             p1.addStatement(new MethodCallExpr(null, "update", nodeList(new NameExpr(modifiedProperty))));
                         }
                     });
                     s.remove();
                 });
 
-        return new ParsingResult(mvelExpression.getStatements()).setModifyProperties(modifiedProperties);
+        return new ParsingResult(mvelExpression.getStatements()).setUsedBindings(usedBindings);
     }
 }

@@ -35,9 +35,9 @@ public class PreprocessPhase {
 
     interface PreprocessPhaseResult {
 
-        Set<String> getModifyProperties();
+        Set<String> getUsedBindings();
 
-        PreprocessPhaseResult addModifyProperties(String name);
+        PreprocessPhaseResult addUsedBinding(String bindingName);
 
         List<Statement> getNewObjectStatements();
 
@@ -53,18 +53,18 @@ public class PreprocessPhase {
         final List<Statement> newObjectStatements = new ArrayList<>();
         final List<Statement> otherStatements = new ArrayList<>();
 
-        final Set<String> modifyProperties = new HashSet<>();
+        final Set<String> usedBindings = new HashSet<>();
 
         PreprocessedResult() {
         }
 
-        public PreprocessPhaseResult addModifyProperties(String name) {
-            modifyProperties.add(name);
+        public PreprocessPhaseResult addUsedBinding(String bindingName) {
+            usedBindings.add(bindingName);
             return this;
         }
 
-        public Set<String> getModifyProperties() {
-            return modifyProperties;
+        public Set<String> getUsedBindings() {
+            return usedBindings;
         }
 
         public List<Statement> getNewObjectStatements() {
@@ -92,12 +92,12 @@ public class PreprocessPhase {
         final List<Statement> otherStatements = new ArrayList<>();
 
         @Override
-        public Set<String> getModifyProperties() {
+        public Set<String> getUsedBindings() {
             return new HashSet<>();
         }
 
         @Override
-        public PreprocessPhaseResult addModifyProperties(String name) {
+        public PreprocessPhaseResult addUsedBinding(String bindingName) {
             return this;
         }
 
@@ -210,7 +210,7 @@ public class PreprocessPhase {
                 final String methodName = mcExpr.getName().asString();
                 String set = methodName.replace("set", "");
                 if (scope.isNameExpr() || scope instanceof DrlNameExpr) { // some classes such "AtomicInteger" have a setter called "set"
-                    result.addModifyProperties(printConstraint(scope));
+                    result.addUsedBinding(printConstraint(scope));
                 }
 
                 return new ExpressionStmt(mcExpr);
@@ -222,7 +222,7 @@ public class PreprocessPhase {
     private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
         DrlNameExpr originalFieldAccess = (DrlNameExpr) assignExpr.getTarget();
         String propertyName = originalFieldAccess.getName().asString();
-        result.addModifyProperties(printConstraint(scope));
+        result.addUsedBinding(printConstraint(scope));
 
         FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
         assignExpr.setTarget(fieldAccessWithScope);

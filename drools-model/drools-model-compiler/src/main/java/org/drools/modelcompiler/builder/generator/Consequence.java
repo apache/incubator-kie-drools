@@ -155,7 +155,7 @@ public class Consequence {
                                   compile.statementResults(),
                                   usedDeclarationInRHS,
                                   onCall,
-                                  compile.getModifyProperties());
+                                  compile.getUsedBindings());
     }
     private BlockStmt rewriteConsequence(String consequence) {
         String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());

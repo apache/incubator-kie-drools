@@ -15,7 +15,7 @@ import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 public class ParsingResult {
 
     private List<Statement> statements;
-    private Set<String> modifyProperties = new HashSet<>();
+    private Set<String> usedBindings = new HashSet<>();
     private Optional<Type> lastExpressionType;
 
     public ParsingResult(List<Statement> statements) {
@@ -30,13 +30,13 @@ public class ParsingResult {
         return new BlockStmt(NodeList.nodeList(statements));
     }
 
-    public ParsingResult setModifyProperties(Set<String> modifyProperties) {
-        this.modifyProperties = modifyProperties;
+    public ParsingResult setUsedBindings(Set<String> usedBindings) {
+        this.usedBindings = usedBindings;
         return this;
     }
 
-    public Set<String> getModifyProperties() {
-        return modifyProperties;
+    public Set<String> getUsedBindings() {
+        return usedBindings;
     }
 
     public ParsingResult setLastExpressionType(Optional<Type> lastExpressionType) {
