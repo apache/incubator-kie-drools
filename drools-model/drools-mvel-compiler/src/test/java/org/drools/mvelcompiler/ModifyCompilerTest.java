@@ -1,7 +1,6 @@
 package org.drools.mvelcompiler;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.junit.Test;
@@ -23,12 +22,12 @@ public class ModifyCompilerTest implements CompilerTest {
 
     @Test
     public void testNestedModify() {
-        test(            "{    if ($fact.getResult() != null) {\n" +
-                                 "        $fact.setResult(\"OK\");\n" +
-                                 "    } else {\n" +
-                                 "        modify ($fact) {\n" +
-                                 "            setResult(\"FIRST\")\n" +
-                                 "        }\n" +
+        test("{    if ($fact.getResult() != null) {\n" +
+                     "        $fact.setResult(\"OK\");\n" +
+                     "    } else {\n" +
+                     "        modify ($fact) {\n" +
+                     "            setResult(\"FIRST\")\n" +
+                     "        }\n" +
                                  "    }}",
              " { " +
                      "if ($fact.getResult() != null) { " +
@@ -42,7 +41,7 @@ public class ModifyCompilerTest implements CompilerTest {
     }
 
     @Override
-    public void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
+    public void test(Consumer<MvelCompilerContext> testFunction,
                       String actualExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {

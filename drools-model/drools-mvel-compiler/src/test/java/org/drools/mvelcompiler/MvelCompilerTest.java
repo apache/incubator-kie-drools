@@ -200,19 +200,23 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void testNestedModify() {
+    public void testModifyInsideIfBlock() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{    if ($p.getParent() != null) {\n" +
-                     "        $p.setName(\"with_parent\");\n" +
-                     "    } else {\n" +
-                     "        modify ($p) {\n" +
-                     "            name = \"without_parent\"" +
-                     "        }\n" +
-                     "    }}", "{ if ($p.getParent() != null) { " +
-                     "$p.setName(\"with_parent\"); " +
-                     "} else { " +
-                     "$p.setName(\"without_parent\"); " +
-                     "} " +
+             "{    " +
+                     "         if ($p.getParent() != null) {\n" +
+                     "              $p.setName(\"with_parent\");\n" +
+                     "         } else {\n" +
+                         "         modify ($p) {\n" +
+                         "            name = \"without_parent\"" +
+                         "         }\n" +
+                     "         }" +
+                     "      }", "" +
+                     "{ " +
+                     "  if ($p.getParent() != null) { " +
+                     "      $p.setName(\"with_parent\"); " +
+                     "  } else { " +
+                     "      $p.setName(\"without_parent\"); " +
+                     "  } " +
                      "}",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
@@ -220,40 +224,44 @@ public class MvelCompilerTest implements CompilerTest {
     @Test
     public void testWithOrdering() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ with( s0 = new Person() ) {\n" +
+             "{ " +
+                     "        with( s0 = new Person() ) {\n" +
                      "            age = 0\n" +
                      "        }\n" +
                      "        insertLogical(s0);\n" +
                      "        with( s1 = new Person() ) {\n" +
                      "            age = 1\n" +
                      "        }\n" +
-                     "        insertLogical(s1);\n }",
+                     "        insertLogical(s1);\n " +
+                     "     }",
 
              "{ " +
-                     "org.drools.Person s1 = new Person(); " +
-                     "org.drools.Person s0 = new Person(); " +
-                     "insertLogical(s0); " +
-                     "insertLogical(s1); " +
-                     "s0.setAge(0); " +
-                     "s1.setAge(1); " +
-                     "}");
+                             "org.drools.Person s1 = new Person(); " +
+                             "org.drools.Person s0 = new Person(); " +
+                             "insertLogical(s0); " +
+                             "insertLogical(s1); " +
+                             "s0.setAge(0); " +
+                             "s1.setAge(1); " +
+                          "}");
     }
 
     @Test
     public void testModifyOrdering() {
         test(ctx -> ctx.addDeclaration("$person", Person.class),
-             "{Address $newAddress = new Address();\n" +
-                     "    $newAddress.setCity( \"Brno\" );\n" +
-                     "    insert( $newAddress );\n" +
-                     "    modify( $person ) {\n" +
-                     "        setAddress( $newAddress )\n" +
-                     "    }}",
+             "{" +
+                     "        Address $newAddress = new Address();\n" +
+                     "        $newAddress.setCity( \"Brno\" );\n" +
+                     "        insert( $newAddress );\n" +
+                     "        modify( $person ) {\n" +
+                     "          setAddress( $newAddress )\n" +
+                     "        }" +
+                            "}",
 
              "{ " +
-                     "org.drools.Address $newAddress = new Address(); " +
-                     "$newAddress.setCity(\"Brno\"); " +
-                     "insert($newAddress); " +
-                     "$person.setAddress($newAddress); " +
-                     "}");
+                             "org.drools.Address $newAddress = new Address(); " +
+                             "$newAddress.setCity(\"Brno\"); " +
+                             "insert($newAddress); " +
+                             "$person.setAddress($newAddress); " +
+                          "}");
     }
 }

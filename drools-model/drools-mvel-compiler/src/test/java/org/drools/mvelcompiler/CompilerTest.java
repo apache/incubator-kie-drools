@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.drools.Person;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
@@ -17,7 +16,7 @@ import static org.junit.Assert.*;
 
 interface CompilerTest {
 
-    default void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
+    default void test(Consumer<MvelCompilerContext> testFunction,
                       String actualExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
@@ -30,7 +29,7 @@ interface CompilerTest {
         imports.add(Person.class.getCanonicalName());
         TypeResolver typeResolver = new ClassTypeResolver(imports, this.getClass().getClassLoader());
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(typeResolver);
-        testFunction.apply(mvelCompilerContext);
+        testFunction.accept(mvelCompilerContext);
         ParsingResult compiled = new MvelCompiler(mvelCompilerContext).compile(actualExpression);
         assertThat(compiled.resultAsString(), equalToIgnoringWhiteSpace(expectedResult));
         resultAssert.accept(compiled);
@@ -39,10 +38,11 @@ interface CompilerTest {
     default void test(String actualExpression,
                       String expectedResult,
                       Consumer<ParsingResult> resultAssert) {
-        test(id -> id, actualExpression, expectedResult, resultAssert);
+        test(id -> {
+        }, actualExpression, expectedResult, resultAssert);
     }
 
-    default void test(Function<MvelCompilerContext, MvelCompilerContext> testFunction,
+    default void test(Consumer<MvelCompilerContext> testFunction,
                       String actualExpression,
                       String expectedResult) {
         test(testFunction, actualExpression, expectedResult, t -> {
@@ -51,7 +51,8 @@ interface CompilerTest {
 
     default void test(String actualExpression,
                       String expectedResult) {
-        test(d -> d, actualExpression, expectedResult, t -> {
+        test(d -> {
+        }, actualExpression, expectedResult, t -> {
         });
     }
 
