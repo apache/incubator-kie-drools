@@ -38,6 +38,7 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -1634,4 +1635,59 @@ public class CompilerTest extends BaseModelTest {
         kieSession.insert(message);
         assertEquals(2, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testPrettyPrinterCrashing() {
+        final String drl = "" +
+                "package org.drools.compiler.test  \n" +
+
+                "import java.util.List\n" +
+                "import java.util.ArrayList\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+
+                "global List list\n" +
+
+                "dialect \"mvel\"\n" +
+
+                "declare Location\n" +
+                "    thing : String \n" +
+                "    location : String \n" +
+                "end" +
+                "\n" +
+                "query isContainedIn( String x, String y ) \n" +
+                "    Location(x, y;)\n" +
+                "    or \n" +
+                "    ( Location(z, y;) and isContainedIn(x, z;) )\n" +
+                "end\n" +
+                "\n" +
+                "rule look when \n" +
+                "    Person( $l : likes ) \n" +
+                "    isContainedIn( $l, 'office'; )\n" +
+                "then\n" +
+                "   insertLogical( 'blah' );" +
+                "end\n" +
+                "\n" +
+                "rule go1 when \n" +
+                "    String( this == 'go1') \n" +
+                "then\n" +
+                "        list.add( drools.getRule().getName() ); \n" +
+                "        insert( new Location('lamp', 'desk') );\n" +
+                "end\n" +
+                "\n";
+
+        KieSession ksession = getKieSession(drl);
+        try {
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+
+            final Person p = new Person();
+            p.setLikes("lamp");
+            ksession.insert(p);
+            ksession.fireAllRules();
+
+        } finally {
+            ksession.dispose();
+        }
+    }
+
 }

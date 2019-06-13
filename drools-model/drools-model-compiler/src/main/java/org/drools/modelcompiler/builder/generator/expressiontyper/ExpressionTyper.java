@@ -37,16 +37,16 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
-import org.drools.constraint.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.constraint.parser.ast.expr.InlineCastExpr;
-import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
-import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
-import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
-import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
+import org.drools.mvel.parser.ast.expr.InlineCastExpr;
+import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpressionKeyValuePair;
+import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
@@ -67,8 +67,8 @@ import org.slf4j.LoggerFactory;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.drools.constraint.parser.DrlConstraintParser.parseType;
-import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvel.parser.MvelParser.parseType;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
@@ -869,7 +869,7 @@ public class ExpressionTyper {
         }
     }
 
-    static class TypedExpressionCursor {
+    public static class TypedExpressionCursor {
         public final Expression expressionCursor;
         public final java.lang.reflect.Type typeCursor;
 

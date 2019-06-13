@@ -51,15 +51,12 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.model.Global;
 import org.drools.model.Model;
 import org.drools.model.Rule;
 import org.drools.model.WindowReference;
-import org.drools.modelcompiler.builder.generator.ConsequenceValidation;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
@@ -126,7 +123,6 @@ public class PackageModel {
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
-    private List<ConsequenceValidation> consequenceValidations = new ArrayList<>();
 
     private final String pkgUUID;
 
@@ -323,21 +319,6 @@ public class PackageModel {
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
     }
-
-    public void addConsequenceValidation(ConsequenceValidation consequenceValidation) {
-        consequenceValidations.add(consequenceValidation);
-        consequenceValidation.setClassName(getName() + "." + rulesFileName);
-    }
-
-    public void validateConsequence(ClassLoader parentClassLoader, MemoryFileSystem memoryFileSystem, ResultsImpl messages) {
-        if(!consequenceValidations.isEmpty()) {
-            ClassLoader byteClassLoader = memoryFileSystem.memoryClassLoader(parentClassLoader);
-            for(ConsequenceValidation cv : consequenceValidations) {
-                cv.validate(byteClassLoader, messages);
-            }
-        }
-    }
-
     public static class RuleSourceResult {
 
         private final CompilationUnit mainRuleClass;

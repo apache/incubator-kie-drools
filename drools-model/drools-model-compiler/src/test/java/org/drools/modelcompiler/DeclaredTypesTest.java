@@ -277,7 +277,7 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
-        assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint. 
+        assertFalse(results.contains(1)); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
 
     @Test
@@ -327,7 +327,7 @@ public class DeclaredTypesTest extends BaseModelTest {
 
         results = getObjectsIntoList(ksession, Integer.class);
         assertTrue(results.contains(2));
-        assertTrue(results.contains(1)); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.  
+        assertTrue(results.contains(1)); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.
     }
 
     @Test

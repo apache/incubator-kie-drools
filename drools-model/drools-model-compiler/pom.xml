@@ -75,7 +75,12 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-constraint-parser</artifactId>
+      <artifactId>drools-mvel-parser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel-compiler</artifactId>
     </dependency>
 
     <dependency>

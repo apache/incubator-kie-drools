@@ -81,10 +81,6 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             if(sources.length != 0) {
                 CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
-                for (PackageModel pm : modelBuilder.getPackageModels()) {
-                    pm.validateConsequence(getClassLoader(), trgMfs, messages);
-                }
-
                 Stream.of(res.getErrors()).collect(groupingBy(CompilationProblem::getFileName))
                     .forEach( (name, errors) -> {
                         errors.forEach( messages::addMessage );

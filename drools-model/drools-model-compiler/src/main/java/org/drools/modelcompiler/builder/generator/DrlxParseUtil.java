@@ -64,15 +64,15 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.constraint.parser.DrlxParser;
-import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.constraint.parser.ast.expr.HalfBinaryExpr;
-import org.drools.constraint.parser.ast.expr.MapCreationLiteralExpression;
-import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.mvel.parser.DrlxParser;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.MapCreationLiteralExpression;
+import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -373,11 +373,13 @@ public class DrlxParseUtil {
             throw new RuntimeException("This doesn't work on arrayAccessExpr convert them to a method call");
         }
 
-        if (expr instanceof NodeWithTraversableScope) {
+        if (expr instanceof EnclosedExpr) {
+            return findRootNodeViaScopeRec(expr.asEnclosedExpr().getInner(), acc);
+        } else if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
             return exprWithScope.traverseScope().map((Expression scope) -> {
-                Expression sanitizedExpr = (Expression) DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
+                Expression sanitizedExpr = DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
                 acc.addLast(sanitizedExpr.clone());
                 return findRootNodeViaScopeRec(scope, acc);
             }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr));
@@ -731,8 +733,10 @@ public class DrlxParseUtil {
         }
     }
 
-    public static boolean hasScope( MethodCallExpr mce, String scope ) {
-        return mce.getScope().map( s -> isNameExprWithName(s, scope)).orElse(false );
+    public static boolean hasScopeWithName(MethodCallExpr expression, String name ) {
+        return findRootNodeViaScope(expression)
+                .filter(s -> isNameExprWithName(s, name))
+                .isPresent();
     }
 
     public static boolean isNameExprWithName(Node expression, String name) {
@@ -813,5 +817,9 @@ public class DrlxParseUtil {
             sanitized = e;
         }
         return sanitized;
+    }
+
+    public static String addCurlyBracesToBlock(String blockString) {
+        return String.format("{%s}", blockString);
     }
 }
