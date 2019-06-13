@@ -1665,7 +1665,7 @@ Expression PreDecrementExpression():
   { return ret; }
 }
 
-// drlcontraintparser start
+// mvel start
 Expression HalfBinaryExpression():
 {
 	Expression ret;
@@ -1945,7 +1945,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	)
 	|
 	  "["ret = Expression() "]" { ret = new ArrayAccessExpr(range(scope, token()), scope, ret); }
-// drlcontraintparser start
+// mvel start
 	|
 	  "#"
 	  (
@@ -1974,7 +1974,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
             }
         }
         )
-// drlcontraintparser end
+// mvel end
   )
   { return ret; }
 }
