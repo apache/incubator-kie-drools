@@ -275,7 +275,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         URL pmmlURL = null;
         try {
             URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
-            pmmlURL = resolveRelativeURI.isAbsolute() ? resolveRelativeURI.toURL() : classLoader.getResource(resolveRelativeURI.toString());
+            pmmlURL = resolveRelativeURI.isAbsolute() ? resolveRelativeURI.toURL() : classLoader.getResource(resolveRelativeURI.getPath());
         } catch (URISyntaxException | IOException e) {
             new PMMLImportErrConsumer(model, i, node).accept(e);
         }
@@ -284,13 +284,14 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     protected static URI resolveRelativeURI(DMNModelImpl model, String relative) throws URISyntaxException, IOException {
+        URI relativeAsURI = new URI(null, null, relative, null);
         if (model.getResource() instanceof FileSystemResource) {
             FileSystemResource fsr = (FileSystemResource) model.getResource();
-            URI resolve = fsr.getURL().toURI().resolve(relative);
+            URI resolve = fsr.getURL().toURI().resolve(relativeAsURI);
             return resolve;
         } else {
-            URI dmnModelURI = new URI(model.getResource().getSourcePath());
-            URI relativeURI = dmnModelURI.resolve(relative);
+            URI dmnModelURI = new URI(null, null, model.getResource().getSourcePath(), null);
+            URI relativeURI = dmnModelURI.resolve(relativeAsURI);
             return relativeURI;
         }
     }

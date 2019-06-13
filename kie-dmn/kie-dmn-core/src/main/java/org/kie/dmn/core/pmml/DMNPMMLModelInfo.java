@@ -28,8 +28,8 @@ public class DMNPMMLModelInfo extends PMMLModelInfo {
 
     private final Map<String, DMNType> inputFields;
 
-    public DMNPMMLModelInfo(String name, Map<String, DMNType> inputFields, Collection<String> outputFields) {
-        super(name, inputFields.keySet(), outputFields);
+    public DMNPMMLModelInfo(String name, Map<String, DMNType> inputFields, Collection<String> targetFields, Collection<String> outputFields) {
+        super(name, inputFields.keySet(), targetFields, outputFields);
         this.inputFields = Collections.unmodifiableMap(new HashMap<>(inputFields));
     }
 
@@ -38,7 +38,7 @@ public class DMNPMMLModelInfo extends PMMLModelInfo {
         for (String name : info.inputFieldNames) {
             inputFields.put(name, model.getTypeRegistry().unknown());
         }
-        return new DMNPMMLModelInfo(info.name, inputFields, info.outputFieldNames);
+        return new DMNPMMLModelInfo(info.name, inputFields, info.targetFieldNames, info.outputFieldNames);
     }
 
     public Map<String, DMNType> getInputFields() {

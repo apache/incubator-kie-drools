@@ -43,5 +43,7 @@ public class PMMLInfoTest {
                                                                is("occupation"),
                                                                is("residenceState"),
                                                                is("validLicense")));
+        assertThat(m0.getTargetFieldNames(), containsInAnyOrder(is("overallScore")));
+        assertThat(m0.getOutputFieldNames(), containsInAnyOrder(is("calculatedScore")));
     }
 }
