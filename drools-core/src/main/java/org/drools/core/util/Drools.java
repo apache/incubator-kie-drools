@@ -37,23 +37,12 @@ public class Drools {
     static {
         droolsFullVersion = Drools.class.getPackage().getImplementationVersion();
         if (droolsFullVersion == null || droolsFullVersion.equals("0.0")) {
-            InputStream is = null;
-            try {
-                is = Drools.class.getClassLoader().getResourceAsStream("drools.versions.properties");
+            try (InputStream is = Drools.class.getClassLoader().getResourceAsStream("drools.versions.properties")) {
                 Properties properties = new Properties();
                 properties.load(is);
                 droolsFullVersion = properties.get("drools.version").toString();
-                is.close();
             } catch ( IOException e ) {
                 throw new RuntimeException(e);
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
             }
         }
 

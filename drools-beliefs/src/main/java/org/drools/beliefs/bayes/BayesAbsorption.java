@@ -58,7 +58,9 @@ public class BayesAbsorption {
         }
 
         for ( int i = 0, length = array.length; i < length; i++ ) {
-            array[i] = array[i]/sum;
+            if (sum != 0) {
+                array[i] = array[i]/sum;
+            }
         }
     }
 

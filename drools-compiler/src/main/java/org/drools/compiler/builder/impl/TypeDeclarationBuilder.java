@@ -287,7 +287,7 @@ public class TypeDeclarationBuilder {
                 type.setValid( false );
             }
 
-            typeDeclarationConfigurator.finalize( type, typeDescr, pkgRegistry, kbuilder.getPackageRegistry(), hierarchyManager );
+            typeDeclarationConfigurator.finalizeConfigurator(type, typeDescr, pkgRegistry, kbuilder.getPackageRegistry(), hierarchyManager );
 
         } catch ( final ClassNotFoundException e ) {
             unprocesseableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
