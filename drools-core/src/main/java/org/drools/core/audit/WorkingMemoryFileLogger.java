@@ -16,15 +16,6 @@
 
 package org.drools.core.audit;
 
-import com.thoughtworks.xstream.XStream;
-import org.drools.core.WorkingMemory;
-import org.drools.core.audit.event.LogEvent;
-import org.drools.core.util.IoUtils;
-import org.kie.api.event.KieRuntimeEventManager;
-import org.kie.api.logger.KieRuntimeLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,6 +25,15 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.thoughtworks.xstream.XStream;
+import org.drools.core.WorkingMemory;
+import org.drools.core.audit.event.LogEvent;
+import org.drools.core.util.IoUtils;
+import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.logger.KieRuntimeLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
 
@@ -54,7 +54,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieR
 
     public static final int DEFAULT_MAX_EVENTS_IN_MEMORY = 1000;
 
-    private List<LogEvent> events            = new ArrayList<LogEvent>();
+    private List<LogEvent> events            = new ArrayList<>();
     private String         fileName          = "event";
     private int            maxEventsInMemory = DEFAULT_MAX_EVENTS_IN_MEMORY;
     private int            nbOfFile          = 0;
@@ -122,17 +122,13 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieR
         if ( !initialized ) {
             initializeLog();
         }
-        Writer writer = null;
-        try {
-            FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log" ),
-                                                             true );
-            writer = new OutputStreamWriter( fileOut,
-                                             IoUtils.UTF8_CHARSET );
+        try (FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log" ), true );
+             Writer writer = new OutputStreamWriter( fileOut, IoUtils.UTF8_CHARSET )) {
             final XStream xstream = createTrustingXStream();
 
-            WorkingMemoryLog log = null;
+            WorkingMemoryLog log;
             synchronized ( this.events ) {
-                log = new WorkingMemoryLog(new ArrayList<LogEvent>( this.events ));
+                log = new WorkingMemoryLog(new ArrayList<>(this.events));
                 clear();
             }
             writer.write( xstream.toXML( log ) + "\n" );
@@ -140,13 +136,6 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieR
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
             logger.error("error", t);
-        } finally {
-            if ( writer != null ) {
-                try {
-                    writer.close();
-                } catch ( Exception e ) {
-                }
-            }
         }
         if ( terminate ) {
             closeLog();
@@ -159,13 +148,9 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieR
     }
 
     private void initializeLog() {
-        try {
-            FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
-                                                             false );
-            Writer writer = new OutputStreamWriter( fileOut,
-                                                    IoUtils.UTF8_CHARSET );
+        try (FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), false );
+             Writer writer = new OutputStreamWriter( fileOut, IoUtils.UTF8_CHARSET )) {
             writer.append( "<object-stream>\n" );
-            writer.close();
             initialized = true;
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
@@ -175,13 +160,9 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieR
     }
 
     private void closeLog() {
-        try {
-            FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
-                                                             true);
-            Writer writer = new OutputStreamWriter( fileOut,
-                                                    IoUtils.UTF8_CHARSET);
+        try (FileOutputStream fileOut = new FileOutputStream( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
+             Writer writer = new OutputStreamWriter( fileOut, IoUtils.UTF8_CHARSET)) {
             writer.append( "</object-stream>\n" );
-            writer.close();
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not close the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {

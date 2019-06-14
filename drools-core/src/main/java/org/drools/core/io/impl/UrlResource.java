@@ -219,16 +219,14 @@ public class UrlResource extends BaseResource
                     throw new IllegalStateException("Cannot delete file " + fi.getAbsolutePath() + "!");
                 }
             }
-            FileOutputStream fout = new FileOutputStream(fi);
-            InputStream in = grabStream();
-            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            int n;
-            while (-1 != (n = in.read(buffer))) {
-                fout.write(buffer, 0, n);
+            try (FileOutputStream fout = new FileOutputStream(fi);
+                 InputStream in = grabStream()) {
+                byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+                int n;
+                while (-1 != (n = in.read(buffer))) {
+                    fout.write(buffer, 0, n);
+                }
             }
-            fout.flush();
-            fout.close();
-            in.close();
             
             File cacheFile = getCacheFile();
             if (!fi.renameTo(cacheFile)) {

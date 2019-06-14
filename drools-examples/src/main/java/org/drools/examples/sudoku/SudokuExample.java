@@ -124,11 +124,8 @@ public class SudokuExample implements ActionListener {
 
     private void runFile(String path){
         Integer[][] values = new Integer[9][];
-        Reader fileIsReader = null;
-        BufferedReader rdr = null;
-        try {
-            fileIsReader = new InputStreamReader(new FileInputStream(path), IoUtils.UTF8_CHARSET);
-            rdr = new BufferedReader( fileIsReader );
+        try (Reader fileIsReader = new InputStreamReader(new FileInputStream(path), IoUtils.UTF8_CHARSET);
+             BufferedReader rdr = new BufferedReader(fileIsReader)) {
             String line = rdr.readLine();
             for( int iRow = 0; iRow < 9;  iRow++ ){
                 values[iRow] = new Integer[9];
@@ -136,7 +133,7 @@ public class SudokuExample implements ActionListener {
                     if( line != null && line.length() > iCol ){
                         char c = line.charAt( iCol );
                         if( '1' <= c && c <= '9' ){
-                            values[iRow][iCol] = Integer.valueOf( c - '0' );
+                            values[iRow][iCol] = c - '0';
                         }
                     }
                 }
@@ -144,18 +141,8 @@ public class SudokuExample implements ActionListener {
             }
             sudoku.setCellValues( values );
             sudoku.validate();
-        } catch ( FileNotFoundException e ) {
+        } catch ( IOException e ) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if( rdr != null ) {
-                try {
-                    rdr.close();
-                } catch (IOException e) {
-                    // nothing to do
-                }
-            }
         }
     }
 
@@ -208,8 +195,6 @@ public class SudokuExample implements ActionListener {
             sudoku.setCellValues(sample);
             sudoku.validate();
             buttonsActive(true);
-        } else {
-            //
         }
     }
 }

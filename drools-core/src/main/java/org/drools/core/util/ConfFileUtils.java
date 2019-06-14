@@ -58,10 +58,7 @@ public class ConfFileUtils {
 
         // check META-INF directories for all known ClassLoaders
         if ( url == null && classLoader != null ) {
-            ClassLoader confClassLoader = classLoader;
-            if ( confClassLoader != null ) {
-                url = confClassLoader.getResource( "META-INF/" + confName );
-            }
+            url = classLoader.getResource( "META-INF/" + confName );
         }
 
         if ( url == null ) {
@@ -106,9 +103,9 @@ public class ConfFileUtils {
         URL url = null;
         if ( fileName != null ) {
             File file = new File( fileName );
-            if ( file != null && file.exists() ) {
+            if ( file.exists() ) {
                 try {
-                    url = file.toURL();
+                    url = file.toURI().toURL();
                 } catch ( MalformedURLException e ) {
                     throw new IllegalArgumentException( "file.toURL() failed for '" + file + "'" );
                 }
@@ -123,16 +120,12 @@ public class ConfFileUtils {
             return null;
         }
         
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader( url.openStream(), IoUtils.UTF8_CHARSET));
-            String line = null;
-        
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader( url.openStream(), IoUtils.UTF8_CHARSET))) {
+            String line;
             while ( ( line = reader.readLine() ) != null ) { // while loop begins here
                 builder.append( line );
                 builder.append( "\n" );
             }
-            
-            reader.close();
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to read " + url.toExternalForm() );
         }
