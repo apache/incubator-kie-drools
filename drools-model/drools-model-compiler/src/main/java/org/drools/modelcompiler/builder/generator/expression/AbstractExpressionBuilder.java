@@ -194,10 +194,10 @@ public abstract class AbstractExpressionBuilder {
                 expression = toNewExpr(BigInteger.class, new StringLiteralExpr(bigInteger.toString()));
             }
 
-        } else if (expression instanceof NameExpr && !context.getDeclarationById(printConstraint(expression)).isPresent()) { // It's a literal of a BigDecimal or BigInteger
-            if (leftType.equals(BigDecimal.class)) {
+        } else if (expression instanceof NameExpr) {
+            if (leftType.equals(BigDecimal.class) && !right.getType().equals(BigDecimal.class)) {
                 expression = toNewExpr(BigDecimal.class, expression);
-            } else if (leftType.equals(BigInteger.class)) {
+            } else if (leftType.equals(BigInteger.class) && !right.getType().equals(BigInteger.class)) {
                 expression = toNewExpr(BigInteger.class, expression);
             }
         }
