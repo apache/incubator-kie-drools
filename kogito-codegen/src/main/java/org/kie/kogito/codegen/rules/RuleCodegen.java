@@ -110,7 +110,7 @@ public class RuleCodegen implements Generator {
                                 .withOneClassPerRule(oneClassPerRule)
                                 .withCdi(dependencyInjection),
                 s -> {
-                    return !s.contains("src/test/java")
+                    return !s.contains("src" + File.separator + "test" + File.separator + "java")
                             && !s.endsWith("bpmn")
                             && !s.endsWith("bpmn2");
                 }
