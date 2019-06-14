@@ -38,7 +38,6 @@ import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -1690,4 +1689,63 @@ public class CompilerTest extends BaseModelTest {
         }
     }
 
+    @Test
+    public void testBetaJoinBigInteger() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $markV : Person(name == \"Mark\", $markAgeInSeconds : ageInSeconds)\n" +
+                        "  $olderV : Person(name != \"Mark\", ageInSeconds > $markAgeInSeconds)\n" +
+                        "then\n" +
+                        "  $r.setValue($olderV.getName() + \" is older than \" + $markV.getName());\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37).setAgeInSeconds(BigInteger.valueOf(12341234));
+        Person edson = new Person("Edson", 35).setAgeInSeconds(BigInteger.valueOf(1234));
+        Person mario = new Person("Mario", 40).setAgeInSeconds(BigInteger.valueOf(123412341234L));
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+    }
+
+    @Test
+    public void testBetaJoinBigDecimal() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $markV : Person(name == \"Mark\", $markMoney : money)\n" +
+                        "  $richerV : Person(name != \"Mark\", money > $markMoney)\n" +
+                        "then\n" +
+                        "  $r.setValue($richerV.getName() + \" is richer than \" + $markV.getName());\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37).setMoney(BigDecimal.valueOf(1_000_000));
+        Person edson = new Person("Edson", 35).setMoney(BigDecimal.valueOf(1_000));
+        Person mario = new Person("Mario", 40).setMoney(BigDecimal.valueOf(1_000_000_000));
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is richer than Mark", result.getValue());
+    }
 }

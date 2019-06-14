@@ -52,6 +52,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class AbstractExpressionBuilder {
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
@@ -194,9 +195,9 @@ public abstract class AbstractExpressionBuilder {
             }
 
         } else if (expression instanceof NameExpr) {
-            if (leftType.equals(BigDecimal.class)) {
+            if (leftType.equals(BigDecimal.class) && !right.getType().equals(BigDecimal.class)) {
                 expression = toNewExpr(BigDecimal.class, expression);
-            } else if (leftType.equals(BigInteger.class)) {
+            } else if (leftType.equals(BigInteger.class) && !right.getType().equals(BigInteger.class)) {
                 expression = toNewExpr(BigInteger.class, expression);
             }
         }
