@@ -95,7 +95,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
         @Override
         public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult result) {
             MsgUtil.reportMessage(LOG,
-                                  DMNMessage.Severity.WARN,
+                                  DMNMessage.Severity.ERROR,
                                   node,
                                   ((DMNResultImpl) result),
                                   null,
@@ -124,14 +124,14 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
             } catch (NoClassDefFoundError | ClassNotFoundException e) {
                 LOG.warn("Tried binding org.kie:kie-dmn-jpmml, failed.");
             } catch (Throwable e) {
-                LOG.warn("Binding org.kie:kie-dmn-jpmml succeded but initialization failed.", e);
+                LOG.warn("Binding org.kie:kie-dmn-jpmml succeded but initialization failed, with:", e);
             }
             try {
                 return new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel, pmmlInfo);
             } catch (NoClassDefFoundError e) {
                 LOG.warn("Tried binding org.drools:kie-pmml, failed.");
             } catch (Throwable e) {
-                LOG.warn("Binding org.drools:kie-pmml succeded but initialization failed.", e);
+                LOG.warn("Binding org.drools:kie-pmml succeded but initialization failed, with:", e);
             }
             MsgUtil.reportMessage(LOG,
                                   DMNMessage.Severity.WARN,

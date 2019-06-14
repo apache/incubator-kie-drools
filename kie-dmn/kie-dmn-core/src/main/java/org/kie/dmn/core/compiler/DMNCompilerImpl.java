@@ -231,7 +231,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             return;
         }
         try (InputStream pmmlIS = pmmlURL.openStream();) {
-            DMNImportPMMLInfo.from(pmmlIS, model, i).consume(x -> new PMMLImportErrConsumer(model, i),
+            DMNImportPMMLInfo.from(pmmlIS, model, i).consume(new PMMLImportErrConsumer(model, i),
                                                              model::addPMMLImportInfo);
         } catch (IOException e) {
             new PMMLImportErrConsumer(model, i).accept(e);
