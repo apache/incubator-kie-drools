@@ -41,6 +41,9 @@ public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
+    public BaseLongClassFieldReader() {
+    }
+
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return getLongValue( workingMemory, object );
     }

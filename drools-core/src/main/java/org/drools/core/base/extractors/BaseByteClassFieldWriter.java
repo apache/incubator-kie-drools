@@ -50,6 +50,9 @@ public abstract class BaseByteClassFieldWriter extends BaseClassFieldWriter {
                valueType );
     }
 
+    public BaseByteClassFieldWriter() {
+    }
+
     public void setValue(final Object bean,
                          final Object value) {
         setByteValue( bean,

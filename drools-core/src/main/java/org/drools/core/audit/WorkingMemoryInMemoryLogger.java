@@ -39,7 +39,7 @@ import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
  */
 public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
 
-    private List<LogEvent> events            = new ArrayList<LogEvent>();
+    private List<LogEvent> events            = new ArrayList<>();
 
     public WorkingMemoryInMemoryLogger() {
     }

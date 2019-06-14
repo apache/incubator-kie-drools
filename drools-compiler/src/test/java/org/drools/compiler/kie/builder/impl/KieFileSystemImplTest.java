@@ -35,7 +35,7 @@ public class KieFileSystemImplTest {
     }
 
     @Test
-    public void testClone() throws Exception {
+    public void testClone() {
         KieFileSystem clonedKieFileSystem = kieFileSystem.clone();
         MemoryFileSystem clonedMfs = ( (KieFileSystemImpl) clonedKieFileSystem ).getMfs();
         Collection<String> clonedFileNames = clonedMfs.getFileNames();

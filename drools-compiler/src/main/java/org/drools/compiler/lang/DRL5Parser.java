@@ -20,6 +20,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.compiler.lang.api.AccumulateDescrBuilder;
 import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
@@ -1375,7 +1376,11 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                            DroolsSoftKeywords.EFFECTIVE ) ) {
                 attribute = stringAttribute( as,
                                              new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EFFECTIVE} );
-                attribute.setType( AttributeDescr.Type.DATE );
+                if (attribute != null) {
+                    attribute.setType( AttributeDescr.Type.DATE );
+                } else {
+                    throw new RecognitionException();
+                }
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
@@ -1383,7 +1388,11 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                            DroolsSoftKeywords.EXPIRES ) ) {
                 attribute = stringAttribute( as,
                                              new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EXPIRES} );
-                attribute.setType( AttributeDescr.Type.DATE );
+                if (attribute != null) {
+                    attribute.setType( AttributeDescr.Type.DATE );
+                } else {
+                    throw new RecognitionException();
+                }
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DIALECT ) ) {
                 attribute = stringAttribute( as,
                                              new String[]{DroolsSoftKeywords.DIALECT} );
@@ -1449,12 +1458,14 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 if ( state.failed ) return null;
             }
             if ( state.backtracking == 0 ) {
-                if ( hasParen ) {
-                    value = input.toString( first,
-                                            input.LT( -1 ).getTokenIndex() );
+                if (attribute != null) {
+                    if ( hasParen ) {
+                        value = input.toString( first,
+                                                input.LT( -1 ).getTokenIndex() );
+                    }
+                    attribute.value( value );
+                    attribute.type( AttributeDescr.Type.EXPRESSION );
                 }
-                attribute.value( value );
-                attribute.type( AttributeDescr.Type.EXPRESSION );
             }
 
         } finally {
@@ -1509,12 +1520,14 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 if ( state.failed ) return null;
             }
             if ( state.backtracking == 0 ) {
-                if ( hasParen ) {
-                    value = input.toString( first,
-                                            input.LT( -1 ).getTokenIndex() );
+                if (attribute != null) {
+                    if ( hasParen ) {
+                        value = input.toString( first,
+                                                input.LT( -1 ).getTokenIndex() );
+                    }
+                    attribute.value( value );
+                    attribute.type( AttributeDescr.Type.EXPRESSION );
                 }
-                attribute.value( value );
-                attribute.type( AttributeDescr.Type.EXPRESSION );
             }
 
         } finally {
@@ -1571,8 +1584,10 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 value = bool.getText();
             }
             if ( state.backtracking == 0 ) {
-                attribute.value( value );
-                attribute.type( AttributeDescr.Type.BOOLEAN );
+                if (attribute != null) {
+                    attribute.value( value );
+                    attribute.type( AttributeDescr.Type.BOOLEAN );
+                }
             }
         } finally {
             if ( attribute != null ) {
@@ -1624,8 +1639,10 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                  DroolsEditorType.STRING_CONST );
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) {
-                attribute.value( StringUtils.unescapeJava( safeStripStringDelimiters( value.getText() ) ) );
-                attribute.type( AttributeDescr.Type.STRING );
+                if (attribute != null) {
+                    attribute.value( StringUtils.unescapeJava( safeStripStringDelimiters( value.getText() ) ) );
+                    attribute.type( AttributeDescr.Type.STRING );
+                }
             }
         } finally {
             if ( attribute != null ) {
@@ -1698,8 +1715,10 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
             }
             builder.append( " ]" );
             if ( state.backtracking == 0 ) {
-                attribute.value( builder.toString() );
-                attribute.type( AttributeDescr.Type.LIST );
+                if (attribute != null) {
+                    attribute.value( builder.toString() );
+                    attribute.type( AttributeDescr.Type.LIST );
+                }
             }
         } finally {
             if ( attribute != null ) {
@@ -1750,10 +1769,12 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                       -1 );
                 if ( state.failed ) return null;
                 if ( state.backtracking == 0 ) {
-                    attribute.value( safeStripDelimiters( value,
-                                                          "(",
-                                                          ")" ) );
-                    attribute.type( AttributeDescr.Type.EXPRESSION );
+                    if (attribute != null) {
+                        attribute.value( safeStripDelimiters( value,
+                                                              "(",
+                                                              ")" ) );
+                        attribute.type( AttributeDescr.Type.EXPRESSION );
+                    }
                 }
             } else {
                 String value = "";
@@ -1782,8 +1803,10 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 if ( state.failed ) return null;
                 value += nbr.getText();
                 if ( state.backtracking == 0 ) {
-                    attribute.value( value );
-                    attribute.type( AttributeDescr.Type.NUMBER );
+                    if (attribute != null) {
+                        attribute.value( value );
+                        attribute.type( AttributeDescr.Type.NUMBER );
+                    }
                 }
             }
         } finally {
@@ -3854,7 +3877,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
             accumulate.function( function.getText(),
                                  label,
                                  unif,
-                                 parameters.toArray( new String[parameters.size()] ) );
+                                 parameters != null ? parameters.toArray( new String[]{} ) : new String[]{} );
         }
     }
 
@@ -4056,7 +4079,11 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                               -1 ).trim();
                         if ( state.failed ) return;
                         if ( state.backtracking == 0 ) {
-                            annotation.value( value );
+                            if (annotation != null) {
+                                annotation.value( value );
+                            } else {
+                                throw new RecognitionException();
+                            }
                         }
                     }
                 } finally {

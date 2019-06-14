@@ -77,6 +77,9 @@ public class TraitHelper implements Externalizable {
         this.entryPoint = nep;
     }
 
+    public TraitHelper() {
+    }
+
     public <T, K> T don( Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean logical, Mode... modes ) {
         if ( core instanceof Thing && ( (Thing) core ).getCore() != core ) {
             return don( activation, ((Thing) core).getCore(), traits, logical, modes );
@@ -537,14 +540,7 @@ public class TraitHelper implements Externalizable {
     }
 
     public FactHandle getFactHandle(Object object) {
-        FactHandle handle = null;
-
-        if ( handle != null ) {
-            return handle;
-        }
-
-        handle = getFactHandleFromWM( object );
-
+        FactHandle handle = getFactHandleFromWM( object );
         if ( handle == null ) {
             if ( object instanceof CoreWrapper ) {
                 handle = getFactHandleFromWM( ((CoreWrapper) object).getCore() );

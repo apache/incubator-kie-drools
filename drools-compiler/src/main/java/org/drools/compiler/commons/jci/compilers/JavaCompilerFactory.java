@@ -74,8 +74,8 @@ public final class JavaCompilerFactory {
             try {
                 clazz = Class.forName(className);
                 classCache.put(className, clazz);
-            } catch (ClassNotFoundException e) {
-                clazz = null;
+            } catch (ClassNotFoundException ignored) {
+                // Ignored
             }
         }
 
@@ -103,13 +103,21 @@ public final class JavaCompilerFactory {
             }
             case NATIVE : {
                 compiler = createCompiler( "native" );
-                updateSettings( compiler.createDefaultSettings(), lngLevel );
+                if (compiler == null) {
+                    throw new RuntimeException("Instance of native compiler cannot be created!");
+                } else {
+                    updateSettings( compiler.createDefaultSettings(), lngLevel );
+                }
                 break;
             }
             case ECLIPSE :
             default : {
                 compiler = createCompiler( "eclipse" );
-                updateSettings( compiler.createDefaultSettings(), lngLevel );
+                if (compiler == null) {
+                    throw new RuntimeException("Instance of eclipse compiler cannot be created!");
+                } else {
+                    updateSettings( compiler.createDefaultSettings(), lngLevel );
+                }
                 break;
             }
         }

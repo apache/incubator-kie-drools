@@ -41,6 +41,9 @@ public class JTMSBeliefSetImpl<M extends JTMSMode<M>> extends LinkedList<M> impl
         this.rootHandle = rootHandle;
     }
 
+    public JTMSBeliefSetImpl() {
+    }
+
     public void add( M node ) {
         JTMSMode mode = node;
         String value = mode.getValue();

@@ -41,6 +41,9 @@ public abstract class BaseIntClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
+    public BaseIntClassFieldReader() {
+    }
+
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return getIntValue( workingMemory, object );
     }

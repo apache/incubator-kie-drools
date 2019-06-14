@@ -37,7 +37,7 @@ public class FactTemplateError extends DroolsError {
         this.descr = descr;
         this.object = object;
         this.message = message;
-        this.line = new int[] { ( this.descr != null ) ? this.descr.getLine() : -1 };
+        this.line = new int[] {this.descr.getLine()};
     }
 
     @Override

@@ -35,7 +35,10 @@ public class SimpleBeliefSet extends LinkedList<SimpleMode> implements BeliefSet
         this.beliefSystem = beliefSystem;
         this.fh = fh;
     }
-    
+
+    public SimpleBeliefSet() {
+    }
+
     public BeliefSystem getBeliefSystem() {
         return beliefSystem;
     }

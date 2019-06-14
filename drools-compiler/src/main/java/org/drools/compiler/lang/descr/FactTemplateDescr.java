@@ -29,6 +29,9 @@ public class FactTemplateDescr extends BaseDescr {
         this.name = name;
     }
 
+    public FactTemplateDescr() {
+    }
+
     public void addFieldTemplate(final FieldTemplateDescr fieldTemplate) {
         this.fields.add( fieldTemplate );
     }

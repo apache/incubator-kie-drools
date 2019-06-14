@@ -46,6 +46,9 @@ public abstract class BaseCharClassFieldWriter extends BaseClassFieldWriter {
                valueType );
     }
 
+    public BaseCharClassFieldWriter() {
+    }
+
     public void setValue(final Object bean,
                          final Object value) {
         setCharValue( bean,

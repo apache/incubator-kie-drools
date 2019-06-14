@@ -54,7 +54,7 @@ public class AccumulateHandler extends BaseAbstractHandler
 
         final Object parent = parser.getParent();
 
-        if ( parent.getClass().getName().equals( FromDescr.class.getName() ) ) {
+        if ( parent.getClass().isAssignableFrom(FromDescr.class) ) {
             final PatternDescr result = (PatternDescr) parser.getParent( 1 );
             result.setSource( accumulateDescr );
 

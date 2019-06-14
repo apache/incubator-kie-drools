@@ -57,6 +57,7 @@ public class ParseException extends RuntimeException {
      * This will print out a summary, including the line number. 
      * It will also print out the cause message if applicable.
      */
+    @Override
     public String getMessage() {
         if ( this.cause == null ) {
             return super.getMessage() + " Line number: " + this.lineNumber;
@@ -65,11 +66,13 @@ public class ParseException extends RuntimeException {
         }
     }
 
+    @Override
     public String toString() {
         return getMessage();
     }
 
-    public Throwable getCause() {
+    @Override
+    public synchronized Throwable getCause() {
         return this.cause;
     }
 

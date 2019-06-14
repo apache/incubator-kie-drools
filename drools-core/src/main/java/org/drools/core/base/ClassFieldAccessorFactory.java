@@ -204,14 +204,7 @@ public class ClassFieldAccessorFactory {
                 return (BaseClassFieldWriter) newClass.getConstructors()[0].newInstance( params );
             } else {
                 if ( inspector.getFieldNames().containsKey( fieldName ) ) {
-                    if ( inspector.getGetterMethods().get( fieldName ) != null ) {
-                        // field without setter
-                        return null;
-                    } else {
-                        // public field
-                        return null;
-                    }
-
+                    return null;
                 } else {
                     throw new RuntimeException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'" );
                 }

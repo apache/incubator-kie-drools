@@ -53,7 +53,7 @@ public class CollectHandler extends BaseAbstractHandler
 
         final Object parent = parser.getParent();
 
-        if ( parent.getClass().getName().equals( FromDescr.class.getName() ) ) {
+        if ( parent.getClass().isAssignableFrom(FromDescr.class) ) {
             final PatternDescr resultPattern = (PatternDescr) parser.getParent( 1 );
             resultPattern.setSource( collectDescr );
         } else if ( parent instanceof ConditionalElementDescr ) {

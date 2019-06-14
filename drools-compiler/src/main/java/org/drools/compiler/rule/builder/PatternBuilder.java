@@ -1898,13 +1898,6 @@ public class PatternBuilder
         DrlExprParser parser = new DrlExprParser(context.getConfiguration().getLanguageLevel());
         ConstraintConnectiveDescr result = parser.parse(expression);
         result.setResource(patternDescr.getResource());
-
-        if (result == null) {
-            registerDescrBuildError(context, patternDescr,
-                                    "Unable to parse pattern expression:\n" + expression);
-            return null;
-        }
-
         result.copyLocation(original);
         if (parser.hasErrors()) {
             for (DroolsParserException error : parser.getErrors()) {
