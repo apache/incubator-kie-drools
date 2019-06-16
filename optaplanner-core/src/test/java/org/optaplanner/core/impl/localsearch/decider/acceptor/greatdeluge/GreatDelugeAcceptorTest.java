@@ -12,13 +12,14 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 
 public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
-    public void isAcceptedPositiveLevelSingleScore() {
+    public void isAcceptedPositiveLevelSingleScoreRainSpeed() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialLevels(SimpleScore.of(1100));
@@ -91,8 +92,9 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
+
     @Test
-    public void isAcceptedPositiveLevelMultipleScore() {
+    public void isAcceptedPositiveLevelMultipleScoreRainSpeed() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialLevels(HardMediumSoftScore.of(0, 200, 500));
@@ -137,10 +139,30 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseEnded(phaseScope);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void negativeWaterLevel() {
+    @Test
+    public void negativeWaterLevelSingleScore() {
+
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(HardMediumSoftScore.parseScore("1, -1, 2"));
-        acceptor.phaseStarted(null);
+        acceptor.setInitialLevels(SimpleScore.of(-100));
+        try {
+            acceptor.phaseStarted(null);
+        }
+        catch (IllegalArgumentException e) {
+            assertEquals("The initial level (" + acceptor.getInitialLevels()
+                    + ") cannot have negative level (" + "-100.0" + ").", e.getMessage());
+        }
+    }
+    @Test
+    public void negativeWaterLevelMultipleScore() {
+
+        GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
+        acceptor.setInitialLevels(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
+        try {
+            acceptor.phaseStarted(null);
+        }
+        catch (IllegalArgumentException e) {
+            assertEquals("The initial level (" + acceptor.getInitialLevels()
+                    + ") cannot have negative level (" + "-1.0" + ").", e.getMessage());
+        }
     }
 }
