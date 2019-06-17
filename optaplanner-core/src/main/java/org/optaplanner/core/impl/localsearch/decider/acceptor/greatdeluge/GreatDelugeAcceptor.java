@@ -36,6 +36,8 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     public Double getRainSpeedRatio() { return this.rainSpeedRatio; }
 
+    public double[] getLevelScoreLevels() { return this.levelScoreLevels; }
+
     public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
 
@@ -59,7 +61,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
                     logger.info("{}", Double.toString(levelScoreLevels[i]));
                     continue;
                 }
-                levelScoreLevels[i] = -levelScoreLevels[i]+5;
+                levelScoreLevels[i] = -levelScoreLevels[i];
                 logger.info("{}", Double.toString(levelScoreLevels[i]));
             }
         }
