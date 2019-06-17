@@ -21,6 +21,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.Message;
 import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.runtime.KieContainer;
@@ -78,7 +79,7 @@ public class DMNRuntimeKiePMMLTest {
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         kfs.write("src/main/resources/org/acme/KiePMMLScoreCard_NOPMMLmodelName.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard_NOPMMLmodelName.dmn", DMNRuntimeKiePMMLTest.class));
-        IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/acme/KiePMMLScoreCard_NOPMMLmodelName.dmn").build();
+        IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet( Message.Level.WARNING, "src/main/resources/org/acme/KiePMMLScoreCard_NOPMMLmodelName.dmn" ).build();
         LOG.debug("getAddedMessages: {}", addResults.getAddedMessages());
         assertTrue(addResults.getAddedMessages().size() > 0);
         LOG.debug("getRemovedMessages: {}", addResults.getRemovedMessages());
