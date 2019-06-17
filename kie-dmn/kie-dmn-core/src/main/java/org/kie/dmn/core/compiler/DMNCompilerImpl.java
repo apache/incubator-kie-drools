@@ -576,12 +576,6 @@ public class DMNCompilerImpl implements DMNCompiler {
             // this is a composite type
             DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
             CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
-            for ( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
-                DMNCompilerHelper.checkVariableName( dmnModel, fieldDef, fieldDef.getName() );
-                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, false);
-                fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
-                compType.addField( fieldDef.getName(), fieldType );
-            }
             type = compType;
             if( topLevel ) {
                 DMNType registered = dmnModel.getTypeRegistry().registerType( type );
@@ -595,6 +589,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                                            Msg.DUPLICATED_ITEM_DEFINITION,
                                            itemDef.getName() );
                 }
+            }
+            for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
+                DMNCompilerHelper.checkVariableName(dmnModel, fieldDef, fieldDef.getName());
+                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, false);
+                fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
+                compType.addField(fieldDef.getName(), fieldType);
             }
         }
         return type;

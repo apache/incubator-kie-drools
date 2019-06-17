@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_f776b6fb-31bc-43b6-9c89-2bbc2973babf" id="_f776b6fb-31bc-43b6-9c89-2bbc2973babf" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_f776b6fb-31bc-43b6-9c89-2bbc2973babf" exporter="DMN Modeler" exporterVersion="6.2.4.1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:itemDefinition name="tEmployee" label="tEmployee">
+        <semantic:itemComponent id="_168e0fbc-436f-4233-a4c5-22195e6722a0" name="full name">
+            <semantic:typeRef>string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_8605063c-e4ca-4a03-85ad-8a4b14567421" name="supervisor">
+            <semantic:typeRef>tEmployee</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:decision id="_dc3d3310-e2a5-471f-93ee-8bf7d4272827" name="hardcoded decision">
+        <semantic:variable name="hardcoded decision" id="_896c0368-5d31-439f-8edd-6aa9e75bc2fc" typeRef="tEmployee"/>
+        <semantic:context id="_6b116bce-c74e-40e2-aaef-0f1e18826cb6" typeRef="tEmployee" triso:expressionId="_17714eb1-8a94-4d1c-b576-fbe5efa00cff">
+            <semantic:contextEntry id="_a4032b66-18de-4e99-9746-2b42fff3222b">
+                <semantic:variable name="full name" id="undefined" typeRef="string"/>
+                <semantic:literalExpression id="_ca9bc665-070a-48bc-a1d6-cd9500c0504b">
+                    <semantic:text>"John Doe"</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry id="_961402d5-1654-41b1-860e-dcc05b8c7295">
+                <semantic:variable name="supervisor" id="_0604126b-2484-4b46-9754-5ec529e1e017" typeRef="tEmployee"/>
+                <semantic:literalExpression id="_040a26e6-a4de-4620-85fc-1bd9b7493c1c">
+                    <semantic:text>{ full name : "supervisor of John", supervisor : null }</semantic:text>
+                </semantic:literalExpression>
+            </semantic:contextEntry>
+        </semantic:context>
+    </semantic:decision>
+</semantic:definitions>
