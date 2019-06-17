@@ -96,6 +96,30 @@ public class GuidedDecisionTreeDRLPersistenceMarshallingTest {
     }
 
     @Test
+    public void testOnlyWrappingBrakcetsAreRemoved() throws Exception {
+        final String expected = "rule \"test_0\"" +
+                "when\n" +
+                "  Person( name in ( \"John\", \"John(jr)\" ) )\n" +
+                "then\n" +
+                "end";
+
+        final GuidedDecisionTree model = new GuidedDecisionTree();
+        model.setTreeName( "test" );
+
+        final TypeNode type = new TypeNodeImpl( "Person" );
+        final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                          "name",
+                                                          "in",
+                                                          new StringValue( "John, John(jr)" ) );
+        model.setRoot( type );
+        type.addChild( c1 );
+
+        final String drl = GuidedDecisionTreeDRLPersistence.getInstance().marshal( model );
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
+    @Test
     public void testSingleRule_SingleConstraintNoOperatorNoValue() throws Exception {
         final String expected = "rule \"test_0\"" +
                 "when\n" +
