@@ -1433,7 +1433,7 @@ public class DefaultAgenda
             synchronized (stateMachineLock) {
                 if (currentState != ExecutionState.INACTIVE) {
                     setCurrentState( ExecutionState.INACTIVE );
-                    stateMachineLock.notify();
+                    stateMachineLock.notifyAll();
                     propagationList.onEngineInactive();
                 }
             }
@@ -1443,7 +1443,7 @@ public class DefaultAgenda
             synchronized (stateMachineLock) {
                 if (currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT) {
                     setCurrentState( ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT );
-                    stateMachineLock.notify();
+                    stateMachineLock.notifyAll();
                 }
             }
         }
@@ -1466,7 +1466,7 @@ public class DefaultAgenda
                     workingMemory.notifyWaitOnRest();
                 }
                 waitAndEnterExecutionState( ExecutionState.DISPOSED );
-                stateMachineLock.notify();
+                stateMachineLock.notifyAll();
                 return true;
             }
         }

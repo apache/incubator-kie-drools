@@ -35,7 +35,10 @@ public abstract class AbstractLeftTupleSinkAdapter
         this.partitionId = partitionId;
     }
 
-    public void writeExternal( ObjectOutput out ) throws IOException {
+    protected AbstractLeftTupleSinkAdapter() {
+    }
+
+    public void writeExternal(ObjectOutput out ) throws IOException {
         out.writeObject( this.partitionId );
     }
 

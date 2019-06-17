@@ -48,6 +48,9 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         this.kruntime = kruntime;
     }
 
+    public DefaultWorkItemManager() {
+    }
+
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workItemCounter.set(in.readLong());

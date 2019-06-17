@@ -29,6 +29,8 @@ public class TraitProxyObjectTypeNode extends ObjectTypeNode {
         super( id, source, objectType, context );
     }
 
+    public TraitProxyObjectTypeNode() {
+    }
 
     public void modifyObject( InternalFactHandle factHandle,
                               ModifyPreviousTuples modifyPreviousTuples,

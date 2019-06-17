@@ -448,52 +448,63 @@ public class ReteooBuilder
 
     public void writeExternal(ObjectOutput out) throws IOException {
         boolean isDrools = out instanceof DroolsObjectOutputStream;
-        DroolsObjectOutputStream droolsStream;
-        ByteArrayOutputStream bytes;
-
-        if ( isDrools ) {
-            bytes = null;
-            droolsStream = (DroolsObjectOutputStream) out;
-        } else {
-            bytes = new ByteArrayOutputStream();
-            droolsStream = new DroolsObjectOutputStream( bytes );
-        }
-        droolsStream.writeObject( rules );
-        droolsStream.writeObject( queries );
-        droolsStream.writeObject( namedWindows );
-        droolsStream.writeObject( idGenerator );
-        if ( !isDrools ) {
-            droolsStream.flush();
-            droolsStream.close();
-            bytes.close();
-            out.writeInt( bytes.size() );
-            out.writeObject( bytes.toByteArray() );
+        DroolsObjectOutputStream droolsStream = null;
+        ByteArrayOutputStream bytes = null;
+        try {
+            if ( isDrools ) {
+                bytes = null;
+                droolsStream = (DroolsObjectOutputStream) out;
+            } else {
+                bytes = new ByteArrayOutputStream();
+                droolsStream = new DroolsObjectOutputStream( bytes );
+            }
+            droolsStream.writeObject( rules );
+            droolsStream.writeObject( queries );
+            droolsStream.writeObject( namedWindows );
+            droolsStream.writeObject( idGenerator );
+        } finally {
+            if ( !isDrools ) {
+                if (droolsStream != null) {
+                    droolsStream.flush();
+                    droolsStream.close();
+                }
+                if (bytes != null) {
+                    bytes.close();
+                    out.writeInt(bytes.size());
+                    out.writeObject(bytes.toByteArray());
+                }
+            }
         }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                                     ClassNotFoundException {
         boolean isDrools = in instanceof DroolsObjectInputStream;
-        DroolsObjectInputStream droolsStream;
-        ByteArrayInputStream bytes;
+        DroolsObjectInputStream droolsStream = null;
+        ByteArrayInputStream bytes = null;
+        try {
+            if ( isDrools ) {
+                bytes = null;
+                droolsStream = (DroolsObjectInputStream) in;
+            } else {
+                bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
+                droolsStream = new DroolsObjectInputStream( bytes );
+            }
 
-        if ( isDrools ) {
-            bytes = null;
-            droolsStream = (DroolsObjectInputStream) in;
-        } else {
-            bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
-            droolsStream = new DroolsObjectInputStream( bytes );
+            this.rules = (Map<String, BaseNode[]>) droolsStream.readObject();
+            this.queries = (Map<String, BaseNode[]>) droolsStream.readObject();
+            this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
+            this.idGenerator = (IdGenerator) droolsStream.readObject();
+        } finally {
+            if ( !isDrools ) {
+                if (droolsStream != null) {
+                    droolsStream.close();
+                }
+                if (bytes != null) {
+                    bytes.close();
+                }
+            }
         }
-
-        this.rules = (Map<String, BaseNode[]>) droolsStream.readObject();
-        this.queries = (Map<String, BaseNode[]>) droolsStream.readObject();
-        this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
-        this.idGenerator = (IdGenerator) droolsStream.readObject();
-        if ( !isDrools ) {
-            droolsStream.close();
-            bytes.close();
-        }
-
     }
 
     public void setRuleBase( InternalKnowledgeBase kBase ) {

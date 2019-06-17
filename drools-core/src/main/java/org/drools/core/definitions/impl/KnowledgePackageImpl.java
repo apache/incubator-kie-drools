@@ -242,37 +242,40 @@ public class KnowledgePackageImpl
     public void writeExternal(ObjectOutput stream) throws IOException {
         boolean isDroolsStream = stream instanceof DroolsObjectOutputStream;
         ByteArrayOutputStream bytes = null;
-        ObjectOutput out;
+        try {
+            ObjectOutput out;
 
-        if (isDroolsStream) {
-            out = stream;
-        } else {
-            bytes = new ByteArrayOutputStream();
-            out = new DroolsObjectOutputStream(bytes);
-        }
+            if (isDroolsStream) {
+                out = stream;
+            } else {
+                bytes = new ByteArrayOutputStream();
+                out = new DroolsObjectOutputStream(bytes);
+            }
 
-        out.writeObject(this.name);
-        out.writeObject(this.classFieldAccessorStore);
-        out.writeObject(this.dialectRuntimeRegistry);
-        out.writeObject(this.typeDeclarations);
-        out.writeObject(this.imports);
-        out.writeObject(this.staticImports);
-        out.writeObject(this.functions);
-        out.writeObject(this.accumulateFunctions);
-        out.writeObject(this.factTemplates);
-        out.writeObject(this.globals);
-        out.writeBoolean(this.valid);
-        out.writeBoolean(this.needStreamMode);
-        out.writeObject(this.rules);
-        out.writeObject(this.entryPointsIds);
-        out.writeObject(this.windowDeclarations);
-        out.writeObject(this.traitRegistry);
-        out.writeObject(this.resourceTypePackages);
-        // writing the whole stream as a byte array
-        if (!isDroolsStream) {
-            bytes.flush();
-            bytes.close();
-            stream.writeObject(bytes.toByteArray());
+            out.writeObject(this.name);
+            out.writeObject(this.classFieldAccessorStore);
+            out.writeObject(this.dialectRuntimeRegistry);
+            out.writeObject(this.typeDeclarations);
+            out.writeObject(this.imports);
+            out.writeObject(this.staticImports);
+            out.writeObject(this.functions);
+            out.writeObject(this.accumulateFunctions);
+            out.writeObject(this.factTemplates);
+            out.writeObject(this.globals);
+            out.writeBoolean(this.valid);
+            out.writeBoolean(this.needStreamMode);
+            out.writeObject(this.rules);
+            out.writeObject(this.entryPointsIds);
+            out.writeObject(this.windowDeclarations);
+            out.writeObject(this.traitRegistry);
+            out.writeObject(this.resourceTypePackages);
+        } finally {
+            // writing the whole stream as a byte array
+            if (bytes != null) {
+                bytes.flush();
+                bytes.close();
+                stream.writeObject(bytes.toByteArray());
+            }
         }
     }
 

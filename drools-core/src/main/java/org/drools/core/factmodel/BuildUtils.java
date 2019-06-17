@@ -45,7 +45,11 @@ public class BuildUtils {
 
         for ( String intf : interfaces ) {
             String temp = getTypeDescriptor( intf );
-            sb.append( temp.replace( ";", "<TK;>;" ) );
+            if (temp == null) {
+                throw new RuntimeException("Cannot resolve internal type from interface " + intf + "!");
+            } else {
+                sb.append( temp.replace( ";", "<TK;>;" ) );
+            }
         }
         return sb.toString();
     }
@@ -127,7 +131,7 @@ public class BuildUtils {
             internalType = "V";
         } else if ( type != null && type.startsWith( "[" ) ) {
             int j = 0;
-            while ( type.charAt( ++j ) == '[' ) {}
+            while ( type.charAt( ++j ) == '[' ) { }
             if ( type.charAt( j ) == 'L' ) {
                 internalType = type.replace( '.', '/' );
             } else {
@@ -150,11 +154,11 @@ public class BuildUtils {
             if ( type.length() == arrayDimSize(type) +1  ) {
                 return type;
             } else {
-                String ans = "Ljava/lang/Object;";
+                StringBuilder ans = new StringBuilder("Ljava/lang/Object;");
                 for ( int j = 0; j < arrayDimSize( type ); j++ ) {
-                    ans = "[" + ans;
+                    ans.insert(0, "[");
                 }
-                return ans;
+                return ans.toString();
             }
         return null;
     }

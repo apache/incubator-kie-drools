@@ -34,6 +34,9 @@ public class RuleFlowGroupEventImpl implements RuleFlowGroupEvent, Externalizabl
         this.kruntime = kruntime;
     }
 
+    public RuleFlowGroupEventImpl() {
+    }
+
     public RuleFlowGroup getRuleFlowGroup() {
         return ruleFlowGroup;
     }

@@ -39,6 +39,9 @@ public class ObjectDeletedEventImpl extends RuleRuntimeEventImpl implements Obje
         this.oldbOject = object;
     }
 
+    public ObjectDeletedEventImpl() {
+    }
+
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );

@@ -373,7 +373,10 @@ public class PropagationQueuingNode extends ObjectSource
             this.context = context;
         }
 
-        public void readExternal( ObjectInput in ) throws IOException,
+        public Action() {
+        }
+
+        public void readExternal(ObjectInput in ) throws IOException,
                                                   ClassNotFoundException {
             handle = (InternalFactHandle) in.readObject();
             context = (PropagationContext) in.readObject();
@@ -397,6 +400,9 @@ public class PropagationQueuingNode extends ObjectSource
                    context );
         }
 
+        public AssertAction() {
+        }
+
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
             sink.propagateAssertObject( this.handle,
@@ -416,6 +422,9 @@ public class PropagationQueuingNode extends ObjectSource
             super( handle,
                    context );
             nodeSink = sink;
+        }
+
+        public AssertToSinkAction() {
         }
 
         public void execute( final ObjectSinkPropagator sink,
@@ -448,6 +457,9 @@ public class PropagationQueuingNode extends ObjectSource
                    context );
         }
 
+        public RetractAction() {
+        }
+
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
             this.handle.forEachRightTuple( rt -> rt.retractTuple( context, workingMemory ) );
@@ -467,6 +479,9 @@ public class PropagationQueuingNode extends ObjectSource
                    context );
             this.nodeSink = nodeSink;
             this.rightTuple = rightTuple;
+        }
+
+        public ModifyToSinkAction() {
         }
 
         public void execute( final ObjectSinkPropagator sink,

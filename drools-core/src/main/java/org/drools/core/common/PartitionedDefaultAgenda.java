@@ -32,6 +32,10 @@ public class PartitionedDefaultAgenda extends DefaultAgenda {
         this.partition = partition;
     }
 
+    public PartitionedDefaultAgenda() {
+        this.partition = 0;
+    }
+
     @Override
     protected void doRetract( PropagationContext ectx ) {
         InternalFactHandle factHandle = ectx.getFactHandle();

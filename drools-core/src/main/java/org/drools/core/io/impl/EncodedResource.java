@@ -61,7 +61,10 @@ public class EncodedResource  extends BaseResource implements InternalResource, 
         setResourceType( resource.getResourceType() );
         setConfiguration( resource.getConfiguration() );
     }
-    
+
+    public EncodedResource() {
+    }
+
     @Override
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

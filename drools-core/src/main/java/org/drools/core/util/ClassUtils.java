@@ -499,17 +499,17 @@ public final class ClassUtils {
 
     public static Class extractGenericType(Class<?> clazz, final String methodName) {
         Method method = ClassUtils.getAccessor(clazz, methodName);
-        if(method == null) {
+        if (method == null) {
             throw new RuntimeException(String.format("Unknown accessor %s on %s", methodName, clazz));
         }
 
         java.lang.reflect.Type returnType = method.getGenericReturnType();
 
-        if(returnType instanceof ParameterizedType){
+        if (returnType instanceof ParameterizedType) {
             ParameterizedType type = (ParameterizedType) returnType;
             java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
-            for(java.lang.reflect.Type typeArgument : typeArguments){
-                return (Class) typeArgument;
+            if (typeArguments.length > 0) {
+                return (Class) typeArguments[0];
             }
         }
         throw new RuntimeException("No generic type");
