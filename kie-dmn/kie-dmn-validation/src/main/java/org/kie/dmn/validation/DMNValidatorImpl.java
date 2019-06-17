@@ -127,7 +127,16 @@ public class DMNValidatorImpl implements DMNValidator {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId( "org.kie", "kie-dmn-validation", Drools.getFullVersion() ),
-                ks.getResources().newClassPathResource("META-INF/kmodule.xml", getClass() ),
+                ks.getResources().newReaderResource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                        "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" + 
+                        "  <kbase name=\"kbase_DMNv1x\" default=\"false\" packages=\"org.kie.dmn.validation.DMNv1x\" />\n" + 
+                        "  <kbase name=\"kbase_DMNv1_1\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_1\">\n" + 
+                        "    <ksession name=\"ksession_DMNv1_1\" default=\"false\" type=\"stateless\"/>\n" + 
+                        "  </kbase>\n" + 
+                        "  <kbase name=\"kbase_DMNv1_2\" default=\"false\" includes=\"kbase_DMNv1x\" packages=\"org.kie.dmn.validation.DMNv1_2\">\n" + 
+                        "    <ksession name=\"ksession_DMNv1_2\" default=\"false\" type=\"stateless\"/>\n" + 
+                        "  </kbase>\n" + 
+                        "</kmodule>")).setTargetPath("META-INF/kmodule.xml"),
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules.drl", getClass() ),
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-auth-req.drl", getClass() ),
                 ks.getResources().newClassPathResource("org/kie/dmn/validation/DMNv1x/dmn-validation-rules-bkm.drl", getClass() ),
