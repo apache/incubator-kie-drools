@@ -33,6 +33,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 
+import static org.drools.core.util.XStreamUtils.createTrustingXStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReteooBuilderTest {
@@ -61,7 +62,7 @@ public class ReteooBuilderTest {
 
     private void writeRuleBase(final InternalKnowledgeBase kBase,
                                final String fileName) throws IOException {
-        final XStream xstream = new XStream();
+        final XStream xstream = createTrustingXStream();
 
         final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( "src/test/resources/org/drools/reteoo/" + fileName ) ) );
 
@@ -82,7 +83,7 @@ public class ReteooBuilderTest {
                            name );
         }
 
-        final XStream xstream = new XStream();
+        final XStream xstream = createTrustingXStream();
 
         final InternalKnowledgeBase goodKBase = (InternalKnowledgeBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
 

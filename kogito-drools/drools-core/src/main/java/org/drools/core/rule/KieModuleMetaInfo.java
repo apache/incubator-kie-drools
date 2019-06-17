@@ -22,8 +22,10 @@ import java.util.Set;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import static org.drools.core.util.XStreamUtils.createTrustingXStream;
+
 public class KieModuleMetaInfo implements Serializable{
-    private static final XStream xStream = new XStream(new DomDriver());
+    private static final XStream xStream = createTrustingXStream(new DomDriver());
 
     static {
         xStream.setClassLoader( KieModuleMetaInfo.class.getClassLoader() );

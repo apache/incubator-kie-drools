@@ -39,12 +39,13 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.drools.core.util.XStreamUtils.createTrustingXStream;
 
 public class KieModuleMarshaller {
 
     static final KieModuleMarshaller MARSHALLER = new KieModuleMarshaller();
 
-    private final XStream xStream = new XStream(new DomDriver());
+    private final XStream xStream = createTrustingXStream(new DomDriver());
 
     private KieModuleMarshaller() {
         xStream.registerConverter(new KieModuleConverter());
