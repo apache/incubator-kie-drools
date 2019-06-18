@@ -29,7 +29,7 @@ public class SimpleLongScoreHibernateTypeTest extends AbstractScoreHibernateType
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(null),
+        persistAndMerge(new TestJpaEntity(SimpleLongScore.ZERO),
                 SimpleLongScore.of(-10L),
                 SimpleLongScore.ofUninitialized(-7, -10L));
     }

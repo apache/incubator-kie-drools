@@ -29,7 +29,7 @@ public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTy
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(null),
+        persistAndMerge(new TestJpaEntity(SimpleDoubleScore.ZERO),
                 SimpleDoubleScore.of(-10.01),
                 SimpleDoubleScore.ofUninitialized(-7, -10.01));
     }

@@ -30,7 +30,7 @@ public class BendableLongScoreHibernateTypeTest extends AbstractScoreHibernateTy
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(null),
+        persistAndMerge(new TestJpaEntity(BendableLongScore.zero(3, 2)),
                 BendableLongScore.of(new long[]{10000L, 2000L, 300L}, new long[]{40L, 5L}),
                 BendableLongScore.ofUninitialized(-7, new long[]{10000L, 2000L, 300L}, new long[]{40L, 5L}));
     }

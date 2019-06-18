@@ -29,7 +29,7 @@ public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreHibernate
 
     @Test
     public void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(null),
+        persistAndMerge(new TestJpaEntity(HardSoftDoubleScore.ZERO),
                 HardSoftDoubleScore.of(-10.01, -2.20),
                 HardSoftDoubleScore.ofUninitialized(-7, -10.01, -2.20));
     }
