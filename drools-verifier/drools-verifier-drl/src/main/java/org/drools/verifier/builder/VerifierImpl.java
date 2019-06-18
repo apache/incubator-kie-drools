@@ -124,7 +124,7 @@ public class VerifierImpl
         try {
 
             if ( this.verifierKnowledgeBase == null ) {
-                synchronized ( this.getClass() ) {
+                synchronized ( VerifierImpl.class ) {
                     updateRuleBase();
                     updateKnowledgeSession();
                 }
@@ -186,7 +186,7 @@ public class VerifierImpl
      */
     public void dispose() {
         if ( ksession != null ) {
-            synchronized ( this.getClass() ) {
+            synchronized ( VerifierImpl.class ) {
                 ksession.dispose();
             }
         }

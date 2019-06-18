@@ -1,14 +1,15 @@
 package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.mvel.parser.ast.expr.OOPathExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -16,6 +17,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseFail;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVisitor;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
+import org.drools.mvel.parser.ast.expr.OOPathExpr;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
@@ -62,8 +64,9 @@ class FlowDSLPattern extends PatternDSL {
     private MethodCallExpr createInputExpression(PatternDescr pattern, DeclarationSpec declarationSpec) {
         MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
         exprDSL.addArgument( context.getVarExpr( pattern.getIdentifier()) );
-        if (context.isQuery() && declarationSpec.getDeclarationSource().isPresent()) {
-            exprDSL.addArgument( declarationSpec.getDeclarationSource().get() );
+        if (context.isQuery()) {
+            Optional<Expression> declarationSource = declarationSpec.getDeclarationSource();
+            declarationSource.ifPresent(exprDSL::addArgument);
         }
 
         Set<String> settableWatchedProps = getSettableWatchedProps();

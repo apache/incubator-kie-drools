@@ -59,7 +59,7 @@ public class Hyperrectangle {
         final int prime = 31;
         int result = 1;
         result = prime * result + dimensions;
-        result = prime * result + ((edges == null) ? 0 : edges.hashCode());
+        result = prime * result + edges.hashCode();
         return result;
     }
 
@@ -78,11 +78,7 @@ public class Hyperrectangle {
         if (dimensions != other.dimensions) {
             return false;
         }
-        if (edges == null) {
-            if (other.edges != null) {
-                return false;
-            }
-        } else if (!edges.equals(other.edges)) {
+        if (!edges.equals(other.edges)) {
             return false;
         }
         return true;
@@ -119,7 +115,7 @@ public class Hyperrectangle {
                 valuesAsH.add("-");
             }
         }
-        return "[ " + valuesAsH.stream().collect(Collectors.joining(", ")) + " ]";
+        return "[ " + String.join(", ", valuesAsH) + " ]";
     }
 
 }

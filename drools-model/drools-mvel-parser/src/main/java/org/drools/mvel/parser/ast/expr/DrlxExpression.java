@@ -22,10 +22,10 @@ import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.SimpleName;
-import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
-import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 import com.github.javaparser.ast.visitor.GenericVisitor;
 import com.github.javaparser.ast.visitor.VoidVisitor;
+import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
+import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
 public class DrlxExpression extends Node {
 
@@ -33,9 +33,11 @@ public class DrlxExpression extends Node {
     private final Expression expr;
 
     public DrlxExpression(SimpleName bind, Expression expr) {
-        super(bind != null ?
-                      new TokenRange(bind.getTokenRange().get().getBegin(), expr.getTokenRange().get().getEnd()) :
-                      expr.getTokenRange().get());
+        super(bind != null
+                      ? new TokenRange(
+                              bind.getTokenRange().orElseThrow(() -> new IllegalStateException("Bind doesn't contain token range! " + bind)).getBegin(),
+                              expr.getTokenRange().orElseThrow(() -> new IllegalStateException("Expression doesn't contain token range! " + expr.toString())).getEnd())
+                      : expr.getTokenRange().orElseThrow(() -> new IllegalStateException("Expression doesn't contain token range! " + expr.toString())));
         this.bind = bind;
         this.expr = expr;
     }

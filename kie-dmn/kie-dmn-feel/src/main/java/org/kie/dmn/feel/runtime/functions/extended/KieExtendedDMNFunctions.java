@@ -89,6 +89,9 @@ public class KieExtendedDMNFunctions {
     }
 
     public static <T extends FEELFunction> T getFunction(Class<T> functionClazz) {
-        return (T) Stream.of(FUNCTIONS).filter(f -> functionClazz.isAssignableFrom(f.getClass())).findFirst().get();
+        return (T) Stream.of(FUNCTIONS)
+                .filter(f -> functionClazz.isAssignableFrom(f.getClass()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find function by class " + functionClazz.getCanonicalName() + "!"));
     }
 }

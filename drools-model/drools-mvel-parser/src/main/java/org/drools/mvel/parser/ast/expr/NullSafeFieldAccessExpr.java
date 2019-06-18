@@ -279,7 +279,8 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
      * Indicate if this NullSafeFieldAccessExpr is an element directly contained in a larger NullSafeFieldAccessExpr.
      */
     public boolean isInternal() {
-        return this.getParentNode().isPresent() && this.getParentNode().get() instanceof NullSafeFieldAccessExpr;
+        Optional<Node> parentNode = this.getParentNode();
+        return parentNode.isPresent() && parentNode.get() instanceof NullSafeFieldAccessExpr;
     }
 
     /**

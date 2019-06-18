@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -74,21 +75,19 @@ public class FunctionInvocationNode
         }
         if ( value instanceof FEELFunction ) {
             function = (FEELFunction) value;
-            if ( function != null ) {
-                Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
-                List<String> functionNameParts = null;
-                if (name instanceof NameRefNode) {
-                    functionNameParts = Arrays.asList(name.getText());
-                } else if (name instanceof QualifiedNameNode) {
-                    functionNameParts = Arrays.asList(((QualifiedNameNode) name).getPartsAsStringArray());
-                } else if (name instanceof PathExpressionNode) {
-                    functionNameParts = Arrays.asList(function.getName());
-                }
-                Object result = invokeTheFunction(functionNameParts, function, ctx, p);
-                return result;
+            Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
+            List<String> functionNameParts;
+            if (name instanceof NameRefNode) {
+                functionNameParts = Collections.singletonList(name.getText());
+            } else if (name instanceof QualifiedNameNode) {
+                functionNameParts = Arrays.asList(((QualifiedNameNode) name).getPartsAsStringArray());
+            } else if (name instanceof PathExpressionNode) {
+                functionNameParts = Collections.singletonList(function.getName());
             } else {
-                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.FUNCTION_NOT_FOUND, name.getText())) );
+                functionNameParts = Collections.emptyList();
             }
+            Object result = invokeTheFunction(functionNameParts, function, ctx, p);
+            return result;
         } else if( value instanceof UnaryTest ) {
             if( params.getElements().size() == 1 ) {
                 Object p = params.getElements().get( 0 ).evaluate( ctx );

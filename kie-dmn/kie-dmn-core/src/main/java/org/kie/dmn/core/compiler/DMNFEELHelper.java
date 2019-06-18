@@ -225,10 +225,8 @@ public class DMNFEELHelper {
 
     private boolean isDuplicateEvent(DMNModelImpl model, Msg.Message error, DMNElement element) {
         return model.getMessages().stream().anyMatch( msg -> msg.getMessageType() == error.getType() &&
-                                                             (msg.getSourceId() == element.getId() ||
-                                                              (msg.getSourceId() != null &&
-                                                               element.getId() != null &&
-                                                               msg.getSourceId().equals( element.getId() ))) );
+                                                             (msg.getSourceId() == null && element.getId() == null
+                                                                     || (msg.getSourceId() != null && element.getId() != null && msg.getSourceId().equals(element.getId()))) );
     }
 
     public ClassOrInterfaceDeclaration generateUnaryTestsSource(String unaryTests, DMNCompilerContext ctx, Type inputColumnType) {

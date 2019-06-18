@@ -678,7 +678,11 @@ public class AdventureFrame extends JFrame {
             LayoutManager lm = c.getParent().getLayout();
             if ( lm instanceof MigLayout ) {
                 Object constr = ((MigLayout) lm).getComponentConstraints( c );
-                if ( constr instanceof String ) c.setToolTipText( (constr != null ? ("\"" + constr + "\"") : "null") );
+                if (constr instanceof String) {
+                    c.setToolTipText( "\"" + constr + "\"" );
+                } else {
+                    c.setToolTipText("null");
+                }
             }
         }
     }

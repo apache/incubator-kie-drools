@@ -103,7 +103,8 @@ public class MultiInstanceDecisionLogic {
         @Override
         public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
             DecisionNodeImpl di = (DecisionNodeImpl) node;
-            MultiInstanceDecisionLogic midl = getMIDL(node).get();
+            MultiInstanceDecisionLogic midl =
+                    getMIDL(node).orElseThrow(() -> new IllegalStateException("Node doesn't contain multi instance decision logic!" + node.toString()));
             
             // set the evaluator accordingly to Signavio logic.
             di.setEvaluator(new MultiInstanceDecisionNodeEvaluator(midl, model, di));

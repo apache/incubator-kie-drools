@@ -130,7 +130,7 @@ public class CompilerBytecodeLoader {
 
     public String getSourceForUnaryTest(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
         CompilationUnit cu = getCompilationUnit(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations );
-        ClassOrInterfaceDeclaration classSource = cu.getClassByName( className ).get();
+        ClassOrInterfaceDeclaration classSource = cu.getClassByName( className ).orElseThrow(() -> new IllegalArgumentException("Cannot find class by name " + className));
         classSource.setStatic( true );
         return classSource.toString();
     }
@@ -138,7 +138,8 @@ public class CompilerBytecodeLoader {
     public <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations ) {
         CompilationUnit cu = parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
         cu.setPackageDeclaration(cuPackage);
-        ClassOrInterfaceDeclaration classSource = cu.getClassByName( templateResourcePath.substring( 1, templateResourcePath.length()-5 ) ).get();
+        final String className = templateResourcePath.substring( 1, templateResourcePath.length() - 5);
+        ClassOrInterfaceDeclaration classSource = cu.getClassByName(className).orElseThrow(() -> new IllegalArgumentException("Cannot find class by name " + className));
         classSource.setName( cuClass );
 
         List<MethodDeclaration> lookupMethodList = cu.getChildNodesByType(MethodDeclaration.class);

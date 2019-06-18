@@ -264,7 +264,11 @@ public class SingleRangeCheck extends CheckBase {
 
         @Override
         public boolean equals(Object obj) {
-            return Arrays.equals(keys, ((PartitionKey) obj).keys);
+            if (obj == null) {
+                return false;
+            } else {
+                return Arrays.equals(keys, ((PartitionKey) obj).keys);
+            }
         }
 
         @Override

@@ -39,7 +39,7 @@ class ComponentsReportVisitor extends ReportVisitor {
 
     public static String visitRulePackageCollection(String sourceFolder,
                                                     Collection<RulePackage> packages) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put( "sourceFolder",
                  sourceFolder );
         map.put( "ruleFolder",
@@ -50,15 +50,12 @@ class ComponentsReportVisitor extends ReportVisitor {
 
         String myTemplate = readFile( "packages.htm" );
 
-        String result = String.valueOf( TemplateRuntime.eval( myTemplate,
-                                                              map ) );
-
-        return result;
+        return String.valueOf( TemplateRuntime.eval( myTemplate, map ) );
     }
 
     public static String visitObjectTypeCollection(String sourceFolder,
                                                    Collection<ObjectType> objectTypes) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put( "sourceFolder",
                  sourceFolder );
         map.put( "objectTypeFolder",
@@ -79,7 +76,7 @@ class ComponentsReportVisitor extends ReportVisitor {
                                    VerifierData data) {
         Collection<ObjectType> objectTypes = data.getObjectTypesByRuleName( rule.getName() );
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put( "sourceFolder",
                  sourceFolder );
         map.put( "objectTypeFolder",
@@ -101,7 +98,7 @@ class ComponentsReportVisitor extends ReportVisitor {
                                          VerifierData data) {
         Collection<VerifierRule> rules = data.getRulesByObjectTypePath( objectType.getPath() );
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put( "sourceFolder",
                  sourceFolder );
         map.put( "ruleFolder",
@@ -128,7 +125,7 @@ class ComponentsReportVisitor extends ReportVisitor {
                                                         field.getObjectTypePath() );
         Collection<VerifierRule> rules = data.getRulesByFieldPath( field.getPath() );
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put( "sourceFolder",
                  sourceFolder );
         map.put( "ruleFolder",
@@ -145,7 +142,7 @@ class ComponentsReportVisitor extends ReportVisitor {
         map.put( "rules",
                  rules );
 
-        if ( field.getFieldType() == Field.DOUBLE || field.getFieldType() == Field.DATE || field.getFieldType() == Field.INT ) {
+        if ( field.getFieldType().equals(Field.DOUBLE) || field.getFieldType().equals(Field.DATE) || field.getFieldType().equals(Field.INT) ) {
             Collection<MissingRange> causes = result.getRangeCheckCausesByFieldPath( field.getPath() );
             Collection<Restriction> restrictions = data.getRestrictionsByFieldPath( field.getPath() );
             map.put( "ranges",

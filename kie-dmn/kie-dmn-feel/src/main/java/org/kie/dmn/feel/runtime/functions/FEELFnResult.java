@@ -37,7 +37,9 @@ public class FEELFnResult<T> extends Either<FEELEvent, T> {
     }
     
     public <X> FEELFnResult<X> map(Function<T, X> rightFn) {
-        return isLeft() ? ofError(this.getLeft().get()) : ofResult(rightFn.apply(this.getRight().get()));
+        return isLeft()
+                ? ofError(this.getLeft().get())
+                : ofResult(rightFn.apply(this.getRight().get()));
     }
 
 }

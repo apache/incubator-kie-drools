@@ -2547,7 +2547,6 @@ public class RuleModelDRLPersistenceImpl
                     sb.append(param);
                 }
                 fac.setFunction(funcName + "(" + sb + ")");
-                break;
             }
             return fac;
         } else if (patternSource instanceof CollectDescr) {
@@ -4080,7 +4079,7 @@ public class RuleModelDRLPersistenceImpl
                 for (int i = 0; i < connectiveConstraints.length; i++) {
                     String constraint = splittedValue[i + 1].trim();
                     String connectiveOperator = findOperator(constraint);
-                    String connectiveValue = constraint.substring(connectiveOperator.length()).trim();
+                    String connectiveValue = constraint.substring(connectiveOperator == null ? 0 : connectiveOperator.length()).trim();
 
                     connectiveConstraints[i] = new ConnectiveConstraint();
                     connectiveConstraints[i].setOperator((isAnd ? "&& " : "|| ") + (connectiveOperator == null ? null : connectiveOperator.trim()));

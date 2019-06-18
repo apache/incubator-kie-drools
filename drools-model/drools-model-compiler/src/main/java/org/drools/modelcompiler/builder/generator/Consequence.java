@@ -177,10 +177,12 @@ public class Consequence {
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
+        } else if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
+            Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
+            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
+        } else {
+            throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
         }
-
-        Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-        return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
     }
 
     public static boolean containsWord(String word, String body) {
