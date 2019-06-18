@@ -67,7 +67,7 @@ public class DMNRuntimePMMLTest {
         runDMNModelInvokingPMML(runtime);
     }
 
-    private void runDMNModelInvokingPMML(final DMNRuntime runtime) {
+    static void runDMNModelInvokingPMML(final DMNRuntime runtime) {
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f", "KiePMMLScoreCard");
         assertThat( dmnModel, notNullValue() );
         assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );

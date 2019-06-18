@@ -36,6 +36,7 @@ import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
+import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.services.KieAssemblersImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -78,12 +80,13 @@ public class DMNRuntimeKiePMMLTest {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
-        kfs.write("src/main/resources/org/acme/KiePMMLScoreCard_NOPMMLmodelName.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard_NOPMMLmodelName.dmn", DMNRuntimeKiePMMLTest.class));
-        IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet( Message.Level.WARNING, "src/main/resources/org/acme/KiePMMLScoreCard_NOPMMLmodelName.dmn" ).build();
+        kfs.write("src/main/resources/org/acme/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard_NOPMMLmodelName.dmn", DMNRuntimeKiePMMLTest.class));
+        KieBuilderSet kieBuilderSet = ((InternalKieBuilder) kieBuilder).createFileSet( Message.Level.WARNING, "src/main/resources/org/acme/KiePMMLScoreCard.dmn" );
+        IncrementalResults addResults = kieBuilderSet.build();
         LOG.debug("getAddedMessages: {}", addResults.getAddedMessages());
-        assertTrue(addResults.getAddedMessages().size() > 0);
+        assertFalse(addResults.getAddedMessages().isEmpty());
         LOG.debug("getRemovedMessages: {}", addResults.getRemovedMessages());
-        assertEquals(0, addResults.getRemovedMessages().size());
+        assertTrue(addResults.getRemovedMessages().isEmpty());
 
         KieRepository kr = ks.getRepository();
         KieContainer kieContainer = ks.newKieContainer(kr.getDefaultReleaseId());
@@ -91,6 +94,19 @@ public class DMNRuntimeKiePMMLTest {
         DMNRuntime dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
 
         runDMNModelInvokingPMML(dmnRuntime);
+
+        kfs.write("src/main/resources/org/acme/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard.dmn", DMNRuntimeKiePMMLTest.class));
+        addResults = kieBuilderSet.build();
+
+        assertTrue(addResults.getAddedMessages().isEmpty());
+        assertFalse(addResults.getRemovedMessages().isEmpty());
+
+        kr = ks.getRepository();
+        kieContainer = ks.newKieContainer(kr.getDefaultReleaseId());
+
+        dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
+
+        DMNRuntimePMMLTest.runDMNModelInvokingPMML(dmnRuntime);
     }
 
     private void runDMNModelInvokingPMML(DMNRuntime runtime) {
