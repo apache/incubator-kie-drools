@@ -20,10 +20,12 @@ import java.util.function.Predicate;
 
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message;
 
 public interface InternalKieBuilder extends KieBuilder {
 
     KieBuilderSet createFileSet(String... files);
+    KieBuilderSet createFileSet(Message.Level minimalLevel, String... files);
 
     KieModule getKieModuleIgnoringErrors();
 
