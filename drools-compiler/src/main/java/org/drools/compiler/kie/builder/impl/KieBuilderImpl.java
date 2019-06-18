@@ -50,6 +50,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -778,8 +779,13 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilderSet createFileSet( String... files ) {
-        if ( kieBuilderSet == null ) {
-            kieBuilderSet = new KieBuilderSetImpl( this );
+        return createFileSet( Level.ERROR, files );
+    }
+
+    @Override
+    public KieBuilderSet createFileSet( Message.Level minimalLevel, String... files ) {
+        if ( kieBuilderSet == null || kieBuilderSet.getMinimalLevel() != minimalLevel ) {
+            kieBuilderSet = new KieBuilderSetImpl( this, minimalLevel );
         }
         return kieBuilderSet.setFiles( files );
     }

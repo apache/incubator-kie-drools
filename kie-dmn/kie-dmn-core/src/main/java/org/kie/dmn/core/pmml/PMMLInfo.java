@@ -59,7 +59,9 @@ public class PMMLInfo<M extends PMMLModelInfo> {
                         .filter(mf -> mf.getUsageType() == UsageType.PREDICTED)
                         .forEach(fn -> targetFields.add(fn.getName().getValue()));
             Collection<String> outputFields = new ArrayList<>();
-            pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
+            if (pm.getOutput() != null && pm.getOutput().getOutputFields() != null) {
+                pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
+            }
             models.add(new PMMLModelInfo(pm.getModelName(), inputFields, targetFields, outputFields));
         }
         Map<String, String> headerExtensions = new HashMap<>();

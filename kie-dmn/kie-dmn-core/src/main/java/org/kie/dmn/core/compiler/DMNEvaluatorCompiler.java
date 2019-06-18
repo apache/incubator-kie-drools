@@ -3,6 +3,7 @@ package org.kie.dmn.core.compiler;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
+import org.kie.dmn.core.pmml.PMMLModelInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -482,12 +485,31 @@ public class DMNEvaluatorCompiler {
                 logger.trace("theImport: {}", theImport);
                 URL pmmlURL = DMNCompilerImpl.pmmlImportURL(getRootClassLoader(), model, theImport, funcDef);
                 logger.trace("pmmlURL: {}", pmmlURL);
+                DMNImportPMMLInfo pmmlInfo = model.getPmmlImportInfo().get(pmmlDocument);
+                logger.trace("pmmlInfo: {}", pmmlInfo);
+                if (pmmlModel == null || pmmlModel.isEmpty()) {
+                    List<String> pmmlModelNames = pmmlInfo.getModels()
+                                                          .stream()
+                                                          .map(PMMLModelInfo::getName)
+                                                          .filter(x -> x != null)
+                                                          .collect(Collectors.toList());
+                    if (pmmlModelNames.size() > 0) {
+                        MsgUtil.reportMessage(logger,
+                                              DMNMessage.Severity.WARN,
+                                              funcDef,
+                                              model,
+                                              null,
+                                              null,
+                                              Msg.FUNC_DEF_PMML_MISSING_MODEL_NAME,
+                                              pmmlModelNames.stream().collect(Collectors.joining(",")));
+                    }
+                }
                 AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
                                                                                                      getRootClassLoader(),
                                                                                                      funcDef,
                                                                                                      pmmlURL,
                                                                                                      pmmlModel,
-                                                                                                     model.getPmmlImportInfo().get(pmmlDocument));
+                                                                                                     pmmlInfo);
                 DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
                 for (InformationItem p : funcDef.getFormalParameter()) {
                     DMNCompilerHelper.checkVariableName(model, p, p.getName());
