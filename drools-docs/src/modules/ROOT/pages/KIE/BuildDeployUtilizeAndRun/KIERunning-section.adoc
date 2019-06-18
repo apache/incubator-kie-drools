@@ -309,7 +309,7 @@ Methods of the `CommandFactory` create the supported commands, all of which can 
 We cover the non-command way first, as commands are scoped to a specific execution call.
 Globals can be resolved in three ways.
 
-* The StatelessKieSession method `getGlobals()` returns a Globals instance which provides access to the session's globals. These are shared for _all_ execution calls. Exercise caution regarding mutable globals because execution calls can be executing simultaneously in different threads.
+* The StatelessKieSession method `getGlobals()` returns a Globals instance which provides access to the session's globals. These are used for _all_ execution calls. Exercise caution regarding mutable globals because execution calls can be executing simultaneously in different threads.
 +
 
 .Session scoped global
