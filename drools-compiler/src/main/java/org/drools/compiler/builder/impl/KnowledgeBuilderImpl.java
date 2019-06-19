@@ -354,7 +354,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
      * @throws DroolsParserException
      */
     public void addPackageFromDrl(final Reader reader,
-                                  final Resource sourceResource) throws DroolsParserException {
+                                  final Resource sourceResource) throws DroolsParserException, IOException {
         this.resource = sourceResource;
         final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         final PackageDescr pkg = parser.parse(sourceResource, reader);
@@ -378,7 +378,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
     }
 
     PackageDescr decisionTableToPackageDescr(Resource resource,
-                                             ResourceConfiguration configuration) throws DroolsParserException {
+                                             ResourceConfiguration configuration) throws DroolsParserException, IOException {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                 (DecisionTableConfiguration) configuration :
                 null;

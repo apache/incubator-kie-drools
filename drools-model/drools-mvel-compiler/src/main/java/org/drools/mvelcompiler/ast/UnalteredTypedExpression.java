@@ -34,6 +34,6 @@ public class UnalteredTypedExpression implements TypedExpression {
 
     @Override
     public String toString() {
-        return "UnalteredTypedExpression{" + "originalExpression=" + originalExpression + '}';
+        return "UnalteredTypedExpression{originalExpression=" + originalExpression + '}';
     }
 }

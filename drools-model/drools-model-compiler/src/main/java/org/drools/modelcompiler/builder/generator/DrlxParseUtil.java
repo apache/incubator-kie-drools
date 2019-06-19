@@ -260,11 +260,7 @@ public class DrlxParseUtil {
             usedDeclarations.add(name);
         }
         Optional<java.lang.reflect.Type> type = context.getDeclarationById( name ).map(DeclarationSpec::getDeclarationClass );
-        if (type.isPresent()) {
-            return type.get();
-        } else {
-            throw new IllegalArgumentException("Cannot get expression type by name " + name + "!");
-        }
+        return type.orElseThrow(() -> new IllegalArgumentException("Cannot get expression type by name " + name + "!"));
     }
 
     public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
