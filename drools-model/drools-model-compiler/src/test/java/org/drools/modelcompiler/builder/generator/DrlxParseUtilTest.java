@@ -41,7 +41,7 @@ public class DrlxParseUtilTest {
         assertEquals("_this.getAddressName().startsWith(\"M\")", concatenated.toString());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = IllegalStateException.class)
     public void throwExceptionWhenMissingNode() {
 
         final Expression expr = StaticJavaParser.parseExpression("this");
