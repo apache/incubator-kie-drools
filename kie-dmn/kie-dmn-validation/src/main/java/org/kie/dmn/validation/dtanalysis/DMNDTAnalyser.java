@@ -38,6 +38,7 @@ import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
@@ -259,11 +260,17 @@ public class DMNDTAnalyser {
         }
     }
 
+    /**
+     * Transform a UnaryTestListNode into a List of discrete values for input/output clause enumeration
+     */
     private List<Comparable<?>> getDiscreteValues(UnaryTestListNode utln) {
         List<Comparable<?>> discreteValues = new ArrayList<>();
         for (BaseNode e : utln.getElements()) {
-            Comparable<?> v = valueFromNode(((UnaryTestNode) e).getValue());
-            discreteValues.add(v);
+            BaseNode value = ((UnaryTestNode) e).getValue();
+            if (!(value instanceof NullNode)) { // to retrieve value from input/output clause enumeration, null is ignored.
+                Comparable<?> v = valueFromNode(value);
+                discreteValues.add(v);
+            }
         }
         return discreteValues;
     }

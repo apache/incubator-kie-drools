@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_baa41fdd-8a0f-434f-bc26-69aface2adc2" id="_baa41fdd-8a0f-434f-bc26-69aface2adc2" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_baa41fdd-8a0f-434f-bc26-69aface2adc2" exporter="DMN Modeler" exporterVersion="6.2.4.2" triso:logoChoice="Default">
+    <semantic:inputData id="_168d79d4-86c1-4182-8c11-6f22e0e712d2" name="my input">
+        <semantic:variable name="my input" id="_57979657-69b8-4a9a-9eca-e8cbe72e5947" typeRef="string"/>
+    </semantic:inputData>
+    <semantic:decision id="_a30b85d3-a501-45e9-9404-12b942b75b9e" name="my decision">
+        <semantic:variable name="my decision" id="_ece422cf-54c1-4e1f-90e9-c37b34a162ef" typeRef="string"/>
+        <semantic:informationRequirement id="_9ff3fd3a-ba83-4cf9-bc13-a3971d3b096f">
+            <semantic:requiredInput href="#_168d79d4-86c1-4182-8c11-6f22e0e712d2"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_5ef1ff81-621d-4c9a-9881-0aaf865758cb" hitPolicy="UNIQUE" outputLabel="my decision" typeRef="string" triso:expressionId="_3e1dae21-515c-4582-819c-707c6c3c2f06">
+            <semantic:input id="_79802a7f-1711-4634-a35a-e802e123ab4e" triso:allowNull="true">
+                <semantic:inputExpression typeRef="string">
+                    <semantic:text>my input</semantic:text>
+                </semantic:inputExpression>
+                <semantic:inputValues triso:constraintsType="enumeration">
+                    <semantic:text>"a","b","c",null</semantic:text>
+                </semantic:inputValues>
+            </semantic:input>
+            <semantic:output id="_e8b38dd9-5f81-4975-b5f0-3d78762d6f71" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_495992fc-63ff-44bb-a6a9-2d6b4dc23cec">
+                <semantic:inputEntry id="_723f1c11-672c-4706-9758-ecbea2eecb5e">
+                    <semantic:text>"a"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_62802820-929e-452a-9786-26290319dd2d">
+                    <semantic:text>"the a"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_06551ce4-ffc0-4751-9aea-3c11f36a7112">
+                <semantic:inputEntry id="_5b6f5721-62be-46dd-927b-8952ea8ba9f3">
+                    <semantic:text>"b"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_83aa42f4-f2aa-4b62-8edc-c6891452fb68">
+                    <semantic:text>"the b"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>
