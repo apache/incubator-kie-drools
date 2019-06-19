@@ -4688,6 +4688,59 @@ public class RuleTemplateModelDRLPersistenceTest {
                       m1);
     }
 
+    @Test
+    public void checkOneTemplateForDifferentFields() {
+        String templateKeyOne = "$template_key1";
+        String templateKeyTwo = "$template_key2";
+
+        FactPattern fp = new FactPattern("Smurf");
+        fp.setBoundName("p1");
+
+        SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setOperator("==");
+        sfc1.setFactType("Smurf");
+        sfc1.setFieldName("field1");
+        sfc1.setFieldType(DataType.TYPE_STRING);
+        sfc1.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setValue(templateKeyOne);
+
+        SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setOperator("==");
+        sfc2.setFactType("Smurf");
+        sfc2.setFieldName("field2");
+        sfc2.setFieldType(DataType.TYPE_STRING);
+        sfc2.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setValue(templateKeyOne);
+
+        SingleFieldConstraint sfc3 = new SingleFieldConstraint();
+        sfc3.setOperator("==");
+        sfc3.setFactType("Smurf");
+        sfc3.setFieldName("field3");
+        sfc3.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        sfc3.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        sfc3.setValue(templateKeyTwo);
+
+        fp.addConstraint(sfc1);
+        fp.addConstraint(sfc2);
+        fp.addConstraint(sfc3);
+
+        //Test 1
+        TemplateModel model = new TemplateModel();
+        model.addLhsItem(fp);
+        model.name = "r1";
+
+        model.addRow(new String[]{"value one", "2"});
+
+        final String expected = "rule \"r1_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( field1 == \"value one\", field2 == \"value one\", field3 == 2 )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall(expected, model);
+    }
+
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
         Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
