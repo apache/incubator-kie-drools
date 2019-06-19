@@ -1313,10 +1313,8 @@ public class RuleModelDRLPersistenceImpl
                                          final String fieldType,
                                          final String value) {
             String workingValue = value.trim();
-            if (workingValue.startsWith("(")) {
+            if (workingValue.startsWith("(") && workingValue.endsWith(")")) {
                 workingValue = workingValue.substring(1);
-            }
-            if (workingValue.endsWith(")")) {
                 workingValue = workingValue.substring(0,
                                                       workingValue.length() - 1);
             }

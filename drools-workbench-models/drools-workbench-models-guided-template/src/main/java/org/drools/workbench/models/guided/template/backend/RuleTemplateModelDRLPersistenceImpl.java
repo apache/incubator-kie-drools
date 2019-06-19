@@ -628,12 +628,9 @@ public class RuleTemplateModelDRLPersistenceImpl
                               "      value = value.substring(1, value.length() - 1);\n" +
                               "    }\n" +
                               "	workingValue = value.trim();\n" +
-                              "	if ( workingValue.startsWith('(') ) {\n" +
+                              "	if ( workingValue.startsWith('(') && workingValue.endsWith(')') ) {\n" +
                               "		workingValue = workingValue.substring( 1 );\n" +
-                              "	}\n" +
-                              "	if ( workingValue.endsWith(')') ) {\n" +
-                              "		workingValue = workingValue.substring( 0," +
-                              "				workingValue.length() - 1 );\n" +
+                              "	  	workingValue = workingValue.substring( 0, workingValue.length() - 1 );\n" +
                               "	}\n" +
                               "	values = workingValue.split( ',' );\n" +
                               "	output = ' (';\n" +
