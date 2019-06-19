@@ -57,6 +57,7 @@ public class NativeJavaCompilerSettings extends JavaCompilerSettings {
         if (isWarnings()) {
             options.add("-Xlint:all");
         }
+        options.addAll( getOptions() );
         return options;
     }
 
