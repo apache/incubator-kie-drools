@@ -14,9 +14,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 
 public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
@@ -195,8 +194,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.setInitialLevels(SimpleScore.of(-100));
         try {
             acceptor.phaseStarted(null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             assertEquals("The initial level (" + acceptor.getInitialLevels()
                     + ") cannot have negative level (" + "-100.0" + ").", e.getMessage());
         }
@@ -208,8 +206,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.setInitialLevels(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
         try {
             acceptor.phaseStarted(null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             assertEquals("The initial level (" + acceptor.getInitialLevels()
                     + ") cannot have negative level (" + "-1.0" + ").", e.getMessage());
         }
@@ -223,7 +220,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         double[] actualScore = {150};
         acceptor.phaseStarted(null);
 
-        assertEquals(true, Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
+        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
     }
 
     @Test
@@ -234,7 +231,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         double[] actualScore = {1, 15, 24};
         acceptor.phaseStarted(null);
 
-        assertEquals(true, Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
+        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
     }
 
     @Test
@@ -252,7 +249,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseStarted(phaseScope);
         double[] actualScore = {66};
 
-        assertEquals(true, Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
+        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
     }
 
     @Test
@@ -270,6 +267,6 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
         acceptor.phaseStarted(phaseScope);
         double[] actualScore = {5, 0, 24};
 
-        assertEquals(true, Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
+        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
     }
 }

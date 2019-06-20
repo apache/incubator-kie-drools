@@ -12,7 +12,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     private Score initialLevel = null;
 
     private Double rainSpeed = null;
-    private Double rainSpeedRatio = null;
+    private Double rainSpeedRatio = DEFAULT_RAIN_SPEED_RATIO;
 
     private int levelsLength = -1;
     private double[] initialLevelScoreLevels;
@@ -28,7 +28,10 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     public Score getInitialLevels() { return this.initialLevel; }
 
-    public void setRainSpeed(Double rainSpeed) { this.rainSpeed = rainSpeed; }
+    public void setRainSpeed(Double rainSpeed) {
+        this.rainSpeed = rainSpeed;
+        this.rainSpeedRatio = null;
+    }
 
     public Double getRainSpeed() { return this.rainSpeed; }
 
@@ -53,16 +56,13 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
         } else {
             double[] initialLevelScoreLevelsNegative;
             initialLevelScoreLevelsNegative = ScoreUtils.extractLevelDoubles(phaseScope.getBestScore());
-            logger.info("{}", phaseScope.getBestScore().toShortString());
             levelScoreLevels = initialLevelScoreLevelsNegative;
 
             for (int i = 0; i < levelScoreLevels.length; i++) {
                 if (Math.abs(levelScoreLevels[i]) < THRESHOLD) {
-                    logger.info("{}", Double.toString(levelScoreLevels[i]));
                     continue;
                 }
                 levelScoreLevels[i] = -levelScoreLevels[i];
-                logger.info("{}", Double.toString(levelScoreLevels[i]));
             }
         }
         levelsLength = levelScoreLevels.length;
@@ -85,11 +85,16 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
             double moveScoreLevel = moveScoreLevels[i];
             double levelScoreLevel = levelScoreLevels[i];
 
+            double isZeroIfEqual = Math.abs(moveScoreLevel + levelScoreLevel);
+
             if (moveScoreLevel > -levelScoreLevel) {
+                // Checks if given score is better than water level, if so, move is accepted.
                 return true;
-            } else if (!(Math.abs(moveScoreLevel + levelScoreLevel) < THRESHOLD)) {
+            } else if (!(isZeroIfEqual < THRESHOLD)) {
+                // Returns false when above condition is not met and, new score and water level are not equal.
                 return false;
-            } else if (i == levelsLength -1){
+            } else if (i == levelsLength - 1){
+                // Returns true when new score and water level are equal and it is last iteration of cycle.
                 return true;
             }
         }
@@ -104,8 +109,6 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
                 levelScoreLevels[i] = levelScoreLevels[i] - rainSpeed;
             } else if (rainSpeedRatio != null) {
                 levelScoreLevels[i] = levelScoreLevels[i] * rainSpeedRatio;
-            } else {
-                levelScoreLevels[i] = levelScoreLevels[i] * DEFAULT_RAIN_SPEED_RATIO;
             }
             if (levelScoreLevels[i] < levelMinimum) {
                 levelScoreLevels[i] = levelMinimum;
