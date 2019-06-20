@@ -252,34 +252,33 @@ public class TypeCoercionTest extends BaseModelTest {
     }
 
     @Test
-    public void testIntegerShort2() {
+    public void testBetaJoinShortInt() {
         String str =
-                "declare WorkingObjectsTransactionDetail initialDecisionYear : int end\n" +
-                        "declare Collateral acquiredYear : short end\n" +
-                        "rule R when\n" +
-                        "   $workingTransactionDetail : WorkingObjectsTransactionDetail(  $initialDecisionYear : initialDecisionYear )\n" +
-                        "   $collateral :  Collateral(  acquiredYear == $initialDecisionYear )\n" +
-                        "then\n" +
-                        "end\n";
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "   $p1 : Person(  $age : age )\n" +
+                "   $p2 :  Person(  ageAsShort == $age )\n" +
+                "then\n" +
+                "end\n";
 
         KieSession ksession = getKieSession( str );
         assertEquals(0, ksession.fireAllRules());
     }
 
     @Test
-    public void testIntegerShort3() {
+    public void testBetaJoinShortIntBoxed() {
         String str =
-                "declare WorkingObjectsTransactionDetail initialDecisionYear : Integer end\n" +
-                        "declare Collateral acquiredYear : Short end\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
                         "rule R when\n" +
-                        "   $workingTransactionDetail : WorkingObjectsTransactionDetail(  $initialDecisionYear : initialDecisionYear )\n" +
-                        "   $collateral :  Collateral(  acquiredYear == $initialDecisionYear )\n" +
+                        "   $p1 : Person(  $age : ageBoxed )\n" +
+                        "   $p2 :  Person(  ageAsShort == $age )\n" +
                         "then\n" +
                         "end\n";
 
         KieSession ksession = getKieSession( str );
         assertEquals(0, ksession.fireAllRules());
     }
+
 
 
 }
