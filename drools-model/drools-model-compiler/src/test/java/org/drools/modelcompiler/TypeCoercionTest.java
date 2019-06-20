@@ -22,10 +22,11 @@ import java.util.List;
 
 import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TypeCoercionTest extends BaseModelTest {
 
@@ -222,4 +223,63 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertEquals(2, ksession.fireAllRules());
     }
+
+
+    @Test
+    public void testIntegerShort() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $markV : Person(name == \"Mark\")\n" +
+                "  $olderV : Person(name != \"Mark\", ageAsShort == $markV.age)\n" +
+                "then\n" +
+                "  $r.setValue($olderV.getName() + \" is same age as \" + $markV.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert(new Person("Mark", 40));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+        assertEquals("Mario is same age as Mark", result.getValue());
+    }
+
+    @Test
+    public void testIntegerShort2() {
+        String str =
+                "declare WorkingObjectsTransactionDetail initialDecisionYear : int end\n" +
+                        "declare Collateral acquiredYear : short end\n" +
+                        "rule R when\n" +
+                        "   $workingTransactionDetail : WorkingObjectsTransactionDetail(  $initialDecisionYear : initialDecisionYear )\n" +
+                        "   $collateral :  Collateral(  acquiredYear == $initialDecisionYear )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testIntegerShort3() {
+        String str =
+                "declare WorkingObjectsTransactionDetail initialDecisionYear : Integer end\n" +
+                        "declare Collateral acquiredYear : Short end\n" +
+                        "rule R when\n" +
+                        "   $workingTransactionDetail : WorkingObjectsTransactionDetail(  $initialDecisionYear : initialDecisionYear )\n" +
+                        "   $collateral :  Collateral(  acquiredYear == $initialDecisionYear )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+
 }
