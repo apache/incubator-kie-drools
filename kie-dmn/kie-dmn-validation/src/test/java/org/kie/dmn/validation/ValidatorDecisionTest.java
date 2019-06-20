@@ -363,4 +363,12 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                 VALIDATE_MODEL, VALIDATE_COMPILATION );
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(0));
     }
+
+    @Test
+    public void testDECISION_MISSING_FUNCTION_ARGUMENT() throws IOException {
+        try (final Reader reader = getReader("decision/DECISION_MISSING_FUNCTION_ARGUMENT.dmn")) {
+            final List<DMNMessage> validate = validator.validate(reader, VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+            assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(10));
+        }
+    }
 }
