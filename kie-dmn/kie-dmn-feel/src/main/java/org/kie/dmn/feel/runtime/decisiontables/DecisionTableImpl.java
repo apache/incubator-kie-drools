@@ -191,14 +191,13 @@ public class DecisionTableImpl implements DecisionTable {
     }
 
     private Object[] resolveActualInputs(EvaluationContext ctx, FEEL feel) {
-        Map<String, Object> variables = ctx.getAllValues();
         Object[] actualInputs = new Object[ inputs.size() ];
         for( int i = 0; i < inputs.size(); i++ ) {
             CompiledExpression compiledInput = inputs.get( i ).getCompiledInput();
             if( compiledInput != null ) {
-                actualInputs[i] = feel.evaluate( compiledInput, variables );
+                actualInputs[i] = feel.evaluate(compiledInput, ctx);
             } else {
-                actualInputs[i] = feel.evaluate( inputs.get( i ).getInputExpression(), variables );
+                actualInputs[i] = feel.evaluate(inputs.get(i).getInputExpression(), ctx);
             }
         }
         return actualInputs;
@@ -300,14 +299,13 @@ public class DecisionTableImpl implements DecisionTable {
      */
     private Object hitToOutput(EvaluationContext ctx, FEEL feel, DTDecisionRule rule) {
         List<CompiledExpression> outputEntries = rule.getOutputEntry();
-        Map<String, Object> values = ctx.getAllValues();
         if ( outputEntries.size() == 1 ) {
-            Object value = feel.evaluate( outputEntries.get( 0 ), values );
+            Object value = feel.evaluate(outputEntries.get(0), ctx);
             return value;
         } else {
             Map<String, Object> output = new HashMap<>();
             for (int i = 0; i < outputs.size(); i++) {
-                output.put(outputs.get(i).getName(), feel.evaluate(outputEntries.get(i), values));
+                output.put(outputs.get(i).getName(), feel.evaluate(outputEntries.get(i), ctx));
             }
             return output;
         }
