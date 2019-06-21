@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bi;
+package org.optaplanner.core.impl.score.stream.tri;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.common.JoinerType;
 
-public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
+public final class CompositeTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
-    private final List<SingleBiJoiner<A, B>> joinerList;
+    private final List<SingleTriJoiner<A, B, C>> joinerList;
 
-    public CompositeBiJoiner(List<SingleBiJoiner<A, B>> joinerList) {
+    public CompositeTriJoiner(List<SingleTriJoiner<A, B, C>> joinerList) {
         this.joinerList = joinerList;
         if (joinerList.isEmpty()) {
             throw new IllegalArgumentException("The joinerList (" + joinerList + ") must not be empty.");
         }
     }
 
-    public List<SingleBiJoiner<A, B>> getJoinerList() {
+    public List<SingleTriJoiner<A, B, C>> getJoinerList() {
         return joinerList;
     }
 
@@ -41,20 +42,20 @@ public final class CompositeBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     // ************************************************************************
 
     @Override
-    public Function<A, Object[]> getLeftCombinedMapping() {
-        return buildCombinedMappingUni(joinerList, SingleBiJoiner::getLeftMapping);
+    public BiFunction<A, B, Object[]> getLeftCombinedMapping() {
+        return buildCombinedMappingBi(joinerList, SingleTriJoiner::getLeftMapping);
     }
 
     @Override
     public JoinerType[] getJoinerTypes() {
         return joinerList.stream()
-                .map(SingleBiJoiner::getJoinerType)
+                .map(SingleTriJoiner::getJoinerType)
                 .toArray(JoinerType[]::new);
     }
 
     @Override
-    public Function<B, Object[]> getRightCombinedMapping() {
-        return buildCombinedMappingUni(joinerList, SingleBiJoiner::getRightMapping);
+    public Function<C, Object[]> getRightCombinedMapping() {
+        return buildCombinedMappingUni(joinerList, SingleTriJoiner::getRightMapping);
     }
 
 }

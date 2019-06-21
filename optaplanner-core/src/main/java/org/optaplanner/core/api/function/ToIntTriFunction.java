@@ -15,24 +15,24 @@
  */
 package org.optaplanner.core.api.function;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /**
- * Represents a function that accepts three arguments and produces a result.
- * This is the three-arity specialization of {@link Function}.
+ * Represents a function that accepts three arguments and produces an int-valued
+ * result.  This is the {@code int}-producing primitive specialization for
+ * {@link TriFunction}.
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
- * whose functional method is {@link #apply(Object, Object, Object)}.
+ * whose functional method is {@link #applyAsInt(Object, Object, Object)}.
  *
  * @param <A> the type of the first argument to the function
  * @param <B> the type of the second argument to the function
  * @param <C> the type of the third argument to the function
- * @param <R> the type of the result of the function
  *
- * @see Function
+ * @see TriFunction
  */
 @FunctionalInterface
-public interface TriFunction<A, B, C, R> {
+public interface ToIntTriFunction<A, B, C> {
 
     /**
      * Applies this function to the given arguments.
@@ -42,6 +42,5 @@ public interface TriFunction<A, B, C, R> {
      * @param c the third function argument
      * @return the function result
      */
-    R apply(A a, B b, C c);
-
+    int applyAsInt(A a, B b, C c);
 }

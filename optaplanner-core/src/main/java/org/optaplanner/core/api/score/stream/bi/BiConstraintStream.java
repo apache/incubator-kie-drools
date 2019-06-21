@@ -55,11 +55,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
-     * is true (for the property it extracts from both facts).
+     * is true (for the properties it extracts from both facts).
      * <p>
      * Important: This is faster and more scalable than a join
      * followed by a {@link TriConstraintStream#filter(TriPredicate)},
-     * because it applies hashing and/or indexing on the Property,
+     * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of [A, B] and C.
      * @param other never null
      * @param joiner never null
@@ -67,6 +67,52 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
      */
     <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> other, TriJoiner<A, B, C> joiner);
+
+    /**
+     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
+     * is true (for the properties it extracts from both facts).
+     * <p>
+     * Important: This is faster and more scalable than a join
+     * followed by a {@link TriConstraintStream#filter(TriPredicate)},
+     * because it applies hashing and/or indexing on the properties,
+     * so it doesn't create nor checks every combination of [A, B] and C.
+     * <p>
+     * This method is syntactic sugar for {@link #join(UniConstraintStream, TriJoiner)}.
+     * <p>
+     * This method has overloaded methods with up to 4 {@link TriJoiner} parameters.
+     * To combine even more joiners, use this method in combination with {@link TriJoiner#and(TriJoiner)}.
+     * @param otherClass never null
+     * @param joiner never null
+     * @param <C> the type of the third matched fact
+     * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
+     */
+    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
+        return join(getConstraint().from(otherClass), joiner);
+    }
+
+    /**
+     * @see #join(Class, TriJoiner)
+     */
+    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2) {
+        return join(otherClass, joiner1.and(joiner2));
+    }
+
+    /**
+     * @see #join(Class, TriJoiner)
+     */
+    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
+        return join(otherClass, joiner1.and(joiner2).and(joiner3));
+    }
+
+    /**
+     * @see #join(Class, TriJoiner)
+     */
+    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
+            TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
+        return join(otherClass, joiner1.and(joiner2).and(joiner3).and(joiner4));
+    }
 
     // ************************************************************************
     // Penalize/reward

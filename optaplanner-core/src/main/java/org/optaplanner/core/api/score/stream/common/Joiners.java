@@ -19,9 +19,11 @@ package org.optaplanner.core.api.score.stream.common;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
+import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
 public final class Joiners {
 
@@ -84,29 +86,39 @@ public final class Joiners {
 
     public static <A, B, C, Property_> TriJoiner<A, B, C> equalTo(
             BiFunction<A, B, Property_> leftMapping, Function <C, Property_> rightMapping) {
-        return new TriJoiner<>(leftMapping, JoinerType.EQUAL_TO, rightMapping);
+        return new SingleTriJoiner<>(leftMapping, JoinerType.EQUAL_TO, rightMapping);
     }
 
     // TODO other TriJoiner methods
 
     public static <A, B, C, Property_> TriJoiner<A, B, C> on(
             BiFunction<A, B, Property_> leftMapping, JoinerType joinerType, Function <C, Property_> rightMapping) {
-        return new TriJoiner<>(leftMapping, joinerType, rightMapping);
+        return new SingleTriJoiner<>(leftMapping, joinerType, rightMapping);
     }
 
+    // ************************************************************************
+    // Extract arguments
+    // ************************************************************************
 
-
-
-
-    public static <A, B, Property_> BiFunction<A, B, Property_> firstBi(Function<A, Property_> mapping) {
+    public static <A, B, Property_> BiFunction<A, B, Property_> argABi(Function<A, Property_> mapping) {
         return (A a, B b) -> mapping.apply(a);
     }
 
-    public static <A, B, Property_> BiFunction<A, B, Property_> secondBi(Function<B, Property_> mapping) {
+    public static <A, B, Property_> BiFunction<A, B, Property_> argBBi(Function<B, Property_> mapping) {
         return (A a, B b) -> mapping.apply(b);
     }
 
-    // TODO TriFunction firstTri, etc
+    public static <A, B, C, Property_> TriFunction<A, B, C, Property_> argATri(Function<A, Property_> mapping) {
+        return (A a, B b, C c) -> mapping.apply(a);
+    }
+
+    public static <A, B, C, Property_> TriFunction<A, B, C, Property_> argBTri(Function<B, Property_> mapping) {
+        return (A a, B b, C c) -> mapping.apply(b);
+    }
+
+    public static <A, B, C, Property_> TriFunction<A, B, C, Property_> argCTri(Function<C, Property_> mapping) {
+        return (A a, B b, C c) -> mapping.apply(c);
+    }
 
     private Joiners() {}
 

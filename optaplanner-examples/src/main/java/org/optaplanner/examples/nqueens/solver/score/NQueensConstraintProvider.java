@@ -36,9 +36,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Horizontal conflict", SimpleScore.of(1));
         c.from(Queen.class)
-                .join(c.from(Queen.class),
-                        Joiners.equalTo(Queen::getRowIndex)
-                                .and(Joiners.lessThan(Queen::getId)))
+                .join(Queen.class,
+                        Joiners.equalTo(Queen::getRowIndex),
+                        Joiners.lessThan(Queen::getId))
                 .penalize();
     }
 
@@ -46,9 +46,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Ascending diagonal conflict", SimpleScore.of(1));
         c.from(Queen.class)
-                .join(c.from(Queen.class),
-                        Joiners.equalTo(Queen::getAscendingDiagonalIndex)
-                                .and(Joiners.lessThan(Queen::getId)))
+                .join(Queen.class,
+                        Joiners.equalTo(Queen::getAscendingDiagonalIndex),
+                        Joiners.lessThan(Queen::getId))
                 .penalize();
     }
 
@@ -56,9 +56,9 @@ public class NQueensConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Descending diagonal conflict", SimpleScore.of(1));
         c.from(Queen.class)
-                .join(c.from(Queen.class),
-                        Joiners.equalTo(Queen::getDescendingDiagonalIndex)
-                                .and(Joiners.lessThan(Queen::getId)))
+                .join(Queen.class,
+                        Joiners.equalTo(Queen::getDescendingDiagonalIndex),
+                        Joiners.lessThan(Queen::getId))
                 .penalize();
     }
 

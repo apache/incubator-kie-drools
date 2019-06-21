@@ -14,38 +14,39 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bi;
+package org.optaplanner.core.impl.score.stream.tri;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.common.JoinerType;
+import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
-public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements BiJoiner<A, B> {
+public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implements TriJoiner<A, B, C> {
 
-    public abstract Function<A, Object[]> getLeftCombinedMapping();
+    public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
 
     public abstract JoinerType[] getJoinerTypes();
 
-    public abstract Function<B, Object[]> getRightCombinedMapping();
+    public abstract Function<C, Object[]> getRightCombinedMapping();
 
     @Override
-    public BiJoiner<A, B> and(BiJoiner<A, B> other) {
-        List<SingleBiJoiner<A, B>> joinerList = new ArrayList<>();
-        for (BiJoiner<A, B> joiner : Arrays.asList(this, other)) {
-            if (joiner instanceof SingleBiJoiner) {
-                joinerList.add((SingleBiJoiner<A, B>) joiner);
-            } else if (joiner instanceof CompositeBiJoiner) {
-                joinerList.addAll(((CompositeBiJoiner<A, B>) joiner).getJoinerList());
+    public TriJoiner<A, B, C> and(TriJoiner<A, B, C> other) {
+        List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
+        for (TriJoiner<A, B, C> joiner : Arrays.asList(this, other)) {
+            if (joiner instanceof SingleTriJoiner) {
+                joinerList.add((SingleTriJoiner<A, B, C>) joiner);
+            } else if (joiner instanceof CompositeTriJoiner) {
+                joinerList.addAll(((CompositeTriJoiner<A, B, C>) joiner).getJoinerList());
             } else {
                 throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
             }
         }
-        return new CompositeBiJoiner<>(joinerList);
+        return new CompositeTriJoiner<>(joinerList);
     }
 
 }

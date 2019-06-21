@@ -19,30 +19,15 @@ package org.optaplanner.core.api.score.stream.tri;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.common.JoinerType;
 
-public final class TriJoiner<A, B, C> {
+public interface TriJoiner<A, B, C> {
 
-    private final BiFunction<A, B, ?> leftMapping;
-    private final JoinerType joinerType;
-    private final Function<C, ?> rightMapping;
+    // ************************************************************************
+    // Combine joiners
+    // ************************************************************************
 
-    public <Property_> TriJoiner(BiFunction<A, B, Property_> leftMapping, JoinerType joinerType, Function<C, Property_> rightMapping) {
-        this.leftMapping = leftMapping;
-        this.joinerType = joinerType;
-        this.rightMapping = rightMapping;
-    }
-
-    public BiFunction<A, B, ?> getLeftMapping() {
-        return leftMapping;
-    }
-
-    public JoinerType getJoinerType() {
-        return joinerType;
-    }
-
-    public Function<C, ?> getRightMapping() {
-        return rightMapping;
-    }
+    TriJoiner<A, B, C> and(TriJoiner<A, B, C> other);
 
 }

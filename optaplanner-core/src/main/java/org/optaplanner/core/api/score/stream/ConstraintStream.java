@@ -43,4 +43,6 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public interface ConstraintStream {
 
+    Constraint getConstraint();
+
 }

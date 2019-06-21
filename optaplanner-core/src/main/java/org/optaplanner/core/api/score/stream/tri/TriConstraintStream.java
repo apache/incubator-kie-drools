@@ -16,11 +16,15 @@
 
 package org.optaplanner.core.api.score.stream.tri;
 
+import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.function.ToIntTriFunction;
+import org.optaplanner.core.api.function.ToLongTriFunction;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
@@ -58,47 +62,45 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      */
     void penalize();
 
-    // TODO introduce TriFunctions
-//    /**
-//     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-//     */
-//    void penalizeInt(ToIntBiFunction<A, B> matchWeigher);
-//
-//    /**
-//     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-//     */
-//    void penalizeLong(ToLongBiFunction<A, B> matchWeigher);
-//
-//    /**
-//     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-//     */
-//    void penalizeBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
+    /**
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void penalizeInt(ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void penalizeLong(ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void penalizeBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} for each match.
      */
     void reward();
 
-    // TODO introduce TriFunctions
-//    /**
-//     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-//     */
-//    void rewardInt(ToIntBiFunction<A, B> matchWeigher);
-//
-//    /**
-//     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-//     */
-//    void rewardLong(ToLongBiFunction<A, B> matchWeigher);
-//
-//    /**
-//     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
-//     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
-//     */
-//    void rewardBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
+    /**
+     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void rewardInt(ToIntTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void rewardLong(ToLongTriFunction<A, B, C> matchWeigher);
+
+    /**
+     * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     */
+    void rewardBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
 
 }

@@ -16,13 +16,20 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
+import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 
-public class BavetAbstractConstraintStream<Solution_> {
+public class BavetAbstractConstraintStream<Solution_> implements ConstraintStream {
 
     protected final BavetConstraint<Solution_> constraint;
 
     public BavetAbstractConstraintStream(BavetConstraint<Solution_> constraint) {
         this.constraint = constraint;
     }
+
+    @Override
+    public BavetConstraint<Solution_> getConstraint() {
+        return constraint;
+    }
+
 }
