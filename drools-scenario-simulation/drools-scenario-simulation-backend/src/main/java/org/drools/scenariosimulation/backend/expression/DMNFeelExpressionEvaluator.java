@@ -17,7 +17,6 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
@@ -35,6 +35,7 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 
+import static java.util.Collections.singletonList;
 import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
 
 public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
@@ -79,7 +80,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     protected FEEL newFeelEvaluator(AtomicReference<FEELEvent> errorHolder) {
         // cleanup existing error
         errorHolder.set(null);
-        FEEL feel = FEEL.newInstance();
+        FEEL feel = FEEL.newInstance(singletonList(new ExtendedDMNProfile()));
         feel.addListener(event -> {
             FEELEvent feelEvent = errorHolder.get();
             if (!(feelEvent instanceof SyntaxErrorEvent) &&
@@ -157,6 +158,6 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
      */
     @Override
     protected Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses) {
-        return new AbstractMap.SimpleEntry<>("", Collections.singletonList(""));
+        return new AbstractMap.SimpleEntry<>("", singletonList(""));
     }
 }
