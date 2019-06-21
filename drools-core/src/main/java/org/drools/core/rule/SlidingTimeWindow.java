@@ -369,6 +369,9 @@ public class SlidingTimeWindow
             this.behaviorContext = behaviorContext;
         }
 
+        public BehaviorJobContext() {
+        }
+
         public JobHandle getJobHandle() {
             return behaviorContext.getJobHandle();
         }

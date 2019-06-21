@@ -324,7 +324,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         BinaryExpr nullChecks = Stream.of(arguments)
                                       .map(e -> new BinaryExpr(new EnclosedExpr(e), new NullLiteralExpr(), BinaryExpr.Operator.EQUALS))
                                       .reduce( (x, y) -> new BinaryExpr(x, y, BinaryExpr.Operator.OR) )
-                                      .get();
+                                      .orElseThrow(() -> new IllegalStateException("Cannot find any null checks!"));
 
         return new ConditionalExpr(new EnclosedExpr(nullChecks), new NullLiteralExpr(), originalOperation);
     }

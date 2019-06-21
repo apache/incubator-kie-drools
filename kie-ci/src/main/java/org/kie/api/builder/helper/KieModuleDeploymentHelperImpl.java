@@ -29,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import org.appformer.maven.integration.MavenRepository;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.util.IoUtils;
@@ -40,8 +41,9 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
-import org.appformer.maven.integration.MavenRepository;
 import org.kie.scanner.KieMavenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
@@ -50,6 +52,8 @@ import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
  * This is the main class where all interfaces and code comes together. 
  */
 final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelper implements SingleKieModuleDeploymentHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KieModuleDeploymentHelperImpl.class);
 
     /**
      * package scope: Because users will do very unexpected things.
@@ -268,11 +272,9 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         
         String pomFileName = MavenRepository.toFileName(releaseId, null) + ".pom";
         File pomFile = new File(System.getProperty("java.io.tmpdir"), pomFileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(pomFile);
+        try (FileOutputStream fos = new FileOutputStream(pomFile)) {
             fos.write(config.pomText.getBytes(IoUtils.UTF8_CHARSET));
             fos.flush();
-            fos.close();
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to write pom.xml to temporary file : " + ioe.getMessage(), ioe);
         }
@@ -302,7 +304,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         
         ReleaseId [] releaseIds = { };
         if( dependencies != null && dependencies.size() > 0 ) { 
-            List<ReleaseId> depReleaseIds = new ArrayList<ReleaseId>();
+            List<ReleaseId> depReleaseIds = new ArrayList<>();
             for( String dep : dependencies ) { 
                 String [] gav = dep.split(":");
                 if( gav.length != 3 ) { 
@@ -314,7 +316,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         }
         config.pomText = getPomText(releaseId, releaseIds);
         
-        KieFileSystem kfs = createKieFileSystemWithKProject(kbaseName, ksessionName);
+        KieFileSystem kfs = createKieFileSystemWithKProject();
         kfs.writePomXML(this.config.pomText);
     
         List<KJarResource> resourceFiles = loadResources(resourceFilePaths);
@@ -338,17 +340,15 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
             throw new RuntimeException("Unable to build KieModule, see the " + buildMsgs + " messages above.");
         }
         
-        return (InternalKieModule) kieBuilder.getKieModule();
+        return kieBuilder.getKieModule();
     }
 
     /**
      * Create the {@link KieFileSystem} instance to store the content going into the KJar.
-     * 
-     * @param kbaseName
-     * @param ksessionName
+     *
      * @return
      */
-    private KieFileSystem createKieFileSystemWithKProject(String kbaseName, String ksessionName) {
+    private KieFileSystem createKieFileSystemWithKProject() {
         KieModuleModel kproj = config.getKieProject();
         KieFileSystem kfs = config.getKieServicesInstance().newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
@@ -363,30 +363,30 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
      * @return A string representation of the pom.
      */
     private static String getPomText(ReleaseId releaseId, ReleaseId... dependencies) {
-        String pom = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n"
-                + "  <modelVersion>4.0.0</modelVersion>\n" 
-                + "\n" 
-                + "  <groupId>" + releaseId.getGroupId() + "</groupId>\n"
-                + "  <artifactId>" + releaseId.getArtifactId() + "</artifactId>\n" 
-                + "  <version>" + releaseId.getVersion() + "</version>\n" + "\n";
+        StringBuilder pom = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                                      + "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                                                      + "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n"
+                                                      + "  <modelVersion>4.0.0</modelVersion>\n"
+                                                      + "\n"
+                                                      + "  <groupId>" + releaseId.getGroupId() + "</groupId>\n"
+                                                      + "  <artifactId>" + releaseId.getArtifactId() + "</artifactId>\n"
+                                                      + "  <version>" + releaseId.getVersion() + "</version>\n" + "\n");
         
         if (dependencies != null && dependencies.length > 0) {
-            pom += "<dependencies>\n";
+            pom.append("<dependencies>\n");
             for (ReleaseId dep : dependencies) {
-                pom += "<dependency>\n";
-                pom += "  <groupId>" + dep.getGroupId() + "</groupId>\n";
-                pom += "  <artifactId>" + dep.getArtifactId() + "</artifactId>\n";
-                pom += "  <version>" + dep.getVersion() + "</version>\n";
-                pom += "</dependency>\n";
+                pom.append("<dependency>\n");
+                pom.append("  <groupId>").append(dep.getGroupId()).append("</groupId>\n");
+                pom.append("  <artifactId>").append(dep.getArtifactId()).append("</artifactId>\n");
+                pom.append("  <version>").append(dep.getVersion()).append("</version>\n");
+                pom.append("</dependency>\n");
             }
-            pom += "</dependencies>\n";
+            pom.append("</dependencies>\n");
         }
         
-        pom += "</project>";
+        pom.append("</project>");
         
-        return pom;
+        return pom.toString();
     }
 
     /**
@@ -399,7 +399,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         if (!path.startsWith("/")) {
             path = "/" + path;
         }
-        List<KJarResource> output = new ArrayList<KJarResource>();
+        List<KJarResource> output = new ArrayList<>();
         URL url = KieModuleDeploymentHelperImpl.class.getResource(path);
         if (fromDir) {
             if (url == null) {
@@ -482,7 +482,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
      * @return A List of {@link KJarResource} instances representing the given list of resource files
      */
     private static List<KJarResource> loadResources(List<String> resourceFilePaths) { 
-        List<KJarResource> kjarResources = new ArrayList<KieModuleDeploymentHelperImpl.KJarResource>();
+        List<KJarResource> kjarResources = new ArrayList<>();
         for( String filePath : resourceFilePaths ) { 
             if( filePath.endsWith("/") ) {
                 try {
@@ -574,26 +574,22 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
     }
 
     private static byte[] readStream(InputStream ios) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[4096];
             int read = 0;
             while ((read = ios.read(buffer)) != -1) {
                 baos.write(buffer, 0, read);
             }
+            return baos.toByteArray();
         } finally {
             try {
-                if (baos != null) {
-                    baos.close();
-                }
                 if (ios != null) {
                     ios.close();
                 }
             } catch (IOException e) {
-                // do nothing
+                LOGGER.error(e.getMessage());
             }
         }
-        return baos.toByteArray();
     }
 
     static class KJarResource {

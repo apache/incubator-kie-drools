@@ -46,6 +46,9 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
                valueType );
     }
 
+    public BaseLongClassFieldWriter() {
+    }
+
     public void setValue(final Object bean,
                          final Object value) {
         setLongValue( bean,

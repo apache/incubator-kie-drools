@@ -41,6 +41,9 @@ public abstract class BaseFloatClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
+    public BaseFloatClassFieldReader() {
+    }
+
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return new Float( getFloatValue( workingMemory, object ) );
     }

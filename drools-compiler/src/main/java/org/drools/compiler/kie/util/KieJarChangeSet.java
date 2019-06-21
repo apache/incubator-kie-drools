@@ -22,7 +22,7 @@ import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChangeSet;
 
 public class KieJarChangeSet {
-    private final Map<String, ResourceChangeSet> changes = new HashMap<String, ResourceChangeSet>();
+    private final Map<String, ResourceChangeSet> changes = new HashMap<>();
 
     public Map<String, ResourceChangeSet> getChanges() {
         return changes;
@@ -55,7 +55,7 @@ public class KieJarChangeSet {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((changes == null) ? 0 : changes.hashCode());
+        result = prime * result + changes.hashCode();
         return result;
     }
 
@@ -65,10 +65,7 @@ public class KieJarChangeSet {
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         KieJarChangeSet other = (KieJarChangeSet) obj;
-        if ( changes == null ) {
-            if ( other.changes != null ) return false;
-        } else if ( !changes.equals( other.changes ) ) return false;
-        return true;
+        return changes.equals(other.changes);
     }
 
     @Override

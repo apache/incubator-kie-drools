@@ -26,6 +26,9 @@ public class AgendaGroupPoppedEventImpl extends AgendaGroupEventImpl implements 
         super( agendaGroup, kruntime );
     }
 
+    public AgendaGroupPoppedEventImpl() {
+    }
+
     @Override
     public String toString() {
         return "==>[AgendaGroupPoppedEvent: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="

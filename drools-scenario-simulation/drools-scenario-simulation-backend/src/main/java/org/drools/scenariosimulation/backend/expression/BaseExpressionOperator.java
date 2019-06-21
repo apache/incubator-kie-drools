@@ -139,7 +139,7 @@ public enum BaseExpressionOperator {
             }
 
             String rawValue = (String) raw;
-            String operator = match(rawValue).get();
+            String operator = match(rawValue).orElseThrow(() -> new IllegalStateException("Cannot determine operator!"));
             String cleanValue = removeOperator(rawValue);
             Object stepValue = convertValue(resultClass.getCanonicalName(), cleanValue, classLoader);
             if (!areComparable(stepValue, resultValue)) {
@@ -157,7 +157,7 @@ public enum BaseExpressionOperator {
                 case ">=":
                     return a.compareTo(b) >= 0;
                 default:
-                    throw new IllegalStateException(new StringBuilder().append("This should not happen ").append(operator).toString());
+                    throw new IllegalStateException("This should not happen " + operator);
             }
         }
 

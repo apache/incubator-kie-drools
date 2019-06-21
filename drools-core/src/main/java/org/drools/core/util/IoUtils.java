@@ -109,26 +109,11 @@ public class IoUtils {
             throw new RuntimeException("Unable to create file " + destFile.getAbsolutePath(), ioe);
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
+        try (FileChannel source = new FileInputStream(sourceFile).getChannel();
+             FileChannel destination = new FileOutputStream(destFile).getChannel()) {
             destination.transferFrom(source, 0, source.size());
         } catch (IOException ioe) {
             throw new RuntimeException("Unable to copy " + sourceFile.getAbsolutePath() + " to " + destFile.getAbsolutePath(), ioe);
-        } finally {
-            if(source != null) {
-                try {
-                    source.close();
-                } catch (IOException e) { }
-            }
-            if(destination != null) {
-                try {
-                    destination.close();
-                } catch (IOException e) { }
-            }
         }
     }
 
@@ -242,26 +227,14 @@ public class IoUtils {
 
     public static byte[] readBytes(File f) throws IOException {
         byte[] buf = new byte[1024];
-
-        BufferedInputStream bais = null;
-        ByteArrayOutputStream baos = null;
-        try {
-            bais = new BufferedInputStream( new FileInputStream( f ) );
-            baos = new ByteArrayOutputStream();
+        try (BufferedInputStream bais = new BufferedInputStream(new FileInputStream(f));
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             int len;
-            while ( (len = bais.read( buf )) > 0 ) {
-                baos.write( buf, 0, len );
+            while ((len = bais.read(buf)) > 0) {
+                baos.write(buf, 0, len);
             }
-        } finally {
-            if (  baos != null ) {
-                baos.close();
-            }
-            if ( bais != null ) {
-                bais.close();
-            }
+            return baos.toByteArray();
         }
-
-        return baos.toByteArray();
     }
 
     public static void write(File f,

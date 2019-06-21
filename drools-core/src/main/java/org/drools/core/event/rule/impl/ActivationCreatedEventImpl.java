@@ -26,6 +26,9 @@ public class ActivationCreatedEventImpl extends ActivationEventImpl implements M
         super( activation, kruntime );
     }
 
+    public ActivationCreatedEventImpl() {
+    }
+
     @Override
     public String toString() {
         return "==>[ActivationCreatedEvent: getActivation()=" + getMatch()

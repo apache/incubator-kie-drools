@@ -149,11 +149,8 @@ public class KieFileSystemImpl
             final KieFileSystem kieFileSystem = readFromByteArray( byteArray );
 
             return kieFileSystem;
-        } catch ( IOException ioe ) {
+        } catch ( IOException | ClassNotFoundException ioe ) {
             logger.warn( "Unable to clone KieFileSystemImpl", ioe );
-            return null;
-        } catch ( ClassNotFoundException cnfe ) {
-            logger.warn( "Unable to clone KieFileSystemImpl", cnfe );
             return null;
         }
     }

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
@@ -147,8 +148,9 @@ public abstract class AbstractExpressionBuilder {
 
     private static String getExpressionSymbolForBetaIndex(Expression expr) {
         Expression scope;
-        if (expr instanceof MethodCallExpr && (( MethodCallExpr ) expr).getScope().isPresent()) {
-            scope = (( MethodCallExpr ) expr).getScope().get();
+        if (expr instanceof MethodCallExpr) {
+            Optional<Expression> scopeExpression = (( MethodCallExpr ) expr).getScope();
+            scope = scopeExpression.orElseThrow(() -> new IllegalArgumentException("Scope expression for " + ((MethodCallExpr) expr).getNameAsString() + " is not present!"));
         } else if (expr instanceof FieldAccessExpr ) {
             scope = (( FieldAccessExpr ) expr).getScope();
         } else {
@@ -210,8 +212,8 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, java.lang.reflect.Type leftType) {
-        LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
-        indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
+        LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
+        indexedByRightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
         final TypedExpression expression;
         if (!leftContainsThis) {
             expression = left;
@@ -219,14 +221,14 @@ public abstract class AbstractExpressionBuilder {
             expression = right;
         }
         final Expression narrowed = narrowExpressionToType(expression, leftType);
-        indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(narrowed));
-        indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
+        indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
+        indexedByDSL.addArgument(indexedByRightOperandExtractor);
     }
 
     protected Class<?> getIndexType( TypedExpression left, TypedExpression right ) {
         return Stream.of(left, right).map(TypedExpression::getType)
                 .filter(Objects::nonNull)
                 .map(ClassUtil::toRawClass)
-                .findFirst().get();
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find index from: " + left.toString() + ", " + right.toString() + "!"));
     }
 }

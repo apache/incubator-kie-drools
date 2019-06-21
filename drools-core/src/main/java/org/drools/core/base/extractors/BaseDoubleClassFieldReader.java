@@ -41,6 +41,9 @@ public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
+    public BaseDoubleClassFieldReader() {
+    }
+
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return new Double( getDoubleValue( workingMemory, object ) );
     }

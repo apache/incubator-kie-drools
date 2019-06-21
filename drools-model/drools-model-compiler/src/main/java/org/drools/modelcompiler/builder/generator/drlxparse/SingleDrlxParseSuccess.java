@@ -177,11 +177,13 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public String getUnificationVariable() {
-        return left.getUnificationVariable().isPresent() ? left.getUnificationVariable().get() : right.getUnificationVariable().get();
+        return left.getUnificationVariable().orElseGet(
+                () -> right.getUnificationVariable().orElseThrow(() -> new IllegalStateException("Right unification variable is not present!")));
     }
 
     public String getUnificationName() {
-        return left.getUnificationName().isPresent() ? left.getUnificationName().get() : right.getUnificationName().get();
+        return left.getUnificationName().orElseGet(
+                () -> right.getUnificationName().orElseThrow(() -> new IllegalStateException("Right unification name is not present!")));
     }
 
     public Class<?> getUnificationVariableType() {
@@ -312,24 +314,24 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
         SingleDrlxParseSuccess otherDrlx = ( SingleDrlxParseSuccess ) other;
 
-        Collection<String> usedDeclarations = new LinkedHashSet<>();
-        usedDeclarations.addAll( this.usedDeclarations );
-        usedDeclarations.addAll( otherDrlx.usedDeclarations );
+        Collection<String> usedDeclarationsSet = new LinkedHashSet<>();
+        usedDeclarationsSet.addAll( this.usedDeclarations );
+        usedDeclarationsSet.addAll( otherDrlx.usedDeclarations );
 
-        Collection<String> usedDeclarationsOnLeft = null;
+        Collection<String> usedDeclarationsOnLeftSet = null;
         if (this.usedDeclarationsOnLeft != null && otherDrlx.usedDeclarationsOnLeft != null) {
-            usedDeclarationsOnLeft = new LinkedHashSet<>();
-            usedDeclarationsOnLeft.addAll( this.usedDeclarationsOnLeft );
-            usedDeclarationsOnLeft.addAll( otherDrlx.usedDeclarationsOnLeft );
+            usedDeclarationsOnLeftSet = new LinkedHashSet<>();
+            usedDeclarationsOnLeftSet.addAll( this.usedDeclarationsOnLeft );
+            usedDeclarationsOnLeftSet.addAll( otherDrlx.usedDeclarationsOnLeft );
         }
 
-        Set<String> reactOnProperties = new HashSet<>();
-        reactOnProperties.addAll( this.reactOnProperties );
-        reactOnProperties.addAll( otherDrlx.reactOnProperties );
+        Set<String> reactOnPropertiesSet = new HashSet<>();
+        reactOnPropertiesSet.addAll( this.reactOnProperties );
+        reactOnPropertiesSet.addAll( otherDrlx.reactOnProperties );
 
         return new SingleDrlxParseSuccess(patternType, exprId, patternBinding, new BinaryExpr( expr, otherDrlx.expr, operator), exprType)
-                .setDecodeConstraintType( IndexUtil.ConstraintType.UNKNOWN ).setUsedDeclarations( usedDeclarations ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeft )
-                .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( reactOnProperties ).setBetaNode(isBetaNode)
+                .setDecodeConstraintType( IndexUtil.ConstraintType.UNKNOWN ).setUsedDeclarations( usedDeclarationsSet ).setUsedDeclarationsOnLeft( usedDeclarationsOnLeftSet )
+                .setUnification( this.isUnification() || otherDrlx.isUnification()).setReactOnProperties( reactOnPropertiesSet ).setBetaNode(isBetaNode)
                 .setLeft( new TypedExpression( this.expr, boolean.class ) )
                 .setRight( new TypedExpression( otherDrlx.expr, boolean.class ) );
     }

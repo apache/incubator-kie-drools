@@ -332,6 +332,9 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     private FieldIndex unregisterFieldIndex(final int index) {
         final FieldIndex fieldIndex = findFieldIndex( index );
+        if (fieldIndex == null) {
+            throw new IllegalStateException("Cannot find field index for index " + index + "!");
+        }
         fieldIndex.decreaseCounter();
 
         // if the fieldcount is 0 then remove it from the linkedlist

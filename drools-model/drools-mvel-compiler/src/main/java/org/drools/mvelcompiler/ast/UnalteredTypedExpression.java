@@ -27,14 +27,13 @@ public class UnalteredTypedExpression implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        return (originalExpression instanceof SimpleName) ? originalExpression.getParentNode().get() : originalExpression;
+        return (originalExpression instanceof SimpleName)
+                ? originalExpression.getParentNode().orElseThrow(() -> new IllegalStateException("Expression has no parent node!"))
+                : originalExpression;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("UnalteredTypedExpression{");
-        sb.append("originalExpression=").append(originalExpression);
-        sb.append('}');
-        return sb.toString();
+        return "UnalteredTypedExpression{originalExpression=" + originalExpression + '}';
     }
 }

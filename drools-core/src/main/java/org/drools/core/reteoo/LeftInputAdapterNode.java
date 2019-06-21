@@ -603,6 +603,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
             this.leftTupleMemoryEnabled = leftTupleMemoryEnabled;
         }
 
+        public RightTupleSinkAdapter() {
+        }
+
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {

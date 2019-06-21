@@ -39,7 +39,7 @@ import static org.kie.soup.commons.xstream.XStreamUtils.createTrustingXStream;
  */
 public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
 
-    private List<LogEvent> events            = new ArrayList<LogEvent>();
+    private List<LogEvent> events            = new ArrayList<>();
 
     public WorkingMemoryInMemoryLogger() {
     }
@@ -66,10 +66,8 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
     public String getEvents() {
         final XStream xstream = createTrustingXStream();
         StringWriter writer = new StringWriter();
-        try {
-            final ObjectOutputStream out = xstream.createObjectOutputStream(writer);
+        try (final ObjectOutputStream out = xstream.createObjectOutputStream(writer)) {
             out.writeObject( this.events );
-            out.close();
         } catch (Throwable t) {
             throw new RuntimeException("Unable to create event output: " + t.getMessage());
         }
@@ -83,9 +81,6 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
         this.events.clear();
     }
 
-    /**
-     * @see org.kie.audit.WorkingMemoryLogger
-     */
     public void logEventCreated(final LogEvent logEvent) {
         this.events.add( logEvent );
     }

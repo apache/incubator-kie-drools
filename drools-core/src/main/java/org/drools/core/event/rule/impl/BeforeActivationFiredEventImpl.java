@@ -29,6 +29,9 @@ public class BeforeActivationFiredEventImpl extends ActivationEventImpl implemen
         super( activation, kruntime );
     }
 
+    public BeforeActivationFiredEventImpl() {
+    }
+
     public long getTimestamp() {
         return timestamp;
     }

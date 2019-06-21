@@ -45,6 +45,9 @@ public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
                valueType );
     }
 
+    public BaseBooleanClassFieldReader() {
+    }
+
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {
         return getBooleanValue( workingMemory,

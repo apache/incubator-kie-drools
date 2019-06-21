@@ -34,7 +34,10 @@ public class ActivationEventImpl implements MatchEvent, Externalizable {
         this.activation = activation;
         this.kruntime = kruntime;
     }
-    
+
+    public ActivationEventImpl() {
+    }
+
     public Match getMatch() {
         return this.activation;
     }

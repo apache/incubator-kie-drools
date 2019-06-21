@@ -145,13 +145,10 @@ public class QuadroupleNonIndexSkipBetaConstraints
 
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
                                        final InternalFactHandle handle) {
-        return this.constraint0.isAllowedCachedLeft( context[0],
-                                                     handle ) && this.constraint1.isAllowedCachedLeft( context[1],
-                                                                                                       handle ) && this.constraint2.isAllowedCachedLeft( context[2],
-                                                                                                                                                         handle )  && this.constraint3.isAllowedCachedLeft( context[3],
-                                                                                                                                                                                                            handle )
-               && this.constraint3.isAllowedCachedLeft( context[3],
-                                                        handle );
+        return this.constraint0.isAllowedCachedLeft(context[0], handle)
+                && this.constraint1.isAllowedCachedLeft(context[1], handle)
+                && this.constraint2.isAllowedCachedLeft(context[2], handle)
+                && this.constraint3.isAllowedCachedLeft(context[3], handle);
     }
 
     public boolean isAllowedCachedRight(ContextEntry[] context,

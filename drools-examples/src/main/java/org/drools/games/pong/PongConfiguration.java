@@ -53,7 +53,7 @@ public class PongConfiguration extends GameConfiguration {
     }
 
     public void setTableWidth(int tableWidth) {
-        validTableDimension( tableWidth );
+        validPongTableDimension(tableWidth );
         setWindowWidth(tableWidth);
     }
 
@@ -62,11 +62,11 @@ public class PongConfiguration extends GameConfiguration {
     }
 
     public void setTableHeight(int tableHeight) {
-        validTableDimension( tableHeight );
+        validPongTableDimension(tableHeight );
         setWindowHeight(tableHeight);
     }
 
-    private void validTableDimension(int dimension) {
+    private void validPongTableDimension(int dimension) {
         if ( dimension % 20 != 0 ) {
             throw new IllegalArgumentException( "Table dimensions must be divisiable by 20" );
         }

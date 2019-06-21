@@ -57,8 +57,8 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
 
     private static final String INDENTATION = "\t";
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DateUtils.getDateFormatMask(),
-                                                                             Locale.ENGLISH);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.getDateFormatMask(),
+                                                                     Locale.ENGLISH);
 
     private int ruleCount;
     private StringBuilder rules = new StringBuilder();
@@ -74,7 +74,7 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
         //Append the DRL generated from the model
         if (model.getRoot() != null) {
             baseRuleName = model.getTreeName();
-            final List<Node> path = new ArrayList<Node>();
+            final List<Node> path = new ArrayList<>();
 
             visit(path,
                   model.getRoot());
@@ -101,7 +101,7 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
         //Process children. Each child creates a new path through the tree
         while (itr.hasNext()) {
             final Node child = itr.next();
-            final List<Node> subPath = new ArrayList<Node>(path);
+            final List<Node> subPath = new ArrayList<>(path);
             visit(subPath,
                   child);
         }
@@ -418,7 +418,7 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
     private String getStringValue(final Value value) {
         if (value instanceof DateValue) {
             final DateValue dv = (DateValue) value;
-            return DATE_FORMAT.format(dv.getValue());
+            return dateFormat.format(dv.getValue());
         } else if (value.getValue() != null) {
             return value.getValue().toString();
         } else {

@@ -35,6 +35,9 @@ public abstract class BaseBooleanClassFieldWriter extends BaseClassFieldWriter {
                fieldName );
     }
 
+    public BaseBooleanClassFieldWriter() {
+    }
+
     /**
      * This constructor is not supposed to be used from outside the class hierarchy
      * 

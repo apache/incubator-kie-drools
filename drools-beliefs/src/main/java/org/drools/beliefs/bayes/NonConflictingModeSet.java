@@ -18,18 +18,10 @@ package org.drools.beliefs.bayes;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.Entry;
-import org.drools.core.util.LinkedListNode;
-
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-
-import java.util.Arrays;
 
 public class NonConflictingModeSet<M extends ModedAssertion<M>> extends LinkedList<M> implements BeliefSet<M> {
     BayesBeliefSystem<? extends ModedAssertion> beliefSystem;
@@ -40,6 +32,9 @@ public class NonConflictingModeSet<M extends ModedAssertion<M>> extends LinkedLi
     public NonConflictingModeSet(InternalFactHandle rootHandle, BayesBeliefSystem<? extends ModedAssertion> beliefSystem) {
         this.rootHandle = rootHandle;
         this.beliefSystem = beliefSystem;
+    }
+
+    public NonConflictingModeSet() {
     }
 
     @Override

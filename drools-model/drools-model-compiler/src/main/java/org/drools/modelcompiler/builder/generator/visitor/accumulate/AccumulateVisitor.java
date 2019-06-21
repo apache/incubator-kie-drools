@@ -434,7 +434,10 @@ public abstract class AccumulateVisitor {
         if (allNamesInActionBlock.size() == 1) {
             String nameExpr = allNamesInActionBlock.iterator().next();
             accumulateMethod.getParameter(1).setName(nameExpr);
-            singleAccumulateType = context2.getDeclarationById(nameExpr).get().getBoxedType();
+            singleAccumulateType =
+                    context2.getDeclarationById(nameExpr)
+                            .orElseThrow(() -> new IllegalStateException("Cannot find declaration by name " + nameExpr + "!"))
+                            .getBoxedType();
         } else {
             allNamesInActionBlock.removeIf( name -> !externalDeclrs.contains( name ) );
             usedExtDeclrs.addAll( allNamesInActionBlock );
@@ -475,22 +478,37 @@ public abstract class AccumulateVisitor {
             returnExpression = new EnclosedExpr(returnExpression);
         }
         rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, returnExpression);
-        resultMethod.getBody().get().addStatement(new ReturnStmt(returnExpression));
+        resultMethod
+                .getBody()
+                .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                .addStatement(new ReturnStmt(returnExpression));
         MethodDeclaration getResultTypeMethod = templateClass.getMethodsByName("getResultType").get(0);
-        getResultTypeMethod.getBody().get().addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
+        getResultTypeMethod
+                .getBody()
+                .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                .addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
 
         if (optReverseMethod.isPresent()) {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
-            supportsReverseMethod.getBody().get().addStatement(parseStatement("return true;"));
+            supportsReverseMethod
+                    .getBody()
+                    .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                    .addStatement(parseStatement("return true;"));
 
             BlockStmt reverseBlock = parseBlockAddSemicolon(descr.getReverseCode());
             writeAccumulateMethod(contextFieldNames, singleAccumulateType, optReverseMethod.get(), reverseBlock);
         } else {
             MethodDeclaration supportsReverseMethod = templateClass.getMethodsByName("supportsReverse").get(0);
-            supportsReverseMethod.getBody().get().addStatement(parseStatement("return false;"));
+            supportsReverseMethod
+                    .getBody()
+                    .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                    .addStatement(parseStatement("return false;"));
 
             MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
-            reverseMethod.getBody().get().addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
+            reverseMethod
+                    .getBody()
+                    .orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"))
+                    .addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
         }
 
         // add resulting accumulator class into the package model
@@ -512,7 +530,7 @@ public abstract class AccumulateVisitor {
         Set<String> externalDeclrs = new HashSet<>();
 
         for (Statement stmt : initBlock.getStatements()) {
-            final BlockStmt initMethodBody = initMethod.getBody().get();
+            final BlockStmt initMethodBody = initMethod.getBody().orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"));
             if (stmt instanceof ExpressionStmt && ((ExpressionStmt) stmt).getExpression() instanceof VariableDeclarationExpr ) {
                 VariableDeclarationExpr vdExpr = (VariableDeclarationExpr) ((ExpressionStmt) stmt).getExpression();
                 for (VariableDeclarator vd : vdExpr.getVariables()) {
@@ -587,13 +605,17 @@ public abstract class AccumulateVisitor {
                 final ExpressionTyper expressionTyper = new ExpressionTyper(context, Object.class, "", false);
                 final TypedExpressionResult typedExpression = expressionTyper.toTypedExpression(expressionUntyped);
 
-                final Expression expression = typedExpression.getTypedExpression().get().getExpression();
+                final Expression expression =
+                        typedExpression
+                                .getTypedExpression()
+                                .orElseThrow(() -> new IllegalStateException("Typed expression is not present!"))
+                                .getExpression();
 
                 forceCastForName(parameterName, singleAccumulateType, expression);
                 rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, expression);
                 convertedExpressionStatement.setExpression(expression);
             }
-            accumulateMethod.getBody().get().addStatement(convertedExpressionStatement);
+            accumulateMethod.getBody().orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!")).addStatement(convertedExpressionStatement);
         }
     }
 

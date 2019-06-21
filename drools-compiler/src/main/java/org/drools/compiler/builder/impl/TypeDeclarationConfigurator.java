@@ -52,7 +52,7 @@ public class TypeDeclarationConfigurator {
         this.kbuilder = kbuilder;
     }
 
-    public void finalize( TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry, Map<String, PackageRegistry> pkgRegistryMap, ClassHierarchyManager hierarchyManager ) {
+    public void finalizeConfigurator(TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry, Map<String, PackageRegistry> pkgRegistryMap, ClassHierarchyManager hierarchyManager ) {
         // prefer definitions where possible
         if ( type.getNature() == TypeDeclaration.Nature.DEFINITION ) {
             hierarchyManager.addDeclarationToPackagePreservingOrder( type, typeDescr, pkgRegistry.getPackage(), pkgRegistryMap );

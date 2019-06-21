@@ -45,7 +45,7 @@ class RowNumber
         if (other == null) {
             throw  new NullPointerException("We should never have an RowNumber class that is null." );
         }
-        if (other== null && other.getRowNumber() == null) {
+        if (other.getRowNumber() == null) {
             return 0;
         }
         if (this.rowNumber == null) {
@@ -68,6 +68,6 @@ class RowNumber
 
     @Override
     public int hashCode() {
-        return rowNumber != null ? ~~rowNumber.hashCode() : 0;
+        return rowNumber != null ? rowNumber.hashCode() : 0;
     }
 }

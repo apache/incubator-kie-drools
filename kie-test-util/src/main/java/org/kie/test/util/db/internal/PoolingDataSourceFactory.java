@@ -126,9 +126,7 @@ final class PoolingDataSourceFactory {
             properties.remove("initialSize");
             BasicManagedDataSource mds = new BasicManagedDataSource();
 
-            try {
-                BasicDataSource ds = BasicDataSourceFactory.createDataSource(properties);
-
+            try (BasicDataSource ds = BasicDataSourceFactory.createDataSource(properties)) {
                 for (Field field : ds.getClass().getDeclaredFields()) {
                     field.setAccessible(true);
                     if (field.get(ds) == null || Modifier.isFinal(field.getModifiers())) {

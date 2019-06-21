@@ -265,7 +265,8 @@ public final class MvelParser {
     private static <T extends Node> T simplifiedParse(ParseStart<T> context, Provider provider) {
         ParseResult<T> result = new MvelParser(staticConfiguration).parse(context, provider);
         if (result.isSuccessful()) {
-            return result.getResult().get();
+            return result.getResult()
+                    .orElseThrow(() -> new IllegalStateException("ParseResult doesn't contain any result although marked as successful!"));
         }
         throw new ParseProblemException(result.getProblems());
     }

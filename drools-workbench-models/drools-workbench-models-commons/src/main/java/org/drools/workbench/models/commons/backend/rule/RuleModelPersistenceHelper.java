@@ -103,7 +103,7 @@ class RuleModelPersistenceHelper {
                                 final boolean isJavaDialect) {
         int nature = (StringUtils.isEmpty(value) ? FieldNatureType.TYPE_UNDEFINED : FieldNatureType.TYPE_LITERAL);
 
-        if (dataType == DataType.TYPE_COLLECTION) {
+        if (DataType.TYPE_COLLECTION.equals(dataType)) {
             return FieldNatureType.TYPE_FORMULA;
         } else if (DataType.TYPE_BOOLEAN.equals(dataType)) {
             if (!(Boolean.TRUE.equals(Boolean.parseBoolean(value)) || Boolean.FALSE.equals(Boolean.parseBoolean(value)))) {
@@ -116,7 +116,7 @@ class RuleModelPersistenceHelper {
                 new SimpleDateFormat(DateUtils.getDateFormatMask(),
                                      Locale.ENGLISH).parse(adjustParam(dataType,
                                                                        value,
-                                                                       Collections.EMPTY_MAP,
+                                                                       Collections.emptyMap(),
                                                                        isJavaDialect));
                 return FieldNatureType.TYPE_LITERAL;
             } catch (ParseException e) {

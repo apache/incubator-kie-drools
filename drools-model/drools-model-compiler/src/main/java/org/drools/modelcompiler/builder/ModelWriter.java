@@ -3,10 +3,12 @@ package org.drools.modelcompiler.builder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.core.util.Drools;
@@ -57,13 +59,16 @@ public class ModelWriter {
             sourceFiles.add( rulesSourceName );
             // manage additional classes, please notice to not add to modelFiles.
             for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
-                String addFileName = cu.findFirst( ClassOrInterfaceDeclaration.class ).get().getNameAsString();
-                String addSourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
-                String addSource = prettyPrinter.print( cu );
-                pkgModel.logRule( addSource );
-                byte[] addBytes = addSource.getBytes();
-                srcMfs.write( addSourceName, addBytes );
-                sourceFiles.add( addSourceName );
+                final Optional<ClassOrInterfaceDeclaration> classOptional = cu.findFirst(ClassOrInterfaceDeclaration.class);
+                if (classOptional.isPresent()) {
+                    String addFileName = classOptional.get().getNameAsString();
+                    String addSourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
+                    String addSource = prettyPrinter.print( cu );
+                    pkgModel.logRule( addSource );
+                    byte[] addBytes = addSource.getBytes();
+                    srcMfs.write( addSourceName, addBytes );
+                    sourceFiles.add( addSourceName );
+                }
             }
         }
 

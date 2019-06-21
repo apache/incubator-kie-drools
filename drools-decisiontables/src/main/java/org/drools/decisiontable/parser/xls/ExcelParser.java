@@ -106,27 +106,27 @@ public class ExcelParser
 
     public void parseWorkbook( Workbook workbook ) {
         try {
-            if ( _useFirstSheet ) {
-                Sheet sheet = workbook.getSheetAt( 0 );
-                processSheet( sheet, _listeners.get( DEFAULT_RULESHEET_NAME ) );
-            } else {
-                for ( String sheetName : _listeners.keySet() ) {
-                    Sheet sheet = workbook.getSheet( sheetName );
-                    if ( sheet == null ) {
-                        throw new IllegalStateException( "Could not find the sheetName (" + sheetName
-                                                         + ") in the workbook sheetNames." );
-                    }
-                    processSheet                              ( sheet,
-                                  _listeners.get( sheetName ) );
-
-                }
-            }
-        } finally {
             try {
+                if ( _useFirstSheet ) {
+                    Sheet sheet = workbook.getSheetAt( 0 );
+                    processSheet( sheet, _listeners.get( DEFAULT_RULESHEET_NAME ) );
+                } else {
+                    for ( String sheetName : _listeners.keySet() ) {
+                        Sheet sheet = workbook.getSheet( sheetName );
+                        if ( sheet == null ) {
+                            throw new IllegalStateException( "Could not find the sheetName (" + sheetName
+                                                                     + ") in the workbook sheetNames." );
+                        }
+                        processSheet                              ( sheet,
+                                                                    _listeners.get( sheetName ) );
+
+                    }
+                }
+            } finally {
                 workbook.close();
-            } catch (IOException e) {
-                throw new RuntimeException( e );
             }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 

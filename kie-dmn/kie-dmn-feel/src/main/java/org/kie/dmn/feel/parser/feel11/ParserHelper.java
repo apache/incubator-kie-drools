@@ -145,6 +145,8 @@ public class ParserHelper {
                     resolvedBIType = (BuiltInType) resolved.getType();
                 } else if (resolved.getType() instanceof AliasFEELType) {
                     resolvedBIType = ((AliasFEELType) resolved.getType()).getBuiltInType();
+                } else {
+                    throw new UnsupportedOperationException("Unsupported BIType " + resolved.getType() + "!");
                 }
                 pushName(name);
                 pushScope(resolvedBIType);

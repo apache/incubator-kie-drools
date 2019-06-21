@@ -42,12 +42,10 @@ public class Overlap {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Overlap values ");
-        builder.append(overlap);
-        builder.append(" for rules: ");
-        builder.append(rules);
-        return builder.toString();
+        return "Overlap values " +
+                overlap +
+                " for rules: " +
+                rules;
     }
 
     public int contigousOnDimension(Overlap other) {
@@ -102,7 +100,7 @@ public class Overlap {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((overlap == null) ? 0 : overlap.hashCode());
-        result = prime * result + ((rules == null) ? 0 : rules.hashCode());
+        result = prime * result + rules.hashCode();
         return result;
     }
 
@@ -125,11 +123,7 @@ public class Overlap {
         } else if (!overlap.equals(other.overlap)) {
             return false;
         }
-        if (rules == null) {
-            if (other.rules != null) {
-                return false;
-            }
-        } else if (!rules.equals(other.rules)) {
+        if (!rules.equals(other.rules)) {
             return false;
         }
         return true;

@@ -83,708 +83,715 @@ import org.kie.internal.process.CorrelationKey;
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
 public final class WrappedStatefulKnowledgeSessionForRHS
-		implements KieSession, InternalWorkingMemoryActions, EventSupport, KieRuntime, Externalizable {
-	private StatefulKnowledgeSessionImpl delegate;
+        implements KieSession,
+                   InternalWorkingMemoryActions,
+                   EventSupport,
+                   KieRuntime,
+                   Externalizable {
 
-	public WrappedStatefulKnowledgeSessionForRHS(WorkingMemory workingMemory) {
-		super();
-		this.delegate = (StatefulKnowledgeSessionImpl) workingMemory;
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-		delegate = (StatefulKnowledgeSessionImpl) in.readObject();
-	}
+    private StatefulKnowledgeSessionImpl delegate;
 
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
-		out.writeObject( delegate );
-	}
-	
-	@Override
-	public QueryResults getQueryResults(String queryName, Object... arguments) {
-		return delegate.getQueryResultsFromRHS(queryName, arguments);
-	}
+    public WrappedStatefulKnowledgeSessionForRHS(WorkingMemory workingMemory) {
+        super();
+        this.delegate = (StatefulKnowledgeSessionImpl) workingMemory;
+    }
 
-	// -- then just delegate
-	
+    public WrappedStatefulKnowledgeSessionForRHS() {
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        delegate = (StatefulKnowledgeSessionImpl) in.readObject();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(delegate);
+    }
+
+    @Override
+    public QueryResults getQueryResults(String queryName, Object... arguments) {
+        return delegate.getQueryResultsFromRHS(queryName, arguments);
+    }
+
+    // -- then just delegate
+
     public InternalRuleUnitExecutor getRuleUnitExecutor() {
         return delegate.getRuleUnitExecutor();
     }
-	
-	public KieRuntimeLogger getLogger() {
-		return delegate.getLogger();
-	}
-
-	public void setLogger(KieRuntimeLogger logger) {
-		delegate.setLogger(logger);
-	}
-
-	public <T> T getKieRuntime(Class<T> cls) {
-		return delegate.getKieRuntime(cls);
-	}
-
-	public <T> T createRuntimeService(Class<T> cls) {
-		return delegate.createRuntimeService(cls);
-	}
-
-	public Map<String, WorkingMemoryEntryPoint> getEntryPointMap() {
-		return delegate.getEntryPointMap();
-	}
-	
-	public void addEventListener(ProcessEventListener listener) {
-		delegate.addEventListener(listener);
-	}
-
-	public Collection<ProcessEventListener> getProcessEventListeners() {
-		return delegate.getProcessEventListeners();
-	}
-
-	public void removeEventListener(ProcessEventListener listener) {
-		delegate.removeEventListener(listener);
-	}
-
-	public KieBase getKieBase() {
-		return delegate.getKieBase();
-	}
-
-	public boolean isAlive() {
-		return delegate.isAlive();
-	}
-
-	public void destroy() {
-		delegate.destroy();
-	}
-
-	public void update(FactHandle factHandle) {
-		delegate.update(factHandle);
-	}
-
-	public void abortProcessInstance(long id) {
-		delegate.abortProcessInstance(id);
-	}
-
-	public void signalEvent(String type, Object event) {
-		delegate.signalEvent(type, event);
-	}
-
-	public void signalEvent(String type, Object event, long processInstanceId) {
-		delegate.signalEvent(type, event, processInstanceId);
-	}
-
-	public Globals getGlobals() {
-		return delegate.getGlobals();
-	}
-
-	public <T> T execute(Command<T> command) {
-		return delegate.execute(command);
-	}
-
-	public void initInitialFact(InternalKnowledgeBase kBase, MarshallerReaderContext context) {
-		delegate.initInitialFact(kBase, context);
-	}
-
-	public LiveQuery openLiveQuery(String query, Object[] arguments, ViewChangedEventListener listener) {
-		return delegate.openLiveQuery(query, arguments, listener);
-	}
-
-	public void reset(int handleId, long handleCounter, long propagationCounter) {
-		delegate.reset(handleId, handleCounter, propagationCounter);
-	}
-
-	public void addEventListener(RuleEventListener listener) {
-		delegate.addEventListener(listener);
-	}
-
-	public void removeEventListener(RuleEventListener listener) {
-		delegate.removeEventListener(listener);
-	}
-
-	public int getId() {
-		return delegate.getId();
-	}
-
-	public void fireUntilHalt() {
-		delegate.fireUntilHalt();
-	}
-
-	public void fireUntilHalt(AgendaFilter agendaFilter) {
-		delegate.fireUntilHalt(agendaFilter);
-	}
-
-	public void executeQueuedActions() {
-		delegate.executeQueuedActions();
-	}
-
-	public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
-		return delegate.getRuleRuntimeEventSupport();
-	}
-
-	@Override
-	public RuleEventListenerSupport getRuleEventSupport() {
-		return delegate.getRuleEventSupport();
-
-	}
-
-	public AgendaEventSupport getAgendaEventSupport() {
-		return delegate.getAgendaEventSupport();
-	}
-
-	public long getPropagationIdCounter() {
-		return delegate.getPropagationIdCounter();
-	}
-
-	public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
-		return delegate.createProcessInstance(processId, parameters);
-	}
-
-	public ProcessInstance startProcessInstance(long processInstanceId) {
-		return delegate.startProcessInstance(processInstanceId);
-	}
-
-	public ProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey,
-			Map<String, Object> parameters) {
-		return delegate.createProcessInstance(processId, correlationKey, parameters);
-	}
-
-	public boolean equals(Object obj) {
-		return delegate.equals(obj);
-	}
-
-	public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
-		return delegate.getProcessInstance(correlationKey);
-	}
-
-	public Map<String, WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
-		return delegate.getWorkingMemoryEntryPoints();
-	}
-
-	public long getLastIdleTimestamp() {
-		return delegate.getLastIdleTimestamp();
-	}
-
-	public Entry[] getActivationParameters(long activationId) {
-		return delegate.getActivationParameters(activationId);
-	}
-
-	public int hashCode() {
-		return delegate.hashCode();
-	}
-
-	public ProcessInstance startProcess(String processId, CorrelationKey correlationKey,
-			Map<String, Object> parameters) {
-		return delegate.startProcess(processId, correlationKey, parameters);
-	}
-
-	public void registerChannel(String name, Channel channel) {
-		delegate.registerChannel(name, channel);
-	}
-
-	public void unregisterChannel(String name) {
-		delegate.unregisterChannel(name);
-	}
-	
-	public void setEndOperationListener(EndOperationListener listener) {
-		delegate.setEndOperationListener(listener);
-	}
-
-	public String toString() {
-		return delegate.toString();
-	}
-
-	public List iterateObjectsToList() {
-		return delegate.iterateObjectsToList();
-	}
-
-	public List iterateNonDefaultEntryPointObjectsToList() {
-		return delegate.iterateNonDefaultEntryPointObjectsToList();
-	}
-	
-	public Map getActivationParameters(Activation activation) {
-		return delegate.getActivationParameters(activation);
-	}
-
-	public void addEventListener(KieBaseEventListener listener) {
-		delegate.addEventListener(listener);
-	}
-
-	public FactHandle insert(Object object) {
-		return delegate.insert(object);
-	}
-
-	public void submit( AtomicAction action ) {
-		delegate.submit( action );
-	}
-
-	public void removeEventListener(KieBaseEventListener listener) {
-		delegate.removeEventListener(listener);
-	}
-
-	public void addEventListener(RuleRuntimeEventListener listener) {
-		delegate.addEventListener(listener);
-	}
-
-	public Collection<KieBaseEventListener> getKieBaseEventListeners() {
-		return delegate.getKieBaseEventListeners();
-	}
-
-	public FactHandle insert(Object object, boolean dynamic) {
-		return delegate.insert(object, dynamic);
-	}
-
-	public void update(FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, Activation activation) {
-		delegate.update(handle, object, mask, modifiedClass, activation);
-	}
-
-	public void removeEventListener(RuleRuntimeEventListener listener) {
-		delegate.removeEventListener(listener);
-	}
-
-	public void delete( FactHandle factHandle, RuleImpl rule, TerminalNode terminalNode, State fhState ) {
-		delegate.delete(factHandle, rule, terminalNode, fhState);
-	}
-
-	public void delete(FactHandle handle, RuleImpl rule, TerminalNode terminalNode) {
-		delegate.delete(handle, rule, terminalNode);
-	}
-
-	@Override
-	public FactHandle insert( Object object, boolean dynamic, RuleImpl rule, TerminalNode terminalNode ) {
-		return delegate.insert( object, dynamic, rule, terminalNode);
-	}
-
-	@Override
-	public FactHandle insertAsync( Object object ) {
-		return delegate.insert( object );
-	}
-
-	public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
-		return delegate.getRuleRuntimeEventListeners();
-	}
-
-	public void addEventListener(AgendaEventListener listener) {
-		delegate.addEventListener(listener);
-	}
-
-	public String getEntryPointId() {
-		return delegate.getEntryPointId();
-	}
-
-	public void retract(FactHandle handle) {
-		delegate.retract(handle);
-	}
-
-	public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-		return delegate.getTruthMaintenanceSystem();
-	}
-
-	public InternalAgenda getAgenda() {
-		return delegate.getAgenda();
-	}
-
-	public long getIdentifier() {
-		return delegate.getIdentifier();
-	}
-
-	public void setIdentifier(long id) {
-		delegate.setIdentifier(id);
-	}
-
-	public InternalWorkingMemory getInternalWorkingMemory() {
-		return delegate.getInternalWorkingMemory();
-	}
-
-	public void setRuleRuntimeEventSupport(RuleRuntimeEventSupport workingMemoryEventSupport) {
-		delegate.setRuleRuntimeEventSupport(workingMemoryEventSupport);
-	}
-
-	public void removeEventListener(AgendaEventListener listener) {
-		delegate.removeEventListener(listener);
-	}
-
-	public void updateTraits(InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation) {
-		delegate.updateTraits(h, mask, modifiedClass, activation);
-	}
-
-	public void update(FactHandle handle, Object object) {
-		delegate.update(handle, object);
-	}
-
-	public void update(FactHandle handle, Object object, String... modifiedProperties) {
-		delegate.update(handle, object, modifiedProperties);
-	}
-
-	public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport) {
-		delegate.setAgendaEventSupport(agendaEventSupport);
-	}
-
-	public void setGlobal(String identifier, Object value) {
-		delegate.setGlobal(identifier, value);
-	}
-
-	public void reset() {
-		delegate.reset();
-	}
-
-	public <T, K, X extends TraitableBean> Thing<K> shed(Activation activation, TraitableBean<K, X> core,
-			Class<T> trait) {
-		return delegate.shed(activation, core, trait);
-	}
-
-	public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
-		return delegate.getNodeMemory(node);
-	}
-
-	public FactHandleFactory getHandleFactory() {
-		return delegate.getHandleFactory();
-	}
-
-	public Collection<AgendaEventListener> getAgendaEventListeners() {
-		return delegate.getAgendaEventListeners();
-	}
-
-	public void clearNodeMemory(MemoryFactory node) {
-		delegate.clearNodeMemory(node);
-	}
-
-	public <T, K> T don(Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b,
-			Mode[] modes) {
-		return delegate.don(activation, core, traits, b, modes);
-	}
-
-	public NodeMemories getNodeMemories() {
-		return delegate.getNodeMemories();
-	}
-
-	public long getNextPropagationIdCounter() {
-		return delegate.getNextPropagationIdCounter();
-	}
-
-	public ObjectStore getObjectStore() {
-		return delegate.getObjectStore();
-	}
-
-	public <T, K> T don(Activation activation, K core, Class<T> trait, boolean b, Mode[] modes) {
-		return delegate.don(activation, core, trait, b, modes);
-	}
-
-	public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-		delegate.queueWorkingMemoryAction(action);
-	}
-
-	public void delete(FactHandle handle) {
-		delegate.delete(handle);
-	}
-
-	public void dispose() {
-		delegate.dispose();
-	}
-
-	public FactHandleFactory getFactHandleFactory() {
-		return delegate.getFactHandleFactory();
-	}
-
-	public Object getGlobal(String identifier) {
-		return delegate.getGlobal(identifier);
-	}
-
-	public EntryPointId getEntryPoint() {
-		return delegate.getEntryPoint();
-	}
-
-	public EntryPointNode getEntryPointNode() {
-		return delegate.getEntryPointNode();
-	}
-
-	public EntryPoint getEntryPoint(String name) {
-		return delegate.getEntryPoint(name);
-	}
-
-	public void delete(FactHandle handle, State fhState) {
-		delegate.delete(handle, fhState);
-	}
-
-	public Environment getEnvironment() {
-		return delegate.getEnvironment();
-	}
-
-	public void setGlobalResolver(GlobalResolver globalResolver) {
-		delegate.setGlobalResolver(globalResolver);
-	}
-
-	public FactHandle getFactHandleByIdentity(Object object) {
-		return delegate.getFactHandleByIdentity(object);
-	}
-
-	public GlobalResolver getGlobalResolver() {
-		return delegate.getGlobalResolver();
-	}
-
-	public InternalKnowledgeBase getKnowledgeBase() {
-		return delegate.getKnowledgeBase();
-	}
-
-	public Lock getLock() {
-		return delegate.getLock();
-	}
-
-	public boolean isSequential() {
-		return delegate.isSequential();
-	}
-
-	public int fireAllRules() {
-		return delegate.fireAllRules();
-	}
-
-	public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
-		return delegate.getObjectTypeConfigurationRegistry();
-	}
-
-	public InternalFactHandle getInitialFactHandle() {
-		return delegate.getInitialFactHandle();
-	}
-
-	public int fireAllRules(AgendaFilter agendaFilter) {
-		return delegate.fireAllRules(agendaFilter);
-	}
-
-	public Calendars getCalendars() {
-		return delegate.getCalendars();
-	}
-
-	public TimerService getTimerService() {
-		return delegate.getTimerService();
-	}
-
-	public int fireAllRules(int fireLimit) {
-		return delegate.fireAllRules(fireLimit);
-	}
-
-	public InternalKnowledgeRuntime getKnowledgeRuntime() {
-		return delegate.getKnowledgeRuntime();
-	}
-
-	public int fireAllRules(AgendaFilter agendaFilter, int fireLimit) {
-		return delegate.fireAllRules(agendaFilter, fireLimit);
-	}
-
-	public Map<String, Channel> getChannels() {
-		return delegate.getChannels();
-	}
-
-	public Collection<? extends EntryPoint> getEntryPoints() {
-		return delegate.getEntryPoints();
-	}
-
-	public Object getObject(FactHandle handle) {
-		return delegate.getObject(handle);
-	}
-
-	public SessionConfiguration getSessionConfiguration() {
-		return delegate.getSessionConfiguration();
-	}
-
-	public Collection<? extends Object> getObjects() {
-		return delegate.getObjects();
-	}
-
-	public void startBatchExecution() {
-		delegate.startBatchExecution();
-	}
-
-	public void endBatchExecution() {
-		delegate.endBatchExecution();
-	}
-
-	public void startOperation() {
-		delegate.startOperation();
-	}
-
-	public FactHandle getFactHandle(Object object) {
-		return delegate.getFactHandle(object);
-	}
-
-	public Iterator<?> iterateObjects() {
-		return delegate.iterateObjects();
-	}
-
-	public void endOperation() {
-		delegate.endOperation();
-	}
-
-	public Iterator<?> iterateObjects(ObjectFilter filter) {
-		return delegate.iterateObjects(filter);
-	}
-
-	public Collection<? extends Object> getObjects(ObjectFilter filter) {
-		return delegate.getObjects(filter);
-	}
-
-	public long getIdleTime() {
-		return delegate.getIdleTime();
-	}
-
-	public <T extends FactHandle> Collection<T> getFactHandles() {
-		return delegate.getFactHandles();
-	}
-
-	public long getTimeToNextJob() {
-		return delegate.getTimeToNextJob();
-	}
-
-	public Iterator<InternalFactHandle> iterateFactHandles() {
-		return delegate.iterateFactHandles();
-	}
-
-	public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
-		return delegate.getFactHandles(filter);
-	}
-
-	public void updateEntryPointsCache() {
-		delegate.updateEntryPointsCache();
-	}
-
-	public void prepareToFireActivation() {
-		delegate.prepareToFireActivation();
-	}
-
-	public Iterator<InternalFactHandle> iterateFactHandles(ObjectFilter filter) {
-		return delegate.iterateFactHandles(filter);
-	}
-
-	public long getFactCount() {
-		return delegate.getFactCount();
-	}
-
-	public void activationFired() {
-		delegate.activationFired();
-	}
-
-	public long getTotalFactCount() {
-		return delegate.getTotalFactCount();
-	}
-
-	public void setFocus(String focus) {
-		delegate.setFocus(focus);
-	}
-
-	public InternalProcessRuntime getProcessRuntime() {
-		return delegate.getProcessRuntime();
-	}
-
-	public InternalProcessRuntime internalGetProcessRuntime() {
-		return delegate.internalGetProcessRuntime();
-	}
-
-	public void closeLiveQuery(InternalFactHandle factHandle) {
-		delegate.closeLiveQuery(factHandle);
-	}
-
-	public void addPropagation(PropagationEntry propagationEntry) {
-		delegate.addPropagation(propagationEntry);
-	}
-
-	public void flushPropagations() {
-		delegate.flushPropagations();
-	}
-
-	public void activate() {
-		delegate.activate();
-	}
-
-	public void deactivate() {
-		delegate.deactivate();
-	}
-
-	public boolean tryDeactivate() {
-		return delegate.tryDeactivate();
-	}
-
-	public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
-		delegate.setAsyncExceptionHandler(handler);
-	}
-
-	public Iterator<? extends PropagationEntry> getActionsIterator() {
-		return delegate.getActionsIterator();
-	}
-
-	public void removeGlobal(String identifier) {
-		delegate.removeGlobal(identifier);
-	}
-
-	public void notifyWaitOnRest() {
-		delegate.notifyWaitOnRest();
-	}
-
-	public void cancelActivation( Activation activation, boolean declarativeAgenda ) {
-		delegate.cancelActivation( activation, declarativeAgenda );
-	}
-
-	public void clearAgenda() {
-		delegate.clearAgenda();
-	}
-
-	public void clearAgendaGroup(String group) {
-		delegate.clearAgendaGroup(group);
-	}
-
-	public void clearActivationGroup(String group) {
-		delegate.clearActivationGroup(group);
-	}
-
-	public void clearRuleFlowGroup(String group) {
-		delegate.clearRuleFlowGroup(group);
-	}
-
-	public ProcessInstance startProcess(String processId) {
-		return delegate.startProcess(processId);
-	}
-
-	public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
-		return delegate.startProcess(processId, parameters);
-	}
-
-	public Collection<ProcessInstance> getProcessInstances() {
-		return delegate.getProcessInstances();
-	}
-
-	public ProcessInstance getProcessInstance(long id) {
-		return delegate.getProcessInstance(id);
-	}
-
-	public ProcessInstance getProcessInstance(long id, boolean readOnly) {
-		return delegate.getProcessInstance(id, readOnly);
-	}
-
-	public WorkItemManager getWorkItemManager() {
-		return delegate.getWorkItemManager();
-	}
-
-	public void halt() {
-		delegate.halt();
-	}
-
-	public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
-		return delegate.getWorkingMemoryEntryPoint(id);
-	}
-
-	public SessionClock getSessionClock() {
-		return delegate.getSessionClock();
-	}
-
-	public void switchToRuleUnit(RuleUnit ruleUnit, Activation activation) {
-        delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnit, activation );
-	}
-
-	public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
-		delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnitClass, activation );
-	}
-
-	public void guardRuleUnit(RuleUnit ruleUnit, Activation activation) {
-		delegate.getRuleUnitExecutor().guardRuleUnit( ruleUnit, activation );
-	}
-
-	public void guardRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
-		delegate.getRuleUnitExecutor().guardRuleUnit( ruleUnitClass, activation );
-	}
+
+    public KieRuntimeLogger getLogger() {
+        return delegate.getLogger();
+    }
+
+    public void setLogger(KieRuntimeLogger logger) {
+        delegate.setLogger(logger);
+    }
+
+    public <T> T getKieRuntime(Class<T> cls) {
+        return delegate.getKieRuntime(cls);
+    }
+
+    public <T> T createRuntimeService(Class<T> cls) {
+        return delegate.createRuntimeService(cls);
+    }
+
+    public Map<String, WorkingMemoryEntryPoint> getEntryPointMap() {
+        return delegate.getEntryPointMap();
+    }
+
+    public void addEventListener(ProcessEventListener listener) {
+        delegate.addEventListener(listener);
+    }
+
+    public Collection<ProcessEventListener> getProcessEventListeners() {
+        return delegate.getProcessEventListeners();
+    }
+
+    public void removeEventListener(ProcessEventListener listener) {
+        delegate.removeEventListener(listener);
+    }
+
+    public KieBase getKieBase() {
+        return delegate.getKieBase();
+    }
+
+    public boolean isAlive() {
+        return delegate.isAlive();
+    }
+
+    public void destroy() {
+        delegate.destroy();
+    }
+
+    public void update(FactHandle factHandle) {
+        delegate.update(factHandle);
+    }
+
+    public void abortProcessInstance(long id) {
+        delegate.abortProcessInstance(id);
+    }
+
+    public void signalEvent(String type, Object event) {
+        delegate.signalEvent(type, event);
+    }
+
+    public void signalEvent(String type, Object event, long processInstanceId) {
+        delegate.signalEvent(type, event, processInstanceId);
+    }
+
+    public Globals getGlobals() {
+        return delegate.getGlobals();
+    }
+
+    public <T> T execute(Command<T> command) {
+        return delegate.execute(command);
+    }
+
+    public void initInitialFact(InternalKnowledgeBase kBase, MarshallerReaderContext context) {
+        delegate.initInitialFact(kBase, context);
+    }
+
+    public LiveQuery openLiveQuery(String query, Object[] arguments, ViewChangedEventListener listener) {
+        return delegate.openLiveQuery(query, arguments, listener);
+    }
+
+    public void reset(int handleId, long handleCounter, long propagationCounter) {
+        delegate.reset(handleId, handleCounter, propagationCounter);
+    }
+
+    public void addEventListener(RuleEventListener listener) {
+        delegate.addEventListener(listener);
+    }
+
+    public void removeEventListener(RuleEventListener listener) {
+        delegate.removeEventListener(listener);
+    }
+
+    public int getId() {
+        return delegate.getId();
+    }
+
+    public void fireUntilHalt() {
+        delegate.fireUntilHalt();
+    }
+
+    public void fireUntilHalt(AgendaFilter agendaFilter) {
+        delegate.fireUntilHalt(agendaFilter);
+    }
+
+    public void executeQueuedActions() {
+        delegate.executeQueuedActions();
+    }
+
+    public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
+        return delegate.getRuleRuntimeEventSupport();
+    }
+
+    @Override
+    public RuleEventListenerSupport getRuleEventSupport() {
+        return delegate.getRuleEventSupport();
+    }
+
+    public AgendaEventSupport getAgendaEventSupport() {
+        return delegate.getAgendaEventSupport();
+    }
+
+    public long getPropagationIdCounter() {
+        return delegate.getPropagationIdCounter();
+    }
+
+    public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
+        return delegate.createProcessInstance(processId, parameters);
+    }
+
+    public ProcessInstance startProcessInstance(long processInstanceId) {
+        return delegate.startProcessInstance(processInstanceId);
+    }
+
+    public ProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey,
+                                                 Map<String, Object> parameters) {
+        return delegate.createProcessInstance(processId, correlationKey, parameters);
+    }
+
+    public boolean equals(Object obj) {
+        return delegate.equals(obj);
+    }
+
+    public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
+        return delegate.getProcessInstance(correlationKey);
+    }
+
+    public Map<String, WorkingMemoryEntryPoint> getWorkingMemoryEntryPoints() {
+        return delegate.getWorkingMemoryEntryPoints();
+    }
+
+    public long getLastIdleTimestamp() {
+        return delegate.getLastIdleTimestamp();
+    }
+
+    public Entry[] getActivationParameters(long activationId) {
+        return delegate.getActivationParameters(activationId);
+    }
+
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    public ProcessInstance startProcess(String processId, CorrelationKey correlationKey,
+                                        Map<String, Object> parameters) {
+        return delegate.startProcess(processId, correlationKey, parameters);
+    }
+
+    public void registerChannel(String name, Channel channel) {
+        delegate.registerChannel(name, channel);
+    }
+
+    public void unregisterChannel(String name) {
+        delegate.unregisterChannel(name);
+    }
+
+    public void setEndOperationListener(EndOperationListener listener) {
+        delegate.setEndOperationListener(listener);
+    }
+
+    public String toString() {
+        return delegate.toString();
+    }
+
+    public List iterateObjectsToList() {
+        return delegate.iterateObjectsToList();
+    }
+
+    public List iterateNonDefaultEntryPointObjectsToList() {
+        return delegate.iterateNonDefaultEntryPointObjectsToList();
+    }
+
+    public Map getActivationParameters(Activation activation) {
+        return delegate.getActivationParameters(activation);
+    }
+
+    public void addEventListener(KieBaseEventListener listener) {
+        delegate.addEventListener(listener);
+    }
+
+    public FactHandle insert(Object object) {
+        return delegate.insert(object);
+    }
+
+    public void submit(AtomicAction action) {
+        delegate.submit(action);
+    }
+
+    public void removeEventListener(KieBaseEventListener listener) {
+        delegate.removeEventListener(listener);
+    }
+
+    public void addEventListener(RuleRuntimeEventListener listener) {
+        delegate.addEventListener(listener);
+    }
+
+    public Collection<KieBaseEventListener> getKieBaseEventListeners() {
+        return delegate.getKieBaseEventListeners();
+    }
+
+    public FactHandle insert(Object object, boolean dynamic) {
+        return delegate.insert(object, dynamic);
+    }
+
+    public void update(FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, Activation activation) {
+        delegate.update(handle, object, mask, modifiedClass, activation);
+    }
+
+    public void removeEventListener(RuleRuntimeEventListener listener) {
+        delegate.removeEventListener(listener);
+    }
+
+    public void delete(FactHandle factHandle, RuleImpl rule, TerminalNode terminalNode, State fhState) {
+        delegate.delete(factHandle, rule, terminalNode, fhState);
+    }
+
+    public void delete(FactHandle handle, RuleImpl rule, TerminalNode terminalNode) {
+        delegate.delete(handle, rule, terminalNode);
+    }
+
+    @Override
+    public FactHandle insert(Object object, boolean dynamic, RuleImpl rule, TerminalNode terminalNode) {
+        return delegate.insert(object, dynamic, rule, terminalNode);
+    }
+
+    @Override
+    public FactHandle insertAsync(Object object) {
+        return delegate.insert(object);
+    }
+
+    public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
+        return delegate.getRuleRuntimeEventListeners();
+    }
+
+    public void addEventListener(AgendaEventListener listener) {
+        delegate.addEventListener(listener);
+    }
+
+    public String getEntryPointId() {
+        return delegate.getEntryPointId();
+    }
+
+    public void retract(FactHandle handle) {
+        delegate.retract(handle);
+    }
+
+    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
+        return delegate.getTruthMaintenanceSystem();
+    }
+
+    public InternalAgenda getAgenda() {
+        return delegate.getAgenda();
+    }
+
+    public long getIdentifier() {
+        return delegate.getIdentifier();
+    }
+
+    public void setIdentifier(long id) {
+        delegate.setIdentifier(id);
+    }
+
+    public InternalWorkingMemory getInternalWorkingMemory() {
+        return delegate.getInternalWorkingMemory();
+    }
+
+    public void setRuleRuntimeEventSupport(RuleRuntimeEventSupport workingMemoryEventSupport) {
+        delegate.setRuleRuntimeEventSupport(workingMemoryEventSupport);
+    }
+
+    public void removeEventListener(AgendaEventListener listener) {
+        delegate.removeEventListener(listener);
+    }
+
+    public void updateTraits(InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation) {
+        delegate.updateTraits(h, mask, modifiedClass, activation);
+    }
+
+    public void update(FactHandle handle, Object object) {
+        delegate.update(handle, object);
+    }
+
+    public void update(FactHandle handle, Object object, String... modifiedProperties) {
+        delegate.update(handle, object, modifiedProperties);
+    }
+
+    public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport) {
+        delegate.setAgendaEventSupport(agendaEventSupport);
+    }
+
+    public void setGlobal(String identifier, Object value) {
+        delegate.setGlobal(identifier, value);
+    }
+
+    public void reset() {
+        delegate.reset();
+    }
+
+    public <T, K, X extends TraitableBean> Thing<K> shed(Activation activation, TraitableBean<K, X> core,
+                                                         Class<T> trait) {
+        return delegate.shed(activation, core, trait);
+    }
+
+    public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
+        return delegate.getNodeMemory(node);
+    }
+
+    public FactHandleFactory getHandleFactory() {
+        return delegate.getHandleFactory();
+    }
+
+    public Collection<AgendaEventListener> getAgendaEventListeners() {
+        return delegate.getAgendaEventListeners();
+    }
+
+    public void clearNodeMemory(MemoryFactory node) {
+        delegate.clearNodeMemory(node);
+    }
+
+    public <T, K> T don(Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b,
+                        Mode[] modes) {
+        return delegate.don(activation, core, traits, b, modes);
+    }
+
+    public NodeMemories getNodeMemories() {
+        return delegate.getNodeMemories();
+    }
+
+    public long getNextPropagationIdCounter() {
+        return delegate.getNextPropagationIdCounter();
+    }
+
+    public ObjectStore getObjectStore() {
+        return delegate.getObjectStore();
+    }
+
+    public <T, K> T don(Activation activation, K core, Class<T> trait, boolean b, Mode[] modes) {
+        return delegate.don(activation, core, trait, b, modes);
+    }
+
+    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
+        delegate.queueWorkingMemoryAction(action);
+    }
+
+    public void delete(FactHandle handle) {
+        delegate.delete(handle);
+    }
+
+    public void dispose() {
+        delegate.dispose();
+    }
+
+    public FactHandleFactory getFactHandleFactory() {
+        return delegate.getFactHandleFactory();
+    }
+
+    public Object getGlobal(String identifier) {
+        return delegate.getGlobal(identifier);
+    }
+
+    public EntryPointId getEntryPoint() {
+        return delegate.getEntryPoint();
+    }
+
+    public EntryPointNode getEntryPointNode() {
+        return delegate.getEntryPointNode();
+    }
+
+    public EntryPoint getEntryPoint(String name) {
+        return delegate.getEntryPoint(name);
+    }
+
+    public void delete(FactHandle handle, State fhState) {
+        delegate.delete(handle, fhState);
+    }
+
+    public Environment getEnvironment() {
+        return delegate.getEnvironment();
+    }
+
+    public void setGlobalResolver(GlobalResolver globalResolver) {
+        delegate.setGlobalResolver(globalResolver);
+    }
+
+    public FactHandle getFactHandleByIdentity(Object object) {
+        return delegate.getFactHandleByIdentity(object);
+    }
+
+    public GlobalResolver getGlobalResolver() {
+        return delegate.getGlobalResolver();
+    }
+
+    public InternalKnowledgeBase getKnowledgeBase() {
+        return delegate.getKnowledgeBase();
+    }
+
+    public Lock getLock() {
+        return delegate.getLock();
+    }
+
+    public boolean isSequential() {
+        return delegate.isSequential();
+    }
+
+    public int fireAllRules() {
+        return delegate.fireAllRules();
+    }
+
+    public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
+        return delegate.getObjectTypeConfigurationRegistry();
+    }
+
+    public InternalFactHandle getInitialFactHandle() {
+        return delegate.getInitialFactHandle();
+    }
+
+    public int fireAllRules(AgendaFilter agendaFilter) {
+        return delegate.fireAllRules(agendaFilter);
+    }
+
+    public Calendars getCalendars() {
+        return delegate.getCalendars();
+    }
+
+    public TimerService getTimerService() {
+        return delegate.getTimerService();
+    }
+
+    public int fireAllRules(int fireLimit) {
+        return delegate.fireAllRules(fireLimit);
+    }
+
+    public InternalKnowledgeRuntime getKnowledgeRuntime() {
+        return delegate.getKnowledgeRuntime();
+    }
+
+    public int fireAllRules(AgendaFilter agendaFilter, int fireLimit) {
+        return delegate.fireAllRules(agendaFilter, fireLimit);
+    }
+
+    public Map<String, Channel> getChannels() {
+        return delegate.getChannels();
+    }
+
+    public Collection<? extends EntryPoint> getEntryPoints() {
+        return delegate.getEntryPoints();
+    }
+
+    public Object getObject(FactHandle handle) {
+        return delegate.getObject(handle);
+    }
+
+    public SessionConfiguration getSessionConfiguration() {
+        return delegate.getSessionConfiguration();
+    }
+
+    public Collection<? extends Object> getObjects() {
+        return delegate.getObjects();
+    }
+
+    public void startBatchExecution() {
+        delegate.startBatchExecution();
+    }
+
+    public void endBatchExecution() {
+        delegate.endBatchExecution();
+    }
+
+    public void startOperation() {
+        delegate.startOperation();
+    }
+
+    public FactHandle getFactHandle(Object object) {
+        return delegate.getFactHandle(object);
+    }
+
+    public Iterator<?> iterateObjects() {
+        return delegate.iterateObjects();
+    }
+
+    public void endOperation() {
+        delegate.endOperation();
+    }
+
+    public Iterator<?> iterateObjects(ObjectFilter filter) {
+        return delegate.iterateObjects(filter);
+    }
+
+    public Collection<? extends Object> getObjects(ObjectFilter filter) {
+        return delegate.getObjects(filter);
+    }
+
+    public long getIdleTime() {
+        return delegate.getIdleTime();
+    }
+
+    public <T extends FactHandle> Collection<T> getFactHandles() {
+        return delegate.getFactHandles();
+    }
+
+    public long getTimeToNextJob() {
+        return delegate.getTimeToNextJob();
+    }
+
+    public Iterator<InternalFactHandle> iterateFactHandles() {
+        return delegate.iterateFactHandles();
+    }
+
+    public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+        return delegate.getFactHandles(filter);
+    }
+
+    public void updateEntryPointsCache() {
+        delegate.updateEntryPointsCache();
+    }
+
+    public void prepareToFireActivation() {
+        delegate.prepareToFireActivation();
+    }
+
+    public Iterator<InternalFactHandle> iterateFactHandles(ObjectFilter filter) {
+        return delegate.iterateFactHandles(filter);
+    }
+
+    public long getFactCount() {
+        return delegate.getFactCount();
+    }
+
+    public void activationFired() {
+        delegate.activationFired();
+    }
+
+    public long getTotalFactCount() {
+        return delegate.getTotalFactCount();
+    }
+
+    public void setFocus(String focus) {
+        delegate.setFocus(focus);
+    }
+
+    public InternalProcessRuntime getProcessRuntime() {
+        return delegate.getProcessRuntime();
+    }
+
+    public InternalProcessRuntime internalGetProcessRuntime() {
+        return delegate.internalGetProcessRuntime();
+    }
+
+    public void closeLiveQuery(InternalFactHandle factHandle) {
+        delegate.closeLiveQuery(factHandle);
+    }
+
+    public void addPropagation(PropagationEntry propagationEntry) {
+        delegate.addPropagation(propagationEntry);
+    }
+
+    public void flushPropagations() {
+        delegate.flushPropagations();
+    }
+
+    public void activate() {
+        delegate.activate();
+    }
+
+    public void deactivate() {
+        delegate.deactivate();
+    }
+
+    public boolean tryDeactivate() {
+        return delegate.tryDeactivate();
+    }
+
+    public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
+        delegate.setAsyncExceptionHandler(handler);
+    }
+
+    public Iterator<? extends PropagationEntry> getActionsIterator() {
+        return delegate.getActionsIterator();
+    }
+
+    public void removeGlobal(String identifier) {
+        delegate.removeGlobal(identifier);
+    }
+
+    public void notifyWaitOnRest() {
+        delegate.notifyWaitOnRest();
+    }
+
+    public void cancelActivation(Activation activation, boolean declarativeAgenda) {
+        delegate.cancelActivation(activation, declarativeAgenda);
+    }
+
+    public void clearAgenda() {
+        delegate.clearAgenda();
+    }
+
+    public void clearAgendaGroup(String group) {
+        delegate.clearAgendaGroup(group);
+    }
+
+    public void clearActivationGroup(String group) {
+        delegate.clearActivationGroup(group);
+    }
+
+    public void clearRuleFlowGroup(String group) {
+        delegate.clearRuleFlowGroup(group);
+    }
+
+    public ProcessInstance startProcess(String processId) {
+        return delegate.startProcess(processId);
+    }
+
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
+        return delegate.startProcess(processId, parameters);
+    }
+
+    public Collection<ProcessInstance> getProcessInstances() {
+        return delegate.getProcessInstances();
+    }
+
+    public ProcessInstance getProcessInstance(long id) {
+        return delegate.getProcessInstance(id);
+    }
+
+    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        return delegate.getProcessInstance(id, readOnly);
+    }
+
+    public WorkItemManager getWorkItemManager() {
+        return delegate.getWorkItemManager();
+    }
+
+    public void halt() {
+        delegate.halt();
+    }
+
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
+        return delegate.getWorkingMemoryEntryPoint(id);
+    }
+
+    public SessionClock getSessionClock() {
+        return delegate.getSessionClock();
+    }
+
+    public void switchToRuleUnit(RuleUnit ruleUnit, Activation activation) {
+        delegate.getRuleUnitExecutor().switchToRuleUnit(ruleUnit, activation);
+    }
+
+    public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
+        delegate.getRuleUnitExecutor().switchToRuleUnit(ruleUnitClass, activation);
+    }
+
+    public void guardRuleUnit(RuleUnit ruleUnit, Activation activation) {
+        delegate.getRuleUnitExecutor().guardRuleUnit(ruleUnit, activation);
+    }
+
+    public void guardRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
+        delegate.getRuleUnitExecutor().guardRuleUnit(ruleUnitClass, activation);
+    }
 }

@@ -28,6 +28,9 @@ public class RuleFlowGroupDeactivatedEventImpl extends RuleFlowGroupEventImpl  i
         super( ruleFlowGroup, kruntime );
     }
 
+    public RuleFlowGroupDeactivatedEventImpl() {
+    }
+
     public String toString() {
         return "==>[RuleFlowGroupDeactivated(name=" + getRuleFlowGroup().getName()  + ")]";
     }

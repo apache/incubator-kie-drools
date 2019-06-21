@@ -41,6 +41,9 @@ public class ObjectInsertedEventImpl extends RuleRuntimeEventImpl
         this.object = object;
     }
 
+    public ObjectInsertedEventImpl() {
+    }
+
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );

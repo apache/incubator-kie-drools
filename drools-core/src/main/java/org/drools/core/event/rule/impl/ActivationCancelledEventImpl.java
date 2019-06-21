@@ -30,6 +30,9 @@ public class ActivationCancelledEventImpl extends ActivationEventImpl implements
         this.cause = cause;
     }
 
+    public ActivationCancelledEventImpl() {
+    }
+
     public MatchCancelledCause getCause() {
         return cause;
     }

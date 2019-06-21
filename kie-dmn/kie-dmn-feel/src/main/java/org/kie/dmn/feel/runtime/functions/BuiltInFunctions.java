@@ -22,7 +22,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 
 public class BuiltInFunctions {
 
-    protected final static FEELFunction[] FUNCTIONS = new FEELFunction[]{
+    protected static final FEELFunction[] FUNCTIONS = new FEELFunction[]{
             new DateFunction(),
             new TimeFunction(),
             new DateAndTimeFunction(),
@@ -88,6 +88,9 @@ public class BuiltInFunctions {
     }
 
     public static <T extends FEELFunction> T getFunction( Class<T> functionClazz ) {
-        return (T) Stream.of( FUNCTIONS ).filter( f -> functionClazz.isAssignableFrom( f.getClass() ) ).findFirst().get();
+        return (T) Stream.of( FUNCTIONS )
+                .filter( f -> functionClazz.isAssignableFrom( f.getClass() ) )
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find function by class " + functionClazz.getCanonicalName() + "!"));
     }
 }

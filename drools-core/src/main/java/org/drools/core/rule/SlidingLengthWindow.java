@@ -164,6 +164,9 @@ public class SlidingLengthWindow
             this.handles = new EventFactHandle[size];
         }
 
+        public SlidingLengthWindowContext() {
+        }
+
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             this.pos = in.readInt();

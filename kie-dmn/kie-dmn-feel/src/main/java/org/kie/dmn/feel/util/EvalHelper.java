@@ -141,7 +141,7 @@ public class EvalHelper {
         if ( c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' ) {
             return true;
         }
-        return c != ' ' && c != '\u00A0' && !Character.isWhitespace(c) && !Character.isWhitespace(c);
+        return c != ' ' && c != '\u00A0' && !Character.isWhitespace(c);
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {

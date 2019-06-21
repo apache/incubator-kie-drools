@@ -144,6 +144,9 @@ public class TypeDeclarationUtil {
             processFields();
         }
 
+        public ClassDefinitionForModel() {
+        }
+
         public void processFields() {
             for (Method m : getDefinedClass().getDeclaredMethods()) {
                 if (m.getParameterCount() == 0) {

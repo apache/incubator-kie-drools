@@ -34,6 +34,9 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
         this.kruntime = kruntime;
     }
 
+    public AgendaGroupEventImpl() {
+    }
+
     public AgendaGroup getAgendaGroup() {
         return agendaGroup;
     }

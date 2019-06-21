@@ -69,6 +69,9 @@ public class StandaloneTraitFactory<T extends Thing<K>, K extends TraitableBean>
         setMode( this.mode, getComponentFactory() );
     }
 
+    public StandaloneTraitFactory() {
+    }
+
     @Override
     protected Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException {
         try {

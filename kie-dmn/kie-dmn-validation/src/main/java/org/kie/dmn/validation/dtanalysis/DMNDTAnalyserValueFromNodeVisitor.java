@@ -137,6 +137,9 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
                 // simple name
                 fnName = n.getName().getText();
             }
+            if (fnName == null) {
+                throw new IllegalStateException("Name of function is not instance of NameRefNode!" + n.toString());
+            }
             List<BaseNode> params = n.getParams().getElements();
             switch (fnName) {
                 case DATE:

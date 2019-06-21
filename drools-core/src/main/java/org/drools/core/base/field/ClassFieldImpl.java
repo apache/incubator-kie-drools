@@ -44,6 +44,9 @@ public class ClassFieldImpl implements FieldValue, Externalizable {
         } catch (ClassNotFoundException e) { }
     }
 
+    public ClassFieldImpl() {
+    }
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( className );
     }

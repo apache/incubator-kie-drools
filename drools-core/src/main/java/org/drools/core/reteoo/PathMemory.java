@@ -97,7 +97,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                 TerminalNode rtn = (TerminalNode) getPathEndNode();
                 log.trace("  LinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, rtn.getRule().getName());
             } else {
-                log.trace("  LinkSegment smask={} rmask={} name={}", mask, "RiaNode");
+                log.trace("  LinkSegment smask={} rmask={}", mask, "RiaNode");
             }
         }
         if (isRuleLinked()) {

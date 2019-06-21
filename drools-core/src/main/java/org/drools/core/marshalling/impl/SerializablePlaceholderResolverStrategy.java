@@ -85,7 +85,7 @@ public class SerializablePlaceholderResolverStrategy
         // this data map is used when marshalling out objects in order
         // to preserve graph references without cloning objects all over
         // the place.
-        public List<Object> data = new ArrayList<Object>();
+        public List<Object> data = new ArrayList<>();
 
         @SuppressWarnings("unchecked")
         public void read(ObjectInputStream ois) throws IOException,

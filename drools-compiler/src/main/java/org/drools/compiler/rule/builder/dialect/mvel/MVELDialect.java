@@ -210,6 +210,9 @@ public class MVELDialect
         this.addImport(new ImportDescr("java.lang.*"));
     }
 
+    public MVELDialect() {
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
         results = (List<KnowledgeBuilderResult>) in.readObject();

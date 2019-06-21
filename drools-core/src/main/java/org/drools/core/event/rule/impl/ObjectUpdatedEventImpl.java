@@ -42,6 +42,9 @@ public class ObjectUpdatedEventImpl  extends RuleRuntimeEventImpl implements Obj
         this.object = object;
     }
 
+    public ObjectUpdatedEventImpl() {
+    }
+
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( factHandle );

@@ -105,8 +105,9 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
     @Override
     public void visit( NullSafeMethodCallExpr nullSafeMethodCallExpr, Void arg ) {
         printComment(nullSafeMethodCallExpr.getComment(), arg);
-        if (nullSafeMethodCallExpr.getScope().isPresent()) {
-            nullSafeMethodCallExpr.getScope().get().accept( this, arg );
+        Optional<Expression> scopeExpression = nullSafeMethodCallExpr.getScope();
+        if (scopeExpression.isPresent()) {
+            scopeExpression.get().accept( this, arg );
             printer.print("!.");
         }
         printTypeArgs(nullSafeMethodCallExpr, arg);

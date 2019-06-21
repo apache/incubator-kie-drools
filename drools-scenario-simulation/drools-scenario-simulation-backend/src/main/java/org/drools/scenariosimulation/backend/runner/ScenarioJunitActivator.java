@@ -74,8 +74,8 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
     }
 
     protected SimulationWithFileName parseFile(String path) {
-        try {
-            String rawFile = new Scanner(new File(path)).useDelimiter("\\Z").next();
+        try (final Scanner scanner = new Scanner(new File(path))) {
+            String rawFile = scanner.useDelimiter("\\Z").next();
             return new SimulationWithFileName(getXmlReader().unmarshal(rawFile).getSimulation(), path);
         } catch (FileNotFoundException e) {
             throw new ScenarioException("File not found, this should not happen: " + path, e);

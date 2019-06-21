@@ -8,17 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
-import org.drools.core.util.DateUtils;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.drools.mvel.parser.ast.expr.OOPathExpr;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
-import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
-import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -34,9 +25,11 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.core.util.DateUtils;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -44,16 +37,24 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
+import org.drools.mvel.parser.ast.expr.OOPathExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
-import static org.drools.core.util.StringUtils.lcFirst;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
+import static org.drools.core.util.StringUtils.lcFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class ConstraintParser {
 
@@ -185,22 +186,26 @@ public class ConstraintParser {
             methodCallExpr.replace(t, new NameExpr("_this"));
         }
 
-        Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getTypeResolver(), functionCall.get().getType().asString());
-        NodeList<Expression> arguments = methodCallExpr.getArguments();
-        List<String> usedDeclarations = new ArrayList<>();
-        for (Expression arg : arguments) {
-            String argString = printConstraint(arg);
-            if (arg instanceof DrlNameExpr && !argString.equals("_this")) {
-                usedDeclarations.add(argString);
-            } else if (arg instanceof CastExpr ) {
-                String s = printConstraint(((CastExpr) arg).getExpression());
-                usedDeclarations.add(s);
-            } else if (arg instanceof MethodCallExpr) {
-                TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
-                usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
+        if (functionCall.isPresent()) {
+            Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getTypeResolver(), functionCall.get().getType().asString());
+            NodeList<Expression> arguments = methodCallExpr.getArguments();
+            List<String> usedDeclarations = new ArrayList<>();
+            for (Expression arg : arguments) {
+                String argString = printConstraint(arg);
+                if (arg instanceof DrlNameExpr && !argString.equals("_this")) {
+                    usedDeclarations.add(argString);
+                } else if (arg instanceof CastExpr ) {
+                    String s = printConstraint(((CastExpr) arg).getExpression());
+                    usedDeclarations.add(s);
+                } else if (arg instanceof MethodCallExpr) {
+                    TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, null, bindingId, isPositional).toTypedExpression(arg);
+                    usedDeclarations.addAll(typedExpressionResult.getUsedDeclarations());
+                }
             }
+            return new SingleDrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
+        } else {
+            throw new IllegalArgumentException("Specified function call is not present!");
         }
-        return new SingleDrlxParseSuccess(patternType, exprId, bindingId, methodCallExpr, returnType).setUsedDeclarations(usedDeclarations);
     }
 
     private DrlxParseResult parseNameExpr(DrlNameExpr nameExpr, Class<?> patternType, String bindingId, Expression drlxExpr, boolean hasBind, String expression, String exprId) {
@@ -215,7 +220,12 @@ public class ConstraintParser {
                     .setLeft( new TypedExpression( withThis, converted.getType() ) )
                     .addReactOnProperty( lcFirst(nameExpr.getNameAsString()) );
         } else if (context.hasDeclaration( expression )) {
-            return new SingleDrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr(printConstraint(drlxExpr)), context.getDeclarationById(expression ).get().getDeclarationClass() );
+            Optional<DeclarationSpec> declarationSpec = context.getDeclarationById(expression);
+            if (declarationSpec.isPresent()) {
+                return new SingleDrlxParseSuccess(patternType, exprId, bindingId, context.getVarExpr(printConstraint(drlxExpr)), declarationSpec.get().getDeclarationClass() );
+            } else {
+                throw new IllegalArgumentException("Cannot find declaration specification by specified expression " + expression + "!");
+            }
         } else {
             return new SingleDrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType() )
                     .addReactOnProperty( nameExpr.getNameAsString() );
@@ -361,8 +371,11 @@ public class ConstraintParser {
     }
 
     private static String getExpressionSymbol(Expression expr) {
-        if (expr instanceof MethodCallExpr && (( MethodCallExpr ) expr).getScope().isPresent()) {
-            return getExpressionSymbol( (( MethodCallExpr ) expr).getScope().get() );
+        if (expr instanceof MethodCallExpr) {
+            Optional<Expression> scopeExpression = (( MethodCallExpr ) expr).getScope();
+            if (scopeExpression.isPresent()) {
+                return getExpressionSymbol( scopeExpression.get() );
+            }
         }
         if (expr instanceof FieldAccessExpr ) {
             return getExpressionSymbol( (( FieldAccessExpr ) expr).getScope() );
@@ -480,8 +493,9 @@ public class ConstraintParser {
         List<Expression> res = new ArrayList<>( methodCallExpr.getArguments() );
         if ( methodCallExpr instanceof NodeWithOptionalScope ) {
             NodeWithOptionalScope<?> nodeWithOptionalScope = (NodeWithOptionalScope) methodCallExpr;
-            if ( nodeWithOptionalScope.getScope().isPresent() ) {
-                Object scope = nodeWithOptionalScope.getScope().get();
+            Optional<Expression> scopeExpression = nodeWithOptionalScope.getScope();
+            if ( scopeExpression.isPresent() ) {
+                Object scope = scopeExpression.get();
                 if (scope instanceof NodeWithArguments) {
                     res.addAll(recurseCollectArguments((NodeWithArguments<?>) scope));
                 }
