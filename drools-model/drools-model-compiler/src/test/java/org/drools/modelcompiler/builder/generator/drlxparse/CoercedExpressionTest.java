@@ -110,7 +110,7 @@ public class CoercedExpressionTest {
     }
 
     @Test
-    public void doNotNameExprLiterals() {
+    public void doNotCastNameExprLiterals() {
         final TypedExpression left = expr("_this.getAgeAsShort()", java.lang.Short.class);
         final TypedExpression right = expr("$age", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
@@ -118,7 +118,7 @@ public class CoercedExpressionTest {
     }
 
     @Test
-    public void doNotNameExprLiterals2() {
+    public void doNotCastNameExprLiterals2() {
         final TypedExpression left = expr("exprDouble", java.lang.Double.class);
         final TypedExpression right = expr("$age", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
