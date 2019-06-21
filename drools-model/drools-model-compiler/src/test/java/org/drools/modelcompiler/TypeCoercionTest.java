@@ -225,34 +225,6 @@ public class TypeCoercionTest extends BaseModelTest {
         assertEquals(2, ksession.fireAllRules());
     }
 
-
-    @Test
-    @Ignore("why does this fail in both drl and exec model?")
-    public void testIntegerShort() {
-        String str =
-                "import " + Result.class.getCanonicalName() + ";" +
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $markV : Person(name == \"Mark\")\n" +
-                "  $olderV : Person(name != \"Mark\", ageAsShort == $markV.age)\n" +
-                "then\n" +
-                "  $r.setValue($olderV.getName() + \" is same age as \" + $markV.getName());\n" +
-                "end";
-
-        KieSession ksession = getKieSession( str );
-
-        Result result = new Result();
-        ksession.insert( result );
-
-        ksession.insert(new Person("Mark", 40));
-        ksession.insert(new Person("Edson", 35));
-        ksession.insert(new Person("Mario", 40));
-
-        ksession.fireAllRules();
-        assertEquals("Mario is same age as Mark", result.getValue());
-    }
-
     @Test
     public void testBetaJoinShortInt() {
         String str =
