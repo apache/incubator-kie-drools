@@ -94,6 +94,19 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
         }
     }
     
+    public static class DMNDTAnalyserOutputClauseVisitor extends DMNDTAnalyserValueFromNodeVisitor {
+
+        public DMNDTAnalyserOutputClauseVisitor(List<FEELProfile> feelProfiles) {
+            super(feelProfiles);
+        }
+
+        @Override
+        public Comparable<?> defaultVisit(ASTNode n) {
+            return n.getText();
+        }
+
+    }
+
     private static class SupportedConstantValueVisitor extends DefaultedVisitor<Boolean> {
 
         public boolean areAllSupported(List<BaseNode> nodes) {
