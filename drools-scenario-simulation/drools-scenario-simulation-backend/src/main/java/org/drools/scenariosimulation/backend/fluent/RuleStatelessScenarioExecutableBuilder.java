@@ -51,6 +51,7 @@ public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecu
         this.sessionName = sessionName;
     }
 
+    @Override
     public void addInternalCondition(Class<?> clazz,
                                      Function<Object, ResultWrapper> checkFunction,
                                      ScenarioResult scenarioResult) {
@@ -58,18 +59,22 @@ public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecu
                 .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));
     }
 
+    @Override
     public void setActiveAgendaGroup(String agendaGroup) {
         this.agendaGroup = agendaGroup;
     }
 
+    @Override
     public void setActiveRuleFlowGroup(String ruleFlowGroup) {
         this.agendaGroup = ruleFlowGroup;
     }
 
+    @Override
     public void insert(Object element) {
         inputs.add(element);
     }
 
+    @Override
     public RequestContext run() {
         KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(sessionName);
         if (kieSessionModel == null) {
@@ -91,7 +96,7 @@ public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecu
             toReturn.add(commands.newAgendaGroupSetFocus(agendaGroup));
         }
 
-        if (inputs.size() > 0) {
+        if (!inputs.isEmpty()) {
             toReturn.add(commands.newInsertElements(inputs));
         }
         toReturn.add(commands.newFireAllRules());

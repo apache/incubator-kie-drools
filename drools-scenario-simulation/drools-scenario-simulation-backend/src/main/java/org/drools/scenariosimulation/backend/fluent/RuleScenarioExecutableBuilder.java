@@ -25,10 +25,8 @@ import org.kie.api.runtime.RequestContext;
 
 public interface RuleScenarioExecutableBuilder {
 
-    String DEFAULT_APPLICATION = "defaultApplication";
-
     static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String kieSessionName, boolean stateless) {
-        if(stateless) {
+        if (stateless) {
             return new RuleStatelessScenarioExecutableBuilder(kieContainer, kieSessionName);
         } else {
             return new RuleStatefulScenarioExecutableBuilder(kieContainer, kieSessionName);
@@ -40,8 +38,8 @@ public interface RuleScenarioExecutableBuilder {
     }
 
     void addInternalCondition(Class<?> clazz,
-                                     Function<Object, ResultWrapper> checkFunction,
-                                     ScenarioResult scenarioResult);
+                              Function<Object, ResultWrapper> checkFunction,
+                              ScenarioResult scenarioResult);
 
     void setActiveAgendaGroup(String agendaGroup);
 

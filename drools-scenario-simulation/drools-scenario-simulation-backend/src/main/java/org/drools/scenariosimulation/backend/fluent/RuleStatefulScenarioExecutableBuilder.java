@@ -38,6 +38,8 @@ import org.kie.internal.builder.fluent.KieSessionFluent;
 
 public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecutableBuilder {
 
+    private final static String DEFAULT_APPLICATION = "defaultApplication";
+
     private final KieSessionFluent kieSessionFluent;
     private final ExecutableBuilder executableBuilder;
     private final Map<FactIdentifier, List<FactCheckerHandle>> internalConditions = new HashMap<>();
@@ -52,7 +54,7 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
     };
 
     protected RuleStatefulScenarioExecutableBuilder(KieContainer kieContainer, String kieSessionName) {
-        executableBuilder = ExecutableBuilder.create();
+        executableBuilder = createExecutableBuilder();
 
         kieSessionFluent = executableBuilder
                 .newApplicationContext(DEFAULT_APPLICATION)
@@ -97,6 +99,14 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
 
         kieSessionFluent.dispose().end();
 
-        return ExecutableRunner.create().execute(executableBuilder.getExecutable());
+        return createExecutableRunner().execute(executableBuilder.getExecutable());
+    }
+
+    protected ExecutableBuilder createExecutableBuilder() {
+        return ExecutableBuilder.create();
+    }
+
+    protected ExecutableRunner<RequestContext> createExecutableRunner() {
+        return ExecutableRunner.create();
     }
 }
