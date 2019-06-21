@@ -44,6 +44,7 @@ import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
+import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
 import org.kie.dmn.feel.lang.impl.UnaryTestInterpretedExecutableExpression;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -54,6 +55,7 @@ import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
+import org.kie.dmn.validation.dtanalysis.DMNDTAnalyserValueFromNodeVisitor.DMNDTAnalyserOutputClauseVisitor;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.BoundValueComparator;
 import org.kie.dmn.validation.dtanalysis.model.DDTAInputClause;
@@ -73,10 +75,12 @@ public class DMNDTAnalyser {
     private static final Logger LOG = LoggerFactory.getLogger(DMNDTAnalyser.class);
     private final org.kie.dmn.feel.FEEL FEEL;
     private final DMNDTAnalyserValueFromNodeVisitor valueFromNodeVisitor;
+    private final DMNDTAnalyserOutputClauseVisitor outputClauseVisitor;
 
     public DMNDTAnalyser(List<DMNProfile> dmnProfiles) {
         FEEL = org.kie.dmn.feel.FEEL.newInstance((List) dmnProfiles);
         valueFromNodeVisitor = new DMNDTAnalyserValueFromNodeVisitor((List) dmnProfiles);
+        outputClauseVisitor = new DMNDTAnalyserOutputClauseVisitor((List) dmnProfiles);
     }
 
     public List<DTAnalysis> analyse(DMNModel model) {
@@ -168,13 +172,14 @@ public class DMNDTAnalyser {
                 ProcessedExpression compile = (ProcessedExpression) FEEL.compile(oe.getText(), FEEL.newCompilerContext());
                 InterpretedExecutableExpression interpreted = compile.getInterpreted();
                 BaseNode outputEntryNode = (BaseNode) interpreted.getASTNode();
-                Comparable<?> value = valueFromNode(outputEntryNode);
+                Comparable<?> value = valueFromNode(outputEntryNode, outputClauseVisitor);
                 ddtaRule.getOutputEntry().add(value);
                 jColIdx++;
             }
             ddtaTable.addRule(ddtaRule);
         }
     }
+
 
     private void compileTableInputClauses(DMNModel model, DecisionTable dt, DDTATable ddtaTable) {
         for (int jColIdx = 0; jColIdx < dt.getInput().size(); jColIdx++) {
@@ -562,7 +567,11 @@ public class DMNDTAnalyser {
         }
     }
 
+    private Comparable<?> valueFromNode(BaseNode node, Visitor<Comparable<?>> visitor) {
+        return node.accept(visitor);
+    }
+
     private Comparable<?> valueFromNode(BaseNode node) {
-        return node.accept(valueFromNodeVisitor);
+        return valueFromNode(node, valueFromNodeVisitor);
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_26d21cbf-e1cc-4587-9435-5c842acdda45" id="_26d21cbf-e1cc-4587-9435-5c842acdda45" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_26d21cbf-e1cc-4587-9435-5c842acdda45" exporter="DMN Modeler" exporterVersion="6.2.4.2" triso:logoChoice="Default">
+    <semantic:inputData id="_e6409803-a3f5-49d6-9003-5b511475c545" name="n">
+        <semantic:variable name="n" id="_15074b4e-3d5d-4b27-b9a6-81a7e9ede552" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_ea7e5e4d-c2fd-4356-a5c6-84827c2d66ce" name="posDoubleNegHalf">
+        <semantic:variable name="posDoubleNegHalf" id="_efc2d402-c9b9-44bb-996e-d4c90cb59987" typeRef="number"/>
+        <semantic:informationRequirement id="_c1cc6c74-857d-4a37-9d69-80775fd08b37">
+            <semantic:requiredInput href="#_e6409803-a3f5-49d6-9003-5b511475c545"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_d18aa93e-3f67-4dda-9b36-93ae75835bdf" hitPolicy="UNIQUE" outputLabel="posDoubleNegHalf" typeRef="number" triso:expressionId="_4846e13e-6a92-4643-b690-ddfc7b8baedc">
+            <semantic:input id="_08095ecc-9077-4635-ab1e-0bb075112669">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>n</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_abff0271-1560-4537-a3ab-7a070a779d70" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_d6784e72-1420-4dcf-a1a7-9c09f8407d57">
+                <semantic:inputEntry id="_7e3d00a5-1fb6-42e8-b36e-6ae93f066d3f">
+                    <semantic:text>&gt;0</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_2d036f47-4b84-4467-9ca7-dc9a69d926a6">
+                    <semantic:text>n*2</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_fc3c0389-89e6-49f6-bd23-64f351cafd26">
+                <semantic:inputEntry id="_b8aaf492-9498-47e1-b1a1-d91fe89bff14">
+                    <semantic:text>&lt;0</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_38b8c34b-2db5-4bfd-bd9d-5711cb10e1e7">
+                    <semantic:text>n/2</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>
