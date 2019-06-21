@@ -38,11 +38,11 @@ import org.kie.internal.builder.fluent.KieSessionFluent;
 
 public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecutableBuilder {
 
-    private final static String DEFAULT_APPLICATION = "defaultApplication";
-
     private final KieSessionFluent kieSessionFluent;
     private final ExecutableBuilder executableBuilder;
     private final Map<FactIdentifier, List<FactCheckerHandle>> internalConditions = new HashMap<>();
+
+    private final static String DEFAULT_APPLICATION = "defaultApplication";
 
     protected static final BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
         KieSessionModel kieSessionModel = kc.getKieSessionModel(sessionName);
