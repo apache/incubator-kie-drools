@@ -39,7 +39,7 @@ public class StatisticUtils {
     public static double[] determineStandardDeviationDoubles(
             List<? extends BenchmarkResult> benchmarkResultList, Score averageScore, int successCount) {
         if (successCount <= 0) {
-            return null;
+            return new double[0];
         }
         if (averageScore == null) {
             throw new IllegalArgumentException("Average score (" + averageScore + ") cannot be null.");
