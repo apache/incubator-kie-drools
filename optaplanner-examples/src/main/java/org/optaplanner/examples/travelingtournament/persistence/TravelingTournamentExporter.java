@@ -80,8 +80,11 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<Tra
                             }
                         }
                     }
-                    String opponentName = (opponentIsHome ? "@" : "") + opponentTeam.getName();
-                    bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", opponentName));
+
+                    if (opponentTeam != null) {
+                        String opponentName = (opponentIsHome ? "@" : "") + opponentTeam.getName();
+                        bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", opponentName));
+                    }
                 }
                 bufferedWriter.write("\n");
             }
