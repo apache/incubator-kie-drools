@@ -55,6 +55,11 @@ public class StatisticUtils {
                 }
             }
         }
+
+        if (differenceSquaredTotalDoubles == null) { // no successful benchmarks
+            return new double[0];
+        }
+
         double[] standardDeviationDoubles = new double[differenceSquaredTotalDoubles.length];
         for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
             standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
