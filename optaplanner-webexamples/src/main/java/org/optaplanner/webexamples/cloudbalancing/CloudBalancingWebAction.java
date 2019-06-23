@@ -46,6 +46,11 @@ public class CloudBalancingWebAction {
 
     public void solve(final HttpSession session) {
         final Solver<CloudBalance> solver = (Solver<CloudBalance>) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
+        if (solver == null) {
+            throw new IllegalStateException("Solver (" + solver + ") cannot be null. As the Solver is not serializable, "
+                                                    + "it might have got lost during a passivation.");
+        }
+
         final CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
 
         solver.addEventListener(new SolverEventListener<CloudBalance>() {
