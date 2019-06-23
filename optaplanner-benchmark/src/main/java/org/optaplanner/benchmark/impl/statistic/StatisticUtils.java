@@ -27,6 +27,10 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class StatisticUtils {
 
+    private StatisticUtils() {
+        // This class is not instantiable
+    }
+
     /**
      * Calculates standard deviation of {@link BenchmarkResult#getAverageScore()}s from {@code averageScore}.
      * @param averageScore not null
