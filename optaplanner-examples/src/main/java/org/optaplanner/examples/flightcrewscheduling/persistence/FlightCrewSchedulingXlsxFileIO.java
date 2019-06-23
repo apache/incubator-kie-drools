@@ -602,6 +602,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                     } else {
                         previousArrivalHour = Math.max(previousArrivalHour, arrivalHour);
                     }
+                    // The list is never null; gets initialized in the first loop due to previousArrivalHour = -1
                     previousFlightAssignmentList.add(flightAssignment);
                 }
             }
