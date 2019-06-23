@@ -95,6 +95,9 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
     }
 
     private void updateTransportTime(ScoreDirector scoreDirector, BusStop sourceStop, Bus bus, Integer transportTimeToHub) {
+        if (sourceStop == null) {
+            throw new IllegalArgumentException("The sourceStop (" + sourceStop + ") cannot be null.");
+        }
         if (Objects.equals(sourceStop.getTransportTimeToHub(), transportTimeToHub)) {
             return;
         }
