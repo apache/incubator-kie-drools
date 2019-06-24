@@ -17,16 +17,20 @@
 package org.kie.dmn.validation.dtanalysis;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
+import org.kie.dmn.validation.dtanalysis.model.Domain;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class IntervalTest {
@@ -89,5 +93,55 @@ public class IntervalTest {
         assertThat(interval.getUpperBound(), is(new Bound(hiValue, hiType, interval)));
         assertThat(interval.getRule(), is(rule));
         assertThat(interval.getCol(), is(col));
+    }
+
+    public static class DummyDomain implements Domain {
+
+        private final Interval domainMinMax;
+        private final List discreteValues;
+
+        public DummyDomain(Interval domainMinMax, List discreteValues) {
+            this.domainMinMax = domainMinMax;
+            this.discreteValues = discreteValues;
+        }
+
+        @Override
+        public Bound<?> getMin() {
+            return domainMinMax.getLowerBound();
+        }
+
+        @Override
+        public Bound<?> getMax() {
+            return domainMinMax.getUpperBound();
+        }
+
+        @Override
+        public Interval getDomainMinMax() {
+            return domainMinMax;
+        }
+
+        @Override
+        public List getDiscreteValues() {
+            return Collections.unmodifiableList(discreteValues);
+        }
+
+        @Override
+        public boolean isDiscreteDomain() {
+            return discreteValues != null && !discreteValues.isEmpty();
+        }
+    }
+
+    @Test
+    public void testHumanFriendlyContinuous() {
+        Interval domainInterval = new Interval(RangeBoundary.CLOSED, 0, 100, RangeBoundary.CLOSED, 0, 0);
+        DummyDomain domain = new DummyDomain(domainInterval, Collections.emptyList());
+
+        assertThat(new Interval(RangeBoundary.CLOSED, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith(">="));
+        assertThat(new Interval(RangeBoundary.OPEN  , 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith(">"));
+        assertThat(new Interval(RangeBoundary.OPEN  , 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), not(startsWith(">=")));
+        
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith("<="));
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain), startsWith("<"));
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain), not(startsWith("<=")));
     }
 }

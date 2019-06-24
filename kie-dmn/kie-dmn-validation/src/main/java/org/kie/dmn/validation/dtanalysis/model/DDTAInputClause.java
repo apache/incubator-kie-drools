@@ -19,7 +19,7 @@ package org.kie.dmn.validation.dtanalysis.model;
 import java.util.Collections;
 import java.util.List;
 
-public class DDTAInputClause {
+public class DDTAInputClause implements Domain {
 
     private final Interval domainMinMax;
     private final List discreteValues;
@@ -34,22 +34,27 @@ public class DDTAInputClause {
         this.discreteValues = discreteValues;
     }
 
+    @Override
     public Bound<?> getMin() {
         return domainMinMax.getLowerBound();
     }
 
+    @Override
     public Bound<?> getMax() {
         return domainMinMax.getUpperBound();
     }
 
+    @Override
     public Interval getDomainMinMax() {
         return domainMinMax;
     }
 
+    @Override
     public List getDiscreteValues() {
         return Collections.unmodifiableList(discreteValues);
     }
 
+    @Override
     public boolean isDiscreteDomain() {
         return discreteValues != null && !discreteValues.isEmpty();
     }
