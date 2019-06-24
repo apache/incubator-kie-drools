@@ -247,9 +247,8 @@ public abstract class AbstractRunnerHelper {
             if (evaluationSucceed) {
                 return createResult(resultRaw);
             } else if (isCollection(className)) {
-                return createErrorResultWithErrorMessage("Impossible to find elements in the collection to satisfy the conditions");
                 // no suggestions for collection yet
-//                throw new RuntimeException("Impossible to find elements in the collection to satisfy the conditions");
+                return createErrorResultWithErrorMessage("Impossible to find elements in the collection to satisfy the conditions");
             } else {
                 return createErrorResult(resultRaw, expectedResultRaw);
             }
