@@ -1354,7 +1354,7 @@ public class RuleModelDRLPersistenceImpl
                 constraintValueBuilder.buildLHSFieldValue(buf,
                                                           type,
                                                           DataType.TYPE_COLLECTION,
-                                                          "@{makeValueList(" + value + ")}");
+                                                          "@{makeValueList(" + value + "," + DataType.isNumeric(fieldType) + ")}");
                 buf.append(" ");
             } else {
                 buf.append(" ");

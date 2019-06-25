@@ -58,6 +58,48 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
+    public void testInWithIntegerValues() {
+        final TemplateModel m = new TemplateModel();
+        m.name = "t1";
+
+        final FactPattern p = new FactPattern("Person");
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        con.setFieldName("field1");
+        con.setOperator("in");
+        con.setValue("$f1");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        p.addConstraint(con);
+
+        m.addLhsItem(p);
+
+        m.addRow(new String[]{"1,2"});
+        m.addRow(new String[]{"\"3\",\"4\""});
+        m.addRow(new String[]{"(5,6)"});
+
+        final String expected = "rule \"t1_2\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (5, 6) )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_1\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (3, 4) )" +
+                "then \n" +
+                "end" +
+                "rule \"t1_0\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (1, 2) )" +
+                "then \n" +
+                "end";
+
+        checkMarshall(expected, m);
+    }
+
+    @Test
     public void testInWithSimpleSingleLiteralValue() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";
