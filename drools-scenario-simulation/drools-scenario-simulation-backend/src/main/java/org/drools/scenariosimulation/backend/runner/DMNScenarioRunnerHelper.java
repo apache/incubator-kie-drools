@@ -43,9 +43,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
 
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResult;
 import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResultWithErrorMessage;
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createResult;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 
 public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
@@ -148,14 +146,12 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         Class<?> resultClass = resultRaw != null ? resultRaw.getClass() : null;
 
         Object expectedResultRaw = expectedResult.getRawValue();
-        try {
-            return expressionEvaluator.evaluateUnaryExpression(expectedResultRaw, resultRaw, resultClass) ?
-                    createResult(resultRaw) :
-                    createErrorResult(resultRaw, expectedResultRaw);
-        } catch (Exception e) {
-            expectedResult.setExceptionMessage(e.getMessage());
-            throw new ScenarioException(e.getMessage(), e);
-        }
+        return getResultWrapper(factMapping.getClassName(),
+                                expectedResult,
+                                expressionEvaluator,
+                                expectedResultRaw,
+                                resultRaw,
+                                resultClass);
     }
 
     @SuppressWarnings("unchecked")
