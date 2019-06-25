@@ -17,7 +17,6 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -168,7 +167,9 @@ public class ModelGenerator {
 
         RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        createUnitData(context, ruleUnitDescr, ruleVariablesBlock );
+        if (ruleUnitDescr != null) {
+            createUnitData(context, ruleUnitDescr, ruleVariablesBlock);
+        }
 
         new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
         final String ruleMethodName = "rule_" + toId(ruleDescr.getName());
@@ -378,40 +379,35 @@ public class ModelGenerator {
     }
 
     private static void createUnitData(RuleContext context, RuleUnitDescription ruleUnitDescr, BlockStmt ruleVariablesBlock ) {
-        if (ruleUnitDescr != null) {
-            for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
-                addUnitData(context, unitVar.getKey(), unitVar.getValue().getGenericReturnType(), ruleVariablesBlock);
-            }
+        for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
+            String unitVarName = unitVar.getKey();
+            java.lang.reflect.Type type = unitVar.getValue().getGenericReturnType();
+            Class<?> rawClass = toRawClass(type);
+            Class<?> resolvedType =
+                    ruleUnitDescr.getDatasourceType(unitVarName)
+                            .orElse(rawClass);
+
+            Type declType = classToReferenceType( rawClass );
+            context.addRuleUnitVar( unitVarName, resolvedType );
+            String varDecl = context.getVar(unitVarName);
+
+            ruleVariablesBlock.addStatement(
+                    createUnitVariable(varDecl, unitVarName, declType));
         }
+
     }
 
-    private static void addUnitData(RuleContext context, String unitVar, java.lang.reflect.Type type, BlockStmt ruleBlock) {
-        Class<?> rawClass = toRawClass(type);
-        Type declType = classToReferenceType( toRawClass(type) );
-
-        context.addRuleUnitVar( unitVar, getClassForUnitData( type, rawClass ) );
-
+    private static AssignExpr createUnitVariable(String varDecl, String unitVar, Type declType) {
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar), Modifier.finalModifier());
+        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, varDecl, Modifier.finalModifier());
 
         MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
 
         unitDataCall.addArgument(new ClassExpr( declType ));
         unitDataCall.addArgument(new StringLiteralExpr(unitVar));
 
-        AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
-        ruleBlock.addStatement(var_assign);
-    }
-
-    private static Class<?> getClassForUnitData( java.lang.reflect.Type type, Class<?> rawClass ) {
-        if (Iterable.class.isAssignableFrom( rawClass ) && type instanceof ParameterizedType) {
-            return toRawClass( (( ParameterizedType ) type).getActualTypeArguments()[0] );
-        }
-        if (rawClass.isArray()) {
-            return rawClass.getComponentType();
-        }
-        return rawClass;
+        return new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
     }
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {

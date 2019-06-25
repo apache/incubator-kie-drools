@@ -236,6 +236,11 @@ public class PatternBuilder
             }
         } else {
             Declaration declr = resolver.getDeclaration(identifier);
+            if (declr == null) {
+                registerDescrBuildError(context, patternDescr,
+                                        "The identifier '" + identifier + "' is not in scope");
+                return;
+            }
             patternDescr.setXpathStartDeclaration(declr);
             patternDescr.setObjectType(declr.getExtractor().getExtractToClassName());
             expr = patternDescr.getIdentifier() + (patternDescr.isUnification() ? " := " : " : ") + expr.substring(identifier.length() + 1);
