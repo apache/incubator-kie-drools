@@ -402,9 +402,17 @@ public class ConstraintParser {
                 "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals";
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, equalsMethod );
-        methodCallExpr.addArgument(left.getExpression());
-        methodCallExpr.addArgument(right.getExpression()); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        methodCallExpr.addArgument(uncastExpr(left.getExpression()));
+        methodCallExpr.addArgument(uncastExpr(right.getExpression())); // don't create NodeList with static method because missing "parent for child" would null and NPE
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+    }
+
+    private static Expression uncastExpr(Expression e) {
+        if(e.isCastExpr()) {
+            return e.asCastExpr().getExpression();
+        } else {
+            return e;
+        }
     }
 
     private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
