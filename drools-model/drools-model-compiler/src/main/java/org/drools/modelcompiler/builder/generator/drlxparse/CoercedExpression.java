@@ -74,10 +74,10 @@ public class CoercedExpression {
             coercedRight = right.cloneWithNewExpression(coercedLiteralNumberExprToType);
         } else if (shouldCoerceBToString(left, right)) {
             coercedRight = coerceToString(right);
-        } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass)) {
-            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(leftClass, rightClass.isPrimitive()), right.getExpression()));
+        } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass) && right.isNumberLiteral()) {
+            coercedRight = castToClass(leftClass);
         } else if (isNotBinaryExpression(right) && left.getType().equals(Object.class) && right.getType() != Object.class) {
-            coercedRight = right.cloneWithNewExpression(new CastExpr(toJavaParserType(Object.class, rightClass.isPrimitive()), right.getExpression()));
+            coercedRight = castToClass(Object.class);
         } else if (leftClass == long.class && rightClass == int.class) {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
@@ -94,6 +94,10 @@ public class CoercedExpression {
         }
 
         return new CoercedExpressionResult(coercedLeft, coercedRight);
+    }
+
+    private TypedExpression castToClass(Class<?> clazz) {
+        return right.cloneWithNewExpression(new CastExpr(toJavaParserType(clazz, right.isPrimitive()), right.getExpression()));
     }
 
     private static TypedExpression coerceToString(TypedExpression typedExpression) {

@@ -225,10 +225,22 @@ public abstract class AbstractExpressionBuilder {
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
     }
 
-    protected Class<?> getIndexType( TypedExpression left, TypedExpression right ) {
-        return Stream.of(left, right).map(TypedExpression::getType)
+    protected Class<?> getIndexType(TypedExpression left, TypedExpression right) {
+        Optional<Class<?>> leftType = Optional.ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
+        Optional<Class<?>> rightType = Optional.ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);;
+
+        // Use Number.class if they're both Numbers but different in order to use best possible type in the index
+        Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {
+            if (Number.class.isAssignableFrom(l) && Number.class.isAssignableFrom(r) && !l.equals(r)) {
+                return Number.class;
+            } else {
+                return l;
+            }
+        }));
+
+        return numberType.orElseGet(() -> Stream.of(left, right).map(TypedExpression::getType)
                 .filter(Objects::nonNull)
                 .map(ClassUtil::toRawClass)
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find index from: " + left.toString() + ", " + right.toString() + "!"));
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find index from: " + left.toString() + ", " + right.toString() + "!")));
     }
 }
