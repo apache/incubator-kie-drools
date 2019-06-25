@@ -45,6 +45,10 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.isCollection;
+import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResult;
+import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResultWithErrorMessage;
+import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createResult;
 
 public abstract class AbstractRunnerHelper {
 
@@ -231,6 +235,28 @@ public abstract class AbstractRunnerHelper {
                                           ScenarioRunnerData scenarioRunnerData,
                                           ExpressionEvaluator expressionEvaluator,
                                           RequestContext requestContext);
+
+    protected ResultWrapper getResultWrapper(String className,
+                                             FactMappingValue expectedResult,
+                                             ExpressionEvaluator expressionEvaluator,
+                                             Object expectedResultRaw,
+                                             Object resultRaw,
+                                             Class<?> resultClass) {
+        try {
+            boolean evaluationSucceed = expressionEvaluator.evaluateUnaryExpression(expectedResultRaw, resultRaw, resultClass);
+            if (evaluationSucceed) {
+                return createResult(resultRaw);
+            } else if (isCollection(className)) {
+                // no suggestions for collection yet
+                return createErrorResultWithErrorMessage("Impossible to find elements in the collection to satisfy the conditions");
+            } else {
+                return createErrorResult(resultRaw, expectedResultRaw);
+            }
+        } catch (Exception e) {
+            expectedResult.setExceptionMessage(e.getMessage());
+            throw new ScenarioException(e.getMessage(), e);
+        }
+    }
 
     public abstract Object createObject(String className,
                                         Map<List<String>, Object> params,

@@ -43,8 +43,6 @@ import org.kie.api.runtime.RequestContext;
 import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.createBuilder;
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createErrorResult;
-import static org.drools.scenariosimulation.backend.runner.model.ResultWrapper.createResult;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.fillBean;
 
 public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
@@ -148,14 +146,13 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
             ScenarioBeanWrapper<?> scenarioBeanWrapper = ScenarioBeanUtil.navigateToObject(objectToCheck, pathToValue, false);
             Object resultValue = scenarioBeanWrapper.getBean();
             Object expectedResultValue = expectedResult.getRawValue();
-            try {
-                return expressionEvaluator.evaluateUnaryExpression(expectedResultValue, resultValue, scenarioBeanWrapper.getBeanClass()) ?
-                        createResult(resultValue) :
-                        createErrorResult(resultValue, expectedResultValue);
-            } catch (Exception e) {
-                expectedResult.setExceptionMessage(e.getMessage());
-                throw new ScenarioException(e.getMessage(), e);
-            }
+
+            return getResultWrapper(factMapping.getClassName(),
+                                    expectedResult,
+                                    expressionEvaluator,
+                                    expectedResultValue,
+                                    resultValue,
+                                    scenarioBeanWrapper.getBeanClass());
         };
     }
 

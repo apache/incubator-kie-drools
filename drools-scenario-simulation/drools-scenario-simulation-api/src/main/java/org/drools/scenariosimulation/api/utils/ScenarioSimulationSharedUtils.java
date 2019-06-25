@@ -16,6 +16,8 @@
 package org.drools.scenariosimulation.api.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public class ScenarioSimulationSharedUtils {
     public static final String FILE_EXTENSION = "scesim";
 
     /**
-     * Returns true if given string equals <code>List.class.getName()</code> or <code>Map.class.getName()</code>
+     * Returns true if given string isList or isMap
      * @param className
      * @return
      */
@@ -37,21 +39,24 @@ public class ScenarioSimulationSharedUtils {
     }
 
     /**
-     * Returns true if given string equals <code>List.class.getName()</code>
+     * Returns true if given string equals to canonical name of List, ArrayList or LinkedList
      * @param className
      * @return
      */
     public static boolean isList(String className) {
-        return List.class.getName().equals(className);
+        return List.class.getCanonicalName().equals(className) ||
+                ArrayList.class.getCanonicalName().equals(className) ||
+                LinkedList.class.getCanonicalName().equals(className);
     }
 
     /**
-     * Returns true if given string equals <code>List.class.getName()</code>
+     * Returns true if given string equals to canonical name of Map or HashMap
      * @param className
      * @return
      */
     public static boolean isMap(String className) {
-        return Map.class.getName().equals(className);
+        return Map.class.getCanonicalName().equals(className) ||
+                HashMap.class.getCanonicalName().equals(className);
     }
 
     public static List<ScenarioWithIndex> toScenarioWithIndex(Simulation simulation) {
