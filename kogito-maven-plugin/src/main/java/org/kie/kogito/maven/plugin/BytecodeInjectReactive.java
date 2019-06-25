@@ -15,30 +15,22 @@
 
 package org.kie.kogito.maven.plugin;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.phreak.ReactiveCollection;
-import org.drools.core.phreak.ReactiveList;
-import org.drools.core.phreak.ReactiveObject;
-import org.drools.core.phreak.ReactiveObjectUtil;
-import org.drools.core.phreak.ReactiveSet;
-import org.drools.core.spi.Tuple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
+import javassist.CtField.Initializer;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
-import javassist.CtField.Initializer;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.CodeIterator;
 import javassist.bytecode.ConstPool;
@@ -49,6 +41,15 @@ import javassist.bytecode.SignatureAttribute.ClassType;
 import javassist.bytecode.SignatureAttribute.MethodSignature;
 import javassist.bytecode.SignatureAttribute.TypeArgument;
 import javassist.bytecode.stackmap.MapMaker;
+import org.drools.core.phreak.ReactiveCollection;
+import org.drools.core.phreak.ReactiveList;
+import org.drools.core.phreak.ReactiveObject;
+import org.drools.core.phreak.ReactiveObjectUtil;
+import org.drools.core.phreak.ReactiveSet;
+import org.drools.core.spi.Tuple;
+import org.kie.kogito.maven.plugin.util.BytecodeInjectException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * kudos to hibernate-enhance-maven-plugin.
@@ -82,7 +83,7 @@ public class BytecodeInjectReactive {
         String apath = ClassLoader.getSystemClassLoader().getResource( aname).getPath();
         String path = null;
         if (apath.contains("!")) {
-            path = apath.substring(0, apath.indexOf("!")).replace("file:", "");
+            path = apath.substring(0, apath.indexOf('!')).replace("file:", "");
         } else {
             path = apath.substring(0, apath.indexOf(aname));
         }
@@ -90,69 +91,70 @@ public class BytecodeInjectReactive {
     }
     
     private void init() {
-        this.writeMethods = new HashMap<String, CtMethod>();
+        this.writeMethods = new HashMap<>();
     }
     
-    public byte[] injectReactive(String classname) throws Exception {
+    public byte[] injectReactive(String classname) throws BytecodeInjectException {
         init();
-        
-        CtClass droolsPojo = cp.get(classname);
-        if (collectReactiveFields(droolsPojo).size() == 0) {
-            LOG.info("Skipped bytecode injection in class " + droolsPojo.getName()+ " because no fields candidated for reactivity.");
+
+        try {
+            CtClass droolsPojo = cp.get(classname);
+            if (collectReactiveFields(droolsPojo).size() == 0) {
+                LOG.info("Skipped bytecode injection in class {} because no fields candidated for reactivity.", droolsPojo.getName());
+                return droolsPojo.toBytecode();
+            }
+
+            droolsPojo.addInterface( cp.get(ReactiveObject.class.getName()) );
+
+            CtField ltsCtField = new CtField( cp.get(Collection.class.getName()), DROOLS_LIST_OF_TUPLES, droolsPojo );
+            ltsCtField.setModifiers(Modifier.PRIVATE);
+            ClassType listOfTuple = new SignatureAttribute.ClassType(Collection.class.getName(),
+                                                                     new TypeArgument[]{new TypeArgument( new SignatureAttribute.ClassType(Tuple.class.getName()) )});
+            ltsCtField.setGenericSignature(
+                    listOfTuple.encode()
+            );
+            // Do not use the Initializer.byNew... as those method always pass at least 1 parameter which is "this".
+            droolsPojo.addField(ltsCtField, Initializer.byExpr("new java.util.HashSet();"));
+
+            final CtMethod getLeftTuplesCtMethod = CtNewMethod.make(
+                    "public java.util.Collection getLeftTuples() {\n" +
+                            "    return this.$$_drools_lts != null ? this.$$_drools_lts : java.util.Collections.emptyList();\n"+
+                            "}", droolsPojo );
+            MethodSignature getLeftTuplesSignature = new MethodSignature(null, null, listOfTuple, null);
+            getLeftTuplesCtMethod.setGenericSignature(getLeftTuplesSignature.encode());
+            droolsPojo.addMethod(getLeftTuplesCtMethod);
+
+            final CtMethod addLeftTupleCtMethod = CtNewMethod.make(
+                    "public void addLeftTuple("+Tuple.class.getName()+" leftTuple) {\n" +
+                            "    if ($$_drools_lts == null) {\n" +
+                            "        $$_drools_lts = new java.util.HashSet();\n" +
+                            "    }\n" +
+                            "    $$_drools_lts.add(leftTuple);\n" +
+                            "}", droolsPojo );
+            droolsPojo.addMethod(addLeftTupleCtMethod);
+
+            final CtMethod removeLeftTupleCtMethod = CtNewMethod.make(
+                    "public void removeLeftTuple("+Tuple.class.getName()+" leftTuple) {\n" +
+                            "    $$_drools_lts.remove(leftTuple);\n" +
+                            "}", droolsPojo );
+            droolsPojo.addMethod(removeLeftTupleCtMethod);
+
+            Map<String, CtField> fieldsMap = collectReactiveFields(droolsPojo);
+            for (CtField f : fieldsMap.values()) {
+                LOG.debug("Preparing field writer method for field: {}.", f);
+                writeMethods.put(f.getName(), makeWriter(droolsPojo, f));
+            }
+
+            enhanceAttributesAccess(fieldsMap, droolsPojo);
+
+            // first call CtClass.toClass() before the original class is loaded, it will persist the bytecode instrumentation changes in the classloader.
             return droolsPojo.toBytecode();
+        } catch (NotFoundException | CannotCompileException | IOException e) {
+            throw new BytecodeInjectException(e);
         }
-        
-        droolsPojo.addInterface( cp.get(ReactiveObject.class.getName()) );
-        
-        CtField ltsCtField = new CtField( cp.get(Collection.class.getName()), DROOLS_LIST_OF_TUPLES, droolsPojo );
-        ltsCtField.setModifiers(Modifier.PRIVATE);
-        ClassType listOfTuple = new SignatureAttribute.ClassType(Collection.class.getName(),
-                new TypeArgument[]{new TypeArgument( new SignatureAttribute.ClassType(Tuple.class.getName()) )});
-        ltsCtField.setGenericSignature(
-                listOfTuple.encode()
-                );
-        // Do not use the Initializer.byNew... as those method always pass at least 1 parameter which is "this".
-        droolsPojo.addField(ltsCtField, Initializer.byExpr("new java.util.HashSet();"));
-        
-        final CtMethod getLeftTuplesCtMethod = CtNewMethod.make(
-                "public java.util.Collection getLeftTuples() {\n" + 
-                "    return this.$$_drools_lts != null ? this.$$_drools_lts : java.util.Collections.emptyList();\n"+
-                "}", droolsPojo );
-        MethodSignature getLeftTuplesSignature = new MethodSignature(null, null, listOfTuple, null);
-        getLeftTuplesCtMethod.setGenericSignature(getLeftTuplesSignature.encode());
-        droolsPojo.addMethod(getLeftTuplesCtMethod);
-        
-        final CtMethod addLeftTupleCtMethod = CtNewMethod.make(
-                "public void addLeftTuple("+Tuple.class.getName()+" leftTuple) {\n" + 
-                "    if ($$_drools_lts == null) {\n" + 
-                "        $$_drools_lts = new java.util.HashSet();\n" + 
-                "    }\n" + 
-                "    $$_drools_lts.add(leftTuple);\n" + 
-                "}", droolsPojo );
-        droolsPojo.addMethod(addLeftTupleCtMethod);
-        
-        final CtMethod removeLeftTupleCtMethod = CtNewMethod.make(
-                "public void removeLeftTuple("+Tuple.class.getName()+" leftTuple) {\n" + 
-                "    $$_drools_lts.remove(leftTuple);\n" + 
-                "}", droolsPojo );
-        droolsPojo.addMethod(removeLeftTupleCtMethod);
-        
-        Map<String, CtField> fieldsMap = collectReactiveFields(droolsPojo);
-        for (CtField f : fieldsMap.values()) {
-            LOG.debug("Preparing field writer method for field: {}.", f);
-            writeMethods.put(f.getName(), makeWriter(droolsPojo, f));
-        }
-        
-        enhanceAttributesAccess(fieldsMap, droolsPojo);
-        
-        // first call CtClass.toClass() before the original class is loaded, it will persist the bytecode instrumentation changes in the classloader.
-        return droolsPojo.toBytecode();
     }
     
-    protected void enhanceAttributesAccess(Map<String, CtField> fieldsMap, CtClass managedCtClass) throws Exception {
-        final ConstPool constPool = managedCtClass.getClassFile().getConstPool();
-        final ClassPool classPool = managedCtClass.getClassPool();
-
+    private void enhanceAttributesAccess(Map<String, CtField> fieldsMap, CtClass managedCtClass) throws BytecodeInjectException {
         for ( Object oMethod : managedCtClass.getClassFile().getMethods() ) {
             final MethodInfo methodInfo = (MethodInfo) oMethod;
             final String methodName = methodInfo.getName();
@@ -163,42 +165,41 @@ public class BytecodeInjectReactive {
             }
 
             try {
-                final CodeIterator itr = methodInfo.getCodeAttribute().iterator();
-                while ( itr.hasNext() ) {
-                    final int index = itr.next();
-                    final int op = itr.byteAt( index );
-                    if ( op != Opcode.PUTFIELD && op != Opcode.GETFIELD ) {
-                        continue;
-                    }
-
-                    final String fieldName = constPool.getFieldrefName( itr.u16bitAt( index + 1 ) );
-                    CtField ctField = fieldsMap.get(fieldName);
-                    if (ctField == null ) {
-                        continue;
-                    }
-                    
-                    // if we are in constructors, only need to intercept assignment statement for Reactive Collection/List/... (regardless they may be final)
-                    if ( methodInfo.isConstructor() && !( isCtFieldACollection(ctField) ) ) {
-                        continue;
-                    }
-
-                    if (op == Opcode.PUTFIELD) {
-                        // addMethod is a safe add, if constant already present it return the existing value without adding.
-                        final int methodIndex = addMethod( constPool, writeMethods.get(fieldName) );
-                        itr.writeByte( Opcode.INVOKEVIRTUAL, index );
-                        itr.write16bit( methodIndex, index + 1 );
-                    }
-                }
-                methodInfo.getCodeAttribute().setAttribute( MapMaker.make( classPool, methodInfo ) );
-            }
-            catch (BadBytecode bb) {
+                enhanceMethodAttributes(managedCtClass, methodInfo, fieldsMap);
+            } catch (BadBytecode bb) {
                 final String msg = String.format(
                         "Unable to perform field access transformation in method [%s]",
                         methodName
                 );
-                throw new Exception( msg, bb );
+                throw new BytecodeInjectException(msg, bb );
             }
         }
+    }
+
+    private void enhanceMethodAttributes(final CtClass managedCtClass,
+                                         final MethodInfo methodInfo,
+                                         final Map<String, CtField> fieldsMap)
+            throws BadBytecode {
+        final ConstPool constPool = managedCtClass.getClassFile().getConstPool();
+        final ClassPool classPool = managedCtClass.getClassPool();
+        final CodeIterator itr = methodInfo.getCodeAttribute().iterator();
+        while ( itr.hasNext() ) {
+            final int index = itr.next();
+            final int op = itr.byteAt( index );
+            if ( op == Opcode.PUTFIELD) {
+                final String fieldName = constPool.getFieldrefName( itr.u16bitAt( index + 1 ) );
+                final CtField ctField = fieldsMap.get(fieldName);
+                if (ctField != null
+                        // if we are in constructors, only need to intercept assignment statement for Reactive Collection/List/... (regardless they may be final)
+                        && !(methodInfo.isConstructor() && !(isCtFieldACollection(ctField)))) {
+                    // addMethod is a safe add, if constant already present it return the existing value without adding.
+                    final int methodIndex = addMethod( constPool, writeMethods.get(fieldName) );
+                    itr.writeByte( Opcode.INVOKEVIRTUAL, index );
+                    itr.write16bit( methodIndex, index + 1 );
+                }
+            }
+        }
+        methodInfo.getCodeAttribute().setAttribute( MapMaker.make( classPool, methodInfo ) );
     }
     
     private static CtMethod write(CtClass target, String format, Object ... args) throws CannotCompileException {
@@ -217,7 +218,7 @@ public class BytecodeInjectReactive {
         return cPool.addMethodrefInfo( cPool.getThisClassInfo(), method.getName(), method.getSignature() );
     }
     
-    private CtMethod makeWriter(CtClass managedCtClass, CtField field) throws Exception {
+    private CtMethod makeWriter(CtClass managedCtClass, CtField field) throws NotFoundException, CannotCompileException {
         final String fieldName = field.getName();
         final String writerName = FIELD_WRITER_PREFIX + fieldName;
         
@@ -239,29 +240,19 @@ public class BytecodeInjectReactive {
         LOG.debug("buildWriteInterceptionBodyFragment: {} {}", field.getType().getClass(), field.getType());
         
         if ( isCtFieldACollection(field) ) {
+            final String constructCallTemplateString = "  this.%1$s = new %2$s($1); ";
             if ( field.getType().equals(cp.get(Set.class.getName())) ) {
                 // it implements Set, so wrap accordingly with ReactiveSet:
-                return String.format(
-                        "  this.%1$s = new "+ReactiveSet.class.getName()+"($1); ",
-                        field.getName()
-                        );
-            }
-            
-            if ( field.getType().equals(cp.get(List.class.getName())) ) {
+                return String.format(constructCallTemplateString, field.getName(), ReactiveSet.class.getName());
+            } else if ( field.getType().equals(cp.get(List.class.getName())) ) {
                 // it implements List, so wrap accordingly with ReactiveList:
-                return String.format(
-                        "  this.%1$s = new "+ReactiveList.class.getName()+"($1); ",
-                        field.getName()
-                        );
+                return String.format(constructCallTemplateString, field.getName(), ReactiveList.class.getName());
+            } else {
+                return String.format(constructCallTemplateString, field.getName(), ReactiveCollection.class.getName());
             }
-            
-            return String.format(
-                    "  this.%1$s = new "+ReactiveCollection.class.getName()+"($1); ",
-                    field.getName()
-                    );
         }
         
-        // 2nd line will result in: ReactiveObjectUtil.notifyModification((ReactiveObject) this);
+        // 2nd line will result in: ReactiveObjectUtil.notifyModification((ReactiveObject) this)
         // and that is fine because ASM: INVOKESTATIC org/drools/core/phreak/ReactiveObjectUtil.notifyModification (Lorg/drools/core/phreak/ReactiveObject;)V
         return String.format(
                 "  this.%1$s = $1;%n" +
@@ -271,34 +262,24 @@ public class BytecodeInjectReactive {
     }
 
     private Map<String, CtField> collectReactiveFields(CtClass managedCtClass) {
-        final Map<String, CtField> persistentFieldMap = new HashMap<String, CtField>();
+        final Map<String, CtField> persistentFieldMap = new HashMap<>();
         for ( CtField ctField : managedCtClass.getDeclaredFields() ) {
             // skip static fields, skip final fields, and skip fields added by enhancement
-            if ( Modifier.isStatic( ctField.getModifiers() ) || ctField.getName().startsWith( DROOLS_PREFIX ) ) {
-                continue;
-            }
             // skip outer reference in inner classes
-            if ( "this$0".equals( ctField.getName() ) ) {
-                continue;
-            }
             // optimization: skip final field, unless it is a Reactive Collection/List/... in which case we need to consider anyway:
-            if ( Modifier.isFinal( ctField.getModifiers()) ) {
-                if ( !isCtFieldACollection(ctField) ) {
-                    continue;
-                }
+            if (!Modifier.isStatic(ctField.getModifiers())
+                    && !ctField.getName().startsWith(DROOLS_PREFIX)
+                    && !"this$0".equals(ctField.getName())
+                    && !(Modifier.isFinal(ctField.getModifiers()) && !isCtFieldACollection(ctField))) {
+                persistentFieldMap.put( ctField.getName(), ctField );
             }
-            persistentFieldMap.put( ctField.getName(), ctField );
         }
         // CtClass.getFields() does not return private fields, while CtClass.getDeclaredFields() does not return inherit
         for ( CtField ctField : managedCtClass.getFields() ) {
-            if ( ctField.getDeclaringClass().equals( managedCtClass ) ) {
-                // Already processed above
-                continue;
+            if ( !ctField.getDeclaringClass().equals( managedCtClass )
+                    && !( Modifier.isStatic( ctField.getModifiers() ) || ctField.getName().startsWith( DROOLS_PREFIX ) )) {
+                persistentFieldMap.put( ctField.getName(), ctField );
             }
-            if ( Modifier.isStatic( ctField.getModifiers() ) || ctField.getName().startsWith( DROOLS_PREFIX ) ) {
-                continue;
-            }
-            persistentFieldMap.put( ctField.getName(), ctField );
         }
         return persistentFieldMap;
     }
@@ -312,7 +293,7 @@ public class BytecodeInjectReactive {
                     || ctField.getType().equals(cp.get(List.class.getName()))
                     || ctField.getType().equals(cp.get(Set.class.getName())) ;
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            LOG.warn(e.getMessage(), e);
             return false;
         }
     }

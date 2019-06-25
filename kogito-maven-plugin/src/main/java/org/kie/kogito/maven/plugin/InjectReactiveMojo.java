@@ -17,14 +17,13 @@ package org.kie.kogito.maven.plugin;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +32,7 @@ import java.util.Set;
 
 import javassist.ClassPool;
 import javassist.CtClass;
+import javassist.NotFoundException;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -51,7 +51,7 @@ import org.drools.core.phreak.ReactiveObject;
 //        phase = LifecyclePhase.COMPILE)
 public class InjectReactiveMojo extends AbstractKieMojo {
 
-    private List<File> sourceSet = new ArrayList<File>();
+    private List<File> sourceSet = new ArrayList<>();
     
     @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
     private File outputDirectory;
@@ -81,81 +81,17 @@ public class InjectReactiveMojo extends AbstractKieMojo {
         }
         getLog().debug("Configured with resolved instrument-packages: "+Arrays.asList(instrumentPackages));
         List<String> packageRegExps = convertAllToPkgRegExps(instrumentPackages);
-        for (String prefix : packageRegExps) {
-            getLog().debug(" "+prefix);
-        }
+        debugPrintPackageRegexps(packageRegExps);
         
         // Perform a depth first search for sourceSet
-        File root = outputDirectory;
-        if ( !root.exists() ) {
-            getLog().info( "Skipping InjectReactive enhancement plugin execution since there is no classes dir " + outputDirectory );
-            return;
-        }
-        walkDir( root );
-        if ( sourceSet.isEmpty() ) {
-            getLog().info( "Skipping InjectReactive enhancement plugin execution since there are no classes to enhance on " + outputDirectory );
-            return;
-        }
+        searchForSourceFiles(outputDirectory);
 
         getLog().info( "Starting InjectReactive enhancement for classes on " + outputDirectory );
-        final ClassLoader classLoader = toClassLoader( Collections.singletonList( root ) );
-        
-        
         final ClassPool classPool = new ClassPool( true ); // 'true' will append classpath for Object.class.
-        // Need to append classpath for the project itself output directory for dependencies betweek Pojos of the project itself.
-        try {
-            getLog().info("Adding to ClassPool the classpath: " + outputDirectory.getAbsolutePath());
-            classPool.appendClassPath(outputDirectory.getAbsolutePath());
-        } catch (Exception e) {
-            getLog().error( "Unable to append path for outputDirectory : "+outputDirectory );
-            if (failOnError) {
-                throw new MojoExecutionException("Unable to append path for outputDirectory : "+outputDirectory, e);
-            } else {
-                return;
-            }
-        }
-        // Append classpath for ReactiveObject.class by using the JAR of the kie-maven-plugin
-        try {
-            String aname = ReactiveObject.class.getPackage().getName().replaceAll("\\.", "/") + "/" +  ReactiveObject.class.getSimpleName()+".class";
-            getLog().info("Resolving ReactiveObject from : "+aname);
-            // The ReactiveObject shall be resolved by using the JAR of the kie-maven-plugin hence asking the ClassLoader of the kie-maven-plugin to resolve it
-            String apath = Thread.currentThread().getContextClassLoader().getResource( aname).getPath();
-            getLog().info(".. as in resource: " + apath );
-            String path = null;
-            if (apath.contains("!")) {
-                path = apath.substring(0, apath.indexOf("!"));
-            } else {
-                path = "file:"+apath.substring(0, apath.indexOf(aname));
-            }
-            getLog().info(".. as in file path: " + path );
-            
-            File f = new File(new URI(path));
-    
-            getLog().info("Adding to ClassPool the classpath: " + f.getAbsolutePath());
-            classPool.appendClassPath(f.getAbsolutePath());
-        } catch (Exception e) {
-            getLog().error( "Unable to locate path for ReactiveObject." );
-            e.printStackTrace();
-            if (failOnError) {
-                throw new MojoExecutionException("Unable to locate path for ReactiveObject.", e);
-            } else {
-                return;
-            }
-        }
-        // Append classpath for the project dependencies
-        for ( URL url : dependenciesURLs() ) {
-            try {
-                getLog().info("Adding to ClassPool the classpath: " + url.getPath());
-                classPool.appendClassPath(url.getPath());
-            } catch (Exception e) {
-                getLog().error( "Unable to append path for project dependency : "+url.getPath() );
-                if (failOnError) {
-                    throw new MojoExecutionException( "Unable to append path for project dependency : "+url.getPath(), e);
-                } else {
-                    return;
-                }
-            }
-        }
+
+        appendClasspathForOutputDirectory(classPool);
+        appendClasspathForReactiveObject(classPool);
+        appendClasspathForDependencies(classPool);
         
         final BytecodeInjectReactive enhancer = BytecodeInjectReactive.newInstance(classPool);
         
@@ -167,58 +103,106 @@ public class InjectReactiveMojo extends AbstractKieMojo {
 
             getLog().info( "Evaluating class [" + ctClass.getName() + "]" );
             getLog().info( ctClass.getPackageName() );
-            getLog().info( ""+Arrays.asList( packageRegExps ) );
-            if ( !isPackageNameIncluded(ctClass.getPackageName(), packageRegExps) ) {
-                continue;
+            getLog().info( "" + Collections.singletonList(packageRegExps));
+            if (isPackageNameIncluded(ctClass.getPackageName(), packageRegExps) ) {
+                try {
+                    byte[] enhancedBytecode = enhancer.injectReactive(ctClass.getName());
+                    writeOutEnhancedClass( enhancedBytecode, ctClass, file );
+
+                    getLog().info( "Successfully enhanced class [" + ctClass.getName() + "]" );
+                } catch (Exception e) {
+                    getLog().error( "ERROR while trying to enhanced class [" + ctClass.getName() + "]" );
+                    if (failOnError) {
+                        throw new MojoExecutionException("ERROR while trying to enhanced class [" + ctClass.getName() + "]", e);
+                    } else {
+                        return;
+                    }
+                }
             }
+        }
+    }
 
-            byte[] enhancedBytecode;
+    private void searchForSourceFiles(final File rootDirectory) {
+        if ( !rootDirectory.exists() ) {
+            getLog().info( "Skipping InjectReactive enhancement plugin execution since there is no classes dir " + outputDirectory );
+            return;
+        }
+        walkDir( rootDirectory );
+        if ( sourceSet.isEmpty() ) {
+            getLog().info( "Skipping InjectReactive enhancement plugin execution since there are no classes to enhance on " + outputDirectory );
+        }
+    }
+
+    private void debugPrintPackageRegexps(final List<String> packageRegExps) {
+        if (getLog().isDebugEnabled()) {
+            for (String prefix : packageRegExps) {
+                getLog().debug(" "+prefix);
+            }
+        }
+    }
+
+    private void appendClasspathForOutputDirectory(final ClassPool classPool) throws MojoExecutionException {
+        // Need to append classpath for the project itself output directory for dependencies between POJOs of the project itself.
+        try {
+            getLog().info("Adding to ClassPool the classpath: " + outputDirectory.getAbsolutePath());
+            classPool.appendClassPath(outputDirectory.getAbsolutePath());
+        } catch (Exception e) {
+            getLog().error( "Unable to append path for outputDirectory : "+outputDirectory );
+            if (failOnError) {
+                throw new MojoExecutionException("Unable to append path for outputDirectory : "+outputDirectory, e);
+            }
+        }
+    }
+
+    private void appendClasspathForReactiveObject(final ClassPool classPool) throws MojoExecutionException {
+        // Uses the JAR of the kie-maven-plugin for this
+        try {
+            String aname = ReactiveObject.class.getPackage().getName().replaceAll("\\.", "/") + "/" +  ReactiveObject.class.getSimpleName()+".class";
+            getLog().info("Resolving ReactiveObject from : "+aname);
+            // The ReactiveObject shall be resolved by using the JAR of the kie-maven-plugin hence asking the ClassLoader of the kie-maven-plugin to resolve it
+            String apath = Thread.currentThread().getContextClassLoader().getResource( aname).getPath();
+            getLog().info(".. as in resource: " + apath );
+            String path = null;
+            if (apath.contains("!")) {
+                path = apath.substring(0, apath.indexOf('!'));
+            } else {
+                path = "file:"+apath.substring(0, apath.indexOf(aname));
+            }
+            getLog().info(".. as in file path: " + path );
+
+            File f = new File(new URI(path));
+
+            getLog().info("Adding to ClassPool the classpath: " + f.getAbsolutePath());
+            classPool.appendClassPath(f.getAbsolutePath());
+        } catch (NotFoundException | URISyntaxException e) {
+            getLog().error( "Unable to locate path for ReactiveObject." );
+            if (failOnError) {
+                throw new MojoExecutionException("Unable to locate path for ReactiveObject.", e);
+            }
+        }
+    }
+
+    private void appendClasspathForDependencies(final ClassPool classPool) throws MojoExecutionException {
+        for ( URL url : dependenciesURLs() ) {
             try {
-                enhancedBytecode = enhancer.injectReactive(ctClass.getName());
-                
-                writeOutEnhancedClass( enhancedBytecode, ctClass, file );
-
-                getLog().info( "Successfully enhanced class [" + ctClass.getName() + "]" );
+                getLog().info("Adding to ClassPool the classpath from dependencies: " + url.getPath());
+                classPool.appendClassPath(url.getPath());
             } catch (Exception e) {
-                getLog().error( "ERROR while trying to enhanced class [" + ctClass.getName() + "]" );
-                e.printStackTrace();
+                getLog().error( "Unable to append path for project dependency : "+url.getPath() );
                 if (failOnError) {
-                    throw new MojoExecutionException("ERROR while trying to enhanced class [" + ctClass.getName() + "]", e);
+                    throw new MojoExecutionException( "Unable to append path for project dependency : "+url.getPath(), e);
                 } else {
                     return;
                 }
             }
-            
         }
     }
     
     private CtClass toCtClass(File file, ClassPool classPool) throws MojoExecutionException {
-        try {
-            final InputStream is = new FileInputStream( file.getAbsolutePath() );
-
-            try {
-                return classPool.makeClass( is );
-            }
-            catch (IOException e) {
-                String msg = "Javassist unable to load class in preparation for enhancing: " + file.getAbsolutePath();
-                if ( failOnError ) {
-                    throw new MojoExecutionException( msg, e );
-                }
-                getLog().warn( msg );
-                return null;
-            }
-            finally {
-                try {
-                    is.close();
-                }
-                catch (IOException e) {
-                    getLog().info( "Was unable to close InputStream : " + file.getAbsolutePath(), e );
-                }
-            }
-        }
-        catch (FileNotFoundException e) {
-            // should never happen, but...
-            String msg = "Unable to locate class file for InputStream: " + file.getAbsolutePath();
+        try (final InputStream is = new FileInputStream( file.getAbsolutePath() )) {
+            return classPool.makeClass( is );
+        } catch (IOException e) {
+            String msg = "Javassist unable to load class in preparation for enhancing: " + file.getAbsolutePath();
             if ( failOnError ) {
                 throw new MojoExecutionException( msg, e );
             }
@@ -226,52 +210,33 @@ public class InjectReactiveMojo extends AbstractKieMojo {
             return null;
         }
     }
-    
-    private ClassLoader toClassLoader(List<File> runtimeClasspath) throws MojoExecutionException {
-        List<URL> urls = new ArrayList<URL>();
-        for ( File file : runtimeClasspath ) {
-            try {
-                urls.add( file.toURI().toURL() );
-                getLog().debug( "Adding classpath entry for classes root " + file.getAbsolutePath() );
-            }
-            catch (MalformedURLException e) {
-                String msg = "Unable to resolve classpath entry to URL: " + file.getAbsolutePath();
-                if ( failOnError ) {
-                    throw new MojoExecutionException( msg, e );
-                }
-                getLog().warn( msg );
-            }
-        }
-
-        urls.addAll( dependenciesURLs() );
-
-        return new URLClassLoader( urls.toArray( new URL[urls.size()] ), null );
-    }
 
     private List<URL> dependenciesURLs() throws MojoExecutionException {
-        List<URL> urls = new ArrayList<>();
         // HHH-10145 Add dependencies to classpath as well - all but the ones used for testing purposes
-        Set<Artifact> artifacts = null;
         MavenProject project = ( (MavenProject) getPluginContext().get( "project" ) );
         if ( project != null ) {
-            // Prefer execution project when available (it includes transient dependencies)
-            MavenProject executionProject = project.getExecutionProject();
-            artifacts = ( executionProject != null ? executionProject.getArtifacts() : project.getArtifacts() );
+            return dependenciesURLsFromProject(project);
+        } else {
+            return new ArrayList<>();
         }
-        if ( artifacts != null) {
-            for ( Artifact a : artifacts ) {
-                if ( !Artifact.SCOPE_TEST.equals( a.getScope() ) ) {
-                    try {
-                        urls.add( a.getFile().toURI().toURL() );
-                        getLog().debug( "Adding classpath entry for dependency " + a.getId() );
+    }
+
+    private List<URL> dependenciesURLsFromProject(final MavenProject mavenProject) throws MojoExecutionException {
+        // Prefer execution project when available (it includes transient dependencies)
+        List<URL> urls = new ArrayList<>();
+        MavenProject executionProject = mavenProject.getExecutionProject();
+        Set<Artifact> artifacts = ( executionProject != null ? executionProject.getArtifacts() : mavenProject.getArtifacts() );
+        for ( Artifact a : artifacts ) {
+            if ( !Artifact.SCOPE_TEST.equals( a.getScope() ) ) {
+                try {
+                    urls.add( a.getFile().toURI().toURL() );
+                    getLog().debug( "Adding classpath entry for dependency " + a.getId() );
+                } catch (MalformedURLException e) {
+                    String msg = "Unable to resolve URL for dependency " + a.getId() + " at " + a.getFile().getAbsolutePath();
+                    if ( failOnError ) {
+                        throw new MojoExecutionException( msg, e );
                     }
-                    catch (MalformedURLException e) {
-                        String msg = "Unable to resolve URL for dependency " + a.getId() + " at " + a.getFile().getAbsolutePath();
-                        if ( failOnError ) {
-                            throw new MojoExecutionException( msg, e );
-                        }
-                        getLog().warn( msg );
-                    }
+                    getLog().warn( msg );
                 }
             }
         }
@@ -284,18 +249,8 @@ public class InjectReactiveMojo extends AbstractKieMojo {
     private void walkDir(File dir) {
         walkDir(
                 dir,
-                new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        return ( pathname.isFile() && pathname.getName().endsWith( ".class" ) );
-                    }
-                },
-                new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        return ( pathname.isDirectory() );
-                    }
-                }
+                pathname -> ( pathname.isFile() && pathname.getName().endsWith( ".class" ) ),
+                pathname -> ( pathname.isDirectory() )
         );
     }
 
@@ -312,48 +267,30 @@ public class InjectReactiveMojo extends AbstractKieMojo {
         if ( enhancedBytecode == null ) {
             return;
         }
+
         try {
             if ( file.delete() ) {
                 if ( !file.createNewFile() ) {
                     getLog().error( "Unable to recreate class file [" + ctClass.getName() + "]" );
                 }
-            }
-            else {
+            } else {
                 getLog().error( "Unable to delete class file [" + ctClass.getName() + "]" );
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             getLog().warn( "Problem preparing class file for writing out enhancements [" + ctClass.getName() + "]" );
         }
 
-        try {
-            FileOutputStream outputStream = new FileOutputStream( file, false );
-            try {
-                outputStream.write( enhancedBytecode );
-                outputStream.flush();
-            }
-            catch (IOException e) {
-                String msg = String.format( "Error writing to enhanced class [%s] to file [%s]", ctClass.getName(), file.getAbsolutePath() );
-                if ( failOnError ) {
-                    throw new MojoExecutionException( msg, e );
-                }
-                getLog().warn( msg );
-            }
-            finally {
-                try {
-                    outputStream.close();
-                    ctClass.detach();
-                }
-                catch (IOException ignore) {
-                }
-            }
-        }
-        catch (FileNotFoundException e) {
-            String msg = "Error opening class file for writing: " + file.getAbsolutePath();
+        try (FileOutputStream outputStream = new FileOutputStream( file, false )) {
+            outputStream.write( enhancedBytecode );
+            outputStream.flush();
+        } catch (IOException e) {
+            String msg = String.format( "Error writing to enhanced class [%s] to file [%s]", ctClass.getName(), file.getAbsolutePath() );
             if ( failOnError ) {
                 throw new MojoExecutionException( msg, e );
             }
             getLog().warn( msg );
+        } finally {
+            ctClass.detach();
         }
     }
     

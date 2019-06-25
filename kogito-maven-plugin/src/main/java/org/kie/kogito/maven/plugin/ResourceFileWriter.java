@@ -16,7 +16,7 @@ public class ResourceFileWriter {
     private MemoryFileSystem mfs;
     private String targetDirectory;
 
-    public ResourceFileWriter(MemoryFileSystem mfs, String targetDirectory) {
+    public ResourceFileWriter(final MemoryFileSystem mfs, final String targetDirectory) {
         this.mfs = mfs;
         this.targetDirectory = targetDirectory;
     }
@@ -28,12 +28,11 @@ public class ResourceFileWriter {
         final Path packagesDestinationPath = Paths.get(targetDirectory, "classes", packagesMemoryFilePath, packagesMemoryFile.getName());
 
         try {
-            if (!Files.exists(packagesDestinationPath)) {
+            if (!packagesDestinationPath.toFile().exists()) {
                 Files.createDirectories(packagesDestinationPath.getParent());
             }
             Files.copy(packagesMemoryFile.getContents(), packagesDestinationPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
             throw new MojoExecutionException("Unable to write file", e);
         }
     }

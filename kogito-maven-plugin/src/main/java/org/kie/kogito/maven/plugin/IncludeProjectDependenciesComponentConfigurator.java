@@ -15,7 +15,13 @@
  */
 package org.kie.kogito.maven.plugin;
 
-import org.codehaus.classworlds.ClassRealm;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.configurator.AbstractComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
@@ -29,12 +35,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A custom ComponentConfigurator which adds the project's runtime classpath elements
  * to the
@@ -44,18 +44,18 @@ public class IncludeProjectDependenciesComponentConfigurator extends AbstractCom
 
    private static final Logger LOGGER = new ConsoleLogger(Logger.LEVEL_DEBUG, "Configurator");
 
+   @Override
    public void configureComponent( Object component, PlexusConfiguration configuration,
                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
                                    ConfigurationListener listener )
          throws ComponentConfigurationException {
-
       addProjectDependenciesToClassRealm(expressionEvaluator, containerRealm);
 
       converterLookup.registerConverter( new ClassRealmConverter( containerRealm ) );
 
       ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
 
-      converter.processConfiguration( converterLookup, component, containerRealm.getClassLoader(), configuration,
+      converter.processConfiguration( converterLookup, component, containerRealm, configuration,
             expressionEvaluator, listener );
    }
 
@@ -71,13 +71,13 @@ public class IncludeProjectDependenciesComponentConfigurator extends AbstractCom
       // Add the project dependencies to the ClassRealm
       final URL[] urls = buildURLs(runtimeClasspathElements);
       for (URL url : urls) {
-         containerRealm.addConstituent(url);
+         containerRealm.addURL(url);
       }
    }
 
    private URL[] buildURLs(List<String> runtimeClasspathElements) throws ComponentConfigurationException {
       // Add the projects classes and dependencies
-      List<URL> urls = new ArrayList<URL>(runtimeClasspathElements.size());
+      List<URL> urls = new ArrayList<>(runtimeClasspathElements.size());
       for (String element : runtimeClasspathElements) {
          try {
             final URL url = new File(element).toURI().toURL();

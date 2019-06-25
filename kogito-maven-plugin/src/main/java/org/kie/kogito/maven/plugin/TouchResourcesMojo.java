@@ -15,15 +15,14 @@
  */
 package org.kie.kogito.maven.plugin;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Compiles and serializes knowledge packages.
@@ -55,7 +54,7 @@ public class TouchResourcesMojo extends AbstractKieMojo {
     private MavenProject project;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         try {
             File outputFolder = new File(resDirectory);
             outputFolder.mkdirs();
@@ -63,7 +62,9 @@ public class TouchResourcesMojo extends AbstractKieMojo {
             for(String kbase : kiebases) {
                 getLog().info("Touching KBase: " + kbase);
                 File file = new File(outputFolder, kbase.replace('.', '_').toLowerCase());
-                file.createNewFile();
+                if (!file.createNewFile()) {
+                    getLog().debug("File already exists, using existing file " + file.getAbsolutePath() + ".");
+                }
             }
         } catch (Exception e) {
             throw new MojoExecutionException("error", e);

@@ -58,12 +58,10 @@ class CompilerHelper {
                 kieMap.put(sbModelMetaInfo.toString(), modelMetaInfo);
                 log.info("KieModelMetaInfo available in the map shared with the Maven Embedder with key:" + sbModelMetaInfo.toString());
             }
-            if (kModule != null) {
-                /*Standard for the kieMap keys -> compilationID + dot + class name */
-                StringBuilder sbkModule = new StringBuilder(compilationID).append(".").append(FileKieModule.class.getName());
-                kieMap.put(sbkModule.toString(), kModule);
-                log.info("KieModule available in the map shared with the Maven Embedder with key:" + sbkModule.toString());
-            }
+            /*Standard for the kieMap keys -> compilationID + dot + class name */
+            StringBuilder sbkModule = new StringBuilder(compilationID).append(".").append(FileKieModule.class.getName());
+            kieMap.put(sbkModule.toString(), kModule);
+            log.info("KieModule available in the map shared with the Maven Embedder with key:" + sbkModule.toString());
         }
     }
 
@@ -102,7 +100,6 @@ class CompilerHelper {
     public Map<String, TypeMetaInfo> getTypeMetaInfo(InternalKieModule kModule) {
         KieMetaInfoBuilder kb = new KieMetaInfoBuilder(kModule);
         KieModuleMetaInfo info = kb.generateKieModuleMetaInfo(null);
-        Map<String, TypeMetaInfo> typesMetaInfo = info.getTypeMetaInfos();
-        return typesMetaInfo;
+        return info.getTypeMetaInfos();
     }
 }

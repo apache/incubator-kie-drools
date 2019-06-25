@@ -25,7 +25,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
-import org.kie.dmn.api.core.AfterGeneratingSourcesListener;
 import org.kie.dmn.api.core.GeneratedSource;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
@@ -40,6 +39,8 @@ import org.kie.internal.io.ResourceWithConfigurationImpl;
         requiresProject = true,
         defaultPhase = LifecyclePhase.COMPILE)
 public class GenerateDMNModelMojo extends AbstractKieMojo {
+
+    private static final String DROOLS_MODEL_COMPILER_PATH = "/generated-sources/dmn/main/java";
 
     @Parameter(required = true, defaultValue = "${project.build.directory}")
     private File targetDirectory;
@@ -57,13 +58,13 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
     private String generateDMNModel;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoFailureException {
         if (DMNModelMode.shouldGenerateDMNModel(generateDMNModel)) {
             generateDMNModel();
         }
     }
 
-    private void generateDMNModel() throws MojoExecutionException {
+    private void generateDMNModel() throws MojoFailureException {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
         KieServices ks = KieServices.Factory.get();
@@ -78,7 +79,7 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
             final List<String> compiledClassNames = new ArrayList<>();
             dmnCompilerConfiguration.setDeferredCompilation(true);
             dmnCompilerConfiguration.addListener(generatedSource -> {
-                final String droolsModelCompilerPath = "/generated-sources/dmn/main/java";
+                final String droolsModelCompilerPath = DROOLS_MODEL_COMPILER_PATH;
                 addNewCompileRoot(droolsModelCompilerPath);
 
                 for (GeneratedSource generatedFile : generatedSource) {
@@ -106,7 +107,7 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
             }
             createDMNFile(compiledClassNames);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MojoFailureException("A problem occurred during DMN model generation!", e);
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
@@ -114,16 +115,16 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
         getLog().info("DMN Model successfully generated");
     }
 
-    private void createDMNFile(List<String> compiledClassNames) {
+    private void createDMNFile(List<String> compiledClassNames) throws MojoExecutionException {
         final Path dmnCompiledClassFile = Paths.get(targetDirectory.getPath(), "classes", DMNRuleClassFile.RULE_CLASS_FILE_NAME);
 
         try {
-            if (!Files.exists(dmnCompiledClassFile)) {
+            if (!dmnCompiledClassFile.toFile().exists()) {
                 Files.createDirectories(dmnCompiledClassFile.getParent());
             }
             Files.write(dmnCompiledClassFile, compiledClassNames);
         } catch (IOException e) {
-            throw new RuntimeException("Unable to write file", e);
+            throw new MojoExecutionException("Unable to write file", e);
         }
     }
 
@@ -154,7 +155,7 @@ public class GenerateDMNModelMojo extends AbstractKieMojo {
             Files.write(newFilePath, sourceContent.getBytes());
             getLog().info("Generating new DMN file" + newFilePath);
         } catch (IOException e) {
-            throw new RuntimeException("Unable to write file", e);
+            throw new IllegalStateException("Unable to write file", e);
         }
     }
 

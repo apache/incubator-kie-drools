@@ -86,9 +86,9 @@ public class SerializeMojo extends AbstractKieMojo {
                 KieBase kb = kc.getKieBase(kbase);
                 getLog().info("Writing KBase: " + kbase);
                 File file = new File(outputFolder, kbase.replace('.', '_').toLowerCase());
-                FileOutputStream out = new FileOutputStream(file);
-                DroolsStreamUtils.streamOut(out, kb.getKiePackages());
-                out.close();
+                try (FileOutputStream out = new FileOutputStream(file)) {
+                    DroolsStreamUtils.streamOut(out, kb.getKiePackages());
+                }
             }
         } catch (Exception e) {
             throw new MojoExecutionException("error", e);
