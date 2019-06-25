@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
@@ -43,19 +42,23 @@ public final class BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_
     }
 
     // ************************************************************************
-    // Node creation methods
+    // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
-        if (!childNodeList.isEmpty()) {
+    protected void assertChildStreamListSize() {
+        if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's a groupBy bridge.");
+                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
+    }
+
+    @Override
+    protected BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1);
         BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node = new BavetGroupByBridgeUniNode<>(
-                buildPolicy.getSession(), nodeOrder, groupKeyMapping, collector, biNode);
+                buildPolicy.getSession(), nodeOrder, parentNode, groupKeyMapping, collector, biNode);
         return node;
     }
 

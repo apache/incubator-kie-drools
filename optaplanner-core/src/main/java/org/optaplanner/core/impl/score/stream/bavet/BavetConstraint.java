@@ -58,7 +58,7 @@ public final class BavetConstraint<Solution_> implements Constraint {
         BavetAbstractUniConstraintStream<Solution_, A> stream = fromUnfiltered(fromClass);
         EntityDescriptor<Solution_> entityDescriptor = factory.getSolutionDescriptor().findEntityDescriptor(fromClass);
         if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
-            Predicate<A> predicate = (Predicate<A>) entityDescriptor::isInitialized;
+            Predicate<A> predicate = (Predicate<A>) entityDescriptor.getIsInitializedPredicate();
             stream = stream.filter(predicate);
         }
         return stream;
@@ -71,11 +71,15 @@ public final class BavetConstraint<Solution_> implements Constraint {
         return stream;
     }
 
+    // ************************************************************************
+    // Node creation
+    // ************************************************************************
+
     public void createNodes(BavetNodeBuildPolicy<Solution_> buildPolicy, Map<Class<?>,
             BavetFromUniNode<Object>> declaredClassToNodeMap, Score<?> constraintWeight) {
         for (BavetFromUniConstraintStream<Solution_, Object> stream : streamList) {
             int nodeOrder = 0;
-            BavetFromUniNode<Object> node = stream.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
+            BavetFromUniNode<Object> node = stream.createNodeChain(buildPolicy, constraintWeight, nodeOrder, null);
             BavetFromUniNode<Object> oldNode = declaredClassToNodeMap.putIfAbsent(stream.getFromClass(), node);
             if (oldNode != null && oldNode != node) {
                 throw new IllegalStateException("The oldNode (" + oldNode

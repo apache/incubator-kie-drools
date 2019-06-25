@@ -16,30 +16,28 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
-import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
 
 public final class BavetJoinRightBridgeUniNode<A, B> extends BavetAbstractUniNode<B> {
 
+    private final BavetAbstractUniNode<B> parentNode;
     private final Function<B, Object[]> mapping;
     private final BavetJoinBiNode<A, B> biNode;
 
     private final BavetIndex<B, BavetJoinRightBridgeUniTuple<A, B>> index;
 
-    public BavetJoinRightBridgeUniNode(BavetConstraintSession session, int nodeOrder,
+    public BavetJoinRightBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<B> parentNode,
             Function<B, Object[]> mapping, BavetIndex<B, BavetJoinRightBridgeUniTuple<A, B>> index,
             BavetJoinBiNode<A, B> biNode) {
         super(session, nodeOrder);
+        this.parentNode = parentNode;
         this.mapping = mapping;
         this.index = index;
         this.biNode = biNode;

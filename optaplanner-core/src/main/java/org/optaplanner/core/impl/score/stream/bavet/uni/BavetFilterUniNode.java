@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -24,16 +25,50 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterUniNode<A> extends BavetAbstractUniNode<A> {
 
+    private final BavetAbstractUniNode<A> parentNode;
     private final Predicate<A> predicate;
 
-    private final List<BavetAbstractUniNode<A>> childNodeList;
+    private List<BavetAbstractUniNode<A>> childNodeList = new ArrayList<>();
 
     public BavetFilterUniNode(BavetConstraintSession session, int nodeOrder,
-            Predicate<A> predicate, List<BavetAbstractUniNode<A>> childNodeList) {
+            BavetAbstractUniNode<A> parentNode, Predicate<A> predicate) {
         super(session, nodeOrder);
+        this.parentNode = parentNode;
         this.predicate = predicate;
-        this.childNodeList = childNodeList;
     }
+
+    @Override
+    public void addChildNode(BavetAbstractUniNode<A> childNode) {
+        childNodeList.add(childNode);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        // Similar to Object.hash() without autoboxing
+        return 31 * System.identityHashCode(parentNode)
+                + System.identityHashCode(predicate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetFilterUniNode) {
+            BavetFilterUniNode<?> other = (BavetFilterUniNode<?>) o;
+            return parentNode == other.parentNode
+                    && predicate == other.predicate;
+        } else {
+            return false;
+        }
+    }
+
+    // ************************************************************************
+    // Runtime
+    // ************************************************************************
 
     @Override
     public BavetFilterUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {

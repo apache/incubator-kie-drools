@@ -27,6 +27,10 @@ import org.optaplanner.core.impl.score.stream.tri.SingleTriJoiner;
 
 public final class Joiners {
 
+    // ************************************************************************
+    // BiJoiner
+    // ************************************************************************
+
     public static <A, Property_> BiJoiner<A, A> equalTo(
             Function<A, Property_> mapping) {
         return equalTo(mapping, mapping);
@@ -82,7 +86,14 @@ public final class Joiners {
         return new SingleBiJoiner<A, B>(leftMapping, joinerType, rightMapping);
     }
 
+    // TODO
+    // join(..., planningVariableContainsCached(Talk::getPeriod, (Period a, Period b) -> a.overlaps(b)))
+    // get the period value range, does a cartesian product on it, so it maps every period to an overlapping periodList
+    // then keep an index from every period to all talks in an overlapping period (possible the same period)
 
+    // ************************************************************************
+    // TriJoiner
+    // ************************************************************************
 
     public static <A, B, C, Property_> TriJoiner<A, B, C> equalTo(
             BiFunction<A, B, Property_> leftMapping, Function <C, Property_> rightMapping) {

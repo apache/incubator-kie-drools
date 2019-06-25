@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.Score;
@@ -43,23 +42,27 @@ public final class BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B>
     }
 
     // ************************************************************************
-    // Node creation methods
+    // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetJoinLeftBridgeUniNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
-        if (!childNodeList.isEmpty()) {
+    protected void assertChildStreamListSize() {
+        if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's a join bridge.");
+                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a join bridge.");
         }
+    }
+
+    @Override
+    protected BavetJoinLeftBridgeUniNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         BavetJoinBiNode<A, B> biNode = (BavetJoinBiNode<A, B>) buildPolicy.getStreamToNodeMap().get(biStream);
         if (biNode == null) {
             biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1); // TODO BUG needs max(left node order, right node order)
             buildPolicy.getStreamToNodeMap().put(biStream, biNode);
         }
         BavetJoinLeftBridgeUniNode<A, B> node = new BavetJoinLeftBridgeUniNode<>(buildPolicy.getSession(),
-                nodeOrder, mapping, indexFactory.buildIndex(true), biNode);
+                nodeOrder, parentNode, mapping, indexFactory.buildIndex(true), biNode);
         biNode.setLeftParentNode(node);
         return node;
     }

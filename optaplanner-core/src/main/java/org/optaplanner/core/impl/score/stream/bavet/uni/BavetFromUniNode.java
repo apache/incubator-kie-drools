@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
@@ -25,14 +26,43 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
 
     private final Class<A> fromClass;
 
-    private final List<BavetAbstractUniNode<A>> childNodeList;
+    private List<BavetAbstractUniNode<A>> childNodeList = new ArrayList<>();
 
     public BavetFromUniNode(BavetConstraintSession session, int nodeOrder,
-            Class<A> fromClass, List<BavetAbstractUniNode<A>> childNodeList) {
+            Class<A> fromClass) {
         super(session, nodeOrder);
         this.fromClass = fromClass;
-        this.childNodeList = childNodeList;
     }
+
+    @Override
+    public void addChildNode(BavetAbstractUniNode<A> childNode) {
+        childNodeList.add(childNode);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        return fromClass.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetFromUniNode) {
+            BavetFromUniNode<?> other = (BavetFromUniNode<?>) o;
+            return fromClass.equals(other.fromClass);
+        } else {
+            return false;
+        }
+    }
+
+    // ************************************************************************
+    // Runtime
+    // ************************************************************************
 
     public BavetFromUniTuple<A> createTuple(A a) {
         return new BavetFromUniTuple<>(this, a, childNodeList.size());
@@ -63,23 +93,6 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
     }
 
     @Override
-    public int hashCode() {
-        return fromClass.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o instanceof BavetFromUniNode) {
-            BavetFromUniNode<?> other = (BavetFromUniNode<?>) o;
-            return fromClass.equals(other.fromClass);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public String toString() {
         return "From(" + fromClass.getSimpleName() + ") with " + childNodeList.size()  + " children";
     }
@@ -87,9 +100,5 @@ public final class BavetFromUniNode<A> extends BavetAbstractUniNode<A> {
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public List<BavetAbstractUniNode<A>> getChildNodeList() {
-        return childNodeList;
-    }
 
 }

@@ -161,18 +161,32 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     public BavetAbstractUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder) {
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         buildPolicy.updateNodeOrderMaximum(nodeOrder);
-        List<BavetAbstractUniNode<A>> childNodeList = new ArrayList<>(childStreamList.size());
-        for (BavetAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
-            BavetAbstractUniNode<A> childNode = childStream.createNodeChain(
-                    buildPolicy, constraintWeight, nodeOrder + 1);
-            childNodeList.add(childNode);
+
+        BavetAbstractUniNode<A> node = createNode(buildPolicy, constraintWeight, nodeOrder, parentNode);
+        BavetAbstractUniNode<A> sharedNode = buildPolicy.retrieveSharedNode(node);
+        if (sharedNode != node) {
+            // Share node
+            node = sharedNode;
+        } else {
+            if (parentNode != null) {
+                parentNode.addChildNode(node);
+            }
         }
-        return createNode(buildPolicy, constraintWeight, nodeOrder, childNodeList);
+
+        assertChildStreamListSize();
+        if (!childStreamList.isEmpty()) {
+            for (BavetAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
+                childStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, node);
+            }
+        }
+        return node;
     }
 
+    protected abstract void assertChildStreamListSize();
+
     protected abstract BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList);
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode);
 
 }

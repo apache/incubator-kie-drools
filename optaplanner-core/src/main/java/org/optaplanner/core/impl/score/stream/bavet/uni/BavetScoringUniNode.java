@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringNode;
 
 public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implements BavetScoringNode {
 
+    private final BavetAbstractUniNode<A> parentNode;
     private final String constraintPackage;
     private final String constraintName;
     private final Score<?> constraintWeight;
@@ -38,10 +39,11 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
     private final boolean constraintMatchEnabled;
     private final Set<BavetScoringUniTuple<A>> tupleSet;
 
-    public BavetScoringUniNode(BavetConstraintSession session, int nodeOrder,
+    public BavetScoringUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
             String constraintPackage, String constraintName, Score<?> constraintWeight,
             BiFunction<A, Consumer<Score<?>>, UndoScoreImpacter> scoreImpacter) {
         super(session, nodeOrder);
+        this.parentNode = parentNode;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeight = constraintWeight;
@@ -49,6 +51,16 @@ public final class BavetScoringUniNode<A> extends BavetAbstractUniNode<A> implem
         this.constraintMatchEnabled = session.isConstraintMatchEnabled();
         tupleSet = constraintMatchEnabled ? new HashSet<>() : null;
     }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // No node sharing
+
+    // ************************************************************************
+    // Runtime
+    // ************************************************************************
 
     @Override
     public BavetScoringUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {

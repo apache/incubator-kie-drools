@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
@@ -71,6 +72,7 @@ public class EntityDescriptor<Solution_> {
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     private final Class<?> entityClass;
+    private final Predicate<Object> isInitializedPredicate;
     // Only declared movable filter, excludes inherited and descending movable filters
     private SelectionFilter declaredMovableEntitySelectionFilter;
     private SelectionSorter decreasingDifficultySorter;
@@ -98,6 +100,11 @@ public class EntityDescriptor<Solution_> {
     public EntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> entityClass) {
         this.solutionDescriptor = solutionDescriptor;
         this.entityClass = entityClass;
+        isInitializedPredicate = this::isInitialized;
+    }
+
+    public Predicate<Object> getIsInitializedPredicate() {
+        return isInitializedPredicate;
     }
 
     // ************************************************************************

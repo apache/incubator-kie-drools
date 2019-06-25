@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 
 public abstract class BavetAbstractUniNode<A> extends BavetAbstractNode {
 
@@ -30,5 +30,10 @@ public abstract class BavetAbstractUniNode<A> extends BavetAbstractNode {
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
+
+    public void addChildNode(BavetAbstractUniNode<A> childNode) {
+        throw new IllegalStateException("Impossible state: the ConstraintStream for this node (" + this
+                + ") cannot handle a childNode (" + childNode + ").");
+    }
 
 }

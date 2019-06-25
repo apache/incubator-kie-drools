@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.bavet.uni;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -70,13 +69,21 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         this.bigDecimalMatchWeigher = bigDecimalMatchWeigher;
     }
 
+    // ************************************************************************
+    // Node creation
+    // ************************************************************************
+
+    @Override
+    protected void assertChildStreamListSize() {
+        if (!childStreamList.isEmpty()) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
+        }
+    }
+
     @Override
     protected BavetScoringUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractUniNode<A>> childNodeList) {
-        if (!childNodeList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's an endpoint.");
-        }
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         if (!positive) {
             constraintWeight = constraintWeight.negate();
         }
@@ -103,7 +110,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A> extends BavetAb
         } else {
             throw new IllegalStateException("Impossible situation: all the matchWeighers are null.");
         }
-        BavetScoringUniNode<A> node = new BavetScoringUniNode<>(buildPolicy.getSession(), nodeOrder,
+        BavetScoringUniNode<A> node = new BavetScoringUniNode<>(buildPolicy.getSession(), nodeOrder, parentNode,
                 constraint.getConstraintPackage(), constraint.getConstraintName(),
                 constraintWeight, scoreImpacter);
         buildPolicy.addScoringNode(node);

@@ -28,16 +28,18 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> extends BavetAbstractUniNode<A> {
 
+    private final BavetAbstractUniNode<A> parentNode;
     private final Function<A, GroupKey_> groupKeyMapping;
     private final UniConstraintCollector<A, ResultContainer_, Result_> collector;
     private final BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode;
 
     private final Map<GroupKey_, BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_>> tupleMap;
 
-    public BavetGroupByBridgeUniNode(BavetConstraintSession session, int nodeOrder,
+    public BavetGroupByBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector,
             BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode) {
         super(session, nodeOrder);
+        this.parentNode = parentNode;
         this.groupKeyMapping = groupKeyMapping;
         this.collector = collector;
         this.biNode = biNode;
