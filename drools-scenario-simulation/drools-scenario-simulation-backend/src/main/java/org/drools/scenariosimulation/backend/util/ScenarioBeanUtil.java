@@ -16,12 +16,18 @@
 
 package org.drools.scenariosimulation.backend.util;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 
@@ -61,21 +67,6 @@ public class ScenarioBeanUtil {
         return beanToFill;
     }
 
-    private static <T> void fillProperty(T beanToFill, List<String> steps, Object propertyValue) throws ReflectiveOperationException {
-        List<String> pathToProperty = steps.subList(0, steps.size() - 1);
-        String lastStep = steps.get(steps.size() - 1);
-
-        Object currentObject = beanToFill;
-        if (pathToProperty.size() > 0) {
-            ScenarioBeanWrapper<?> scenarioBeanWrapper = navigateToObject(beanToFill, pathToProperty, true);
-            currentObject = scenarioBeanWrapper.getBean();
-        }
-
-        Field last = currentObject.getClass().getDeclaredField(lastStep);
-        last.setAccessible(true);
-        last.set(currentObject, propertyValue);
-    }
-
     public static ScenarioBeanWrapper<?> navigateToObject(Object rootObject, List<String> steps) {
         return navigateToObject(rootObject, steps, true);
     }
@@ -109,24 +100,6 @@ public class ScenarioBeanUtil {
         }
 
         return new ScenarioBeanWrapper<>(currentObject, currentClass);
-    }
-
-    private static Object getFieldValue(Field declaredField, Object currentObject, boolean createIfNull) throws ReflectiveOperationException {
-        Object value = declaredField.get(currentObject);
-        if (value == null && createIfNull) {
-            value = newInstance(declaredField.getType());
-            declaredField.set(currentObject, value);
-        }
-        return value;
-    }
-
-    private static <T> T newInstance(Class<T> clazz) {
-        try {
-            return clazz.newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new ScenarioException(new StringBuilder().append("Class ").append(clazz.getCanonicalName())
-                                                .append(" has no empty constructor").toString(), e);
-        }
     }
 
     public static Object convertValue(String className, Object cleanValue, ClassLoader classLoader) {
@@ -215,6 +188,61 @@ public class ScenarioBeanUtil {
             return (Class<T>) classLoader.loadClass(className);
         } catch (ClassNotFoundException | NullPointerException e) {
             throw new ScenarioException(new StringBuilder().append("Impossible to load class ").append(className).toString(), e);
+        }
+    }
+
+    // FIXME migrate all getDeclaredField (here and in BaseExpressionEvaluator) to use this (or a similar) method to use proper getter/setter
+    // FIXME verify if Introspector returns only public properties
+    public Function<Object, Object> retrieveGetter(Class<?> clazz, String property) {
+        try {
+            for (PropertyDescriptor pd : Introspector.getBeanInfo(clazz).getPropertyDescriptors()) {
+                if (Objects.equals(pd.getName(), property)) {
+                    return object -> {
+                        try {
+                            return pd.getReadMethod().invoke(object);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    };
+                }
+            }
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        // FIXME
+        throw new RuntimeException();
+    }
+
+    private static <T> void fillProperty(T beanToFill, List<String> steps, Object propertyValue) throws ReflectiveOperationException {
+        List<String> pathToProperty = steps.subList(0, steps.size() - 1);
+        String lastStep = steps.get(steps.size() - 1);
+
+        Object currentObject = beanToFill;
+        if (pathToProperty.size() > 0) {
+            ScenarioBeanWrapper<?> scenarioBeanWrapper = navigateToObject(beanToFill, pathToProperty, true);
+            currentObject = scenarioBeanWrapper.getBean();
+        }
+
+        Field last = currentObject.getClass().getDeclaredField(lastStep);
+        last.setAccessible(true);
+        last.set(currentObject, propertyValue);
+    }
+
+    private static Object getFieldValue(Field declaredField, Object currentObject, boolean createIfNull) throws ReflectiveOperationException {
+        Object value = declaredField.get(currentObject);
+        if (value == null && createIfNull) {
+            value = newInstance(declaredField.getType());
+            declaredField.set(currentObject, value);
+        }
+        return value;
+    }
+
+    private static <T> T newInstance(Class<T> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new ScenarioException(new StringBuilder().append("Class ").append(clazz.getCanonicalName())
+                                                .append(" has no empty constructor").toString(), e);
         }
     }
 
