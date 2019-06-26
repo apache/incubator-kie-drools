@@ -88,7 +88,6 @@ public class AbstractCodegenTest {
             String fileName = entry.relativePath();
             sources[index++] = fileName;
             srcMfs.write(fileName, entry.contents());
-            System.out.println(new String(entry.contents()));
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());

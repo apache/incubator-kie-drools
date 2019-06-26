@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -40,12 +39,12 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.WildcardType;
 import org.kie.kogito.Model;
-import org.kie.kogito.codegen.ApplicationSection;
+import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 
-public class ProcessesContainerGenerator implements ApplicationSection {
+public class ProcessesContainerGenerator extends AbstractApplicationSection {
 
     //    private static final String RESOURCE = "/class-templates/ModuleTemplate.java";
     private final List<ProcessGenerator> processes;
@@ -60,6 +59,8 @@ public class ProcessesContainerGenerator implements ApplicationSection {
     private MethodDeclaration processesMethodDeclaration;
 
     public ProcessesContainerGenerator(String packageName) {
+        super("Processes", "processes", Processes.class);
+
         this.processes = new ArrayList<>();
         this.processInstances = new ArrayList<>();
         this.factoryMethods = new ArrayList<>();
@@ -147,21 +148,6 @@ public class ProcessesContainerGenerator implements ApplicationSection {
         NodeList<Expression> processIds = NodeList.nodeList(processes.stream().map(p -> new StringLiteralExpr(p.processId())).collect(Collectors.toList()));
         processesMethodDeclaration.getBody().get().addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList", processIds)));
 
-
-        return new ClassOrInterfaceDeclaration()
-                .setModifiers(Keyword.PUBLIC)
-                .setName("Processes")
-                .addImplementedType(Processes.class.getCanonicalName())
-                .setMembers(applicationDeclarations);
-
-    }
-
-    public MethodDeclaration factoryMethod() {
-        MethodDeclaration processesMethod = new MethodDeclaration()
-                .setName("processes")
-                .setModifiers(Keyword.PUBLIC)
-                .setType(Processes.class)
-                .setBody(new BlockStmt().addStatement(new ReturnStmt(new ObjectCreationExpr().setType("Processes"))));
-        return processesMethod;
+        return super.classDeclaration().setMembers(applicationDeclarations);
     }
 }

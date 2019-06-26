@@ -33,12 +33,13 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.config.DefaultRuleEventListenerConfig;
-import org.kie.kogito.codegen.ApplicationSection;
+import org.drools.modelcompiler.builder.CanonicalModelKieProject;
+import org.kie.kogito.codegen.AbstractApplicationSection;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnits;
 
-public class RuleUnitContainerGenerator implements ApplicationSection {
+public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
     private final String packageName;
     private final String generatedFilePath;
@@ -51,6 +52,7 @@ public class RuleUnitContainerGenerator implements ApplicationSection {
     private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
 
     public RuleUnitContainerGenerator(String packageName) {
+        super("RuleUnits", "ruleUnits", RuleUnits.class);
         this.packageName = packageName;
         this.targetTypeName = "Module";
         this.targetCanonicalName = packageName + "." + targetTypeName;
@@ -97,32 +99,22 @@ public class RuleUnitContainerGenerator implements ApplicationSection {
         return methodDeclaration;
     }
 
-    public MethodDeclaration factoryMethod() {
-        return new MethodDeclaration()
-                .setType(RuleUnits.class.getCanonicalName())
-                .setName("ruleUnits")
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .setBody(new BlockStmt().addStatement(new ReturnStmt().setExpression(
-                        new ObjectCreationExpr().setType("RuleUnits")
-                )));
-    }
-
     @Override
     public ClassOrInterfaceDeclaration classDeclaration() {
 
         NodeList<BodyDeclaration<?>> declarations = new NodeList<>();
         FieldDeclaration kieRuntimeFieldDeclaration = new FieldDeclaration();
 
-        if (hasCdi) {
-            kieRuntimeFieldDeclaration.addAnnotation("javax.inject.Inject")
-                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()), "ruleRuntimeBuilder"));
-        } else {
-            kieRuntimeFieldDeclaration.addVariable(new VariableDeclarator(
-                    new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()),
-                    "ruleRuntimeBuilder",
-                    new ObjectCreationExpr(null, new ClassOrInterfaceType(null, "org.drools.project.model.ProjectRuntime"), NodeList.nodeList())));
-        }
+        // declare field `ruleRuntimeBuilder`
+        kieRuntimeFieldDeclaration
+                .addVariable(new VariableDeclarator(
+                        new ClassOrInterfaceType(null, KieRuntimeBuilder.class.getCanonicalName()),
+                        "ruleRuntimeBuilder")
+                                     .setInitializer(new ObjectCreationExpr()
+                                                             .setType(CanonicalModelKieProject.PROJECT_RUNTIME_CLASS)));
         declarations.add(kieRuntimeFieldDeclaration);
+
+        // declare method ruleRuntimeBuilder()
         MethodDeclaration methodDeclaration = new MethodDeclaration()
                 .addModifier(Modifier.Keyword.PUBLIC)
                 .setName("ruleRuntimeBuilder")
@@ -133,10 +125,7 @@ public class RuleUnitContainerGenerator implements ApplicationSection {
 
         declarations.addAll(factoryMethods);
 
-        return new ClassOrInterfaceDeclaration()
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .setName("RuleUnits")
-                .addImplementedType(RuleUnits.class.getCanonicalName())
+        return super.classDeclaration()
                 .setMembers(declarations);
     }
 

@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.kogito.Config;
@@ -122,6 +123,13 @@ public class ApplicationGeneratorTest {
                     new ClassOrInterfaceDeclaration().setName("Foo");
             private MethodDeclaration methodDeclaration =
                     new MethodDeclaration().setType("void");
+            private FieldDeclaration fieldDeclaration =
+                    new FieldDeclaration().addVariable(new VariableDeclarator().setType(int.class).setName("i"));
+
+            @Override
+            public FieldDeclaration fieldDeclaration() {
+                return fieldDeclaration;
+            }
 
             @Override
             public MethodDeclaration factoryMethod() {
@@ -152,7 +160,7 @@ public class ApplicationGeneratorTest {
         final CompilationUnit compilationUnit = appGenerator.compilationUnit();
         assertGeneratedFiles(generatedFiles, compilationUnit.toString().getBytes(StandardCharsets.UTF_8), 2);
 
-        assertCompilationUnit(compilationUnit, false, 2);
+        assertCompilationUnit(compilationUnit, false, 3);
         final TypeDeclaration mainAppClass = compilationUnit.getTypes().get(0);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.factoryMethod()).hasSize(1);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.classDeclaration()).hasSize(1);

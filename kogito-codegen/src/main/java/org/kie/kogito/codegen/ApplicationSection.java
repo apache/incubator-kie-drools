@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 /**
@@ -30,6 +31,8 @@ import com.github.javaparser.ast.body.MethodDeclaration;
  *    app.processes().createMyProcess()
  */
 public interface ApplicationSection {
+
+    FieldDeclaration fieldDeclaration();
 
     MethodDeclaration factoryMethod();
 
