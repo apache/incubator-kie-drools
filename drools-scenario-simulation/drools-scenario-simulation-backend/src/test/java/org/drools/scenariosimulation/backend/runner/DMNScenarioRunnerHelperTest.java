@@ -62,6 +62,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -259,6 +260,44 @@ public class DMNScenarioRunnerHelperTest {
                              " has not been successfully evaluated: " +
                              failedDecision.getEvaluationStatus(),
                      failedResult.getErrorMessage().get());
+    }
+
+    @Test
+    public void getResultWrapper() {
+        ExpressionEvaluator expressionEvaluatorMock = mock(ExpressionEvaluator.class);
+        Object resultRaw = "test";
+        Object expectedResultRaw = "";
+        String collectionError = "Impossible to find elements in the collection to satisfy the conditions";
+        String genericErrorMessage = "errorMessage";
+
+        // case 1: succeed
+        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(true);
+        ResultWrapper resultWrapper = runnerHelper.getResultWrapper(String.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, String.class);
+        assertTrue(resultWrapper.isSatisfied());
+
+        // case 2: failed with actual value
+        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenReturn(false);
+        resultWrapper = runnerHelper.getResultWrapper(String.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, String.class);
+        assertFalse(resultWrapper.isSatisfied());
+        assertEquals(resultRaw, resultWrapper.getResult());
+
+        // case 3: failed without actual value (list)
+        resultWrapper = runnerHelper.getResultWrapper(List.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, List.class);
+        assertEquals(collectionError, resultWrapper.getErrorMessage().get());
+
+        // case 4: failed without actual value (map)
+        resultWrapper = runnerHelper.getResultWrapper(Map.class.getCanonicalName(), new FactMappingValue(), expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
+        assertEquals(collectionError, resultWrapper.getErrorMessage().get());
+
+        // case 5: failed with generic exception
+        when(expressionEvaluatorMock.evaluateUnaryExpression(any(), any(), any(Class.class))).thenThrow(new IllegalArgumentException(genericErrorMessage));
+        FactMappingValue expectedResult5 = new FactMappingValue();
+        assertThatThrownBy(() -> {
+            runnerHelper.getResultWrapper(Map.class.getCanonicalName(), expectedResult5, expressionEvaluatorMock, expectedResultRaw, resultRaw, Map.class);
+        })
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage(genericErrorMessage);
+        assertEquals(genericErrorMessage, expectedResult5.getExceptionMessage());
     }
 
     private DecisionNode createDecisionMock(String decisionName) {
