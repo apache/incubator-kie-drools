@@ -27,20 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.BehaviorDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.QueryDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.rule.Behavior;
-import org.drools.core.ruleunit.RuleUnitDescription;
-import org.drools.core.time.TimeUtils;
-import org.drools.core.util.MVELSafeHelper;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -55,6 +41,20 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.BehaviorDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.core.rule.Behavior;
+import org.drools.core.ruleunit.RuleUnitDescription;
+import org.drools.core.time.TimeUtils;
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.model.Rule;
 import org.drools.model.UnitData;
 import org.drools.model.Variable;
@@ -66,8 +66,8 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-import static java.util.stream.Collectors.toList;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
@@ -75,7 +75,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ATTRIBUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.DECLARATION_OF_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.METADATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.RULE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.SUPPLY_CALL;
@@ -436,11 +435,6 @@ public class ModelGenerator {
 
         decl.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
 
-        decl.getEntryPoint().ifPresent( ep -> {
-            MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
-            entryPointCall.addArgument( new StringLiteralExpr(ep ) );
-            declarationOfCall.addArgument( entryPointCall );
-        } );
         for ( BehaviorDescr behaviorDescr : decl.getBehaviors() ) {
             MethodCallExpr windowCall = new MethodCallExpr(null, WINDOW_CALL);
             if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {

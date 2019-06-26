@@ -14,13 +14,12 @@ import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
-import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
@@ -31,6 +30,9 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.Optional.of;
@@ -38,6 +40,7 @@ import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.sanitizeDrlNameExpr;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 
 public class FromVisitor {
@@ -56,10 +59,16 @@ public class FromVisitor {
         if (sourceDescr instanceof FromDescr) {
             String expression = ((FromDescr) sourceDescr).getDataSource().toString();
 
-            boolean isEnumeratedList = expression.startsWith( "[" ) && expression.endsWith( "]" );
+            boolean isEnumeratedList = expression.startsWith("[") && expression.endsWith("]");
             return isEnumeratedList ?
-                    createEnumeratedFrom( expression.substring( 1, expression.length()-1 ) ) :
-                    createSingleFrom( expression );
+                    createEnumeratedFrom(expression.substring(1, expression.length() - 1)) :
+                    createSingleFrom(expression);
+        } else if (sourceDescr instanceof EntryPointDescr) {
+            String entryPointId = ((EntryPointDescr) sourceDescr).getEntryId();
+
+            MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
+            entryPointCall.addArgument(new StringLiteralExpr(entryPointId));
+            return Optional.of(entryPointCall);
         } else {
             return Optional.empty();
         }
