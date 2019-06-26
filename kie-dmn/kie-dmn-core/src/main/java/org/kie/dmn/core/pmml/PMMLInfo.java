@@ -48,7 +48,7 @@ public class PMMLInfo<M extends PMMLModelInfo> {
         PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
         List<PMMLModelInfo> models = new ArrayList<>();
         for (Model pm : pmml.getModels()) {
-            models.add(pmmlToModelInfo(pmml, pm));
+            models.add(pmmlToModelInfo(pm));
         }
         PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models, pmmlToHeaderInfo(pmml, pmml.getHeader()));
         return info;
@@ -62,7 +62,7 @@ public class PMMLInfo<M extends PMMLModelInfo> {
         return new PMMLHeaderInfo("http://www.dmg.org/PMML-" + pmml.getBaseVersion().replace(".", "_"), headerExtensions);
     }
 
-    public static PMMLModelInfo pmmlToModelInfo(PMML pmml, Model pm) {
+    public static PMMLModelInfo pmmlToModelInfo(Model pm) {
         MiningSchema miningSchema = pm.getMiningSchema();
         Collection<String> inputFields = new ArrayList<>();
         miningSchema.getMiningFields()

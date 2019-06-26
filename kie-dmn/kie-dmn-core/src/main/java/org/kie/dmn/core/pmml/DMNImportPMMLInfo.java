@@ -84,7 +84,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
                 DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
                 List<UnaryTest> av = null;
-                if (df.getValues() != null && df.getValues().size() > 0 && ft != BuiltInType.UNKNOWN) {
+                if (df.getValues() != null && !df.getValues().isEmpty() && ft != BuiltInType.UNKNOWN) {
                     final BuiltInType feelType = ft;
                     String lov = df.getValues().stream().map(Value::getValue).map(o -> feelType == BuiltInType.STRING ? "\"" + o.toString() + "\"" : o.toString()).collect(Collectors.joining(","));
                     av = feel.evaluateUnaryTests(lov, Collections.emptyMap());
@@ -94,7 +94,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
             }
             List<DMNPMMLModelInfo> models = pmml.getModels()
                                                 .stream()
-                                                .map(m -> PMMLInfo.pmmlToModelInfo(pmml, m))
+                                                .map(m -> PMMLInfo.pmmlToModelInfo(m))
                                                 .map(proto -> DMNPMMLModelInfo.from(proto, model, i)).collect(Collectors.toList());
             DMNImportPMMLInfo info = new DMNImportPMMLInfo(i, models, h);
             return Either.ofRight(info);
