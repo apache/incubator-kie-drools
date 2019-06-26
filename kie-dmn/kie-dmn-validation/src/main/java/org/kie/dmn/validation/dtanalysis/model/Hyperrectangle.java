@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.kie.dmn.feel.runtime.Range.RangeBoundary;
-
 public class Hyperrectangle {
 
     private final int dimensions;
@@ -88,29 +86,7 @@ public class Hyperrectangle {
         List<String> valuesAsH = new ArrayList<>();
         for (int i = 0; i<dimensions; i++) {
             if (i < edges.size()) {
-                Interval interval = edges.get(i);
-                if (interval.getLowerBound().getValue().equals(interval.getUpperBound().getValue()) 
-                        && interval.getLowerBound().getBoundaryType() == RangeBoundary.CLOSED 
-                        && interval.getUpperBound().getBoundaryType() == RangeBoundary.CLOSED) {
-                    valuesAsH.add(Bound.boundValueToString(interval.getLowerBound().getValue()));
-                } else if (ddtaTable.getInputs().get(i).isDiscreteDomain()) {
-                    List<?> dValues = ddtaTable.getInputs().get(i).getDiscreteValues();
-                    int posL = dValues.indexOf(interval.getLowerBound().getValue());
-                    if (posL < dValues.size() - 1
-                        && dValues.get(posL + 1).equals(interval.getUpperBound().getValue())
-                            && interval.getLowerBound().getBoundaryType() == RangeBoundary.CLOSED 
-                            && interval.getUpperBound().getBoundaryType() == RangeBoundary.OPEN) {
-                        valuesAsH.add(Bound.boundValueToString(interval.getLowerBound().getValue()));
-                    } else if (posL == dValues.size() - 1
-                               && interval.getLowerBound().getBoundaryType() == RangeBoundary.CLOSED 
-                               && interval.getUpperBound().getBoundaryType() == RangeBoundary.CLOSED) {
-                        valuesAsH.add(Bound.boundValueToString(interval.getLowerBound().getValue()));
-                    } else {
-                        valuesAsH.add(interval.toString());
-                    }
-                } else {
-                    valuesAsH.add(interval.toString());
-                }
+                valuesAsH.add(edges.get(i).asHumanFriendly(ddtaTable.getInputs().get(i)));
             } else {
                 valuesAsH.add("-");
             }

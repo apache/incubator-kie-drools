@@ -229,4 +229,40 @@ public class Interval {
         LOG.debug("results {}", results);
         return results;
     }
+
+    public String asHumanFriendly(Domain domain) {
+        if (lowerBound.getValue().equals(upperBound.getValue()) 
+                && lowerBound.getBoundaryType() == RangeBoundary.CLOSED 
+                && upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
+            return Bound.boundValueToString(lowerBound.getValue());
+        } else if (domain.isDiscreteDomain()) {
+            List<?> dValues = domain.getDiscreteValues();
+            int posL = dValues.indexOf(lowerBound.getValue());
+            if (posL < dValues.size() - 1
+                && dValues.get(posL + 1).equals(upperBound.getValue())
+                    && lowerBound.getBoundaryType() == RangeBoundary.CLOSED 
+                    && upperBound.getBoundaryType() == RangeBoundary.OPEN) {
+                return Bound.boundValueToString(lowerBound.getValue());
+            } else if (posL == dValues.size() - 1
+                       && lowerBound.getBoundaryType() == RangeBoundary.CLOSED 
+                       && upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
+                return Bound.boundValueToString(lowerBound.getValue());
+            } else {
+                return this.toString();
+            }
+        } else if (upperBound.equals(domain.getMax()) && upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
+            if (lowerBound.getBoundaryType() == RangeBoundary.CLOSED) {
+                return ">=" + Bound.boundValueToString(lowerBound.getValue());
+            } else if (lowerBound.getBoundaryType() == RangeBoundary.OPEN) {
+                return ">" + Bound.boundValueToString(lowerBound.getValue());
+            }
+        } else if (lowerBound.equals(domain.getMin()) && lowerBound.getBoundaryType() == RangeBoundary.CLOSED) {
+            if (upperBound.getBoundaryType() == RangeBoundary.CLOSED) {
+                return "<=" + Bound.boundValueToString(upperBound.getValue());
+            } else if (upperBound.getBoundaryType() == RangeBoundary.OPEN) {
+                return "<" + Bound.boundValueToString(upperBound.getValue());
+            }
+        }
+        return this.toString();
+    }
 }
