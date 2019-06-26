@@ -37,6 +37,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.drools.core.util.Drools;
 import org.kie.api.KieBase;
@@ -471,7 +472,10 @@ public class DMNValidatorImpl implements DMNValidator {
     private List<DMNMessage> validateSchema(Source s, Schema schema) {
         List<DMNMessage> problems = new ArrayList<>();
         try {
-            schema.newValidator().validate(s);
+            Validator validator = schema.newValidator();
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            validator.validate(s);
         } catch (SAXException | IOException e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
             logDebugMessages(problems);
