@@ -683,15 +683,15 @@ public class ExtensibleXmlParser extends DefaultHandler {
     }
 
     public void warning(final SAXParseException x) {
-        logger.warn( buildPrintMessage( x ) );
+        logger.debug( buildPrintMessage( x ) );
     }
 
     public void error(final SAXParseException x) {
-        logger.error( buildPrintMessage( x ) );
+        logger.debug( buildPrintMessage( x ) );
     }
 
     public void fatalError(final SAXParseException x) throws SAXParseException {
-        logger.error( buildPrintMessage( x ) );
+        logger.debug( buildPrintMessage( x ) );
         throw x;
     }
 

@@ -13,9 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.process.Process;
@@ -23,16 +20,14 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 
 @Path("/$name$")
-@Api(description = "$documentation$")
 public class $Type$Resource {
 
     Process<$Type$> process;
 
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation("Creates new instance of $name$")
-    public $Type$ createResource_$name$(@ApiParam(value="$name$ data that should be created") $Type$ resource) {
+    @Consumes(MediaType.APPLICATION_JSON)    
+    public $Type$ createResource_$name$($Type$ resource) {
         if (resource == null) {
             resource = new $Type$();
         }
@@ -44,7 +39,6 @@ public class $Type$Resource {
 
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation("Returns a list of $name$")
     public List<$Type$> getResources_$name$() {
         return process.instances().values().stream()
                 .map(ProcessInstance::variables)
@@ -54,7 +48,6 @@ public class $Type$Resource {
     @GET()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation("Returns information about specified $name$")
     public $Type$ getResource_$name$(@PathParam("id") Long id) {
         return process.instances()
                 .findById(id)
@@ -65,7 +58,6 @@ public class $Type$Resource {
     @DELETE()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation("Cancels specified $name$")
     public $Type$ deleteResource_$name$(@PathParam("id") Long id) {
         ProcessInstance<$Type$> pi = process.instances()
                 .findById(id)
@@ -81,7 +73,6 @@ public class $Type$Resource {
     @GET()
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation("Returns list of task ids that are currently active in given $name$")
     public Map<Long, String> getTasks_$name$(@PathParam("id") Long id) {
         return process.instances()
                 .findById(id)

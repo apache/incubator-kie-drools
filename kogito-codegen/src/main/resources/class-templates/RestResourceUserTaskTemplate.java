@@ -2,14 +2,14 @@ package com.myspace.demo;
 
 import org.drools.core.WorkItemNotFoundException;
 
+
 public class $Type$Resource {
 
     
     @POST()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation("Completes $taskname$ task")
-    public $Type$ completeTask(@PathParam("id") Long id, @PathParam("workItemId") Long workItemId, @ApiParam(value="Data for $taskname$ task") $TaskOutput$ model) {
+    public $Type$ completeTask(@PathParam("id") Long id, @PathParam("workItemId") Long workItemId, $TaskOutput$ model) {
         try {
             ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
             if (pi == null) {
@@ -28,7 +28,6 @@ public class $Type$Resource {
     @GET()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation("Returns $taskname$ task with data")
     public $TaskInput$ getTask(@PathParam("id") Long id, @PathParam("workItemId") Long workItemId) {
         try {
             ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
@@ -49,7 +48,6 @@ public class $Type$Resource {
     @DELETE()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation("Aborts $taskname$ task")
     public $Type$ abortTask(@PathParam("id") Long id, @PathParam("workItemId") Long workItemId) {
         
         try {

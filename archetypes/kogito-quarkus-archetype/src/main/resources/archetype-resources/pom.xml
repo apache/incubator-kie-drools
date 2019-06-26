@@ -10,7 +10,6 @@
   <properties>
     <quarkus.version>${version.io.quarkus}</quarkus.version>
     <kogito.version>${version.org.kie.kogito}</kogito.version>
-    <swagger.version>${version.swagger}</swagger.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -65,11 +64,6 @@
       <artifactId>jbpm-flow</artifactId>
       <version>${kogito.version}</version>
     </dependency>
-    <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-annotations</artifactId>
-      <version>${swagger.version}</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -92,31 +86,25 @@
         <extensions>true</extensions>
       </plugin>
       <plugin>
-        <groupId>com.github.kongchen</groupId>
+        <groupId>io.openapitools.swagger</groupId>
         <artifactId>swagger-maven-plugin</artifactId>
-        <version>3.1.8</version>
         <configuration>
-          <apiSources>
-            <apiSource>
-              <springmvc>false</springmvc>
-              <locations>
-                <location>\${groupId}</location>
-              </locations>
-              <schemes>http,https</schemes>
-              <info>
-                <title>\${project.description}</title>
-                <version>\${project.version}</version>
-              </info>
-              <outputPath>\${basedir}/target/classes/META-INF/resources/docs/</outputPath>
-              <outputFormats>json,yaml</outputFormats>
-              <swaggerDirectory>\${basedir}/target/classes/META-INF/resources/docs/</swaggerDirectory>
-              <swaggerFileName>swagger</swaggerFileName>
-            </apiSource>
-          </apiSources>
+          <resourcePackages>
+            <resourcePackage>org.kie.kogito.examples</resourcePackage>
+          </resourcePackages>
+          <outputDirectory>${basedir}/target/classes/static/</outputDirectory>
+          <outputFilename>swagger</outputFilename>
+          <outputFormats>JSON,YAML</outputFormats>
+          <prettyPrint>true</prettyPrint>
+          <swaggerConfig>
+            <info>
+              <title>${project.description}</title>
+              <version>${project.version}</version>
+            </info>
+          </swaggerConfig>
         </configuration>
         <executions>
           <execution>
-            <phase>compile</phase>
             <goals>
               <goal>generate</goal>
             </goals>
