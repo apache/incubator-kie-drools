@@ -1748,4 +1748,43 @@ public class CompilerTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals("Mario is richer than Mark", result.getValue());
     }
+
+    @Test
+    public void testBetaCast() {
+        String str =
+                    "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Address.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $p : Person($intField : age)\n" +
+                        "  $a : Address(shortNumber == (short)$intField)\n" +
+                        "then\n" +
+                        "  $r.setValue($a.getCity() + \" has the name number of\" + $p.getName());\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        Address a = new Address("Milan");
+        a.setShortNumber((short)37);
+
+        Address b = new Address("Milan");
+        a.setShortNumber((short)1);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.insert(a);
+        ksession.insert(b);
+
+        ksession.fireAllRules();
+    }
 }

@@ -410,6 +410,7 @@ public class ConstraintParser {
     private static Expression uncastExpr(Expression e) {
         if(e.isCastExpr()) {
             return e.asCastExpr().getExpression();
+//            return e;
         } else {
             return e;
         }
