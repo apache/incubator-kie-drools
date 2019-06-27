@@ -556,7 +556,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                         Map<Integer, List<FlightAssignment>> hourToAssignmentListMap = extractHourToAssignmentListMap(employeeAssignmentList, date);
                         for (int departureHour = minimumHour; departureHour <= maximumHour; departureHour++) {
                             List<FlightAssignment> flightAssignmentList = hourToAssignmentListMap.get(departureHour);
-                            if (flightAssignmentList != null) {
+                            if (flightAssignmentList != null && !flightAssignmentList.isEmpty()) {
                                 nextCell(unavailable ? unavailableStyle : defaultStyle).setCellValue(flightAssignmentList.stream()
                                         .map(FlightAssignment::getFlight)
                                         .map(flight -> flight.getDepartureAirport().getCode()
