@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <title>OptaPlanner webexamples: vehicle routing</title>
   <meta http-equiv="REFRESH" content="0;url=<%=application.getContextPath()%>/vehiclerouting/leaflet.jsp"/>
 </head>
 <body>

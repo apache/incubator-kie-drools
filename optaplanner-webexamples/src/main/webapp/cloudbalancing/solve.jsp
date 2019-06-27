@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <title>OptaPlanner webexamples: Cloud Balancing</title>
   <meta http-equiv="REFRESH" content="0;url=<%=application.getContextPath()%>/cloudbalancing/solving.jsp"/>
 </head>
 <body>
