@@ -399,14 +399,14 @@ public class ModelGenerator {
     private static AssignExpr createUnitVariable(String varDecl, String unitVar, Type declType) {
         ClassOrInterfaceType varType = toClassOrInterfaceType(UnitData.class);
         varType.setTypeArguments(declType);
-        VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, varDecl, Modifier.finalModifier());
+        VariableDeclarationExpr varExpr = new VariableDeclarationExpr(varType, varDecl, Modifier.finalModifier());
 
         MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
 
         unitDataCall.addArgument(new ClassExpr( declType ));
         unitDataCall.addArgument(new StringLiteralExpr(unitVar));
 
-        return new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
+        return new AssignExpr(varExpr, unitDataCall, AssignExpr.Operator.ASSIGN);
     }
 
     public static void createVariables(KnowledgeBuilderImpl kbuilder, BlockStmt block, PackageModel packageModel, RuleContext context) {
