@@ -325,16 +325,16 @@ public class ConstraintParser {
         right = coerced.getCoercedRight();
 
         Expression combo;
-        switch (operator) {
-            case EQUALS:
-            case NOT_EQUALS:
-                combo = getEqualityExpression(left, right, operator);
-                break;
-            default:
-                if (left.getExpression() == null || right.getExpression() == null) {
-                    return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
-                }
-                combo = handleSpecialComparisonCases(operator, left, right);
+            switch (operator) {
+                case EQUALS:
+                case NOT_EQUALS:
+                    combo = getEqualityExpression(left, right, operator);
+                    break;
+                default:
+                    if (left.getExpression() == null || right.getExpression() == null) {
+                        return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
+                    }
+                    combo = handleSpecialComparisonCases(operator, left, right);
         }
 
         for(Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
@@ -403,9 +403,11 @@ public class ConstraintParser {
     }
 
     private static Expression uncastExpr(Expression e) {
+        if(e == null) { // TODO: Not sure why a null should be here - check QueryTest.testPositionalRecursiveQuery
+            return null;
+        }
         if(e.isCastExpr()) {
             return e.asCastExpr().getExpression();
-//            return e;
         } else {
             return e;
         }
