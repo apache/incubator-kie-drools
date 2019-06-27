@@ -121,7 +121,12 @@ public class DrlxParseUtil {
             CastExpr ce = (CastExpr) expression;
             return findLeftLeafOfMethodCall(ce.getExpression());
         } else if (expression instanceof MethodCallExpr) {
-            return expression;
+            MethodCallExpr methodCallExpr = expression.asMethodCallExpr();
+            if(!methodCallExpr.getArguments().isEmpty()) {
+                return methodCallExpr.getArguments().iterator().next();
+            } else {
+                return expression;
+            }
         } else if (expression instanceof FieldAccessExpr) {
             return expression;
         } else {

@@ -325,16 +325,17 @@ public class ConstraintParser {
         right = coerced.getCoercedRight();
 
         Expression combo;
-            switch (operator) {
-                case EQUALS:
-                case NOT_EQUALS:
-                    combo = getEqualityExpression(left, right, operator);
-                    break;
-                default:
-                    if (left.getExpression() == null || right.getExpression() == null) {
-                        return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
-                    }
-                    combo = handleSpecialComparisonCases(operator, left, right);
+
+        switch (operator) {
+            case EQUALS:
+            case NOT_EQUALS:
+                combo = getEqualityExpression(left, right, operator);
+                break;
+            default:
+                if (left.getExpression() == null || right.getExpression() == null) {
+                    return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
+                }
+                combo = handleSpecialComparisonCases(operator, left, right);
         }
 
         for(Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
@@ -383,22 +384,17 @@ public class ConstraintParser {
             return compareBigDecimal(operator, left, right);
         }
 
-        final Expression rightExpression = right.getExpression();
-        final Expression leftExpression = left.getExpression();
-
-        if (isPrimitiveExpression(rightExpression) && isPrimitiveExpression(leftExpression)) {
-            if (left.getType() != String.class) {
-                return new BinaryExpr(leftExpression, rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
-            }
-        }
-
-        String equalsMethod = !left.getType().equals( right.getType() ) && Number.class.isAssignableFrom( left.getRawClass() ) ?
+        boolean typesAreDifferent = !left.getType().equals(right.getType());
+        boolean leftIsNumber =  left.getBoxedType().map(Number.class::isAssignableFrom).orElse(false);
+        boolean rightIsNumber =  right.getBoxedType().map(Number.class::isAssignableFrom).orElse(false);
+        String equalsMethod = typesAreDifferent && leftIsNumber && rightIsNumber?
                 "org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals" :
                 "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals";
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, equalsMethod );
+        // Avoid casts, by using an helper method we leverage autoboxing and equals
         methodCallExpr.addArgument(uncastExpr(left.getExpression()));
-        methodCallExpr.addArgument(uncastExpr(right.getExpression())); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        methodCallExpr.addArgument(uncastExpr(right.getExpression()));
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
 
