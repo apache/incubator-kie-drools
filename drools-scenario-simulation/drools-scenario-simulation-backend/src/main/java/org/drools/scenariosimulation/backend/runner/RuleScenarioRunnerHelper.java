@@ -62,7 +62,8 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
         }
         RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilder(kieContainer,
-                                                                                    simulationDescriptor.getDmoSession());
+                                                                                    simulationDescriptor.getDmoSession(),
+                                                                                    simulationDescriptor.isStateless());
 
         if (simulationDescriptor.getRuleFlowGroup() != null) {
             ruleScenarioExecutableBuilder.setActiveRuleFlowGroup(simulationDescriptor.getRuleFlowGroup());

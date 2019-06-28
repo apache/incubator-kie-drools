@@ -50,6 +50,7 @@ public class SimulationDescriptor {
     private String dmnName;
 
     private boolean skipFromBuild = false;
+    private boolean stateless = false;
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
@@ -245,5 +246,13 @@ public class SimulationDescriptor {
 
     private List<FactMapping> internalFilter(Predicate<FactMapping> predicate) {
         return factMappings.stream().filter(predicate).collect(Collectors.toList());
+    }
+
+    public boolean isStateless() {
+        return stateless;
+    }
+
+    public void setStateless(boolean stateless) {
+        this.stateless = stateless;
     }
 }
