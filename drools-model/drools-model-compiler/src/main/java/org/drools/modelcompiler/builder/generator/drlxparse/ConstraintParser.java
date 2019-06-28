@@ -433,7 +433,7 @@ public class ConstraintParser {
         String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
         if (left.getType() == String.class && right.getType() == String.class) {
             return methodName + "StringsAsNumbers";
-        } else if (isNumber(left) || isNumber(right)) {
+        } else if (isNumber(left) && isNumber(right)) {
             return methodName + "Numbers";
         } else if (Comparable.class.isAssignableFrom(left.getRawClass()) && Comparable.class.isAssignableFrom(right.getRawClass())) {
             return methodName;

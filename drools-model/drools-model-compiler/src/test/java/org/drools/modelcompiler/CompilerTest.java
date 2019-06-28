@@ -1831,4 +1831,35 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testNumericLimits() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $p : Person(ageLong > 9223372036854775806)\n" + // MAX_LONG - 1
+                        "then\n" +
+                        "  $r.setValue($p.getName() + \" is very old\");\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark").setAgeLong(37);
+        Person edson = new Person("Edson").setAgeLong(35);
+        Person mario = new Person("Mario").setAgeLong(Long.MAX_VALUE);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        assertEquals("Mario is very old", result.getValue());
+
+    }
 }
