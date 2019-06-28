@@ -58,7 +58,11 @@ public class EvaluationUtil {
     }
 
     public static boolean greaterThanNumbers(Number n1, Object n2) {
-        throw new UnsupportedOperationException();
+        if(n2 instanceof Number){
+            return greaterThanNumbers(n1, (Number)n2);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public static boolean greaterThanNumbers(Long n1, Long n2) {
@@ -70,7 +74,11 @@ public class EvaluationUtil {
     }
 
     public static boolean lessThanNumbers(Number n1, Object n2) {
-        throw new UnsupportedOperationException();
+        if(n2 instanceof Number){
+            return lessThanNumbers(n1, (Number)n2);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public static boolean lessThanNumbers(Long n1, Long n2) {
