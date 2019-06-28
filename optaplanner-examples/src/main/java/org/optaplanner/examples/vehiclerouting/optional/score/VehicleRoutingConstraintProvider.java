@@ -59,7 +59,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     protected void arrivalAfterDueTime(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight("arrivalAfterDueTime", HardSoftLongScore.ofHard(1L));
         c.from(TimeWindowedCustomer.class)
-                .filter(customer -> customer.getDueTime() < customer.getArrivalTime())
+                .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
                 .penalizeLong(customer -> customer.getArrivalTime() - customer.getDueTime());
     }
 

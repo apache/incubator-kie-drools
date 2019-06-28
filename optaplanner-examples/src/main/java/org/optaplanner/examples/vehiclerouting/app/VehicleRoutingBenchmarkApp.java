@@ -30,6 +30,8 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
                         "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfig.xml"),
                 new ArgOption("stepLimit",
                         "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingStepLimitBenchmarkConfig.xml"),
+                new ArgOption("scoreDirector",
+                        "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("template",
                         "org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl", true)
         );
