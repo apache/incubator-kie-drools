@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>optaplanner-docs</artifactId>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>OptaPlanner documentation</name>
   <description>
