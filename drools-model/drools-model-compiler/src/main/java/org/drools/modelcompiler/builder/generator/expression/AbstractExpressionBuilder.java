@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -41,7 +42,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -53,7 +53,6 @@ import org.drools.modelcompiler.util.ClassUtil;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class AbstractExpressionBuilder {
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
@@ -113,11 +112,33 @@ public abstract class AbstractExpressionBuilder {
             // Can we unify it? Sometimes expression is in the left sometimes in expression
             final Expression e;
             if(left != null) {
-                e = DrlxParseUtil.findLeftLeafOfMethodCall(left.getExpression());
+                e = findLeftmostExpression(left.getExpression());
             } else {
                 e = drlxParseResult.getExpr();
             }
             return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), e);
+        }
+    }
+
+    private Expression findLeftmostExpression(Expression expression) {
+        if (expression instanceof BinaryExpr) {
+            BinaryExpr be = (BinaryExpr) expression;
+            return findLeftmostExpression(be.getLeft());
+        }
+        if (expression instanceof CastExpr) {
+            CastExpr ce = (CastExpr) expression;
+            return findLeftmostExpression(ce.getExpression());
+        } else if (expression instanceof MethodCallExpr) {
+            MethodCallExpr methodCallExpr = expression.asMethodCallExpr();
+            if(!methodCallExpr.getArguments().isEmpty()) {
+                return findLeftmostExpression(methodCallExpr.getArguments().iterator().next());
+            } else {
+                return expression;
+            }
+        } else if (expression instanceof FieldAccessExpr) {
+            return expression;
+        } else {
+            throw new UnsupportedOperationException("Unknown expression: " + expression);
         }
     }
 
