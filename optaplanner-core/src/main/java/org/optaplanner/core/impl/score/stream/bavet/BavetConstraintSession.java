@@ -52,7 +52,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     private final Map<Class<?>, List<BavetFromUniNode<Object>>> effectiveClassToNodeListMap;
 
     private final List<Queue<BavetAbstractTuple>> nodeOrderedQueueList;
-    private final Map<Object, BavetFromUniTuple<Object>> fromTupleMap;
+    private final Map<Object, List<BavetFromUniTuple<Object>>> fromTupleListMap;
 
     public BavetConstraintSession(boolean constraintMatchEnabled, ScoreDefinition scoreDefinition,
             Map<BavetConstraint<Solution_>, Score<?>> constraintToWeightMap) {
@@ -71,7 +71,7 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
         for (int i = 0; i < nodeOrderSize; i++) {
             nodeOrderedQueueList.add(new ArrayDeque<>(1000));
         }
-        fromTupleMap = new IdentityHashMap<>(1000);
+        fromTupleListMap = new IdentityHashMap<>(1000);
     }
 
     public List<BavetFromUniNode<Object>> findFromNodeList(Class<?> factClass) {
@@ -90,32 +90,38 @@ public final class BavetConstraintSession<Solution_> implements ConstraintSessio
     public void insert(Object fact) {
         Class<?> factClass = fact.getClass();
         List<BavetFromUniNode<Object>> fromNodeList = findFromNodeList(factClass);
+        List<BavetFromUniTuple<Object>> tupleList = new ArrayList<>(fromNodeList.size());
+        List<BavetFromUniTuple<Object>> old = fromTupleListMap.put(fact, tupleList);
+        if (old != null) {
+            throw new IllegalStateException("The fact (" + fact + ") was already inserted, so it cannot insert again.");
+        }
         for (BavetFromUniNode<Object> node : fromNodeList) {
             BavetFromUniTuple<Object> tuple = node.createTuple(fact);
-            BavetFromUniTuple<Object> old = fromTupleMap.put(fact, tuple);
-            if (old != null) {
-                throw new IllegalStateException("The fact (" + fact + ") was already inserted, so it cannot insert again.");
-            }
+            tupleList.add(tuple);
             transitionTuple(tuple, BavetTupleState.CREATING);
         }
     }
 
     @Override
     public void update(Object fact) {
-        BavetFromUniTuple<Object> tuple = fromTupleMap.get(fact);
-        if (tuple == null) {
+        List<BavetFromUniTuple<Object>> tupleList = fromTupleListMap.get(fact);
+        if (tupleList == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot update.");
         }
-        transitionTuple(tuple, BavetTupleState.UPDATING);
+        for (BavetFromUniTuple<Object> tuple : tupleList) {
+            transitionTuple(tuple, BavetTupleState.UPDATING);
+        }
     }
 
     @Override
     public void retract(Object fact) {
-        BavetFromUniTuple<Object> tuple = fromTupleMap.remove(fact);
-        if (tuple == null) {
+        List<BavetFromUniTuple<Object>> tupleList = fromTupleListMap.get(fact);
+        if (tupleList == null) {
             throw new IllegalStateException("The fact (" + fact + ") was never inserted, so it cannot retract.");
         }
-        transitionTuple(tuple, BavetTupleState.DYING);
+        for (BavetFromUniTuple<Object> tuple : tupleList) {
+            transitionTuple(tuple, BavetTupleState.DYING);
+        }
     }
 
     public void transitionTuple(BavetAbstractTuple tuple, BavetTupleState newState) {
