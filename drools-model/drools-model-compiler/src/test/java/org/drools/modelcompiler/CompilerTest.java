@@ -1787,4 +1787,48 @@ public class CompilerTest extends BaseModelTest {
 
         ksession.fireAllRules();
     }
+
+
+    @Test
+    public void testBetaCastGreaterThan() {
+        String str =
+                    "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Address.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $p : Person($intField : age)\n" +
+                        "  $a : Address(shortNumber > (short)$intField)\n" +
+                        "then\n" +
+                        "  $r.setValue($a.getCity() + \" has the name number of\" + $p.getName());\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        Address a = new Address("Milan");
+        a.setShortNumber((short)37);
+
+        Address b = new Address("Naples");
+        a.setShortNumber((short)1);
+
+        Address c = new Address("Rome");
+        c.setShortNumber((short)38);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.insert(a);
+        ksession.insert(b);
+        ksession.insert(c);
+
+        ksession.fireAllRules();
+    }
 }

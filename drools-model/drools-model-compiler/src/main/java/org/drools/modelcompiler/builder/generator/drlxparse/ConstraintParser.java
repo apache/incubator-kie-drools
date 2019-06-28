@@ -385,9 +385,7 @@ public class ConstraintParser {
         }
 
         boolean typesAreDifferent = !left.getType().equals(right.getType());
-        boolean leftIsNumber =  left.getBoxedType().map(Number.class::isAssignableFrom).orElse(false);
-        boolean rightIsNumber =  right.getBoxedType().map(Number.class::isAssignableFrom).orElse(false);
-        String equalsMethod = typesAreDifferent && leftIsNumber && rightIsNumber?
+        String equalsMethod = typesAreDifferent && isNumber(left) && isNumber(right) ?
                 "org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals" :
                 "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals";
 
@@ -396,6 +394,10 @@ public class ConstraintParser {
         methodCallExpr.addArgument(uncastExpr(left.getExpression()));
         methodCallExpr.addArgument(uncastExpr(right.getExpression()));
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+    }
+
+    private static Boolean isNumber(TypedExpression left) {
+        return left.getBoxedType().map(ConstraintParser::isNumericType).orElse(false);
     }
 
     private static Expression uncastExpr(Expression e) {
@@ -418,8 +420,8 @@ public class ConstraintParser {
             String methodName = getComparisonMethodName(operator, left, right);
             if (methodName != null) {
                 MethodCallExpr compareMethod = new MethodCallExpr( null, methodName );
-                compareMethod.addArgument( left.getExpression() );
-                compareMethod.addArgument( right.getExpression() );
+                compareMethod.addArgument(uncastExpr(left.getExpression()));
+                compareMethod.addArgument(uncastExpr(right.getExpression()));
                 return compareMethod;
             }
         }
@@ -429,11 +431,11 @@ public class ConstraintParser {
 
     private static String getComparisonMethodName(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
-        if ( left.getType() == String.class && right.getType() == String.class ) {
+        if (left.getType() == String.class && right.getType() == String.class) {
             return methodName + "StringsAsNumbers";
-        } else if ( isNumericType( left.getRawClass() ) || isNumericType( right.getRawClass() ) ) {
+        } else if (isNumber(left) || isNumber(right)) {
             return methodName + "Numbers";
-        } else if ( Comparable.class.isAssignableFrom( left.getRawClass() ) && Comparable.class.isAssignableFrom( right.getRawClass() ) ) {
+        } else if (Comparable.class.isAssignableFrom(left.getRawClass()) && Comparable.class.isAssignableFrom(right.getRawClass())) {
             return methodName;
         }
         return null;
