@@ -23,6 +23,9 @@ import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieContainer;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -31,10 +34,10 @@ import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataCorrectlyClonedSolution;
+import org.optaplanner.core.impl.testdata.util.KieContainerHelper;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class PlannerBenchmarkFactoryTest {
 
@@ -105,7 +108,7 @@ public class PlannerBenchmarkFactoryTest {
         SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
         CustomPhaseConfig phaseConfig = new CustomPhaseConfig();
         phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(NoChangeCustomPhaseCommand.class));
-        solverBenchmarkConfig.getSolverConfig() .setPhaseConfigList(Collections.singletonList(phaseConfig));
+        solverBenchmarkConfig.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
@@ -162,4 +165,34 @@ public class PlannerBenchmarkFactoryTest {
         plannerBenchmark.benchmark();
     }
 
+    @Test
+    public void createFromReleaseId() throws IOException {
+        ReleaseId releaseId = deployTestingKjar();
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromKieContainerXmlResource(
+                releaseId, "testdata/kjar/benchmarkConfig.solver");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test
+    public void createFromKieContainer() throws IOException {
+        ReleaseId releaseId = deployTestingKjar();
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromKieContainerXmlResource(
+                kieContainer, "testdata/kjar/benchmarkConfig.solver");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    private ReleaseId deployTestingKjar() throws IOException {
+        KieContainerHelper kieContainerHelper = new KieContainerHelper();
+
+        ReleaseId releaseId = kieContainerHelper.deployTestdataBenchmarkKjar(
+                "buildSolverWithReleaseId",
+                "org/optaplanner/benchmark/api/kieContainerNamedKsessionKmodule.xml",
+                "org/optaplanner/benchmark/api/testdataKieContainerPlannerBenchmarkConfig.xml");
+        return releaseId;
+    }
 }
