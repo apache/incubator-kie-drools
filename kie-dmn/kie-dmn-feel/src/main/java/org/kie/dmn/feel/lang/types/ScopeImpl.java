@@ -21,7 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
@@ -158,7 +159,7 @@ public class ScopeImpl
     }
 
     private List<String> tokenize(String symbol) {
-        ANTLRInputStream input = new ANTLRInputStream(symbol);
+        CharStream input = CharStreams.fromString(symbol);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         List<String> tokens = new ArrayList<>(  );
 
