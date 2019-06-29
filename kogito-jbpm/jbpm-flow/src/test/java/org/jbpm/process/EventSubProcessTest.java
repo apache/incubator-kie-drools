@@ -38,14 +38,14 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
 
 import static org.jbpm.process.test.NodeCreator.connect;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventSubProcessTest extends AbstractBaseTest  {
     
@@ -186,7 +186,7 @@ public class EventSubProcessTest extends AbstractBaseTest  {
         ProcessInstance processInstance = ksession.startProcess(processId);
         
         processInstance.signalEvent(EVENT_NAME, null);
-        assertEquals("Event " + EVENT_NAME + " did not fire!", 1, eventList.size());
+        assertEquals(1, eventList.size(), "Event " + EVENT_NAME + " did not fire!");
         
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

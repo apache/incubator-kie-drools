@@ -16,14 +16,12 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.InputStreamResource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
@@ -34,6 +32,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DroolsDeclaredTypeSequenceFlowExpressionTest {
 	

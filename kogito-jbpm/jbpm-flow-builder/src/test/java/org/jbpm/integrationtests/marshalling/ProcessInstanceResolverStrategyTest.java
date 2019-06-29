@@ -16,9 +16,6 @@
 
 package org.jbpm.integrationtests.marshalling;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -43,7 +40,7 @@ import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -52,6 +49,9 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
@@ -111,13 +111,13 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         writerContext.close();
         byte[] bytes = baos.toByteArray();
         int numCorrectBytes = calculateNumBytesForLong(processInstance.getId());
-        assertTrue("Expected " + numCorrectBytes + " bytes, not " + bytes.length, bytes.length == numCorrectBytes);
+        assertTrue(bytes.length == numCorrectBytes, "Expected " + numCorrectBytes + " bytes, not " + bytes.length);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bais);
         long serializedProcessInstanceId = ois.readLong();
-        assertTrue("Expected " + processInstance.getId() + ", not " + serializedProcessInstanceId,
-                processInstance.getId() == serializedProcessInstanceId);
+        assertTrue(processInstance.getId() == serializedProcessInstanceId,
+                   "Expected " + processInstance.getId() + ", not " + serializedProcessInstanceId);
 
         // Test other strategy stuff
         ProcessInstanceManager pim = ProcessInstanceResolverStrategy.retrieveProcessInstanceManager(writerContext);

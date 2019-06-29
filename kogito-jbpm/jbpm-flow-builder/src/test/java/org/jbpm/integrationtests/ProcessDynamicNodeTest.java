@@ -24,14 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
@@ -45,14 +44,16 @@ import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ProcessDynamicNodeTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ProcessDynamicNodeTest.class);
     
     @Test
-    @Ignore
+    @Disabled
     public void TODOtestDynamicActions() {
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -118,7 +119,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void TODOtestDynamicAsyncActions() {
         Reader source = new StringReader(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

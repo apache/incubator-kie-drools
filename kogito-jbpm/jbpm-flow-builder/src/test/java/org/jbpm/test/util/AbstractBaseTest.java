@@ -16,28 +16,28 @@
 
 package org.jbpm.test.util;
 
+import java.util.Arrays;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.integrationtests.JbpmSerializationHelper;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractBaseTest {
  
     protected KnowledgeBuilderImpl builder;
    
-    @Before
+    @BeforeEach
     public void before() { 
         builder = new KnowledgeBuilderImpl();
     }
@@ -64,12 +64,12 @@ public abstract class AbstractBaseTest {
         return kbase.newKieSession(conf, null);
     }
     
-    @BeforeClass
+    @BeforeAll
     public static void configure() { 
         LoggingPrintStream.interceptSysOutSysErr();
     }
     
-    @AfterClass
+    @AfterAll
     public static void reset() { 
         LoggingPrintStream.resetInterceptSysOutSysErr();
     }

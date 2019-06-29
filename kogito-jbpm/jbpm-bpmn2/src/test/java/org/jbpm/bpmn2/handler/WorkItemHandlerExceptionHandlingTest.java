@@ -16,9 +16,6 @@
 
 package org.jbpm.bpmn2.handler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +24,9 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -38,21 +35,22 @@ import org.kie.api.runtime.process.WorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkItemHandlerExceptionHandlingTest.class);
+public class WorkItemHandlerExceptionHandlingTest extends JbpmBpmn2TestCase {
 
     private static Boolean strictVariableSetting = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
     public WorkItemHandlerExceptionHandlingTest() {        
     }
     
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {        
         VariableScope.setVariableStrictOption(false);
         WorkItemNodeInstance.setVariableStrictOption(false);
     }
     
-    @AfterClass
+    @AfterAll
     public static void clean() throws Exception {        
         VariableScope.setVariableStrictOption(strictVariableSetting);
         WorkItemNodeInstance.setVariableStrictOption(strictVariableSetting);

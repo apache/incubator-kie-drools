@@ -16,12 +16,8 @@
 
 package org.jbpm.process.builder;
 
-import static org.junit.Assert.*;
-
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -40,9 +36,12 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.instance.node.SplitInstance;
-import org.junit.Test;
-import org.kie.api.definition.KiePackage;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseTest {
 

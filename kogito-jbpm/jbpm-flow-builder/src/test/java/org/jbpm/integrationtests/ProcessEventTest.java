@@ -23,11 +23,11 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProcessEventTest extends AbstractBaseTest {
   
@@ -293,7 +293,7 @@ public class ProcessEventTest extends AbstractBaseTest {
         
         ProcessInstance processInstance =
             ksession.startProcess("org.drools.core.event");
-        assertEquals("Process did not complete!", ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState(), "Process did not complete!");
         assertEquals("MyValue", ((VariableScopeInstance)
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));

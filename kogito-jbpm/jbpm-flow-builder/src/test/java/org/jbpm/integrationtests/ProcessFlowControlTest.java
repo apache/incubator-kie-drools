@@ -16,9 +16,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +25,8 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -40,6 +37,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ProcessFlowControlTest extends AbstractBaseTest {
     
@@ -298,7 +298,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void FIXME_testLoadingRuleFlowInPackage4() throws Exception {
         // adding ruleflows of different package
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
@@ -311,7 +311,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void FIXME_testLoadingRuleFlowInPackage5() throws Exception {
         // adding ruleflow of different package than rules
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
@@ -324,7 +324,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void FIXME_testLoadingRuleFlowInPackage6() throws Exception {
         // adding rules of different package than ruleflow
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );

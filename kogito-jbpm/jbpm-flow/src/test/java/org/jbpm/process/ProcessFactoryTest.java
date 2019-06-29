@@ -18,7 +18,7 @@ package org.jbpm.process;
 
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 public class ProcessFactoryTest extends AbstractBaseTest {

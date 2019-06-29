@@ -43,11 +43,15 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class WorkItemTest extends AbstractBaseTest {
 
@@ -73,11 +77,11 @@ public class WorkItemTest extends AbstractBaseTest {
         try {
             processInstance = ksession.startProcess( "org.drools.actions",
                                                                  parameters );
-            Assert.fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
+            fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
         } catch ( Throwable e ) {
 
         }
-        Assert.assertNull( processInstance );
+        assertNull( processInstance );
     }
 
 	@Test
@@ -100,19 +104,19 @@ public class WorkItemTest extends AbstractBaseTest {
         ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
                                                                   parameters );
         long processInstanceId = processInstance.getId();
-        Assert.assertEquals( ProcessInstance.STATE_ACTIVE,
+        assertEquals( ProcessInstance.STATE_ACTIVE,
                            processInstance.getState() );
         ksession.getWorkItemManager().registerWorkItemHandler( workName,
                                                                null );
 
         try {
             ksession.abortProcessInstance( processInstanceId );
-            Assert.fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
+            fail( "should fail if WorkItemHandler for" + workName + "is not registered" );
         } catch ( WorkItemHandlerNotFoundException wihnfe ) {
 
         }
 
-        Assert.assertEquals( ProcessInstance.STATE_ABORTED,
+        assertEquals( ProcessInstance.STATE_ABORTED,
                              processInstance.getState() );
     }
 	
@@ -140,10 +144,10 @@ public class WorkItemTest extends AbstractBaseTest {
                                                                   parameters );
         
         Object numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
-        Assert.assertNotNull(numberVariable);
-        Assert.assertEquals("test", numberVariable);
+        assertNotNull(numberVariable);
+        assertEquals("test", numberVariable);
 
-        Assert.assertEquals( ProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                              processInstance.getState() );
     }
 	
@@ -177,10 +181,10 @@ public class WorkItemTest extends AbstractBaseTest {
                                                                   parameters );
         
         Object numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
-        Assert.assertNotNull(numberVariable);
-        Assert.assertEquals("one", numberVariable);
+        assertNotNull(numberVariable);
+        assertEquals("one", numberVariable);
 
-        Assert.assertEquals( ProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                              processInstance.getState() );
         
         parameters = new HashMap<String, Object>();
@@ -193,10 +197,10 @@ public class WorkItemTest extends AbstractBaseTest {
                                                                   parameters );
         
         numberVariable = ((WorkflowProcessInstance)processInstance).getVariable("MyObject");
-        Assert.assertNotNull(numberVariable);
-        Assert.assertEquals("two", numberVariable);
+        assertNotNull(numberVariable);
+        assertEquals("two", numberVariable);
 
-        Assert.assertEquals( ProcessInstance.STATE_COMPLETED,
+        assertEquals( ProcessInstance.STATE_COMPLETED,
                              processInstance.getState() );
     }
 

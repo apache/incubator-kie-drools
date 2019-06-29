@@ -16,13 +16,13 @@
 
 package org.jbpm.process.core.datatype.impl.coverter;
 
-import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TypeConverterTest {
 

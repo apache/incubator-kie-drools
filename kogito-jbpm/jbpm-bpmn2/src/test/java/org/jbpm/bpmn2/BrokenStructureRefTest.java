@@ -17,15 +17,14 @@
 package org.jbpm.bpmn2;
 
 import java.io.InputStream;
-import java.net.URL;
 
 import org.drools.core.util.IoUtils;
 import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.jbpm.process.core.impl.XmlProcessDumperFactory;
-import org.junit.Assert;
-import org.junit.Test;
-import org.kie.api.KieBase;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class BrokenStructureRefTest {
 
@@ -33,11 +32,11 @@ public class BrokenStructureRefTest {
 	public void testProcessWithBrokenItemDefinitionUri() throws Exception {
 		InputStream inputBpmn = getClass().getResourceAsStream("/BPMN2-BrokenStructureRef.bpmn2");
 		XmlProcessDumper dumper = XmlProcessDumperFactory.getXmlProcessDumperFactoryService().newXmlProcessDumper();
-		Assert.assertNotNull(dumper);
+		assertNotNull(dumper);
 		String processXml = new String(IoUtils.readBytesFromInputStream(inputBpmn), "UTF-8");
-		Assert.assertNotNull(processXml);
+		assertNotNull(processXml);
 		org.kie.api.definition.process.Process proc = dumper.readProcess(processXml);
-		Assert.assertNotNull(proc);
-		Assert.assertEquals("BrokenStructureRef", proc.getId());
+		assertNotNull(proc);
+		assertEquals("BrokenStructureRef", proc.getId());
 	}
 }

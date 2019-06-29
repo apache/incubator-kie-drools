@@ -16,23 +16,14 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -41,33 +32,11 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class EscalationEventTest extends JbpmBpmn2TestCase {
-
-    @Parameters
-    public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false } };
-        return Arrays.asList(data);
-    };
-
-    private Logger logger = LoggerFactory
-            .getLogger(EscalationEventTest.class);
-
-    private KieSession ksession;
-    
-    public EscalationEventTest(boolean persistence) {
-    }
-
-    @After
-    public void dispose() {
-        if (ksession != null) {
-            ksession.dispose();
-            ksession = null;
-        }
-    }
 
     private ProcessEventListener LOGGING_EVENT_LISTENER = new DefaultProcessEventListener() {
 
@@ -148,7 +117,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     }
     
     @Test
-    @Ignore( "Escalation does not cancel work items yet.")
+    @Disabled( "Escalation does not cancel work items yet.")
     // TODO: make escalation interrupt tasks -- or look more closely at the spec to make sure that's the case? 
     public void testEscalationBoundaryEventInterruptsTask() throws Exception {
         KieBase kbase = createKnowledgeBase("escalation/BPMN2-EscalationBoundaryEventInterrupting.bpmn2");
@@ -159,7 +128,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance);
         
         // Check for cancellation of task
-        assertEquals( "WorkItem was not cancelled!", WorkItem.ABORTED, handler.getWorkItem().getState());
+        assertEquals(WorkItem.ABORTED, handler.getWorkItem().getState(), "WorkItem was not cancelled!");
     }
 
     @Test
@@ -172,7 +141,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     
 
     @Test
-    @Ignore( "General escalation is not yet supported.")
+    @Disabled("General escalation is not yet supported.")
     // TODO: implement general escalation
     // TODO: implement asynchronous escalation
     public void testGeneralEscalationBoundaryEventWithTask() throws Exception {
@@ -213,7 +182,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     }
     
     @Test
-    @Ignore( "Non interrupting escalation has not yet been implemented.")
+    @Disabled("Non interrupting escalation has not yet been implemented.")
     // TODO: implement non-interrupting escalation
     public void testNonInterruptingEscalationBoundaryEventOnTask() throws Exception {
         KieBase kbase = createKnowledgeBase("escalation/BPMN2-EscalationBoundaryEventOnTask.bpmn2");

@@ -23,10 +23,10 @@ import java.util.regex.Matcher;
 
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.util.PatternConstants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParameterResolverTest extends AbstractBaseTest {
 

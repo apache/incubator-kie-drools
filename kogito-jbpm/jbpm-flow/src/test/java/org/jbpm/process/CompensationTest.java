@@ -46,8 +46,8 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
@@ -55,8 +55,8 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
 
 import static org.jbpm.process.test.NodeCreator.connect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CompensationTest extends AbstractBaseTest {
 
@@ -66,7 +66,7 @@ public class CompensationTest extends AbstractBaseTest {
     
     private KieSession ksession; 
     
-    @After
+    @AfterEach
     public void cleanUp() { 
         if( ksession != null ) { 
             ksession.dispose();
@@ -118,11 +118,11 @@ public class CompensationTest extends AbstractBaseTest {
                 nodes.addAll(Arrays.asList(((NodeContainer) node).getNodes()));
             }
         }
-        assertNotNull("Could not find node (" + nodeName + ").", found);
-        
+        assertNotNull(found, "Could not find node (" + nodeName + ").");
+
         return found;
     }
-    
+
     /*
      * TESTS
      */
@@ -154,7 +154,7 @@ public class CompensationTest extends AbstractBaseTest {
         // call compensation on the uncompleted work 1 (which should not fire)
 
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should not have fired yet.", 0, eventList.size());
+        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // complete work 1
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
@@ -162,14 +162,14 @@ public class CompensationTest extends AbstractBaseTest {
 
         // call compensation on work 1, which should now fire
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should have fired.", 1, eventList.size());
+        assertEquals(1, eventList.size(), "Compensation should have fired.");
 
         // complete work 2 & 3
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
-        
+
     @Test
     public void testCompensationBoundaryEventGeneral() throws Exception {
         String processId = "org.jbpm.process.compensation.boundary";
@@ -195,17 +195,17 @@ public class CompensationTest extends AbstractBaseTest {
 
         // general compensation should not cause anything to happen
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should not have fired yet.", 0, eventList.size());
+        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // complete work 1 & 2
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals("Compensation should not have fired yet.", 0, eventList.size());
+        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
 
         // general compensation should now cause the compensation handlers to fire in reverse order
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should have fired.", 2, eventList.size());
+        assertEquals(2, eventList.size(), "Compensation should have fired.");
 
         // complete work 3 and finish
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
@@ -284,22 +284,22 @@ public class CompensationTest extends AbstractBaseTest {
     
         // call compensation on the uncompleted work 1 (which should not fire)
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should not have fired yet.", 0, eventList.size());
-        
+        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
+
         // pre work item
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
     
         // sub-process is active, but not complete
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should not have fired yet.", 0, eventList.size());
-        
+        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
+
         // sub process work item
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         
         // sub-process has completed 
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should have fired once.", 1, eventList.size());
-        
+        assertEquals(1, eventList.size(), "Compensation should have fired once.");
+
         // post work item
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -335,8 +335,8 @@ public class CompensationTest extends AbstractBaseTest {
         // Call general compensation 
 
         ksession.signalEvent("Compensation", compensationEvent, processInstance.getId());
-        assertEquals("Compensation should have fired once.", 1, eventList.size());
-        
+        assertEquals(1, eventList.size(), "Compensation should have fired once.");
+
         // post work item
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

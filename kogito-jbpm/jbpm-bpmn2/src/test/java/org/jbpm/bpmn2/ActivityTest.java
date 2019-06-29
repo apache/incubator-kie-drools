@@ -16,25 +16,13 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.command.SingleSessionCommandService;
-import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -54,12 +42,10 @@ import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -69,7 +55,6 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
-import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.Context;
@@ -83,33 +68,22 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@RunWith(Parameterized.class)
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class ActivityTest extends JbpmBpmn2TestCase {
 
-    @Parameters
-    public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }};
-        return Arrays.asList(data);
-    };
-
-    private static final Logger logger = LoggerFactory.getLogger(ActivityTest.class);
-
-    private KieSession ksession;
     private KieSession ksession2;
 
-    public ActivityTest(boolean persistence) throws Exception {
-        
-    }
-
-    @After
-    public void dispose() {
-        if (ksession != null) {   
-            ksession.dispose();
-            ksession = null;
-        }
+    @AfterEach
+    @Override
+    public void disposeSession() {
+        super.disposeSession();
         if (ksession2 != null) {
             ksession2.dispose();
             ksession2 = null;
@@ -995,7 +969,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("Hello john!", processInstance.getVariable("s"));
     }
 
-    @Test @Ignore("Transfomer has been disabled")
+    @Test
+    @Disabled("Transfomer has been disabled")
     public void testServiceTaskWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithTransformation.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1361,10 +1336,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertNodeTriggered(processInstance.getId() + 1, "StartProcess", "Task 1", "End");
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testInvalidServiceTask() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-InvalidServiceProcess.bpmn2");
-        ksession = createKnowledgeSession(kbase);
+    @Test
+    @Timeout(10)
+    public void testInvalidServiceTask() {
+        assertThrows(IllegalArgumentException.class, () -> createKnowledgeBase("BPMN2-InvalidServiceProcess.bpmn2"));
     }
 
     @Test // JBPM-3951
@@ -1380,7 +1355,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @SuppressWarnings("unchecked")
-	@Test @Ignore("Transfomer has been disabled")
+	@Test
+    @Disabled("Transfomer has been disabled")
     public void testBusinessRuleTaskWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithTransformation.bpmn2",
                 "BPMN2-RuleTaskWithTransformation.drl");
@@ -1406,7 +1382,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test @Ignore("Transfomer has been disabled")
+    @Test
+    @Disabled("Transfomer has been disabled")
     public void testCallActivityWithTransformation() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityWithTransformation.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1677,7 +1654,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("Hello Genworth welcome to jBPMS!", ((WorkflowProcessInstance) processInstance).getVariable("message"));
     }
     
-    @Ignore
+    @Disabled
     @Test
     public void testDMNBusinessRuleTask()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -1713,8 +1690,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertEquals(BigDecimal.valueOf(30), vacationDays);
     }
-    
-    @Ignore
+
+    @Disabled
     @Test
     public void testDMNBusinessRuleTaskByDecisionName()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -1730,8 +1707,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
         assertEquals(BigDecimal.valueOf(5), vacationDays);
     }
-    
-    @Ignore
+
+    @Disabled
     @Test
     public void testDMNBusinessRuleTaskMultipleDecisionsOutput()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -1749,8 +1726,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         BigDecimal extraDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("extraDays");
         assertEquals(BigDecimal.valueOf(5), extraDays);
     }
-    
-    @Ignore
+
+    @Disabled
     @Test
     public void testDMNBusinessRuleTaskInvalidExecution()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -1767,8 +1744,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             assertTrue(e.getCause().getMessage().contains("DMN result errors"));
         }
     }
-    
-    @Ignore
+
+    @Disabled
     @Test
     public void testDMNBusinessRuleTaskModelById()throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper(
@@ -1831,9 +1808,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         })
         .withMessageContaining("Fire rule limit reached 5");        
     }
-    
+
+    @Disabled
     @Test
-    @Ignore
     public void testScriptTaskFEEL() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ScriptTaskFEEL.bpmn2");
         ksession = createKnowledgeSession(kbase);

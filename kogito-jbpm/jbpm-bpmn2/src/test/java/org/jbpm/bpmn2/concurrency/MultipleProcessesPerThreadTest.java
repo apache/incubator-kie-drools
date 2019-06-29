@@ -16,8 +16,6 @@
 
 package org.jbpm.bpmn2.concurrency;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -26,8 +24,8 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.bpmn2.objects.Status;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -44,16 +42,15 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * This test costs time and resources, please only run locally for the time being.
- */
-@Ignore
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Disabled("This test costs time and resources, please only run locally for the time being.")
 public class MultipleProcessesPerThreadTest {
     
     private static final int LOOPS = 1000;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
-    
+
     protected static KieSession createStatefulKnowledgeSession(KieBase kbase) {
         return kbase.newKieSession();
     }
@@ -73,9 +70,9 @@ public class MultipleProcessesPerThreadTest {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        
-        assertTrue( "Hello World process thread did not complete successfully", hello.status == Status.SUCCESS );
-        assertTrue( "User Task process thread did not complete successfully", user.status == Status.SUCCESS );
+
+        assertTrue(hello.status == Status.SUCCESS, "Hello World process thread did not complete successfully");
+        assertTrue(user.status == Status.SUCCESS, "User Task process thread did not complete successfully");
     }
 
     private static class HelloWorldProcessThread implements Runnable {

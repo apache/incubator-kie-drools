@@ -16,17 +16,17 @@
 
 package org.jbpm.ruleflow.instance;
 
-import static org.junit.Assert.assertNotNull;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RuleFlowProcessInstanceTest extends AbstractBaseTest  {
 

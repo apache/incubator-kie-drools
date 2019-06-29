@@ -16,24 +16,18 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.SessionConfiguration;
@@ -54,12 +48,10 @@ import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.rules.Timeout;
-import org.junit.runner.Description;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -89,44 +81,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 /**
  * Base test case for the jbpm-bpmn2 module.
  */
+@Timeout(value = 3000, unit = TimeUnit.SECONDS)
 public abstract class JbpmBpmn2TestCase {
-    private static final Logger log = LoggerFactory.getLogger(JbpmBpmn2TestCase.class);
-   
-    protected WorkingMemoryInMemoryLogger logger;
-    
-    @Rule
-    public Timeout globalTimeout = Timeout.seconds(3000);
 
-    @Rule
-    public TestRule watcher = new TestWatcher() {
-        protected void starting(Description description) {
-            log.info(" >>> {} <<<", description.getMethodName());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-            try {
-                String methodName = description.getMethodName();
-                int i = methodName.indexOf("[");
-                if (i > 0) {
-                    methodName = methodName.substring(0, i);
-                }
-                Method method = description.getTestClass().getMethod(methodName);                
-            } catch (Exception ex) {
-                // ignore
-            }
-        };
+    /**
+     * Used by many subclasses. Instead of each test duplicating the cleanup code, we extract it here in
+     * the superclass.
+     */
+    protected KieSession ksession;
 
-        protected void finished(Description description) {
-            log.info("Finished {}", description);
-        };
-    };
+    protected WorkingMemoryInMemoryLogger workingMemoryLogger;
 
-    public JbpmBpmn2TestCase() {
-        
+    @AfterEach
+    public void disposeSession() {
+        if (ksession != null) {
+            ksession.dispose();
+            ksession = null;
+        }
+    }
+    @BeforeEach
+    protected void logTestStart(TestInfo testInfo) {
+        logger.info(" >>> {} <<<", testInfo.getDisplayName());
     }
 
-    @After
+    @AfterEach
+    protected void logTestEnd(TestInfo testInfo) {
+        logger.info("Finished {}", testInfo.getDisplayName());
+    }
+
+    @AfterEach
     public void clear() {
         clearHistory();
     }
@@ -284,7 +278,7 @@ public abstract class JbpmBpmn2TestCase {
         conf = SessionConfiguration.newInstance(defaultProps);
         conf.setOption(ForceEagerActivationOption.YES);
         result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
-        logger = new WorkingMemoryInMemoryLogger(result);
+        workingMemoryLogger = new WorkingMemoryInMemoryLogger(result);
         
         return result;
     }
@@ -311,21 +305,25 @@ public abstract class JbpmBpmn2TestCase {
 
 
     public void assertProcessInstanceCompleted(ProcessInstance processInstance) {
-        assertTrue("Process instance has not been completed.", assertProcessInstanceState(ProcessInstance.STATE_COMPLETED, processInstance));
+        assertTrue(assertProcessInstanceState(ProcessInstance.STATE_COMPLETED, processInstance),
+                   "Process instance has not been completed.");
     }
 
     public void assertProcessInstanceAborted(ProcessInstance processInstance) {
-        assertTrue("Process instance has not been aborted.", assertProcessInstanceState(ProcessInstance.STATE_ABORTED, processInstance));
+        assertTrue(assertProcessInstanceState(ProcessInstance.STATE_ABORTED, processInstance),
+                   "Process instance has not been aborted.");
     }
 
     public void assertProcessInstanceActive(ProcessInstance processInstance) {
-        assertTrue("Process instance is not active.", assertProcessInstanceState(ProcessInstance.STATE_ACTIVE, processInstance)
-                || assertProcessInstanceState(ProcessInstance.STATE_PENDING, processInstance));
+        assertTrue(assertProcessInstanceState(ProcessInstance.STATE_ACTIVE, processInstance)
+                || assertProcessInstanceState(ProcessInstance.STATE_PENDING, processInstance),
+                   "Process instance is not active.");
     }
 
     public void assertProcessInstanceFinished(ProcessInstance processInstance,
             KieSession ksession) {
-        assertNull("Process instance has not been finished.", ksession.getProcessInstance(processInstance.getId()));
+        assertNull(ksession.getProcessInstance(processInstance.getId()),
+                   "Process instance has not been finished.");
     }
 
     public void assertNodeActive(long processInstanceId, KieSession ksession,
@@ -382,7 +380,7 @@ public abstract class JbpmBpmn2TestCase {
             String node) {
         int counter = 0;
         
-        for (LogEvent event : logger.getLogEvents()) {
+        for (LogEvent event : workingMemoryLogger.getLogEvents()) {
             if (event instanceof RuleFlowNodeLogEvent) {
                 String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
                 if (node.equals(nodeName)) {
@@ -396,7 +394,7 @@ public abstract class JbpmBpmn2TestCase {
     
     public int getNumberOfProcessInstances(String processId) {
         int counter = 0;      
-        LogEvent [] events = logger.getLogEvents().toArray(new LogEvent[0]);
+        LogEvent [] events = workingMemoryLogger.getLogEvents().toArray(new LogEvent[0]);
         for (LogEvent event : events ) { 
             if (event.getType() == LogEvent.BEFORE_RULEFLOW_CREATED) {
                 if(((RuleFlowLogEvent) event).getProcessId().equals(processId)) {
@@ -420,7 +418,7 @@ public abstract class JbpmBpmn2TestCase {
             names.add(nodeName);
         }
         
-        for (LogEvent event : logger.getLogEvents()) {
+        for (LogEvent event : workingMemoryLogger.getLogEvents()) {
             if (event instanceof RuleFlowNodeLogEvent) {
                 String nodeName = ((RuleFlowNodeLogEvent) event)
                         .getNodeName();
@@ -436,7 +434,7 @@ public abstract class JbpmBpmn2TestCase {
     protected List<String> getCompletedNodes(long processInstanceId) { 
         List<String> names = new ArrayList<String>();
         
-        for (LogEvent event : logger.getLogEvents()) {
+        for (LogEvent event : workingMemoryLogger.getLogEvents()) {
             if (event instanceof RuleFlowNodeLogEvent) {
                 if( event.getType() == 27 ) { 
                     names.add(((RuleFlowNodeLogEvent) event).getNodeId());
@@ -449,8 +447,8 @@ public abstract class JbpmBpmn2TestCase {
 
     protected void clearHistory() {
         
-        if (logger != null) {
-            logger.clear();
+        if (workingMemoryLogger != null) {
+            workingMemoryLogger.clear();
         }
     
     }
@@ -491,7 +489,7 @@ public abstract class JbpmBpmn2TestCase {
     
     public void assertProcessVarValue(ProcessInstance processInstance, String varName, Object varValue) {
         String actualValue = getProcessVarValue(processInstance, varName);
-        assertEquals("Variable " + varName + " value misatch!",  varValue, actualValue );
+        assertEquals(varValue, actualValue, "Variable " + varName + " value misatch!");
     }
 
     public void assertNodeExists(ProcessInstance process, String... nodeNames) {
@@ -606,7 +604,7 @@ public abstract class JbpmBpmn2TestCase {
     
     protected void assertProcessInstanceCompleted(long processInstanceId, KieSession ksession) {
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
-        assertNull("Process instance has not completed.", processInstance);
+        assertNull(processInstance, "Process instance has not completed.");
     }
 
     protected void assertProcessInstanceAborted(long processInstanceId, KieSession ksession) {

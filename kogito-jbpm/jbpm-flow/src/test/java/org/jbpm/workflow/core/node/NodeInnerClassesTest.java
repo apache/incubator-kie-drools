@@ -19,16 +19,17 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.test.TestProcessEventListener;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NodeInnerClassesTest extends AbstractBaseTest {
 
@@ -74,7 +75,7 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
         ksession.addEventListener(procEventListener);
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
-        Assert.assertNotNull(processInstance);
+        assertNotNull(processInstance);
 	}
 
 }

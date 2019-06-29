@@ -26,29 +26,24 @@ import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.StartNode;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class RuleFlowProcessValidatorTest {
 
     private RuleFlowProcessValidator validator;
 
     private List<ProcessValidationError> errors;
 
-    @Mock
-    private RuleFlowProcess process;
+    private RuleFlowProcess process = mock(RuleFlowProcess.class);
 
-    @Mock
-    private Node node;
+    private Node node = mock(Node.class);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         errors = new ArrayList<ProcessValidationError>();
         validator = RuleFlowProcessValidator.getInstance();

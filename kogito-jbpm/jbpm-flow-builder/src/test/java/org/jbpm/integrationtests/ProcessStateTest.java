@@ -25,8 +25,8 @@ import java.util.List;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.node.StateNodeInstance;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -37,8 +37,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProcessStateTest extends AbstractBaseTest {
     
@@ -429,7 +429,7 @@ public class ProcessStateTest extends AbstractBaseTest {
     }
     
     @Test
-    @Ignore
+    @Disabled
     public void FIXMEtestDelayedStateConstraintPriorities1() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -495,7 +495,7 @@ public class ProcessStateTest extends AbstractBaseTest {
     }
     
     @Test
-    @Ignore
+    @Disabled
     public void FIXMEtestDelayedStateConstraintPriorities2() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(

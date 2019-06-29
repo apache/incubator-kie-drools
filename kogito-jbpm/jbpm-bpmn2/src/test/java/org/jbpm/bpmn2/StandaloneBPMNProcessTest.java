@@ -16,18 +16,13 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -43,11 +38,9 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -61,31 +54,12 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-@RunWith(Parameterized.class)
+import static org.assertj.core.api.Assertions.*;
+
 public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(StandaloneBPMNProcessTest.class);
-    
-    @Parameters
-    public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] {
-                { false} 
-                };
-        return Arrays.asList(data);
-    }
-    
-    public StandaloneBPMNProcessTest(boolean persistence) {
-        
-    }
-
-    /**
-     * Tests
-     */
-    
     @Test
     public void testMinimalProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
@@ -264,7 +238,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testExclusiveSplitXPath() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -354,7 +328,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.signalEvent("No", "NoValue", processInstance.getId());
     }
 
-    @Test(timeout=10000)
+    @Test
+    @Timeout(10)
     public void testEventBasedSplit2() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit2.bpmn2");
@@ -393,7 +368,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore("process does not complete")
+    @Disabled("process does not complete")
     public void testEventBasedSplit3() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit3.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -525,7 +500,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    @Test(timeout=10000)
+    @Test
+    @Timeout(10)
     public void testTimerBoundaryEvent() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
@@ -538,7 +514,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    @Test(timeout=10000)
+    @Test
+    @Timeout(10)
     public void testTimerBoundaryEventInterrupting() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
@@ -552,7 +529,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore("Process does not complete.")
+    @Disabled("Process does not complete.")
     public void testAdHocSubProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcess.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -578,7 +555,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore("Process does not complete.")
+    @Disabled("Process does not complete.")
     public void testAdHocSubProcessAutoComplete() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcessAutoComplete.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -628,7 +605,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    @Test(timeout=10000)
+    @Test
+    @Timeout(10)
     public void testIntermediateCatchEventTimer() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
@@ -645,7 +623,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore("process does not complete")
+    @Disabled("process does not complete")
     public void testIntermediateCatchEventCondition() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -704,7 +682,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore("bpmn does not compile")
+    @Disabled("bpmn does not compile")
     public void testConditionalStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ConditionalStart.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -718,7 +696,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.fireAllRules();
     }
 
-    @Test(timeout=10000)
+    @Test
+    @Timeout(10)
     public void testTimerStart() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 5);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");

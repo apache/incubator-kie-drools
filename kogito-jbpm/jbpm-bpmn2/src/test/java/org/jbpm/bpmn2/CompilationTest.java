@@ -16,9 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,17 +33,15 @@ import org.jbpm.process.builder.dialect.java.JavaReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.workflow.core.DroolsAction;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class CompilationTest extends JbpmBpmn2TestCase {
-
-    private static final Logger logger = LoggerFactory.getLogger(CompilationTest.class);
-
-    public CompilationTest() {        
-    }
 
     @Test
     public void testReturnValueDescrCreation() throws Exception {
@@ -56,16 +51,16 @@ public class CompilationTest extends JbpmBpmn2TestCase {
         String filename = "BPMN2-GatewaySplit-SequenceConditions.bpmn2";
         KieBase kbase = createKnowledgeBase(filename);
 
-        assertFalse( "No " + ActionDescr.class.getSimpleName() + " instances caught for testing!",
-                javaProcessDialect.getActionDescrs().isEmpty() );
+        assertFalse(javaProcessDialect.getActionDescrs().isEmpty(),
+                    "No " + ActionDescr.class.getSimpleName() + " instances caught for testing!");
         for( BaseDescr descr : javaProcessDialect.getActionDescrs() ) {
-           assertNotNull( descr.getClass().getSimpleName() +" has a null resource field", descr.getResource() );
+            assertNotNull(descr.getResource(), descr.getClass().getSimpleName() +" has a null resource field");
         }
 
-        assertFalse( "No " + ReturnValueDescr.class.getSimpleName() + " instances caught for testing!",
-                javaProcessDialect.getReturnValueDescrs().isEmpty() );
+        assertFalse(javaProcessDialect.getReturnValueDescrs().isEmpty(),
+                    "No " + ReturnValueDescr.class.getSimpleName() + " instances caught for testing!");
         for( BaseDescr descr : javaProcessDialect.getReturnValueDescrs() ) {
-           assertNotNull( descr.getClass().getSimpleName() +" has a null resource field", descr.getResource() );
+            assertNotNull(descr.getResource(), descr.getClass().getSimpleName() + " has a null resource field");
         }
     }
 

@@ -16,8 +16,6 @@
 
 package org.jbpm.test.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,27 +23,25 @@ import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.process.test.TestProcessEventListener;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public abstract class AbstractBaseTest {
 
     protected Logger logger;
 
-    @Rule
-    public TestName name = new TestName();
-    
-    @Before 
-    public void before() { 
+    @BeforeEach
+    public void before(TestInfo testInfo) {
         addLogger();
-        logger.debug( "> " + name.getMethodName() );
+        logger.debug( "> " + testInfo.getDisplayName() );
     }
    
     public abstract void addLogger();
@@ -79,17 +75,17 @@ public abstract class AbstractBaseTest {
                 real = eventHistory.get(i);
             }
             logger.debug("{} | {}", expected, real);
-            assertEquals("Mismatch in expected event", expected, real);
+            assertEquals(expected, real, "Mismatch in expected event");
         }
-        assertEquals("Mismatch in number of events expected.", eventOrder.length, eventHistory.size());
+        assertEquals(eventOrder.length, eventHistory.size(), "Mismatch in number of events expected.");
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void configure() {
         LoggingPrintStream.interceptSysOutSysErr();
     }
 
-    @AfterClass
+    @AfterAll
     public static void reset() {
         LoggingPrintStream.resetInterceptSysOutSysErr();
     }

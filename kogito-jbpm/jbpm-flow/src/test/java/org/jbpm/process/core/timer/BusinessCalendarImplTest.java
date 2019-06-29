@@ -24,11 +24,12 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.time.SessionPseudoClock;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BusinessCalendarImplTest extends AbstractBaseTest {
 
@@ -339,15 +340,15 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
         assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss", result));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testMissingConfigurationDualArgConstructor() {
         SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2012-05-04 13:45").getTime());
-        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(null, clock);
+        assertThrows(IllegalArgumentException.class, () -> new BusinessCalendarImpl(null, clock));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testMissingConfigurationSingleArgConstructor() {
-        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(null);
+        assertThrows(IllegalArgumentException.class, () -> new BusinessCalendarImpl(null));
     }
     
     @Test

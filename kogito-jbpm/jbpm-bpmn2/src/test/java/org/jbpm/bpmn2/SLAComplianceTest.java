@@ -16,12 +16,6 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,11 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -45,27 +36,12 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class SLAComplianceTest extends JbpmBpmn2TestCase {
-
-    @Parameters
-    public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false } };
-        return Arrays.asList(data);
-    };
-    
-
-    private KieSession ksession;    
-
-    public SLAComplianceTest(boolean persistence) throws Exception {
-    }
-    @After
-    public void dispose() {
-        if (ksession != null) {
-            ksession.dispose();
-            ksession = null;
-        }
-    }
 
     @Test
     public void testSLAonProcessViolated() throws Exception {
@@ -86,17 +62,17 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         
         boolean slaViolated = latch.await(10, TimeUnit.SECONDS);
-        assertTrue("SLA was not violated while it is expected", slaViolated);
-        
+        assertTrue(slaViolated, "SLA was not violated while it is expected");
+
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
         
@@ -118,14 +94,14 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
                 
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);        
         
@@ -155,14 +131,14 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         
         boolean slaViolated = latch.await(10, TimeUnit.SECONDS);
-        assertTrue("SLA was not violated while it is expected", slaViolated);
-        
+        assertTrue(slaViolated, "SLA was not violated while it is expected");
+
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
 
@@ -198,14 +174,14 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
                 
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         Collection<NodeInstance> active = ((WorkflowProcessInstance)processInstance).getNodeInstances();
         assertEquals(1, active.size());
         
@@ -248,24 +224,24 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         
  
         boolean slaViolated = latch.await(5, TimeUnit.SECONDS);
-        assertFalse("SLA should not violated by timer", slaViolated);
-        
+        assertFalse(slaViolated, "SLA should not violated by timer");
+
         // simulate external tracking of sla
         ksession.signalEvent("slaViolation", null, processInstance.getId());
         
         slaViolated = latch.await(10, TimeUnit.SECONDS);
-        assertTrue("SLA was not violated while it is expected", slaViolated);
-        
+        assertTrue(slaViolated, "SLA was not violated while it is expected");
+
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
         
@@ -277,7 +253,7 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ksession.dispose();
     }
-    
+
     @Test
     public void testSLAonUserTaskViolatedExternalTracking() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
@@ -298,18 +274,17 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         
         boolean slaViolated = latch.await(5, TimeUnit.SECONDS);
-        assertFalse("SLA should not violated by timer", slaViolated);
-        
+        assertFalse(slaViolated, "SLA should not violated by timer");
 
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         Collection<NodeInstance> active = ((WorkflowProcessInstance)processInstance).getNodeInstances();
         assertEquals(1, active.size());
         
@@ -319,9 +294,8 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         ksession.signalEvent("slaViolation:" + userTaskNode.getId(), null, processInstance.getId());
         
         slaViolated = latch.await(10, TimeUnit.SECONDS);
-        assertTrue("SLA was not violated while it is expected", slaViolated);
-        
-        
+        assertTrue(slaViolated, "SLA was not violated while it is expected");
+
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);        
         
@@ -336,7 +310,7 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ksession.dispose();
     }
-    
+
     @Test
     public void testSLAonProcessViolatedWithExpression() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
@@ -359,17 +333,17 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask", parameters);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         
         boolean slaViolated = latch.await(10, TimeUnit.SECONDS);
-        assertTrue("SLA was not violated while it is expected", slaViolated);
-        
+        assertTrue(slaViolated, "SLA was not violated while it is expected");
+
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_VIOLATED, slaCompliance);
         
@@ -402,19 +376,18 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         
  
         boolean slaViolated = latch.await(5, TimeUnit.SECONDS);
-        assertFalse("SLA should not violated by timer", slaViolated);
-        
-        
+        assertFalse(slaViolated, "SLA should not violated by timer");
+
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         int slaCompliance = getSLAComplianceForProcessInstance(processInstance);
         assertEquals(ProcessInstance.SLA_PENDING, slaCompliance);
         
@@ -445,14 +418,13 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         boolean slaViolated = latch.await(5, TimeUnit.SECONDS);
-        assertTrue("SLA should be violated by timer", slaViolated);
-        
+        assertTrue(slaViolated, "SLA should be violated by timer");
 
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         Collection<NodeInstance> active = ((WorkflowProcessInstance)processInstance).getNodeInstances();
         assertEquals(1, active.size());
         
@@ -492,7 +464,7 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        
+
         Collection<NodeInstance> active = ((WorkflowProcessInstance)processInstance).getNodeInstances();
         assertEquals(1, active.size());
         
@@ -510,9 +482,8 @@ public class SLAComplianceTest extends JbpmBpmn2TestCase {
         
 
         boolean slaViolated = latch.await(3, TimeUnit.SECONDS);
-        assertFalse("SLA should not violated by timer", slaViolated);
-        
-        
+        assertFalse(slaViolated, "SLA should not violated by timer");
+
         ksession.dispose();
     }
     

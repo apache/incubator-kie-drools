@@ -16,16 +16,15 @@
 
 package org.jbpm.workflow.instance.node;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
-import org.jbpm.workflow.instance.impl.factory.CreateNewNodeFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProcessNodeInstanceFactoryTest extends AbstractBaseTest {
    

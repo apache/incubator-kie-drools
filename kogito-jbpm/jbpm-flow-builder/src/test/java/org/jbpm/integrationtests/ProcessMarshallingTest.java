@@ -30,8 +30,8 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
@@ -48,8 +48,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.jbpm.integrationtests.JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProcessMarshallingTest extends AbstractBaseTest {
     
@@ -484,7 +484,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         assertEquals(0, session.getProcessInstances().size());
     }
     
-    @Test @Ignore
+    @Test @Disabled
     public void testMarshallingProcessInstanceWithTimer() throws Exception {
         String process = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

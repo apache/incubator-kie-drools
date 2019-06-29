@@ -16,26 +16,24 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class ProcessFactoryTest extends JbpmBpmn2TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    public ProcessFactoryTest() {        
-    }
+public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testProcessFactory() throws Exception {
@@ -105,7 +103,8 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(10)
     public void testBoundaryTimerTimeCycle() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("BoundaryTimerEvent",
                                                                                                             1);
@@ -153,7 +152,8 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(10)
     public void testBoundaryTimerTimeDuration() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("BoundaryTimerEvent",
                                                                                                             1);
@@ -201,7 +201,8 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(10)
     public void testAdHocSimple() throws Exception {
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
@@ -214,7 +215,8 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         assertTrue(process.isDynamic());
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(10)
     public void testSignalEvent() throws Exception {
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
@@ -258,7 +260,8 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(10)
     public void testActionNodeIsDroolsAction() throws Exception {
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory

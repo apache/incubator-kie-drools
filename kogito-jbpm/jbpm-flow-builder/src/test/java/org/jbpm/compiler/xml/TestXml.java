@@ -16,9 +16,6 @@
 
 package org.jbpm.compiler.xml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.List;
@@ -26,10 +23,13 @@ import java.util.List;
 import org.drools.core.xml.SemanticModules;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestXml extends AbstractBaseTest {
     

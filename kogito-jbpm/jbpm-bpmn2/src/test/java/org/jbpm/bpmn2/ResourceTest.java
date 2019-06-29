@@ -16,19 +16,14 @@
 
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class ResourceTest extends JbpmBpmn2TestCase {
-
-    private StatefulKnowledgeSession ksession;
-
-    public ResourceTest() {
-    }
 
     @Test
     public void testResourceType() throws Exception {

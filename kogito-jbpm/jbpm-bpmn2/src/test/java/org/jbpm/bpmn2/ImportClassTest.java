@@ -16,21 +16,17 @@
 
 package org.jbpm.bpmn2;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.*;
 
 public class ImportClassTest extends JbpmBpmn2TestCase {
     
-    public ImportClassTest() {
-    }
-
     @Test
-    public void testResourceType() throws Exception {
-        
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> { 
-            createKnowledgeBaseWithoutDumper("build/sample.bpmn", "build/sample2.bpmn"); })
-        .withMessageContaining("Process Compilation error HelloService cannot be resolved to a type");  
+    public void testResourceType() {
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> createKnowledgeBaseWithoutDumper("build/sample.bpmn", "build/sample2.bpmn"))
+                .withMessageContaining("Process Compilation error HelloService cannot be resolved to a type");
     }
 
 }

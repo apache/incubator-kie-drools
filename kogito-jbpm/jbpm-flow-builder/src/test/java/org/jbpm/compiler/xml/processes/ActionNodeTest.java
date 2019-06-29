@@ -16,19 +16,19 @@
 
 package org.jbpm.compiler.xml.processes;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ActionNodeTest extends AbstractBaseTest {
     

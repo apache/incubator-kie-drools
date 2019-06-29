@@ -16,16 +16,16 @@
 
 package org.jbpm.compiler.canonical;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProcessToExecModelGeneratorTest {
     
@@ -64,7 +64,7 @@ public class ProcessToExecModelGeneratorTest {
         Process process = factory.validate().getProcess();
         
         ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process);
-        assertNotNull("Dumper should return non null class for process", processMetadata);
+        assertNotNull(processMetadata, "Dumper should return non null class for process");
         
         logger.debug(processMetadata.getGeneratedClassModel().toString());
         
@@ -110,7 +110,7 @@ public class ProcessToExecModelGeneratorTest {
         Process process = factory.validate().getProcess();
         
         ModelMetaData modelMetadata = ProcessToExecModelGenerator.INSTANCE.generateModel((WorkflowProcess) process);
-        assertNotNull("Dumper should return non null class for process", modelMetadata);
+        assertNotNull(modelMetadata, "Dumper should return non null class for process");
         
         logger.info(modelMetadata.generate());
         assertEquals("com.myspace.demo.OrdersModel", modelMetadata.getModelClassName());
