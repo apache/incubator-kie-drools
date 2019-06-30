@@ -15,10 +15,6 @@
 
 package org.kie.kogito.codegen;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,20 +29,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.kie.kogito.Config;
-import org.mockito.Mockito;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.Config;
+import org.mockito.Mockito;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class ApplicationGeneratorTest {
 
@@ -62,7 +58,7 @@ public class ApplicationGeneratorTest {
 
     @Test
     public void packageNameNull() {
-        Assertions.assertThatThrownBy(() -> new ApplicationGenerator(null, new File("")))
+        assertThatThrownBy(() -> new ApplicationGenerator(null, new File("")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

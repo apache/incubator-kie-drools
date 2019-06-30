@@ -15,22 +15,21 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 
+import static org.assertj.core.api.Assertions.*;
+
 
 public class CallActivityTaskTest extends AbstractCodegenTest {
 
-    
     @Test
     public void testBasicCallActivityTask() throws Exception {
         

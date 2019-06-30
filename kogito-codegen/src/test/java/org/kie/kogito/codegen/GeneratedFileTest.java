@@ -17,10 +17,10 @@ package org.kie.kogito.codegen;
 
 import java.nio.charset.StandardCharsets;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class GeneratedFileTest {
 
@@ -30,7 +30,7 @@ public class GeneratedFileTest {
 
     private static GeneratedFile testFile;
 
-    @BeforeClass
+    @BeforeAll
     public static void createTestFile() {
         testFile = new GeneratedFile(TEST_TYPE, TEST_RELATIVE_PATH, TEST_CONTENTS);
     }

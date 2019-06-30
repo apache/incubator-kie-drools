@@ -15,12 +15,10 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractCodegenTest;
@@ -29,9 +27,9 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.Sig;
 
+import static org.assertj.core.api.Assertions.*;
 
 public class SignalEventTest extends AbstractCodegenTest {
-
     
     @Test
     public void testIntermediateSignalEventWithData() throws Exception {

@@ -16,7 +16,7 @@
 
 package org.kie.kogito.codegen;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.data.AdultUnit;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.Results;
@@ -25,9 +25,8 @@ import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.impl.RuleUnitRegistry;
 
 import static java.util.Arrays.asList;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RuleUnitCompilerTest extends AbstractCodegenTest {
 

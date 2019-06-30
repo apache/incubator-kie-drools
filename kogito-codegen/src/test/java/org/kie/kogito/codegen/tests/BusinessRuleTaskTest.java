@@ -15,14 +15,12 @@
 
 package org.kie.kogito.codegen.tests;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -31,10 +29,11 @@ import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 
+import static org.assertj.core.api.Assertions.*;
+
 
 public class BusinessRuleTaskTest extends AbstractCodegenTest {
 
-    
     @Test
     public void testBasicBusinessRuleTask() throws Exception {
         

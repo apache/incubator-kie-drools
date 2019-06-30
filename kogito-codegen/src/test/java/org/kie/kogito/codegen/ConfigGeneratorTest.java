@@ -17,12 +17,12 @@ package org.kie.kogito.codegen;
 
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.StaticConfig;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class ConfigGeneratorTest {
 
