@@ -18,6 +18,8 @@ Quick Links
 
 **Homepage:** http://kogito.kie.org
 
+**Wiki:** https://github.com/kiegroup/kogito-runtimes/wiki
+
 **jBPM:** https://www.jbpm.org/
 
 **Drools:** https://www.drools.org/
