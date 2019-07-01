@@ -62,6 +62,12 @@ public interface MigrationStrategy {
     Function<String, String> from1_4to1_5();
 
     /**
+     * Method to obtain the migration function from 1.4 to 1.5
+     * @return
+     */
+    Function<String, String> from1_5to1_6();
+
+    /**
      * Method to complete the migration. For instance it can be used to store the new value
      * @return
      */

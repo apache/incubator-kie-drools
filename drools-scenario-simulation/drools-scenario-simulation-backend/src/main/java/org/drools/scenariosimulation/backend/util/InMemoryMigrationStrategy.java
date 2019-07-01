@@ -18,9 +18,20 @@ package org.drools.scenariosimulation.backend.util;
 
 import java.util.function.Function;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
+import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
+import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.project.datamodel.imports.Import;
 
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
@@ -112,5 +123,44 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             }
             return updateVersion(xmlPersistence.marshal(model), "1.4", "1.5");
         };
+    }
+
+    @Override
+    public Function<String, String> from1_5to1_6() {
+        return rawXml -> {
+            // We need to do those things here because to parse "old" xmls we need a differently configured Xstream
+            ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
+            if (rawXml == null ||  rawXml.trim().equals("")) {
+                return xmlPersistence.marshal(new ScenarioSimulationModel());
+            }
+
+            // Unmarshall the 1.5 format with "older" xstream configuration, that read "reference" attributes
+            Object o = getLocalXStream().fromXML(rawXml);
+            ScenarioSimulationModel model = (ScenarioSimulationModel) o;
+
+            // Marshall the model with the "new" xstream configuration, that does not write "reference" attributes
+            return updateVersion(xmlPersistence.marshal(model), "1.5", "1.6");
+        };
+    }
+
+    private XStream getLocalXStream() {
+        // We need this local instance to instantiate XStream with older settings
+        XStream toReturn = XStreamUtils.createTrustingXStream(new DomDriver());
+
+        toReturn.autodetectAnnotations(true);
+
+        toReturn.alias("ExpressionElement", ExpressionElement.class);
+        toReturn.alias("ExpressionIdentifier", ExpressionIdentifier.class);
+        toReturn.alias("FactIdentifier", FactIdentifier.class);
+        toReturn.alias("FactMapping", FactMapping.class);
+        toReturn.alias("FactMappingType", FactMappingType.class);
+        toReturn.alias("FactMappingValue", FactMappingValue.class);
+        toReturn.alias("Scenario", Scenario.class);
+        toReturn.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
+        toReturn.alias("Simulation", Simulation.class);
+        toReturn.alias("SimulationDescriptor", SimulationDescriptor.class);
+
+        toReturn.alias("Import", Import.class);
+        return toReturn;
     }
 }

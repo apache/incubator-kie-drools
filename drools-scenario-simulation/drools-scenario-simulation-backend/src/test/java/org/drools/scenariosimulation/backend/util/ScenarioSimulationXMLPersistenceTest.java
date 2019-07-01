@@ -132,7 +132,17 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
         assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
-        assertTrue(!migrated.contains("dmoSession"));
+        assertFalse(migrated.contains("dmoSession"));
+    }
+
+    @Test
+    public void migrateIfNecessary_1_5_to_1_6() throws Exception {
+        String toMigrate = getFileContent("scesim-1-5-dmn.scesim");
+        assertTrue(toMigrate.contains("reference="));
+        String migrated = instance.migrateIfNecessary(toMigrate);
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.5\">"));
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
+        assertFalse(migrated.contains("reference="));
     }
 
     @Test
@@ -166,15 +176,4 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.DMN);
     }
 
-    @Test
-    public void unmarshalScesimWithReference() throws Exception {
-        String toUnmarshal = getFileContent("scesim-with-reference.scesim");
-        final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        final SimulationDescriptor simulationDescriptor = retrieved.getSimulation().getSimulationDescriptor();
-        simulationDescriptor.getFactMappings().forEach(factMapping -> {
-            assertNotNull(factMapping.getFactIdentifier());
-            assertNotNull(factMapping.getExpressionIdentifier());
-        });
-        assertEquals(simulationDescriptor.getType(), ScenarioSimulationModel.Type.DMN);
-    }
 }
