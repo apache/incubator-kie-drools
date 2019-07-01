@@ -18,12 +18,14 @@ package org.drools.scenariosimulation.backend.util;
 import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -162,5 +164,17 @@ public class ScenarioSimulationXMLPersistenceTest {
         String toUnmarshal = getFileContent("scesim-dmn.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.DMN);
+    }
+
+    @Test
+    public void unmarshalScesimWithReference() throws Exception {
+        String toUnmarshal = getFileContent("scesim-with-reference.scesim");
+        final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
+        final SimulationDescriptor simulationDescriptor = retrieved.getSimulation().getSimulationDescriptor();
+        simulationDescriptor.getFactMappings().forEach(factMapping -> {
+            assertNotNull(factMapping.getFactIdentifier());
+            assertNotNull(factMapping.getExpressionIdentifier());
+        });
+        assertEquals(simulationDescriptor.getType(), ScenarioSimulationModel.Type.DMN);
     }
 }

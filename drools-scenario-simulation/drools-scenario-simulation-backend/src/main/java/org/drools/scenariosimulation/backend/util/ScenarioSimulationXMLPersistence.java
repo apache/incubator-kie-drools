@@ -46,6 +46,7 @@ public class ScenarioSimulationXMLPersistence {
     private ScenarioSimulationXMLPersistence() {
         xt = XStreamUtils.createTrustingXStream(new DomDriver());
 
+        xt.setMode(XStream.NO_REFERENCES);
         xt.autodetectAnnotations(true);
 
         xt.alias("ExpressionElement", ExpressionElement.class);
