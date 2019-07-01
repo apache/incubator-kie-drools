@@ -1,0 +1,126 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ScenarioSimulationModel" type="ScenarioSimulationModelType"/>
+  <xs:complexType name="ExpressionElementType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="step"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="expressionElementsType">
+    <xs:sequence>
+      <xs:element type="ExpressionElementType" name="ExpressionElement" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="expressionIdentifierType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="name" minOccurs="0"/>
+      <xs:element type="xs:string" name="type" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="factIdentifierType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="name" minOccurs="0"/>
+      <xs:element type="xs:string" name="className" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="genericTypes">
+    <xs:sequence>
+      <xs:element type="xs:string" name="string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FactMappingType">
+    <xs:sequence>
+      <xs:element type="expressionElementsType" name="expressionElements"/>
+      <xs:element type="expressionIdentifierType" name="expressionIdentifier"/>
+      <xs:element name="factIdentifier" type="factIdentifierType"/>
+      <xs:element type="xs:string" name="className"/>
+      <xs:element type="xs:string" name="factAlias"/>
+      <xs:element type="xs:string" name="expressionAlias" minOccurs="0"/>
+      <xs:element type="genericTypes" name="genericTypes"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="factMappingsType">
+    <xs:sequence>
+      <xs:element type="FactMappingType" name="FactMapping" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="simulationDescriptorType">
+    <xs:sequence>
+      <xs:element type="factMappingsType" name="factMappings" minOccurs="0"/>
+      <xs:element type="xs:string" name="dmoSession" minOccurs="0"/>
+      <xs:element type="xs:string" name="dmnFilePath" minOccurs="0"/>
+      <xs:element type="xs:string" name="type" minOccurs="0"/>
+      <xs:element type="xs:string" name="fileName" minOccurs="0"/>
+      <xs:element type="xs:string" name="kieSession" minOccurs="0"/>
+      <xs:element type="xs:string" name="kieBase" minOccurs="0"/>
+      <xs:element type="xs:string" name="ruleFlowGroup" minOccurs="0"/>
+      <xs:element type="xs:string" name="dmnNamespace" minOccurs="0"/>
+      <xs:element type="xs:string" name="dmnName" minOccurs="0"/>
+      <xs:element type="xs:boolean" name="skipFromBuild" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+<!--  <xs:complexType name="expressionIdentifierReferenceType">-->
+<!--    <xs:attribute type="xs:string" name="reference"/>-->
+<!--  </xs:complexType>-->
+  <xs:complexType name="rawValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="class"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="FactMappingValueType">
+    <xs:sequence>
+      <xs:element type="factIdentifierType" name="factIdentifier"/>
+      <xs:element type="expressionIdentifierType" name="expressionIdentifier"/>
+      <xs:element type="rawValueType" name="rawValue" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="factMappingValuesType">
+    <xs:sequence>
+      <xs:element type="FactMappingValueType" name="FactMappingValue" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+<!--  <xs:complexType name="simulationDescriptorReferenceType">-->
+<!--    <xs:attribute type="xs:string" name="reference"/>-->
+<!--  </xs:complexType>-->
+  <xs:complexType name="ScenarioType">
+    <xs:sequence>
+      <xs:element type="factMappingValuesType" name="factMappingValues"/>
+<!--      <xs:element type="simulationDescriptorReferenceType" name="simulationDescriptor"/>-->
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="scenariosType">
+    <xs:sequence>
+      <xs:element type="ScenarioType" name="Scenario" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="simulationType">
+    <xs:sequence>
+      <xs:element type="simulationDescriptorType" name="simulationDescriptor"/>
+      <xs:element type="scenariosType" name="scenarios"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ImportType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="type"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="wrappedImportsType">
+    <xs:sequence>
+      <xs:element type="ImportType" name="Import" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="importsType">
+    <xs:sequence>
+      <xs:element type="wrappedImportsType" name="imports" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ScenarioSimulationModelType">
+    <xs:sequence>
+      <xs:element type="simulationType" name="simulation"/>
+      <xs:element type="importsType" name="imports"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="version"/>
+  </xs:complexType>
+</xs:schema>
