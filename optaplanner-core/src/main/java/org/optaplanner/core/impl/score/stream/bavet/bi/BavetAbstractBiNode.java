@@ -16,13 +16,18 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 
 public abstract class BavetAbstractBiNode<A, B> extends BavetAbstractNode {
 
     public BavetAbstractBiNode(BavetConstraintSession session, int nodeOrder) {
         super(session, nodeOrder);
+    }
+
+    public void addChildNode(BavetAbstractBiNode<A, B> childNode) {
+        throw new IllegalStateException("Impossible state: the ConstraintStream for this node (" + this
+                + ") cannot handle a childNode (" + childNode + ").");
     }
 
     public abstract BavetAbstractBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple);

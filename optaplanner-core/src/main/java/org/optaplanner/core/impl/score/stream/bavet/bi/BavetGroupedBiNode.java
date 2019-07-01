@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -26,14 +27,28 @@ public final class BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> exte
 
     private final Function<ResultContainer_, Result_> finisher;
 
-    private final List<BavetAbstractBiNode<GroupKey_, Result_>> childNodeList;
+    private final List<BavetAbstractBiNode<GroupKey_, Result_>> childNodeList = new ArrayList<>();
 
     public BavetGroupedBiNode(BavetConstraintSession session, int nodeOrder,
-            Function<ResultContainer_, Result_> finisher, List<BavetAbstractBiNode<GroupKey_, Result_>> childNodeList) {
+            Function<ResultContainer_, Result_> finisher) {
         super(session, nodeOrder);
         this.finisher = finisher;
-        this.childNodeList = childNodeList;
     }
+
+    @Override
+    public void addChildNode(BavetAbstractBiNode<GroupKey_, Result_> childNode) {
+        childNodeList.add(childNode);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
+
+    // ************************************************************************
+    // Runtime
+    // ************************************************************************
 
     @Override
     public BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> createTuple(BavetAbstractBiTuple<GroupKey_, Result_> parentTuple) {

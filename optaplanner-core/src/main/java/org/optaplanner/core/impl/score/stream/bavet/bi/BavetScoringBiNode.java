@@ -50,6 +50,16 @@ public final class BavetScoringBiNode<A, B> extends BavetAbstractBiNode<A, B> im
         tupleSet = constraintMatchEnabled ? new HashSet<>() : null;
     }
 
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // No node sharing
+
+    // ************************************************************************
+    // Runtime
+    // ************************************************************************
+
     @Override
     public BavetScoringBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
         return new BavetScoringBiTuple<>(this, parentTuple);

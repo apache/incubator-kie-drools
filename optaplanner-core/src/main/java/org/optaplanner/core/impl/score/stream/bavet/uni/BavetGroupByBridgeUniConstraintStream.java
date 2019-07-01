@@ -56,7 +56,7 @@ public final class BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_
     @Override
     protected BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
-        BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1);
+        BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, null);
         BavetGroupByBridgeUniNode<A, GroupKey_, ResultContainer_, Result_> node = new BavetGroupByBridgeUniNode<>(
                 buildPolicy.getSession(), nodeOrder, parentNode, groupKeyMapping, collector, biNode);
         return node;

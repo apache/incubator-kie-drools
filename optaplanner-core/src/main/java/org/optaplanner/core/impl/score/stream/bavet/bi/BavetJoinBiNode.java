@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
@@ -32,13 +32,26 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> {
     private BavetJoinLeftBridgeUniNode<A, B> leftParentNode;
     private BavetJoinRightBridgeUniNode<A, B> rightParentNode;
 
-    private final List<BavetAbstractBiNode<A, B>> childNodeList;
+    private final List<BavetAbstractBiNode<A, B>> childNodeList = new ArrayList<>();
 
-    public BavetJoinBiNode(BavetConstraintSession session, int nodeOrder,
-            List<BavetAbstractBiNode<A, B>> childNodeList) {
+    public BavetJoinBiNode(BavetConstraintSession session, int nodeOrder) {
         super(session, nodeOrder);
-        this.childNodeList = childNodeList;
     }
+
+    @Override
+    public void addChildNode(BavetAbstractBiNode<A, B> childNode) {
+        childNodeList.add(childNode);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    // TODO
+
+    // ************************************************************************
+    // Runtime
+    // ************************************************************************
 
     @Override
     public BavetJoinBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {

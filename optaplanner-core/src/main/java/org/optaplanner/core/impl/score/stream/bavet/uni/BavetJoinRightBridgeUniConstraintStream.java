@@ -58,7 +58,7 @@ public final class BavetJoinRightBridgeUniConstraintStream<Solution_, A, B>
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<B> parentNode) {
         BavetJoinBiNode<A, B> biNode = (BavetJoinBiNode<A, B>) buildPolicy.getStreamToNodeMap().get(biStream);
         if (biNode == null) {
-            biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1); // TODO BUG needs max(left node order, right node order)
+            biNode = biStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, null); // TODO BUG needs max(left node order, right node order)
             buildPolicy.getStreamToNodeMap().put(biStream, biNode);
         }
         BavetJoinRightBridgeUniNode<A, B> node = new BavetJoinRightBridgeUniNode<>(buildPolicy.getSession(),

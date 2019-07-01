@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
 
@@ -24,16 +25,50 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 
 public final class BavetFilterBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
+    private final BavetAbstractBiNode<A, B> parentNode;
     private final BiPredicate<A, B> predicate;
 
-    private final List<BavetAbstractBiNode<A, B>> childNodeList;
+    private final List<BavetAbstractBiNode<A, B>> childNodeList = new ArrayList<>();
 
     public BavetFilterBiNode(BavetConstraintSession session, int nodeOrder,
-            BiPredicate<A, B> predicate, List<BavetAbstractBiNode<A, B>> childNodeList) {
+            BavetAbstractBiNode<A, B> parentNode, BiPredicate<A, B> predicate) {
         super(session, nodeOrder);
+        this.parentNode = parentNode;
         this.predicate = predicate;
-        this.childNodeList = childNodeList;
     }
+
+    @Override
+    public void addChildNode(BavetAbstractBiNode<A, B> childNode) {
+        childNodeList.add(childNode);
+    }
+
+    // ************************************************************************
+    // Equality for node sharing
+    // ************************************************************************
+
+    @Override
+    public int hashCode() {
+        // Similar to Object.hash() without autoboxing
+        return 31 * System.identityHashCode(parentNode)
+                + System.identityHashCode(predicate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof BavetFilterBiNode) {
+            BavetFilterBiNode<?, ?> other = (BavetFilterBiNode<?, ?>) o;
+            return parentNode == other.parentNode
+                    && predicate == other.predicate;
+        } else {
+            return false;
+        }
+    }
+
+    // ************************************************************************
+    // Runtime
+    // ************************************************************************
 
     @Override
     public BavetFilterBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {

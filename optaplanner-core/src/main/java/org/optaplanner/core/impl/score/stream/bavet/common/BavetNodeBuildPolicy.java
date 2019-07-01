@@ -43,7 +43,13 @@ public class BavetNodeBuildPolicy<Solution_> {
     }
 
     public <Node_ extends BavetAbstractNode> Node_ retrieveSharedNode(Node_ node) {
-        return (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
+        Node_ sharedNode = (Node_) sharableNodeMap.computeIfAbsent(node, k -> node);
+        if (node.getNodeOrder() != sharedNode.getNodeOrder()) {
+            throw new IllegalStateException("Impossible state: the node (" + node
+                    + ")'s nodeOrder (" + node.getNodeOrder() + ") differs from the sharedNode (" + sharedNode
+                    + ")'s nodeOrder (" + sharedNode.getNodeOrder() + ").");
+        }
+        return sharedNode;
     }
 
     public void addScoringNode(BavetScoringNode scoringNode) {

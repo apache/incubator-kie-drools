@@ -109,22 +109,34 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     // ************************************************************************
-    // Node creation methods
+    // Node creation
     // ************************************************************************
 
     public BavetAbstractBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder) {
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
         buildPolicy.updateNodeOrderMaximum(nodeOrder);
-        List<BavetAbstractBiNode<A, B>> childNodeList = new ArrayList<>(childStreamList.size());
-        for (BavetAbstractBiConstraintStream<Solution_, A, B> childStream : childStreamList) {
-            BavetAbstractBiNode<A, B> childNode = childStream.createNodeChain(
-                    buildPolicy, constraintWeight, nodeOrder + 1);
-            childNodeList.add(childNode);
+
+        BavetAbstractBiNode<A, B> node = createNode(buildPolicy, constraintWeight, nodeOrder, parentNode);
+        BavetAbstractBiNode<A, B> sharedNode = buildPolicy.retrieveSharedNode(node);
+        if (sharedNode != node) {
+            // Share node
+            node = sharedNode;
+        } else {
+            if (parentNode != null) {
+                parentNode.addChildNode(node);
+            }
         }
-        return createNode(buildPolicy, constraintWeight, nodeOrder, childNodeList);
+
+        assertChildStreamListSize();
+        for (BavetAbstractBiConstraintStream<Solution_, A, B> childStream : childStreamList) {
+            childStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, node);
+        }
+        return node;
     }
 
+    protected abstract void assertChildStreamListSize();
+
     protected abstract BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractBiNode<A, B>> childNodeList);
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode);
 
 }

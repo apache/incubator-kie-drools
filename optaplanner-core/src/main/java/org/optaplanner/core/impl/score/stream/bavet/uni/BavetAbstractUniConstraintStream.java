@@ -157,7 +157,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     // ************************************************************************
-    // Node creation methods
+    // Node creation
     // ************************************************************************
 
     public BavetAbstractUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
@@ -176,10 +176,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         }
 
         assertChildStreamListSize();
-        if (!childStreamList.isEmpty()) {
-            for (BavetAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
-                childStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, node);
-            }
+        for (BavetAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
+            childStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, node);
         }
         return node;
     }

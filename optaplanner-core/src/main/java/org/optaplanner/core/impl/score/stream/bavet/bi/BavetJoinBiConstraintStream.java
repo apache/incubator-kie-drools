@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.List;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -29,23 +27,31 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     }
 
     // ************************************************************************
-    // Node creation methods
+    // Node creation
     // ************************************************************************
 
     @Override
-    public BavetJoinBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder) {
-        return (BavetJoinBiNode<A, B>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder);
-    }
-
-    @Override
-    protected BavetAbstractBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractBiNode<A, B>> childNodeList) {
-        if (childNodeList.isEmpty()) {
+    protected void assertChildStreamListSize() {
+        if (childStreamList.isEmpty()) {
             throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
                     + "Maybe don't create it.");
         }
-        return new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder, childNodeList);
+    }
+
+    @Override
+    public BavetJoinBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
+        return (BavetJoinBiNode<A, B>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);
+    }
+
+    @Override
+    protected BavetJoinBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
+        if (parentNode != null) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") cannot have a parentNode (" + parentNode + ").");
+        }
+        return new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder);
     }
 
     @Override

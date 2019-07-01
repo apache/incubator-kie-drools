@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.ToIntBiFunction;
@@ -71,16 +70,20 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B> extends Bavet
     }
 
     // ************************************************************************
-    // Node creation methods
+    // Node creation
     // ************************************************************************
 
     @Override
-    protected BavetScoringBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, List<BavetAbstractBiNode<A, B>> childNodeList) {
-        if (!childNodeList.isEmpty()) {
+    protected void assertChildStreamListSize() {
+        if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childNodeList (" + childNodeList + ") but it's an endpoint.");
+                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
         }
+    }
+
+    @Override
+    protected BavetScoringBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
         if (!positive) {
             constraintWeight = constraintWeight.negate();
         }

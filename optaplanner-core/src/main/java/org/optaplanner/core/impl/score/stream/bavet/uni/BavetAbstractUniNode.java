@@ -25,15 +25,15 @@ public abstract class BavetAbstractUniNode<A> extends BavetAbstractNode {
         super(session, nodeOrder);
     }
 
+    public void addChildNode(BavetAbstractUniNode<A> childNode) {
+        throw new IllegalStateException("Impossible state: the ConstraintStream for this node (" + this
+                + ") cannot handle a childNode (" + childNode + ").");
+    }
+
     public abstract BavetAbstractUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple);
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public void addChildNode(BavetAbstractUniNode<A> childNode) {
-        throw new IllegalStateException("Impossible state: the ConstraintStream for this node (" + this
-                + ") cannot handle a childNode (" + childNode + ").");
-    }
 
 }
