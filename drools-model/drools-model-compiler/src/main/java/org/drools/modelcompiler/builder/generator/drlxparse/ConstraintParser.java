@@ -401,7 +401,7 @@ public class ConstraintParser {
     }
 
     private static Expression uncastExpr(Expression e) {
-        if(e == null) { // TODO: Not sure why a null should be here - check QueryTest.testPositionalRecursiveQuery
+        if(e == null) { // Not sure why a null should be here - check QueryTest.testPositionalRecursiveQuery
             return null;
         }
         if(e.isCastExpr()) {
