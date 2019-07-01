@@ -33,6 +33,9 @@ import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
 
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.cleanUpUnusedNodes;
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.configureXStreamMappings;
+
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
     @Override
@@ -133,9 +136,9 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             if (rawXml == null ||  rawXml.trim().equals("")) {
                 return xmlPersistence.marshal(new ScenarioSimulationModel());
             }
-
+            String input = cleanUpUnusedNodes(rawXml);
             // Unmarshall the 1.5 format with "older" xstream configuration, that read "reference" attributes
-            Object o = getLocalXStream().fromXML(rawXml);
+            Object o = getLocalXStream().fromXML(input);
             ScenarioSimulationModel model = (ScenarioSimulationModel) o;
 
             // Marshall the model with the "new" xstream configuration, that does not write "reference" attributes
@@ -146,21 +149,8 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     private XStream getLocalXStream() {
         // We need this local instance to instantiate XStream with older settings
         XStream toReturn = XStreamUtils.createTrustingXStream(new DomDriver());
-
         toReturn.autodetectAnnotations(true);
-
-        toReturn.alias("ExpressionElement", ExpressionElement.class);
-        toReturn.alias("ExpressionIdentifier", ExpressionIdentifier.class);
-        toReturn.alias("FactIdentifier", FactIdentifier.class);
-        toReturn.alias("FactMapping", FactMapping.class);
-        toReturn.alias("FactMappingType", FactMappingType.class);
-        toReturn.alias("FactMappingValue", FactMappingValue.class);
-        toReturn.alias("Scenario", Scenario.class);
-        toReturn.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
-        toReturn.alias("Simulation", Simulation.class);
-        toReturn.alias("SimulationDescriptor", SimulationDescriptor.class);
-
-        toReturn.alias("Import", Import.class);
+        configureXStreamMappings(toReturn);
         return toReturn;
     }
 }

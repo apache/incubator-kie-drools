@@ -16,6 +16,9 @@
 
 package org.drools.scenariosimulation.backend.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,10 +40,11 @@ import org.kie.soup.project.datamodel.imports.Import;
 
 public class ScenarioSimulationXMLPersistence {
 
-    private XStream xt;
     private static final ScenarioSimulationXMLPersistence INSTANCE = new ScenarioSimulationXMLPersistence();
     private static final String currentVersion = new ScenarioSimulationModel().getVersion();
     private static final Pattern p = Pattern.compile("version=\"([0-9]+\\.[0-9]+)");
+
+    private XStream xt;
     private MigrationStrategy migrationStrategy = new InMemoryMigrationStrategy();
 
     private ScenarioSimulationXMLPersistence() {
@@ -48,23 +52,46 @@ public class ScenarioSimulationXMLPersistence {
 
         xt.setMode(XStream.NO_REFERENCES);
         xt.autodetectAnnotations(true);
+        configureXStreamMappings(xt);
+    }
 
-        xt.alias("ExpressionElement", ExpressionElement.class);
-        xt.alias("ExpressionIdentifier", ExpressionIdentifier.class);
-        xt.alias("FactIdentifier", FactIdentifier.class);
-        xt.alias("FactMapping", FactMapping.class);
-        xt.alias("FactMappingType", FactMappingType.class);
-        xt.alias("FactMappingValue", FactMappingValue.class);
-        xt.alias("Scenario", Scenario.class);
-        xt.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
-        xt.alias("Simulation", Simulation.class);
-        xt.alias("SimulationDescriptor", SimulationDescriptor.class);
-
-        xt.alias("Import", Import.class);
+    /**
+     * Method to configure the commonly-used mappings defined in {@see XSTREAM_MAPPINGS}
+     * @param toConfigure
+     */
+    public static void configureXStreamMappings(XStream toConfigure) {
+        Map<String, Class> XSTREAM_MAPPINGS = new HashMap<String, Class>() {
+            {
+                put("ExpressionElement", ExpressionElement.class);
+                put("ExpressionIdentifier", ExpressionIdentifier.class);
+                put("FactIdentifier", FactIdentifier.class);
+                put("FactMapping", FactMapping.class);
+                put("FactMappingType", FactMappingType.class);
+                put("FactMappingValue", FactMappingValue.class);
+                put("Scenario", Scenario.class);
+                put("ScenarioSimulationModel", ScenarioSimulationModel.class);
+                put("Simulation", Simulation.class);
+                put("SimulationDescriptor", SimulationDescriptor.class);
+                put("Import", Import.class);
+            }
+        };
+        XSTREAM_MAPPINGS.forEach(toConfigure::alias);
     }
 
     public static ScenarioSimulationXMLPersistence getInstance() {
         return INSTANCE;
+    }
+
+    public static String getCurrentVersion() {
+        return currentVersion;
+    }
+
+    public static String cleanUpUnusedNodes(String input) {
+        return removeNode(input, "<simulationDescriptor reference\\b[^>]*>(.*?)");
+    }
+
+    private static  String removeNode(String input, String toRemove) {
+        return input.replaceAll(toRemove,"");
     }
 
     public String marshal(final ScenarioSimulationModel sc) {
@@ -89,6 +116,7 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public String migrateIfNecessary(String rawXml) {
+        rawXml = cleanUpUnusedNodes(rawXml);
         String fileVersion = extractVersion(rawXml);
         Function<String, String> migrator = getMigrationStrategy().start();
         boolean supported = currentVersion.equals(fileVersion);
@@ -133,12 +161,10 @@ public class ScenarioSimulationXMLPersistence {
         this.migrationStrategy = migrationStrategy;
     }
 
-    public static String getCurrentVersion() {
-        return currentVersion;
-    }
-
     protected ScenarioSimulationModel internalUnmarshal(String xml) {
+        xml = cleanUpUnusedNodes(xml);
         Object o = xt.fromXML(xml);
         return (ScenarioSimulationModel) o;
     }
+
 }
