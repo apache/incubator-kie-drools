@@ -17,6 +17,7 @@
 package org.drools.modelcompiler;
 
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -98,4 +99,20 @@ public class CompilationFailuresTest extends BaseModelTest {
         assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
     }
 
+    @Test
+    public void testMaxIntegerResultOnDoublePatternShouldntCompile() {
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  $max : Double() from accumulate ( $num : Integer(); max($num) ) \n" +
+                "then\n" +
+                "  Double res = null;" +
+                "  res = $max;\n" +
+                "  System.out.println($max);\n" +
+                "end";
+
+        Results results = getCompilationResults(drl);
+        assertFalse(results.getMessages( Message.Level.ERROR).isEmpty());
+    }
 }
