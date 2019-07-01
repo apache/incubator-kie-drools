@@ -326,20 +326,16 @@ public class ConstraintParser {
 
         Expression combo;
 
-        if(left.isPrimitive()) {
-            combo = new BinaryExpr( left.getExpression(), right.getExpression(), operator );
-        } else {
-            switch (operator) {
-                case EQUALS:
-                case NOT_EQUALS:
-                    combo = getEqualityExpression(left, right, operator);
-                    break;
-                default:
-                    if (left.getExpression() == null || right.getExpression() == null) {
-                        return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
-                    }
-                    combo = handleSpecialComparisonCases(operator, left, right);
-            }
+        switch (operator) {
+            case EQUALS:
+            case NOT_EQUALS:
+                combo = getEqualityExpression(left, right, operator);
+                break;
+            default:
+                if (left.getExpression() == null || right.getExpression() == null) {
+                    return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
+                }
+                combo = handleSpecialComparisonCases(operator, left, right);
         }
 
         for(Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
@@ -388,23 +384,30 @@ public class ConstraintParser {
             return compareBigDecimal(operator, left, right);
         }
 
-        final Expression rightExpression = right.getExpression();
-        final Expression leftExpression = left.getExpression();
-
-        if (isPrimitiveExpression(rightExpression) && isPrimitiveExpression(leftExpression)) {
-            if (left.getType() != String.class) {
-                return new BinaryExpr(leftExpression, rightExpression, operator == BinaryExpr.Operator.EQUALS ? BinaryExpr.Operator.EQUALS : BinaryExpr.Operator.NOT_EQUALS );
-            }
-        }
-
-        String equalsMethod = !left.getType().equals( right.getType() ) && Number.class.isAssignableFrom( left.getRawClass() ) ?
+        String equalsMethod = isNumber(left) && isNumber(right) ?
                 "org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals" :
                 "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals";
 
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, equalsMethod );
-        methodCallExpr.addArgument(left.getExpression());
-        methodCallExpr.addArgument(right.getExpression()); // don't create NodeList with static method because missing "parent for child" would null and NPE
+        // Avoid casts, by using an helper method we leverage autoboxing and equals
+        methodCallExpr.addArgument(uncastExpr(left.getExpression()));
+        methodCallExpr.addArgument(uncastExpr(right.getExpression()));
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+    }
+
+    private static Boolean isNumber(TypedExpression left) {
+        return left.getBoxedType().map(ConstraintParser::isNumericType).orElse(false);
+    }
+
+    private static Expression uncastExpr(Expression e) {
+        if(e == null) { // Not sure why a null should be here - check QueryTest.testPositionalRecursiveQuery
+            return null;
+        }
+        if(e.isCastExpr()) {
+            return e.asCastExpr().getExpression();
+        } else {
+            return e;
+        }
     }
 
     private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
@@ -416,8 +419,8 @@ public class ConstraintParser {
             String methodName = getComparisonMethodName(operator, left, right);
             if (methodName != null) {
                 MethodCallExpr compareMethod = new MethodCallExpr( null, methodName );
-                compareMethod.addArgument( left.getExpression() );
-                compareMethod.addArgument( right.getExpression() );
+                compareMethod.addArgument(uncastExpr(left.getExpression()));
+                compareMethod.addArgument(uncastExpr(right.getExpression()));
                 return compareMethod;
             }
         }
@@ -427,11 +430,11 @@ public class ConstraintParser {
 
     private static String getComparisonMethodName(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
-        if ( left.getType() == String.class && right.getType() == String.class ) {
+        if (left.getType() == String.class && right.getType() == String.class) {
             return methodName + "StringsAsNumbers";
-        } else if ( isNumericType( left.getRawClass() ) || isNumericType( right.getRawClass() ) ) {
+        } else if (isNumber(left) || isNumber(right)) {
             return methodName + "Numbers";
-        } else if ( Comparable.class.isAssignableFrom( left.getRawClass() ) && Comparable.class.isAssignableFrom( right.getRawClass() ) ) {
+        } else if (Comparable.class.isAssignableFrom(left.getRawClass()) && Comparable.class.isAssignableFrom(right.getRawClass())) {
             return methodName;
         }
         return null;

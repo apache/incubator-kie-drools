@@ -362,7 +362,8 @@ public class ClassUtil {
         if (c == short.class) return Short.class;
         if (c == byte.class) return Byte.class;
         if (c == char.class) return Character.class;
-        return Boolean.class;
+        if (c == boolean.class) return Boolean.class;
+        return c;
     }
 
     public static Class<?> toRawClass(Type type) {
