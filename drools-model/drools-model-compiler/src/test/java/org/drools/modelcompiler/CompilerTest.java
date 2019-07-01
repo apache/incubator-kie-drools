@@ -1760,7 +1760,7 @@ public class CompilerTest extends BaseModelTest {
                         "  $p : Person($intField : age)\n" +
                         "  $a : Address(shortNumber == (short)$intField)\n" +
                         "then\n" +
-                        "  $r.setValue($a.getCity() + \" has the name number of\" + $p.getName());\n" +
+                        "  $r.setValue($a.getCity() + \" number has the same value of \" + $p.getName() + \" age\");\n" +
                         "end";
 
         KieSession ksession = getKieSession( str );
@@ -1775,8 +1775,8 @@ public class CompilerTest extends BaseModelTest {
         Address a = new Address("Milan");
         a.setShortNumber((short)37);
 
-        Address b = new Address("Milan");
-        a.setShortNumber((short)1);
+        Address b = new Address("Rome");
+        b.setShortNumber((short)1);
 
         ksession.insert(mark);
         ksession.insert(edson);
@@ -1786,6 +1786,8 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(b);
 
         ksession.fireAllRules();
+        assertEquals("Milan number has the same value of Mark age", result.getValue());
+
     }
 
 
@@ -1800,7 +1802,7 @@ public class CompilerTest extends BaseModelTest {
                         "  $p : Person($intField : age)\n" +
                         "  $a : Address(shortNumber > (short)$intField)\n" +
                         "then\n" +
-                        "  $r.setValue($a.getCity() + \" has the name number of\" + $p.getName());\n" +
+                            "  $r.setValue($a.getCity() + \" number is greater than \" + $p.getName() + \" age\");\n" +
                         "end";
 
         KieSession ksession = getKieSession( str );
@@ -1816,7 +1818,7 @@ public class CompilerTest extends BaseModelTest {
         a.setShortNumber((short)37);
 
         Address b = new Address("Naples");
-        a.setShortNumber((short)1);
+        b.setShortNumber((short)1);
 
         Address c = new Address("Rome");
         c.setShortNumber((short)38);
@@ -1830,6 +1832,9 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert(c);
 
         ksession.fireAllRules();
+
+        assertEquals("Rome number is greater than Mark age", result.getValue());
+
     }
 
     @Test

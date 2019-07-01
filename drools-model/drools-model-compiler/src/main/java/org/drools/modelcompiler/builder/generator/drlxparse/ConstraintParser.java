@@ -384,8 +384,7 @@ public class ConstraintParser {
             return compareBigDecimal(operator, left, right);
         }
 
-        boolean typesAreDifferent = !left.getType().equals(right.getType());
-        String equalsMethod = typesAreDifferent && isNumber(left) && isNumber(right) ?
+        String equalsMethod = isNumber(left) && isNumber(right) ?
                 "org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals" :
                 "org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals";
 
