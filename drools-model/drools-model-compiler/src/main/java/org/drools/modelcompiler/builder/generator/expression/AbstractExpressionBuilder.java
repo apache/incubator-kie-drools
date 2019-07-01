@@ -26,8 +26,6 @@ import java.util.stream.Stream;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -42,6 +40,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -49,10 +48,13 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.util.ClassUtil;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class AbstractExpressionBuilder {
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
@@ -138,7 +140,8 @@ public abstract class AbstractExpressionBuilder {
         } else if (expression instanceof FieldAccessExpr) {
             return expression;
         } else {
-            throw new UnsupportedOperationException("Unknown expression: " + expression);
+            context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+            return expression;
         }
     }
 
