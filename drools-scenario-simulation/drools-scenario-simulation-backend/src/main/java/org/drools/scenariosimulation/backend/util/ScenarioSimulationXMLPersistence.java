@@ -126,6 +126,7 @@ public class ScenarioSimulationXMLPersistence {
                 break;
             default:
                 supported = currentVersion.equals(fileVersion);
+                break;
         }
         if (!supported) {
             throw new IllegalArgumentException(new StringBuilder().append("Version ").append(fileVersion)
