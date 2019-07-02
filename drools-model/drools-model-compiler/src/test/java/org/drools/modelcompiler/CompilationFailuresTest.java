@@ -101,11 +101,30 @@ public class CompilationFailuresTest extends BaseModelTest {
 
     @Test
     public void testMaxIntegerResultOnDoublePatternShouldntCompile() {
+        checkCompilationFailureOnMismatchingAccumulate("Integer", "max");
+    }
+
+    @Test
+    public void testMinIntegerResultOnDoublePatternShouldntCompile() {
+        checkCompilationFailureOnMismatchingAccumulate("Integer", "min");
+    }
+
+    @Test
+    public void testMaxLongResultOnDoublePatternShouldntCompile() {
+        checkCompilationFailureOnMismatchingAccumulate("Long", "max");
+    }
+
+    @Test
+    public void testMinLongResultOnDoublePatternShouldntCompile() {
+        checkCompilationFailureOnMismatchingAccumulate("Long", "min");
+    }
+
+    private void checkCompilationFailureOnMismatchingAccumulate(String type, String accFunc) {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
                 "rule X when\n" +
-                "  $max : Double() from accumulate ( $num : Integer(); max($num) ) \n" +
+                "  $max : Double() from accumulate ( $num : " + type + "(); " + accFunc + "($num) ) \n" +
                 "then\n" +
                 "  Double res = null;" +
                 "  res = $max;\n" +
