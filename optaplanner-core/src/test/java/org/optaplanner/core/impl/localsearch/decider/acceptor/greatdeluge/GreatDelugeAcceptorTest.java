@@ -11,10 +11,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 
@@ -24,8 +21,8 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void isAcceptedPositiveLevelSingleScoreRainSpeed() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(SimpleScore.of(1100));
-        acceptor.setRainSpeed(100.0);
+        acceptor.setInitialWaterLevels(SimpleScore.of(1100));
+        acceptor.setRainSpeedScore(SimpleScore.of(100));
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
@@ -99,8 +96,8 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void isAcceptedPositiveLevelMultipleScoreRainSpeed() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(HardMediumSoftScore.of(0, 200, 500));
-        acceptor.setRainSpeed(100.0);
+        acceptor.setInitialWaterLevels(HardMediumSoftScore.of(0, 200, 500));
+        acceptor.setRainSpeedScore(HardMediumSoftScore.of(0,100,100));
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(HardMediumSoftScore.of(0, -200, -1000));
@@ -145,7 +142,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void isAcceptedPositiveLevelMultipleScoreRainSpeedRatio() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(HardMediumSoftScore.of(0, 200, 500));
+        acceptor.setInitialWaterLevels(HardMediumSoftScore.of(0, 200, 500));
         acceptor.setRainSpeedRatio(0.9);
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
@@ -191,11 +188,11 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void negativeWaterLevelSingleScore() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(SimpleScore.of(-100));
+        acceptor.setInitialWaterLevels(SimpleScore.of(-100));
         try {
             acceptor.phaseStarted(null);
         } catch (IllegalArgumentException e) {
-            assertEquals("The initial level (" + acceptor.getInitialLevels()
+            assertEquals("The initial level (" + acceptor.getInitialWaterLevels()
                     + ") cannot have negative level (" + "-100.0" + ").", e.getMessage());
         }
     }
@@ -203,70 +200,12 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void negativeWaterLevelMultipleScore() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
+        acceptor.setInitialWaterLevels(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
         try {
             acceptor.phaseStarted(null);
         } catch (IllegalArgumentException e) {
-            assertEquals("The initial level (" + acceptor.getInitialLevels()
+            assertEquals("The initial level (" + acceptor.getInitialWaterLevels()
                     + ") cannot have negative level (" + "-1.0" + ").", e.getMessage());
         }
     }
-
-    @Test
-    public void parsingLevelScoreLevelsFromInitialLevelSingleScore() {
-
-        GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(SimpleScore.of(150));
-        double[] actualScore = {150};
-        acceptor.phaseStarted(null);
-
-        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
-    }
-
-    @Test
-    public void parsingLevelScoreLevelsFromInitialLevelMultipleScore() {
-
-        GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialLevels(HardMediumSoftScore.parseScore("1hard/15medium/24soft"));
-        double[] actualScore = {1, 15, 24};
-        acceptor.phaseStarted(null);
-
-        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
-    }
-
-    @Test
-    public void parsingLevelScoreLevelsFromPhaseBestScoreSingleScore() {
-
-        GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setRainSpeedRatio(0.9995);
-
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(SimpleScore.of(-66));
-        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
-        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
-        lastCompletedStepScope.setScore(SimpleScore.of(-66));
-        phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
-        acceptor.phaseStarted(phaseScope);
-        double[] actualScore = {66};
-
-        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
-    }
-
-    @Test
-    public void parsingLevelScoreLevelsFromPhaseBestScoreMultipleScore() {
-
-        GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setRainSpeedRatio(0.959595);
-
-        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(HardMediumSoftScore.of(-5, 0, -24));
-        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
-        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
-        lastCompletedStepScope.setScore(HardMediumSoftScore.of(-5, 0, -24));
-        phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
-        acceptor.phaseStarted(phaseScope);
-        double[] actualScore = {5, 0, 24};
-
-        assertTrue(Arrays.equals(actualScore, acceptor.getLevelScoreLevels()));
-    }
-}
+   }
