@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -35,10 +33,6 @@ public class Scenario {
      * List of values to be used to test this scenario
      */
     private final List<FactMappingValue> factMappingValues = new ArrayList<>();
-
-
-    public Scenario() {
-    }
 
 
     /**

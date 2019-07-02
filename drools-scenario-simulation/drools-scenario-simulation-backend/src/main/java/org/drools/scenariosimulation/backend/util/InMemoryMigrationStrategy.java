@@ -21,17 +21,9 @@ import java.util.function.Function;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
-import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
-import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
-import org.drools.scenariosimulation.api.model.FactMappingType;
-import org.drools.scenariosimulation.api.model.FactMappingValue;
-import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
-import org.drools.scenariosimulation.api.model.Simulation;
-import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.kie.soup.commons.xstream.XStreamUtils;
-import org.kie.soup.project.datamodel.imports.Import;
 
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.cleanUpUnusedNodes;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.configureXStreamMappings;
@@ -146,6 +138,10 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
         };
     }
 
+    /**
+     * Returns the <code>XStream</code> configured for scesim version <= 1.5
+     * @return
+     */
     private XStream getLocalXStream() {
         // We need this local instance to instantiate XStream with older settings
         XStream toReturn = XStreamUtils.createTrustingXStream(new DomDriver());

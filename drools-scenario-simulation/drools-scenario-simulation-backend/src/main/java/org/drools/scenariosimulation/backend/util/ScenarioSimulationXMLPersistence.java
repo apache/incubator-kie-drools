@@ -16,9 +16,6 @@
 
 package org.drools.scenariosimulation.backend.util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,22 +57,17 @@ public class ScenarioSimulationXMLPersistence {
      * @param toConfigure
      */
     public static void configureXStreamMappings(XStream toConfigure) {
-        Map<String, Class> XSTREAM_MAPPINGS = new HashMap<String, Class>() {
-            {
-                put("ExpressionElement", ExpressionElement.class);
-                put("ExpressionIdentifier", ExpressionIdentifier.class);
-                put("FactIdentifier", FactIdentifier.class);
-                put("FactMapping", FactMapping.class);
-                put("FactMappingType", FactMappingType.class);
-                put("FactMappingValue", FactMappingValue.class);
-                put("Scenario", Scenario.class);
-                put("ScenarioSimulationModel", ScenarioSimulationModel.class);
-                put("Simulation", Simulation.class);
-                put("SimulationDescriptor", SimulationDescriptor.class);
-                put("Import", Import.class);
-            }
-        };
-        XSTREAM_MAPPINGS.forEach(toConfigure::alias);
+        toConfigure.alias("ExpressionElement", ExpressionElement.class);
+        toConfigure.alias("ExpressionIdentifier", ExpressionIdentifier.class);
+        toConfigure.alias("FactIdentifier", FactIdentifier.class);
+        toConfigure.alias("FactMapping", FactMapping.class);
+        toConfigure.alias("FactMappingType", FactMappingType.class);
+        toConfigure.alias("FactMappingValue", FactMappingValue.class);
+        toConfigure.alias("Scenario", Scenario.class);
+        toConfigure.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
+        toConfigure.alias("Simulation", Simulation.class);
+        toConfigure.alias("SimulationDescriptor", SimulationDescriptor.class);
+        toConfigure.alias("Import", Import.class);
     }
 
     public static ScenarioSimulationXMLPersistence getInstance() {
@@ -87,11 +79,8 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public static String cleanUpUnusedNodes(String input) {
-        return removeNode(input, "<simulationDescriptor reference\\b[^>]*>(.*?)");
-    }
-
-    private static  String removeNode(String input, String toRemove) {
-        return input.replaceAll(toRemove,"");
+        String toRemove = "<simulationDescriptor reference\\b[^>]*>(.*?)";
+        return input.replaceAll(toRemove, "");
     }
 
     public String marshal(final ScenarioSimulationModel sc) {
@@ -119,7 +108,7 @@ public class ScenarioSimulationXMLPersistence {
         rawXml = cleanUpUnusedNodes(rawXml);
         String fileVersion = extractVersion(rawXml);
         Function<String, String> migrator = getMigrationStrategy().start();
-        boolean supported = currentVersion.equals(fileVersion);
+        boolean supported;
         switch (fileVersion) {
             case "1.0":
                 migrator = migrator.andThen(getMigrationStrategy().from1_0to1_1());
@@ -134,6 +123,9 @@ public class ScenarioSimulationXMLPersistence {
             case "1.5":
                 migrator = migrator.andThen(getMigrationStrategy().from1_5to1_6());
                 supported = true;
+                break;
+            default:
+                supported = currentVersion.equals(fileVersion);
         }
         if (!supported) {
             throw new IllegalArgumentException(new StringBuilder().append("Version ").append(fileVersion)
@@ -166,5 +158,4 @@ public class ScenarioSimulationXMLPersistence {
         Object o = xt.fromXML(xml);
         return (ScenarioSimulationModel) o;
     }
-
 }
