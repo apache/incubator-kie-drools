@@ -36,6 +36,7 @@ import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
@@ -47,7 +48,6 @@ import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;
 import org.drools.core.xml.WrapperSemanticModule;
-import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;
@@ -66,6 +66,7 @@ import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.kie.internal.builder.conf.ProcessStringEscapesOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
+import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,7 @@ public class KnowledgeBuilderConfigurationImpl
 
     private boolean                           processStringEscapes    = true;
     private boolean                           classLoaderCache        = true;
+    private boolean                           trimCellsInDTable       = true;
     private boolean                           groupDRLsInKieBasesByFolder       = false;
 
     private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
@@ -195,7 +197,7 @@ public class KnowledgeBuilderConfigurationImpl
             // an osgi environement) so try with the class loader of this class
             this.chainedProperties = ChainedProperties.getChainedProperties( getClass().getClassLoader() );
 
-            if (this.classLoader instanceof ProjectClassLoader ) {
+            if (this.classLoader instanceof ProjectClassLoader) {
                 ((ProjectClassLoader) classLoader).setDroolsClassLoader(getClass().getClassLoader());
             }
         }
@@ -206,6 +208,10 @@ public class KnowledgeBuilderConfigurationImpl
 
         setProperty(ClassLoaderCacheOption.PROPERTY_NAME,
                 this.chainedProperties.getProperty(ClassLoaderCacheOption.PROPERTY_NAME,
+                        "true"));
+
+        setProperty( TrimCellsInDTableOption.PROPERTY_NAME,
+                this.chainedProperties.getProperty(TrimCellsInDTableOption.PROPERTY_NAME,
                         "true"));
 
         setProperty( GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME,
@@ -286,6 +292,8 @@ public class KnowledgeBuilderConfigurationImpl
             setProcessStringEscapes(Boolean.parseBoolean(value));
         } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
             setClassLoaderCacheEnabled(Boolean.parseBoolean(value));
+        } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
+            setTrimCellsInDTable(Boolean.parseBoolean(value));
         } else if (name.equals(GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME)) {
             setGroupDRLsInKieBasesByFolder(Boolean.parseBoolean(value));
         } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
@@ -337,6 +345,8 @@ public class KnowledgeBuilderConfigurationImpl
             return String.valueOf(isProcessStringEscapes());
         } else if (name.equals(ClassLoaderCacheOption.PROPERTY_NAME)) {
             return String.valueOf(isClassLoaderCacheEnabled());
+        } else if (name.equals(TrimCellsInDTableOption.PROPERTY_NAME)) {
+            return String.valueOf(isTrimCellsInDTable());
         } else if (name.equals(GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME)) {
             return String.valueOf(isGroupDRLsInKieBasesByFolder());
         } else if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
@@ -654,6 +664,14 @@ public class KnowledgeBuilderConfigurationImpl
         this.classLoaderCache = classLoaderCacheEnabled;
     }
 
+    public boolean isTrimCellsInDTable() {
+        return trimCellsInDTable;
+    }
+
+    public void setTrimCellsInDTable( boolean trimCellsInDTable ) {
+        this.trimCellsInDTable = trimCellsInDTable;
+    }
+
     public boolean isGroupDRLsInKieBasesByFolder() {
         return groupDRLsInKieBasesByFolder;
     }
@@ -722,6 +740,8 @@ public class KnowledgeBuilderConfigurationImpl
             return (T) DefaultPackageNameOption.get(this.defaultPackageName);
         } else if (ClassLoaderCacheOption.class.equals(option)) {
             return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
+        } else if (TrimCellsInDTableOption.class.equals(option)) {
+            return (T) (this.trimCellsInDTable ? TrimCellsInDTableOption.ENABLED : TrimCellsInDTableOption.DISABLED);
         } else if (GroupDRLsInKieBasesByFolderOption.class.equals(option)) {
             return (T) (this.groupDRLsInKieBasesByFolder ? GroupDRLsInKieBasesByFolderOption.ENABLED : GroupDRLsInKieBasesByFolderOption.DISABLED);
         } else if (PropertySpecificOption.class.equals(option)) {
@@ -777,6 +797,8 @@ public class KnowledgeBuilderConfigurationImpl
             setDefaultPackageName(((DefaultPackageNameOption) option).getPackageName());
         } else if (option instanceof ClassLoaderCacheOption) {
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
+        } else if (option instanceof TrimCellsInDTableOption) {
+            setTrimCellsInDTable(((TrimCellsInDTableOption) option).isTrimCellsInDTable());
         } else if (option instanceof GroupDRLsInKieBasesByFolderOption) {
             setGroupDRLsInKieBasesByFolder(((GroupDRLsInKieBasesByFolderOption) option).isGroupDRLsInKieBasesByFolder());
         } else if (option instanceof KBuilderSeverityOption) {
