@@ -89,10 +89,9 @@ end
 // Each student above the capacity counts as 1 point of penalty.
 rule "roomCapacity"
     when
-        $room : Room($capacity : capacity)
-        Lecture(room == $room, studentSize > $capacity, $studentSize : studentSize)
+        $lecture : Lecture(room != null, studentSize > getRoom().getCapacity())
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, ($capacity - $studentSize));
+        scoreHolder.addSoftConstraintMatch(kcontext, ($lecture.getRoom().getCapacity() - $lecture.getStudentSize()));
 end
 
 // MinimumWorkingDays: The lectures of each course should be spread into a minimum number of days.

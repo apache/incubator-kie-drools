@@ -59,6 +59,15 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return stream;
     }
 
+    // ************************************************************************
+    // Join
+    // ************************************************************************
+
+    @Override
+    public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
     @Override
     public <B> BiConstraintStream<A, B> join(
                 UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
@@ -87,6 +96,15 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return biStream;
     }
 
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Override
+    public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
     @Override
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping, UniConstraintCollector<A, ResultContainer_, Result_> collector) {
@@ -102,8 +120,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
-        // TODO
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(); // TODO
     }
 
     // ************************************************************************

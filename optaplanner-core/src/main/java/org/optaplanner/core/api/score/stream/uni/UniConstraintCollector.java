@@ -22,10 +22,6 @@ import java.util.function.Supplier;
 
 public final class UniConstraintCollector<A, ResultContainer_, Result_> {
 
-    // TODO add sum(long), count(), ...
-
-    // TODO extra interface
-
     private final Supplier<ResultContainer_> supplier;
     private final BiFunction<ResultContainer_, A, Runnable> accumulator;
     private final Function<ResultContainer_, Result_> finisher;

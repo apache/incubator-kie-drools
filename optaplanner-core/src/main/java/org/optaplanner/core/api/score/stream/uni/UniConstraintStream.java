@@ -46,27 +46,61 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     UniConstraintStream<A> filter(Predicate<A> predicate);
 
+    // ************************************************************************
+    // Join
+    // ************************************************************************
+
     /**
-     * Create a new {@link BiConstraintStream} for every combination of A and B for which the {@link BiJoiner}
-     * is true (for the properties it extracts from both facts).
+     * Create a new {@link BiConstraintStream} for every combination of A and B.
      * <p>
-     * Important: This is faster and more scalable than a join
-     * followed by a {@link BiConstraintStream#filter(BiPredicate)},
-     * because it applies hashing and/or indexing on the properties,
-     * so it doesn't create nor checks every combination of A and B.
-     * @param other never null
-     * @param joiner never null
+     * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
+     * than a {@link #join(UniConstraintStream, BiJoiner)},
+     * because it doesn't apply hashing and/or indexing on the properties,
+     * so it creates and checks every combination of A and B.
+     * @param otherStream never null
      * @param <B> the type of the second matched fact
-     * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
+     * @return a stream that matches every combination of A and B
      */
-    <B> BiConstraintStream<A, B> join(UniConstraintStream<B> other, BiJoiner<A, B> joiner);
+    <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream);
 
     /**
      * Create a new {@link BiConstraintStream} for every combination of A and B for which the {@link BiJoiner}
      * is true (for the properties it extracts from both facts).
      * <p>
-     * Important: This is faster and more scalable than a join
-     * followed by a {@link BiConstraintStream#filter(BiPredicate)},
+     * Important: This is faster and more scalable than a {@link #join(UniConstraintStream) join}
+     * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
+     * because it applies hashing and/or indexing on the properties,
+     * so it doesn't create nor checks every combination of A and B.
+     * @param otherStream never null
+     * @param joiner never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
+     */
+    <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner);
+
+    /**
+     * Create a new {@link BiConstraintStream} for every combination of A and B.
+     * <p>
+     * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
+     * than a {@link #join(Class, BiJoiner)},
+     * because it doesn't apply hashing and/or indexing on the properties,
+     * so it creates and checks every combination of A and B.
+     * <p>
+     * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
+     * @param otherClass never null
+     * @param <B> the type of the second matched fact
+     * @return a stream that matches every combination of A and B
+     */
+    default <B> BiConstraintStream<A, B> join(Class<B> otherClass) {
+        return join(getConstraint().from(otherClass));
+    }
+
+    /**
+     * Create a new {@link BiConstraintStream} for every combination of A and B for which the {@link BiJoiner}
+     * is true (for the properties it extracts from both facts).
+     * <p>
+     * Important: This is faster and more scalable than a {@link #join(Class) join}
+     * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of A and B.
      * <p>
@@ -106,9 +140,17 @@ public interface UniConstraintStream<A> extends ConstraintStream {
         return join(otherClass, joiner1.and(joiner2).and(joiner3).and(joiner4));
     }
 
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
     <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);
+
+    <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
+            Function<A, GroupKeyA_> groupKeyAMapping,
+            Function<A, GroupKeyB_> groupKeyBMapping);
 
     <GroupKeyA_, GroupKeyB_, ResultContainer_, Result_> TriConstraintStream<GroupKeyA_, GroupKeyB_, Result_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping,

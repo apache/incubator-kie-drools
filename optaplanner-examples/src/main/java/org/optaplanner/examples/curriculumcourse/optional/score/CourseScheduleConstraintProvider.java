@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
-import org.optaplanner.core.api.score.stream.common.Joiners;
+import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
@@ -40,6 +40,10 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         conflictingLecturesSameCourseInSamePeriod(constraintFactory);
         roomOccupancy(constraintFactory);
         unavailablePeriodPenalty(constraintFactory);
+        roomCapacity(constraintFactory);
+        minimumWorkingDays(constraintFactory);
+        curriculumCompactness(constraintFactory);
+        roomStability(constraintFactory);
     }
 
     private void teacherConflict(ConstraintFactory constraintFactory) {
@@ -108,6 +112,44 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                         on(UnavailablePeriodPenalty::getCourse, EQUAL_TO, Lecture::getCourse),
                         on(UnavailablePeriodPenalty::getPeriod, EQUAL_TO, Lecture::getPeriod))
                 .penalize();
+    }
+
+    protected void roomCapacity(ConstraintFactory constraintFactory) {
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "roomCapacity", HardSoftScore.ofSoft(1));
+        c.from(Lecture.class)
+                .filter(lecture -> lecture.getStudentSize() > lecture.getRoom().getCapacity())
+                .penalizeInt(lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity());
+    }
+
+    protected void minimumWorkingDays(ConstraintFactory constraintFactory) {
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "minimumWorkingDays", HardSoftScore.ofSoft(5));
+        c.from(Lecture.class)
+                .groupBy(Lecture::getCourse, countDistinct(Lecture::getDay))
+                .filter((course, dayCount) -> course.getMinWorkingDaySize() > dayCount)
+                .penalizeInt((course, dayCount) -> (int) (course.getMinWorkingDaySize() - dayCount));
+    }
+
+    protected void curriculumCompactness(ConstraintFactory constraintFactory) {
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "curriculumCompactness", HardSoftScore.ofSoft(2));
+        c.from(Curriculum.class)
+                .join(Lecture.class)
+                .filter((curriculum, lecture) -> lecture.getCurriculumList().contains(curriculum));
+        // TODO .groupBy(curriculum, collectSortAndFilter(lecture, Lecture::getPeriod(), lectureList -> lectureList.filter(if no before or after))
+        //      .flatten()
+        //      .penalize();
+        throw new UnsupportedOperationException();
+    }
+
+    protected void roomStability(ConstraintFactory constraintFactory) {
+        Constraint c = constraintFactory.newConstraintWithWeight(
+                "roomStability", HardSoftScore.ofSoft(1));
+        c.from(Lecture.class)
+                .groupBy(Lecture::getCourse, countDistinct(Lecture::getRoom))
+                .filter((course, roomCount) -> roomCount > 1)
+                .penalizeInt((course, roomCount) -> (int) (roomCount - 1L));
     }
 
 }

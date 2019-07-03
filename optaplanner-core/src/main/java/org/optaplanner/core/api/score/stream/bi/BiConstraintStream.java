@@ -53,27 +53,61 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     BiConstraintStream<A, B> filter(BiPredicate<A, B> predicate);
 
+    // ************************************************************************
+    // Join
+    // ************************************************************************
+
     /**
-     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
-     * is true (for the properties it extracts from both facts).
+     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C.
      * <p>
-     * Important: This is faster and more scalable than a join
-     * followed by a {@link TriConstraintStream#filter(TriPredicate)},
-     * because it applies hashing and/or indexing on the properties,
-     * so it doesn't create nor checks every combination of [A, B] and C.
-     * @param other never null
-     * @param joiner never null
+     * Important: {@link TriConstraintStream#filter(TriPredicate)}  Filtering} this is slower and less scalable
+     * than a {@link #join(UniConstraintStream, TriJoiner)},
+     * because it doesn't apply hashing and/or indexing on the properties,
+     * so it creates and checks every combination of [A, B] and C.
+     * @param otherStream never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
+     * @return a stream that matches every combination of [A, B] and C
      */
-    <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> other, TriJoiner<A, B, C> joiner);
+    <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream);
 
     /**
      * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
      * is true (for the properties it extracts from both facts).
      * <p>
-     * Important: This is faster and more scalable than a join
-     * followed by a {@link TriConstraintStream#filter(TriPredicate)},
+     * Important: This is faster and more scalable than a {@link #join(UniConstraintStream) join}
+     * followed by a {@link TriConstraintStream#filter(TriPredicate) filter},
+     * because it applies hashing and/or indexing on the properties,
+     * so it doesn't create nor checks every combination of [A, B] and C.
+     * @param otherStream never null
+     * @param joiner never null
+     * @param <C> the type of the third matched fact
+     * @return a stream that matches every combination of [A, B] and C for which the {@link BiJoiner} is true
+     */
+    <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner);
+
+    /**
+     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C.
+     * <p>
+     * Important: {@link TriConstraintStream#filter(TriPredicate)}  Filtering} this is slower and less scalable
+     * than a {@link #join(Class, TriJoiner)},
+     * because it doesn't apply hashing and/or indexing on the properties,
+     * so it creates and checks every combination of [A, B] and C.
+     * <p>
+     * This method is syntactic sugar for {@link #join(UniConstraintStream)}.
+     * @param otherClass never null
+     * @param <C> the type of the third matched fact
+     * @return a stream that matches every combination of [A, B] and C
+     */
+    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass) {
+        return join(getConstraint().from(otherClass));
+    }
+
+    /**
+     * Create a new {@link TriConstraintStream} for every combination of [A, B] and C for which the {@link BiJoiner}
+     * is true (for the properties it extracts from both facts).
+     * <p>
+     * Important: This is faster and more scalable than a {@link #join(Class, TriJoiner) join}
+     * followed by a {@link TriConstraintStream#filter(TriPredicate) filter},
      * because it applies hashing and/or indexing on the properties,
      * so it doesn't create nor checks every combination of [A, B] and C.
      * <p>
@@ -84,7 +118,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
-     * @return a stream that matches every combination of A and B for which the {@link BiJoiner} is true
+     * @return a stream that matches every combination of [A, B] and C for which the {@link BiJoiner} is true
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner) {
         return join(getConstraint().from(otherClass), joiner);
@@ -113,6 +147,10 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
         return join(otherClass, joiner1.and(joiner2).and(joiner3).and(joiner4));
     }
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
 
     // ************************************************************************
     // Penalize/reward

@@ -16,30 +16,66 @@
 
 package org.optaplanner.core.api.score.stream.common;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
+/**
+ *
+ */
 public final class ConstraintCollectors {
 
     public static <A> UniConstraintCollector<A, ?, Long> count() {
         return new UniConstraintCollector<>(
                 () -> new long[1],
-                (resultContainer1, a) -> {
-                    resultContainer1[0] ++;
-                    return (() -> resultContainer1[0] --);
+                (resultContainer, a) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
                 },
                 resultContainer -> resultContainer[0]);
+    }
+
+    public static <A> UniConstraintCollector<A, ?, Long> countDistinct(Function<A, ?> groupValueMapping) {
+        class CountDistinctResultContainer {
+            long count = 0L;
+            Map<Object, long[]> objectCountMap = new HashMap<>();
+        }
+        return new UniConstraintCollector<>(
+                CountDistinctResultContainer::new,
+                (resultContainer, a) -> {
+                    Object value = groupValueMapping.apply(a);
+                    long[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new long[1]);
+                    if (objectCount[0] == 0L) {
+                        resultContainer.count++;
+                    }
+                    objectCount[0]++;
+                    return (() -> {
+                        long[] objectCount2 = resultContainer.objectCountMap.get(value);
+                        if (objectCount2 == null) {
+                            throw new IllegalStateException("Impossible state: the value (" + value
+                                    + ") of A (" + a + ") is removed more times than it was added.");
+                        }
+                        objectCount2[0]--;
+                        if (objectCount2[0] == 0L) {
+                            resultContainer.objectCountMap.remove(value);
+                            resultContainer.count--;
+                        }
+                    });
+                },
+                resultContainer -> resultContainer.count);
     }
 
     public static <A> UniConstraintCollector<A, ?, Integer> sum(ToIntFunction<? super A> groupValueMapping) {
         return new UniConstraintCollector<>(
                 () -> new int[1],
-                (resultContainer1, a) -> {
+                (resultContainer, a) -> {
                     int value = groupValueMapping.applyAsInt(a);
-                    resultContainer1[0] += value;
-                    return (() -> resultContainer1[0] -= value);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
                 },
                 resultContainer -> resultContainer[0]);
     }
@@ -47,10 +83,10 @@ public final class ConstraintCollectors {
     public static <A> UniConstraintCollector<A, ?, Long> sum(ToLongFunction<? super A> groupValueMapping) {
         return new UniConstraintCollector<>(
                 () -> new long[1],
-                (resultContainer1, a) -> {
+                (resultContainer, a) -> {
                     long value = groupValueMapping.applyAsLong(a);
-                    resultContainer1[0] += value;
-                    return (() -> resultContainer1[0] -= value);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
                 },
                 resultContainer -> resultContainer[0]);
     }

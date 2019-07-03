@@ -53,10 +53,23 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         return stream;
     }
 
+    // ************************************************************************
+    // Join
+    // ************************************************************************
+
     @Override
-    public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> other, TriJoiner<A, B, C> joiner) {
+    public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream) {
         throw new UnsupportedOperationException(); // TODO
     }
+
+    @Override
+    public <C> TriConstraintStream<A, B, C> join(UniConstraintStream<C> otherStream, TriJoiner<A, B, C> joiner) {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
 
     // ************************************************************************
     // Penalize/reward
