@@ -22,10 +22,12 @@ import java.util.Optional;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.kogito.rules.RuleUnitMemory;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleUnitDescriptionRegistryTest {
 
@@ -92,14 +94,14 @@ public class RuleUnitDescriptionRegistryTest {
         assertThat(registry.hasUnits()).isTrue();
     }
 
-    private void loadDescriptionIntoRegistry(final Class<? extends RuleUnit> ruleUnitClass) {
-        final RuleUnitDescriptionLoader loader = new RuleUnitDescriptionLoader(RuleUnitTestUtil.createTypeResolver());
+    private void loadDescriptionIntoRegistry(final Class<? extends RuleUnitMemory> ruleUnitClass) {
+        final RuleUnitDescriptionLoader loader = RuleUnitTestUtil.createRuleUnitDescriptionLoader();
         loader.getDescription(ruleUnitClass.getName());
         assertThat(loader.getDescriptions()).hasSize(1);
         registry.add(loader);
     }
 
-    private void assertDescriptionIsLoaded(final Class<? extends RuleUnit> ruleUnitClass) {
+    private void assertDescriptionIsLoaded(final Class<? extends RuleUnitMemory> ruleUnitClass) {
         final Optional<RuleUnitDescription> description = registry.getDescription(ruleUnitClass.getName());
         assertThat(description).isPresent();
         assertThat(description.get().getRuleUnitClass()).isEqualTo(ruleUnitClass);

@@ -18,25 +18,27 @@ package org.kie.kogito.rules.impl;
 import java.lang.reflect.Field;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnitMemory;
 
 public class AbstractRuleUnitInstance<T extends RuleUnitMemory> implements RuleUnitInstance<T> {
 
-    private final T workingMemory;
+    private final T unitMemory;
     private final RuleUnit<T> unit;
-    private final KieSession rt;
+    private final KieSession runtime;
 
-    public AbstractRuleUnitInstance(RuleUnit<T> unit, T workingMemory, KieSession rt) {
+    public AbstractRuleUnitInstance( RuleUnit<T> unit, T unitMemory, KieSession runtime ) {
         this.unit = unit;
-        this.rt = rt;
-        this.workingMemory = workingMemory;
+        this.runtime = runtime;
+        this.unitMemory = unitMemory;
+        bind( runtime, unitMemory );
     }
 
     public int fire() {
-        bind(rt, workingMemory);
-        return rt.fireAllRules();
+        return runtime.fireAllRules();
     }
 
     @Override
@@ -45,18 +47,25 @@ public class AbstractRuleUnitInstance<T extends RuleUnitMemory> implements RuleU
     }
 
     public T workingMemory() {
-        return workingMemory;
+        return unitMemory;
     }
 
-    protected void bind(KieSession rt, T workingMemory) {
+    protected void bind(KieSession runtime, T workingMemory) {
         try {
             for (Field f : workingMemory.getClass().getDeclaredFields()) {
                 f.setAccessible(true);
                 Object v = null;
                 v = f.get(workingMemory);
-                if (v instanceof ListDataSource) {
-                    ListDataSource o = (ListDataSource) v;
-                    o.drainInto(rt::insert);
+                String dataSourceName = f.getName();
+                if ( v instanceof DataSource ) {
+                    DataSource<?> o = ( DataSource<?> ) v;
+                    EntryPoint ep = runtime.getEntryPoint(dataSourceName);
+                    o.subscribe(ep::insert);
+                }
+                try {
+                    runtime.setGlobal( dataSourceName, v );
+                } catch (RuntimeException e) {
+                    // ignore if the global doesn't exist
                 }
             }
         } catch (IllegalAccessException e) {

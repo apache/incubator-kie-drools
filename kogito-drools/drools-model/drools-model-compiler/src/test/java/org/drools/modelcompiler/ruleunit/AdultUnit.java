@@ -14,26 +14,32 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.codegen.data;
+package org.drools.modelcompiler.ruleunit;
 
-import org.kie.kogito.rules.DataStore;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.modelcompiler.domain.Person;
+import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnitMemory;
-import org.kie.kogito.rules.impl.ListDataSource;
 
 public class AdultUnit implements RuleUnitMemory {
+    private List<String> results = new ArrayList<>();
     private int adultAge = 18;
-    private DataStore<Person> persons = new ListDataSource<>();
-    private Results results = new Results();
+    private DataSource<Person> persons;
 
-    public AdultUnit( ) {
-        this( new ListDataSource<>() );
-    }
+    public AdultUnit( ) { }
 
-    public AdultUnit( DataStore<Person> persons ) {
+    public AdultUnit( DataSource<Person> persons ) {
         this.persons = persons;
     }
 
-    public DataStore<Person> getPersons() {
+    public AdultUnit( DataSource<Person> persons, int adultAge ) {
+        this.persons = persons;
+        this.adultAge = adultAge;
+    }
+
+    public DataSource<Person> getPersons() {
         return persons;
     }
 
@@ -41,7 +47,7 @@ public class AdultUnit implements RuleUnitMemory {
         return adultAge;
     }
 
-    public Results getResults() {
+    public List<String> getResults() {
         return results;
     }
 }

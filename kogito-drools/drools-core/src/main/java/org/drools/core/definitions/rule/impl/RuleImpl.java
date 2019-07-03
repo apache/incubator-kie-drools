@@ -16,8 +16,6 @@
 
 package org.drools.core.definitions.rule.impl;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -59,9 +57,11 @@ import org.drools.core.time.impl.Timer;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
+import org.kie.kogito.rules.RuleUnitMemory;
+
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class RuleImpl implements Externalizable,
                                  Wireable,
@@ -862,13 +862,12 @@ public class RuleImpl implements Externalizable,
         return ruleUnitClassName;
     }
 
-    public void setRuleUnitClass( Class<? extends RuleUnit> ruleUnit ) {
+    public void setRuleUnitClass( Class<? extends RuleUnitMemory> ruleUnit ) {
         setRuleUnitClassName( ruleUnit.getName() );
     }
 
     public void setRuleUnitClassName( String ruleUnitClassName ) {
         this.ruleUnitClassName = ruleUnitClassName;
-        setAgendaGroup( ruleUnitClassName );
     }
 
     public boolean hasRuleUnit() {

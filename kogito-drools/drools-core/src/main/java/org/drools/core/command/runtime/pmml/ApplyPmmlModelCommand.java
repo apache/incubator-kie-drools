@@ -69,8 +69,8 @@ public class ApplyPmmlModelCommand implements ExecutableCommand<PMML4Result>, Id
 		}
 		return null;
 //		RuleUnitExecutor executor = RuleUnitExecutor.create().bind(kbase);
-//		DataSource<PMMLRequestData> data = executor.newDataSource("request", this.requestData);
-//		DataSource<PMML4Result> resultData = executor.newDataSource("results", resultHolder);
+//		DataStore<PMMLRequestData> data = executor.newDataSource("request", this.requestData);
+//		DataStore<PMML4Result> resultData = executor.newDataSource("results", resultHolder);
 //		System.out.println("Setting result: "+resultHolder);
 //		ctx.lookup(ExecutionResultImpl.class).setResult(this.outIdentifier, resultHolder);
 //		return resultHolder;

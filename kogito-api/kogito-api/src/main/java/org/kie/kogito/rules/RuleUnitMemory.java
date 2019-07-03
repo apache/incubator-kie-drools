@@ -16,7 +16,7 @@
 
 package org.kie.kogito.rules;
 
-public interface RuleUnitMemory extends org.kie.api.runtime.rule.RuleUnit {
+public interface RuleUnitMemory {
 
 
 }

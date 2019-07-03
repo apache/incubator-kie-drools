@@ -32,7 +32,6 @@ import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.RuleContext;
-import org.kie.api.runtime.rule.RuleUnit;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -165,10 +164,4 @@ public interface KnowledgeHelper
     InternalFactHandle bolster( Object object, Object value );
 
     ClassLoader getProjectClassLoader();
-
-    void run(RuleUnit ruleUnit);
-    void run(Class<? extends RuleUnit> ruleUnitClass);
-
-    void guard(RuleUnit ruleUnit);
-    void guard(Class<? extends RuleUnit> ruleUnitClass);
 }

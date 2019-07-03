@@ -186,6 +186,14 @@ public class PackageModel {
         entryPoints.stream().map( EntryPointDeclarationDescr::getEntryPointId ).forEach( this.entryPoints::add );
     }
 
+    public void addEntryPoint(String name) {
+        entryPoints.add( name );
+    }
+
+    public boolean hasEntryPoint(String name) {
+        return entryPoints.contains( name );
+    }
+
     public Collection<String> getStaticImports() {
         return this.staticImports;
     }
@@ -244,6 +252,10 @@ public class PackageModel {
                     }
                 }));
         globals.putAll(transformed);
+    }
+
+    public void addGlobal(String name, Class<?> type) {
+        globals.put( name, type );
     }
 
     public Map<String, Class<?>> getGlobals() {

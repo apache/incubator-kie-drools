@@ -17,8 +17,6 @@
 package org.drools.core.common;
 
 import java.util.Iterator;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -31,11 +29,8 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.RuleUnit;
 
 public class DynamicEntryPoint extends NamedEntryPoint {
-
-    private final Map<RuleUnit, ObjectTypeConfigurationRegistry> boundUnits = new WeakHashMap<>();
 
     public DynamicEntryPoint( EntryPointId entryPoint, StatefulKnowledgeSessionImpl wm ) {
         this( entryPoint, wm, new ReentrantLock() );
@@ -49,7 +44,6 @@ public class DynamicEntryPoint extends NamedEntryPoint {
         this.kBase = kBase;
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.entryPointNode = this.kBase.getRete().getEntryPointNode( entryPoint );
-        boundUnits.clear();
         propagateAll();
     }
 

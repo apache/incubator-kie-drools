@@ -17,8 +17,6 @@
  */
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.ruleunit.RuleUnitUtil;
-
 /**
  * An entry point descriptor for facts. This is part of the
  * support to multi-stream concurrent event assertion.
@@ -26,8 +24,6 @@ import org.drools.core.ruleunit.RuleUnitUtil;
 public class EntryPointDescr extends PatternSourceDescr {
 
     private static final long serialVersionUID = 150l;
-
-    public static final EntryPointDescr RULE_UNIT_ENTRY_POINT_DESCR = new EntryPointDescr( RuleUnitUtil.RULE_UNIT_ENTRY_POINT );
 
     public EntryPointDescr() {
     }

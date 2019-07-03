@@ -16,14 +16,12 @@
 
 package org.drools.core.ruleunit;
 
-import static org.drools.core.ruleunit.RuleUnitUtil.getUnitName;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.kogito.rules.RuleUnitMemory;
 
 public class RuleUnitDescriptionRegistry {
 
@@ -33,7 +31,7 @@ public class RuleUnitDescriptionRegistry {
 
     public RuleUnitDescriptionRegistry() { }
 
-    public RuleUnitDescription getDescription(final RuleUnit ruleUnit) {
+    public RuleUnitDescription getDescription(final RuleUnitMemory ruleUnit) {
         final RuleUnitDescription ruleUnitDescr = ruleUnits.get(getUnitName(ruleUnit));
         if (ruleUnitDescr == null) {
             throw new IllegalStateException("Unknown RuleUnitDescription: " + getUnitName(ruleUnit));
@@ -58,5 +56,9 @@ public class RuleUnitDescriptionRegistry {
 
     public boolean hasUnits() {
         return !ruleUnits.isEmpty();
+    }
+
+    public static String getUnitName( RuleUnitMemory ruleUnit ) {
+        return ruleUnit.getClass().getName();
     }
 }

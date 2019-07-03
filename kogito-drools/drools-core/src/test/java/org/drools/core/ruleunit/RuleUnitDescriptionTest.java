@@ -23,18 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.core.ruleunit.RuleUnitTestUtil.createPackage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.*;
 
 public class RuleUnitDescriptionTest {
 
@@ -42,7 +38,7 @@ public class RuleUnitDescriptionTest {
 
     @BeforeEach
     public void prepareRuleUnitDescr() {
-        ruleUnitDescr = new RuleUnitDescription(TestRuleUnit.class);
+        ruleUnitDescr = new RuleUnitDescription(createPackage("test"), TestRuleUnit.class);
     }
 
     @Test
@@ -128,80 +124,6 @@ public class RuleUnitDescriptionTest {
     }
 
     @Test
-    public void bindDataSourcesNonexistingEntryPoints() {
-        final StatefulKnowledgeSessionImpl sessionImpl = mock(StatefulKnowledgeSessionImpl.class);
-        when(sessionImpl.getEntryPoint("number")).thenReturn(null);
-        when(sessionImpl.getEntryPoint("numbersArray")).thenReturn(null);
-        when(sessionImpl.getEntryPoint("stringList")).thenReturn(null);
-        when(sessionImpl.getEntryPoint("simpleFactList")).thenReturn(null);
-
-        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{1, 2, 5}, BigDecimal.TEN);
-        final SimpleFact simpleFact = new SimpleFact("testValue");
-        testRuleUnit.addSimpleFact(simpleFact);
-
-        ruleUnitDescr.bindDataSources(sessionImpl, testRuleUnit);
-        verify(sessionImpl, never()).insert(anyObject());
-        verify(sessionImpl, never()).insert(anyObject(), anyBoolean(), anyObject(), anyObject());
-    }
-
-    @Test
-    public void bindDataSources() {
-        final WorkingMemoryEntryPoint numberEntryPoint = mock(WorkingMemoryEntryPoint.class);
-        final WorkingMemoryEntryPoint numbersArrayEntryPoint = mock(WorkingMemoryEntryPoint.class);
-        final WorkingMemoryEntryPoint stringListEntryPoint = mock(WorkingMemoryEntryPoint.class);
-        final WorkingMemoryEntryPoint simpleFactListEntryPoint = mock(WorkingMemoryEntryPoint.class);
-
-        final StatefulKnowledgeSessionImpl sessionImpl = mock(StatefulKnowledgeSessionImpl.class);
-        when(sessionImpl.getEntryPoint(TestRuleUnit.class.getCanonicalName() + ".number")).thenReturn(numberEntryPoint);
-        when(sessionImpl.getEntryPoint(TestRuleUnit.class.getCanonicalName() + ".numbersArray")).thenReturn(numbersArrayEntryPoint);
-        when(sessionImpl.getEntryPoint(TestRuleUnit.class.getCanonicalName() + ".stringList")).thenReturn(stringListEntryPoint);
-        when(sessionImpl.getEntryPoint(TestRuleUnit.class.getCanonicalName() + ".simpleFactList")).thenReturn(simpleFactListEntryPoint);
-
-        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{1, 2, 5}, BigDecimal.TEN);
-        final SimpleFact simpleFact = new SimpleFact("testValue");
-        testRuleUnit.addSimpleFact(simpleFact);
-
-        ruleUnitDescr.bindDataSources(sessionImpl, testRuleUnit);
-
-        verify(numberEntryPoint).insert(BigDecimal.TEN);
-        verifyNoMoreInteractions(numberEntryPoint);
-
-        verify(numbersArrayEntryPoint).insert(1);
-        verify(numbersArrayEntryPoint).insert(2);
-        verify(numbersArrayEntryPoint).insert(5);
-        verifyNoMoreInteractions(numbersArrayEntryPoint);
-
-        verifyZeroInteractions(stringListEntryPoint);
-
-        verify(simpleFactListEntryPoint).insert(simpleFact);
-        verifyNoMoreInteractions(simpleFactListEntryPoint);
-    }
-
-    @Test
-    public void unbindDataSources() {
-        final WorkingMemoryEntryPoint boundPropEntryPoint = mock(WorkingMemoryEntryPoint.class);
-
-        final StatefulKnowledgeSessionImpl sessionImpl = mock(StatefulKnowledgeSessionImpl.class);
-        // This is a little hack, see description in TestRuleUnit class.
-        when(sessionImpl.getEntryPoint(TestRuleUnit.class.getCanonicalName() + ".bound")).thenReturn(boundPropEntryPoint);
-
-        final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{1, 2, 5}, BigDecimal.TEN);
-        final SimpleFact simpleFact = new SimpleFact("testValue");
-        testRuleUnit.addSimpleFact(simpleFact);
-
-        assertThat(testRuleUnit.bound).isFalse();
-
-        // Bind calls getBound() which switches the bound flag to true
-        ruleUnitDescr.bindDataSources(sessionImpl, testRuleUnit);
-        verify(boundPropEntryPoint).insert(true);
-
-        // Unbind calls getBound() which switches the bound flag to false
-        ruleUnitDescr.unbindDataSources(sessionImpl, testRuleUnit);
-        // We have to observe directly. By calling getBound, it will get switched again.
-        assertThat(testRuleUnit.bound).isFalse();
-    }
-
-    @Test
     public void getValue() {
         final TestRuleUnit testRuleUnit = new TestRuleUnit(new Integer[]{1, 2, 5}, BigDecimal.TEN);
         final SimpleFact simpleFact = new SimpleFact("testValue");
@@ -225,7 +147,7 @@ public class RuleUnitDescriptionTest {
     private void assertEntryPointIdExists(final String entryPointIdName) {
         final Optional<EntryPointId> entryPointId = ruleUnitDescr.getEntryPointId(entryPointIdName);
         assertTrue(entryPointId.isPresent());
-        assertEquals(TestRuleUnit.class.getName() + "." + entryPointIdName, entryPointId.get().getEntryPointId());
+        assertEquals(entryPointIdName, entryPointId.get().getEntryPointId());
     }
 
     private void assertDataSourceType(final String dataSourceName, final Class<?> expectedType) {

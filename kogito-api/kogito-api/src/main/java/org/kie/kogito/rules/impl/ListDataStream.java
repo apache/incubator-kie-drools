@@ -1,8 +1,9 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -16,42 +17,32 @@
 package org.kie.kogito.rules.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.kogito.rules.DataStore;
+import org.kie.kogito.rules.DataStream;
 
-public class ListDataSource<T> implements DataStore<T> {
+public class ListDataStream<T> implements DataStream<T> {
     private final ArrayList<T> values = new ArrayList<>();
     private final List<Consumer<T>> subscribers = new ArrayList<>();
 
-    public FactHandle add(T t) {
-        values.add(t);
-        subscribers.forEach(c -> c.accept(t));
-        return null;
+    public ListDataStream( T... ts ) {
+        append( ts );
     }
 
     @Override
-    public void update(FactHandle handle, T object) {
-
-    }
-
-    @Override
-    public void remove(FactHandle handle) {
-
+    public void append( T... ts ) {
+        for (T t : ts) {
+            values.add( t );
+            subscribers.forEach(c -> c.accept(t));
+        }
     }
 
     @Override
     public void subscribe(Consumer<T> consumer) {
         subscribers.add(consumer);
         values.forEach(consumer);
-    }
-
-    public void addAll(Collection<? extends T> ts) {
-        values.addAll(ts);
     }
 
     @Override

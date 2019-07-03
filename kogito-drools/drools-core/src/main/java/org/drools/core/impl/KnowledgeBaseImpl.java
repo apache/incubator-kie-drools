@@ -1241,11 +1241,10 @@ public class KnowledgeBaseImpl
                     if (globals.containsKey( identifier ) && !globals.get( identifier ).equals( type )) {
                         throw new RuntimeException(pkg.getName() + " cannot be integrated");
                     } else {
-                        pkg.addGlobal( identifier,
-                                       this.rootClassLoader.loadClass( type ) );
+                        Class<?> globalType = this.rootClassLoader.loadClass( type );
+                        pkg.addGlobal( identifier, globalType );
                         // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
-                        addGlobal(identifier,
-                                  this.rootClassLoader.loadClass(type));
+                        addGlobal( identifier, globalType );
                     }
                 }
             }
@@ -1778,10 +1777,6 @@ public class KnowledgeBaseImpl
 
     public InternalKieContainer getKieContainer() {
        return this.kieContainer;
-    }
-
-    public RuleUnitDescriptionRegistry getRuleUnitDescriptionRegistry() {
-        return ruleUnitDescriptionRegistry;
     }
 
     public boolean hasUnits() {

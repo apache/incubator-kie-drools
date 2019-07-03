@@ -17,22 +17,22 @@ package org.kie.kogito.codegen.rules;
 
 import java.lang.reflect.Method;
 
-import org.kie.api.runtime.KieSession;
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.impl.AbstractRuleUnitInstance;
-import org.kie.kogito.rules.impl.ListDataSource;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.drools.core.util.ClassUtils;
+import org.kie.api.runtime.KieSession;
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.impl.AbstractRuleUnitInstance;
 
 public class RuleUnitInstanceSourceClass {
 
@@ -85,30 +85,44 @@ public class RuleUnitInstanceSourceClass {
 
         BlockStmt methodBlock = new BlockStmt();
         methodDeclaration.setName("bind")
+                .addAnnotation( "Override" )
                 .addModifier(Modifier.Keyword.PROTECTED)
-                .addParameter(KieSession.class.getCanonicalName(), "rt")
+                .addParameter(KieSession.class.getCanonicalName(), "runtime")
                 .addParameter(typeName, "value")
                 .setType(void.class)
                 .setBody(methodBlock);
 
         try {
 
+
             for (Method m : typeClass.getDeclaredMethods()) {
                 m.setAccessible(true);
-                if (m.getReturnType() == DataSource.class) {
-                    EnclosedExpr casted = new EnclosedExpr(
-                            //  ((ListDataSource) value.$method())
-                            new CastExpr()
-                                    .setType(ListDataSource.class.getCanonicalName())
-                                    .setExpression(new MethodCallExpr(new NameExpr("value"), m.getName())));
+                String methodName = m.getName();
+                String propertyName = ClassUtils.getter2property(methodName);
 
-                    // .drainInto(rt::insert)
-                    MethodCallExpr drainInto = new MethodCallExpr(casted, "drainInto").addArgument(
-                            new MethodReferenceExpr().setScope(new NameExpr("rt")).setIdentifier("insert"));
+                if ( DataSource.class.isAssignableFrom( m.getReturnType() ) ) {
+                    //  value.$method())
+                    Expression fieldAccessor =
+                            new MethodCallExpr(new NameExpr("value"), methodName);
+
+                    // .subscribe(rt.getEntryPoint()::insert)
+                    MethodCallExpr drainInto = new MethodCallExpr(fieldAccessor, "subscribe").addArgument(
+                            new MethodReferenceExpr().setScope(
+                                    new MethodCallExpr(
+                                            new NameExpr("runtime"), "getEntryPoint",
+                                            NodeList.nodeList(new StringLiteralExpr(propertyName))))
+                                    .setIdentifier("insert"));
+//                            new MethodReferenceExpr().setScope(new NameExpr("runtime")).setIdentifier("insert"));
 
                     methodBlock.addStatement(drainInto);
                 }
+
+                MethodCallExpr setGlobalCall = new MethodCallExpr( new NameExpr("runtime"), "setGlobal" );
+                setGlobalCall.addArgument( new StringLiteralExpr( propertyName ) );
+                setGlobalCall.addArgument( new MethodCallExpr(new NameExpr("value"), methodName) );
+                methodBlock.addStatement(setGlobalCall);
             }
+
         } catch (Exception e) {
             throw new Error(e);
         }

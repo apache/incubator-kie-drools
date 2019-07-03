@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.definition.rule.UnitVar;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.kogito.rules.RuleUnitMemory;
 
-public class TestRuleUnit implements RuleUnit {
+public class TestRuleUnit implements RuleUnitMemory {
 
     private final Integer[] numbersArray;
 
@@ -76,30 +76,5 @@ public class TestRuleUnit implements RuleUnit {
 
     public void addString(final String string) {
         stringList.add(string);
-    }
-
-    @Override
-    public void onStart() {
-        // Intentionally empty.
-    }
-
-    @Override
-    public void onEnd() {
-        // Intentionally empty.
-    }
-
-    @Override
-    public void onSuspend() {
-        // Intentionally empty.
-    }
-
-    @Override
-    public void onResume() {
-        // Intentionally empty.
-    }
-
-    @Override
-    public void onYield(final RuleUnit other) {
-        // Intentionally empty.
     }
 }

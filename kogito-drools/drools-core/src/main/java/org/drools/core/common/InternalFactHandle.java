@@ -20,10 +20,10 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.ruleunit.InternalDataStore;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -166,7 +166,7 @@ public interface InternalFactHandle
         }
     }
 
-    default InternalDataSource<?> getDataSource() {
+    default InternalDataStore<?> getDataStore() {
         return null;
     }
 

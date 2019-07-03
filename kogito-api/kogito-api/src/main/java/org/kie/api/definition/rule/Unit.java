@@ -21,10 +21,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.kogito.rules.RuleUnitMemory;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Unit {
-    Class<? extends RuleUnit> value();
+    Class<? extends RuleUnitMemory> value();
 }

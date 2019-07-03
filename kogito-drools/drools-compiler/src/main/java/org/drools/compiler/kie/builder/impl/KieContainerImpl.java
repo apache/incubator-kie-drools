@@ -15,10 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
-import static org.drools.core.util.Drools.isJndiAvailable;
-import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +28,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -45,7 +40,6 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleUnitExecutorSession;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulSessionPool;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
@@ -73,13 +67,16 @@ import org.kie.api.runtime.KieContainerSessionsPool;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.api.time.Calendar;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
+import static org.drools.core.util.Drools.isJndiAvailable;
+import static org.drools.reflective.util.ClassUtils.convertResourceToClassName;
 
 public class KieContainerImpl
     implements
@@ -486,22 +483,6 @@ public class KieContainerImpl
             throw new RuntimeException(stateless ? "Cannot find a default StatelessKieSession" : "Cannot find a default KieSession");
         }
         return defaultKieSessionModel;
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor() {
-        return new RuleUnitExecutorSession( newKieSession() );
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor(KieSessionConfiguration conf) {
-        return new RuleUnitExecutorSession( newKieSession( conf ) );
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor(String kSessionName) {
-        return new RuleUnitExecutorSession( newKieSession( kSessionName ) );
-    }
-
-    public RuleUnitExecutor newRuleUnitExecutor(String kSessionName, KieSessionConfiguration conf) {
-        return new RuleUnitExecutorSession( newKieSession( kSessionName, conf ) );
     }
 
     public StatelessKieSession newStatelessKieSession() {

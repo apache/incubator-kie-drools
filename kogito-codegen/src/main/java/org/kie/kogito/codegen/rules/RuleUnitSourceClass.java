@@ -22,6 +22,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -107,7 +108,10 @@ public class RuleUnitSourceClass {
     private MethodCallExpr createKieBaseFromModel() {
         return new MethodCallExpr(
                 new NameExpr("org.drools.modelcompiler.builder.KieBaseBuilder"),
-                "createKieBaseFromModel").addArgument(new ObjectCreationExpr().setType(generatedSourceFile));
+                "createKieBaseFromModel").addArgument(
+                new ObjectCreationExpr().setType("org.drools.model.impl.UnitModelImpl")
+                        .addArgument(new ObjectCreationExpr().setType(generatedSourceFile))
+                        .addArgument(new StringLiteralExpr(canonicalName)));
     }
 
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {
@@ -126,7 +130,7 @@ public class RuleUnitSourceClass {
                 .setModifiers(Modifier.Keyword.PUBLIC);
 
         if (hasCdi) {
-            cls.addAnnotation( "javax.inject.Singleton" );
+            cls.addAnnotation("javax.inject.Singleton");
         }
 
         String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);

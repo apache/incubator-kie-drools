@@ -65,7 +65,6 @@ import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.drools.core.ruleunit.RuleUnitUtil;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.Enabled;
@@ -107,7 +106,6 @@ import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.functions.Function0;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
-import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.Exchange;
 import org.drools.model.patterns.CompositePatterns;
 import org.drools.model.patterns.EvalImpl;
@@ -143,7 +141,6 @@ import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.FlowDSL.declarationOf;
-import static org.drools.model.FlowDSL.entryPoint;
 import static org.drools.model.bitmask.BitMaskUtil.calculatePatternMask;
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 import static org.drools.model.impl.NamesGenerator.generateName;
@@ -229,7 +226,6 @@ public class KiePackagesBuilder {
         ruleImpl.setPackage( rule.getPackage() );
         if (rule.getUnit() != null) {
             ruleImpl.setRuleUnitClassName( rule.getUnit() );
-            pkg.getRuleUnitDescriptionLoader().getDescription(ruleImpl );
         }
         RuleContext ctx = new RuleContext( this, pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );
@@ -387,9 +383,6 @@ public class KiePackagesBuilder {
 
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
         GroupElement lhs = ctx.getRule().getLhs();
-        if (ctx.getRule().getRuleUnitClassName() != null) {
-            lhs.addChild( addPatternForVariable( ctx, lhs, getUnitVariable( ctx, pkg, view ), Condition.Type.PATTERN ) );
-        }
         addSubConditions( ctx, lhs, view.getSubConditions());
         if (requiresLeftActivation(lhs)) {
             lhs.addChild( 0, new Pattern( 0, ClassObjectType.InitialFact_ObjectType ) );
@@ -402,20 +395,6 @@ public class KiePackagesBuilder {
             return and.getChildren().isEmpty() || requiresLeftActivation( and.getChildren().get( 0 ) );
         }
         return rce instanceof QueryElement;
-    }
-
-    private Variable getUnitVariable( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
-        String unitClassName = ctx.getRule().getRuleUnitClassName();
-        for (Variable<?> var : view.getBoundVariables()) {
-            if ( var instanceof DeclarationImpl && var.getType().getName().equals( unitClassName ) ) {
-                return ( (DeclarationImpl) var ).setSource( entryPoint( RuleUnitUtil.RULE_UNIT_ENTRY_POINT ) );
-            }
-        }
-        try {
-            return declarationOf( pkg.getTypeResolver().resolveType( unitClassName ), entryPoint( RuleUnitUtil.RULE_UNIT_ENTRY_POINT ) );
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( e );
-        }
     }
 
     private RuleConditionElement conditionToElement( RuleContext ctx, GroupElement group, Condition condition ) {
@@ -806,7 +785,7 @@ public class KiePackagesBuilder {
                     pattern.setSource(fromSource);
                 } else if ( decl.getSource() instanceof UnitData ) {
                     UnitData unitData = (UnitData ) decl.getSource();
-                    pattern.setSource( new EntryPointId( ctx.getRule().getRuleUnitClassName() + "." + unitData.getName() ) );
+                    pattern.setSource( new EntryPointId( unitData.getName() ) );
                 } else {
                     throw new UnsupportedOperationException( "Unknown source: " + decl.getSource() );
                 }

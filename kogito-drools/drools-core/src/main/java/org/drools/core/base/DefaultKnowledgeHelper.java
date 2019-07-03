@@ -16,9 +16,6 @@
 
 package org.drools.core.base;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -71,7 +68,9 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.RuleUnit;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
 public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     implements
@@ -398,9 +397,9 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void update( final FactHandle handle, BitMask mask, Class<?> modifiedClass ) {
         InternalFactHandle h = (InternalFactHandle) handle;
 
-        if (h.getDataSource() != null) {
+        if (h.getDataStore() != null) {
             // This handle has been insert from a datasource, so update it
-            h.getDataSource().update( h,
+            h.getDataStore().update( h,
                                       ((InternalFactHandle)handle).getObject(),
                                       mask,
                                       modifiedClass,
@@ -620,21 +619,5 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public ClassLoader getProjectClassLoader() {
         return ((InternalKnowledgeBase)getKieRuntime().getKieBase()).getRootClassLoader();
-    }
-
-    public void run(RuleUnit ruleUnit ) {
-        workingMemory.switchToRuleUnit( ruleUnit, activation );
-    }
-
-    public void run(Class<? extends RuleUnit> ruleUnitClass) {
-        workingMemory.switchToRuleUnit( ruleUnitClass, activation );
-    }
-
-    public void guard(RuleUnit ruleUnit) {
-        workingMemory.guardRuleUnit( ruleUnit, activation );
-    }
-
-    public void guard(Class<? extends RuleUnit> ruleUnitClass) {
-        workingMemory.guardRuleUnit( ruleUnitClass, activation );
     }
 }

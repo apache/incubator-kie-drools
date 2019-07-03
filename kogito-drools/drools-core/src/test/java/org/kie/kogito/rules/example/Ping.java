@@ -1,9 +1,8 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,10 +13,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.rules;
+package org.kie.kogito.rules.example;
 
-import java.util.function.Consumer;
+import org.kie.kogito.rules.DataStore;
+import org.kie.kogito.rules.impl.ListDataSource;
 
-public interface DataSource<T> extends Iterable<T> {
-    void subscribe( Consumer<T> subscriber);
+public class Ping {
+    DataStore<String> pings = new ListDataSource<>();
 }

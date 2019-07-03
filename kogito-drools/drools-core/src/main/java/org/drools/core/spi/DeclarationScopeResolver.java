@@ -16,8 +16,6 @@
 
 package org.drools.core.spi;
 
-import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +66,7 @@ public class DeclarationScopeResolver {
 
     public void setRule(RuleImpl rule) {
         this.rule = rule;
-        this.ruleUnitDescr = pkg.getRuleUnitDescriptionLoader().getDescription(rule );
+        this.ruleUnitDescr = pkg.getRuleUnitDescriptionLoader().getDescription( rule );
     }
 
     public RuleConditionElement peekBuildStack() {
@@ -150,14 +148,6 @@ public class DeclarationScopeResolver {
     public Class<?> resolveVarType( String identifier ) {
         return ruleUnitDescr.flatMap( unit -> unit.getVarType( identifier ) ) // resolve identifier on rule unit ...
                             .orElseGet( () -> globalMap.get( identifier ) );  // ... or alternatively among globals
-    }
-
-    public String normalizeValueForUnit( String value ) {
-        return ruleUnitDescr.map( unit -> {
-            int dotPos = value.indexOf( '.' );
-            String firstPart = dotPos > 0 ? value.substring( 0, dotPos ) : value;
-            return unit.hasVar( firstPart ) ? RULE_UNIT_DECLARATION + "." + value : value;
-        }).orElse( value );
     }
 
     public boolean hasDataSource( String name ) {

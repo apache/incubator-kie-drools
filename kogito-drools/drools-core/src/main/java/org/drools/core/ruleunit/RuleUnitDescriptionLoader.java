@@ -22,20 +22,20 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.addon.TypeResolver;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.kogito.rules.RuleUnitMemory;
 
 public class RuleUnitDescriptionLoader {
 
     private State state = State.UNKNOWN;
 
-    private transient final TypeResolver typeResolver;
+    private transient final InternalKnowledgePackage pkg;
     private final Map<String, RuleUnitDescription> ruleUnitDescriptionsCache = new ConcurrentHashMap<>();
     private final Set<String> nonExistingUnits = new HashSet<>();
 
-    public RuleUnitDescriptionLoader(final TypeResolver typeResolver) {
-        this.typeResolver = typeResolver;
+    public RuleUnitDescriptionLoader(InternalKnowledgePackage pkg) {
+        this.pkg = pkg;
     }
 
     public State getState() {
@@ -46,23 +46,23 @@ public class RuleUnitDescriptionLoader {
         return ruleUnitDescriptionsCache;
     }
 
-    public Optional<RuleUnitDescription> getDescription(final RuleImpl rule) {
+    public Optional<RuleUnitDescription> getDescription(RuleImpl rule) {
         return getDescription(rule.getRuleUnitClassName());
     }
 
-    public Optional<RuleUnitDescription> getDescription(final String unitClassName) {
+    public Optional<RuleUnitDescription> getDescription(String unitClassName) {
         final Optional<RuleUnitDescription> result = Optional.ofNullable(unitClassName)
                 .map(name -> ruleUnitDescriptionsCache.computeIfAbsent(name, this::findDescription));
         state = state.hasUnit(result.isPresent());
         return result;
     }
 
-    private RuleUnitDescription findDescription(final String ruleUnit) {
+    private RuleUnitDescription findDescription(String ruleUnit) {
         if (nonExistingUnits.contains(ruleUnit)) {
             return null;
         }
         try {
-            return new RuleUnitDescription((Class<? extends RuleUnit>) typeResolver.resolveType(ruleUnit));
+            return new RuleUnitDescription(pkg, (Class<? extends RuleUnitMemory>) pkg.getTypeResolver().resolveType(ruleUnit));
         } catch (final ClassNotFoundException e) {
             nonExistingUnits.add(ruleUnit);
             return null;

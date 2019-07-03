@@ -16,8 +16,6 @@
 
 package org.drools.core.ruleunit;
 
-import static org.drools.reflective.util.ClassUtils.getter2property;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -27,29 +25,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.datasources.BindableArray;
-import org.drools.core.datasources.BindableDataProvider;
-import org.drools.core.datasources.BindableIterable;
-import org.drools.core.datasources.BindableObject;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.EntryPointId;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnitMemory;
+
+import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.reflective.util.ClassUtils.getter2property;
 
 public class RuleUnitDescription {
-    private final Class<? extends RuleUnit> ruleUnitClass;
+    private final Class<? extends RuleUnitMemory> ruleUnitClass;
 
     private final Map<String, String> datasources = new HashMap<>();
     private final Map<String, Class<?>> datasourceTypes = new HashMap<>();
 
     private final Map<String, Method> varAccessors = new HashMap<>();
 
-    public RuleUnitDescription(Class<? extends RuleUnit> ruleUnitClass ) {
+    public RuleUnitDescription( InternalKnowledgePackage pkg, Class<? extends RuleUnitMemory> ruleUnitClass ) {
         this.ruleUnitClass = ruleUnitClass;
-        indexUnitVars();
+        indexUnitVars(pkg);
     }
 
-    public Class<? extends RuleUnit> getRuleUnitClass() {
+    public Class<? extends RuleUnitMemory> getRuleUnitClass() {
         return ruleUnitClass;
     }
 
@@ -57,12 +54,8 @@ public class RuleUnitDescription {
         return ruleUnitClass.getName();
     }
 
-    private String getEntryPointName(String name) {
-        return getRuleUnitName() + "." + name;
-    }
-
     public Optional<EntryPointId> getEntryPointId( String name ) {
-        return Optional.ofNullable( datasources.get( name ) ).map( ds -> new EntryPointId( getEntryPointName(name) ) );
+        return Optional.ofNullable( datasources.get( name ) ).map( ds -> new EntryPointId( name ) );
     }
 
     public Optional<Class<?>> getDatasourceType( String name ) {
@@ -89,32 +82,7 @@ public class RuleUnitDescription {
         return datasources.containsKey( name );
     }
 
-    public void bindDataSources( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit ) {
-        datasources.forEach( (name, accessor) -> bindDataSource( wm, ruleUnit, name, accessor ) );
-    }
-
-    private void bindDataSource( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit, String name, String accessor ) {
-        WorkingMemoryEntryPoint entryPoint = wm.getEntryPoint( getEntryPointName( name ) );
-        if (entryPoint != null) {
-            BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
-            if (dataSource != null) {
-                dataSource.bind( ruleUnit, entryPoint );
-            }
-        }
-    }
-
-    public void unbindDataSources( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit ) {
-        datasources.values().forEach( accessor -> unbindDataSource( ruleUnit, accessor ) );
-    }
-
-    private void unbindDataSource( RuleUnit ruleUnit, String accessor ) {
-        BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
-        if (dataSource != null) {
-            dataSource.unbind( ruleUnit );
-        }
-    }
-
-    public Object getValue(RuleUnit ruleUnit, String identifier) {
+    public Object getValue(RuleUnitMemory ruleUnit, String identifier) {
         Method m = varAccessors.get(identifier);
         if (m != null) {
             try {
@@ -126,49 +94,39 @@ public class RuleUnitDescription {
         return null;
     }
 
-    private BindableDataProvider findDataSource( RuleUnit ruleUnit, String accessor ) {
-        try {
-            Object value = ruleUnit.getClass().getMethod( accessor ).invoke( ruleUnit );
-            if (value == null) {
-                return null;
-            }
-            if (value instanceof BindableDataProvider) {
-                return ( (BindableDataProvider) value );
-            }
-            if (value instanceof Iterable) {
-                return new BindableIterable( (Iterable) value );
-            }
-            if (value.getClass().isArray()) {
-                return new BindableArray( (Object[]) value );
-            }
-            return new BindableObject( value );
-        } catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    private void indexUnitVars() {
+    private void indexUnitVars(InternalKnowledgePackage pkg) {
         for (Method m : ruleUnitClass.getMethods()) {
-            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 && !"getUnitIdentity".equals(m.getName())) {
+            if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 ) {
                 String id = getter2property(m.getName());
                 if (id != null && !id.equals( "class" )) {
-                    datasources.put( id, m.getName() );
-                    varAccessors.put( id, m );
-
-                    Class<?> returnClass = m.getReturnType();
-                    if (returnClass.isArray()) {
-                        datasourceTypes.put( id, returnClass.getComponentType() );
-                    } else if (Iterable.class.isAssignableFrom( returnClass )) {
-                        Type returnType = m.getGenericReturnType();
-                        Class<?> sourceType = returnType instanceof ParameterizedType ?
-                                              (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
-                                              Object.class;
-                        datasourceTypes.put( id, sourceType );
-                    } else {
-                        datasourceTypes.put( id, returnClass );
-                    }
+                    indexUnitAccessor( pkg, m, id );
                 }
             }
         }
+    }
+
+    private void indexUnitAccessor( InternalKnowledgePackage pkg, Method m, String id ) {
+        datasources.put( id, m.getName() );
+        varAccessors.put( id, m );
+
+        Class<?> unitVarType = getUnitVarType(m);
+        datasourceTypes.put( id, unitVarType );
+        pkg.addGlobal( id, convertFromPrimitiveType( m.getReturnType() ) );
+    }
+
+    private Class<?> getUnitVarType(Method m) {
+        Class<?> returnClass = m.getReturnType();
+        if (returnClass.isArray()) {
+            return returnClass.getComponentType();
+        }
+
+        if (Iterable.class.isAssignableFrom( returnClass )) {
+            Type returnType = m.getGenericReturnType();
+            return  returnType instanceof ParameterizedType ?
+                    (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
+                    Object.class;
+        }
+
+        return returnClass;
     }
 }

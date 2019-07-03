@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.core.ruleunit;
+package org.kie.kogito.rules;
 
-import org.kie.api.runtime.rule.RuleUnit;
-
-public class RuleUnitUtil {
-    public static final String RULE_UNIT_ENTRY_POINT = "$$units$$";
-    public static final String RULE_UNIT_DECLARATION = "$$unit";
-
-    public static String getUnitName( RuleUnit ruleUnit ) {
-        return ruleUnit.getClass().getName();
-    }
+public interface DataStream<T> extends DataSource<T> {
+    void append( T... ts );
 }

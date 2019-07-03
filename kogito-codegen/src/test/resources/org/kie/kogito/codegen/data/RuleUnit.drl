@@ -1,13 +1,12 @@
-package org.kie.kogito.codegen.data
+package org.kie.kogito.codegen.data;
 unit AdultUnit;
 
 import org.kie.kogito.codegen.data.Person
 import org.kie.kogito.codegen.data.Results
 
 rule Adult when
-    $r: Results()
-    Person(age >= 18, $name : name)
+    $p: /persons[ age >= 18, $name : name ]
 then
-    $r.add($name);
+    results.add($name);
 end
 

@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.core.datasources;
+package org.drools.core.ruleunit;
 
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.drools.core.spi.Activation;
+import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.rules.DataStore;
 
-public class BindableObject implements BindableDataProvider {
-
-    private final Object object;
-
-    public BindableObject( Object object ) {
-        this.object = object;
-    }
-
-    @Override
-    public void bind( RuleUnit unit, WorkingMemoryEntryPoint ep ) {
-        ep.insert(object);
+public interface InternalDataStore<T> extends DataStore<T> {
+    default void update( FactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
+        throw new UnsupportedOperationException();
     }
 }

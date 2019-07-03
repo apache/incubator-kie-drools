@@ -642,7 +642,7 @@ public class KnowledgePackageImpl
 
     public void setTypeResolver(TypeResolver typeResolver) {
         this.typeResolver = typeResolver;
-        this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(typeResolver);
+        this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(this);
     }
 
     public RuleUnitDescriptionLoader getRuleUnitDescriptionLoader() {

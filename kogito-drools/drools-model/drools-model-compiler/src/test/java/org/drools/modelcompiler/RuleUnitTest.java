@@ -16,113 +16,46 @@
 
 package org.drools.modelcompiler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.model.Model;
-import org.drools.model.Rule;
-import org.drools.model.Variable;
-import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.ruleunit.AdultUnit;
+import org.drools.modelcompiler.ruleunit.AdultUnitInstance;
 import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.api.runtime.rule.RuleUnitExecutor;
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.impl.ListDataStream;
 
 import static java.util.Arrays.asList;
 
-import static org.drools.model.FlowDSL.declarationOf;
-import static org.drools.model.FlowDSL.expr;
-import static org.drools.model.FlowDSL.on;
-import static org.drools.model.FlowDSL.rule;
-import static org.drools.model.FlowDSL.unitData;
 import static org.junit.Assert.assertTrue;
 
-public class RuleUnitTest {
+public class RuleUnitTest extends BaseModelTest {
 
-    public static class AdultUnit implements RuleUnit {
-        private List<String> results = new ArrayList<String>();
-        private int adultAge = 18;
-        private DataSource<Person> persons;
-
-        public AdultUnit( ) { }
-
-        public AdultUnit( DataSource<Person> persons ) {
-            this.persons = persons;
-        }
-
-        public DataSource<Person> getPersons() {
-            return persons;
-        }
-
-        public int getAdultAge() {
-            return adultAge;
-        }
-
-        public List<String> getResults() {
-            return results;
-        }
+    public RuleUnitTest( RUN_TYPE testRunType ) {
+        super( testRunType );
     }
 
     @Test
     public void testRuleUnit() {
-        List<String> result = new ArrayList<>();
+        String str =
+            "package org.drools.modelcompiler.ruleunit;\n" +
+            "unit AdultUnit\n" +
+            "import " + Person.class.getCanonicalName() + "\n" +
+            "rule Adult when\n" +
+            "    $p: /persons[ age >= adultAge ]" +
+            "then\n" +
+            "    results.add($p.getName());" +
+            "end ";
 
-        Variable<Person> adult = declarationOf( Person.class, unitData( "persons" ) );
+        DataSource<Person> persons = new ListDataStream<>(
+                new Person( "Mario", 45 ),
+                new Person( "Marilena", 47 ),
+                new Person( "Sofia", 7 ) );
 
-        Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( AdultUnit.class )
-                .build(
-                        expr("$expr$1$", adult, p -> p.getAge() > 18),
-                        on(adult).execute(p -> {
-                            System.out.println( p.getName() );
-                            result.add( p.getName() );
-                        })
-                );
+        AdultUnit unit = new AdultUnit( persons, 21 );
+        AdultUnitInstance unitInstance = new AdultUnitInstance( unit, getKieSession(str) );
 
-        Model model = new ModelImpl().addRule( rule );
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+        unitInstance.fire();
 
-        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kieBase );
-
-        executor.newDataSource( "persons",
-                new Person( "Mario", 43 ),
-                new Person( "Marilena", 44 ),
-                new Person( "Sofia", 5 ) );
-
-        executor.run( AdultUnit.class );
-
-        assertTrue( result.containsAll( asList("Mario", "Marilena") ) );
+        assertTrue( unit.getResults().containsAll( asList("Mario", "Marilena") ) );
     }
 
-    @Test
-    public void testRuleUnitWithVarBinding() {
-        Variable<AdultUnit> unit = declarationOf( AdultUnit.class );
-        Variable<Person> adult = declarationOf( Person.class, unitData( "persons" ) );
-
-        Rule rule = rule( "org.drools.retebuilder", "Adult" ).unit( RuleUnitTest.AdultUnit.class )
-                .build(
-                        expr("$expr$1$", adult, unit, (p, u) -> p.getAge() > u.getAdultAge()),
-                        on(adult, unitData(List.class, "results")).execute((p, r) -> {
-                            System.out.println( p.getName() );
-                            r.add( p.getName() );
-                        })
-                );
-
-        Model model = new ModelImpl().addRule( rule );
-        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
-
-        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kieBase );
-
-        executor.newDataSource( "persons",
-                new Person( "Mario", 43 ),
-                new Person( "Marilena", 44 ),
-                new Person( "Sofia", 5 ) );
-
-        AdultUnit ruleUnit = new AdultUnit();
-        executor.run( ruleUnit );
-
-        assertTrue( ruleUnit.getResults().containsAll( asList("Mario", "Marilena") ) );
-    }
 }

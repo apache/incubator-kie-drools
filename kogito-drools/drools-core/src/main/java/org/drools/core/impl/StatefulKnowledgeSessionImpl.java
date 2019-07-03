@@ -16,11 +16,6 @@
 
 package org.drools.core.impl;
 
-import static java.util.stream.Collectors.toList;
-import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
-import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -117,7 +112,6 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.kie.services.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
@@ -156,6 +150,13 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.services.time.TimerService;
+
+import static java.util.stream.Collectors.toList;
+
+import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
@@ -245,8 +246,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
-
-    protected transient InternalRuleUnitExecutor ruleUnitExecutor;
 
     private boolean stateless;
 
@@ -2093,28 +2092,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (declarativeAgenda && activation.getActivationFactHandle() != null) {
             getEntryPointNode().retractActivation( activation.getActivationFactHandle(), activation.getPropagationContext(), this );
         }
-        if (ruleUnitExecutor != null) {
-            ruleUnitExecutor.cancelActivation( activation );
-        }
-    }
-
-    @Override
-    public void onSuspend() {
-        if (ruleUnitExecutor != null) {
-            ruleUnitExecutor.onSuspend();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        if (ruleUnitExecutor != null) {
-            ruleUnitExecutor.onResume();
-        }
-    }
-
-    @Override
-    public InternalRuleUnitExecutor getRuleUnitExecutor() {
-        return ruleUnitExecutor;
     }
 
     @Override

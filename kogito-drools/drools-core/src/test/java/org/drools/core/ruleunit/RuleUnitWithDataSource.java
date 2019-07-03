@@ -16,10 +16,10 @@
 
 package org.drools.core.ruleunit;
 
-import org.kie.api.runtime.rule.DataSource;
-import org.kie.api.runtime.rule.RuleUnit;
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.RuleUnitMemory;
 
-public class RuleUnitWithDataSource implements RuleUnit {
+public class RuleUnitWithDataSource implements RuleUnitMemory {
 
     private DataSource<Object> stringSource;
 

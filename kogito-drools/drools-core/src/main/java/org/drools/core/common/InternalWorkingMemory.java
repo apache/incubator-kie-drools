@@ -26,7 +26,6 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
-import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.reteoo.EntryPointNode;
@@ -208,8 +207,4 @@ public interface InternalWorkingMemory
 
     default void onSuspend() { }
     default void onResume() { }
-
-    default InternalRuleUnitExecutor getRuleUnitExecutor() {
-        return null;
-    }
 }

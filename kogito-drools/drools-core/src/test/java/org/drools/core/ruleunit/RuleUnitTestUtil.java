@@ -20,13 +20,25 @@ import java.util.Collections;
 
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
 
 public final class RuleUnitTestUtil {
 
     public static TypeResolver createTypeResolver() {
         return new ClassTypeResolver(Collections.emptySet(),
-                                     RuleUnitUtil.class.getClassLoader(),
-                                     RuleUnitUtil.class.getPackage().getName());
+                RuleUnitDescription.class.getClassLoader(),
+                RuleUnitDescription.class.getPackage().getName());
+    }
+
+    public static InternalKnowledgePackage createPackage(String name) {
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl(name);
+        pkg.setTypeResolver( createTypeResolver() );
+        return pkg;
+    }
+
+    public static RuleUnitDescriptionLoader createRuleUnitDescriptionLoader() {
+        return createPackage(null).getRuleUnitDescriptionLoader();
     }
 
     private RuleUnitTestUtil() {

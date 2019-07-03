@@ -31,7 +31,7 @@ public class RuleUnitDescriptionLoaderTest {
 
     @BeforeEach
     public void prepareRuleUnitDescriptionLoader() {
-        loader = new RuleUnitDescriptionLoader(RuleUnitTestUtil.createTypeResolver());
+        loader = RuleUnitTestUtil.createRuleUnitDescriptionLoader();
     }
 
     @Test

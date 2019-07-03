@@ -16,11 +16,6 @@
 
 package org.drools.compiler.rule.builder;
 
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.getNormalizeDate;
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeEmptyKeyword;
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeStringOperator;
-import static org.drools.core.util.StringUtils.isIdentifier;
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,6 +124,11 @@ import org.mvel2.ParserContext;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
+
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.getNormalizeDate;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeEmptyKeyword;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeStringOperator;
+import static org.drools.core.util.StringUtils.isIdentifier;
 
 /**
  * A builder for patterns
@@ -1145,8 +1145,6 @@ public class PatternBuilder
                 }
             }
         }
-
-        value2 = context.getDeclarationResolver().normalizeValueForUnit(value2);
 
         Declaration declr = null;
         if (value2.indexOf('(') < 0 && value2.indexOf('.') < 0 && value2.indexOf('[') < 0) {

@@ -38,7 +38,6 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.RuleUnit;
 
 public class SequentialKnowledgeHelper
     implements
@@ -320,10 +319,4 @@ public class SequentialKnowledgeHelper
     public void cancelMatch(Match match) {
         // TODO Auto-generated method stub
     }
-
-    public void run(RuleUnit ruleUnit ) { }
-    public void run(Class<? extends RuleUnit> ruleUnitClass) { }
-
-    public void guard(RuleUnit ruleUnit ) { }
-    public void guard(Class<? extends RuleUnit> ruleUnitClass) { }
 }

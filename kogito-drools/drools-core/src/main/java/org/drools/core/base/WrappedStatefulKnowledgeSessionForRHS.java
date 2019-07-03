@@ -35,7 +35,6 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
@@ -47,7 +46,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
-import org.kie.services.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
@@ -72,11 +70,11 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.FactHandle.State;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
+import org.kie.services.time.TimerService;
 
 /**
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
@@ -106,10 +104,6 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 	}
 
 	// -- then just delegate
-	
-    public InternalRuleUnitExecutor getRuleUnitExecutor() {
-        return delegate.getRuleUnitExecutor();
-    }
 	
 	public KieRuntimeLogger getLogger() {
 		return delegate.getLogger();
@@ -769,21 +763,5 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 
 	public SessionClock getSessionClock() {
 		return delegate.getSessionClock();
-	}
-
-	public void switchToRuleUnit(RuleUnit ruleUnit, Activation activation) {
-        delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnit, activation );
-	}
-
-	public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
-		delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnitClass, activation );
-	}
-
-	public void guardRuleUnit(RuleUnit ruleUnit, Activation activation) {
-		delegate.getRuleUnitExecutor().guardRuleUnit( ruleUnit, activation );
-	}
-
-	public void guardRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
-		delegate.getRuleUnitExecutor().guardRuleUnit( ruleUnitClass, activation );
 	}
 }
