@@ -20,6 +20,8 @@ Quick Links
 
 **Wiki:** https://github.com/kiegroup/kogito-runtimes/wiki
 
+**JIRA:** https://issues.jboss.org/projects/KOGITO
+
 **jBPM:** https://www.jbpm.org/
 
 **Drools:** https://www.drools.org/
