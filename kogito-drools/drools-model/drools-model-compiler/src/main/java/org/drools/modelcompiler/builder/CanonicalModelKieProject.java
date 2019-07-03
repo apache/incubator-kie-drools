@@ -35,6 +35,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.util.Drools;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.jci.CompilationProblem;
 import org.slf4j.Logger;
@@ -42,9 +43,9 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
 
-import static org.drools.modelcompiler.CanonicalKieModule.MODEL_FILE;
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
 import static org.drools.modelcompiler.CanonicalKieModule.createFromClassLoader;
+import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
@@ -131,14 +132,14 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             System.out.println(res.getErrors());
         }
 
-        writeModelFile(modelFiles, trgMfs);
+        writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
     }
 
-    protected void writeModelFile(Collection<String> modelSources, MemoryFileSystem trgMfs) {
+    public void writeModelFile(Collection<String> modelSources, MemoryFileSystem trgMfs, ReleaseId releaseId) {
         String pkgNames = MODEL_VERSION + Drools.getFullVersion() + "\n";
-        if (!modelSources.isEmpty()) {
+        if(!modelSources.isEmpty()) {
             pkgNames += modelSources.stream().collect(Collectors.joining("\n"));
         }
-        trgMfs.write(MODEL_FILE, pkgNames.getBytes());
+        trgMfs.write(getModelFileWithGAV(releaseId), pkgNames.getBytes() );
     }
 }

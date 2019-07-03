@@ -19,6 +19,7 @@ package org.drools.modelcompiler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -90,7 +91,8 @@ import static org.kie.api.io.ResourceType.determineResourceType;
 
 public class CanonicalKieModule implements InternalKieModule {
 
-    public static final String MODEL_FILE = "META-INF/kie/drools-model";
+    public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
+    public static final String MODEL_FILE_NAME = "drools-model";
 
     public static final String MODEL_VERSION = "Drools-Model-Version:";
 
@@ -322,7 +324,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private Collection<String> getRuleClassNames() {
         if ( ruleClassesNames == null ) {
-            ruleClassesNames = findRuleClassesNames( getModuleClassLoader() );
+            ruleClassesNames = findRuleClassesNames();
         }
         return ruleClassesNames;
     }
@@ -345,13 +347,17 @@ public class CanonicalKieModule implements InternalKieModule {
         return models;
     }
 
-    private static Collection<String> findRuleClassesNames( ClassLoader kieProjectCL) {
+    private Collection<String> findRuleClassesNames() {
         String modelFiles;
+        ReleaseId releaseId = internalKieModule.getReleaseId();
+        String modelFileName = getModelFileWithGAV(releaseId);
         try {
-            modelFiles = new String( IoUtils.readBytesFromInputStream( kieProjectCL.getResourceAsStream( MODEL_FILE ) ) );
+            Resource modelFile = internalKieModule.getResource(modelFileName);
+            modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
         } catch (IOException e) {
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
+
 
         String[] lines = modelFiles.split( "\n" );
         String header = lines[0];
@@ -740,5 +746,12 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public ReleaseId getReleaseId() {
         return internalKieModule.getReleaseId();
+    }
+
+    public static String getModelFileWithGAV(ReleaseId releaseId) {
+        return Paths.get(MODEL_FILE_DIRECTORY,
+                              releaseId.getGroupId(),
+                              releaseId.getArtifactId(),
+                              MODEL_FILE_NAME).toString();
     }
 }

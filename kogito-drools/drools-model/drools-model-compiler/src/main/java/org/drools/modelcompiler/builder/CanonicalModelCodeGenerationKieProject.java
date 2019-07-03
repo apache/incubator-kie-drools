@@ -63,6 +63,6 @@ public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKiePro
         new ProjectSourceClass(modelMethod).withCdi(hasCdi).write(srcMfs);
 
         srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("."));
-        writeModelFile(generatedSourceFiles, trgMfs);
+        writeModelFile(generatedSourceFiles, trgMfs, getInternalKieModule().getReleaseId());
     }
 }
