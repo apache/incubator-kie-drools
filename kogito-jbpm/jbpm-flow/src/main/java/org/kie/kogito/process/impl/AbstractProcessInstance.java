@@ -19,8 +19,10 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.runtime.process.EventListener;
@@ -31,6 +33,7 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.uow.WorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
 
@@ -55,10 +58,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         
         ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+pid, completionEventListener, false);
         
-        process.instances().update(pid, this);
+        addToUnitOfWork((pi) -> process.instances().update(pi.id(), pi));
         org.kie.api.runtime.process.ProcessInstance pi = this.rt.startProcessInstance(pid);
         unbind(variables, pi.getVariables());
         
+    }
+    
+    protected void addToUnitOfWork(Consumer<ProcessInstance<T>> action) {
+        ((InternalProcessRuntime) rt).getUnitOfWorkManager().currentUnitOfWork().intercept(WorkUnit.create(this, action));
     }
 
     public void abort() {
@@ -66,10 +73,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             return;
         }
         long pid = legacyProcessInstance.getId();
-        unbind(variables, legacyProcessInstance.getVariables());
-        process.instances().remove(pid);
+        unbind(variables, legacyProcessInstance.getVariables());        
         this.rt.abortProcessInstance(pid);
- 
+        addToUnitOfWork((pi) -> process.instances().remove(pi.id()));
     }
 
     @Override
@@ -134,9 +140,9 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     
     protected void removeOnFinish() {
 
-        if (status() != org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {
-            process.instances().remove(legacyProcessInstance.getId());
+        if (status() != org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {            
             ((WorkflowProcessInstance)legacyProcessInstance).removeEventListener("processInstanceCompleted:"+legacyProcessInstance.getId(), completionEventListener, false);
+            addToUnitOfWork((pi) -> process.instances().remove(pi.id()));
         }
     }
 

@@ -64,7 +64,10 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManager;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.time.TimerService;
 import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
 import org.kie.services.time.impl.CronExpression;
@@ -79,6 +82,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	private SignalManager signalManager;
 	private TimerManager timerManager;
 	private ProcessEventSupport processEventSupport;
+	private UnitOfWorkManager unitOfWorkManager;
 
 	public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
 		this.kruntime = kruntime;
@@ -93,7 +97,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		timerManager = new TimerManager(
 		        new TimerManagerRuntimeAdaptor(kruntime),
                 kruntime.getTimerService());
-        processEventSupport = new ProcessEventSupport();
+		unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
+        processEventSupport = new ProcessEventSupport(unitOfWorkManager);
         if (isActive()) {
             initProcessEventListeners();                   
             initStartTimers();
@@ -125,7 +130,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		timerManager = new TimerManager(
 		        new TimerManagerRuntimeAdaptor(kruntime),
                 kruntime.getTimerService());
-        processEventSupport = new ProcessEventSupport();
+		unitOfWorkManager = new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
+        processEventSupport = new ProcessEventSupport(unitOfWorkManager);
         if (isActive()) {
             initProcessEventListeners();                   
             initStartTimers();
@@ -481,7 +487,12 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
 	public WorkItemManager getWorkItemManager() {
 		return kruntime.getWorkItemManager();
-	}
+	}	
+
+    @Override
+    public UnitOfWorkManager getUnitOfWorkManager() {
+        return unitOfWorkManager;
+    }
 
 	public void signalEvent(String type, Object event) {
 		signalManager.signalEvent(type, event);
@@ -671,4 +682,5 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         }
         
     }
+
 }

@@ -87,7 +87,7 @@ public class AbstractCodegenTest {
         for (GeneratedFile entry : generatedFiles) {
             String fileName = entry.relativePath();
             sources[index++] = fileName;
-            srcMfs.write(fileName, entry.contents());
+            srcMfs.write(fileName, entry.contents());          
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());

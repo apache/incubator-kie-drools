@@ -25,6 +25,7 @@ import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.signal.LightSignalManager;
 import org.kie.services.time.TimerService;
 
@@ -35,12 +36,15 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     private final SignalManager signalManager;
     private final WorkItemManager workItemManager;
     private final ProcessEventSupport eventSupport;
+    private final UnitOfWorkManager unitOfWorkManager;
 
     public AbstractProcessRuntimeServiceProvider(
             TimerService timerService,
             WorkItemHandlerConfig workItemHandlerProvider,
             ProcessEventListenerConfig processEventListenerProvider,
-            SignalManagerHub compositeSignalManager) {
+            SignalManagerHub compositeSignalManager,
+            UnitOfWorkManager unitOfWorkManager) {
+        this.unitOfWorkManager = unitOfWorkManager;
         processInstanceManager = new DefaultProcessInstanceManager();
         signalManager = new LightSignalManager(
                 id -> Optional.ofNullable(
@@ -55,7 +59,7 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
                     workItem, workItemHandlerProvider.forName(workItem));
         }
         
-        this.eventSupport = new ProcessEventSupport();
+        this.eventSupport = new ProcessEventSupport(this.unitOfWorkManager);
         
         for (ProcessEventListener listener : processEventListenerProvider.listeners()) {
             this.eventSupport.addEventListener(listener);
@@ -85,5 +89,10 @@ public class AbstractProcessRuntimeServiceProvider implements ProcessRuntimeServ
     @Override
     public ProcessEventSupport getEventSupport() {        
         return eventSupport;
+    }
+
+    @Override
+    public UnitOfWorkManager getUnitOfWorkManager() {
+        return unitOfWorkManager;
     }
 }

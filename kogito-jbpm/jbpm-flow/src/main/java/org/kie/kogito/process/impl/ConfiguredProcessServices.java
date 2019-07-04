@@ -25,7 +25,8 @@ public class ConfiguredProcessServices extends AbstractProcessRuntimeServiceProv
         super(new JDKTimerService(),
               config.workItemHandlers(),
               config.processEventListeners(),
-              config.signalManagerHub());
+              config.signalManagerHub(),
+              config.unitOfWorkManager());
 
     }
 }

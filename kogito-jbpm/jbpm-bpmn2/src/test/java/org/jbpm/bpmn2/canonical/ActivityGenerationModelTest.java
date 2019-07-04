@@ -50,6 +50,8 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -391,7 +393,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
             wiConfig.register(entry.getKey(), entry.getValue());
         }
 
-        ProcessConfig config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(new DebugProcessEventListener()));
+        ProcessConfig config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(new DebugProcessEventListener()), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
         TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
         Map<String, BpmnProcess> processes = new HashMap<>();

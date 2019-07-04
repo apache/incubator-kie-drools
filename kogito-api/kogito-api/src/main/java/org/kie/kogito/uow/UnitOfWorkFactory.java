@@ -3,8 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.process;
+package org.kie.kogito.uow;
 
-import org.kie.kogito.signal.SignalManagerHub;
-import org.kie.kogito.uow.UnitOfWorkManager;
+/**
+ * Factory responsible for create instances of UnitOfWork of given
+ * implementation type.
+ *
+ */
+public interface UnitOfWorkFactory {
 
-public interface ProcessConfig {
-    WorkItemHandlerConfig workItemHandlers();
-    
-    ProcessEventListenerConfig processEventListeners();
-    
-    SignalManagerHub signalManagerHub();
-    
-    UnitOfWorkManager unitOfWorkManager();
+    /**
+     * Creates new instance of UnitOfWork implementation backed by this factory.
+     * @return new unit of work instance
+     */
+    UnitOfWork create();
 }

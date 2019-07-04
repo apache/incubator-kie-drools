@@ -17,6 +17,7 @@ package org.kie.kogito;
 
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.rules.RuleUnits;
+import org.kie.kogito.uow.UnitOfWorkManager;
 
 /**
  * Entry point for accessing business automation components
@@ -41,7 +42,17 @@ public interface Application {
         return null;
     }
 
+    /**
+     * Returns rule units found in the application otherwise null
+     * @return rule unit information or null if not found
+     */
     default RuleUnits ruleUnits() {
         return null;
     }
+    
+    /**
+     * Returns unit of work manager that allows to control execution within the application
+     * @return non null unit of work manager
+     */
+    UnitOfWorkManager unitOfWorkManager();
 }

@@ -28,18 +28,28 @@ import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.uow.WorkUnit;
 
 public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListener> {
 
+    private UnitOfWorkManager unitOfWorkManager;
+
+    public ProcessEventSupport(UnitOfWorkManager unitOfWorkManager) {
+        this.unitOfWorkManager = unitOfWorkManager;
+    }
+    
     public void fireBeforeProcessStarted(final ProcessInstance instance, KieRuntime kruntime ) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
             final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
 
-            do{
-                iter.next().beforeProcessStarted(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do{
+                    iter.next().beforeProcessStarted(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -49,9 +59,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final ProcessStartedEvent event = new ProcessStartedEventImpl(instance, kruntime);
 
-            do {
-                iter.next().afterProcessStarted(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().afterProcessStarted(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -61,9 +73,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
 
-            do {
-                iter.next().beforeProcessCompleted(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().beforeProcessCompleted(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -73,9 +87,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
 
-            do {
-                iter.next().afterProcessCompleted(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().afterProcessCompleted(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -85,9 +101,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final ProcessNodeTriggeredEvent event = new ProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
 
-            do {
-                iter.next().beforeNodeTriggered(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().beforeNodeTriggered(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -97,9 +115,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final ProcessNodeTriggeredEvent event = new ProcessNodeTriggeredEventImpl(nodeInstance, kruntime);
 
-            do{
-                iter.next().afterNodeTriggered(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do{
+                    iter.next().afterNodeTriggered(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -109,9 +129,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final ProcessNodeLeftEvent event = new ProcessNodeLeftEventImpl(nodeInstance, kruntime);
 
-            do{
-                iter.next().beforeNodeLeft(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do{
+                    iter.next().beforeNodeLeft(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -121,9 +143,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final ProcessNodeLeftEvent event = new ProcessNodeLeftEventImpl(nodeInstance, kruntime);
 
-            do{
-                iter.next().afterNodeLeft(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do{
+                    iter.next().afterNodeLeft(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -136,9 +160,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
             final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
                 id, instanceId, oldValue, newValue, processInstance, kruntime);
 
-            do {
-                iter.next().beforeVariableChanged(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().beforeVariableChanged(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -151,9 +177,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
             final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
                 name, id, oldValue, newValue, processInstance, kruntime);
 
-            do {
-                iter.next().afterVariableChanged(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().afterVariableChanged(e);
+                } while (iter.hasNext());
+            }));
         }
     }
     
@@ -163,9 +191,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
 
-            do{
-                iter.next().beforeSLAViolated(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do{
+                    iter.next().beforeSLAViolated(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -175,9 +205,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, kruntime);
 
-            do {
-                iter.next().afterSLAViolated(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().afterSLAViolated(e);
+                } while (iter.hasNext());
+            }));
         }
     }
     
@@ -187,9 +219,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
 
-            do{
-                iter.next().beforeSLAViolated(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do{
+                    iter.next().beforeSLAViolated(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 
@@ -199,9 +233,11 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if (iter.hasNext()) {
             final SLAViolatedEvent event = new SLAViolatedEventImpl(instance, nodeInstance, kruntime);
 
-            do {
-                iter.next().afterSLAViolated(event);
-            } while (iter.hasNext());
+            unitOfWorkManager.currentUnitOfWork().intercept(WorkUnit.create(event, (e) -> {
+                do {
+                    iter.next().afterSLAViolated(e);
+                } while (iter.hasNext());
+            }));
         }
     }
 

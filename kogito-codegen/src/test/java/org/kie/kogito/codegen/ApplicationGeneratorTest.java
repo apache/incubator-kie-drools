@@ -208,7 +208,7 @@ public class ApplicationGeneratorTest {
         assertThat(compilationUnit.getPackageDeclaration().get().getName().toString()).isEqualTo(PACKAGE_NAME);
 
         assertThat(compilationUnit.getImports()).isNotNull();
-        assertThat(compilationUnit.getImports()).hasSize(2);
+        assertThat(compilationUnit.getImports()).hasSize(3);
         assertThat(compilationUnit.getImports().get(0).getName().toString()).isEqualTo(Config.class.getCanonicalName());
 
         assertThat(compilationUnit.getTypes()).isNotNull();
@@ -226,7 +226,7 @@ public class ApplicationGeneratorTest {
         }
 
         assertThat(mainAppClass.getMembers()).isNotNull();
-        assertThat(mainAppClass.getMembers()).hasSize(2 + expectedNumberOfCustomFactoryMethods);
+        assertThat(mainAppClass.getMembers()).hasSize(4 + expectedNumberOfCustomFactoryMethods);
 
         assertThat(mainAppClass.getMembers())
                 .filteredOn(member -> member instanceof MethodDeclaration

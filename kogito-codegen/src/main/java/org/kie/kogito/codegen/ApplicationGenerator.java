@@ -15,6 +15,9 @@
 
 package org.kie.kogito.codegen;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_FQN;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,9 +30,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.Config;
+import org.kie.kogito.codegen.metadata.ImageMetaData;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -38,19 +49,13 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.kie.kogito.Config;
-import org.kie.kogito.codegen.metadata.ImageMetaData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_FQN;
 
 public class ApplicationGenerator {
 
@@ -104,7 +109,14 @@ public class ApplicationGenerator {
                 parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
         ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
-
+        
+        FieldDeclaration unitOfWorkManagerField = cls.findFirst(FieldDeclaration.class).filter(fd -> fd.getVariable(0).getNameAsString().equals("unitOfWorkManager")).get();
+        // unit of work manager setup
+        unitOfWorkManagerField.getVariable(0).setInitializer(new ObjectCreationExpr(null, 
+                                                                                    new ClassOrInterfaceType(null, DefaultUnitOfWorkManager.class.getCanonicalName()), 
+                                                                                    NodeList.nodeList(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, CollectingUnitOfWorkFactory.class.getCanonicalName()), NodeList.nodeList()))));
+        
+        
         if (hasCdi) {
             cls.addAnnotation("javax.inject.Singleton");                       
         }

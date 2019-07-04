@@ -60,6 +60,7 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.signal.SignalManager;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.services.time.TimerService;
 import org.kie.services.time.impl.CommandServiceTimerJobFactoryManager;
 import org.kie.services.time.impl.CronExpression;
@@ -77,6 +78,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     private TimerManager timerManager;
     private ProcessEventSupport processEventSupport;
     private final WorkItemManager workItemManager;
+    private UnitOfWorkManager unitOfWorkManager;
 
     public static LightProcessRuntime ofProcess(Process p) {
         LightProcessRuntimeServiceProvider services =
@@ -106,6 +108,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         this.timerManager = new TimerManager(timerManagerRuntime, timerService);
         this.processEventSupport = services.getEventSupport();
         this.workItemManager = services.getWorkItemManager();
+        this.unitOfWorkManager = services.getUnitOfWorkManager();
         if (isActive()) {
             initProcessEventListeners();
             initStartTimers();
@@ -455,6 +458,11 @@ public class LightProcessRuntime implements InternalProcessRuntime {
     public WorkItemManager getWorkItemManager() {
         return workItemManager;
     }
+    
+    @Override
+    public UnitOfWorkManager getUnitOfWorkManager() {
+        return this.unitOfWorkManager;
+    }
 
     public void signalEvent(String type, Object event) {
         signalManager.signalEvent(type, event);
@@ -635,4 +643,5 @@ public class LightProcessRuntime implements InternalProcessRuntime {
             return null;
         }
     }
+
 }

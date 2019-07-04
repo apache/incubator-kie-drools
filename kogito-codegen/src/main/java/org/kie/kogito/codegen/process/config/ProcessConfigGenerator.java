@@ -19,6 +19,7 @@ import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 public class ProcessConfigGenerator {
@@ -38,6 +39,7 @@ public class ProcessConfigGenerator {
         return new ObjectCreationExpr()
                 .setType(StaticProcessConfig.class.getCanonicalName())
                 .addArgument(new ObjectCreationExpr().setType(workItemConfigClass))
-                .addArgument(new ObjectCreationExpr().setType(processEventListenerConfigClass));
+                .addArgument(new ObjectCreationExpr().setType(processEventListenerConfigClass))
+                .addArgument(new NameExpr("unitOfWorkManager"));
     }
 }
