@@ -41,6 +41,10 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
  */
 public interface TriConstraintStream<A, B, C> extends ConstraintStream {
 
+    // ************************************************************************
+    // Filter
+    // ************************************************************************
+
     /**
      * Exhaustively test each tuple of facts against the {@link TriPredicate}
      * and match if {@link TriPredicate#test(Object, Object, Object)} returns true.

@@ -24,11 +24,17 @@ import org.optaplanner.core.api.score.stream.testdata.TestdataLavishSolution;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishValueGroup;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
+import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
+
 public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
     public UniConstraintStreamTest(boolean constraintMatchEnabled) {
         super(constraintMatchEnabled);
     }
+
+    // ************************************************************************
+    // Filter
+    // ************************************************************************
 
     @Test
     public void filter_problemFact() {
@@ -47,15 +53,15 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                new JustifiedMatch(valueGroup1),
-                new JustifiedMatch(valueGroup2));
+                assertMatch(valueGroup1),
+                assertMatch(valueGroup2));
 
         // Incremental
         scoreDirector.beforeProblemPropertyChanged(valueGroup1);
         valueGroup1.setCode("Other code");
         scoreDirector.afterProblemPropertyChanged(valueGroup1);
         assertScore(scoreDirector,
-                new JustifiedMatch(valueGroup2));
+                assertMatch(valueGroup2));
     }
 
     @Test
@@ -79,17 +85,66 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         // From scratch
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                new JustifiedMatch(entity1),
-                new JustifiedMatch(entity2));
+                assertMatch(entity1),
+                assertMatch(entity2));
 
         // Incremental
         scoreDirector.beforeProblemPropertyChanged(entity3);
         entity3.setEntityGroup(entityGroup);
         scoreDirector.afterProblemPropertyChanged(entity3);
         assertScore(scoreDirector,
-                new JustifiedMatch(entity1),
-                new JustifiedMatch(entity2),
-                new JustifiedMatch(entity3));
+                assertMatch(entity1),
+                assertMatch(entity2),
+                assertMatch(entity3));
     }
+
+    // ************************************************************************
+    // Join
+    // ************************************************************************
+
+    // TODO
+
+    // ************************************************************************
+    // Group by
+    // ************************************************************************
+
+    @Test
+    public void groupBy_1mapping1collector() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", solution.getFirstEntityGroup(),
+                solution.getFirstValue());
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
+            constraint.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, count())
+                    .penalizeInt((g, count) -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-8, solution.getFirstEntityGroup(), 8),
+                assertMatchWithScore(-2, entityGroup, 2));
+
+        // Incremental
+        scoreDirector.beforeProblemPropertyChanged(entity3);
+        entity3.setEntityGroup(entityGroup);
+        scoreDirector.afterProblemPropertyChanged(entity3);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-7, solution.getFirstEntityGroup(), 7),
+                assertMatchWithScore(-3, entityGroup, 3));
+    }
+
+    // ************************************************************************
+    // Penalize/reward
+    // ************************************************************************
+
+    // TODO
 
 }

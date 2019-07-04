@@ -62,22 +62,22 @@ public abstract class AbstractConstraintStreamTest {
     }
 
     protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
-            JustifiedMatch... justifiedMatches) {
+            AssertableMatch... assertableMatches) {
         SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
-        int scoreTotal = Arrays.stream(justifiedMatches)
-                .mapToInt(justifiedMatch -> justifiedMatch.score)
+        int scoreTotal = Arrays.stream(assertableMatches)
+                .mapToInt(assertableMatch -> assertableMatch.score)
                 .sum();
         assertEquals(scoreTotal, score.getScore());
         if (constraintMatchEnabled) {
             ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
                     .get(ConstraintMatchTotal.composeConstraintId("testConstraintPackage", "testConstraintName"));
-            assertEquals(justifiedMatches.length, constraintMatchTotal.getConstraintMatchCount());
-            for (JustifiedMatch justifiedMatch : justifiedMatches) {
+            assertEquals(assertableMatches.length, constraintMatchTotal.getConstraintMatchCount());
+            for (AssertableMatch assertableMatch : assertableMatches) {
                 if (constraintMatchTotal.getConstraintMatchSet().stream()
                         .noneMatch(constraintMatch
-                                -> constraintMatch.getJustificationList().equals(justifiedMatch.justificationList)
-                                && ((SimpleScore) constraintMatch.getScore()).getScore() == justifiedMatch.score)) {
-                    fail("The justifiedMatch (" + justifiedMatch + ") does not exist in the constraintMatchSet ("
+                                -> constraintMatch.getJustificationList().equals(assertableMatch.justificationList)
+                                && ((SimpleScore) constraintMatch.getScore()).getScore() == assertableMatch.score)) {
+                    fail("The assertableMatch (" + assertableMatch + ") does not exist in the constraintMatchSet ("
                             + constraintMatchTotal.getConstraintMatchSet() + ").");
                 }
             }
@@ -85,16 +85,20 @@ public abstract class AbstractConstraintStreamTest {
         }
     }
 
-    protected static class JustifiedMatch {
+    protected static AssertableMatch assertMatch(Object... justifications) {
+        return new AssertableMatch(-1, justifications);
+    }
 
-        private List<Object> justificationList;
+    protected static AssertableMatch assertMatchWithScore(int score, Object... justifications) {
+        return new AssertableMatch(score, justifications);
+    }
+
+    protected static class AssertableMatch {
+
         private int score;
+        private List<Object> justificationList;
 
-        public JustifiedMatch(Object... justifications) {
-            this(-1, justifications);
-        }
-
-        public JustifiedMatch(int score, Object... justifications) {
+        public AssertableMatch(int score, Object... justifications) {
             this.justificationList = Arrays.asList(justifications);
             this.score = score;
         }

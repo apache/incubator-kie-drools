@@ -41,6 +41,10 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
  */
 public interface BiConstraintStream<A, B> extends ConstraintStream {
 
+    // ************************************************************************
+    // Filter
+    // ************************************************************************
+
     /**
      * Exhaustively test each tuple of facts against the {@link BiPredicate}
      * and match if {@link BiPredicate#test(Object, Object)} returns true.

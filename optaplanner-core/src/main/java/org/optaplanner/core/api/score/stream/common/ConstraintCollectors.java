@@ -29,7 +29,17 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
  */
 public final class ConstraintCollectors {
 
-    public static <A> UniConstraintCollector<A, ?, Long> count() {
+    public static <A> UniConstraintCollector<A, ?, Integer> count() {
+        return new UniConstraintCollector<>(
+                () -> new int[1],
+                (resultContainer, a) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A> UniConstraintCollector<A, ?, Long> countLong() {
         return new UniConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a) -> {
@@ -39,7 +49,37 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A> UniConstraintCollector<A, ?, Long> countDistinct(Function<A, ?> groupValueMapping) {
+    public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
+        class CountDistinctResultContainer {
+            int count = 0;
+            Map<Object, int[]> objectCountMap = new HashMap<>();
+        }
+        return new UniConstraintCollector<>(
+                CountDistinctResultContainer::new,
+                (resultContainer, a) -> {
+                    Object value = groupValueMapping.apply(a);
+                    int[] objectCount = resultContainer.objectCountMap.computeIfAbsent(value, k -> new int[1]);
+                    if (objectCount[0] == 0) {
+                        resultContainer.count++;
+                    }
+                    objectCount[0]++;
+                    return (() -> {
+                        int[] objectCount2 = resultContainer.objectCountMap.get(value);
+                        if (objectCount2 == null) {
+                            throw new IllegalStateException("Impossible state: the value (" + value
+                                    + ") of A (" + a + ") is removed more times than it was added.");
+                        }
+                        objectCount2[0]--;
+                        if (objectCount2[0] == 0) {
+                            resultContainer.objectCountMap.remove(value);
+                            resultContainer.count--;
+                        }
+                    });
+                },
+                resultContainer -> resultContainer.count);
+    }
+
+    public static <A> UniConstraintCollector<A, ?, Long> countDistinctLong(Function<A, ?> groupValueMapping) {
         class CountDistinctResultContainer {
             long count = 0L;
             Map<Object, long[]> objectCountMap = new HashMap<>();

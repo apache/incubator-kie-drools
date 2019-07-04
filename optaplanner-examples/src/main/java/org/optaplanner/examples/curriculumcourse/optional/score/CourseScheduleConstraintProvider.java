@@ -99,9 +99,9 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "roomOccupancy", HardSoftScore.ofHard(1));
         c.from(Lecture.class)
-                .groupBy(Lecture::getPeriod, Lecture::getRoom, count()) // TODO countInt?
-                .filter((period, room, count) -> count > 1L)
-                .penalizeInt((period, room, count) -> (int) (count - 1));
+                .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
+                .filter((period, room, count) -> count > 1)
+                .penalizeInt((period, room, count) -> count - 1);
     }
 
     protected void unavailablePeriodPenalty(ConstraintFactory constraintFactory) {
@@ -128,7 +128,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         c.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getDay))
                 .filter((course, dayCount) -> course.getMinWorkingDaySize() > dayCount)
-                .penalizeInt((course, dayCount) -> (int) (course.getMinWorkingDaySize() - dayCount));
+                .penalizeInt((course, dayCount) -> course.getMinWorkingDaySize() - dayCount);
     }
 
     protected void curriculumCompactness(ConstraintFactory constraintFactory) {
@@ -149,7 +149,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         c.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getRoom))
                 .filter((course, roomCount) -> roomCount > 1)
-                .penalizeInt((course, roomCount) -> (int) (roomCount - 1L));
+                .penalizeInt((course, roomCount) -> roomCount - 1);
     }
 
 }
