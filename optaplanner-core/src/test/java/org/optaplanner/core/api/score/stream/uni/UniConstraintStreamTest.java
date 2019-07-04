@@ -25,11 +25,12 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.testdata.TestdataLavishEntity;
+import org.optaplanner.core.api.score.stream.testdata.TestdataLavishEntityGroup;
+import org.optaplanner.core.api.score.stream.testdata.TestdataLavishSolution;
+import org.optaplanner.core.api.score.stream.testdata.TestdataLavishValueGroup;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 import static org.junit.Assert.*;
 
@@ -40,31 +41,48 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     }
 
     @Test
-    public void filter() {
-        InnerScoreDirector<TestdataSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataValue.class)
-                    .filter(value -> value.getCode().endsWith("1"))
+    public void filter_problemFact() {
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
+            constraint.from(TestdataLavishValueGroup.class)
+                    .filter(valueGroup -> valueGroup.getCode().startsWith("MyValueGroup"))
                     .penalize();
         });
 
-        TestdataSolution solution = new TestdataSolution();
-        TestdataValue v1 = new TestdataValue("v1");
-        TestdataValue v2 = new TestdataValue("v2");
-        TestdataValue v11 = new TestdataValue("v11");
-        solution.setValueList(Arrays.asList(v1, v2, v11));
-        TestdataEntity e1 = new TestdataEntity("e1");
-        TestdataEntity e2 = new TestdataEntity("e2");
-        TestdataEntity e11 = new TestdataEntity("e11");
-        solution.setEntityList(Arrays.asList(e1, e2, e11));
-        scoreDirector.setWorkingSolution(solution);
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+        TestdataLavishValueGroup valueGroup1 = new TestdataLavishValueGroup("MyValueGroup 1");
+        solution.getValueGroupList().add(valueGroup1);
+        TestdataLavishValueGroup valueGroup2 = new TestdataLavishValueGroup("MyValueGroup 2");
+        solution.getValueGroupList().add(valueGroup2);
 
-        assertScore(scoreDirector, new AssertableMatch(-1, v1), new AssertableMatch(-1, v11));
+        assertScore(scoreDirector, solution,
+                new AssertableMatch(valueGroup1),
+                new AssertableMatch(valueGroup2));
     }
 
-    public InnerScoreDirector<TestdataSolution> buildScoreDirector(Consumer<Constraint> constraintConsumer) {
-        ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
+    @Test
+    public void filter_entity() {
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
+            constraint.from(TestdataLavishEntity.class)
+                    .filter(entity -> entity.getEntityGroup() == entityGroup)
+                    .penalize();
+        });
+
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup, solution.getFirstValue());
+        solution.getEntityList().add(entity2);
+
+        assertScore(scoreDirector, solution,
+                new AssertableMatch(entity1),
+                new AssertableMatch(entity2));
+    }
+
+    public InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Consumer<Constraint> constraintConsumer) {
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
                 = new ConstraintStreamScoreDirectorFactory<>(
-                        TestdataSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+                TestdataLavishSolution.buildSolutionDescriptor(), (constraintFactory) -> {
             Constraint constraint = constraintFactory.newConstraintWithWeight(
                     "testConstraintPackage", "testConstraintName", SimpleScore.of(1));
             constraintConsumer.accept(constraint);
@@ -72,8 +90,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
     }
 
-    public void assertScore(InnerScoreDirector<TestdataSolution> scoreDirector,
+    public void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector, TestdataLavishSolution solution,
             AssertableMatch... assertableMatches) {
+        scoreDirector.setWorkingSolution(solution);
         SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
         int scoreTotal = Arrays.stream(assertableMatches).mapToInt(assertableMatch -> assertableMatch.score).sum();
         assertEquals(scoreTotal, score.getScore());
@@ -98,6 +117,10 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
 
         private List<Object> justificationList;
         private int score;
+
+        public AssertableMatch(Object... justifications) {
+            this(-1, justifications);
+        }
 
         public AssertableMatch(int score, Object... justifications) {
             this.justificationList = Arrays.asList(justifications);
