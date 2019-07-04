@@ -36,7 +36,7 @@ import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.drools.core.common.ProjectClassLoader;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
