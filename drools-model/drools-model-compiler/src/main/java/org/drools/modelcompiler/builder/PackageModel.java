@@ -155,6 +155,10 @@ public class PackageModel {
     public String getName() {
         return name;
     }
+
+    public String getPathName() {
+        return name.replace('.', '/');
+    }
     
     public DRLIdGenerator getExprIdGenerator() {
         return exprIdGenerator;
