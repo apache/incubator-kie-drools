@@ -22,6 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -94,6 +95,9 @@ public class TestGenValueFact implements TestGenFact {
                     TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider(
                             (Map) value, id, typeArgs, existingInstances);
                     fields.add(new TestGenFactField(this, fieldName, mapValueProvider));
+                } else if (field.getType().equals(Date.class)) {
+                    TestGenDateValueProvider dateValueProvider = new TestGenDateValueProvider((Date) value);
+                    fields.add(new TestGenFactField(this, fieldName, dateValueProvider));
                 } else {
                     Method parseMethod = getParseMethod(field);
                     if (parseMethod != null) {
