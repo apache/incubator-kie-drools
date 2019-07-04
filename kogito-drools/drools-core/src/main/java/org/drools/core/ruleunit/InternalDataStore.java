@@ -22,7 +22,5 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.rules.DataStore;
 
 public interface InternalDataStore<T> extends DataStore<T> {
-    default void update( FactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        throw new UnsupportedOperationException();
-    }
+    void update( FactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation);
 }

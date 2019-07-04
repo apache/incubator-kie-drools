@@ -20,16 +20,16 @@ import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
 import org.kie.kogito.rules.RuleUnitMemory;
 
-public class AdultUnit implements RuleUnitMemory {
+public class AdultUnitModify implements RuleUnitMemory {
     private int adultAge = 18;
     private DataStore<Person> persons = DataSource.createStore();
     private Results results = new Results();
 
-    public AdultUnit( ) {
+    public AdultUnitModify( ) {
         this( DataSource.createStore() );
     }
 
-    public AdultUnit( DataStore<Person> persons ) {
+    public AdultUnitModify( DataStore<Person> persons ) {
         this.persons = persons;
     }
 

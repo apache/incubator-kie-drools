@@ -1,8 +1,9 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -13,12 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.rules.impl;
+package org.kie.kogito.rules;
 
-import org.kie.kogito.rules.DataStore;
+import org.kie.api.runtime.rule.FactHandle;
 
-public class DataSources {
-    public static <T> DataStore<T> create() {
-        return new ListDataSource<>();
+public interface DataProcessor {
+
+    default void insert(Object object) {
+        insert( null, object );
     }
+
+    FactHandle insert( DataHandle handle, Object object);
+
+    void update(DataHandle handle, Object object);
+
+    void delete(DataHandle handle);
 }

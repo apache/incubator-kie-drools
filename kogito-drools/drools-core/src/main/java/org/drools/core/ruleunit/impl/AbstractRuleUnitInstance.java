@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.rules.impl;
+package org.drools.core.ruleunit.impl;
 
 import java.lang.reflect.Field;
 
@@ -60,7 +60,7 @@ public class AbstractRuleUnitInstance<T extends RuleUnitMemory> implements RuleU
                 if ( v instanceof DataSource ) {
                     DataSource<?> o = ( DataSource<?> ) v;
                     EntryPoint ep = runtime.getEntryPoint(dataSourceName);
-                    o.subscribe(ep::insert);
+                    o.subscribe(new EntryPointDataProcessor( ep ));
                 }
                 try {
                     runtime.setGlobal( dataSourceName, v );

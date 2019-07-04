@@ -21,7 +21,7 @@ import org.drools.modelcompiler.ruleunit.AdultUnit;
 import org.drools.modelcompiler.ruleunit.AdultUnitInstance;
 import org.junit.Test;
 import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.impl.ListDataStream;
+import org.drools.core.ruleunit.impl.ListDataStream;
 
 import static java.util.Arrays.asList;
 

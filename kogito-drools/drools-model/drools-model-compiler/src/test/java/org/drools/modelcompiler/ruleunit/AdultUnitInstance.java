@@ -17,7 +17,7 @@
 package org.drools.modelcompiler.ruleunit;
 
 import org.kie.api.runtime.KieSession;
-import org.kie.kogito.rules.impl.AbstractRuleUnitInstance;
+import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
 
 public class AdultUnitInstance extends AbstractRuleUnitInstance<AdultUnit> {
 

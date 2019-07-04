@@ -16,18 +16,26 @@
 
 package org.kie.kogito.rules.impl;
 
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.RuleUnitMemory;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class SessionMemory implements RuleUnitMemory {
-    private final DataStream<Object> dataSource = DataSource.createStream();
+import org.kie.kogito.rules.DataHandle;
 
-    public DataSource<Object> getDataSource() {
-        return dataSource;
+public class DataHandleImpl implements DataHandle {
+    private static final AtomicLong counter = new AtomicLong();
+
+    private final long id = counter.incrementAndGet();
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        DataHandleImpl that = ( DataHandleImpl ) o;
+        return id == that.id;
     }
 
-    public void add(Object obj) {
-        dataSource.append( obj );
+    @Override
+    public int hashCode() {
+        return Objects.hash( id );
     }
 }

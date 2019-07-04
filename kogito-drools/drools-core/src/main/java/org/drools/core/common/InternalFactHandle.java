@@ -26,6 +26,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.ruleunit.InternalDataStore;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.rules.DataHandle;
 
 public interface InternalFactHandle
     extends
@@ -169,14 +170,12 @@ public interface InternalFactHandle
     default InternalDataStore<?> getDataStore() {
         return null;
     }
+    default void setDataStore( InternalDataStore<?> dataStore ) { }
 
-    default InternalFactHandle getParentHandle() {
+    default DataHandle getDataHandle() {
         return null;
     }
-
-    default void setParentHandle( InternalFactHandle parentHandle ) {
-        throw new UnsupportedOperationException();
-    }
+    default void setDataHandle( DataHandle dataHandle ) { }
 
     static InternalFactHandle dummyFactHandleOf(Object object) {
         return new DummyFactHandle( object );

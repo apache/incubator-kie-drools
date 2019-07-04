@@ -38,6 +38,7 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.rules.DataHandle;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -78,7 +79,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     protected LinkedTuples          linkedTuples;
 
-    private InternalFactHandle      parentHandle;
+    private InternalDataStore<?>    dataStore;
+    private DataHandle              dataHandle;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -945,14 +947,21 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     @Override
     public InternalDataStore<?> getDataStore() {
-        return parentHandle != null ? parentHandle.getDataStore() : null;
+        return dataStore;
     }
 
-    public InternalFactHandle getParentHandle() {
-        return parentHandle;
+    @Override
+    public void setDataStore( InternalDataStore<?> dataStore ) {
+        this.dataStore = dataStore;
     }
 
-    public void setParentHandle( InternalFactHandle parentHandle ) {
-        this.parentHandle = parentHandle;
+    @Override
+    public DataHandle getDataHandle() {
+        return dataHandle;
+    }
+
+    @Override
+    public void setDataHandle( DataHandle dataHandle ) {
+        this.dataHandle = dataHandle;
     }
 }

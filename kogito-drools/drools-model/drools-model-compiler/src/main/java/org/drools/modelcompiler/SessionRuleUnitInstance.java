@@ -18,7 +18,8 @@ package org.drools.modelcompiler;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.impl.AbstractRuleUnitInstance;
+import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
+import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
 import org.kie.kogito.rules.impl.SessionMemory;
 
 public class SessionRuleUnitInstance extends AbstractRuleUnitInstance<SessionMemory> {
@@ -28,6 +29,6 @@ public class SessionRuleUnitInstance extends AbstractRuleUnitInstance<SessionMem
     }
 
     protected void bind( KieSession runtime, SessionMemory memory ) {
-        memory.getDataSource().subscribe( runtime::insert);
+        memory.getDataSource().subscribe(new EntryPointDataProcessor( runtime ));
     }
 }

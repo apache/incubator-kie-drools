@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.rules.impl;
+package org.drools.core.ruleunit.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
+import org.kie.kogito.rules.DataProcessor;
 import org.kie.kogito.rules.DataStream;
 
 public class ListDataStream<T> implements DataStream<T> {
     private final ArrayList<T> values = new ArrayList<>();
-    private final List<Consumer<T>> subscribers = new ArrayList<>();
+    private final List<DataProcessor> subscribers = new ArrayList<>();
 
     public ListDataStream( T... ts ) {
         append( ts );
@@ -35,14 +35,14 @@ public class ListDataStream<T> implements DataStream<T> {
     public void append( T... ts ) {
         for (T t : ts) {
             values.add( t );
-            subscribers.forEach(c -> c.accept(t));
+            subscribers.forEach(s -> s.insert(t));
         }
     }
 
     @Override
-    public void subscribe(Consumer<T> consumer) {
-        subscribers.add(consumer);
-        values.forEach(consumer);
+    public void subscribe( DataProcessor subscriber) {
+        subscribers.add(subscriber);
+        values.forEach(subscriber::insert);
     }
 
     @Override

@@ -16,8 +16,32 @@
 
 package org.kie.kogito.rules;
 
-import java.util.function.Consumer;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface DataSource<T> extends Iterable<T> {
-    void subscribe( Consumer<T> subscriber);
+    void subscribe(DataProcessor subscriber);
+
+    interface Factory {
+        <T> DataStream<T> createStream();
+        <T> DataStore<T> createStore();
+    }
+
+    static <T> DataStream<T> createStream() {
+        return FactoryHolder.get().createStream();
+    }
+
+    static <T> DataStore<T> createStore() {
+        return FactoryHolder.get().createStore();
+    }
+
+    class FactoryHolder {
+
+        private static class LazyHolder {
+            private static Factory INSTANCE = ServiceRegistry.getInstance().get(Factory.class);
+        }
+
+        public static Factory get() {
+            return LazyHolder.INSTANCE;
+        }
+    }
 }

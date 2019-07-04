@@ -21,7 +21,9 @@ import java.util.concurrent.Future;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Executor;
 import org.kie.kogito.codegen.data.AdultUnit;
+import org.kie.kogito.codegen.data.AdultUnitModify;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.impl.RuleUnitRegistry;
@@ -41,15 +43,38 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
 
         adults.getPersons().add(new Person( "Mario", 45 ));
         adults.getPersons().add(new Person( "Marilena", 47 ));
-        adults.getPersons().add(new Person( "Sofia", 7 ));
+
+        Person sofia = new Person( "Sofia", 7 );
+        DataHandle dhSofia = adults.getPersons().add(sofia);
 
         RuleUnit<AdultUnit> unit = RuleUnitRegistry.create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
-        assertEquals(2, instance.fire() );
 
+        assertEquals(2, instance.fire() );
         assertTrue( adults.getResults().getResults().containsAll( asList("Mario", "Marilena") ) );
+
+        sofia.setAge( 22 );
+        adults.getPersons().update( dhSofia, sofia );
+        assertEquals( 1, instance.fire() );
+        assertTrue( adults.getResults().getResults().containsAll( asList("Mario", "Marilena", "Sofia") ) );
     }
 
+    @Test
+    public void testRuleUnitModify() throws Exception {
+        generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitModify.drl");
+
+        AdultUnitModify adults = new AdultUnitModify();
+
+        Person sofia = new Person( "Sofia", 7 );
+        DataHandle dhSofia = adults.getPersons().add(sofia);
+
+        RuleUnit<AdultUnitModify> unit = RuleUnitRegistry.create(AdultUnitModify.class);
+        RuleUnitInstance<AdultUnitModify> instance = unit.createInstance(adults);
+
+        assertEquals(2, instance.fire() );
+
+        assertTrue( adults.getResults().getResults().containsAll( asList("Sofia") ) );
+    }
 
     @Test
     public void testRuleUnitExecutor() throws Exception {

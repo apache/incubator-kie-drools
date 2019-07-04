@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.rules;
 
 import java.lang.reflect.Method;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -24,15 +25,16 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.runtime.KieSession;
 import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.impl.AbstractRuleUnitInstance;
+import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
+import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
 
 public class RuleUnitInstanceSourceClass {
 
@@ -105,13 +107,12 @@ public class RuleUnitInstanceSourceClass {
                     Expression fieldAccessor =
                             new MethodCallExpr(new NameExpr("value"), methodName);
 
-                    // .subscribe(rt.getEntryPoint()::insert)
-                    MethodCallExpr drainInto = new MethodCallExpr(fieldAccessor, "subscribe").addArgument(
-                            new MethodReferenceExpr().setScope(
+                    // .subscribe( new EntryPointDataProcessor(runtime.getEntryPoint()) )
+                    MethodCallExpr drainInto = new MethodCallExpr(fieldAccessor, "subscribe")
+                            .addArgument(new ObjectCreationExpr(null, StaticJavaParser.parseClassOrInterfaceType( EntryPointDataProcessor.class.getName() ), NodeList.nodeList(
                                     new MethodCallExpr(
-                                            new NameExpr("runtime"), "getEntryPoint",
-                                            NodeList.nodeList(new StringLiteralExpr(propertyName))))
-                                    .setIdentifier("insert"));
+                                    new NameExpr("runtime"), "getEntryPoint",
+                                    NodeList.nodeList(new StringLiteralExpr(propertyName))))));
 //                            new MethodReferenceExpr().setScope(new NameExpr("runtime")).setIdentifier("insert"));
 
                     methodBlock.addStatement(drainInto);
