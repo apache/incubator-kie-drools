@@ -31,11 +31,11 @@ public class Person extends AbstractReactiveObject {
 
     private Person ParentP;
 
-    public static int countItems(Map<Integer, Integer> items) {
+    public static int countItems(Map<?, ?> items) {
         return items.size();
     }
 
-    public static boolean evaluate(Map<Integer, Integer> items) {
+    public static boolean evaluate(Map<?, ?> items) {
         return items.size() > 0;
     }
 
