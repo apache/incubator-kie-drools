@@ -16,8 +16,19 @@
 
 package org.optaplanner.core.api.score.stream;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.testdata.TestdataLavishSolution;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractConstraintStreamTest {
@@ -33,6 +44,66 @@ public abstract class AbstractConstraintStreamTest {
 
     public AbstractConstraintStreamTest(boolean constraintMatchEnabled) {
         this.constraintMatchEnabled = constraintMatchEnabled;
+    }
+
+    // ************************************************************************
+    // SimpleScore creation and assertion methods
+    // ************************************************************************
+
+    protected InnerScoreDirector<TestdataLavishSolution> buildScoreDirector(Consumer<Constraint> constraintConsumer) {
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataLavishSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            Constraint constraint = constraintFactory.newConstraintWithWeight(
+                    "testConstraintPackage", "testConstraintName", SimpleScore.of(1));
+            constraintConsumer.accept(constraint);
+        });
+        return scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+    }
+
+    protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
+            JustifiedMatch... justifiedMatches) {
+        SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
+        int scoreTotal = Arrays.stream(justifiedMatches)
+                .mapToInt(justifiedMatch -> justifiedMatch.score)
+                .sum();
+        assertEquals(scoreTotal, score.getScore());
+        if (constraintMatchEnabled) {
+            ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
+                    .get(ConstraintMatchTotal.composeConstraintId("testConstraintPackage", "testConstraintName"));
+            assertEquals(justifiedMatches.length, constraintMatchTotal.getConstraintMatchCount());
+            for (JustifiedMatch justifiedMatch : justifiedMatches) {
+                if (constraintMatchTotal.getConstraintMatchSet().stream()
+                        .noneMatch(constraintMatch
+                                -> constraintMatch.getJustificationList().equals(justifiedMatch.justificationList)
+                                && ((SimpleScore) constraintMatch.getScore()).getScore() == justifiedMatch.score)) {
+                    fail("The justifiedMatch (" + justifiedMatch + ") does not exist in the constraintMatchSet ("
+                            + constraintMatchTotal.getConstraintMatchSet() + ").");
+                }
+            }
+
+        }
+    }
+
+    protected static class JustifiedMatch {
+
+        private List<Object> justificationList;
+        private int score;
+
+        public JustifiedMatch(Object... justifications) {
+            this(-1, justifications);
+        }
+
+        public JustifiedMatch(int score, Object... justifications) {
+            this.justificationList = Arrays.asList(justifications);
+            this.score = score;
+        }
+
+        @Override
+        public String toString() {
+            return justificationList + "=" + score;
+        }
+
     }
 
 }

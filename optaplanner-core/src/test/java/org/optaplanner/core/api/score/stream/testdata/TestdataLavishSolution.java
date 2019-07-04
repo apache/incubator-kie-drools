@@ -140,8 +140,20 @@ public class TestdataLavishSolution extends TestdataObject {
     // Complex methods
     // ************************************************************************
 
+    public TestdataLavishValueGroup getFirstValueGroup() {
+        return valueGroupList.get(0);
+    }
+
     public TestdataLavishValue getFirstValue() {
         return valueList.get(0);
+    }
+
+    public TestdataLavishEntityGroup getFirstEntityGroup() {
+        return entityGroupList.get(0);
+    }
+
+    public TestdataLavishEntity getFirstEntity() {
+        return entityList.get(0);
     }
 
 }

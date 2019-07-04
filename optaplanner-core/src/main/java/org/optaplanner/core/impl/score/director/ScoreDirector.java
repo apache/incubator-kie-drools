@@ -153,14 +153,6 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
 
     void afterVariableChanged(Object entity, String variableName);
 
-    // TODO VariableDescriptor is not likely to go to public API
-
-    void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity);
-
-    void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity);
-
-    void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue);
-
     void triggerVariableListeners();
 
     void beforeEntityRemoved(Object entity);
@@ -223,5 +215,13 @@ public interface ScoreDirector<Solution_> extends AutoCloseable {
     default void dispose() {
         close();
     }
+
+    // TODO VariableDescriptor is not likely to go to public API: move these into InnerScoreDirector
+
+    void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity);
+
+    void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity);
+
+    void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue);
 
 }
