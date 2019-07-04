@@ -185,8 +185,11 @@ public class ProtobufInputMarshaller {
                                                                     Environment environment,
                                                                     SessionConfiguration config,
                                                                     ProtobufMessages.KnowledgeSession _session) throws IOException {
-        FactHandleFactory handleFactory = context.kBase.newFactHandleFactory( _session.getRuleData().getLastId(),
-                                                                                 _session.getRuleData().getLastRecency() );
+        int nextFHId = _session.getRuleData().getLastId();
+        if (nextFHId > Integer.MAX_VALUE / 2) {
+            nextFHId = 0;
+        }
+        FactHandleFactory handleFactory = context.kBase.newFactHandleFactory( nextFHId, _session.getRuleData().getLastRecency() );
 
         InternalAgenda agenda = context.kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.kBase, false );
         readAgenda( context, _session.getRuleData(), agenda );
