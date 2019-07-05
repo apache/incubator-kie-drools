@@ -90,6 +90,10 @@ public class EvaluationContextImpl implements EvaluationContext {
         push( new ExecutionFrameImpl( peek() /*, symbols, scope*/ ) );
     }
 
+    public void enterFrame(int size) {
+        push(new ExecutionFrameImpl(peek(), size));
+    }
+
     @Override
     public void exitFrame() {
         pop();
