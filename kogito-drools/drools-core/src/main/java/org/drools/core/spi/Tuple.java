@@ -114,6 +114,10 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     short getStagedType();
     void setStagedType(short stagedType);
 
+    default boolean isDeleted() {
+        return getStagedType() == DELETE || getStagedType() == NORMALIZED_DELETE;
+    }
+
     Tuple getStagedPrevious();
     void setStagedPrevious( Tuple stagePrevious );
 
