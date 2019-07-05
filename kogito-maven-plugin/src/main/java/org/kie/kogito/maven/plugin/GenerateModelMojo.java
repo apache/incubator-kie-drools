@@ -20,6 +20,9 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
+import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
@@ -139,7 +142,7 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
-                        .withDependencyInjection(dependencyInjection);
+                        .withDependencyInjection(discoverDependencyInjectionAnnotator());
 
         if (generateRuleUnits) {
             appGen.withGenerator(RuleCodegen.ofPath(projectPath, false))
@@ -209,5 +212,23 @@ public class GenerateModelMojo extends AbstractKieMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to find .drl files");
         }
+    }
+    
+    protected DependencyInjectionAnnotator discoverDependencyInjectionAnnotator() {
+        if (!dependencyInjection) {
+            return null;
+        }
+        
+        boolean hasSpring = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("spring"));
+        if (hasSpring) {
+            return new SpringDependencyInjectionAnnotator();
+        }
+        
+        boolean hasQuarkus = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("quarkus"));
+        if (hasQuarkus) {
+            return new CDIDependencyInjectionAnnotator();
+        }
+        
+        throw new IllegalStateException("Unable to find dependency injection annotator");
     }
 }

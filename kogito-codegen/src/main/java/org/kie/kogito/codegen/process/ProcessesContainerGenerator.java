@@ -21,6 +21,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.Model;
+import org.kie.kogito.codegen.AbstractApplicationSection;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -38,11 +45,6 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.WildcardType;
-import org.kie.kogito.Model;
-import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 
 public class ProcessesContainerGenerator extends AbstractApplicationSection {
 
@@ -50,7 +52,8 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
     private final List<ProcessGenerator> processes;
     private final List<ProcessInstanceGenerator> processInstances;
     private final List<BodyDeclaration<?>> factoryMethods;
-    private boolean hasCdi;
+
+    private DependencyInjectionAnnotator annotator;
     private String workItemConfigClass = DefaultWorkItemHandlerConfig.class.getCanonicalName();
     private String processEventListenerConfigClass = DefaultProcessEventListenerConfig.class.getCanonicalName();
 
@@ -121,8 +124,8 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
         byProcessIdMethodDeclaration.getBody().get().addStatement(byProcessId);
     }
 
-    public ProcessesContainerGenerator withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public ProcessesContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
         return this;
     }
 

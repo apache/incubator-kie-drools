@@ -35,6 +35,7 @@ import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
 public class RuleCodegen implements Generator {
@@ -66,7 +67,7 @@ public class RuleCodegen implements Generator {
      */
     private final Predicate<String> fileFilter;
 
-    private boolean dependencyInjection;
+    private DependencyInjectionAnnotator annotator;
     
     private String ruleEventListenersConfigClass = null;
 
@@ -105,10 +106,9 @@ public class RuleCodegen implements Generator {
         
         kieBuilder.buildAll(
                 (km, cl) ->
-                        new RuleCodegenProject(km, cl)
+                        new RuleCodegenProject(km, cl, annotator)                                
                                 .withModuleGenerator(moduleGenerator)
-                                .withOneClassPerRule(oneClassPerRule)
-                                .withCdi(dependencyInjection),
+                                .withOneClassPerRule(oneClassPerRule),
                 s -> {
                     return !s.contains("src" + File.separator + "test" + File.separator + "java")
                             && !s.endsWith("bpmn")
@@ -144,8 +144,8 @@ public class RuleCodegen implements Generator {
         return this;
     }
 
-    public void setDependencyInjection(boolean di) {
-        this.dependencyInjection = di;
+    public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
     }
 
     @Override

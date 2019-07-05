@@ -5,11 +5,8 @@ import org.kie.kogito.rules.impl.SessionMemory;
 import org.drools.modelcompiler.SessionRuleUnitInstance;
 import org.kie.kogito.rules.RuleUnit;
 
-@javax.inject.Singleton
-@javax.inject.Named("$SessionName$")
 public class SessionRuleUnit implements RuleUnit<SessionMemory> {
-
-    @javax.inject.Inject
+    
     KieRuntimeBuilder runtimeBuilder;
 
     @Override

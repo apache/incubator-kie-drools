@@ -25,20 +25,20 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 
 public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKieProject {
 
-    private boolean hasCdi = ModelWriter.HAS_CDI;
+    private String dependencyInjection = ModelWriter.CDI_ANNOTATION;
     private boolean oneClassPerRule = false;
 
     public CanonicalModelCodeGenerationKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(true, kieModule, classLoader);
     }
 
-    public CanonicalModelCodeGenerationKieProject withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public CanonicalModelCodeGenerationKieProject withDependencyInjection(String dependencyInjection) {
+        this.dependencyInjection = dependencyInjection;
         return this;
     }
 
-    protected boolean hasCdi() {
-        return hasCdi;
+    protected String hasCdi() {
+        return dependencyInjection;
     }
 
     public CanonicalModelCodeGenerationKieProject withOneClassPerRule(boolean oneClassPerRule) {
@@ -60,7 +60,7 @@ public class CanonicalModelCodeGenerationKieProject extends CanonicalModelKiePro
         new org.drools.modelcompiler.builder.ModelSourceClass(
                 getInternalKieModule().getReleaseId(), modelMethod, generatedSourceFiles)
                 .write(srcMfs);
-        new ProjectSourceClass(modelMethod).withCdi(hasCdi).write(srcMfs);
+        new ProjectSourceClass(modelMethod).withDependencyInjection(dependencyInjection).write(srcMfs);
 
         srcMfs.copyFolder(srcMfs.getFolder("src/main/java"), trgMfs, trgMfs.getFolder("."));
         writeModelFile(generatedSourceFiles, trgMfs, getInternalKieModule().getReleaseId());

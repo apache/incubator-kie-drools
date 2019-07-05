@@ -18,8 +18,7 @@
   <properties>
     <java.version>1.8</java.version>    
     <kogito.version>${version.org.kie.kogito}</kogito.version>
-    <cxf.version>3.2.6</cxf.version>
-    <kogito.di.enabled>false</kogito.di.enabled>
+    <cxf.version>3.2.6</cxf.version>    
   </properties>
 
   <dependencies>

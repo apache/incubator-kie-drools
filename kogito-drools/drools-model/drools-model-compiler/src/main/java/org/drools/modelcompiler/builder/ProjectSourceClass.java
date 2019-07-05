@@ -12,14 +12,14 @@ import static org.drools.modelcompiler.builder.PackageModel.log;
 public class ProjectSourceClass {
 
     final KieModuleModelMethod modelMethod;
-    private boolean hasCdi;
+    private String dependencyInjection = "";
 
     public ProjectSourceClass(KieModuleModelMethod modelMethod) {
         this.modelMethod = modelMethod;
     }
 
-    public ProjectSourceClass withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public ProjectSourceClass withDependencyInjection(String dependencyInjection) {
+        this.dependencyInjection = dependencyInjection;
         return this;
     }
     public String generate() {
@@ -32,7 +32,7 @@ public class ProjectSourceClass {
                         "import " + KieBaseModel.class.getCanonicalName()  + ";\n" +
                         "import " + KieSession.class.getCanonicalName()  + ";\n" +
                         "\n" +
-                        ( hasCdi ? "@javax.enterprise.context.ApplicationScoped\n" : "" ) +
+                        dependencyInjection + "\n"+
                         "public class ProjectRuntime implements " + KieRuntimeBuilder.class.getCanonicalName() + " {\n" +
                         "\n");
         sb.append(modelMethod.getConstructor());

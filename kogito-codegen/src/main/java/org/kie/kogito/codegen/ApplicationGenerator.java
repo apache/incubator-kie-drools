@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.Config;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.ImageMetaData;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
@@ -73,7 +74,9 @@ public class ApplicationGenerator {
     private final File targetDirectory;
 
     private String targetTypeName;
-    private boolean hasCdi;
+    
+    private DependencyInjectionAnnotator annotator;
+    
     private boolean hasRuleUnits;
     private final List<BodyDeclaration<?>> factoryMethods;
     private ConfigGenerator configGenerator = new ConfigGenerator();
@@ -117,8 +120,8 @@ public class ApplicationGenerator {
                                                                                     NodeList.nodeList(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, CollectingUnitOfWorkFactory.class.getCanonicalName()), NodeList.nodeList()))));
         
         
-        if (hasCdi) {
-            cls.addAnnotation("javax.inject.Singleton");                       
+        if (useInjection()) {  
+            annotator.withSingletonComponent(cls);
         }
 
         if (hasRuleUnits) {
@@ -158,8 +161,8 @@ public class ApplicationGenerator {
         return compilationUnit;
     }
 
-    public ApplicationGenerator withDependencyInjection(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public ApplicationGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
         return this;
     }
 
@@ -184,7 +187,7 @@ public class ApplicationGenerator {
     public <G extends Generator> G withGenerator(G generator) {
         this.generators.add(generator);
         generator.setPackageName(packageName);
-        generator.setDependencyInjection(hasCdi);
+        generator.setDependencyInjection(annotator);
         return generator;
     }
     
@@ -215,5 +218,9 @@ public class ApplicationGenerator {
             logger.debug( "=====" );
         }
         return source;
+    }
+    
+    protected boolean useInjection() {
+        return this.annotator != null;
     }
 }

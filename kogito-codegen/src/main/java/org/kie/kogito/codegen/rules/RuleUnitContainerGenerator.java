@@ -35,6 +35,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
 import org.kie.kogito.codegen.AbstractApplicationSection;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnits;
@@ -46,7 +47,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     private final String targetCanonicalName;
     private final List<RuleUnitSourceClass> ruleUnits;
     private String targetTypeName;
-    private boolean hasCdi;
+    private DependencyInjectionAnnotator annotator;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
 
     private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
@@ -134,8 +135,8 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
                 .setTypeArguments(new ClassOrInterfaceType(null, canonicalName));
     }
 
-    public RuleUnitContainerGenerator withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public RuleUnitContainerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
         return this;
     }
 

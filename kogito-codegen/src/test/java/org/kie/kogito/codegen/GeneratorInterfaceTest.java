@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 public class GeneratorInterfaceTest {
 
@@ -51,7 +52,7 @@ public class GeneratorInterfaceTest {
             }
 
             @Override
-            public void setDependencyInjection(boolean dependencyInjection) {
+            public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
 
             }
         };

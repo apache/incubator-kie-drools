@@ -20,6 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.ProcessMetaData;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.kogito.Model;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.process.impl.AbstractProcess;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -36,25 +46,15 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.StringUtils;
-import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.kie.api.definition.process.Process;
-import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.kogito.Model;
-import org.kie.kogito.process.impl.AbstractProcess;
 
 /**
  * Generates the Process&lt;T&gt; container
@@ -76,7 +76,7 @@ public class ProcessGenerator {
     private final String targetCanonicalName;
     private final String appCanonicalName;
     private String targetTypeName;
-    private boolean hasCdi = false;   
+    private DependencyInjectionAnnotator annotator;
     
     private List<CompilationUnit> additionalClasses = new ArrayList<>();
 
@@ -190,10 +190,9 @@ public class ProcessGenerator {
             
             processMetaData.getGeneratedHandlers().forEach((name, handler) -> {
                 ClassOrInterfaceDeclaration clazz = handler.findFirst(ClassOrInterfaceDeclaration.class).get();
-                if (hasCdi) {
-                    
-                    
-                    clazz.addAnnotation("javax.enterprise.context.ApplicationScoped");
+                if (useInjection()) {
+                                       
+                    annotator.withApplicationComponent(clazz);
                     BlockStmt actionBody = new BlockStmt();
                     LambdaExpr forachBody = new LambdaExpr(new Parameter(new UnknownType(), "h"), actionBody);
                     MethodCallExpr forachHandler = new MethodCallExpr(new NameExpr("handlers"), "forEach");                    
@@ -217,8 +216,8 @@ public class ProcessGenerator {
                 }
                 // annotate for injection or add constructor for initialization
                 handler.findAll(FieldDeclaration.class).forEach(fd -> {
-                    if (hasCdi) {
-                        fd.addAnnotation("javax.inject.Inject");
+                    if (useInjection()) {
+                        annotator.withInjection(fd);
                     } else {
                         BlockStmt constructorBody = new BlockStmt();
                         AssignExpr assignExpr = new AssignExpr(
@@ -270,14 +269,12 @@ public class ProcessGenerator {
                 .setName(targetTypeName)
                 .setModifiers(Modifier.Keyword.PUBLIC);
 
-        if (hasCdi) {
-            cls.addAnnotation("javax.inject.Singleton")
-            .addAnnotation(new SingleMemberAnnotationExpr(
-                    new Name("javax.inject.Named"),
-                    new StringLiteralExpr(process.getId())));
+        if (useInjection()) {
+            annotator.withNamedSingletonComponent(cls, process.getId());
+            
             FieldDeclaration handlersInjectFieldDeclaration = new FieldDeclaration()
-                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName("javax.enterprise.inject.Instance"), NodeList.nodeList(new ClassOrInterfaceType(null, WorkItemHandler.class.getCanonicalName()))), "handlers"))
-                    .addAnnotation("javax.inject.Inject");
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, WorkItemHandler.class.getCanonicalName()))), "handlers"));
+            annotator.withOptionalInjection(handlersInjectFieldDeclaration);
             
             cls.addMember(handlersInjectFieldDeclaration);
         }
@@ -331,7 +328,7 @@ public class ProcessGenerator {
                 .addMember(internalConfigure(processMetaData))
                 .addMember(legacyProcess(processMetaData));
         
-        if (hasCdi) {
+        if (useInjection()) {
             MethodDeclaration initMethod = new MethodDeclaration()
                     .addModifier(Keyword.PUBLIC)
                     .setName("init")
@@ -349,10 +346,10 @@ public class ProcessGenerator {
                 FieldDeclaration subprocessFieldDeclaration = new FieldDeclaration();                    
 
                 String fieldName = "process" + subProcessId;
-                if (hasCdi) {
+                if (useInjection()) {
                     subprocessFieldDeclaration
-                        .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName))
-                        .addAnnotation("javax.inject.Inject");
+                        .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.capitalize(subProcessId+"Model")))), fieldName));
+                    annotator.withInjection(subprocessFieldDeclaration);
                 } else {
                     // app.processes().create$Subprocess()
                     MethodCallExpr initSubProcessField = new MethodCallExpr(
@@ -390,8 +387,12 @@ public class ProcessGenerator {
         return additionalClasses;
     }
 
-    public ProcessGenerator withCdi(boolean dependencyInjection) {
-        this.hasCdi = dependencyInjection;
+    public ProcessGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
         return this;
+    }
+    
+    protected boolean useInjection() {
+        return this.annotator != null;
     }
 }

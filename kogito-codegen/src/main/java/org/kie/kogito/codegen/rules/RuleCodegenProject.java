@@ -15,38 +15,40 @@
 
 package org.kie.kogito.codegen.rules;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
+import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_SOURCE;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.modelcompiler.builder.CanonicalModelCodeGenerationKieProject;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.model.KieBaseModel;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
-import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_SOURCE;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject implements KieBuilder.ProjectType {
 
-    public static final BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> SUPPLIER = RuleCodegenProject::new;
-
     private RuleUnitContainerGenerator moduleGenerator;
+    private DependencyInjectionAnnotator annotator;    
 
-    public RuleCodegenProject(InternalKieModule kieModule, ClassLoader classLoader) {
+    public RuleCodegenProject(InternalKieModule kieModule, ClassLoader classLoader, DependencyInjectionAnnotator annotator) {
         super(kieModule, classLoader);
+        this.annotator = annotator;
+        withDependencyInjection(annotator != null ? "@" + annotator.applicationComponentType() : "");
     }
 
     public RuleCodegenProject withModuleGenerator(RuleUnitContainerGenerator moduleGenerator) {
@@ -61,7 +63,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
         if (moduleGenerator == null) {
             throw new IllegalStateException("Module generator is not specified!");
         } else {
-            moduleGenerator.withCdi(hasCdi());
+            moduleGenerator.withDependencyInjection(annotator);
         }
 
         boolean hasRuleUnits = false;
@@ -78,7 +80,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                         RuleUnitSourceClass ruSource = new RuleUnitSourceClass( ruleUnit.getPackage().getName(),
                                                                                 ruleUnit.getSimpleName(),
                                                                                 packageModel.getRulesFileName() )
-                                .withCdi( hasCdi() );
+                                .withDependencyInjection(annotator );
                         moduleGenerator.addRuleUnit( ruSource );
                         unitsMap.put(ruleUnit, ruSource.targetCanonicalName());
                     }
@@ -101,12 +103,16 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                         ruleUnitInstance.generatedFilePath(),
                         log( ruleUnitInstance.generate() ).getBytes( StandardCharsets.UTF_8 ) );
             }
-        } else if (hasCdi()) {
+        } else if (annotator != null) {
             for (KieBaseModel kBaseModel : kBaseModels.values()) {
                 for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
                     CompilationUnit cu = parse( getClass().getResourceAsStream( "/class-templates/SessionRuleUnitTemplate.java" ) );
                     ClassOrInterfaceDeclaration template = cu.findFirst( ClassOrInterfaceDeclaration.class ).get();
+                    annotator.withNamedSingletonComponent(template, "$SessionName$");                                        
                     template.setName( "SessionRuleUnit_" + sessionName );
+                    
+                    template.findAll(FieldDeclaration.class).stream().filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach(fd -> annotator.withInjection(fd));;
+                    
                     template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
                     trgMfs.write(
                             "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
@@ -115,4 +121,5 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
             }
         }
     }
+    
 }

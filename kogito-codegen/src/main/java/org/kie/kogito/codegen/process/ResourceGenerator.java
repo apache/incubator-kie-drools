@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.Sig;
 
@@ -64,7 +65,7 @@ public class ResourceGenerator {
     private String dataClazzName;
     private String modelfqcn;
     private final String processName;
-    private boolean hasCdi;
+    private DependencyInjectionAnnotator annotator;
     
     private List<UserTaskModelMetaData> userTasks;
     private Map<String, String> signals;
@@ -85,8 +86,8 @@ public class ResourceGenerator {
         this.processClazzName = processfqcn;
     }
 
-    public ResourceGenerator withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public ResourceGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
         return this;
     }
     
@@ -195,7 +196,7 @@ public class ResourceGenerator {
         template.findAll(ClassOrInterfaceType.class).forEach(this::interpolateTypes);
         template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
 
-        if (hasCdi) {
+        if (useInjection()) {
             template.findAll(FieldDeclaration.class,
                              this::isProcessField).forEach(this::annotateFields);
         } else {
@@ -210,9 +211,8 @@ public class ResourceGenerator {
         return fd.getElementType().asClassOrInterfaceType().getNameAsString().equals("Process");
     }
 
-    private void annotateFields(FieldDeclaration fd) {
-        fd.addAnnotation("javax.inject.Inject");
-        fd.addSingleMemberAnnotation("javax.inject.Named", new StringLiteralExpr(processId));
+    private void annotateFields(FieldDeclaration fd) {       
+        annotator.withNamedInjection(fd, processId);
     }
     
     private void initializeField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
@@ -300,5 +300,9 @@ public class ResourceGenerator {
 
     public String generatedFilePath() {
         return relativePath;
+    }
+    
+    protected boolean useInjection() {
+        return this.annotator != null;
     }
 }

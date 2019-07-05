@@ -39,6 +39,7 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Config;
+import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.*;
@@ -78,7 +79,7 @@ public class ApplicationGeneratorTest {
     @Test
     public void compilationUnitWithCDI() {
         final ApplicationGenerator initialAppGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
-        final ApplicationGenerator appGenerator = initialAppGenerator.withDependencyInjection(true);
+        final ApplicationGenerator appGenerator = initialAppGenerator.withDependencyInjection(new CDIDependencyInjectionAnnotator());
         assertThat(appGenerator).isSameAs(initialAppGenerator);
         assertCompilationUnit(appGenerator.compilationUnit(), true, 0);
     }

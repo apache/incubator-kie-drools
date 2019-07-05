@@ -19,8 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import com.github.javaparser.ast.body.BodyDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 /**
  * A code generator for a part of the platform, e.g. rules, processes, etc.
@@ -50,7 +49,7 @@ public interface Generator {
 
     void setPackageName(String packageName);
 
-    void setDependencyInjection(boolean dependencyInjection);
+    void setDependencyInjection(DependencyInjectionAnnotator annotator);
     
     default Map<String, String> getLabels() {
         return Collections.emptyMap();

@@ -15,12 +15,12 @@ import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_META
 
 public class ModelWriter {
 
-    public static final boolean HAS_CDI = hasCdi();
+    public static final String CDI_ANNOTATION = "@javax.enterprise.context.ApplicationScoped";
 
-    private boolean hasCdi = HAS_CDI;
+    private String dependencyInjection = CDI_ANNOTATION;
 
-    public ModelWriter withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public ModelWriter withCdi(String dependencyInjection) {
+        this.dependencyInjection = dependencyInjection;
         return this;
     }
 
@@ -92,15 +92,6 @@ public class ModelWriter {
 
         public List<String> getModelFiles() {
             return modelFiles;
-        }
-    }
-
-    public static boolean hasCdi() {
-        try {
-            Class.forName("javax.enterprise.context.ApplicationScoped");
-            return true;
-        } catch (Exception e) {
-            return false;
         }
     }
 }

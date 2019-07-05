@@ -27,6 +27,8 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.impl.AbstractRuleUnit;
 
@@ -41,7 +43,7 @@ public class RuleUnitSourceClass {
     private final String canonicalName;
     private final String targetCanonicalName;
     private String targetTypeName;
-    private boolean hasCdi;
+    private DependencyInjectionAnnotator annotator;
 
     public RuleUnitSourceClass(String packageName, String typeName, String generatedSourceFile) {
         this.packageName = packageName;
@@ -129,8 +131,8 @@ public class RuleUnitSourceClass {
                 .setName(targetTypeName)
                 .setModifiers(Modifier.Keyword.PUBLIC);
 
-        if (hasCdi) {
-            cls.addAnnotation("javax.inject.Singleton");
+        if (annotator != null) {
+            annotator.withSingletonComponent(cls);
         }
 
         String ruleUnitInstanceFQCN = RuleUnitInstanceSourceClass.qualifiedName(packageName, typeName);
@@ -142,8 +144,8 @@ public class RuleUnitSourceClass {
         return cls;
     }
 
-    public RuleUnitSourceClass withCdi(boolean hasCdi) {
-        this.hasCdi = hasCdi;
+    public RuleUnitSourceClass withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
         return this;
     }
 }

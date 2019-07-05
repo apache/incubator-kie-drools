@@ -45,6 +45,7 @@ import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.Generator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import static org.drools.modelcompiler.builder.CanonicalModelKieProject.PROJECT_MODEL_CLASS;
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
@@ -54,7 +55,7 @@ public class IncrementalRuleCodegen implements Generator {
     private String packageName;
     private final Collection<File> files;
 
-    private boolean dependencyInjection;
+    private DependencyInjectionAnnotator annotator;
 
     private CanonicalKieModuleModel kieModel;
 
@@ -101,8 +102,8 @@ public class IncrementalRuleCodegen implements Generator {
         // no config yet
     }
 
-    public void setDependencyInjection(boolean di) {
-        this.dependencyInjection = di;
+    public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
     }
 
     private Stream<GeneratedFile> generateModelForPackage( CompositePackageDescr pkg ) {

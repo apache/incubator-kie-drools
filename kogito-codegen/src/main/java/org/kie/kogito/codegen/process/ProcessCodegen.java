@@ -49,6 +49,7 @@ import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFile.Type;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.xml.sax.SAXException;
@@ -111,8 +112,9 @@ public class ProcessCodegen implements Generator {
     private String packageName;
     private String applicationCanonicalName;
     private String workItemHandlerConfigClass = null;
-    private String processEventListenerConfigClass = null;
-    private boolean dependencyInjection;
+    private String processEventListenerConfigClass = null;    
+    private DependencyInjectionAnnotator annotator;
+    
     private ProcessesContainerGenerator moduleGenerator;
 
     private final Map<String, WorkflowProcess> processes;
@@ -139,12 +141,12 @@ public class ProcessCodegen implements Generator {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
         this.moduleGenerator = new ProcessesContainerGenerator(packageName)
-                .withCdi(dependencyInjection);
+                .withDependencyInjection(annotator);
         this.applicationCanonicalName = packageName + ".Application";
     }
 
-    public void setDependencyInjection(boolean di) {
-        dependencyInjection = di;
+    public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
     }
 
     public ProcessesContainerGenerator moduleGenerator() {
@@ -222,7 +224,7 @@ public class ProcessCodegen implements Generator {
                     classPrefix,
                     modelClassGenerator.className(),
                     applicationCanonicalName)
-                    .withCdi(dependencyInjection);
+                    .withDependencyInjection(annotator);
 
             ProcessInstanceGenerator pi = new ProcessInstanceGenerator(
                     workFlowProcess.getPackageName(),
@@ -236,7 +238,7 @@ public class ProcessCodegen implements Generator {
                         workFlowProcess,
                         modelClassGenerator.className(),
                         execModelGen.className())
-                        .withCdi(dependencyInjection)
+                        .withDependencyInjection(annotator)
                         .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                         .withSignals(processIdToMetadata.get(workFlowProcess.getId()).getSignals());
                 
