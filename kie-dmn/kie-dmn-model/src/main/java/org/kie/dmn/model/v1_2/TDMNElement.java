@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DMNExternalLink;
 
 public class TDMNElement extends KieDMNModelInstrumentedBase implements DMNElement {
 
@@ -71,6 +72,7 @@ public class TDMNElement extends KieDMNModelInstrumentedBase implements DMNEleme
     public static class TExtensionElements extends KieDMNModelInstrumentedBase implements ExtensionElements {
 
         protected List<Object> any;
+        private List<DMNExternalLink> externalLinks;
 
         @Override
         public List<Object> getAny() {
@@ -80,6 +82,13 @@ public class TDMNElement extends KieDMNModelInstrumentedBase implements DMNEleme
             return this.any;
         }
 
+        @Override
+        public List<DMNExternalLink> getExternalLinks() {
+            if ( externalLinks == null ) {
+                externalLinks = new ArrayList<>();
+            }
+            return externalLinks;
+        }
     }
 
 }

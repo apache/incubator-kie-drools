@@ -24,6 +24,7 @@ public interface DMNElement extends DMNModelInstrumentedBase {
 
         List<Object> getAny();
 
+        List<DMNExternalLink> getExternalLinks();
     }
 
     String getDescription();

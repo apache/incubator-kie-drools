@@ -38,6 +38,7 @@ import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
+import org.kie.dmn.model.api.DMNExternalLink;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
@@ -51,6 +52,7 @@ import org.kie.dmn.model.v1_2.TContext;
 import org.kie.dmn.model.v1_2.TContextEntry;
 import org.kie.dmn.model.v1_2.TDMNElement;
 import org.kie.dmn.model.v1_2.TDMNElementReference;
+import org.kie.dmn.model.v1_2.TDMNExternalLink;
 import org.kie.dmn.model.v1_2.TDecision;
 import org.kie.dmn.model.v1_2.TDecisionRule;
 import org.kie.dmn.model.v1_2.TDecisionService;
@@ -273,6 +275,7 @@ public class XStreamMarshaller
         xStream.alias("row", org.kie.dmn.model.v1_2.TList.class);
         xStream.alias("list", org.kie.dmn.model.v1_2.TList.class);
         xStream.alias("extensionElements", TDMNElement.TExtensionElements.class);
+        xStream.alias("DMNExternalLink", TDMNExternalLink.class);
 
         // Manually imported TEXT = String
         xStream.alias( LiteralExpressionConverter.TEXT, String.class );
@@ -319,6 +322,8 @@ public class XStreamMarshaller
         xStream.alias("waypoint", Point.class);
         xStream.registerConverter(new PointConverter(xStream));
         xStream.alias("extension", DiagramElement.Extension.class);
+        xStream.alias("DMNExternalLink", DMNExternalLink.class);
+        xStream.registerConverter(new DMNExternalLinkConverter(xStream));
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
@@ -354,9 +359,11 @@ public class XStreamMarshaller
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );
         xStream.registerConverter(new ElementCollectionConverter( xStream ) );
+
         xStream.registerConverter(new ExtensionElementsConverter( xStream, extensionRegisters ) );
         xStream.registerConverter(new DiagramElementExtensionConverter(xStream, extensionRegisters));
-        
+
+
         xStream.ignoreUnknownElements();
 
         for(DMNExtensionRegister extensionRegister : extensionRegisters) {

@@ -27,6 +27,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.model.api.DMNElement.ExtensionElements;
+import org.kie.dmn.model.api.DMNExternalLink;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_2.TDMNElement;
@@ -36,6 +37,9 @@ import org.slf4j.LoggerFactory;
 public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExtensionElementsConverter.class);
+
+    static final String EXTERNAL_LINKS = "externalLinks";
+    static final String DMN_EXTERNAL_LINK = "DMNExternalLink";
 
     private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
 
@@ -47,17 +51,16 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
 
     public ExtensionElementsConverter(XStream xStream, List<DMNExtensionRegister> extensionRegisters) {
         super(xStream);
-        if ( !extensionRegisters.isEmpty() ) {
+        if (!extensionRegisters.isEmpty()) {
             this.extensionRegisters.addAll(extensionRegisters);
         }
     }
 
-
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         DMNModelInstrumentedBase obj = createModelObject();
-        assignAttributes( reader, obj );
-        if(extensionRegisters.size() == 0) {
+        assignAttributes(reader, obj);
+        if (extensionRegisters.size() == 0) {
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
@@ -69,16 +72,22 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                try {
-                    Object object = readItem(reader, context, null);
-                    if (object instanceof DMNModelInstrumentedBase) {
-                        ((KieDMNModelInstrumentedBase) object).setParent(obj);
-                        ((KieDMNModelInstrumentedBase) obj).addChildren((KieDMNModelInstrumentedBase) object);
+                if (EXTERNAL_LINKS.equals(nodeName)) {
+                    while (reader.hasMoreChildren()) {
+                        reader.moveDown();
+                        nodeName = reader.getNodeName();
+                        Object object = getObject(reader, context, obj);
+                        reader.moveUp();
+                        assignChildElement(obj, nodeName, object);
                     }
-                    assignChildElement(obj, nodeName, object);
-                } catch (CannotResolveClassException e) {
-                    // do nothing; I tried to convert the extension element child with the converters, but no converter is registered for this child.
-                    LOG.debug("Tried to convert the extension element child {}, but no converter is registered for this child.", nodeName);
+                } else {
+                    try {
+                        Object object = getObject(reader, context, obj);
+                        assignChildElement(obj, nodeName, object);
+                    } catch (CannotResolveClassException e) {
+                        // do nothing; I tried to convert the extension element child with the converters, but no converter is registered for this child.
+                        LOG.debug("Tried to convert the extension element child {}, but no converter is registered for this child.", nodeName);
+                    }
                 }
                 reader.moveUp();
             }
@@ -86,23 +95,34 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
         return obj;
     }
 
+    private Object getObject(final HierarchicalStreamReader reader,
+                             final UnmarshallingContext context,
+                             final Object obj) {
+        final Object object = readItem(reader, context, null);
+        if (object instanceof DMNModelInstrumentedBase) {
+            ((KieDMNModelInstrumentedBase) object).setParent((KieDMNModelInstrumentedBase) obj);
+            ((KieDMNModelInstrumentedBase) obj).addChildren((KieDMNModelInstrumentedBase) object);
+        }
+        return object;
+    }
+
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
         // no attributes.
     }
-    
+
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
-        
-        if(extensionRegisters.size() == 0) {
+
+        if (extensionRegisters.size() == 0) {
             return;
         }
 
         ExtensionElements ee = (ExtensionElements) parent;
-        if ( ee.getAny() != null ) {
-            for ( Object a : ee.getAny() ) {
+        if (ee.getAny() != null) {
+            for (Object a : ee.getAny()) {
                 writeItem(a, context, writer);
             }
         }
@@ -124,8 +144,11 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
 
     @Override
     public void assignChildElement(Object parent, String nodeName, Object child) {
-        ExtensionElements id = (ExtensionElements)parent;
-        id.getAny().add(child);
+        ExtensionElements id = (ExtensionElements) parent;
+        if (nodeName.equals(DMN_EXTERNAL_LINK)) {
+            id.getExternalLinks().add((DMNExternalLink) child);
+        } else {
+            id.getAny().add(child);
+        }
     }
-
 }
