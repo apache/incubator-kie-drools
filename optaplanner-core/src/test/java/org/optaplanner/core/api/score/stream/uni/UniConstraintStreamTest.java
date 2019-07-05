@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.stream.uni;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishEntity;
@@ -109,7 +110,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @Test
-    public void groupBy_1mapping1collector() {
+    public void groupBy_1mapping1collector_count() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
@@ -139,6 +140,59 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         assertScore(scoreDirector,
                 assertMatchWithScore(-7, solution.getFirstEntityGroup(), 7),
                 assertMatchWithScore(-3, entityGroup, 3));
+    }
+
+    @Test
+    public void groupBy_1mapping1collector_countDistinct() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        entity1.setStringProperty("A");
+        solution.getEntityList().add(entity1);
+        TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup, solution.getFirstValue());
+        entity2.setStringProperty("A");
+        solution.getEntityList().add(entity2);
+        TestdataLavishEntity entity3 = new TestdataLavishEntity("MyEntity 3", entityGroup,
+                solution.getFirstValue());
+        entity3.setStringProperty("B");
+        solution.getEntityList().add(entity3);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
+            constraint.from(TestdataLavishEntity.class)
+                    .groupBy(TestdataLavishEntity::getEntityGroup, countDistinct(TestdataLavishEntity::getStringProperty))
+                    .penalizeInt((g, count) -> count);
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1),
+                assertMatchWithScore(-2, entityGroup, 2));
+
+        // Incremental
+        scoreDirector.beforeProblemPropertyChanged(entity3);
+        entity3.setStringProperty("A");
+        scoreDirector.afterProblemPropertyChanged(entity3);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, solution.getFirstEntityGroup(), 1),
+                assertMatchWithScore(-1, entityGroup, 1));
+
+        scoreDirector.beforeProblemPropertyChanged(entity3);
+        entity3.setEntityGroup(solution.getFirstEntityGroup());
+        scoreDirector.afterProblemPropertyChanged(entity3);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, solution.getFirstEntityGroup(), 2),
+                assertMatchWithScore(-1, entityGroup, 1));
+    }
+
+    @Test @Ignore("TODO implement it") // TODO
+    public void groupBy_2mapping0collector() {
+
+    }
+
+    @Test @Ignore("TODO implement it") // TODO
+    public void groupBy_2mapping1collector() {
+
     }
 
     // ************************************************************************

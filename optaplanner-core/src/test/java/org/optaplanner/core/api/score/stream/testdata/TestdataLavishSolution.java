@@ -76,11 +76,17 @@ public class TestdataLavishSolution extends TestdataObject {
         return solution;
     }
 
+    @ProblemFactCollectionProperty
     private List<TestdataLavishValueGroup> valueGroupList;
+    @ValueRangeProvider(id = "valueRange")
+    @ProblemFactCollectionProperty
     private List<TestdataLavishValue> valueList;
+    @ProblemFactCollectionProperty
     private List<TestdataLavishEntityGroup> entityGroupList;
+    @PlanningEntityCollectionProperty
     private List<TestdataLavishEntity> entityList;
 
+    @PlanningScore
     private SimpleScore score;
 
     public TestdataLavishSolution() {
@@ -89,56 +95,6 @@ public class TestdataLavishSolution extends TestdataObject {
     public TestdataLavishSolution(String code) {
         super(code);
     }
-
-    @ProblemFactCollectionProperty
-    public List<TestdataLavishValueGroup> getValueGroupList() {
-        return valueGroupList;
-    }
-
-    public void setValueGroupList(List<TestdataLavishValueGroup> valueGroupList) {
-        this.valueGroupList = valueGroupList;
-    }
-
-    @ValueRangeProvider(id = "valueRange")
-    @ProblemFactCollectionProperty
-    public List<TestdataLavishValue> getValueList() {
-        return valueList;
-    }
-
-    public void setValueList(List<TestdataLavishValue> valueList) {
-        this.valueList = valueList;
-    }
-
-    @ProblemFactCollectionProperty
-    public List<TestdataLavishEntityGroup> getEntityGroupList() {
-        return entityGroupList;
-    }
-
-    public void setEntityGroupList(List<TestdataLavishEntityGroup> entityGroupList) {
-        this.entityGroupList = entityGroupList;
-    }
-
-    @PlanningEntityCollectionProperty
-    public List<TestdataLavishEntity> getEntityList() {
-        return entityList;
-    }
-
-    public void setEntityList(List<TestdataLavishEntity> entityList) {
-        this.entityList = entityList;
-    }
-
-    @PlanningScore
-    public SimpleScore getScore() {
-        return score;
-    }
-
-    public void setScore(SimpleScore score) {
-        this.score = score;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
 
     public TestdataLavishValueGroup getFirstValueGroup() {
         return valueGroupList.get(0);
@@ -154,6 +110,50 @@ public class TestdataLavishSolution extends TestdataObject {
 
     public TestdataLavishEntity getFirstEntity() {
         return entityList.get(0);
+    }
+
+    // ************************************************************************
+    // Getter/setters
+    // ************************************************************************
+
+    public List<TestdataLavishValueGroup> getValueGroupList() {
+        return valueGroupList;
+    }
+
+    public void setValueGroupList(List<TestdataLavishValueGroup> valueGroupList) {
+        this.valueGroupList = valueGroupList;
+    }
+
+    public List<TestdataLavishValue> getValueList() {
+        return valueList;
+    }
+
+    public void setValueList(List<TestdataLavishValue> valueList) {
+        this.valueList = valueList;
+    }
+
+    public List<TestdataLavishEntityGroup> getEntityGroupList() {
+        return entityGroupList;
+    }
+
+    public void setEntityGroupList(List<TestdataLavishEntityGroup> entityGroupList) {
+        this.entityGroupList = entityGroupList;
+    }
+
+    public List<TestdataLavishEntity> getEntityList() {
+        return entityList;
+    }
+
+    public void setEntityList(List<TestdataLavishEntity> entityList) {
+        this.entityList = entityList;
+    }
+
+    public SimpleScore getScore() {
+        return score;
+    }
+
+    public void setScore(SimpleScore score) {
+        this.score = score;
     }
 
 }

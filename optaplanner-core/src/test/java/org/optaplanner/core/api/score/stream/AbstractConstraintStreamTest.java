@@ -67,11 +67,9 @@ public abstract class AbstractConstraintStreamTest {
         int scoreTotal = Arrays.stream(assertableMatches)
                 .mapToInt(assertableMatch -> assertableMatch.score)
                 .sum();
-        assertEquals(scoreTotal, score.getScore());
         if (constraintMatchEnabled) {
             ConstraintMatchTotal constraintMatchTotal = scoreDirector.getConstraintMatchTotalMap()
                     .get(ConstraintMatchTotal.composeConstraintId("testConstraintPackage", "testConstraintName"));
-            assertEquals(assertableMatches.length, constraintMatchTotal.getConstraintMatchCount());
             for (AssertableMatch assertableMatch : assertableMatches) {
                 if (constraintMatchTotal.getConstraintMatchSet().stream()
                         .noneMatch(constraintMatch
@@ -81,8 +79,9 @@ public abstract class AbstractConstraintStreamTest {
                             + constraintMatchTotal.getConstraintMatchSet() + ").");
                 }
             }
-
+            assertEquals(assertableMatches.length, constraintMatchTotal.getConstraintMatchCount());
         }
+        assertEquals(scoreTotal, score.getScore());
     }
 
     protected static AssertableMatch assertMatch(Object... justifications) {
