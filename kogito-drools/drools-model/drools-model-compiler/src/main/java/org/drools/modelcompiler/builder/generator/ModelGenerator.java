@@ -432,7 +432,7 @@ public class ModelGenerator {
 
         MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
 
-        declarationOfCall.addArgument(new ClassExpr( decl.getType() ));
+        declarationOfCall.addArgument(new ClassExpr( decl.getBoxedType() ));
 
         if (domainClass) {
             String domainClassSourceName = asJavaSourceName( decl.getDeclarationClass() );

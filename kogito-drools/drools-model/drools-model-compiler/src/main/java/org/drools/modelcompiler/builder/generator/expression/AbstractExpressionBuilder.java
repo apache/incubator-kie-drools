@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
-import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;

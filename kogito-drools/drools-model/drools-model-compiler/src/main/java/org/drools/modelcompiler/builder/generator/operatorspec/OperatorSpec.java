@@ -1,6 +1,6 @@
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
-import org.drools.constraint.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;

@@ -67,7 +67,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-constraint-parser</artifactId>
+      <artifactId>drools-mvel-parser</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-mvel-compiler</artifactId>
     </dependency>
 
     <!-- test -->

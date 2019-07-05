@@ -8,9 +8,9 @@ import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import org.drools.constraint.parser.ast.expr.InlineCastExpr;
-import org.drools.constraint.parser.ast.expr.NullSafeFieldAccessExpr;
-import org.drools.constraint.parser.ast.expr.NullSafeMethodCallExpr;
+import org.drools.mvel.parser.ast.expr.InlineCastExpr;
+import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
 
 public class FlattenScope {
 

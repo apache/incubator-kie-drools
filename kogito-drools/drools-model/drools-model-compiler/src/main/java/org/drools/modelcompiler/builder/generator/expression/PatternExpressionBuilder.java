@@ -17,7 +17,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.constraint.parser.ast.expr.DrlNameExpr;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;

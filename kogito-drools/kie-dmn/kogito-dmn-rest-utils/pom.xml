@@ -34,7 +34,7 @@
         </exclusion>
         <exclusion>
           <groupId>org.drools</groupId>
-          <artifactId>drools-constraint-parser</artifactId>
+          <artifactId>drools-mvel-parser</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.kie</groupId>
@@ -91,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-constraint-parser</artifactId>
+      <artifactId>drools-mvel-parser</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

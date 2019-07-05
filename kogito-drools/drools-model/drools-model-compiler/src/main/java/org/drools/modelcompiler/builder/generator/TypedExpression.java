@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.mvel.parser.printer.PrintUtil;
 
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 

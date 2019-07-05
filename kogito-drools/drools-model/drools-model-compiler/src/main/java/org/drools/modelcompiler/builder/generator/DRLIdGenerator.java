@@ -24,6 +24,7 @@ import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.util.StringUtil.md5Hash;
 
 public class DRLIdGenerator {
+
     private Map<PatternTypeDRLConstraint, String> generatedCondIds = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateOOPathId = new HashMap<>();
     private Map<PatternTypeDRLConstraint, String> generateUnificationVariableId = new HashMap<>();
@@ -121,6 +122,5 @@ public class DRLIdGenerator {
         public String toString() {
             return "" + ((patternType != null) ? patternType.getName() : "<no patternType>") + "( " + drlConstraint + " )";
         }
-        
     }
 }

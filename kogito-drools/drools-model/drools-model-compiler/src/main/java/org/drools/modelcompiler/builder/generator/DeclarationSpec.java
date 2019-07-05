@@ -73,8 +73,12 @@ public class DeclarationSpec {
         return variableName;
     }
 
-    public com.github.javaparser.ast.type.Type getType() {
+    public com.github.javaparser.ast.type.Type getBoxedType() {
         return DrlxParseUtil.classToReferenceType(getDeclarationClass());
+    }
+
+    public com.github.javaparser.ast.type.Type getRawType() {
+        return DrlxParseUtil.toType(getDeclarationClass());
     }
 
     public Boolean isGlobal() {

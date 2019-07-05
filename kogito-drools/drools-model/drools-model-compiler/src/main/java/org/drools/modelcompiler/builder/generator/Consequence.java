@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -14,11 +15,12 @@ import java.util.regex.Pattern;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -28,27 +30,38 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.constraint.parser.ast.expr.CommaSeparatedMethodCallExpr;
-import org.drools.constraint.parser.ast.expr.DrlxExpression;
-import org.drools.constraint.parser.printer.PrintUtil;
+import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
+import org.drools.mvel.parser.ast.expr.DrlxExpression;
+import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.core.util.StringUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
+import org.drools.mvelcompiler.ModifyCompiler;
+import org.drools.mvelcompiler.MvelCompiler;
+import org.drools.mvelcompiler.MvelCompilerException;
+import org.drools.mvelcompiler.ParsingResult;
+import org.drools.mvelcompiler.context.MvelCompilerContext;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.stream.Collectors.toSet;
 
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
-import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
-import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScope;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScopeWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -57,13 +70,18 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTES
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+
 
 public class Consequence {
 
     public static final Set<String> knowledgeHelperMethods = new HashSet<>();
     public static final Set<String> implicitDroolsMethods = new HashSet<>();
 
-    private static final Expression asKnoledgeHelperExpression = parseExpression("((" + DroolsImpl.class.getCanonicalName() + ") drools).asKnowledgeHelper()");
+    private Expression createAsKnowledgeHelperExpression() {
+        return parseExpression(String.format("((%s) drools).asKnowledgeHelper()", DroolsImpl.class.getCanonicalName()));
+    }
 
     static {
         implicitDroolsMethods.add("insert");
@@ -90,10 +108,10 @@ public class Consequence {
         this.packageModel = context.getPackageModel();
     }
 
-    public MethodCallExpr createCall( RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
+    public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
+
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
-            // mvel consequences will be treated as a ScriptBlock
             ruleConsequence = rewriteConsequence( consequenceString );
             if ( ruleConsequence != null ) {
                 ruleConsequence.findAll( Expression.class )
@@ -120,15 +138,39 @@ public class Consequence {
         }
         MethodCallExpr executeCall = null;
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
-            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall);
+            executeCall = executeCall(ruleVariablesBlock, ruleConsequence, usedDeclarationInRHS, onCall, Collections.emptySet());
         } else if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            executeCall = executeScriptCall(ruleDescr, onCall);
+            executeCall = createExecuteCallMvel(ruleDescr, ruleVariablesBlock, usedDeclarationInRHS, onCall);
         }
+
         return executeCall;
     }
 
+    private MethodCallExpr createExecuteCallMvel(RuleDescr ruleDescr, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
+        String mvelBlock = addCurlyBracesToBlock(ruleDescr.getConsequence().toString());
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
+
+        for(DeclarationSpec d : context.getAllDeclarations()) {
+            Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getRawType());
+            mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
+        }
+
+        ParsingResult compile;
+        try {
+            compile = new MvelCompiler(mvelCompilerContext).compile(mvelBlock);
+        } catch (MvelCompilerException e) {
+            context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
+            return null;
+        }
+
+        return executeCall(ruleVariablesBlock,
+                                  compile.statementResults(),
+                                  usedDeclarationInRHS,
+                                  onCall,
+                                  compile.getUsedBindings());
+    }
     private BlockStmt rewriteConsequence(String consequence) {
-        String ruleConsequenceAsBlock = rewriteConsequenceBlock(consequence.trim());
+        String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
         try {
             return parseBlock( ruleConsequenceAsBlock );
         } catch (ParseProblemException e) {
@@ -164,7 +206,16 @@ public class Consequence {
         return m.find();
     }
 
-    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall) {
+    private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Set<String> modifyProperties) {
+
+        for (String modifiedProperty : modifyProperties) {
+            NodeList<Expression> arguments = nodeList(new NameExpr(modifiedProperty));
+            MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update",
+                                                       arguments);
+            ruleConsequence.getStatements().add(new ExpressionStmt(update));
+        }
+
+
         boolean requireDrools = rewriteRHS(ruleVariablesBlock, ruleConsequence);
         MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTE_CALL : EXECUTE_CALL);
         LambdaExpr executeLambda = new LambdaExpr();
@@ -178,40 +229,6 @@ public class Consequence {
         return executeCall;
     }
 
-    private MethodCallExpr executeScriptCall(RuleDescr ruleDescr, MethodCallExpr onCall) {
-        MethodCallExpr executeCall = new MethodCallExpr(onCall, onCall == null ? "D." + EXECUTESCRIPT_CALL : EXECUTESCRIPT_CALL);
-        executeCall.addArgument(new StringLiteralExpr("mvel"));
-        executeCall.addArgument(packageModel.getName() + "." + packageModel.getRulesFileName() + ".class");
-
-        ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
-        objectCreationExpr.setType(StringBuilder.class.getCanonicalName());
-        Expression mvelSB = objectCreationExpr;
-
-        for (String i : packageModel.getImports()) {
-            if (i.equals(packageModel.getName() + ".*")) {
-                continue; // skip same-package star import.
-            }
-            mvelSB = appendImport( mvelSB, i );
-        }
-
-        StringLiteralExpr mvelScriptBodyStringLiteral = new StringLiteralExpr();
-        mvelScriptBodyStringLiteral.setString(ruleDescr.getConsequence().toString()); // use the setter method in order for the string literal be properly escaped.
-
-        MethodCallExpr appendCall = new MethodCallExpr(mvelSB, "append");
-        appendCall.addArgument(mvelScriptBodyStringLiteral);
-
-        executeCall.addArgument(new MethodCallExpr(appendCall, "toString"));
-        return executeCall;
-    }
-
-    private MethodCallExpr appendImport( Expression mvelSB, String i ) {
-        MethodCallExpr appendCall = new MethodCallExpr(mvelSB, "append");
-        StringLiteralExpr importAsStringLiteral = new StringLiteralExpr();
-        importAsStringLiteral.setString("import " + i + ";\n"); // use the setter method in order for the string literal be properly escaped.
-        appendCall.addArgument(importAsStringLiteral);
-        return appendCall;
-    }
-
     private MethodCallExpr onCall(Collection<String> usedArguments) {
         MethodCallExpr onCall = null;
 
@@ -222,67 +239,16 @@ public class Consequence {
         return onCall;
     }
 
-    private String rewriteConsequenceBlock(String consequence) {
+    private String rewriteModifyBlock(String consequence) {
         int modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify");
         if (modifyPos < 0) {
             return consequence;
         }
 
-        int lastCopiedEnd = 0;
-        StringBuilder sb = new StringBuilder();
-        sb.append(consequence.substring(lastCopiedEnd, modifyPos));
-        lastCopiedEnd = modifyPos + 1;
+        ModifyCompiler modifyCompiler = new ModifyCompiler();
+        ParsingResult compile = modifyCompiler.compile(addCurlyBracesToBlock(consequence));
 
-        for (; modifyPos >= 0; modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify", modifyPos+6)) {
-            int declStart = consequence.indexOf('(', modifyPos + 6);
-            int declEnd = declStart > 0 && consequence.indexOf(')', declStart + 1) >= 0 ? StringUtils.findEndOfMethodArgsIndex(consequence, declStart) : -1;
-            if (declEnd < 0) {
-                continue;
-            }
-            String decl = consequence.substring(declStart + 1, declEnd).trim();
-            int blockStart = consequence.indexOf('{', declEnd + 1);
-            int blockEnd = consequence.indexOf('}', blockStart + 1);
-            if (blockEnd < 0) {
-                continue;
-            }
-
-            if (lastCopiedEnd < modifyPos) {
-                sb.append(consequence.substring(lastCopiedEnd, modifyPos));
-            }
-
-            Expression declAsExpr = parseExpression(decl );
-            if (decl.indexOf( '(' ) >= 0) {
-                declAsExpr = new EnclosedExpr( declAsExpr );
-            }
-            String originalBlock = consequence.substring(blockStart + 1, blockEnd).trim();
-            if(!"".equals(originalBlock)) {
-                DrlxExpression modifyBlock = DrlxParseUtil.parseExpression(originalBlock);
-                Expression expr = modifyBlock.getExpr();
-                List<Expression> originalMethodCalls;
-                if (expr instanceof CommaSeparatedMethodCallExpr ) {
-                    originalMethodCalls = ((CommaSeparatedMethodCallExpr) expr).getExpressions();
-                } else {
-                    originalMethodCalls = Collections.singletonList(expr);
-                }
-                for (Expression e : originalMethodCalls) {
-                    MethodCallExpr mc = (MethodCallExpr) e;
-                    Expression mcWithScope = org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend(declAsExpr, mc);
-                    modifyBlock.replace(mc, mcWithScope);
-                    sb.append(PrintUtil.printConstraint(mc));
-                    sb.append(";\n");
-                }
-            }
-
-            sb.append("update(").append(decl).append(");\n");
-            lastCopiedEnd = blockEnd + 1;
-            modifyPos = lastCopiedEnd - 6;
-        }
-
-        if (lastCopiedEnd < consequence.length()) {
-            sb.append(consequence.substring(lastCopiedEnd));
-        }
-
-        return sb.toString();
+        return printConstraint(compile.statementResults());
     }
 
     private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {
@@ -301,7 +267,7 @@ public class Consequence {
                     methodCallExpr.setScope(new NameExpr("drools"));
                 }
                 if (knowledgeHelperMethods.contains(methodCallExpr.getNameAsString())) {
-                    methodCallExpr.setScope(asKnoledgeHelperExpression);
+                    methodCallExpr.setScope(createAsKnowledgeHelperExpression());
                 } else if (methodCallExpr.getNameAsString().equals("update")) {
                     if (methodCallExpr.toString().contains( "FactHandle" )) {
                         methodCallExpr.setScope( new NameExpr( "((org.drools.modelcompiler.consequence.DroolsImpl) drools)" ) );
@@ -347,8 +313,11 @@ public class Consequence {
     private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
         Set<String> modifiedProps = new HashSet<>();
         for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
-            if (methodCall.getScope().isPresent() && hasScope(methodCall, updatedVar)) {
-                String propName = methodToProperty(methodCall);
+            DrlxParseUtil.RemoveRootNodeResult removeRootNodeViaScope = DrlxParseUtil.findRemoveRootNodeViaScope(methodCall);
+            Optional<Expression> root = removeRootNodeViaScope.getRootNode()
+                    .filter(s -> isNameExprWithName(s, updatedVar));
+            if (methodCall.getScope().isPresent() && root.isPresent()) {
+                String propName = methodToProperty(methodCall, removeRootNodeViaScope.getFirstChild());
                 if (propName != null) {
                     modifiedProps.add(propName);
                 } else {
@@ -360,11 +329,11 @@ public class Consequence {
         return modifiedProps;
     }
 
-    private String methodToProperty(MethodCallExpr mce) {
+    private String methodToProperty(MethodCallExpr mce, Expression getter) {
         String propertyName = setter2property(mce.getNameAsString());
 
-        if (propertyName == null && mce.getArguments().isEmpty()) {
-            propertyName = getter2property(mce.getNameAsString());
+        if (propertyName == null && getter.isMethodCallExpr()) {
+            propertyName = getter2property(getter.asMethodCallExpr().getNameAsString());
         }
 
         // TODO also register additional property in case the invoked method is annotated with @Modifies
@@ -373,7 +342,7 @@ public class Consequence {
     }
 
     private static boolean isDroolsMethod(MethodCallExpr mce) {
-        final boolean hasDroolsScope = hasScope(mce, "drools");
+        final boolean hasDroolsScope = hasScopeWithName(mce, "drools");
         final boolean isImplicitDroolsMethod = !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
         final boolean hasDroolsAsParameter = findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
         return hasDroolsScope || isImplicitDroolsMethod || hasDroolsAsParameter;
