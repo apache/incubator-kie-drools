@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1094,7 +1095,7 @@ public class RuleModelDRLPersistenceImpl
             } else {
                 addFieldRestriction(buf,
                                     constr.getConstraintValueType(),
-                                    constr.getFieldType(),
+                                    getFieldType(constr),
                                     constr.getOperator(),
                                     parameters,
                                     constr.getValue(),
@@ -1122,7 +1123,7 @@ public class RuleModelDRLPersistenceImpl
             } else {
                 addConnectiveFieldRestriction(buf,
                                               constr.getConstraintValueType(),
-                                              constr.getFieldType(),
+                                              getFieldType(constr),
                                               constr.getOperator(),
                                               parameters,
                                               constr.getValue(),
@@ -1148,7 +1149,7 @@ public class RuleModelDRLPersistenceImpl
         }
 
         private void assertConstraintValue(final SingleFieldConstraint sfc) {
-            if (DataType.TYPE_STRING.equals(sfc.getFieldType())) {
+            if (DataType.TYPE_STRING.equals(getFieldType(sfc))) {
                 if (sfc.getValue() == null) {
                     sfc.setValue("");
                 }
@@ -1164,7 +1165,7 @@ public class RuleModelDRLPersistenceImpl
                 return true;
             }
             final String operator = constr.getOperator();
-            final String fieldType = constr.getFieldType();
+            final String fieldType = getFieldType(constr);
             final String fieldValue = constr.getValue();
             if (operator == null) {
                 return false;
@@ -3737,7 +3738,7 @@ public class RuleModelDRLPersistenceImpl
                                                     factPattern.getFactType()),
                                          fieldConstraint.getFieldName());
 
-            if (field != null && (fieldConstraint.getFieldType() == null || fieldConstraint.getFieldType().trim().length() == 0)) {
+            if (field != null && (fieldConstraint.getFieldType() == null || getFieldType(fieldConstraint).trim().length() == 0)) {
                 fieldConstraint.setFieldType(getSimpleFactType(field.getType(),
                                                                dmo));
             }
@@ -4083,7 +4084,7 @@ public class RuleModelDRLPersistenceImpl
                     connectiveConstraints[i].setOperator((isAnd ? "&& " : "|| ") + (connectiveOperator == null ? null : connectiveOperator.trim()));
                     connectiveConstraints[i].setFactType(factPattern.getFactType());
                     connectiveConstraints[i].setFieldName(con.getFieldName());
-                    connectiveConstraints[i].setFieldType(con.getFieldType());
+                    connectiveConstraints[i].setFieldType(getFieldType(con));
                     setValueOnConstraint(m,
                                          operator,
                                          factPattern,
@@ -4279,5 +4280,14 @@ public class RuleModelDRLPersistenceImpl
         }
 
         return rm;
+    }
+
+    private static String getFieldType(final SingleFieldConstraint constr) {
+        final String fieldType = constr.getFieldType();
+        if (Objects.equals("this", fieldType)) {
+            return constr.getFactType();
+        } else {
+            return fieldType;
+        }
     }
 }
