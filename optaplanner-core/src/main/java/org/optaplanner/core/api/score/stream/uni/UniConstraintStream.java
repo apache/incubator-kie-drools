@@ -148,6 +148,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     // Group by
     // ************************************************************************
 
+    <GroupKey_> UniConstraintStream<GroupKey_> groupBy(
+            Function<A, GroupKey_> groupKeyMapping);
+
     <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector);

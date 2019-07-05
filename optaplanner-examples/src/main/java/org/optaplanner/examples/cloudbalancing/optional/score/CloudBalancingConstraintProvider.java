@@ -61,7 +61,9 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     protected void computerCost(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight("computerCost", HardSoftScore.ofSoft(1));
         c.from(CloudProcess.class)
-                // TODO Simplify by using exists()
+                // TODO Simplify by using:
+                // .groupBy(CloudProcess::getComputer)
+                // .penalizeInt(CloudComputer::getCost);
                 .groupBy(CloudProcess::getComputer, count())
                 .penalizeInt((computer, count) -> computer.getCost());
     }
