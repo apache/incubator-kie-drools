@@ -113,11 +113,11 @@ public class DrlxParseUtilTest {
 
     @Test
     public void removeRootNodeTest() {
-        assertEquals(new RemoveRootNodeResult(of(expr("sum")), expr("sum")), findRemoveRootNodeViaScope(expr("sum")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$a")), expr("getAge()")), findRemoveRootNodeViaScope(expr("$a.getAge()")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)")), findRemoveRootNodeViaScope(expr("$c.convert($length)")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)")), findRemoveRootNodeViaScope(expr("$data.getValues().get(0)")));
-        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)")), findRemoveRootNodeViaScope(expr("$data.getIndexes().getValues().get(0)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("sum")), expr("sum"), expr("sum")), findRemoveRootNodeViaScope(expr("sum")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$a")), expr("getAge()"), expr("getAge()")), findRemoveRootNodeViaScope(expr("$a.getAge()")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$c")), expr("convert($length)"), expr("convert($length)")), findRemoveRootNodeViaScope(expr("$c.convert($length)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getValues().get(0)"), expr("getValues()")), findRemoveRootNodeViaScope(expr("$data.getValues().get(0)")));
+        assertEquals(new RemoveRootNodeResult(of(expr("$data")), expr("getIndexes().getValues().get(0)"), expr("getIndexes()")), findRemoveRootNodeViaScope(expr("$data.getIndexes().getValues().get(0)")));
     }
 
     private Expression expr(String $a) {

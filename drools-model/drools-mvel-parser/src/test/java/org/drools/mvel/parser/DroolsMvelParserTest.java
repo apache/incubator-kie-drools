@@ -568,6 +568,17 @@ public class DroolsMvelParserTest {
     }
 
     @Test
+    public void testModifyMultiple() {
+        String expr = "{ modify($p) { setAge(1),\nsetAge(2);setAge(3)\nsetAge(4); }; }";
+
+        BlockStmt expression = MvelParser.parseBlock(expr);
+        assertEquals("{\n" +
+                             "    modify ($p) { setAge(1), setAge(2), setAge(3), setAge(4) };\n" +
+                             "}", printConstraint(expression));
+
+    }
+
+    @Test
     public void testModifyEmptyBlock() {
         String expr = "{ modify( $s ) { } }";
 
