@@ -474,7 +474,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         if (lookUpEnabled) {
             lookUpManager.addWorkingObject(problemFact);
         }
-        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
     }
 
     @Override
@@ -484,7 +484,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void afterProblemPropertyChanged(Object problemFactOrEntity) {
-        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
     }
 
     @Override
@@ -497,7 +497,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         if (lookUpEnabled) {
             lookUpManager.removeWorkingObject(problemFact);
         }
-        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke the variable listeners
     }
 
     @Override

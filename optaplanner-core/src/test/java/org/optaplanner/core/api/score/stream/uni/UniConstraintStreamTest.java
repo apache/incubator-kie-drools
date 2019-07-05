@@ -223,7 +223,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         // Incremental
         scoreDirector.beforeProblemPropertyChanged(entity3);
         entity3.setEntityGroup(entityGroup);
-        scoreDirector.afterProblemPropertyChanged(entity3); // TODO THIS NOT REALLY INCREMENTAL!!!
+        scoreDirector.afterProblemPropertyChanged(entity3);
         assertScore(scoreDirector,
                 assertMatchWithScore(-7, solution.getFirstEntityGroup(), 7),
                 assertMatchWithScore(-3, entityGroup, 3));
