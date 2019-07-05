@@ -45,8 +45,8 @@ Right-click the second row and select *Insert row below* to add another row.
 * *Scenario description*: `Parking violation`
 * *Points* (under *Given* column header): `10`
 * *Type*: `"parking"`
-* *Speed Limit*: `-`
-* *Actual Speed*: `-`
+* *Speed Limit*: leave blank
+* *Actual Speed*: leave blank
 * *Points* (under *Expect* column header): `1`
 * *Amount*: `100`
 * *Should the driver be suspended?*: `"No"`
