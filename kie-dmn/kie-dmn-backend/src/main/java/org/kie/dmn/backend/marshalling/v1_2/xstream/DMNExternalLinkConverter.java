@@ -17,7 +17,6 @@
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNExternalLink;
@@ -44,21 +43,11 @@ public class DMNExternalLinkConverter extends DMNModelInstrumentedBaseConverter 
     }
 
     @Override
-    protected void assignChildElement(final Object parent, final String nodeName, final Object child) {
-        super.assignChildElement(parent, nodeName, child);
-    }
-
-    @Override
     protected void assignAttributes(final HierarchicalStreamReader reader, final Object parent) {
         super.assignAttributes(reader, parent);
         final DMNExternalLink external = (DMNExternalLink) parent;
         external.setLinkDescription(reader.getAttribute(LINK_DESCRIPTION));
         external.setURL(reader.getAttribute(URL));
-    }
-
-    @Override
-    protected void writeChildren(final HierarchicalStreamWriter writer, final MarshallingContext context, final Object parent) {
-        super.writeChildren(writer, context, parent);
     }
 
     @Override
