@@ -70,6 +70,27 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testPropertyReactivityWithArguments() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R \n" +
+                "when\n" +
+                "    $p: Person()\n" +
+                "then\n" +
+                "    modify($p) { setLikes( String.valueOf(($p.getAddress().getStreet() + $p.getAddress().getCity()))) };\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Person me = new Person( "Mario", 40 );
+        me.setAddress(new Address("street1", 2, "city1"));
+        ksession.insert( me );
+        ksession.fireAllRules();
+
+        assertEquals( "street1city1", me.getLikes() );
+    }
+
+    @Test
     public void testPropertyReactvityOnFinalField() throws Exception {
         String str =
                 "rule R when\n" +
