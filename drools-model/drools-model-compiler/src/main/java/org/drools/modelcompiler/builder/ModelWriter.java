@@ -41,6 +41,7 @@ public class ModelWriter {
 
             RuleWriter rules = packageModelWriter.getRules();
             generatedFiles.add(new GeneratedFile(rules.getName(), rules.getMainSource()));
+            modelFiles.add( rules.getClassName() );
 
             for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
                 generatedFiles.add(new GeneratedFile(ruleSource.getName(), ruleSource.getSource()));

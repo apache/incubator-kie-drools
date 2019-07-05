@@ -45,7 +45,6 @@ public class AccumulateClassWriter {
     }
 
     public String getName() {
-        return pkgModel.getPathName() + "/" + name;
+        return pkgModel.getPathName() + "/" + name + ".java";
     }
-
 }

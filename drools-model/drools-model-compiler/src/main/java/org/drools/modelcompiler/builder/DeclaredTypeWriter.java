@@ -42,6 +42,6 @@ public class DeclaredTypeWriter {
     }
 
     public String getName() {
-        return pkgModel.getPathName() + "/" + name;
+        return pkgModel.getPathName() + "/" + name + ".java";
     }
 }

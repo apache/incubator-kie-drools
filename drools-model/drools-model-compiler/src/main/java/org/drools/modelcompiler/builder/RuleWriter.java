@@ -36,17 +36,20 @@ public class RuleWriter {
     private final String rulesFileName;
     private final PackageModel.RuleSourceResult rulesSource;
 
-    public RuleWriter(String rulesFileName, PackageModel.RuleSourceResult rulesSource) {
+    public RuleWriter(String rulesFileName, PackageModel.RuleSourceResult rulesSource, PackageModel pkgModel) {
         this.rulesFileName = rulesFileName;
         this.rulesSource = rulesSource;
         this.generatedPojo = rulesSource.getMainRuleClass();
-        this.pkgModel = null;
+        this.pkgModel = pkgModel;
     }
 
     public String getName() {
-        return pkgModel.getPathName() + "/" + rulesFileName;
+        return pkgModel.getPathName() + "/" + rulesFileName + ".java";
     }
 
+    public String getClassName() {
+        return pkgModel.getName() + "." + rulesFileName;
+    }
 
     public String getMainSource() {
         return prettyPrinter.print(generatedPojo);
@@ -77,9 +80,8 @@ public class RuleWriter {
         }
 
         public String getName() {
-            return pkgModel.getPathName() + "/" + name;
+            return pkgModel.getPathName() + "/" + name + ".java";
         }
-
 
         public String getSource() {
             String code = prettyPrinter.print(source);

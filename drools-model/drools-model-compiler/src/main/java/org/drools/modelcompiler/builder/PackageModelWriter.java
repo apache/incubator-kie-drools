@@ -31,7 +31,7 @@ public class PackageModelWriter {
         this.packageModel = packageModel;
         this.declaredTypes = toDeclaredTypeWriters(packageModel);
         this.accumulateClasses = toAccumulateClassWriters(packageModel);
-        this.ruleWriter = new RuleWriter(packageModel.getRulesFileName(), packageModel.getRulesSource());
+        this.ruleWriter = new RuleWriter(packageModel.getRulesFileName(), packageModel.getRulesSource(), packageModel);
     }
 
     public List<DeclaredTypeWriter> getDeclaredTypes() {
