@@ -4,6 +4,7 @@ public class Address {
 
     private String street;
     private int number;
+    private short shortNumber;
     private String city;
 
     public Address() {
@@ -43,6 +44,18 @@ public class Address {
 
     public void setCity(final String city) {
         this.city = city;
+    }
+
+    public short getShortNumber() {
+        return shortNumber;
+    }
+
+    public short getShortNumberBoxed() {
+        return shortNumber;
+    }
+
+    public void setShortNumber(short shortNumber) {
+        this.shortNumber = shortNumber;
     }
 
     public int hashCode() {

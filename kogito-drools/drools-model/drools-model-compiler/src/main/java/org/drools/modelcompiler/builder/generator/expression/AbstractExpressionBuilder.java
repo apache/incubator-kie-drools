@@ -20,12 +20,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -40,7 +40,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.IndexIdGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -48,10 +48,13 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.util.ClassUtil;
+import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class AbstractExpressionBuilder {
     protected static final IndexIdGenerator indexIdGenerator = new IndexIdGenerator();
@@ -111,11 +114,34 @@ public abstract class AbstractExpressionBuilder {
             // Can we unify it? Sometimes expression is in the left sometimes in expression
             final Expression e;
             if(left != null) {
-                e = DrlxParseUtil.findLeftLeafOfMethodCall(left.getExpression());
+                e = findLeftmostExpression(left.getExpression());
             } else {
                 e = drlxParseResult.getExpr();
             }
             return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), e);
+        }
+    }
+
+    private Expression findLeftmostExpression(Expression expression) {
+        if (expression instanceof BinaryExpr) {
+            BinaryExpr be = (BinaryExpr) expression;
+            return findLeftmostExpression(be.getLeft());
+        }
+        if (expression instanceof CastExpr) {
+            CastExpr ce = (CastExpr) expression;
+            return findLeftmostExpression(ce.getExpression());
+        } else if (expression instanceof MethodCallExpr) {
+            MethodCallExpr methodCallExpr = expression.asMethodCallExpr();
+            if(!methodCallExpr.getArguments().isEmpty()) {
+                return findLeftmostExpression(methodCallExpr.getArguments().iterator().next());
+            } else {
+                return expression;
+            }
+        } else if (expression instanceof FieldAccessExpr) {
+            return expression;
+        } else {
+            context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+            return expression;
         }
     }
 
@@ -194,9 +220,9 @@ public abstract class AbstractExpressionBuilder {
             }
 
         } else if (expression instanceof NameExpr) {
-            if (leftType.equals(BigDecimal.class)) {
+            if (leftType.equals(BigDecimal.class) && !right.getType().equals(BigDecimal.class)) {
                 expression = toNewExpr(BigDecimal.class, expression);
-            } else if (leftType.equals(BigInteger.class)) {
+            } else if (leftType.equals(BigInteger.class) && !right.getType().equals(BigInteger.class)) {
                 expression = toNewExpr(BigInteger.class, expression);
             }
         }
@@ -209,8 +235,8 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected void addIndexedByDeclaration(TypedExpression left, TypedExpression right, boolean leftContainsThis, MethodCallExpr indexedByDSL, Collection<String> usedDeclarations, java.lang.reflect.Type leftType) {
-        LambdaExpr indexedBy_rightOperandExtractor = new LambdaExpr();
-        indexedBy_rightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
+        LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
+        indexedByRightOperandExtractor.addParameter(new Parameter(new UnknownType(), usedDeclarations.iterator().next()));
         final TypedExpression expression;
         if (!leftContainsThis) {
             expression = left;
@@ -218,14 +244,26 @@ public abstract class AbstractExpressionBuilder {
             expression = right;
         }
         final Expression narrowed = narrowExpressionToType(expression, leftType);
-        indexedBy_rightOperandExtractor.setBody(new ExpressionStmt(narrowed));
-        indexedByDSL.addArgument(indexedBy_rightOperandExtractor);
+        indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
+        indexedByDSL.addArgument(indexedByRightOperandExtractor);
     }
 
-    protected Class<?> getIndexType( TypedExpression left, TypedExpression right ) {
-        return Stream.of(left, right).map(TypedExpression::getType)
+    protected Class<?> getIndexType(TypedExpression left, TypedExpression right) {
+        Optional<Class<?>> leftType = Optional.ofNullable(left.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);
+        Optional<Class<?>> rightType = Optional.ofNullable(right.getType()).map(ClassUtil::toRawClass).map(ClassUtil::toNonPrimitiveType);;
+
+        // Use Number.class if they're both Numbers but different in order to use best possible type in the index
+        Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {
+            if (Number.class.isAssignableFrom(l) && Number.class.isAssignableFrom(r) && !l.equals(r)) {
+                return Number.class;
+            } else {
+                return l;
+            }
+        }));
+
+        return numberType.orElseGet(() -> Stream.of(left, right).map(TypedExpression::getType)
                 .filter(Objects::nonNull)
                 .map(ClassUtil::toRawClass)
-                .findFirst().get();
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find index from: " + left.toString() + ", " + right.toString() + "!")));
     }
 }

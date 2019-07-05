@@ -64,6 +64,12 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.StringUtils;
+import org.drools.core.util.index.IndexUtil;
+import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
@@ -160,7 +166,7 @@ public class DrlxParseUtil {
         return null;
     }
 
-    public static java.lang.reflect.Type returnTypeOfMethodCallExpr( RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, java.lang.reflect.Type clazz, Collection<String> usedDeclarations) {
+    public static java.lang.reflect.Type returnTypeOfMethodCallExpr(RuleContext context, TypeResolver typeResolver, MethodCallExpr methodCallExpr, java.lang.reflect.Type clazz, Collection<String> usedDeclarations) {
         final Class[] argsType = methodCallExpr.getArguments().stream()
                 .map((Expression e) -> getExpressionType(context, typeResolver, e, usedDeclarations))
                 .toArray(Class[]::new);
@@ -187,7 +193,7 @@ public class DrlxParseUtil {
         if (expr instanceof NameExpr) {
             return expressionTypeNameExpr(context, usedDeclarations, ((NameExpr) expr).getNameAsString());
         }
-        if (expr instanceof DrlNameExpr ) {
+        if (expr instanceof DrlNameExpr) {
             return expressionTypeNameExpr(context, usedDeclarations, ((DrlNameExpr) expr).getNameAsString());
         }
 
@@ -418,6 +424,7 @@ public class DrlxParseUtil {
         public Expression getFirstChild() {
             return firstChild;
         }
+
         @Override
         public String toString() {
             return "RemoveRootNodeResult{" +
@@ -489,7 +496,7 @@ public class DrlxParseUtil {
         Expression previousScope = null;
 
         for (ParsedMethod e : callStackLeftToRight) {
-            if (e.expression instanceof DrlNameExpr || e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr ) {
+            if (e.expression instanceof DrlNameExpr || e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr || e.expression instanceof NullSafeFieldAccessExpr) {
                 if (e.fieldToResolve.equals( bindingId )) {
                     continue;
                 }

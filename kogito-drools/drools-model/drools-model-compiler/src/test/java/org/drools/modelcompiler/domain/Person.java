@@ -1,6 +1,7 @@
 package org.drools.modelcompiler.domain;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,9 @@ public class Person extends AbstractReactiveObject {
     @Position(1)
     private int age;
 
+
+    private long ageLong;
+
     private Address address;
     private int id = 0;
     private String likes;
@@ -27,9 +31,9 @@ public class Person extends AbstractReactiveObject {
 
     private BigDecimal money;
 
-    private Map<Integer, Integer> items = new HashMap<>();
+    private BigInteger ageInSeconds;
 
-    private Person ParentP;
+    private Map<Integer, Integer> items = new HashMap<>();
 
     public static int countItems(Map<?, ?> items) {
         return items.size();
@@ -48,6 +52,8 @@ public class Person extends AbstractReactiveObject {
     public void setNumberOfItems(int numberOfItems) {
         this.numberOfItems = numberOfItems;
     }
+
+    private Person ParentP;
 
     public Person() { }
 
@@ -84,6 +90,10 @@ public class Person extends AbstractReactiveObject {
         return age;
     }
 
+    public Integer getAgeBoxed() {
+        return age;
+    }
+
     public Short getAgeAsShort() {
         return (short)age;
     }
@@ -99,6 +109,15 @@ public class Person extends AbstractReactiveObject {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public long getAgeLong() {
+        return ageLong;
+    }
+
+    public Person setAgeLong(long ageLong) {
+        this.ageLong = ageLong;
+        return this;
     }
 
     public int getId() {
@@ -137,8 +156,9 @@ public class Person extends AbstractReactiveObject {
         return money;
     }
 
-    public void setMoney(BigDecimal money) {
+    public Person setMoney(BigDecimal money) {
         this.money = money;
+        return this;
     }
 
     public void setItems(Map<Integer, Integer> items) {
@@ -167,6 +187,15 @@ public class Person extends AbstractReactiveObject {
 
     public Person setParentP(Person parentP) {
         ParentP = parentP;
+        return this;
+    }
+
+    public BigInteger getAgeInSeconds() {
+        return ageInSeconds;
+    }
+
+    public Person setAgeInSeconds(BigInteger ageInSeconds) {
+        this.ageInSeconds = ageInSeconds;
         return this;
     }
 

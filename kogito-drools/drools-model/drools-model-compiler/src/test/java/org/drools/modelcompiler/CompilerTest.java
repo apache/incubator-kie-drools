@@ -89,6 +89,7 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals( "street1city1", me.getLikes() );
     }
+
     @Test
     public void testPropertyReactvityOnFinalField() throws Exception {
         String str =
@@ -1622,5 +1623,184 @@ public class CompilerTest extends BaseModelTest {
         message.setStatus( Message.HELLO );
         kieSession.insert(message);
         assertEquals(2, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testBetaJoinBigInteger() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $markV : Person(name == \"Mark\", $markAgeInSeconds : ageInSeconds)\n" +
+                        "  $olderV : Person(name != \"Mark\", ageInSeconds > $markAgeInSeconds)\n" +
+                        "then\n" +
+                        "  $r.setValue($olderV.getName() + \" is older than \" + $markV.getName());\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37).setAgeInSeconds(BigInteger.valueOf(12341234));
+        Person edson = new Person("Edson", 35).setAgeInSeconds(BigInteger.valueOf(1234));
+        Person mario = new Person("Mario", 40).setAgeInSeconds(BigInteger.valueOf(123412341234L));
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+    }
+
+    @Test
+    public void testBetaJoinBigDecimal() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $markV : Person(name == \"Mark\", $markMoney : money)\n" +
+                        "  $richerV : Person(name != \"Mark\", money > $markMoney)\n" +
+                        "then\n" +
+                        "  $r.setValue($richerV.getName() + \" is richer than \" + $markV.getName());\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37).setMoney(BigDecimal.valueOf(1_000_000));
+        Person edson = new Person("Edson", 35).setMoney(BigDecimal.valueOf(1_000));
+        Person mario = new Person("Mario", 40).setMoney(BigDecimal.valueOf(1_000_000_000));
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is richer than Mark", result.getValue());
+    }
+
+    @Test
+    public void testBetaCast() {
+        String str =
+                    "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Address.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $p : Person($intField : age)\n" +
+                        "  $a : Address(shortNumber == (short)$intField)\n" +
+                        "then\n" +
+                        "  $r.setValue($a.getCity() + \" number has the same value of \" + $p.getName() + \" age\");\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        Address a = new Address("Milan");
+        a.setShortNumber((short)37);
+
+        Address b = new Address("Rome");
+        b.setShortNumber((short)1);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.insert(a);
+        ksession.insert(b);
+
+        ksession.fireAllRules();
+        assertEquals("Milan number has the same value of Mark age", result.getValue());
+
+    }
+
+
+    @Test
+    public void testBetaCastGreaterThan() {
+        String str =
+                    "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "import " + Address.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $p : Person($intField : age)\n" +
+                        "  $a : Address(shortNumber > (short)$intField)\n" +
+                        "then\n" +
+                            "  $r.setValue($a.getCity() + \" number is greater than \" + $p.getName() + \" age\");\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark", 37);
+        Person edson = new Person("Edson", 35);
+        Person mario = new Person("Mario", 40);
+
+        Address a = new Address("Milan");
+        a.setShortNumber((short)37);
+
+        Address b = new Address("Naples");
+        b.setShortNumber((short)1);
+
+        Address c = new Address("Rome");
+        c.setShortNumber((short)38);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.insert(a);
+        ksession.insert(b);
+        ksession.insert(c);
+
+        ksession.fireAllRules();
+
+        assertEquals("Rome number is greater than Mark age", result.getValue());
+
+    }
+
+    @Test
+    public void testNumericLimits() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                        "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "  $r : Result()\n" +
+                        "  $p : Person(ageLong > 9223372036854775806)\n" + // MAX_LONG - 1
+                        "then\n" +
+                        "  $r.setValue($p.getName() + \" is very old\");\n" +
+                        "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        Person mark = new Person("Mark").setAgeLong(37);
+        Person edson = new Person("Edson").setAgeLong(35);
+        Person mario = new Person("Mario").setAgeLong(Long.MAX_VALUE);
+
+        ksession.insert(mark);
+        ksession.insert(edson);
+        ksession.insert(mario);
+
+        ksession.fireAllRules();
+
+        assertEquals("Mario is very old", result.getValue());
+
     }
 }
