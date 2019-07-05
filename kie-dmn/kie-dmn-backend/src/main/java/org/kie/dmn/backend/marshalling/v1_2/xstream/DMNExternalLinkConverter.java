@@ -44,17 +44,25 @@ public class DMNExternalLinkConverter extends DMNModelInstrumentedBaseConverter 
 
     @Override
     protected void assignAttributes(final HierarchicalStreamReader reader, final Object parent) {
-        super.assignAttributes(reader, parent);
+        superAssignAttributes(reader, parent);
         final DMNExternalLink external = (DMNExternalLink) parent;
         external.setLinkDescription(reader.getAttribute(LINK_DESCRIPTION));
         external.setURL(reader.getAttribute(URL));
     }
 
+    void superAssignAttributes(final HierarchicalStreamReader reader, final Object parent) {
+        super.assignAttributes(reader, parent);
+    }
+
     @Override
     protected void writeAttributes(final HierarchicalStreamWriter writer, final Object parent) {
-        super.writeAttributes(writer, parent);
+        superWriteAttributes(writer, parent);
         final DMNExternalLink external = (DMNExternalLink) parent;
         writer.addAttribute(LINK_DESCRIPTION, external.getLinkDescription());
         writer.addAttribute(URL, external.getURL());
+    }
+
+    void superWriteAttributes(final HierarchicalStreamWriter writer, final Object parent) {
+        super.writeAttributes(writer, parent);
     }
 }
