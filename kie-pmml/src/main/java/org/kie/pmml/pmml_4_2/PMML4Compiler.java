@@ -757,6 +757,11 @@ public class PMML4Compiler {
             XMLStreamReader reader = null;
             try {
                 Thread.currentThread().setContextClassLoader(PMML4Compiler.class.getClassLoader());
+
+                // Workaround: in Java 9+ Maven does not load the package-info class during plugin execution
+                // see https://hibernate.atlassian.net/browse/HHH-12893
+                PMML4Compiler.class.getClassLoader().loadClass("org.dmg.pmml.pmml_4_2.descr.package-info");
+
                 Class c = PMML4Compiler.class.getClassLoader().loadClass("org.dmg.pmml.pmml_4_2.descr.PMML");
                 jc = JAXBContext.newInstance(c);
                 XMLInputFactory xif = XMLInputFactory.newFactory();
