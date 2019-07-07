@@ -149,6 +149,7 @@
                   <groupId>org.jacoco</groupId>
                   <artifactId>org.jacoco.agent</artifactId>
                   <version>${version.jacoco.plugin}</version>
+                  <classifier>runtime</classifier>
                 </dependency>
               </dependencies>
             </plugin>
