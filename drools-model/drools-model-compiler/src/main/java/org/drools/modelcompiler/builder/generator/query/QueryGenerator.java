@@ -1,8 +1,6 @@
 package org.drools.modelcompiler.builder.generator.query;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.printer.PrettyPrinter;
 
 /**
@@ -14,21 +12,26 @@ public class QueryGenerator {
         int arity = 5;
 
 
-        // QueryDef
-        CompilationUnit queryDef = new QueryDefGenerator(arity).generate();
-        System.out.println("\n\n\nQueryDef");
-        System.out.println(new PrettyPrinter().print(queryDef));
-
-
-        // QueryDefImpl
-        System.out.println("\n\n\nQueryDefImpl");
-        CompilationUnit queryDefImpl = new QueryDefImplGenerator(arity).generate();
-        System.out.println(new PrettyPrinter().print(queryDefImpl));
-
+//        // QueryDef
+//        CompilationUnit queryDef = new QueryDefGenerator(arity).generate();
+//        System.out.println("\n\n\nQueryDef");
+//        System.out.println(new PrettyPrinter().print(queryDef));
+//
+//
+//        // QueryDefImpl
+//        System.out.println("\n\n\nQueryDefImpl");
+//        CompilationUnit queryDefImpl = new QueryDefImplGenerator(arity).generate();
+//        System.out.println(new PrettyPrinter().print(queryDefImpl));
+//
+//
+//        // FlowDSL
+//        System.out.println("\n\n\nFlowDSL");
+//        CompilationUnit flowDSL = new FlowDSLQueryGenerator(arity).generate();
+//        System.out.println(new PrettyPrinter().print(flowDSL));
 
         // FlowDSL
-        System.out.println("\n\n\nFlowDSL");
-        CompilationUnit flowDSL = new FlowDSLGenerator(arity).generate();
-        System.out.println(new PrettyPrinter().print(flowDSL));
+        System.out.println("\n\n\nPatternDSL");
+        CompilationUnit patternDSL = new PatternDSLQueryGenerator(arity).generate();
+        System.out.println(new PrettyPrinter().print(patternDSL));
     }
 }

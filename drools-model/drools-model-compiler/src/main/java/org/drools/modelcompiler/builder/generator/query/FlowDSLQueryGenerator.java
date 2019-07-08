@@ -20,11 +20,11 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-public class FlowDSLGenerator {
+public class FlowDSLQueryGenerator {
 
     private final int arity;
 
-    public FlowDSLGenerator(int arity) {
+    public FlowDSLQueryGenerator(int arity) {
         this.arity = arity;
     }
 
