@@ -14,28 +14,19 @@ public class QueryGenerator {
     public static void main(String[] args) {
         int arity = 10;
 
+        CompilationUnit patternDSL = new CompilationUnit();
+        ClassOrInterfaceDeclaration clazzPatternDSL = patternDSL.addClass("PatternDSL");
+        range(arity).forEach(arity1 -> new PatternDSLQueryGenerator(clazzPatternDSL, arity1).generate());
+        System.out.println(new PrettyPrinter().print(clazzPatternDSL));
 
-//        generateQueryDef(arity);
-//        generateQueryDefImpl(arity);
-//        generateFlowDSL(arity);
-//        generatePatternDSL(arity);
-
-
-        CompilationUnit aggregator = new CompilationUnit();
-        ClassOrInterfaceDeclaration clazz = aggregator.addClass(String.format("FlowDSL", arity));
-
-        IntStream.range(1, 11).forEach(arity1 -> generatePatternDSL(clazz, arity1));
-
+        CompilationUnit flowDSL = new CompilationUnit();
+        ClassOrInterfaceDeclaration clazzFlowDSL = flowDSL.addClass("FlowDSL");
+        range(arity).forEach(arity1 -> new FlowDSLQueryGenerator(clazzFlowDSL, arity1).generate());
+        System.out.println(new PrettyPrinter().print(clazzFlowDSL));
     }
 
-    private static void generatePatternDSL(ClassOrInterfaceDeclaration aggregator, int arity) {
-        ClassOrInterfaceDeclaration patternDSL = new PatternDSLQueryGenerator(aggregator, arity).generate();
-        System.out.println(new PrettyPrinter().print(patternDSL));
-    }
-
-    private static void generateFlowDSL(int arity) {
-        CompilationUnit flowDSL = new FlowDSLQueryGenerator(arity).generate();
-        System.out.println(new PrettyPrinter().print(flowDSL));
+    private static IntStream range(int arity) {
+        return IntStream.range(1, arity + 1);
     }
 
     private static void generateQueryDefImpl(int arity) {
