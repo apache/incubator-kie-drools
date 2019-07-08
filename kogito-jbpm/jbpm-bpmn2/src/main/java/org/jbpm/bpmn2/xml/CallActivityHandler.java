@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
@@ -74,7 +75,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();
         	if ("ioSpecification".equals(nodeName)) {
-        		readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes, dataOutputTypes);
+        		readIoSpecification(xmlNode, dataInputs, dataOutputs, dataInputTypes, dataOutputTypes, parser);
         	} else if ("dataInputAssociation".equals(nodeName)) {
         		readDataInputAssociation(xmlNode, subProcessNode, dataInputs);
         	} else if ("dataOutputAssociation".equals(nodeName)) {
@@ -138,7 +139,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
         return node;
     }
 
-    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs, Map<String, String> dataInputTypes, Map<String, String> dataOutputTypes) {
+    protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs, Map<String, String> dataInputTypes, Map<String, String> dataOutputTypes, ExtensibleXmlParser parser) {
     	org.w3c.dom.Node subNode = xmlNode.getFirstChild();
 		while (subNode instanceof Element) {
 			String subNodeName = subNode.getNodeName();
@@ -147,13 +148,15 @@ public class CallActivityHandler extends AbstractNodeHandler {
         		String inputName = ((Element) subNode).getAttribute("name");
         		dataInputs.put(id, inputName);
 				String type = ((Element) subNode).getAttribute("dtype");
-				dataInputTypes.put(inputName, type);
+				String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
+				dataInputTypes.put(inputName, retrieveDataType(itemSubjectRef, type, parser));
         	} else if ("dataOutput".equals(subNodeName)) {
         		String id = ((Element) subNode).getAttribute("id");
         		String outputName = ((Element) subNode).getAttribute("name");
         		dataOutputs.put(id, outputName);
 				String type = ((Element) subNode).getAttribute("dtype");
-				dataOutputTypes.put(outputName, type);
+				String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
+				dataOutputTypes.put(outputName, retrieveDataType(itemSubjectRef, type, parser));
 			}
         	subNode = subNode.getNextSibling();
 		}

@@ -53,4 +53,28 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
         assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
     }
+    
+    @Test
+    public void testBasicCallActivityTaskWithTypeInfo() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("subprocess/CallActivityWithTypeInfo.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("x", "a");
+        parameters.put("y", "b");
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
+        assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
+        assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
+    }
 }

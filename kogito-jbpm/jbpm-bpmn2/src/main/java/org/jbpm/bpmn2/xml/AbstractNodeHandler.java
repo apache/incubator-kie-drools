@@ -611,4 +611,19 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
         return signalName;
     }
+    
+    protected String retrieveDataType(String itemSubjectRef, String dtype, ExtensibleXmlParser parser) {
+        if (dtype != null && !dtype.isEmpty()) {
+            return dtype;
+        }
+        
+        if (itemSubjectRef != null && !itemSubjectRef.isEmpty()) {
+            Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+            ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+            
+            return itemDefinitions.get(itemSubjectRef).getStructureRef();
+        }
+        
+        return null;
+    }
 }
