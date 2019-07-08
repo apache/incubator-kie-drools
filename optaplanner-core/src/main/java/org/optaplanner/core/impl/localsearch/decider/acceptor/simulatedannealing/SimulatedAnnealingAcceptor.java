@@ -99,7 +99,8 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     @Override
     public void stepStarted(LocalSearchStepScope stepScope) {
-        super.stepEnded(stepScope);
+        super.stepStarted(stepScope);
+        // TimeGradient only refreshes at the beginning of a step, so this code is in stepStarted instead of stepEnded
         double timeGradient = stepScope.getTimeGradient();
         double reverseTimeGradient = 1.0 - timeGradient;
         temperatureLevels = new double[levelsLength];
