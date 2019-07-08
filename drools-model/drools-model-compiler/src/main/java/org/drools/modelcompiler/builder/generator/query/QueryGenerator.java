@@ -1,5 +1,9 @@
 package org.drools.modelcompiler.builder.generator.query;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -11,7 +15,7 @@ import com.github.javaparser.printer.PrettyPrinter;
  */
 public class QueryGenerator {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         int arity = 10;
 
         CompilationUnit patternDSL = new CompilationUnit();
@@ -23,6 +27,9 @@ public class QueryGenerator {
         ClassOrInterfaceDeclaration clazzFlowDSL = flowDSL.addClass("FlowDSL");
         range(arity).forEach(arity1 -> new FlowDSLQueryGenerator(clazzFlowDSL, arity1).generate());
         System.out.println(new PrettyPrinter().print(clazzFlowDSL));
+
+        range(arity).forEach(QueryGenerator::generateQueryDef);
+        range(arity).forEach(QueryGenerator::generateQueryDefImpl);
     }
 
     private static IntStream range(int arity) {
@@ -30,14 +37,24 @@ public class QueryGenerator {
     }
 
     private static void generateQueryDefImpl(int arity) {
-        System.out.println("\n\n\nQueryDefImpl");
-        CompilationUnit queryDefImpl = new QueryDefImplGenerator(arity).generate();
-        System.out.println(new PrettyPrinter().print(queryDefImpl));
+        QueryDefImplGenerator queryDefImplGenerator = new QueryDefImplGenerator(arity);
+        CompilationUnit queryDefImpl = queryDefImplGenerator.generate();
+        String generatedClass = new PrettyPrinter().print(queryDefImpl);
+        try {
+            Files.write(Paths.get("/tmp/", "queryimpl", queryDefImplGenerator.getClassName() + ".java"), generatedClass.getBytes());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void generateQueryDef(int arity) {
-        CompilationUnit queryDef = new QueryDefGenerator(arity).generate();
-        System.out.println("\n\n\nQueryDef");
-        System.out.println(new PrettyPrinter().print(queryDef));
+        QueryDefGenerator queryDefGenerator = new QueryDefGenerator(arity);
+        CompilationUnit queryDef = queryDefGenerator.generate();
+        String generatedClass = new PrettyPrinter().print(queryDef);
+        try {
+            Files.write(Paths.get("/tmp/", "querydef", queryDefGenerator.getClassName() + ".java"), generatedClass.getBytes());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

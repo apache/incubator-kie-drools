@@ -37,9 +37,15 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 public class QueryDefImplGenerator {
 
     private final int arity;
+    private final String className;
 
     QueryDefImplGenerator(int arity) {
         this.arity = arity;
+        className = String.format("Query%dDefImpl", arity);
+    }
+
+    public String getClassName() {
+        return className;
     }
 
     public CompilationUnit generate() {
@@ -70,7 +76,7 @@ public class QueryDefImplGenerator {
     }
 
     private ClassOrInterfaceDeclaration classDeclaration(CompilationUnit cu) {
-        ClassOrInterfaceDeclaration clazz = cu.addClass(String.format("Query%dDefImpl", arity), Modifier.Keyword.PUBLIC);
+        ClassOrInterfaceDeclaration clazz = cu.addClass(className, Modifier.Keyword.PUBLIC);
 
         clazz.addExtendedType("QueryDefImpl");
         clazz.addImplementedType("ModelComponent");

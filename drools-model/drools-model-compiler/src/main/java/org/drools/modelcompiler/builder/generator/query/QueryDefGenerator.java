@@ -21,9 +21,15 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 public class QueryDefGenerator {
 
     private final int arity;
+    private String className;
 
     QueryDefGenerator(int arity) {
         this.arity = arity;
+        className = String.format("Query%dDef", arity);
+    }
+
+    public String getClassName() {
+        return className;
     }
 
     public CompilationUnit generate() {
@@ -43,7 +49,7 @@ public class QueryDefGenerator {
     }
 
     private ClassOrInterfaceDeclaration classDeclaration(CompilationUnit cu) {
-        ClassOrInterfaceDeclaration clazz = cu.addInterface(String.format("Query%dDef", arity), Modifier.Keyword.PUBLIC);
+        ClassOrInterfaceDeclaration clazz = cu.addInterface(className, Modifier.Keyword.PUBLIC);
 
         clazz.addExtendedType("QueryDef");
 
