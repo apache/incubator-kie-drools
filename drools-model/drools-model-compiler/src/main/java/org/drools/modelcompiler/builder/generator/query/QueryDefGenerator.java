@@ -65,7 +65,6 @@ public class QueryDefGenerator {
 
     private void callMethod(ClassOrInterfaceDeclaration clazz) {
         MethodDeclaration method = clazz.addMethod("call", Modifier.Keyword.DEFAULT);
-        method.addParameter("boolean", "open");
         method.setType(parseClassOrInterfaceType("QueryCallViewItem"));
 
         BlockStmt stmts = new BlockStmt();
@@ -89,6 +88,7 @@ public class QueryDefGenerator {
 
     private void callMethodInterface(ClassOrInterfaceDeclaration clazz) {
         MethodDeclaration method = new MethodDeclaration(nodeList(), parseClassOrInterfaceType("QueryCallViewItem"), "call");
+        method.addParameter("boolean", "open");
         method.setBody(null);
 
         rangeArity().forEach(i -> {
