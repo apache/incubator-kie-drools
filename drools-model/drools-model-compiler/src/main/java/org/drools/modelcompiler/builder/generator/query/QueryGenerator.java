@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.builder.generator.query;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.printer.PrettyPrinter;
 
@@ -10,8 +12,17 @@ public class QueryGenerator {
 
     public static void main(String[] args) {
         int arity = 5;
-        CompilationUnit queryDefImpl = new QueryDefImplGenerator(arity).generate();
 
-        System.out.println("queryDefImpl = " + new PrettyPrinter().print(queryDefImpl));
+
+        // QueryDef
+        CompilationUnit queryDef = new QueryDefGenerator(arity).generate();
+        System.out.println("\n\n\nQueryDef");
+        System.out.println(new PrettyPrinter().print(queryDef));
+
+
+        // QueryDefImpl
+        System.out.println("\n\n\nQueryDefImpl");
+        CompilationUnit queryDefImpl = new QueryDefImplGenerator(arity).generate();
+        System.out.println(new PrettyPrinter().print(queryDefImpl));
     }
 }
