@@ -1,8 +1,8 @@
 package org.drools.modelcompiler.builder.generator.query;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.printer.PrettyPrinter;
 
 /**
@@ -24,5 +24,11 @@ public class QueryGenerator {
         System.out.println("\n\n\nQueryDefImpl");
         CompilationUnit queryDefImpl = new QueryDefImplGenerator(arity).generate();
         System.out.println(new PrettyPrinter().print(queryDefImpl));
+
+
+        // FlowDSL
+        System.out.println("\n\n\nFlowDSL");
+        CompilationUnit flowDSL = new FlowDSLGenerator(arity).generate();
+        System.out.println(new PrettyPrinter().print(flowDSL));
     }
 }
