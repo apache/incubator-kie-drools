@@ -22,16 +22,15 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class PatternDSLQueryGenerator {
 
+    private final ClassOrInterfaceDeclaration clazz;
     private final int arity;
 
-    public PatternDSLQueryGenerator(int arity) {
+    public PatternDSLQueryGenerator(ClassOrInterfaceDeclaration clazz, int arity) {
+        this.clazz = clazz;
         this.arity = arity;
     }
 
-    public CompilationUnit generate() {
-        CompilationUnit cu = new CompilationUnit("org.drools.model.impl");
-
-        ClassOrInterfaceDeclaration clazz = cu.addClass(String.format("FlowDSL", arity));
+    public ClassOrInterfaceDeclaration generate() {
 
         queryFirstMethodOnlyClass(clazz);
         querySecondMethodOnlyClass(clazz);
@@ -39,7 +38,7 @@ public class PatternDSLQueryGenerator {
         queryFirstMethod(clazz);
         querySecondMethod(clazz);
 
-        return cu;
+        return clazz;
     }
 
     private void queryFirstMethodOnlyClass(ClassOrInterfaceDeclaration clazz) {
