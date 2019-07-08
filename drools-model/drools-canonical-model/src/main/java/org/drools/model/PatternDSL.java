@@ -1347,14 +1347,6 @@ public class PatternDSL extends DSL {
         return new Query4DefImpl<>( VIEW_BUILDER, pkg, name, type1, type2, type3, type4 );
     }
 
-    public static <A, B, C, D, E> Query5Def<A, B, C, D, E> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4, Class<E> type5  ) {
-        return new Query5DefImpl<>( VIEW_BUILDER, name, type1, type2, type3, type4, type5 );
-    }
-
-    public static <A, B, C, D, E> Query5Def<A, B, C, D, E> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4, Class<E> type5 ) {
-        return new Query5DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5 );
-    }
-
     public static <A> Query1Def<A> query( String pkg, String name, Class<A> type1, String arg1name ) {
         return new Query1DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name );
     }
@@ -1381,6 +1373,14 @@ public class PatternDSL extends DSL {
 
     public static <A, B, C, D> Query4Def<A, B, C, D> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name ) {
         return new Query4DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name );
+    }
+
+    public static <A, B, C, D, E> Query5Def<A, B, C, D, E> query( String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4, Class<E> type5  ) {
+        return new Query5DefImpl<>( VIEW_BUILDER, name, type1, type2, type3, type4, type5 );
+    }
+
+    public static <A, B, C, D, E> Query5Def<A, B, C, D, E> query( String pkg, String name, Class<A> type1, Class<B> type2, Class<C> type3, Class<D> type4, Class<E> type5 ) {
+        return new Query5DefImpl<>(VIEW_BUILDER, pkg, name, type1, type2, type3, type4, type5 );
     }
 
     public static <A, B, C, D, E> Query5Def<A, B, C, D, E> query( String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name, Class<E> type5, String arg5name ) {
