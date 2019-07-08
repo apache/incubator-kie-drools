@@ -1387,7 +1387,7 @@ public class PatternDSL extends DSL {
         return new Query5DefImpl<>( VIEW_BUILDER, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name );
     }
 
-    public static <A, B, C, D, E> Query5Def<A, B, C, D, E> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name, Class<E> type5, String arg5Name) {
+    public static <A, B, C, D, E> Query5Def<A, B, C, D, E> query( String pkg, String name, Class<A> type1, String arg1name, Class<B> type2, String arg2name, Class<C> type3, String arg3name, Class<D> type4, String arg4name, Class<E> type5, String arg5name) {
         return new Query5DefImpl<>( VIEW_BUILDER, pkg, name, type1, arg1name, type2, arg2name, type3, arg3name, type4, arg4name, type5, arg5name);
     }
 
