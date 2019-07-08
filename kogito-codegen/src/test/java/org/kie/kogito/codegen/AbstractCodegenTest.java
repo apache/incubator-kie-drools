@@ -40,6 +40,8 @@ import org.kie.kogito.codegen.rules.RuleCodegen;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractCodegenTest {
+    
+    private TestClassLoader classloader;
 
     @SuppressWarnings("deprecation")
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.getInstance().loadCompiler(JavaDialectConfiguration.CompilerType.NATIVE, "1.8");
@@ -87,19 +89,23 @@ public class AbstractCodegenTest {
         for (GeneratedFile entry : generatedFiles) {
             String fileName = entry.relativePath();
             sources[index++] = fileName;
-            srcMfs.write(fileName, entry.contents());          
+            srcMfs.write(fileName, entry.contents());
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
         assertThat(result.getErrors()).as(Arrays.toString(result.getErrors())).hasSize(0);
 
-        TestClassLoader cl = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
+        classloader = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 
         @SuppressWarnings("unchecked")
-        Class<Application> app = (Class<Application>) Class.forName(this.getClass().getPackage().getName() + ".Application", true, cl);
+        Class<Application> app = (Class<Application>) Class.forName(this.getClass().getPackage().getName() + ".Application", true, classloader);
 
         return app.newInstance();
+    }
+    
+    protected ClassLoader testClassLoader() {
+        return classloader;
     }
 
     private static class TestClassLoader extends URLClassLoader {

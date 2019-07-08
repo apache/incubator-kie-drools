@@ -128,11 +128,12 @@ public class ResourceGenerator {
        
                 userTaskTemplate.findAll(MethodDeclaration.class).forEach(md -> {                    
                     
-                    template.addMethod(md.getName() + "_" + userTask.getId(), Keyword.PUBLIC)
-                    .setType(md.getType())
-                    .setParameters(md.getParameters())
-                    .setBody(md.getBody().get())
-                    .setAnnotations(md.getAnnotations());
+                    MethodDeclaration cloned = md.clone();
+                    template.addMethod(cloned.getName() + "_" + userTask.getId(), Keyword.PUBLIC)
+                    .setType(cloned.getType())
+                    .setParameters(cloned.getParameters())
+                    .setBody(cloned.getBody().get())
+                    .setAnnotations(cloned.getAnnotations());
                     
                 });
                 
