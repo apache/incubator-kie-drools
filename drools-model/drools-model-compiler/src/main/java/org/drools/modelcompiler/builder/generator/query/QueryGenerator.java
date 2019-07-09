@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder.generator.query;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +14,7 @@ import com.github.javaparser.printer.PrettyPrinter;
  */
 public class QueryGenerator {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         int arity = 10;
 
         CompilationUnit patternDSL = new CompilationUnit();

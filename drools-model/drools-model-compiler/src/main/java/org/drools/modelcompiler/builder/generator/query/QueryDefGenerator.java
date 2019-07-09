@@ -1,7 +1,5 @@
 package org.drools.modelcompiler.builder.generator.query;
 
-import java.util.stream.IntStream;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -18,13 +16,12 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseImport;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-public class QueryDefGenerator {
+public class QueryDefGenerator extends Generator {
 
-    private final int arity;
     private String className;
 
     QueryDefGenerator(int arity) {
-        this.arity = arity;
+        super(arity);
         className = String.format("Query%dDef", arity);
     }
 
@@ -112,17 +109,5 @@ public class QueryDefGenerator {
             methodDeclaration.setBody(null);
             methodDeclaration.setType(genericType("Variable", genericTypeName));
         });
-    }
-
-    private String stringWithIndex(String pre, int i) {
-        return pre + i;
-    }
-
-    private IntStream rangeArity() {
-        return IntStream.range(1, arity + 1);
-    }
-
-    private String genericType(String typeName, String genericTypeName) {
-        return typeName + "<" + genericTypeName + ">";
     }
 }

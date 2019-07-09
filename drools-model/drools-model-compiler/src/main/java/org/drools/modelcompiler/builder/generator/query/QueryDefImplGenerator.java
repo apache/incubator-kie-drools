@@ -1,7 +1,5 @@
 package org.drools.modelcompiler.builder.generator.query;
 
-import java.util.stream.IntStream;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -25,7 +23,6 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
-import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -33,12 +30,13 @@ import static com.github.javaparser.StaticJavaParser.parseImport;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-public class QueryDefImplGenerator {
+public class QueryDefImplGenerator extends Generator {
 
     private final int arity;
     private final String className;
 
     QueryDefImplGenerator(int arity) {
+        super(arity);
         this.arity = arity;
         className = String.format("Query%dDefImpl", arity);
     }
@@ -62,15 +60,15 @@ public class QueryDefImplGenerator {
         ));
 
         ClassOrInterfaceDeclaration clazz = classDeclaration(cu);
-//        copyright(cu);
         nameClassConstructor(clazz);
         packageNameClassConstructor(clazz);
         nameClassArgConstructor(clazz);
         pkgNameClassArgConstructor(clazz);
+
         callMethod(clazz);
         getArgumentsMethod(clazz);
         getters(clazz);
-        equals(clazz);
+        generateEquals(clazz);
 
         return cu;
     }
@@ -85,12 +83,12 @@ public class QueryDefImplGenerator {
         NodeList<Type> typeArguments = nodeList();
 
         rangeArity().forEach(i -> {
-            String genericTypeName = stringWithIndex("T", i);
+            String genericTypeName = genericTypeName(i);
 
             typeArguments.add(parseType(genericTypeName));
             clazz.addTypeParameter(new TypeParameter(genericTypeName));
 
-            clazz.addField(parseType(genericType("Variable", genericTypeName)), stringWithIndex("arg", i), Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
+            clazz.addField(parseType(genericType("Variable", genericTypeName)), argIndex(i), Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
         });
 
         implement.setTypeArguments(typeArguments);
@@ -100,108 +98,104 @@ public class QueryDefImplGenerator {
 
     private void nameClassConstructor(ClassOrInterfaceDeclaration clazz) {
         ConstructorDeclaration constructorDeclaration1 = clazz.addConstructor(Modifier.Keyword.PUBLIC);
-        constructorDeclaration1.addParameter("ViewBuilder", "viewBuilder");
-        constructorDeclaration1.addParameter("String", "name");
-        BlockStmt stmts = new BlockStmt();
-        MethodCallExpr ctorDeclaration = new MethodCallExpr(null, "this");
-        stmts.addStatement(ctorDeclaration);
-        ctorDeclaration.addArgument("viewBuilder");
-        ctorDeclaration.addArgument("DEFAULT_PACKAGE");
-        ctorDeclaration.addArgument("name");
+        addViewBuilderParameter(constructorDeclaration1);
+        addNameParameter(constructorDeclaration1);
+        BlockStmt statements = new BlockStmt();
+        MethodCallExpr constructor = new MethodCallExpr(null, "this");
+        statements.addStatement(constructor);
+        addViewBuilderValue(constructor);
+        addDefaultPackageValue(constructor);
+        addNameValue(constructor);
 
         rangeArity().forEach(i -> {
-            String genericTypeName = stringWithIndex("T", i);
-            String typeWithIndex = stringWithIndex("type", i);
+            String genericTypeName = genericTypeName(i);
+            String typeWithIndex = typeWithIndex(i);
 
-            constructorDeclaration1.addParameter(genericType("Class", genericTypeName), typeWithIndex);
-            ctorDeclaration.addArgument(typeWithIndex);
+            constructorDeclaration1.addParameter(classGenericParameter(genericTypeName), typeWithIndex);
+            constructor.addArgument(typeWithIndex);
         });
 
-        constructorDeclaration1.setBody(stmts);
+        constructorDeclaration1.setBody(statements);
     }
 
     private void packageNameClassConstructor(ClassOrInterfaceDeclaration clazz) {
         ConstructorDeclaration declaration = clazz.addConstructor(Modifier.Keyword.PUBLIC);
-        declaration.addParameter("ViewBuilder", "viewBuilder");
-        declaration.addParameter("String", "pkg");
-        declaration.addParameter("String", "name");
-        BlockStmt stmts = new BlockStmt();
+        addViewBuilderParameter(declaration);
+        addPackageParameter(declaration);
+        addNameParameter(declaration);
+        BlockStmt statements = new BlockStmt();
         MethodCallExpr body = new MethodCallExpr(null, "super");
-        stmts.addStatement(body);
-        body.addArgument("viewBuilder");
-        body.addArgument("pkg");
-        body.addArgument("name");
+        statements.addStatement(body);
+        addViewBuilderValue(body);
+        addPkgValue(body);
+        addNameValue(body);
 
         rangeArity().forEach(i -> {
-            String typeWithIndex = stringWithIndex("type", i);
-            String genericTypeName = stringWithIndex("T", i);
+            String typeWithIndex = typeWithIndex(i);
+            String genericTypeName = genericTypeName(i);
 
 
-            declaration.addParameter(genericType("Class", genericTypeName), typeWithIndex);
+            declaration.addParameter(classGenericParameter(genericTypeName), typeWithIndex);
 
             AssignExpr assignExpr = new AssignExpr();
-            assignExpr.setTarget(new FieldAccessExpr(new NameExpr("this"), stringWithIndex("arg", i)));
+            assignExpr.setTarget(new FieldAccessExpr(new NameExpr("this"), argIndex(i)));
             assignExpr.setValue(new MethodCallExpr(null, "declarationOf", nodeList(new NameExpr(typeWithIndex))));
 
-            stmts.addStatement(assignExpr);
+            statements.addStatement(assignExpr);
         });
 
-        declaration.setBody(stmts);
+        declaration.setBody(statements);
     }
 
     private void nameClassArgConstructor(ClassOrInterfaceDeclaration clazz) {
-        ConstructorDeclaration ctorDeclaration = clazz.addConstructor(Modifier.Keyword.PUBLIC);
-        ctorDeclaration.addParameter("ViewBuilder", "viewBuilder");
-        ctorDeclaration.addParameter("String", "name");
-        BlockStmt ctor2Stmt = new BlockStmt();
-        MethodCallExpr ctorDeclarationBody = new MethodCallExpr(null, "this");
-        ctor2Stmt.addStatement(ctorDeclarationBody);
-        ctorDeclarationBody.addArgument("viewBuilder");
-        ctorDeclarationBody.addArgument("DEFAULT_PACKAGE");
-        ctorDeclarationBody.addArgument("name");
+        ConstructorDeclaration constructor = clazz.addConstructor(Modifier.Keyword.PUBLIC);
+        addViewBuilderParameter(constructor);
+        addNameParameter(constructor);
+        BlockStmt constructorStatements = new BlockStmt();
+        MethodCallExpr constructorBody = new MethodCallExpr(null, "this");
+        constructorStatements.addStatement(constructorBody);
+        addViewBuilderValue(constructorBody);
+        addDefaultPackageValue(constructorBody);
+        addNameValue(constructorBody);
 
         rangeArity().forEach(i -> {
-            String genericTypeName = stringWithIndex("T", i);
-            String typeWithIndex = stringWithIndex("type", i);
-            String argWithIndex = stringWithIndexInside(i, "arg", "name");
+            String argWithIndex = argNameWithIndex(i);
 
-            ctorDeclaration.addParameter(genericType("Class", genericTypeName), typeWithIndex);
-            ctorDeclaration.addParameter("String", argWithIndex);
-            ctorDeclarationBody.addArgument(typeWithIndex);
-            ctorDeclarationBody.addArgument(argWithIndex);
+            constructor.addParameter(classGenericName(i), typeWithIndex(i));
+            constructor.addParameter(STRINGLITERAL, argWithIndex);
+            constructorBody.addArgument(typeWithIndex(i));
+            constructorBody.addArgument(argWithIndex);
         });
 
-        ctorDeclaration.setBody(ctor2Stmt);
+        constructor.setBody(constructorStatements);
     }
 
     private void pkgNameClassArgConstructor(ClassOrInterfaceDeclaration clazz) {
         ConstructorDeclaration constructorDeclaration2 = clazz.addConstructor(Modifier.Keyword.PUBLIC);
-        constructorDeclaration2.addParameter("ViewBuilder", "viewBuilder");
-        constructorDeclaration2.addParameter("String", "pkg");
-        constructorDeclaration2.addParameter("String", "name");
-        BlockStmt stmts = new BlockStmt();
-        MethodCallExpr ctorDeclaration = new MethodCallExpr(null, "super");
-        stmts.addStatement(ctorDeclaration);
-        ctorDeclaration.addArgument("viewBuilder");
-        ctorDeclaration.addArgument("pkg");
-        ctorDeclaration.addArgument("name");
+        addViewBuilderParameter(constructorDeclaration2);
+        addPackageParameter(constructorDeclaration2);
+        addNameParameter(constructorDeclaration2);
+        BlockStmt statements = new BlockStmt();
+        MethodCallExpr constructorBody = new MethodCallExpr(null, "super");
+        statements.addStatement(constructorBody);
+        addViewBuilderValue(constructorBody);
+        addPkgValue(constructorBody);
+        addNameValue(constructorBody);
 
         rangeArity().forEach(i -> {
-            String typeWithIndex = stringWithIndex("type", i);
-            String genericTypeName = stringWithIndex("T", i);
-            String argWithIndex = stringWithIndexInside(i, "arg", "name");
+            String argWithIndex = argNameWithIndex(i);
 
-            constructorDeclaration2.addParameter(genericType("Class", genericTypeName), typeWithIndex);
-            constructorDeclaration2.addParameter("String", argWithIndex);
+            constructorDeclaration2.addParameter(classGenericName(i), typeWithIndex(i));
+            constructorDeclaration2.addParameter(STRINGLITERAL, argWithIndex);
 
             AssignExpr assignExpr = new AssignExpr();
-            assignExpr.setTarget(new FieldAccessExpr(new NameExpr("this"), stringWithIndex("arg", i)));
-            assignExpr.setValue(new MethodCallExpr(null, "declarationOf", nodeList(new NameExpr(typeWithIndex), new NameExpr(argWithIndex))));
+            assignExpr.setTarget(new FieldAccessExpr(new NameExpr("this"), argIndex(i)));
+            assignExpr.setValue(new MethodCallExpr(null, "declarationOf", nodeList(new NameExpr(typeWithIndex(i)), new NameExpr(argWithIndex))));
 
-            stmts.addStatement(assignExpr);
+            statements.addStatement(assignExpr);
         });
 
-        constructorDeclaration2.setBody(stmts);
+        constructorDeclaration2.setBody(statements);
     }
 
     private void callMethod(ClassOrInterfaceDeclaration clazz) {
@@ -210,28 +204,24 @@ public class QueryDefImplGenerator {
         method.addParameter("boolean", "open");
         method.setType(parseClassOrInterfaceType("QueryCallViewItem"));
 
-        BlockStmt stmts = new BlockStmt();
+        BlockStmt statements = new BlockStmt();
         NodeList<Expression> arguments = nodeList();
         ClassOrInterfaceType queryCallViewItemImpl = parseClassOrInterfaceType("QueryCallViewItemImpl");
         ObjectCreationExpr objCreationExpr = new ObjectCreationExpr(null, queryCallViewItemImpl, arguments);
-        stmts.addStatement(new ReturnStmt(objCreationExpr));
+        statements.addStatement(new ReturnStmt(objCreationExpr));
         objCreationExpr.addArgument("this");
         objCreationExpr.addArgument("open");
 
         rangeArity().forEach(i -> {
             String varWithIndex = stringWithIndex("var", i);
-            String genericTypeName = stringWithIndex("T", i);
+            String genericTypeName = genericTypeName(i);
 
             method.addParameter(genericType("Argument", genericTypeName), varWithIndex);
 
             objCreationExpr.addArgument(varWithIndex);
         });
 
-        method.setBody(stmts);
-    }
-
-    private MethodDeclaration addOverride(MethodDeclaration method) {
-        return method.addAnnotation("Override");
+        method.setBody(statements);
     }
 
     private void getArgumentsMethod(ClassOrInterfaceDeclaration clazz) {
@@ -240,28 +230,28 @@ public class QueryDefImplGenerator {
         Type variableArrayType = parseType("Variable<?>[]");
         method.setType(variableArrayType);
 
-        BlockStmt stmts = new BlockStmt();
+        BlockStmt statements = new BlockStmt();
         ArrayInitializerExpr arrayInitializerExpr = new ArrayInitializerExpr();
         ArrayCreationExpr arrayCreation = new ArrayCreationExpr(variableArrayType, nodeList(), arrayInitializerExpr);
-        stmts.addStatement(new ReturnStmt(arrayCreation));
+        statements.addStatement(new ReturnStmt(arrayCreation));
 
         NodeList<Expression> values = nodeList();
         rangeArity().forEach(i -> {
-            String argIndex = stringWithIndex("arg", i);
+            String argIndex = argIndex(i);
 
             values.add(new NameExpr(argIndex));
         });
 
         arrayInitializerExpr.setValues(values);
 
-        method.setBody(stmts);
+        method.setBody(statements);
     }
 
     private void getters(ClassOrInterfaceDeclaration clazz) {
         rangeArity().forEach(i -> {
-            String genericTypeName = stringWithIndex("T", i);
-            String methodName = stringWithIndex("getArg", i);
-            String argWithIndex = stringWithIndex("arg", i);
+            String genericTypeName = genericTypeName(i);
+            String methodName = getArgIndex(i);
+            String argWithIndex = argIndex(i);
 
             MethodDeclaration methodDeclaration = clazz.addMethod(methodName, Modifier.Keyword.PUBLIC);
             addOverride(methodDeclaration);
@@ -270,9 +260,7 @@ public class QueryDefImplGenerator {
         });
     }
 
-    private void equals(ClassOrInterfaceDeclaration clazz) {
-
-
+    private void generateEquals(ClassOrInterfaceDeclaration clazz) {
         String template = "   @Override\n" +
                 "    public boolean isEqualTo( ModelComponent other ) {\n" +
                 "        if ( this == other ) return true;\n" +
@@ -290,10 +278,8 @@ public class QueryDefImplGenerator {
 
 
         for(int i : rangeArity().toArray()) {
-            String argWithIndex = stringWithIndex("arg", i);
-
+            String argWithIndex = argIndex(i);
             Expression e = parseExpression(String.format("ModelComponent.areEqualInModel( %s, that.%s )", argWithIndex, argWithIndex));
-
             andExpr = new BinaryExpr(andExpr, e, BinaryExpr.Operator.AND);
         }
 
@@ -308,19 +294,4 @@ public class QueryDefImplGenerator {
         clazz.addMember(parse);
     }
 
-    private String stringWithIndex(String pre, int i) {
-        return pre + i;
-    }
-
-    private String stringWithIndexInside(int i, String pre, String post) {
-        return pre + i + post;
-    }
-
-    private IntStream rangeArity() {
-        return IntStream.range(1, arity + 1);
-    }
-
-    private String genericType(String typeName, String genericTypeName) {
-        return typeName + "<" + genericTypeName + ">";
-    }
 }
