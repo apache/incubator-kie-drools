@@ -1,12 +1,9 @@
 package org.drools.modelcompiler.builder.generator.query;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.CompilationUnit;

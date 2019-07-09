@@ -108,7 +108,7 @@ public class QueryDefGenerator {
             String genericTypeName = stringWithIndex("T", i);
             String methodName = stringWithIndex("getArg", i);
 
-            MethodDeclaration methodDeclaration = clazz.addMethod(methodName, Modifier.Keyword.PUBLIC);
+            MethodDeclaration methodDeclaration = clazz.addMethod(methodName);
             methodDeclaration.setBody(null);
             methodDeclaration.setType(genericType("Variable", genericTypeName));
         });
