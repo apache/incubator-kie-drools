@@ -16,6 +16,8 @@
 
 package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
+import java.util.Objects;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -39,7 +41,7 @@ public class DMNExternalLinkConverter extends DMNModelInstrumentedBaseConverter 
 
     @Override
     public boolean canConvert(final Class aClass) {
-        return aClass.equals(DMNExternalLink.class) || aClass.equals(TDMNExternalLink.class);
+        return Objects.equals(aClass, DMNExternalLink.class) || Objects.equals(aClass, TDMNExternalLink.class);
     }
 
     @Override

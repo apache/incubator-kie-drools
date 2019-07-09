@@ -18,6 +18,7 @@ package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -72,7 +73,7 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if (EXTERNAL_LINKS.equals(nodeName)) {
+                if (Objects.equals(EXTERNAL_LINKS, nodeName)) {
                     while (reader.hasMoreChildren()) {
                         reader.moveDown();
                         nodeName = reader.getNodeName();
@@ -145,7 +146,7 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
     @Override
     public void assignChildElement(Object parent, String nodeName, Object child) {
         ExtensionElements id = (ExtensionElements) parent;
-        if (nodeName.equals(DMN_EXTERNAL_LINK)) {
+        if (Objects.equals(nodeName, DMN_EXTERNAL_LINK)) {
             id.getExternalLinks().add((DMNExternalLink) child);
         } else {
             id.getAny().add(child);
