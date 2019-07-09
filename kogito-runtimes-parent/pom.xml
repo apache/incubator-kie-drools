@@ -34,7 +34,7 @@
       </snapshots>
     </repository>
   </repositories>
-  
+
   <scm>
     <connection>scm:git:https://github.com/kiegroup/kogito-runtimes.git</connection>
     <developerConnection>scm:git:git@github.com:kiegroup/kogito-runtimes.git</developerConnection>
@@ -51,4 +51,129 @@
     <module>archetypes</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>run-code-coverage</id>
+      <properties>
+        <jacoco.exec.file>${project.build.directory}/jacoco.exec</jacoco.exec.file>
+        <jacoco.excludes>*Lexer:org.kie.kogito.codegen.data.*</jacoco.excludes>
+        <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.org.jacoco.agent}/org.jacoco.agent-${version.org.jacoco.agent}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
+        <surefire.argLine>
+          -Dfile.encoding=${project.build.sourceEncoding}
+          ${jacoco.agent.line}
+        </surefire.argLine>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.cargo</groupId>
+              <artifactId>cargo-maven2-plugin</artifactId>
+              <configuration>
+                <configuration>
+                  <properties>
+                    <cargo.start.jvmargs>${jacoco.agent.line}</cargo.start.jvmargs>
+                  </properties>
+                </configuration>
+              </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>${surefire.argLine}</argLine>
+              </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.jacoco</groupId>
+                  <artifactId>org.jacoco.agent</artifactId>
+                  <version>${version.org.jacoco.agent}</version>
+                  <classifier>runtime</classifier>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!--suppress UnresolvedMavenProperty -->
+        <jacoco.master.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.master.exec.file>
+        <sonar.jacoco.reportPaths>${jacoco.master.exec.file}</sonar.jacoco.reportPaths>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>kiegroup</sonar.organization>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
+      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <configuration>
+                <fileSets>
+                  <fileSet>
+                    <directory>${project.build.directory}</directory>
+                    <includes>
+                      <include>*.exec</include>
+                    </includes>
+                  </fileSet>
+                </fileSets>
+                <destFile>${jacoco.master.exec.file}</destFile>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>report</goal>
+                  <goal>merge</goal>
+                </goals>
+                <phase>generate-resources</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sonar</goal>
+                </goals>
+                <phase>generate-resources</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <activation>
+        <property>
+          <name>env.CHANGE_ID</name>
+        </property>
+      </activation>
+      <id>sonarcloud-analysis-pull-request</id>
+      <properties>
+        <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.branch>${env.CHANGE_BRANCH}</sonar.pullrequest.branch>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.key>${env.CHANGE_ID}</sonar.pullrequest.key>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.base>${env.CHANGE_TARGET}</sonar.pullrequest.base>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.github.repository>${env.CHANGE_URL}</sonar.pullrequest.github.repository>
+      </properties>
+    </profile>
+  </profiles>
 </project>

@@ -4,6 +4,9 @@ pipeline {
     agent {
         label 'submarine-static || kie-rhel7'
     }
+    triggers {
+        cron('H 20 * * 1-5')
+    }
     tools {
         maven 'kie-maven-3.5.4'
         jdk 'kie-jdk1.8'
@@ -22,40 +25,10 @@ pipeline {
                 sh 'printenv'
             }
         }
-        stage('Build kogito-bom') {
-            steps {
-                dir("kogito-bom") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                        maven.runMavenWithSubmarineSettings('clean install', true)
-                    }
-                }
-            }
-        }
         stage('Build kogito-runtimes') {
             steps {
                 script {
                     maven.runMavenWithSubmarineSettings('clean install -Prun-code-coverage', false)
-                }
-            }
-        }
-        stage('Build kogito-cloud') {
-            steps {
-                dir("kogito-cloud") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-cloud', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                        maven.runMavenWithSubmarineSettings('clean install', false)
-                    }
-                }
-            }
-        }
-        stage('Build kogito-examples') {
-            steps {
-                dir("kogito-examples") {
-                    script {
-                        githubscm.checkoutIfExists('kogito-examples', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
-                        maven.runMavenWithSubmarineSettings('clean install', false)
-                    }
                 }
             }
         }
@@ -68,11 +41,6 @@ pipeline {
         }
     }
     post {
-        unstable {
-            script {
-                mailer.sendEmailFailure()
-            }
-        }
         failure {
             script {
                 mailer.sendEmailFailure()
