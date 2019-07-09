@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.stream.common;
 
+import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -83,7 +84,37 @@ public final class Joiners {
 
     public static <A, B, Property_> BiJoiner<A, B> on(
             Function<A, Property_> leftMapping, JoinerType joinerType, Function <B, Property_> rightMapping) {
-        return new SingleBiJoiner<A, B>(leftMapping, joinerType, rightMapping);
+        return new SingleBiJoiner<>(leftMapping, joinerType, rightMapping);
+    }
+
+    public static <A, B, Property_> BiJoiner<A, B> contains(
+            Function<A, ? extends Collection<Property_>> leftMapping, Function <B, Property_> rightMapping) {
+        return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINS, rightMapping);
+    }
+
+    public static <A, B, Property_> BiJoiner<A, B> isContainedBy(
+            Function<A, Property_> leftMapping, Function <B, ? extends Collection<Property_>> rightMapping) {
+        return new SingleBiJoiner<>(leftMapping, JoinerType.IS_CONTAINED_BY, rightMapping);
+    }
+
+    public static <A, Property_> BiJoiner<A, A> intersectingWith(
+            Function<A, ? extends Collection<Property_>> mapping) {
+        return intersectingWith(mapping, mapping);
+    }
+
+    public static <A, B, Property_> BiJoiner<A, B> intersectingWith(
+            Function<A, ? extends Collection<Property_>> leftMapping, Function <B, ? extends Collection<Property_>> rightMapping) {
+        return new SingleBiJoiner<>(leftMapping, JoinerType.INTERSECTING_WITH, rightMapping);
+    }
+
+    public static <A, Property_> BiJoiner<A, A> disjoint(
+            Function<A, ? extends Collection<Property_>> mapping) {
+        return disjoint(mapping, mapping);
+    }
+
+    public static <A, B, Property_> BiJoiner<A, B> disjoint(
+            Function<A, ? extends Collection<Property_>> leftMapping, Function <B, ? extends Collection<Property_>> rightMapping) {
+        return new SingleBiJoiner<>(leftMapping, JoinerType.DISJOINT, rightMapping);
     }
 
     // TODO

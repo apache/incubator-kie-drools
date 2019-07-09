@@ -20,7 +20,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 
 public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
 
@@ -28,7 +27,7 @@ public final class SingleTriJoiner<A, B, C> extends AbstractTriJoiner<A, B, C> {
     private final JoinerType joinerType;
     private final Function<C, ?> rightMapping;
 
-    public <Property_> SingleTriJoiner(BiFunction<A, B, Property_> leftMapping, JoinerType joinerType, Function<C, Property_> rightMapping) {
+    public SingleTriJoiner(BiFunction<A, B, ?> leftMapping, JoinerType joinerType, Function<C, ?> rightMapping) {
         this.leftMapping = leftMapping;
         this.joinerType = joinerType;
         this.rightMapping = rightMapping;

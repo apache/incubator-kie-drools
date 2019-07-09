@@ -380,17 +380,17 @@ rule "Speaker preferred timeslot tags"
                 $count * $talk.getDurationInMinutes());
 end
 
-rule "Talk preferred timeslot tags"
+rule "Speaker undesired timeslot tags"
     when
-        $talk : Talk($count : missingPreferredTimeslotTagCount() > 0)
+        $talk : Talk($count : prevailingSpeakerUndesiredTimeslotTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
 end
 
-rule "Speaker undesired timeslot tags"
+rule "Talk preferred timeslot tags"
     when
-        $talk : Talk($count : prevailingSpeakerUndesiredTimeslotTagCount() > 0)
+        $talk : Talk($count : missingPreferredTimeslotTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
@@ -412,17 +412,17 @@ rule "Speaker preferred room tags"
                 $count * $talk.getDurationInMinutes());
 end
 
-rule "Talk preferred room tags"
+rule "Speaker undesired room tags"
     when
-        $talk : Talk($count : missingPreferredRoomTagCount() > 0)
+        $talk : Talk($count : prevailingSpeakerUndesiredRoomTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());
 end
 
-rule "Speaker undesired room tags"
+rule "Talk preferred room tags"
     when
-        $talk : Talk($count : prevailingSpeakerUndesiredRoomTagCount() > 0)
+        $talk : Talk($count : missingPreferredRoomTagCount() > 0)
     then
         scoreHolder.penalize(kcontext,
                 $count * $talk.getDurationInMinutes());

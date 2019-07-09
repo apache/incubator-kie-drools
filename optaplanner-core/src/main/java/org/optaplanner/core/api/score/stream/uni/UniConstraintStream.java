@@ -100,8 +100,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * Create a new {@link BiConstraintStream} for every combination of A and B for which the {@link BiJoiner}
-     * is true (for the properties it extracts from both facts).
+     * Create a new {@link BiConstraintStream} for every combination of A and B
+     * for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * Important: This is faster and more scalable than a {@link #join(Class) join}
      * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
@@ -111,7 +111,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
      * <p>
      * This method has overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * To combine even more joiners, use this method in combination with {@link BiJoiner#and(BiJoiner)}.
+     * To combine 5 or more joiners, use this method in combination with {@link BiJoiner#and(BiJoiner)}.
      * @param otherClass never null
      * @param joiner never null
      * @param <B> the type of the second matched fact
@@ -142,6 +142,60 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
         return join(otherClass, joiner1.and(joiner2).and(joiner3).and(joiner4));
+    }
+
+    /**
+     * Create a new {@link BiConstraintStream} for every unique combination of A and another A.
+     * <p>
+     * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
+     * than a {@link #joinOther(BiJoiner)},
+     * because it does barely applies hashing and/or indexing on the properties,
+     * so it creates and checks almost every combination of A and A.
+     * <p>
+     * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
+     * @return a stream that matches every unique combination of A and another A
+     */
+    BiConstraintStream<A, A> joinOther();
+
+    /**
+     * Create a new {@link BiConstraintStream} for every unique combination of A and another A
+     * for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
+     * <p>
+     * Important: This is faster and more scalable than a {@link #joinOther() join}
+     * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
+     * because it applies hashing and/or indexing on the properties,
+     * so it doesn't create nor checks almost every combination of A and A.
+     * <p>
+     * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
+     * <p>
+     * This method has overloaded methods with up to 4 {@link BiJoiner} parameters.
+     * To combine 5 or more joiners, use this method in combination with {@link BiJoiner#and(BiJoiner)}.
+     * @param joiner never null
+     * @return a stream that matches every unique combination of A and another A for which the {@link BiJoiner} is true
+     */
+    BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner);
+
+    /**
+     * @see #joinOther(BiJoiner)
+     */
+    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
+        return joinOther(joiner1.and(joiner2));
+    }
+
+    /**
+     * @see #joinOther(BiJoiner)
+     */
+    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
+            BiJoiner<A, A> joiner3) {
+        return joinOther(joiner1.and(joiner2).and(joiner3));
+    }
+
+    /**
+     * @see #joinOther(BiJoiner)
+     */
+    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
+            BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
+        return joinOther(joiner1.and(joiner2).and(joiner3).and(joiner4));
     }
 
     // ************************************************************************

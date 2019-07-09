@@ -22,12 +22,17 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 /**
  *
  */
 public final class ConstraintCollectors {
+
+    // ************************************************************************
+    // count
+    // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> count() {
         return new UniConstraintCollector<>(
@@ -48,6 +53,30 @@ public final class ConstraintCollectors {
                 },
                 resultContainer -> resultContainer[0]);
     }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Integer> countBi() {
+        return new BiConstraintCollector<>(
+                () -> new int[1],
+                (resultContainer, a, b) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Long> countLongBi() {
+        return new BiConstraintCollector<>(
+                () -> new long[1],
+                (resultContainer, a, b) -> {
+                    resultContainer[0]++;
+                    return (() -> resultContainer[0]--);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    // ************************************************************************
+    // countDistinct
+    // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> countDistinct(Function<A, ?> groupValueMapping) {
         class CountDistinctResultContainer {
@@ -108,6 +137,10 @@ public final class ConstraintCollectors {
                 },
                 resultContainer -> resultContainer.count);
     }
+
+    // ************************************************************************
+    // sum
+    // ************************************************************************
 
     public static <A> UniConstraintCollector<A, ?, Integer> sum(ToIntFunction<? super A> groupValueMapping) {
         return new UniConstraintCollector<>(

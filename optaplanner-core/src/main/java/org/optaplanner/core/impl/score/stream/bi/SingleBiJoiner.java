@@ -16,11 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bi;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.common.JoinerType;
 
 public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
@@ -29,7 +26,7 @@ public final class SingleBiJoiner<A, B> extends AbstractBiJoiner<A, B> {
     private final JoinerType joinerType;
     private final Function<B, ?> rightMapping;
 
-    public <Property_> SingleBiJoiner(Function<A, Property_> leftMapping, JoinerType joinerType, Function<B, Property_> rightMapping) {
+    public SingleBiJoiner(Function<A, ?> leftMapping, JoinerType joinerType, Function<B, ?> rightMapping) {
         this.leftMapping = leftMapping;
         this.joinerType = joinerType;
         this.rightMapping = rightMapping;

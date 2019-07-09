@@ -265,6 +265,16 @@ public class Talk extends AbstractPersistable {
         return timeslot.getOverlapInMinutes(other.getTimeslot());
     }
 
+    public int combinedDurationInMinutes(Talk other) {
+        if (timeslot == null) {
+            return 0;
+        }
+        if (other.getTimeslot() == null) {
+            return 0;
+        }
+        return timeslot.getDurationInMinutes() + other.getTimeslot().getDurationInMinutes();
+    }
+
     @Override
     public String toString() {
         return code;
