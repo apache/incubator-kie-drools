@@ -2,7 +2,6 @@ package org.drools.modelcompiler.builder.generator.query;
 
 import java.util.stream.IntStream;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -31,13 +30,60 @@ public class FlowDSLQueryGenerator {
     }
 
     public ClassOrInterfaceDeclaration generate() {
-        queryFirstMethod(clazz);
-        querySecondMethod(clazz);
+        queryNameClass(clazz);
+        queryNameClassArg(clazz);
+        queryPkgNameClass(clazz);
+        queryPkgNameClassArg(clazz);
 
         return clazz;
     }
 
-    private void queryFirstMethod(ClassOrInterfaceDeclaration clazz) {
+    private void queryNameClass(ClassOrInterfaceDeclaration clazz) {
+        MethodDeclaration query1 = clazz.addMethod("query", Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
+
+
+        query1.addParameter("String", "name");
+
+        BlockStmt stmts = new BlockStmt();
+        NodeList<Type> typeArguments = nodeList();
+        NodeList<TypeParameter> typeParameters = nodeList();
+
+        NodeList<Expression> arguments = nodeList();
+        ClassOrInterfaceType queryCallViewItemImpl = parseClassOrInterfaceType("Query" + arity + "DefImpl<>");
+        ObjectCreationExpr objCreationExpr = new ObjectCreationExpr(null, queryCallViewItemImpl, arguments);
+        objCreationExpr.setDiamondOperator();
+        stmts.addStatement(new ReturnStmt(objCreationExpr));
+        objCreationExpr.addArgument(new NameExpr("VIEW_BUILDER"));
+        objCreationExpr.addArgument("name");
+
+        rangeArity().forEach(i -> {
+            String genericTypeName = stringWithIndex("T", i);
+            String type = stringWithIndex("type", i);
+
+            typeArguments.add(parseType(genericTypeName));
+
+            arguments.add(new NameExpr(type));
+
+            String classGenericType = genericType("Class", genericTypeName);
+            Type genericType = parseType(classGenericType);
+            query1.addParameter(genericType, type);
+
+            typeParameters.add(new TypeParameter(genericTypeName));
+
+        });
+
+        query1.setTypeParameters(typeParameters);
+
+
+        query1.setBody(stmts);
+        ClassOrInterfaceType type = parseClassOrInterfaceType("Query" + arity + "Def");
+        type.setTypeArguments(typeArguments);
+        query1.setType(type);
+
+    }
+
+
+    private void queryNameClassArg(ClassOrInterfaceDeclaration clazz) {
         MethodDeclaration query1 = clazz.addMethod("query", Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
 
 
@@ -84,7 +130,49 @@ public class FlowDSLQueryGenerator {
 
     }
 
-    private void querySecondMethod(ClassOrInterfaceDeclaration clazz) {
+    private void queryPkgNameClass(ClassOrInterfaceDeclaration clazz) {
+        MethodDeclaration query1 = clazz.addMethod("query", Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
+
+        query1.addParameter("String", "pkg");
+        query1.addParameter("String", "name");
+
+
+        BlockStmt stmts = new BlockStmt();
+        NodeList<Type> typeArguments = nodeList();
+        NodeList<TypeParameter> typeParameters = nodeList();
+        NodeList<Expression> arguments = nodeList();
+        ClassOrInterfaceType queryCallViewItemImpl = parseClassOrInterfaceType("Query" + arity + "DefImpl<>");
+        ObjectCreationExpr objCreationExpr = new ObjectCreationExpr(null, queryCallViewItemImpl, arguments);
+        objCreationExpr.setDiamondOperator();
+        stmts.addStatement(new ReturnStmt(objCreationExpr));
+        objCreationExpr.addArgument(new NameExpr("VIEW_BUILDER"));
+        objCreationExpr.addArgument("pkg");
+        objCreationExpr.addArgument("name");
+
+        rangeArity().forEach(i -> {
+            String genericTypeName = stringWithIndex("T", i);
+            String type = stringWithIndex("type", i);
+
+            typeArguments.add(parseType(genericTypeName));
+
+            arguments.add(new NameExpr(type));
+
+            String classGenericType = genericType("Class", genericTypeName);
+            Type genericType = parseType(classGenericType);
+            query1.addParameter(genericType, type);
+
+            typeParameters.add(new TypeParameter(genericTypeName));
+        });
+
+        query1.setTypeParameters(typeParameters);
+
+        query1.setBody(stmts);
+        ClassOrInterfaceType type = parseClassOrInterfaceType("Query" + arity + "Def");
+        type.setTypeArguments(typeArguments);
+        query1.setType(type);
+    }
+
+    private void queryPkgNameClassArg(ClassOrInterfaceDeclaration clazz) {
         MethodDeclaration query1 = clazz.addMethod("query", Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC);
 
         query1.addParameter("String", "pkg");
