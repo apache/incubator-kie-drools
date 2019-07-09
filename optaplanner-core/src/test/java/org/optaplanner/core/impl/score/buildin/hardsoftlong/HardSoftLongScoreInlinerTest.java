@@ -29,22 +29,22 @@ import static org.junit.Assert.*;
 public class HardSoftLongScoreInlinerTest {
 
     @Test
-    public void buildLongWeightedScoreImpacter() {
+    public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
         Consumer<Score<?>> scoreConsumer = null;
 
         HardSoftLongScoreInliner scoreInliner = new HardSoftLongScoreInliner(constraintMatchEnabled);
         assertEquals(HardSoftLongScore.ZERO, scoreInliner.extractScore(0));
 
-        LongWeightedScoreImpacter hardImpacter = scoreInliner.buildLongWeightedScoreImpacter(HardSoftLongScore.ofHard(-90L));
+        LongWeightedScoreImpacter hardImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftLongScore.ofHard(-90L));
         UndoScoreImpacter hardUndo = hardImpacter.impactScore(1L, scoreConsumer);
         assertEquals(HardSoftLongScore.of(-90L, 0L), scoreInliner.extractScore(0));
-        scoreInliner.buildLongWeightedScoreImpacter(HardSoftLongScore.ofHard(-800L)).impactScore(1L, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter(HardSoftLongScore.ofHard(-800L)).impactScore(1L, scoreConsumer);
         assertEquals(HardSoftLongScore.of(-890L, 0L), scoreInliner.extractScore(0));
         hardUndo.undoScoreImpact();
         assertEquals(HardSoftLongScore.of(-800L, 0L), scoreInliner.extractScore(0));
 
-        LongWeightedScoreImpacter softImpacter = scoreInliner.buildLongWeightedScoreImpacter(HardSoftLongScore.ofSoft(-1L));
+        LongWeightedScoreImpacter softImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftLongScore.ofSoft(-1L));
         UndoScoreImpacter softUndo = softImpacter.impactScore(3L, scoreConsumer);
         assertEquals(HardSoftLongScore.of(-800L, -3L), scoreInliner.extractScore(0));
         softImpacter.impactScore(10L, scoreConsumer);
@@ -52,7 +52,7 @@ public class HardSoftLongScoreInlinerTest {
         softUndo.undoScoreImpact();
         assertEquals(HardSoftLongScore.of(-800L, -10L), scoreInliner.extractScore(0));
 
-        LongWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildLongWeightedScoreImpacter(HardSoftLongScore.of(-1000L, -3000L));
+        LongWeightedScoreImpacter allLevelsImpacter = scoreInliner.buildWeightedScoreImpacter(HardSoftLongScore.of(-1000L, -3000L));
         UndoScoreImpacter allLevelsUndo = allLevelsImpacter.impactScore(1L, scoreConsumer);
         assertEquals(HardSoftLongScore.of(-1800L, -3010L), scoreInliner.extractScore(0));
         allLevelsUndo.undoScoreImpact();

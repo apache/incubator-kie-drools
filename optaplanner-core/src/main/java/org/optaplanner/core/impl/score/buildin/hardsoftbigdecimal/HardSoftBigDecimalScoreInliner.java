@@ -34,7 +34,7 @@ public class HardSoftBigDecimalScoreInliner extends ScoreInliner<HardSoftBigDeci
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(HardSoftBigDecimalScore constraintWeight) {
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(HardSoftBigDecimalScore constraintWeight) {
         if (constraintWeight.equals(HardSoftBigDecimalScore.ZERO)) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
                     + " this constraint should have been culled during node creation.");

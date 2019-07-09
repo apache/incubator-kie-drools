@@ -29,22 +29,22 @@ import static org.junit.Assert.*;
 public class SimpleLongScoreInlinerTest {
 
     @Test
-    public void buildLongWeightedScoreImpacter() {
+    public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
         Consumer<Score<?>> scoreConsumer = null;
 
         SimpleLongScoreInliner scoreInliner = new SimpleLongScoreInliner(constraintMatchEnabled);
         assertEquals(SimpleLongScore.ZERO, scoreInliner.extractScore(0));
 
-        LongWeightedScoreImpacter impacter1 = scoreInliner.buildLongWeightedScoreImpacter(SimpleLongScore.of(-90L));
+        LongWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-90L));
         UndoScoreImpacter undo1 = impacter1.impactScore(1L, scoreConsumer);
         assertEquals(SimpleLongScore.of(-90L), scoreInliner.extractScore(0));
-        scoreInliner.buildLongWeightedScoreImpacter(SimpleLongScore.of(-800L)).impactScore(1L, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-800L)).impactScore(1L, scoreConsumer);
         assertEquals(SimpleLongScore.of(-890L), scoreInliner.extractScore(0));
         undo1.undoScoreImpact();
         assertEquals(SimpleLongScore.of(-800L), scoreInliner.extractScore(0));
 
-        LongWeightedScoreImpacter impacter2 = scoreInliner.buildLongWeightedScoreImpacter(SimpleLongScore.of(-1L));
+        LongWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter(SimpleLongScore.of(-1L));
         UndoScoreImpacter undo2 = impacter2.impactScore(3L, scoreConsumer);
         assertEquals(SimpleLongScore.of(-803L), scoreInliner.extractScore(0));
         impacter2.impactScore(10L, scoreConsumer);

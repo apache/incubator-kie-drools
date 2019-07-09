@@ -99,7 +99,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public void penalize() {
         // TODO FIXME depends on Score type
-        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, false, (A a, B b) -> 1));
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, false));
     }
 
     @Override
@@ -120,7 +120,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public void reward() {
         // TODO FIXME depends on Score type
-        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, true, (A a, B b) -> 1));
+        addScoringBiConstraintStream(new BavetScoringBiConstraintStream<>(constraint, true));
     }
 
     @Override

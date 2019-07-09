@@ -39,7 +39,7 @@ public class BendableBigDecimalScoreInliner extends ScoreInliner<BendableBigDeci
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(BendableBigDecimalScore constraintWeight) {
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(BendableBigDecimalScore constraintWeight) {
         if (constraintWeight.equals(BendableBigDecimalScore.zero(hardScores.length, softScores.length))) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
                     + " this constraint should have been culled during node creation.");

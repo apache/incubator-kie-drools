@@ -30,22 +30,22 @@ import static org.junit.Assert.*;
 public class SimpleBigDecimalScoreInlinerTest {
 
     @Test
-    public void buildBigDecimalWeightedScoreImpacter() {
+    public void buildWeightedScoreImpacter() {
         boolean constraintMatchEnabled = false;
         Consumer<Score<?>> scoreConsumer = null;
 
         SimpleBigDecimalScoreInliner scoreInliner = new SimpleBigDecimalScoreInliner(constraintMatchEnabled);
         assertEquals(SimpleBigDecimalScore.ZERO, scoreInliner.extractScore(0));
 
-        BigDecimalWeightedScoreImpacter impacter1 = scoreInliner.buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
+        BigDecimalWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("90.0")));
         UndoScoreImpacter undo1 = impacter1.impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("90.0")), scoreInliner.extractScore(0));
-        scoreInliner.buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("800.0"))).impactScore(new BigDecimal("1.0"), scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("800.0"))).impactScore(new BigDecimal("1.0"), scoreConsumer);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("890.0")), scoreInliner.extractScore(0));
         undo1.undoScoreImpact();
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("800.0")), scoreInliner.extractScore(0));
 
-        BigDecimalWeightedScoreImpacter impacter2 = scoreInliner.buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("1.0")));
+        BigDecimalWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter(SimpleBigDecimalScore.of(new BigDecimal("1.0")));
         UndoScoreImpacter undo2 = impacter2.impactScore(new BigDecimal("3.0"), scoreConsumer);
         assertEquals(SimpleBigDecimalScore.of(new BigDecimal("803.0")), scoreInliner.extractScore(0));
         impacter2.impactScore(new BigDecimal("10.0"), scoreConsumer);

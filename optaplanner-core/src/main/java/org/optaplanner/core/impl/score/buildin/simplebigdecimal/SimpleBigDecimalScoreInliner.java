@@ -33,7 +33,7 @@ public class SimpleBigDecimalScoreInliner extends ScoreInliner<SimpleBigDecimalS
     }
 
     @Override
-    public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(SimpleBigDecimalScore constraintWeight) {
+    public BigDecimalWeightedScoreImpacter buildWeightedScoreImpacter(SimpleBigDecimalScore constraintWeight) {
         if (constraintWeight.equals(SimpleBigDecimalScore.ZERO)) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
                     + " this constraint should have been culled during node creation.");

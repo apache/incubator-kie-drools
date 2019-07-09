@@ -36,15 +36,15 @@ public class SimpleScoreInlinerTest {
         SimpleScoreInliner scoreInliner = new SimpleScoreInliner(constraintMatchEnabled);
         assertEquals(SimpleScore.ZERO, scoreInliner.extractScore(0));
 
-        IntWeightedScoreImpacter impacter1 = scoreInliner.buildIntWeightedScoreImpacter(SimpleScore.of(-90));
+        IntWeightedScoreImpacter impacter1 = scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-90));
         UndoScoreImpacter undo1 = impacter1.impactScore(1, scoreConsumer);
         assertEquals(SimpleScore.of(-90), scoreInliner.extractScore(0));
-        scoreInliner.buildIntWeightedScoreImpacter(SimpleScore.of(-800)).impactScore(1, scoreConsumer);
+        scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-800)).impactScore(1, scoreConsumer);
         assertEquals(SimpleScore.of(-890), scoreInliner.extractScore(0));
         undo1.undoScoreImpact();
         assertEquals(SimpleScore.of(-800), scoreInliner.extractScore(0));
 
-        IntWeightedScoreImpacter impacter2 = scoreInliner.buildIntWeightedScoreImpacter(SimpleScore.of(-1));
+        IntWeightedScoreImpacter impacter2 = scoreInliner.buildWeightedScoreImpacter(SimpleScore.of(-1));
         UndoScoreImpacter undo2 = impacter2.impactScore(3, scoreConsumer);
         assertEquals(SimpleScore.of(-803), scoreInliner.extractScore(0));
         impacter2.impactScore(10, scoreConsumer);

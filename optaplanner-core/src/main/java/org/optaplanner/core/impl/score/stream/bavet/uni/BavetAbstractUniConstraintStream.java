@@ -144,8 +144,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     public void penalize() {
-        // TODO FIXME depends on Score type
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, (A a) -> 1));
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false));
     }
 
     @Override
@@ -165,8 +164,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     public void reward() {
-        // TODO FIXME depends on Score type
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, (A a) -> 1));
+        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true));
     }
 
     @Override

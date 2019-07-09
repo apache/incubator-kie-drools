@@ -32,7 +32,7 @@ public class SimpleLongScoreInliner extends ScoreInliner<SimpleLongScore> {
     }
 
     @Override
-    public LongWeightedScoreImpacter buildLongWeightedScoreImpacter(SimpleLongScore constraintWeight) {
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(SimpleLongScore constraintWeight) {
         if (constraintWeight.equals(SimpleLongScore.ZERO)) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
                     + " this constraint should have been culled during node creation.");

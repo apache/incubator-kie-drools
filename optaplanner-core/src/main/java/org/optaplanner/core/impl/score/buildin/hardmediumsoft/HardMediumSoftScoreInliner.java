@@ -34,7 +34,7 @@ public class HardMediumSoftScoreInliner extends ScoreInliner<HardMediumSoftScore
     }
 
     @Override
-    public IntWeightedScoreImpacter buildIntWeightedScoreImpacter(HardMediumSoftScore constraintWeight) {
+    public IntWeightedScoreImpacter buildWeightedScoreImpacter(HardMediumSoftScore constraintWeight) {
         if (constraintWeight.equals(HardMediumSoftScore.ZERO)) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
                     + " this constraint should have been culled during node creation.");

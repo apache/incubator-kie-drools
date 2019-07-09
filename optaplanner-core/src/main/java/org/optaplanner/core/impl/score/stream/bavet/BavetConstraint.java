@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
@@ -32,16 +33,16 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 
 public final class BavetConstraint<Solution_> implements Constraint {
 
-    private final BavetConstraintFactory<Solution_> factory;
+    private final BavetConstraintFactory<Solution_> constraintFactory;
     private final String constraintPackage;
     private final String constraintName;
     private final Function<Solution_, Score<?>> constraintWeightExtractor;
 
     private List<BavetFromUniConstraintStream<Solution_, Object>> streamList = new ArrayList<>();
 
-    public BavetConstraint(BavetConstraintFactory<Solution_> factory, String constraintPackage, String constraintName,
+    public BavetConstraint(BavetConstraintFactory<Solution_> constraintFactory, String constraintPackage, String constraintName,
             Function<Solution_, Score<?>> constraintWeightExtractor) {
-        this.factory = factory;
+        this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
         this.constraintWeightExtractor = constraintWeightExtractor;
@@ -49,14 +50,14 @@ public final class BavetConstraint<Solution_> implements Constraint {
 
     public Score<?> extractConstraintWeight(Solution_ workingSolution) {
         Score<?> constraintWeight = constraintWeightExtractor.apply(workingSolution);
-        factory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
+        constraintFactory.getSolutionDescriptor().validateConstraintWeight(constraintPackage, constraintName, constraintWeight);
         return constraintWeight;
     }
 
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> from(Class<A> fromClass) {
         BavetAbstractUniConstraintStream<Solution_, A> stream = fromUnfiltered(fromClass);
-        EntityDescriptor<Solution_> entityDescriptor = factory.getSolutionDescriptor().findEntityDescriptor(fromClass);
+        EntityDescriptor<Solution_> entityDescriptor = constraintFactory.getSolutionDescriptor().findEntityDescriptor(fromClass);
         if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
             Predicate<A> predicate = (Predicate<A>) entityDescriptor.getIsInitializedPredicate();
             stream = stream.filter(predicate);
@@ -92,12 +93,20 @@ public final class BavetConstraint<Solution_> implements Constraint {
     // Getters/setters
     // ************************************************************************
 
+    public BavetConstraintFactory<Solution_> getConstraintFactory() {
+        return constraintFactory;
+    }
+
     public String getConstraintPackage() {
         return constraintPackage;
     }
 
     public String getConstraintName() {
         return constraintName;
+    }
+
+    public String getConstraintId() {
+        return ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
     }
 
 }

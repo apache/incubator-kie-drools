@@ -36,7 +36,7 @@ public class BendableLongScoreInliner extends ScoreInliner<BendableLongScore> {
     }
 
     @Override
-    public LongWeightedScoreImpacter buildLongWeightedScoreImpacter(BendableLongScore constraintWeight) {
+    public LongWeightedScoreImpacter buildWeightedScoreImpacter(BendableLongScore constraintWeight) {
         if (constraintWeight.equals(BendableLongScore.zero(hardScores.length, softScores.length))) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight + ") cannot be zero,"
                     + " this constraint should have been culled during node creation.");

@@ -16,12 +16,16 @@
 
 package org.optaplanner.core.api.score.stream.uni;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishEntity;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishEntityGroup;
@@ -29,6 +33,11 @@ import org.optaplanner.core.api.score.stream.testdata.TestdataLavishSolution;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishValueGroup;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalScoreSolution;
+import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleLongScoreSolution;
 
 import static org.junit.Assert.*;
 import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
@@ -292,8 +301,155 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // Penalize/reward
     // ************************************************************************
 
-    // TODO
+    @Test
+    public void penalize_Int() {
+        TestdataSolution solution = new TestdataSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        solution.setValueList(Arrays.asList(v1));
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", v1);
+        solution.setEntityList(Arrays.asList(e1, e2));
 
+        ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleScore.of(1))
+                    .from(TestdataEntity.class)
+                    .penalize();
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
+                    .from(TestdataEntity.class)
+                    .penalizeInt(entity -> 20);
+        });
+        InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertEquals(SimpleScore.of(-42), scoreDirector.calculateScore());
+    }
+
+    @Test
+    public void penalize_Long() {
+        TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        solution.setValueList(Arrays.asList(v1));
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", v1);
+        solution.setEntityList(Arrays.asList(e1, e2));
+
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleLongScore.of(1))
+                    .from(TestdataEntity.class)
+                    .penalize();
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleLongScore.of(1))
+                    .from(TestdataEntity.class)
+                    .penalizeLong(entity -> 20L);
+        });
+        InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertEquals(SimpleLongScore.of(-42L), scoreDirector.calculateScore());
+    }
+
+    @Test
+    public void penalize_BigDecimal() {
+        TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        solution.setValueList(Arrays.asList(v1));
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", v1);
+        solution.setEntityList(Arrays.asList(e1, e2));
+
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleBigDecimalScore.of(BigDecimal.ONE))
+                    .from(TestdataEntity.class)
+                    .penalize();
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleBigDecimalScore.of(BigDecimal.ONE))
+                    .from(TestdataEntity.class)
+                    .penalizeBigDecimal(entity -> new BigDecimal("0.2"));
+        });
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("-2.4")), scoreDirector.calculateScore());
+    }
+
+    @Test
+    public void reward_Int() {
+        TestdataSolution solution = new TestdataSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        solution.setValueList(Arrays.asList(v1));
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", v1);
+        solution.setEntityList(Arrays.asList(e1, e2));
+
+        ConstraintStreamScoreDirectorFactory<TestdataSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleScore.of(1))
+                    .from(TestdataEntity.class)
+                    .reward();
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
+                    .from(TestdataEntity.class)
+                    .rewardInt(entity -> 20);
+        });
+        InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertEquals(SimpleScore.of(42), scoreDirector.calculateScore());
+    }
+
+    @Test
+    public void reward_Long() {
+        TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        solution.setValueList(Arrays.asList(v1));
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", v1);
+        solution.setEntityList(Arrays.asList(e1, e2));
+
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleLongScoreSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleLongScore.of(1))
+                    .from(TestdataEntity.class)
+                    .reward();
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleLongScore.of(1))
+                    .from(TestdataEntity.class)
+                    .rewardLong(entity -> 20L);
+        });
+        InnerScoreDirector<TestdataSimpleLongScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertEquals(SimpleLongScore.of(42L), scoreDirector.calculateScore());
+    }
+
+    @Test
+    public void reward_BigDecimal() {
+        TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
+        TestdataValue v1 = new TestdataValue("v1");
+        solution.setValueList(Arrays.asList(v1));
+        TestdataEntity e1 = new TestdataEntity("e1", v1);
+        TestdataEntity e2 = new TestdataEntity("e2", v1);
+        solution.setEntityList(Arrays.asList(e1, e2));
+
+        ConstraintStreamScoreDirectorFactory<TestdataSimpleBigDecimalScoreSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleBigDecimalScore.of(BigDecimal.ONE))
+                    .from(TestdataEntity.class)
+                    .reward();
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleBigDecimalScore.of(BigDecimal.ONE))
+                    .from(TestdataEntity.class)
+                    .rewardBigDecimal(entity -> new BigDecimal("0.2"));
+        });
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        scoreDirector.setWorkingSolution(solution);
+        assertEquals(SimpleBigDecimalScore.of(new BigDecimal("2.4")), scoreDirector.calculateScore());
+    }
 
     // ************************************************************************
     // Combinations

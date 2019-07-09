@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 
 @FunctionalInterface
-public interface BigDecimalWeightedScoreImpacter {
+public interface BigDecimalWeightedScoreImpacter extends WeightedScoreImpacter {
 
     /**
      * @param matchWeight never null

@@ -28,19 +28,6 @@ public abstract class ScoreInliner<Score_ extends Score<Score_>> {
 
     public abstract Score_ extractScore(int initScore);
 
-    public IntWeightedScoreImpacter buildIntWeightedScoreImpacter(Score_ constraintWeight) {
-        throw new UnsupportedOperationException("The score inliner (" +  this
-                + ") does not support an int matchWeigher.");
-    }
-
-    public LongWeightedScoreImpacter buildLongWeightedScoreImpacter(Score_ constraintWeight) {
-        throw new UnsupportedOperationException("The score inliner (" +  this
-                + ") does not support a long matchWeigher.");
-    }
-
-    public BigDecimalWeightedScoreImpacter buildBigDecimalWeightedScoreImpacter(Score_ constraintWeight) {
-        throw new UnsupportedOperationException("The score inliner (" +  this
-                + ") does not support a BigDecimal matchWeigher.");
-    }
+    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Score_ constraintWeight);
 
 }
