@@ -9,63 +9,65 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class GreatDelugeAcceptor extends AbstractAcceptor {
 
-    private Score initialWaterLevels = null;
+    private Score initialWaterLevel = null;
     private Score currentWaterLevel = null;
 
-    private Double rainSpeedRatio = DEFAULT_RAIN_SPEED_RATIO;
-    private Score rainSpeedScore = null;
+    private Score waterLevelIncrementScore = null;
+    private Double waterLevelIncrementRatio = DEFAULT_WATER_LEVEL_INCREMENT_RATIO;
 
     // Good value to come out from. Source: https://github.com/UniTime/cpsolver from Tomas Muller
-    private static final double DEFAULT_RAIN_SPEED_RATIO = 0.99_999_995;
+    private static final double DEFAULT_WATER_LEVEL_INCREMENT_RATIO = 0.00_000_005;
 
 
-    public Score getRainSpeedScore() {
-        return this.rainSpeedScore;
+    public Score getWaterLevelIncrementScore() {
+        return this.waterLevelIncrementScore;
     }
 
-    public void setRainSpeedScore(Score rainSpeedScore) {
-        this.rainSpeedScore = rainSpeedScore;
-        this.rainSpeedRatio = null;
+    public void setWaterLevelIncrementScore(Score waterLevelIncrementScore) {
+        this.waterLevelIncrementScore = waterLevelIncrementScore;
+        this.waterLevelIncrementRatio = null;
     }
 
-    public Score getInitialWaterLevels() {
-        return this.initialWaterLevels;
+    public Score getInitialWaterLevel() {
+        return this.initialWaterLevel;
     }
 
-    public void setInitialWaterLevels(Score initialLevel) {
-        this.initialWaterLevels = initialLevel;
+    public void setInitialWaterLevel(Score initialLevel) {
+        this.initialWaterLevel = initialLevel;
     }
 
-    public Double getRainSpeedRatio() {
-        return this.rainSpeedRatio;
+    public Double getWaterLevelIncrementRatio() {
+        return this.waterLevelIncrementRatio;
     }
 
-    public void setRainSpeedRatio(Double rainSpeedRatio) {
-        this.rainSpeedRatio = rainSpeedRatio;
+    public void setWaterLevelIncrementRatio(Double waterLevelIncrementRatio) {
+        this.waterLevelIncrementRatio = waterLevelIncrementRatio;
     }
 
+    @Override
     public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
 
-        if (initialWaterLevels != null) {
-            for (double initialLevelLevel : ScoreUtils.extractLevelDoubles(initialWaterLevels)) {
+        if (initialWaterLevel != null) {
+            for (double initialLevelLevel : ScoreUtils.extractLevelDoubles(initialWaterLevel)) {
                 if (initialLevelLevel < 0.0) {
-                    throw new IllegalArgumentException("The initial level (" + initialWaterLevels
+                    throw new IllegalArgumentException("The initial level (" + initialWaterLevel
                                                                + ") cannot have negative level (" + initialLevelLevel + ").");
                 }
             }
-            currentWaterLevel = initialWaterLevels;
+            currentWaterLevel = initialWaterLevel;
 
         } else {
             currentWaterLevel = phaseScope.getBestScore().negate();
         }
     }
 
+    @Override
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        initialWaterLevels = null;
-        rainSpeedRatio = DEFAULT_RAIN_SPEED_RATIO;
-        rainSpeedScore = null;
+        initialWaterLevel = null;
+        waterLevelIncrementRatio = DEFAULT_WATER_LEVEL_INCREMENT_RATIO;
+        waterLevelIncrementScore = null;
     }
 
     @Override
@@ -76,12 +78,16 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
         return moveScore.compareTo(currentWaterLevel.negate()) >= 0;
     }
 
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    @Override
+    public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
-        if (rainSpeedScore != null) {
-            currentWaterLevel = currentWaterLevel.subtract(rainSpeedScore);
+
+        if (waterLevelIncrementScore != null) {
+            currentWaterLevel = currentWaterLevel.subtract(waterLevelIncrementScore);
         } else {
-            currentWaterLevel = currentWaterLevel.multiply(rainSpeedRatio);
+            Score increment = currentWaterLevel.multiply(waterLevelIncrementRatio);
+            currentWaterLevel = currentWaterLevel.subtract(increment);
         }
+        logger.debug(currentWaterLevel.toShortString());
     }
 }

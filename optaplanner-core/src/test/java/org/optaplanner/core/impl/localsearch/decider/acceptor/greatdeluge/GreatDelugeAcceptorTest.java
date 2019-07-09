@@ -21,8 +21,8 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void isAcceptedPositiveLevelSingleScoreRainSpeed() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevels(SimpleScore.of(1100));
-        acceptor.setRainSpeedScore(SimpleScore.of(100));
+        acceptor.setInitialWaterLevel(SimpleScore.of(1000));
+        acceptor.setWaterLevelIncrementScore(SimpleScore.of(100));
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
@@ -96,8 +96,8 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void isAcceptedPositiveLevelMultipleScoreRainSpeed() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevels(HardMediumSoftScore.of(0, 200, 500));
-        acceptor.setRainSpeedScore(HardMediumSoftScore.of(0,100,100));
+        acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, 100, 400));
+        acceptor.setWaterLevelIncrementScore(HardMediumSoftScore.of(0, 100, 100));
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(HardMediumSoftScore.of(0, -200, -1000));
@@ -142,8 +142,8 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void isAcceptedPositiveLevelMultipleScoreRainSpeedRatio() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevels(HardMediumSoftScore.of(0, 200, 500));
-        acceptor.setRainSpeedRatio(0.9);
+        acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, 180, 450));
+        acceptor.setWaterLevelIncrementRatio(0.9);
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(HardMediumSoftScore.of(0, -200, -1000));
@@ -188,11 +188,11 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void negativeWaterLevelSingleScore() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevels(SimpleScore.of(-100));
+        acceptor.setInitialWaterLevel(SimpleScore.of(-100));
         try {
             acceptor.phaseStarted(null);
         } catch (IllegalArgumentException e) {
-            assertEquals("The initial level (" + acceptor.getInitialWaterLevels()
+            assertEquals("The initial level (" + acceptor.getInitialWaterLevel()
                     + ") cannot have negative level (" + "-100.0" + ").", e.getMessage());
         }
     }
@@ -200,11 +200,11 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     public void negativeWaterLevelMultipleScore() {
 
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevels(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
+        acceptor.setInitialWaterLevel(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
         try {
             acceptor.phaseStarted(null);
         } catch (IllegalArgumentException e) {
-            assertEquals("The initial level (" + acceptor.getInitialWaterLevels()
+            assertEquals("The initial level (" + acceptor.getInitialWaterLevel()
                     + ") cannot have negative level (" + "-1.0" + ").", e.getMessage());
         }
     }

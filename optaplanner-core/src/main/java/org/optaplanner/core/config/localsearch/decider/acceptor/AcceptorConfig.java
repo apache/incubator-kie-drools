@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
@@ -76,9 +75,9 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     protected Integer stepCountingHillClimbingSize = null;
     protected StepCountingHillClimbingType stepCountingHillClimbingType = null;
 
-    protected String greatDelugeStartingWaterLevel = null;
-    protected Double greatDelugeRainSpeedRatio = null;
-    protected String greatDelugeRainSpeedScore = null;
+    protected String greatDelugeInitialWaterLevel = null;
+    protected Double greatDelugeWaterLevelIncrementRatio = null;
+    protected String greatDelugeWaterLevelIncrementScore = null;
 
     @Deprecated
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
@@ -242,28 +241,28 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         this.stepCountingHillClimbingType = stepCountingHillClimbingType;
     }
 
-    public String getGreatDelugeStartingWaterLevel() {
-        return greatDelugeStartingWaterLevel;
+    public String getGreatDelugeInitialWaterLevel() {
+        return greatDelugeInitialWaterLevel;
     }
 
-    public void setGreatDelugeStartingWaterLevel(String greatDelugeStartingWaterLevel) {
-        this.greatDelugeStartingWaterLevel = greatDelugeStartingWaterLevel;
+    public void setGreatDelugeInitialWaterLevel(String greatDelugeInitialWaterLevel) {
+        this.greatDelugeInitialWaterLevel = greatDelugeInitialWaterLevel;
     }
 
-    public String getGreatDelugeRainSpeedScore() {
-        return greatDelugeRainSpeedScore;
+    public String getGreatDelugeWaterLevelIncrementScore() {
+        return greatDelugeWaterLevelIncrementScore;
     }
 
-    public void setGreatDelugeRainSpeedScore(String greatDelugeRainSpeedScore) {
-        this.greatDelugeRainSpeedScore = greatDelugeRainSpeedScore;
+    public void setGreatDelugeWaterLevelIncrementScore(String greatDelugeWaterLevelIncrementScore) {
+        this.greatDelugeWaterLevelIncrementScore = greatDelugeWaterLevelIncrementScore;
     }
 
-    public Double getGreatDelugeRainSpeedRatio() {
-        return greatDelugeRainSpeedRatio;
+    public Double getGreatDelugeWaterLevelIncrementRatio() {
+        return greatDelugeWaterLevelIncrementRatio;
     }
 
-    public void setGreatDelugeRainSpeedRatio(Double greatDelugeRainSpeedRatio) {
-        this.greatDelugeRainSpeedRatio = greatDelugeRainSpeedRatio;
+    public void setGreatDelugeWaterLevelIncrementRatio(Double greatDelugeWaterLevelIncrementRatio) {
+        this.greatDelugeWaterLevelIncrementRatio = greatDelugeWaterLevelIncrementRatio;
     }
 
     // ************************************************************************
@@ -526,26 +525,29 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
             acceptorList.add(acceptor);
         }
         if ((acceptorTypeList!= null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
-                || greatDelugeRainSpeedRatio != null || greatDelugeRainSpeedScore != null) {
+                || greatDelugeWaterLevelIncrementRatio != null
+                || greatDelugeWaterLevelIncrementScore != null
+                || greatDelugeInitialWaterLevel != null) {
             GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
 
-            if (greatDelugeRainSpeedScore != null && greatDelugeRainSpeedRatio != null) {
-                throw new IllegalArgumentException("The greatDelugeRainSpeedScore (" + greatDelugeRainSpeedScore
-                        + ") and greatDelugeRainSpeedRatio (" + greatDelugeRainSpeedRatio
-                        + ") cannot be both non null.");
+            if (greatDelugeWaterLevelIncrementScore != null && greatDelugeWaterLevelIncrementRatio != null) {
+                throw new IllegalArgumentException("The greatDelugeWaterLevelIncrementScore ("
+                        + greatDelugeWaterLevelIncrementScore + ") and greatDelugeWaterLevelIncrementRatio ("
+                        + greatDelugeWaterLevelIncrementRatio + ") cannot be both non null.");
             }
 
-            if (greatDelugeRainSpeedRatio != null) {
-                acceptor.setRainSpeedRatio(greatDelugeRainSpeedRatio);
+            if (greatDelugeWaterLevelIncrementRatio != null) {
+                acceptor.setWaterLevelIncrementRatio(greatDelugeWaterLevelIncrementRatio);
             }
 
-            if (greatDelugeRainSpeedScore != null) {
-                acceptor.setRainSpeedScore(configPolicy.getScoreDefinition().parseScore(greatDelugeRainSpeedScore));
+            if (greatDelugeWaterLevelIncrementScore != null) {
+                acceptor.setWaterLevelIncrementScore(configPolicy.getScoreDefinition()
+                    .parseScore(greatDelugeWaterLevelIncrementScore));
             }
 
-            if (greatDelugeStartingWaterLevel != null) {
-                acceptor.setInitialWaterLevels(configPolicy.getScoreDefinition()
-                        .parseScore(greatDelugeStartingWaterLevel));
+            if (greatDelugeInitialWaterLevel != null) {
+                acceptor.setInitialWaterLevel(configPolicy.getScoreDefinition()
+                    .parseScore(greatDelugeInitialWaterLevel));
             }
             acceptorList.add(acceptor);
         }
@@ -609,12 +611,12 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                 inheritedConfig.getStepCountingHillClimbingSize());
         stepCountingHillClimbingType = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingType,
                 inheritedConfig.getStepCountingHillClimbingType());
-        greatDelugeStartingWaterLevel = ConfigUtils.inheritOverwritableProperty(greatDelugeStartingWaterLevel,
-                inheritedConfig.getGreatDelugeStartingWaterLevel());
-        greatDelugeRainSpeedRatio = ConfigUtils.inheritOverwritableProperty(greatDelugeRainSpeedRatio,
-                inheritedConfig.getGreatDelugeRainSpeedRatio());
-        greatDelugeRainSpeedScore = ConfigUtils.inheritOverwritableProperty(greatDelugeRainSpeedScore,
-                inheritedConfig.getGreatDelugeRainSpeedScore());
+        greatDelugeInitialWaterLevel = ConfigUtils.inheritOverwritableProperty(greatDelugeInitialWaterLevel,
+                inheritedConfig.getGreatDelugeInitialWaterLevel());
+        greatDelugeWaterLevelIncrementRatio = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementRatio,
+                inheritedConfig.getGreatDelugeWaterLevelIncrementRatio());
+        greatDelugeWaterLevelIncrementScore = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementScore,
+                inheritedConfig.getGreatDelugeWaterLevelIncrementScore());
     }
 
 }

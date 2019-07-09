@@ -21,7 +21,8 @@ public enum LocalSearchType {
     TABU_SEARCH,
     SIMULATED_ANNEALING,
     LATE_ACCEPTANCE,
-    VARIABLE_NEIGHBORHOOD_DESCENT;
+    VARIABLE_NEIGHBORHOOD_DESCENT,
+    GREAT_DELUGE;
 
     /**
      * @return {@link #values()} without duplicates (abstract types that end up behaving as one of the other types).

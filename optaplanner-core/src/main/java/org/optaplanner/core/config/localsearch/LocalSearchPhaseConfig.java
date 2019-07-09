@@ -225,6 +225,9 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                 case LATE_ACCEPTANCE:
                     acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.LATE_ACCEPTANCE));
                     break;
+                case GREAT_DELUGE:
+                    acceptorConfig_.setAcceptorTypeList(Collections.singletonList(AcceptorType.GREAT_DELUGE));
+                    break;
                 default:
                     throw new IllegalStateException("The localSearchType (" + localSearchType_
                             + ") is not implemented.");
@@ -258,6 +261,9 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     // Fast stepping algorithm
                     foragerConfig_.setAcceptedCountLimit(1);
                     break;
+                case GREAT_DELUGE:
+                    // Fast stepping algorithm
+                    foragerConfig_.setAcceptedCountLimit(4);
                 case VARIABLE_NEIGHBORHOOD_DESCENT:
                     foragerConfig_.setPickEarlyType(LocalSearchPickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING);
                     break;
