@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -54,7 +55,6 @@ import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.hasScopeWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -315,8 +315,11 @@ public class Consequence {
     private Set<String> findModifiedProperties( List<MethodCallExpr> methodCallExprs, MethodCallExpr updateExpr, String updatedVar ) {
         Set<String> modifiedProps = new HashSet<>();
         for (MethodCallExpr methodCall : methodCallExprs.subList(0, methodCallExprs.indexOf(updateExpr))) {
-            if (methodCall.getScope().isPresent() && hasScopeWithName(methodCall, updatedVar)) {
-                String propName = methodToProperty(methodCall);
+            DrlxParseUtil.RemoveRootNodeResult removeRootNodeViaScope = DrlxParseUtil.findRemoveRootNodeViaScope(methodCall);
+            Optional<Expression> root = removeRootNodeViaScope.getRootNode()
+                    .filter(s -> isNameExprWithName(s, updatedVar));
+            if (methodCall.getScope().isPresent() && root.isPresent()) {
+                String propName = methodToProperty(methodCall, removeRootNodeViaScope.getFirstChild());
                 if (propName != null) {
                     modifiedProps.add(propName);
                 } else {
@@ -328,11 +331,11 @@ public class Consequence {
         return modifiedProps;
     }
 
-    private String methodToProperty(MethodCallExpr mce) {
+    private String methodToProperty(MethodCallExpr mce, Expression getter) {
         String propertyName = setter2property(mce.getNameAsString());
 
-        if (propertyName == null && mce.getArguments().isEmpty()) {
-            propertyName = getter2property(mce.getNameAsString());
+        if (propertyName == null && getter.isMethodCallExpr()) {
+            propertyName = getter2property(getter.asMethodCallExpr().getNameAsString());
         }
 
         // TODO also register additional property in case the invoked method is annotated with @Modifies
@@ -341,7 +344,9 @@ public class Consequence {
     }
 
     private static boolean isDroolsMethod(MethodCallExpr mce) {
-        final boolean hasDroolsScope = hasScopeWithName(mce, "drools");
+        final boolean hasDroolsScope = DrlxParseUtil.findRootNodeViaScope(mce)
+                .filter(s -> isNameExprWithName(s, "drools"))
+                .isPresent();
         final boolean isImplicitDroolsMethod = !mce.getScope().isPresent() && implicitDroolsMethods.contains(mce.getNameAsString());
         final boolean hasDroolsAsParameter = findAllChildrenRecursive(mce).stream().anyMatch(a -> isNameExprWithName(a, "drools"));
         return hasDroolsScope || isImplicitDroolsMethod || hasDroolsAsParameter;

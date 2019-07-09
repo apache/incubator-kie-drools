@@ -207,6 +207,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }
                 } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
                     processPMMLImport(model, i);
+                    model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
                 } else {
                     MsgUtil.reportMessage(logger,
                                           DMNMessage.Severity.ERROR,
@@ -231,8 +232,8 @@ public class DMNCompilerImpl implements DMNCompiler {
             return;
         }
         try (InputStream pmmlIS = pmmlURL.openStream();) {
-            DMNImportPMMLInfo.from(pmmlIS, model, i).consume(new PMMLImportErrConsumer(model, i),
-                                                             model::addPMMLImportInfo);
+            DMNImportPMMLInfo.from(pmmlIS, (DMNCompilerConfigurationImpl) dmnCompilerConfig, model, i).consume(new PMMLImportErrConsumer(model, i),
+                                                                                                               model::addPMMLImportInfo);
         } catch (IOException e) {
             new PMMLImportErrConsumer(model, i).accept(e);
         }

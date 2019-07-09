@@ -60,8 +60,16 @@ public class DMNRuntimePMMLTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNRuntimePMMLTest.class);
 
     @Test
-    public void testSimpleItemDefinition() {
+    public void testBasic() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLScoreCard.dmn",
+                                                                                       DMNRuntimePMMLTest.class,
+                                                                                       "test_scorecard.pmml");
+        runDMNModelInvokingPMML(runtime);
+    }
+
+    @Test
+    public void testWithInputTypes() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLScoreCard_wInputType.dmn",
                                                                                        DMNRuntimePMMLTest.class,
                                                                                        "test_scorecard.pmml");
         runDMNModelInvokingPMML(runtime);
