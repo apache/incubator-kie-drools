@@ -16,15 +16,21 @@
 
 package org.optaplanner.core.api.score.stream.uni;
 
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
+
 import org.junit.Ignore;
 import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.AbstractConstraintStreamTest;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishEntity;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishEntityGroup;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishSolution;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishValueGroup;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.stream.ConstraintStreamScoreDirectorFactory;
 
+import static org.junit.Assert.*;
 import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
 import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 
@@ -287,5 +293,86 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     // TODO
+
+
+    // ************************************************************************
+    // Combinations
+    // ************************************************************************
+
+    @Test
+    public void globalNodeOrder() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
+        entity1.setStringProperty("MyString1");
+        solution.getEntityList().add(entity1);
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector1 = buildScoreDirector((constraint) -> {
+            constraint.from(TestdataLavishEntity.class)
+                    .filter(entity -> entity.getEntityGroup() == entityGroup)
+                    .filter(entity -> entity.getStringProperty().equals("MyString1"))
+                    .join(TestdataLavishEntity.class, equalTo(TestdataLavishEntity::getIntegerProperty))
+                    .penalize();
+        });
+
+        // From scratch
+        scoreDirector1.setWorkingSolution(solution);
+        assertScore(scoreDirector1,
+                assertMatch(entity1, solution.getFirstEntity()),
+                assertMatch(entity1, entity1));
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector2 = buildScoreDirector((constraint) -> {
+            constraint.from(TestdataLavishEntity.class)
+                    .join(constraint.from(TestdataLavishEntity.class)
+                            .filter(entity -> entity.getEntityGroup() == entityGroup)
+                            .filter(entity -> entity.getStringProperty().equals("MyString1")),
+                            equalTo(TestdataLavishEntity::getIntegerProperty))
+                    .penalize();
+        });
+
+        // From scratch
+        scoreDirector2.setWorkingSolution(solution);
+        assertScore(scoreDirector2,
+                assertMatch(solution.getFirstEntity(), entity1),
+                assertMatch(entity1, entity1));
+    }
+
+    @Test
+    public void nodeSharing() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 2);
+        TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", solution.getFirstEntityGroup(), solution.getFirstValue());
+        entity1.setStringProperty("myProperty1");
+        solution.getEntityList().add(entity1);
+
+        AtomicLong monitorCount = new AtomicLong(0L);
+        Predicate<TestdataLavishEntity> predicate = entity -> {
+            monitorCount.getAndIncrement(); return true;
+        };
+        ConstraintStreamScoreDirectorFactory<TestdataLavishSolution> scoreDirectorFactory
+                = new ConstraintStreamScoreDirectorFactory<>(
+                TestdataLavishSolution.buildSolutionDescriptor(), (constraintFactory) -> {
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint1", SimpleScore.of(1))
+                    .from(TestdataLavishEntity.class)
+                    .filter(predicate)
+                    .penalize();
+            constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
+                    .from(TestdataLavishEntity.class)
+                    .filter(predicate)
+                    .penalize();
+        });
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertEquals(3, monitorCount.getAndSet(0L));
+
+        // Incremental
+        scoreDirector.beforeProblemPropertyChanged(entity1);
+        entity1.setStringProperty("myProperty2");
+        scoreDirector.afterProblemPropertyChanged(entity1);
+        scoreDirector.calculateScore();
+        assertEquals(1, monitorCount.get());
+    }
 
 }
