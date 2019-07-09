@@ -194,9 +194,9 @@ public abstract class AbstractExpressionBuilder {
             }
 
         } else if (expression instanceof NameExpr) {
-            if (leftType.equals(BigDecimal.class)) {
+            if (leftType.equals(BigDecimal.class) && !right.getType().equals(BigDecimal.class)) {
                 expression = toNewExpr(BigDecimal.class, expression);
-            } else if (leftType.equals(BigInteger.class)) {
+            } else if (leftType.equals(BigInteger.class) && !right.getType().equals(BigInteger.class)) {
                 expression = toNewExpr(BigInteger.class, expression);
             }
         }
