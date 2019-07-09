@@ -3,7 +3,10 @@ package org.drools.modelcompiler.builder.generator.query;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -41,7 +44,9 @@ public class QueryGenerator {
         CompilationUnit queryDefImpl = queryDefImplGenerator.generate();
         String generatedClass = new PrettyPrinter().print(queryDefImpl);
         try {
-            Files.write(Paths.get("/tmp/", "queryimpl", queryDefImplGenerator.getClassName() + ".java"), generatedClass.getBytes());
+            Path queryimpl = Paths.get("/tmp/", "queryimpl", queryDefImplGenerator.getClassName() + ".java");
+            Files.createDirectories(queryimpl.getParent());
+            Files.write(queryimpl, generatedClass.getBytes());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -52,7 +57,9 @@ public class QueryGenerator {
         CompilationUnit queryDef = queryDefGenerator.generate();
         String generatedClass = new PrettyPrinter().print(queryDef);
         try {
-            Files.write(Paths.get("/tmp/", "querydef", queryDefGenerator.getClassName() + ".java"), generatedClass.getBytes());
+            Path querydef = Paths.get("/tmp/", "querydef", queryDefGenerator.getClassName() + ".java");
+            Files.createDirectories(querydef.getParent());
+            Files.write(querydef, generatedClass.getBytes());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

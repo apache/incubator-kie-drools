@@ -57,6 +57,7 @@ public class QueryDefImplGenerator {
                 parseImport(String.format("import org.drools.model.Query%dDef;", arity)),
                 parseImport("import org.drools.model.Variable;"),
                 parseImport("import org.drools.model.view.QueryCallViewItem;"),
+                parseImport("import org.drools.model.view.QueryCallViewItemImpl;"),
                 parseImport("import static org.drools.model.FlowDSL.declarationOf;"),
                 parseImport("import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;")
         ));
