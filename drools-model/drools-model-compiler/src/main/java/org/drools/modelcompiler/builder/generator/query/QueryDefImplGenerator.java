@@ -9,7 +9,6 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -64,10 +63,10 @@ public class QueryDefImplGenerator {
 
         ClassOrInterfaceDeclaration clazz = classDeclaration(cu);
 //        copyright(cu);
-        firstConstructor(clazz);
-        secondConstructor(clazz);
-        thirdConstructor(clazz);
-        fourthConstructor(clazz);
+        nameClassConstructor(clazz);
+        packageNameClassConstructor(clazz);
+        nameClassArgConstructor(clazz);
+        pkgNameClassArgConstructor(clazz);
         callMethod(clazz);
         getArgumentsMethod(clazz);
         getters(clazz);
@@ -99,25 +98,7 @@ public class QueryDefImplGenerator {
         return clazz;
     }
 
-    private void copyright(CompilationUnit cu) {
-        cu.addOrphanComment(new BlockComment("\n" +
-                                                     " * Copyright 2005 JBoss Inc\n" +
-                                                     " *\n" +
-                                                     " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-                                                     " * you may not use this file except in compliance with the License.\n" +
-                                                     " * You may obtain a copy of the License at\n" +
-                                                     " *\n" +
-                                                     " *      http://www.apache.org/licenses/LICENSE-2.0\n" +
-                                                     " *\n" +
-                                                     " * Unless required by applicable law or agreed to in writing, software\n" +
-                                                     " * distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                                                     " * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-                                                     " * See the License for the specific language governing permissions and\n" +
-                                                     " * limitations under the License.\n" +
-                                                     " "));
-    }
-
-    private void firstConstructor(ClassOrInterfaceDeclaration clazz) {
+    private void nameClassConstructor(ClassOrInterfaceDeclaration clazz) {
         ConstructorDeclaration constructorDeclaration1 = clazz.addConstructor(Modifier.Keyword.PUBLIC);
         constructorDeclaration1.addParameter("ViewBuilder", "viewBuilder");
         constructorDeclaration1.addParameter("String", "name");
@@ -139,11 +120,11 @@ public class QueryDefImplGenerator {
         constructorDeclaration1.setBody(stmts);
     }
 
-    private void secondConstructor(ClassOrInterfaceDeclaration clazz) {
+    private void packageNameClassConstructor(ClassOrInterfaceDeclaration clazz) {
         ConstructorDeclaration declaration = clazz.addConstructor(Modifier.Keyword.PUBLIC);
         declaration.addParameter("ViewBuilder", "viewBuilder");
-        declaration.addParameter("String", "name");
         declaration.addParameter("String", "pkg");
+        declaration.addParameter("String", "name");
         BlockStmt stmts = new BlockStmt();
         MethodCallExpr body = new MethodCallExpr(null, "super");
         stmts.addStatement(body);
@@ -168,7 +149,7 @@ public class QueryDefImplGenerator {
         declaration.setBody(stmts);
     }
 
-    private void thirdConstructor(ClassOrInterfaceDeclaration clazz) {
+    private void nameClassArgConstructor(ClassOrInterfaceDeclaration clazz) {
         ConstructorDeclaration ctorDeclaration = clazz.addConstructor(Modifier.Keyword.PUBLIC);
         ctorDeclaration.addParameter("ViewBuilder", "viewBuilder");
         ctorDeclaration.addParameter("String", "name");
@@ -193,7 +174,7 @@ public class QueryDefImplGenerator {
         ctorDeclaration.setBody(ctor2Stmt);
     }
 
-    private void fourthConstructor(ClassOrInterfaceDeclaration clazz) {
+    private void pkgNameClassArgConstructor(ClassOrInterfaceDeclaration clazz) {
         ConstructorDeclaration constructorDeclaration2 = clazz.addConstructor(Modifier.Keyword.PUBLIC);
         constructorDeclaration2.addParameter("ViewBuilder", "viewBuilder");
         constructorDeclaration2.addParameter("String", "pkg");

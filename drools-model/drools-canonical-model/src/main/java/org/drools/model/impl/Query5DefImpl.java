@@ -40,7 +40,7 @@ public class Query5DefImpl<T1, T2, T3, T4, T5> extends QueryDefImpl implements M
         this(viewBuilder, DEFAULT_PACKAGE, name, type1, type2, type3, type4, type5);
     }
 
-    public Query5DefImpl(ViewBuilder viewBuilder, String name, String pkg, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5) {
+    public Query5DefImpl(ViewBuilder viewBuilder, String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5) {
         super(viewBuilder, pkg, name);
         this.arg1 = declarationOf(type1);
         this.arg2 = declarationOf(type2);

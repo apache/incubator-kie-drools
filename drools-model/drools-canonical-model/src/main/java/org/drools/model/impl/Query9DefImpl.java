@@ -48,7 +48,7 @@ public class Query9DefImpl<T1, T2, T3, T4, T5, T6, T7, T8, T9> extends QueryDefI
         this(viewBuilder, DEFAULT_PACKAGE, name, type1, type2, type3, type4, type5, type6, type7, type8, type9);
     }
 
-    public Query9DefImpl(ViewBuilder viewBuilder, String name, String pkg, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8, Class<T9> type9) {
+    public Query9DefImpl(ViewBuilder viewBuilder, String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3, Class<T4> type4, Class<T5> type5, Class<T6> type6, Class<T7> type7, Class<T8> type8, Class<T9> type9) {
         super(viewBuilder, pkg, name);
         this.arg1 = declarationOf(type1);
         this.arg2 = declarationOf(type2);

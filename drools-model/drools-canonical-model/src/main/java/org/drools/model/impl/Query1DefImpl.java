@@ -32,7 +32,7 @@ public class Query1DefImpl<T1> extends QueryDefImpl implements ModelComponent, Q
         this(viewBuilder, DEFAULT_PACKAGE, name, type1);
     }
 
-    public Query1DefImpl(ViewBuilder viewBuilder, String name, String pkg, Class<T1> type1) {
+    public Query1DefImpl(ViewBuilder viewBuilder, String pkg, String name, Class<T1> type1) {
         super(viewBuilder, pkg, name);
         this.arg1 = declarationOf(type1);
     }

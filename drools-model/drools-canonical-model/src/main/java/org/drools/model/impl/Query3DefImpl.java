@@ -36,7 +36,7 @@ public class Query3DefImpl<T1, T2, T3> extends QueryDefImpl implements ModelComp
         this(viewBuilder, DEFAULT_PACKAGE, name, type1, type2, type3);
     }
 
-    public Query3DefImpl(ViewBuilder viewBuilder, String name, String pkg, Class<T1> type1, Class<T2> type2, Class<T3> type3) {
+    public Query3DefImpl(ViewBuilder viewBuilder, String pkg, String name, Class<T1> type1, Class<T2> type2, Class<T3> type3) {
         super(viewBuilder, pkg, name);
         this.arg1 = declarationOf(type1);
         this.arg2 = declarationOf(type2);

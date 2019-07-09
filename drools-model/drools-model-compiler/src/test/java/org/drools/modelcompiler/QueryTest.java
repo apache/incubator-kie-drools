@@ -872,12 +872,12 @@ public class QueryTest extends BaseModelTest {
     }
 
     @Test
-    public void testQuery5Args() throws IOException, ClassNotFoundException {
+    public void testQuery10Args() throws IOException, ClassNotFoundException {
         String str =
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
-                "query peeps( String name, int age, long ageLong, int id, String likes ) \n" +
+                "query peeps( String name, int age, long ageLong, int id, String likes, String arg6, String arg7, String arg8, String arg9, String arg10) \n" +
                 "    Person( name := name, age := age, ageLong := ageLong, id := id, likes := likes ) \n" +
                 "end \n";
 
@@ -895,7 +895,13 @@ public class QueryTest extends BaseModelTest {
         ksession.insert( mark );
 
         List<String> list = new ArrayList<>();
-        QueryResults results = ksession.getQueryResults( "peeps", "Mario", 44, 44L, 1, "cheese" );
+        QueryResults results = ksession.getQueryResults( "peeps", "Mario", 44, 44L, 1, "cheese"
+                , "these"
+                , "arguments"
+                , "are"
+                , "ignored"
+                , "it's just for compilation"
+        );
         for (final QueryResultsRow result : results) {
             list.add((String) result.get("name"));
         }
