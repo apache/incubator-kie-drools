@@ -261,8 +261,8 @@ public class PatternDSLTest {
         Rule rule = rule("accumulate")
                 .build(
                         accumulate( pattern( person ).expr(p -> p.getName().startsWith("M")).bind(age, Person::getAge),
-                                accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class, age).as(resultSum),
-                                accFunction(org.drools.core.base.accumulators.AverageAccumulateFunction.class, age).as(resultAvg)),
+                                accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, age).as(resultSum),
+                                accFunction(org.drools.core.base.accumulators.AverageAccumulateFunction::new, age).as(resultAvg)),
                         on(resultSum, resultAvg)
                                 .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
                 );

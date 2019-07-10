@@ -27,7 +27,6 @@ package org.drools.mvel.parser;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.github.javaparser.ParseProblemException;
@@ -51,7 +50,7 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.junit.jupiter.api.Assertions.assertEquals;
