@@ -16,15 +16,18 @@ Custom data types that you create for a boxed expression can be simple or struct
 . In the DMN designer canvas, select a decision node or business knowledge model for which you want to define the data types and click the *Edit* icon to open the DMN boxed expression designer.
 . If the boxed expression is for a decision node that is not yet defined, click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
 +
+.Selecting the logic type for a decision node
 image::dmn/dmn-decision-boxed-expression-options.png[]
 
 . Click the cell for the table header, column header, or parameter field (depending on the boxed expression type) for which you want to define the data type and click *Manage* to go to the *Data Types* page where you can create a custom data type.
 +
 --
+.Managing data types for a column header value
 image::dmn/dmn-manage-data-types.png[]
 
 You can also set and manage custom data types for a specified decision node or business knowledge model node by selecting the *Diagram properties* icon in the upper-right corner of the DMN designer:
 
+.Managing data types in diagram properties
 image::dmn/dmn-manage-data-types1a.png[]
 
 The data type that you define for a specified cell in a boxed expression determines the structure of the data that you use within that associated table, column, or field in the boxed expression.
@@ -34,6 +37,7 @@ In this example, an output column *Credit Score Rating* for a DMN decision table
 . On the *Data Types* page, click *Add* and create a *Credit_Score_Rating* data type as a `string`:
 +
 --
+.Adding a new data type
 image::dmn/dmn-custom-data-type-add.png[]
 
 If the data type requires a list of items, enable the *List* setting.
@@ -47,6 +51,7 @@ If the data type requires a list of items, enable the *List* setting.
 * `"Poor"`
 * `"Bad"`
 
+.Adding constraints to the new data type
 image::dmn/dmn-custom-data-type-constraints.png[]
 
 For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
@@ -62,6 +67,7 @@ image::dmn/dmn-decision-table-example1a.png[]
 
 In the DMN decision model for this scenario, the *Credit Score Rating* decision flows into the following *Loan Prequalification* decision that also requires custom data types:
 
+.Decision table for loan prequalification
 image::dmn/dmn-manage-data-types-blank.png[]
 --
 . Continuing with this example, return to the *Data Types* window, click *Add*, and create a *Loan_Qualification* data type as a `Structure` with no constraints.
@@ -71,6 +77,7 @@ When you save the new structured data type, the first sub-field appears so that 
 
 For additional sub-fields, next to the *Loan_Qualification* data type, select the settings icon (three vertical dots) and select *Insert nested field*:
 
+.Adding a new structured data type with nested fields
 image::dmn/dmn-manage-data-types-structured.png[]
 --
 . For this example, under the structured *Loan_Qualification* data type, add a *Qualification* field with `"Qualified"` and `"Not Qualified"` enumeration constraints, and a *Reason* field with no constraints. Add also a simple *Back_End_Ratio* and a *Front_End_Ratio* data type, both with `"Sufficient"` and `"Insufficient"` enumeration constraints.
@@ -78,6 +85,7 @@ image::dmn/dmn-manage-data-types-structured.png[]
 --
 Click *Save* for each data type that you create.
 
+.Adding nested data types with constraints
 image::dmn/dmn-manage-data-types-structured2.png[]
 --
 . Return to the decision table and, for each column, click the column header cell, set the data type to the new corresponding custom data type, and define the rule values as needed for the column with the constraints that you specified, if applicable.

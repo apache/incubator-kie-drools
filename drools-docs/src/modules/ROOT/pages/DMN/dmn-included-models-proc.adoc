@@ -14,19 +14,23 @@ You cannot include DMN models from other projects in {CENTRAL}.
 . Click *Include Model*, select a DMN model from your project in the *DMN models* list, enter a unique name for the included model, and click *Include*:
 +
 --
+.Including a DMN model
 image::dmn/dmn-include-model.png[]
 
 The DMN model is added to this DMN file, and all DRD nodes from the included model are listed under *Decision Components* in the *Decision Navigator* view:
 
+.DMN file with decision components from the included DMN model
 image::dmn/dmn-include-model-list.png[]
 
 All data types from the included model are also listed in the *Data Types* tab for the DMN file:
 
+.DMN file with data types from the included DMN model
 image::dmn/dmn-include-model-data-types.png[]
 --
 . In the *Model* tab of the DMN designer, click and drag the included DRD components onto the canvas to begin implementing them in your DRD:
 +
 --
+.Adding DRD components from the included DMN model
 image::dmn/dmn-include-model-drd.png[]
 
 To edit DRD nodes or data types from included models, you must update the source file for the included model directly. All changes to the source of the included model are automatically applied across DMN files that include that model.

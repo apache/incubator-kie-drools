@@ -20,6 +20,7 @@ NOTE: If you imported a DMN file that does not contain layout information, the i
 . Begin adding components to your new or imported DMN decision requirements diagram (DRD) by clicking and dragging one of the DMN nodes from the left toolbar:
 +
 --
+.Adding DRD components
 image::dmn/dmn-drag-decision-node.png[]
 
 The following DRD components are available:
@@ -46,10 +47,12 @@ By default, all business knowledge models are defined as boxed function expressi
 
 For decision nodes, you click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
 
+.Selecting the logic type for a decision node
 image::dmn/dmn-decision-boxed-expression-options.png[]
 
 For business knowledge models, you click the top-left function cell to select the function type, or right-click the function value cell, select *Clear*, and select a boxed expression of another type.
 
+.Selecting the function or other logic type for a business knowledge model
 image::dmn/dmn-bkm-define.png[]
 --
 . In the selected boxed expression designer for either a decision node (any expression type) or business knowledge model (function expression), click the applicable table cells to define the table name, variable data types, variable names and values, function parameters and bindings, or FEEL expressions to include in the decision logic.
@@ -90,7 +93,7 @@ The following connection types are available, depending on the node type:
 For more details about DRD components and connector rules, see xref:dmn-drd-components-ref_dmn-models[].
 ////
 
-.Connecting credit score input to credit score rating decision
+.Connecting credit score input to the credit score rating decision
 image::dmn/dmn-input-connection-example.png[]
 
 image::dmn/dmn-input-connection-example2.png[]
