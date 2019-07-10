@@ -263,7 +263,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     break;
                 case GREAT_DELUGE:
                     // Fast stepping algorithm
-                    foragerConfig_.setAcceptedCountLimit(4);
+                    foragerConfig_.setAcceptedCountLimit(1);
                 case VARIABLE_NEIGHBORHOOD_DESCENT:
                     foragerConfig_.setPickEarlyType(LocalSearchPickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING);
                     break;

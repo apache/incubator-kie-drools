@@ -25,7 +25,6 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     public void setWaterLevelIncrementScore(Score waterLevelIncrementScore) {
         this.waterLevelIncrementScore = waterLevelIncrementScore;
-        this.waterLevelIncrementRatio = null;
     }
 
     public Score getInitialWaterLevel() {
@@ -66,8 +65,6 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         initialWaterLevel = null;
-        waterLevelIncrementRatio = DEFAULT_WATER_LEVEL_INCREMENT_RATIO;
-        waterLevelIncrementScore = null;
     }
 
     @Override
@@ -88,6 +85,5 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
             Score increment = currentWaterLevel.multiply(waterLevelIncrementRatio);
             currentWaterLevel = currentWaterLevel.subtract(increment);
         }
-        logger.debug(currentWaterLevel.toShortString());
     }
 }
