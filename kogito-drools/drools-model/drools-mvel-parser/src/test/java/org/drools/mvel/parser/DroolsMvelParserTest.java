@@ -38,7 +38,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
