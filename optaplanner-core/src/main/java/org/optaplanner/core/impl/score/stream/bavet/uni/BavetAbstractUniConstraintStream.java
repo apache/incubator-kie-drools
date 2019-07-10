@@ -148,7 +148,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public void penalizeInt(ToIntFunction<A> matchWeigher) {
+    public void penalize(ToIntFunction<A> matchWeigher) {
         addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
     }
 
@@ -168,7 +168,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public void rewardInt(ToIntFunction<A> matchWeigher) {
+    public void reward(ToIntFunction<A> matchWeigher) {
         addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
     }
 

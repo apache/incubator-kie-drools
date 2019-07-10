@@ -226,7 +226,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
             constraint.from(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup, count())
-                    .penalizeInt((g, count) -> count);
+                    .penalize((g, count) -> count);
         });
 
         // From scratch
@@ -262,7 +262,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
             constraint.from(TestdataLavishEntity.class)
                     .groupBy(TestdataLavishEntity::getEntityGroup, countDistinct(TestdataLavishEntity::getStringProperty))
-                    .penalizeInt((g, count) -> count);
+                    .penalize((g, count) -> count);
         });
 
         // From scratch
@@ -318,7 +318,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .penalize();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
                     .from(TestdataEntity.class)
-                    .penalizeInt(entity -> 20);
+                    .penalize(entity -> 20);
         });
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 
@@ -393,7 +393,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                     .reward();
             constraintFactory.newConstraintWithWeight("myPackage", "myConstraint2", SimpleScore.of(1))
                     .from(TestdataEntity.class)
-                    .rewardInt(entity -> 20);
+                    .reward(entity -> 20);
         });
         InnerScoreDirector<TestdataSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabled);
 

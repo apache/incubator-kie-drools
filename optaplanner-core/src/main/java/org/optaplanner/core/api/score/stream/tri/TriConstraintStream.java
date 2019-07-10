@@ -68,9 +68,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(ToLongTriFunction)} or {@link #penalizeBigDecimal(TriFunction)}.
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      */
-    void penalizeInt(ToIntTriFunction<A, B, C> matchWeigher);
+    void penalize(ToIntTriFunction<A, B, C> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -91,9 +93,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
 
     /**
      * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(ToLongTriFunction)} or {@link #rewardBigDecimal(TriFunction)}.
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      */
-    void rewardInt(ToIntTriFunction<A, B, C> matchWeigher);
+    void reward(ToIntTriFunction<A, B, C> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.

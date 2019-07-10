@@ -183,9 +183,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(ToLongBiFunction)} or {@link #penalizeBigDecimal(BiFunction)}.
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      */
-    void penalizeInt(ToIntBiFunction<A, B> matchWeigher);
+    void penalize(ToIntBiFunction<A, B> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -206,9 +208,11 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
 
     /**
      * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(ToLongBiFunction)} or {@link #rewardBigDecimal(BiFunction)}.
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      */
-    void rewardInt(ToIntBiFunction<A, B> matchWeigher);
+    void reward(ToIntBiFunction<A, B> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.

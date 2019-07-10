@@ -229,9 +229,11 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(ToLongFunction)} or {@link #penalizeBigDecimal(Function)}.
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      */
-    void penalizeInt(ToIntFunction<A> matchWeigher);
+    void penalize(ToIntFunction<A> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -252,9 +254,11 @@ public interface UniConstraintStream<A> extends ConstraintStream {
 
     /**
      * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(ToLongFunction)} or {@link #rewardBigDecimal(Function)}.
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      */
-    void rewardInt(ToIntFunction<A> matchWeigher);
+    void reward(ToIntFunction<A> matchWeigher);
 
     /**
      * Positively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.

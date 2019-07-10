@@ -39,7 +39,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         c.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
-                .penalizeInt((computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
+                .penalize((computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
     }
 
     protected void requiredMemoryTotal(ConstraintFactory constraintFactory) {
@@ -47,7 +47,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         c.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredMemory))
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
-                .penalizeInt((computer, requiredMemory) -> requiredMemory - computer.getMemory());
+                .penalize((computer, requiredMemory) -> requiredMemory - computer.getMemory());
     }
 
     protected void requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
@@ -55,7 +55,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         c.from(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredNetworkBandwidth))
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
-                .penalizeInt((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
+                .penalize((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
     }
 
     protected void computerCost(ConstraintFactory constraintFactory) {
@@ -63,9 +63,9 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         c.from(CloudProcess.class)
                 // TODO Simplify by using:
                 // .groupBy(CloudProcess::getComputer)
-                // .penalizeInt(CloudComputer::getCost);
+                // .penalize(CloudComputer::getCost);
                 .groupBy(CloudProcess::getComputer, count())
-                .penalizeInt((computer, count) -> computer.getCost());
+                .penalize((computer, count) -> computer.getCost());
     }
 
 }

@@ -66,7 +66,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                         lessThan(Lecture::getId))
                 .filter((lecture1, lecture2) -> lecture1.getCurriculumList().stream()
                         .anyMatch(lecture -> lecture2.getCurriculumList().contains(lecture)))
-                .penalizeInt((lecture1, lecture2) -> (int) lecture1.getCurriculumList().stream()
+                .penalize((lecture1, lecture2) -> (int) lecture1.getCurriculumList().stream()
                         .filter(lecture -> lecture2.getCurriculumList().contains(lecture))
                         .count());
     }
@@ -81,7 +81,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                         on(argABi(CourseConflict::getRightCourse), EQUAL_TO, Lecture::getCourse),
                         on(argBBi(Lecture::getPeriod), EQUAL_TO, Lecture::getPeriod))
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
-                .penalizeInt((courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
+                .penalize((courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
     }
 
     protected void conflictingLecturesSameCourseInSamePeriod(ConstraintFactory constraintFactory) {
@@ -92,7 +92,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                         on(Lecture::getCourse, EQUAL_TO, Lecture::getCourse),
                         on(Lecture::getPeriod, EQUAL_TO, Lecture::getPeriod),
                         on(Lecture::getId, LESS_THAN, Lecture::getId))
-                .penalizeInt((lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
+                .penalize((lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
     }
 
     protected void roomOccupancy(ConstraintFactory constraintFactory) {
@@ -101,7 +101,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         c.from(Lecture.class)
                 .groupBy(Lecture::getPeriod, Lecture::getRoom, count())
                 .filter((period, room, count) -> count > 1)
-                .penalizeInt((period, room, count) -> count - 1);
+                .penalize((period, room, count) -> count - 1);
     }
 
     protected void unavailablePeriodPenalty(ConstraintFactory constraintFactory) {
@@ -119,7 +119,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "roomCapacity", HardSoftScore.ofSoft(1));
         c.from(Lecture.class)
                 .filter(lecture -> lecture.getStudentSize() > lecture.getRoom().getCapacity())
-                .penalizeInt(lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity());
+                .penalize(lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity());
     }
 
     protected void minimumWorkingDays(ConstraintFactory constraintFactory) {
@@ -128,7 +128,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         c.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getDay))
                 .filter((course, dayCount) -> course.getMinWorkingDaySize() > dayCount)
-                .penalizeInt((course, dayCount) -> course.getMinWorkingDaySize() - dayCount);
+                .penalize((course, dayCount) -> course.getMinWorkingDaySize() - dayCount);
     }
 
     protected void curriculumCompactness(ConstraintFactory constraintFactory) {
@@ -149,7 +149,7 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         c.from(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getRoom))
                 .filter((course, roomCount) -> roomCount > 1)
-                .penalizeInt((course, roomCount) -> roomCount - 1);
+                .penalize((course, roomCount) -> roomCount - 1);
     }
 
 }
