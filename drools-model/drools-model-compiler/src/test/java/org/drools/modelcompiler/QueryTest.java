@@ -870,4 +870,42 @@ public class QueryTest extends BaseModelTest {
         assertEquals(1, list.size());
         assertEquals("Mario", list.get(0));
     }
+
+    @Test
+    public void testQuery10Args() throws IOException, ClassNotFoundException {
+        String str =
+                "package org.drools.compiler.test  \n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "query peeps( String name, int age, long ageLong, int id, String likes, String arg6, String arg7, String arg8, String arg9, String arg10) \n" +
+                "    Person( name := name, age := age, ageLong := ageLong, id := id, likes := likes ) \n" +
+                "end \n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person mario = new Person("Mario", 44);
+        mario.setAgeLong(44L);
+        mario.setId(1);
+        mario.setLikes("cheese");
+        ksession.insert( mario );
+        Person mark = new Person("Mark", 40);
+        mark.setAgeLong(40L);
+        mark.setId(2);
+        mark.setLikes("beer");
+        ksession.insert( mark );
+
+        List<String> list = new ArrayList<>();
+        QueryResults results = ksession.getQueryResults( "peeps", "Mario", 44, 44L, 1, "cheese"
+                , "these"
+                , "arguments"
+                , "are"
+                , "ignored"
+                , "it's just for compilation"
+        );
+        for (final QueryResultsRow result : results) {
+            list.add((String) result.get("name"));
+        }
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
+    }
 }
