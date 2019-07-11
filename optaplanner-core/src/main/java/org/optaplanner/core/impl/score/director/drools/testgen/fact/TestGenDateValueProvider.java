@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import java.util.Date;
 
-public class TestGenDateValueProvider extends TestGenAbstractValueProvider<Date> {
+class TestGenDateValueProvider extends TestGenAbstractValueProvider<Date> {
 
     public TestGenDateValueProvider(Date value) {
         super(value);
