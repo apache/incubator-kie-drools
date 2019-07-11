@@ -16,7 +16,9 @@
 
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 class TestGenDateValueProvider extends TestGenAbstractValueProvider<Date> {
 
@@ -26,6 +28,11 @@ class TestGenDateValueProvider extends TestGenAbstractValueProvider<Date> {
 
     @Override
     public String toString() {
-        return '"' + value.toString() + '"';
+        return "new Date(" + value.getTime() + ')';
+    }
+
+    @Override
+    public List<Class<?>> getImports() {
+        return Collections.singletonList(Date.class);
     }
 }
