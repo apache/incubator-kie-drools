@@ -674,8 +674,8 @@ especially for fast stepping algorithms
 ====
 
 
-[[benchmarkReportScoreCalculationSpeedtatistic]]
-=== Score Calculation Speed Statistic (Graph And CSV)
+[[benchmarkReportScoreCalculationSpeedOverTimeStatistic]]
+=== Score Calculation Speed Over Time Statistic (Graph And CSV)
 
 To see how fast the scores are calculated, add:
 
