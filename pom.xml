@@ -79,13 +79,6 @@
          it needs. Any additional 3rd party dependency versions need to go directly into kie-third-party-bom. -->
     <dependencies>
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-platform-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-bom</artifactId>
         <version>${version.org.kie}</version>
