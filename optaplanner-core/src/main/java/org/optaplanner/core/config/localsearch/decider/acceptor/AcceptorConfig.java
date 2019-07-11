@@ -28,6 +28,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.hillclimbing.HillClimbingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
@@ -39,7 +40,6 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.ValueTabuAcce
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRatioTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRatioTabuSizeStrategy;
-import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 
 import static org.apache.commons.lang3.ObjectUtils.*;
 
@@ -72,12 +72,12 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     protected Integer lateAcceptanceSize = null;
 
-    protected Integer stepCountingHillClimbingSize = null;
-    protected StepCountingHillClimbingType stepCountingHillClimbingType = null;
-
     protected String greatDelugeInitialWaterLevel = null;
     protected String greatDelugeWaterLevelIncrementScore = null;
     protected Double greatDelugeWaterLevelIncrementRatio = null;
+
+    protected Integer stepCountingHillClimbingSize = null;
+    protected StepCountingHillClimbingType stepCountingHillClimbingType = null;
 
     @Deprecated
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
@@ -225,22 +225,6 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         this.lateAcceptanceSize = lateAcceptanceSize;
     }
 
-    public Integer getStepCountingHillClimbingSize() {
-        return stepCountingHillClimbingSize;
-    }
-
-    public void setStepCountingHillClimbingSize(Integer stepCountingHillClimbingSize) {
-        this.stepCountingHillClimbingSize = stepCountingHillClimbingSize;
-    }
-
-    public StepCountingHillClimbingType getStepCountingHillClimbingType() {
-        return stepCountingHillClimbingType;
-    }
-
-    public void setStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
-        this.stepCountingHillClimbingType = stepCountingHillClimbingType;
-    }
-
     public String getGreatDelugeInitialWaterLevel() {
         return greatDelugeInitialWaterLevel;
     }
@@ -263,6 +247,22 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     public void setGreatDelugeWaterLevelIncrementRatio(Double greatDelugeWaterLevelIncrementRatio) {
         this.greatDelugeWaterLevelIncrementRatio = greatDelugeWaterLevelIncrementRatio;
+    }
+
+    public Integer getStepCountingHillClimbingSize() {
+        return stepCountingHillClimbingSize;
+    }
+
+    public void setStepCountingHillClimbingSize(Integer stepCountingHillClimbingSize) {
+        this.stepCountingHillClimbingSize = stepCountingHillClimbingSize;
+    }
+
+    public StepCountingHillClimbingType getStepCountingHillClimbingType() {
+        return stepCountingHillClimbingType;
+    }
+
+    public void setStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
+        this.stepCountingHillClimbingType = stepCountingHillClimbingType;
     }
 
     // ************************************************************************
@@ -515,15 +515,6 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
             acceptor.setLateAcceptanceSize(defaultIfNull(lateAcceptanceSize, 400));
             acceptorList.add(acceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.STEP_COUNTING_HILL_CLIMBING))
-                || stepCountingHillClimbingSize != null) {
-            int stepCountingHillClimbingSize_ = defaultIfNull(stepCountingHillClimbingSize, 400);
-            StepCountingHillClimbingType stepCountingHillClimbingType_
-                    = defaultIfNull(stepCountingHillClimbingType, StepCountingHillClimbingType.STEP);
-            StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(
-                    stepCountingHillClimbingSize_, stepCountingHillClimbingType_);
-            acceptorList.add(acceptor);
-        }
         if ((acceptorTypeList!= null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
                 || greatDelugeInitialWaterLevel != null
                 || greatDelugeWaterLevelIncrementScore != null
@@ -538,18 +529,26 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
             if (greatDelugeInitialWaterLevel != null) {
                 acceptor.setInitialWaterLevel(configPolicy.getScoreDefinition()
-                                                      .parseScore(greatDelugeInitialWaterLevel));
+                        .parseScore(greatDelugeInitialWaterLevel));
             }
 
             if (greatDelugeWaterLevelIncrementScore != null) {
                 acceptor.setWaterLevelIncrementScore(configPolicy.getScoreDefinition()
                                                              .parseScore(greatDelugeWaterLevelIncrementScore));
-                acceptor.setWaterLevelIncrementRatio(null);
             }
 
             if (greatDelugeWaterLevelIncrementRatio != null) {
                 acceptor.setWaterLevelIncrementRatio(greatDelugeWaterLevelIncrementRatio);
             }
+            acceptorList.add(acceptor);
+        }
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.STEP_COUNTING_HILL_CLIMBING))
+                || stepCountingHillClimbingSize != null) {
+            int stepCountingHillClimbingSize_ = defaultIfNull(stepCountingHillClimbingSize, 400);
+            StepCountingHillClimbingType stepCountingHillClimbingType_
+                    = defaultIfNull(stepCountingHillClimbingType, StepCountingHillClimbingType.STEP);
+            StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor(
+                    stepCountingHillClimbingSize_, stepCountingHillClimbingType_);
             acceptorList.add(acceptor);
         }
 
@@ -608,16 +607,16 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                 simulatedAnnealingStartingTemperature, inheritedConfig.getSimulatedAnnealingStartingTemperature());
         lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
                 inheritedConfig.getLateAcceptanceSize());
-        stepCountingHillClimbingSize = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingSize,
-                inheritedConfig.getStepCountingHillClimbingSize());
-        stepCountingHillClimbingType = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingType,
-                inheritedConfig.getStepCountingHillClimbingType());
         greatDelugeInitialWaterLevel = ConfigUtils.inheritOverwritableProperty(greatDelugeInitialWaterLevel,
                 inheritedConfig.getGreatDelugeInitialWaterLevel());
         greatDelugeWaterLevelIncrementScore = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementScore,
                 inheritedConfig.getGreatDelugeWaterLevelIncrementScore());
         greatDelugeWaterLevelIncrementRatio = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementRatio,
                 inheritedConfig.getGreatDelugeWaterLevelIncrementRatio());
+        stepCountingHillClimbingSize = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingSize,
+                inheritedConfig.getStepCountingHillClimbingSize());
+        stepCountingHillClimbingType = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingType,
+                inheritedConfig.getStepCountingHillClimbingType());
 
     }
 

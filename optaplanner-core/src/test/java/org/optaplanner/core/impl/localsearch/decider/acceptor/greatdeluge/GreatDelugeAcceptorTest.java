@@ -11,15 +11,14 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 
 public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void isAcceptedPositiveLevelSingleScoreRainSpeed() {
-
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialWaterLevel(SimpleScore.of(1000));
         acceptor.setWaterLevelIncrementScore(SimpleScore.of(100));
@@ -94,7 +93,6 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void isAcceptedPositiveLevelMultipleScoreRainSpeed() {
-
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, 100, 400));
         acceptor.setWaterLevelIncrementScore(HardMediumSoftScore.of(0, 100, 100));
@@ -140,7 +138,6 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void isAcceptedPositiveLevelMultipleScoreRainSpeedRatio() {
-
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, 180, 450));
         acceptor.setWaterLevelIncrementRatio(0.9);
@@ -186,7 +183,6 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void negativeWaterLevelSingleScore() {
-
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialWaterLevel(SimpleScore.of(-100));
         try {
@@ -196,9 +192,9 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
                     + ") cannot have negative level (" + "-100.0" + ").", e.getMessage());
         }
     }
+
     @Test
     public void negativeWaterLevelMultipleScore() {
-
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
         acceptor.setInitialWaterLevel(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
         try {
@@ -208,4 +204,5 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
                     + ") cannot have negative level (" + "-1.0" + ").", e.getMessage());
         }
     }
-   }
+
+}

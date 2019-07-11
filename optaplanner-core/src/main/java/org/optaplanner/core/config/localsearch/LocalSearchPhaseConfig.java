@@ -258,9 +258,6 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     break;
                 case SIMULATED_ANNEALING:
                 case LATE_ACCEPTANCE:
-                    // Fast stepping algorithm
-                    foragerConfig_.setAcceptedCountLimit(1);
-                    break;
                 case GREAT_DELUGE:
                     // Fast stepping algorithm
                     foragerConfig_.setAcceptedCountLimit(1);

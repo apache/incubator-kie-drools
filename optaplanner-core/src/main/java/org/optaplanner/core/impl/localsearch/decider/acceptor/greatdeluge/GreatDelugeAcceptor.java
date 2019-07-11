@@ -9,15 +9,15 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class GreatDelugeAcceptor extends AbstractAcceptor {
 
+    // Good value to come out from. Source: https://github.com/UniTime/cpsolver from Tomas Muller
+    private static final double DEFAULT_WATER_LEVEL_INCREMENT_RATIO = 0.00_000_005;
+
     private Score initialWaterLevel = null;
-    private Score currentWaterLevel = null;
 
     private Score waterLevelIncrementScore = null;
     private Double waterLevelIncrementRatio = DEFAULT_WATER_LEVEL_INCREMENT_RATIO;
 
-    // Good value to come out from. Source: https://github.com/UniTime/cpsolver from Tomas Muller
-    private static final double DEFAULT_WATER_LEVEL_INCREMENT_RATIO = 0.00_000_005;
-
+    private Score currentWaterLevel = null;
 
     public Score getWaterLevelIncrementScore() {
         return this.waterLevelIncrementScore;
@@ -46,7 +46,6 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-
         if (initialWaterLevel != null) {
             for (double initialLevelLevel : ScoreUtils.extractLevelDoubles(initialWaterLevel)) {
                 if (initialLevelLevel < 0.0) {
@@ -55,7 +54,6 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
                 }
             }
             currentWaterLevel = initialWaterLevel;
-
         } else {
             currentWaterLevel = phaseScope.getBestScore().negate();
         }
@@ -69,16 +67,13 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
-
         Score moveScore = moveScope.getScore();
-
         return moveScore.compareTo(currentWaterLevel.negate()) >= 0;
     }
 
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
-
         if (waterLevelIncrementScore != null) {
             currentWaterLevel = currentWaterLevel.subtract(waterLevelIncrementScore);
         } else {
@@ -86,4 +81,5 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
             currentWaterLevel = currentWaterLevel.subtract(increment);
         }
     }
+
 }
