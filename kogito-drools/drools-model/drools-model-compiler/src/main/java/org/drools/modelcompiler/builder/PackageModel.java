@@ -131,7 +131,6 @@ public class PackageModel {
     private KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
-    private ModuleSourceClass moduleGenerator;
 
     private final String pkgUUID;
     private Set<Class<?>> ruleUnits = new HashSet<>();

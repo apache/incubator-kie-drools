@@ -112,7 +112,8 @@ public class RuleContext {
             }
             String drlFile = descr.getResource().getSourcePath();
             if (drlFile != null) {
-                unitName = drlFile.substring( 0, drlFile.length() - ".drl".length() ).replaceAll( "/", "." );
+                String drlFileName = drlFile.substring(drlFile.lastIndexOf('/')+1);
+                unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
                 useNamingConvention = true;
             }
         }
@@ -385,7 +386,7 @@ public class RuleContext {
             return empty();
         }
     }
-  
+
     public Boolean isNestedInsideOr() {
         return isNestedInsideOr;
     }

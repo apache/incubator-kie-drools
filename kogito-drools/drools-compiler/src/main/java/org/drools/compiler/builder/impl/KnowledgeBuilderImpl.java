@@ -109,6 +109,7 @@ import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectError;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -374,7 +375,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder,
             IOException {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                 (DecisionTableConfiguration) configuration :
-                null;
+                new DecisionTableConfigurationImpl();
 
         if (dtableConfiguration != null && !dtableConfiguration.getRuleTemplateConfigurations().isEmpty()) {
             List<String> generatedDrls = DecisionTableFactory.loadFromInputStreamWithTemplates(resource, dtableConfiguration);

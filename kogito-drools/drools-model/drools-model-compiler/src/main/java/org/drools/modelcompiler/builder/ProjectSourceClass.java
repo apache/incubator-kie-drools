@@ -47,6 +47,10 @@ public class ProjectSourceClass {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(CanonicalModelKieProject.PROJECT_RUNTIME_SOURCE, log( generate() ).getBytes());
+        srcMfs.write(getName(), log(generate() ).getBytes());
+    }
+
+    public String getName() {
+        return CanonicalModelKieProject.PROJECT_RUNTIME_SOURCE;
     }
 }

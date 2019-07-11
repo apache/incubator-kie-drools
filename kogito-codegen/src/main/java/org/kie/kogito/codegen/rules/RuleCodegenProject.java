@@ -98,7 +98,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                         ruleUnit.generatedFilePath(),
                         log( ruleUnit.generate() ).getBytes( StandardCharsets.UTF_8 ) );
 
-                RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance();
+                RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance(Thread.currentThread().getContextClassLoader());
                 trgMfs.write(
                         ruleUnitInstance.generatedFilePath(),
                         log( ruleUnitInstance.generate() ).getBytes( StandardCharsets.UTF_8 ) );

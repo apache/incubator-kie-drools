@@ -40,6 +40,12 @@ public class RuleUnitInstanceSourceClass {
 
     private final String packageName;
     private final String typeName;
+    /**
+     * class loader is currently used to resolve type declarations
+     * in the rule unit
+     *
+     */
+    private final ClassLoader classLoader;
     private final String canonicalName;
     private final String targetTypeName;
     private final String targetCanonicalName;
@@ -49,9 +55,10 @@ public class RuleUnitInstanceSourceClass {
         return packageName + "." + typeName + "RuleUnitInstance";
     }
 
-    public RuleUnitInstanceSourceClass(String packageName, String typeName) {
+    public RuleUnitInstanceSourceClass(String packageName, String typeName, ClassLoader classLoader) {
         this.packageName = packageName;
         this.typeName = typeName;
+        this.classLoader = classLoader;
         this.canonicalName = packageName + "." + typeName;
         this.targetTypeName = typeName + "RuleUnitInstance";
         this.targetCanonicalName = packageName + "." + targetTypeName;
@@ -78,7 +85,7 @@ public class RuleUnitInstanceSourceClass {
         // on reflection if the class is not available.
         Class<?> typeClass;
         try {
-            typeClass = Thread.currentThread().getContextClassLoader().loadClass(canonicalName);
+            typeClass = classLoader.loadClass(canonicalName);
         } catch (ClassNotFoundException e) {
             throw new Error(e);
         }
@@ -98,9 +105,11 @@ public class RuleUnitInstanceSourceClass {
 
 
             for (Method m : typeClass.getDeclaredMethods()) {
-                m.setAccessible(true);
                 String methodName = m.getName();
                 String propertyName = ClassUtils.getter2property(methodName);
+                if (propertyName == null) {
+                    continue;
+                }
 
                 if ( DataSource.class.isAssignableFrom( m.getReturnType() ) ) {
                     //  value.$method())

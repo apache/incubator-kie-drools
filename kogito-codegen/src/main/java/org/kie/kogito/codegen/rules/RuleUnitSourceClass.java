@@ -55,8 +55,8 @@ public class RuleUnitSourceClass {
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
     }
 
-    public RuleUnitInstanceSourceClass instance() {
-        return new RuleUnitInstanceSourceClass(packageName, typeName);
+    public RuleUnitInstanceSourceClass instance(ClassLoader classLoader) {
+        return new RuleUnitInstanceSourceClass(packageName, typeName, classLoader);
     }
 
     public String generatedFilePath() {

@@ -28,7 +28,11 @@ public class ModelSourceClass {
     }
 
     public void write(MemoryFileSystem srcMfs) {
-        srcMfs.write(CanonicalModelKieProject.PROJECT_MODEL_SOURCE, log( generate() ).getBytes());
+        srcMfs.write(getName(), log(generate() ).getBytes());
+    }
+
+    public String getName() {
+        return CanonicalModelKieProject.PROJECT_MODEL_SOURCE;
     }
 
     public String generate() {

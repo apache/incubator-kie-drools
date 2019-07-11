@@ -15,6 +15,8 @@
 
 package org.kie.kogito.codegen;
 
+import java.nio.charset.StandardCharsets;
+
 public class GeneratedFile {
     
     public enum Type {
@@ -30,6 +32,13 @@ public class GeneratedFile {
     private final String relativePath;
     private final byte[] contents;
     private final Type type;
+
+    public GeneratedFile(Type type, String relativePath, String contents) {
+        this.type = type;
+        this.relativePath = relativePath;
+        this.contents = contents.getBytes(StandardCharsets.UTF_8);
+    }
+
 
     public GeneratedFile(Type type, String relativePath, byte[] contents) {
         this.type = type;
@@ -47,5 +56,13 @@ public class GeneratedFile {
     
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "GeneratedFile{" +
+                "type=" + type +
+                ", relativePath='" + relativePath + '\'' +
+                '}';
     }
 }

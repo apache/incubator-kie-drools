@@ -45,6 +45,7 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
+import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
@@ -70,7 +71,7 @@ public class ProcessCodegen implements Generator {
     }
 
     public static ProcessCodegen ofPath(Path path) throws IOException {
-        Path srcPath = Paths.get(path.toString(), "src");
+        Path srcPath = Paths.get(path.toString());
         List<File> files = Files.walk(srcPath)
                 .filter(p -> p.toString().endsWith(".bpmn") || p.toString().endsWith(".bpmn2"))
                 .map(Path::toFile)
@@ -127,6 +128,9 @@ public class ProcessCodegen implements Generator {
         for (Process process : processes) {
             this.processes.put(process.getId(), (WorkflowProcess) process);
         }
+
+        // set default package name
+        setPackageName(ApplicationGenerator.DEFAULT_PACKAGE_NAME);
 
     }
 

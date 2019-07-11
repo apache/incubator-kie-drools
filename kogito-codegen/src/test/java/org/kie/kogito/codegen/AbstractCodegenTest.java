@@ -35,6 +35,7 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.process.ProcessCodegen;
+import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegen;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,8 +66,7 @@ public class AbstractCodegenTest {
                         .withDependencyInjection(null);
 
         if (!rulesResources.isEmpty()) {
-            appGen.withGenerator(RuleCodegen.ofFiles(Paths.get("src", "test", "resources"),
-                                                     rulesResources
+            appGen.withGenerator(IncrementalRuleCodegen.ofFiles(rulesResources
                                                                    .stream()
                                                                    .map(resource -> new File("src/test/resources", resource))
                                                                    .collect(Collectors.toList())));

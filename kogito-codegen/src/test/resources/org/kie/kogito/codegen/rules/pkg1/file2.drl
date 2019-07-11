@@ -1,0 +1,7 @@
+package org.kie.kogito.codegen.rules.pkg1
+
+rule three when
+then  end
+
+rule four when
+then  end

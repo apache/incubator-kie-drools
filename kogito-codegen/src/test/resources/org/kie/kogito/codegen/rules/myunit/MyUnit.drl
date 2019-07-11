@@ -1,0 +1,4 @@
+package org.kie.kogito.codegen.rules.myunit
+
+rule IAmAInAUnitAMA when
+then  end
