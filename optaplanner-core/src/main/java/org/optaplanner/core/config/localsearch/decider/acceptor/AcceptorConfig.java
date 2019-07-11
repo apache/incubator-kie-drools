@@ -505,8 +505,8 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                         + ") currently requires a simulatedAnnealingStartingTemperature ("
                         + simulatedAnnealingStartingTemperature + ").");
             }
-            acceptor.setStartingTemperature(configPolicy.getScoreDefinition()
-                    .parseScore(simulatedAnnealingStartingTemperature));
+            acceptor.setStartingTemperature(
+                    configPolicy.getScoreDefinition().parseScore(simulatedAnnealingStartingTemperature));
             acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))
@@ -520,25 +520,23 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                 || greatDelugeWaterLevelIncrementScore != null
                 || greatDelugeWaterLevelIncrementRatio != null) {
             GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-
-            if (greatDelugeWaterLevelIncrementScore != null && greatDelugeWaterLevelIncrementRatio != null) {
-                throw new IllegalArgumentException("The greatDelugeWaterLevelIncrementScore ("
-                        + greatDelugeWaterLevelIncrementScore + ") and greatDelugeWaterLevelIncrementRatio ("
-                        + greatDelugeWaterLevelIncrementRatio + ") cannot be both non null.");
-            }
-
             if (greatDelugeInitialWaterLevel != null) {
-                acceptor.setInitialWaterLevel(configPolicy.getScoreDefinition()
-                        .parseScore(greatDelugeInitialWaterLevel));
+                acceptor.setInitialWaterLevel(
+                        configPolicy.getScoreDefinition().parseScore(greatDelugeInitialWaterLevel));
             }
-
             if (greatDelugeWaterLevelIncrementScore != null) {
-                acceptor.setWaterLevelIncrementScore(configPolicy.getScoreDefinition()
-                                                             .parseScore(greatDelugeWaterLevelIncrementScore));
-            }
-
-            if (greatDelugeWaterLevelIncrementRatio != null) {
+                if (greatDelugeWaterLevelIncrementRatio != null) {
+                    throw new IllegalArgumentException("The acceptor cannot have both "
+                            + "greatDelugeWaterLevelIncrementScore (" + greatDelugeWaterLevelIncrementScore
+                            + ") and greatDelugeWaterLevelIncrementRatio (" + greatDelugeWaterLevelIncrementRatio + ").");
+                }
+                acceptor.setWaterLevelIncrementScore(
+                        configPolicy.getScoreDefinition().parseScore(greatDelugeWaterLevelIncrementScore));
+            } else if (greatDelugeWaterLevelIncrementRatio != null) {
                 acceptor.setWaterLevelIncrementRatio(greatDelugeWaterLevelIncrementRatio);
+            } else {
+                // Based on Tomas Muller's work. TODO Confirm with benchmarker across our examples/datasets
+                acceptor.setWaterLevelIncrementRatio(0.00_000_005);
             }
             acceptorList.add(acceptor);
         }

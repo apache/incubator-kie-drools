@@ -55,6 +55,94 @@
     </solver>
   </inheritedSolverBenchmark>
 
+  <solverBenchmarkBluePrint>
+    <solverBenchmarkBluePrintType>EVERY_LOCAL_SEARCH_TYPE</solverBenchmarkBluePrintType>
+  </solverBenchmarkBluePrint>
+
+  <!--<solverBenchmark>-->
+    <!--<name>First Fit</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>First Fit Decreasing</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+
+  <!--<solverBenchmark>-->
+    <!--<name>Tabu Search</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector/>-->
+          <!--<swapMoveSelector/>-->
+          <!--<pillarChangeMoveSelector/>-->
+          <!--<pillarSwapMoveSelector/>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<entityTabuSize>7</entityTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<acceptedCountLimit>1000</acceptedCountLimit>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>Simulated Annealing</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector/>-->
+          <!--<swapMoveSelector/>-->
+          <!--<pillarChangeMoveSelector/>-->
+          <!--<pillarSwapMoveSelector/>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<acceptedCountLimit>4</acceptedCountLimit>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>Late Acceptance</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<unionMoveSelector>-->
+          <!--<changeMoveSelector/>-->
+          <!--<swapMoveSelector/>-->
+          <!--<pillarChangeMoveSelector/>-->
+          <!--<pillarSwapMoveSelector/>-->
+        <!--</unionMoveSelector>-->
+        <!--<acceptor>-->
+          <!--<lateAcceptanceSize>400</lateAcceptanceSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<acceptedCountLimit>4</acceptedCountLimit>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+
   <!--<solverBenchmark>-->
     <!--<name>BRANCH_AND_BOUND</name>-->
     <!--<solver>-->
@@ -63,88 +151,4 @@
       <!--</exhaustiveSearch>-->
     <!--</solver>-->
   <!--</solverBenchmark>-->
-
-  <solverBenchmark>
-    <name>First Fit</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>First Fit Decreasing</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Tabu Search</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <pillarChangeMoveSelector/>
-          <pillarSwapMoveSelector/>
-        </unionMoveSelector>
-        <acceptor>
-          <entityTabuSize>7</entityTabuSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>1000</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>Simulated Annealing</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <pillarChangeMoveSelector/>
-          <pillarSwapMoveSelector/>
-        </unionMoveSelector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>4</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>Late Acceptance</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <pillarChangeMoveSelector/>
-          <pillarSwapMoveSelector/>
-        </unionMoveSelector>
-        <acceptor>
-          <lateAcceptanceSize>400</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>4</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
 </plannerBenchmark>

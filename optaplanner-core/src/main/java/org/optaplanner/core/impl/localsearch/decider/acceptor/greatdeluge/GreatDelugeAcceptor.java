@@ -9,13 +9,10 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class GreatDelugeAcceptor extends AbstractAcceptor {
 
-    // Good value to come out from. Source: https://github.com/UniTime/cpsolver from Tomas Muller
-    private static final double DEFAULT_WATER_LEVEL_INCREMENT_RATIO = 0.00_000_005;
+    private Score initialWaterLevel;
 
-    private Score initialWaterLevel = null;
-
-    private Score waterLevelIncrementScore = null;
-    private Double waterLevelIncrementRatio = DEFAULT_WATER_LEVEL_INCREMENT_RATIO;
+    private Score waterLevelIncrementScore;
+    private Double waterLevelIncrementRatio;
 
     private Score currentWaterLevel = null;
 
@@ -50,7 +47,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
             for (double initialLevelLevel : ScoreUtils.extractLevelDoubles(initialWaterLevel)) {
                 if (initialLevelLevel < 0.0) {
                     throw new IllegalArgumentException("The initial level (" + initialWaterLevel
-                                                               + ") cannot have negative level (" + initialLevelLevel + ").");
+                            + ") cannot have negative level (" + initialLevelLevel + ").");
                 }
             }
             currentWaterLevel = initialWaterLevel;
@@ -62,7 +59,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     @Override
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        initialWaterLevel = null;
+        currentWaterLevel = null;
     }
 
     @Override
