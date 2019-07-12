@@ -2,6 +2,7 @@ package org.drools.modelcompiler.builder.generator;
 
 import java.util.List;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.modelcompiler.builder.ModelBuilderImpl;
@@ -19,8 +20,8 @@ public class EnumGenerator {
         this.packageModel = packageModel;
     }
 
-    public void generate(List<EnumDeclarationDescr> enumDeclarations) {
+    public ClassOrInterfaceDeclaration generate(List<EnumDeclarationDescr> enumDeclarations) {
 
-
+        return new ClassOrInterfaceDeclaration();
     }
 }
