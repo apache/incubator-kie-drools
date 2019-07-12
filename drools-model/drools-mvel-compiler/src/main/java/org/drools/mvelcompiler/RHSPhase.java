@@ -105,6 +105,8 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private TypedExpression simpleNameAsFirstNode(SimpleName n) {
         return asDeclaration(n)
+                .map(Optional::of)
+                .orElseGet(() -> asEnum(n))
                 .orElseGet(() -> new UnalteredTypedExpression(n));
     }
 
@@ -134,6 +136,11 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             Class<?> clazz = d.getClazz();
             return new SimpleNameTExpr(n.asString(), clazz);
         });
+    }
+
+    private Optional<TypedExpression> asEnum(SimpleName n) {
+        Optional<Class<?>> enumType = mvelCompilerContext.findEnum(n.asString());
+        return enumType.map(clazz -> new SimpleNameTExpr(n.asString(), clazz));
     }
 
     private Optional<TypedExpression> asPropertyAccessor(SimpleName n, Context arg) {
