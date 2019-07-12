@@ -526,13 +526,18 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
             }
             if (greatDelugeWaterLevelIncrementScore != null) {
                 if (greatDelugeWaterLevelIncrementRatio != null) {
-                    throw new IllegalArgumentException("The acceptor cannot have both "
+                    throw new IllegalArgumentException("The acceptor cannot have both a "
                             + "greatDelugeWaterLevelIncrementScore (" + greatDelugeWaterLevelIncrementScore
-                            + ") and greatDelugeWaterLevelIncrementRatio (" + greatDelugeWaterLevelIncrementRatio + ").");
+                            + ") and a greatDelugeWaterLevelIncrementRatio (" + greatDelugeWaterLevelIncrementRatio + ").");
                 }
                 acceptor.setWaterLevelIncrementScore(
                         configPolicy.getScoreDefinition().parseScore(greatDelugeWaterLevelIncrementScore));
             } else if (greatDelugeWaterLevelIncrementRatio != null) {
+                if (greatDelugeWaterLevelIncrementRatio <= 0.0) {
+                    throw new IllegalArgumentException("The greatDelugeWaterLevelIncrementRatio ("
+                            + greatDelugeWaterLevelIncrementRatio
+                            + ") must be positive because the water level should increase.");
+                }
                 acceptor.setWaterLevelIncrementRatio(greatDelugeWaterLevelIncrementRatio);
             } else {
                 // Based on Tomas Muller's work. TODO Confirm with benchmarker across our examples/datasets

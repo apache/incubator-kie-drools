@@ -27,7 +27,32 @@
   "ignores": {
     "revapi": {
       "_comment": "Changes between 7.18.0.Final and the current branch. These changes are desired and thus ignored.",
-      "ignore": []
+      "ignore": [
+        {
+          "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.optaplanner.core.config.localsearch.LocalSearchType.VARIABLE_NEIGHBORHOOD_DESCENT",
+          "new": "field org.optaplanner.core.config.localsearch.LocalSearchType.VARIABLE_NEIGHBORHOOD_DESCENT",
+          "oldOrdinal": "4",
+          "newOrdinal": "5",
+          "package": "org.optaplanner.core.config.localsearch",
+          "classSimpleName": "LocalSearchType",
+          "fieldName": "VARIABLE_NEIGHBORHOOD_DESCENT",
+          "elementKind": "enumConstant",
+          "justification": "Add Great Deluge"
+        },
+        {
+          "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType.STEP_COUNTING_HILL_CLIMBING",
+          "new": "field org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType.STEP_COUNTING_HILL_CLIMBING",
+          "oldOrdinal": "8",
+          "newOrdinal": "9",
+          "package": "org.optaplanner.core.config.localsearch.decider.acceptor",
+          "classSimpleName": "AcceptorType",
+          "fieldName": "STEP_COUNTING_HILL_CLIMBING",
+          "elementKind": "enumConstant",
+          "justification": "Add Great Deluge"
+        }
+      ]
     }
   }
 }

@@ -5,16 +5,17 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     private Score initialWaterLevel;
-
     private Score waterLevelIncrementScore;
     private Double waterLevelIncrementRatio;
 
+    private Score startingWaterLevel = null;
+
     private Score currentWaterLevel = null;
+    private Double currentWaterLevelRatio = null;
 
     public Score getWaterLevelIncrementScore() {
         return this.waterLevelIncrementScore;
@@ -43,39 +44,49 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        if (initialWaterLevel != null) {
-            for (double initialLevelLevel : ScoreUtils.extractLevelDoubles(initialWaterLevel)) {
-                if (initialLevelLevel < 0.0) {
-                    throw new IllegalArgumentException("The initial level (" + initialWaterLevel
-                            + ") cannot have negative level (" + initialLevelLevel + ").");
-                }
-            }
-            currentWaterLevel = initialWaterLevel;
-        } else {
-            currentWaterLevel = phaseScope.getBestScore().negate();
+        startingWaterLevel = initialWaterLevel != null ? initialWaterLevel : phaseScope.getBestScore();
+        if (waterLevelIncrementRatio != null) {
+            currentWaterLevelRatio = 0.0;
         }
+        currentWaterLevel = startingWaterLevel;
     }
 
     @Override
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
+        startingWaterLevel = null;
+        if (waterLevelIncrementRatio != null) {
+            currentWaterLevelRatio = null;
+        }
         currentWaterLevel = null;
     }
 
     @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         Score moveScore = moveScope.getScore();
-        return moveScore.compareTo(currentWaterLevel.negate()) >= 0;
+        if (moveScore.compareTo(currentWaterLevel) >= 0) {
+            return true;
+        }
+        Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();
+        if (moveScore.compareTo(lastStepScore) > 0) {
+            // Aspiration
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
         if (waterLevelIncrementScore != null) {
-            currentWaterLevel = currentWaterLevel.subtract(waterLevelIncrementScore);
+            currentWaterLevel = currentWaterLevel.add(waterLevelIncrementScore);
         } else {
-            Score increment = currentWaterLevel.multiply(waterLevelIncrementRatio);
-            currentWaterLevel = currentWaterLevel.subtract(increment);
+            // Avoid numerical instability: SimpleScore.of(500).multiply(0.000_001) underflows to zero
+            currentWaterLevelRatio += waterLevelIncrementRatio;
+            currentWaterLevel = startingWaterLevel.add(
+                    // TODO targetWaterLevel.subtract(startingWaterLevel).multiply(waterLevelIncrementRatio);
+                    // The startingWaterLevel.negate() is short for zeroScore.subtract(startingWaterLevel)
+                    startingWaterLevel.negate().multiply(currentWaterLevelRatio));
         }
     }
 

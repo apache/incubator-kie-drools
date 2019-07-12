@@ -18,9 +18,8 @@ import static org.mockito.Mockito.*;
 public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
-    public void isAcceptedPositiveLevelSingleScoreRainSpeed() {
+    public void waterLevelIncrementScore_SimpleScore() {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevel(SimpleScore.of(1000));
         acceptor.setWaterLevelIncrementScore(SimpleScore.of(100));
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
@@ -33,7 +32,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
 
         // lastCompletedStepScore = -1000
-        // water level 1000
+        // water level -1000
         LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope0);
         LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -500);
@@ -52,7 +51,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
 
         // lastCompletedStepScore = -500
-        // water level 900
+        // water level -900
         LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope1);
         LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -600);
@@ -71,7 +70,7 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
 
         // lastCompletedStepScore = -600
-        // water level 800
+        // water level -800
         LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope2);
         LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope1, -350);
@@ -92,9 +91,9 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
 
     @Test
-    public void isAcceptedPositiveLevelMultipleScoreRainSpeed() {
+    public void waterLevelIncrementScore_HardMediumSoftScore() {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, 100, 400));
+        acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, -100, -400));
         acceptor.setWaterLevelIncrementScore(HardMediumSoftScore.of(0, 100, 100));
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
@@ -107,24 +106,23 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
 
         // lastCompletedStepScore = 0/-200/-1000
-        // water level 0/100/400
+        // water level 0/-100/-400
         LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope0);
         LocalSearchMoveScope<TestdataSolution> moveScope0 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope0.setScore(HardMediumSoftScore.of(0,-100,-300));
+        assertEquals(true, acceptor.isAccepted(moveScope0));
         LocalSearchMoveScope<TestdataSolution> moveScope1 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope1.setScore(HardMediumSoftScore.of(0,-100,-500));
+        assertEquals(true, acceptor.isAccepted(moveScope1)); // Aspiration
         LocalSearchMoveScope<TestdataSolution> moveScope2 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope2.setScore(HardMediumSoftScore.of(0,-50,-800));
+        assertEquals(true, acceptor.isAccepted(moveScope2));
         LocalSearchMoveScope<TestdataSolution> moveScope3 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope3.setScore(HardMediumSoftScore.of(-5,-50,-100));
+        assertEquals(false, acceptor.isAccepted(moveScope3));
         LocalSearchMoveScope<TestdataSolution> moveScope4 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
         moveScope4.setScore(HardMediumSoftScore.of(0,-22,-200));
-
-        assertEquals(true, acceptor.isAccepted(moveScope0));
-        assertEquals(false, acceptor.isAccepted(moveScope1));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
-        assertEquals(false, acceptor.isAccepted(moveScope3));
         assertEquals(true, acceptor.isAccepted(moveScope4));
 
         stepScope0.setStep(moveScope4.getMove());
@@ -137,72 +135,70 @@ public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test
-    public void isAcceptedPositiveLevelMultipleScoreRainSpeedRatio() {
+    public void waterLevelIncrementRatio() {
         GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevel(HardMediumSoftScore.of(0, 180, 450));
-        acceptor.setWaterLevelIncrementRatio(0.9);
+        acceptor.setWaterLevelIncrementRatio(0.1);
 
         DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
-        solverScope.setBestScore(HardMediumSoftScore.of(0, -200, -1000));
+        solverScope.setBestScore(SimpleScore.of(-8));
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
-        lastCompletedStepScope.setScore(HardMediumSoftScore.of(0, -200, -1000));
+        lastCompletedStepScope.setScore(SimpleScore.of(-8));
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         acceptor.phaseStarted(phaseScope);
 
 
-        // lastCompletedStepScore = 0/-200/-1000
-        // water level 0/180/450
+        // lastCompletedStepScore = -8
+        // water level -8
         LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         acceptor.stepStarted(stepScope0);
-        LocalSearchMoveScope<TestdataSolution> moveScope0 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
-        moveScope0.setScore(HardMediumSoftScore.of(0,-180,-300));
-        LocalSearchMoveScope<TestdataSolution> moveScope1 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
-        moveScope1.setScore(HardMediumSoftScore.of(0,-180,-500));
-        LocalSearchMoveScope<TestdataSolution> moveScope2 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
-        moveScope2.setScore(HardMediumSoftScore.of(0,-50,-800));
-        LocalSearchMoveScope<TestdataSolution> moveScope3 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
-        moveScope3.setScore(HardMediumSoftScore.of(-5,-50,-100));
-        LocalSearchMoveScope<TestdataSolution> moveScope4 = new LocalSearchMoveScope<>(stepScope0, 0, mock(Move.class));
-        moveScope4.setScore(HardMediumSoftScore.of(0,-180,-450));
-
+        LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -5);
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -8)));
         assertEquals(true, acceptor.isAccepted(moveScope0));
-        assertEquals(false, acceptor.isAccepted(moveScope1));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
-        assertEquals(false, acceptor.isAccepted(moveScope3));
-        assertEquals(true, acceptor.isAccepted(moveScope4));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -7)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -9)));
 
-        stepScope0.setStep(moveScope2.getMove());
-        stepScope0.setScore(moveScope2.getScore());
-        solverScope.setBestScore(moveScope2.getScore());
+        stepScope0.setStep(moveScope0.getMove());
+        stepScope0.setScore(moveScope0.getScore());
+        solverScope.setBestScore(moveScope0.getScore());
         acceptor.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
 
+
+        // lastCompletedStepScore = -5
+        // water level -8 (rounded down from -7.2)
+        LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
+        acceptor.stepStarted(stepScope1);
+        LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -6);
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -10)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -7)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -9)));
+        assertEquals(true, acceptor.isAccepted(moveScope1));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -8)));
+
+        stepScope1.setStep(moveScope1.getMove());
+        stepScope1.setScore(moveScope1.getScore());
+        solverScope.setBestScore(moveScope1.getScore());
+        acceptor.stepEnded(stepScope1);
+        phaseScope.setLastCompletedStepScope(stepScope1);
+
+
+        // lastCompletedStepScore = -6
+        // water level -7 (rounded down from -6.4)
+        LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
+        acceptor.stepStarted(stepScope2);
+        LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope1, -4);
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -9)));
+        assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -8)));
+        assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -7)));
+        assertEquals(true, acceptor.isAccepted(moveScope2));
+
+        stepScope1.setStep(moveScope2.getMove());
+        stepScope1.setScore(moveScope2.getScore());
+        acceptor.stepEnded(stepScope2);
+        phaseScope.setLastCompletedStepScope(stepScope2);
+
         acceptor.phaseEnded(phaseScope);
-    }
-
-    @Test
-    public void negativeWaterLevelSingleScore() {
-        GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevel(SimpleScore.of(-100));
-        try {
-            acceptor.phaseStarted(null);
-        } catch (IllegalArgumentException e) {
-            assertEquals("The initial level (" + acceptor.getInitialWaterLevel()
-                    + ") cannot have negative level (" + "-100.0" + ").", e.getMessage());
-        }
-    }
-
-    @Test
-    public void negativeWaterLevelMultipleScore() {
-        GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-        acceptor.setInitialWaterLevel(HardMediumSoftScore.parseScore("1hard/-1medium/2soft"));
-        try {
-            acceptor.phaseStarted(null);
-        } catch (IllegalArgumentException e) {
-            assertEquals("The initial level (" + acceptor.getInitialWaterLevel()
-                    + ") cannot have negative level (" + "-1.0" + ").", e.getMessage());
-        }
     }
 
 }
