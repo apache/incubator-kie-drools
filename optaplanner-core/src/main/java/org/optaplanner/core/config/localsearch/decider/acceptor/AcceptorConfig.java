@@ -72,7 +72,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     protected Integer lateAcceptanceSize = null;
 
-    protected String greatDelugeInitialWaterLevel = null;
+//    protected String greatDelugeInitialWaterLevel = null;
     protected String greatDelugeWaterLevelIncrementScore = null;
     protected Double greatDelugeWaterLevelIncrementRatio = null;
 
@@ -225,13 +225,13 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         this.lateAcceptanceSize = lateAcceptanceSize;
     }
 
-    public String getGreatDelugeInitialWaterLevel() {
-        return greatDelugeInitialWaterLevel;
-    }
-
-    public void setGreatDelugeInitialWaterLevel(String greatDelugeInitialWaterLevel) {
-        this.greatDelugeInitialWaterLevel = greatDelugeInitialWaterLevel;
-    }
+//    public String getGreatDelugeInitialWaterLevel() {
+//        return greatDelugeInitialWaterLevel;
+//    }
+//
+//    public void setGreatDelugeInitialWaterLevel(String greatDelugeInitialWaterLevel) {
+//        this.greatDelugeInitialWaterLevel = greatDelugeInitialWaterLevel;
+//    }
 
     public String getGreatDelugeWaterLevelIncrementScore() {
         return greatDelugeWaterLevelIncrementScore;
@@ -516,14 +516,14 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
             acceptorList.add(acceptor);
         }
         if ((acceptorTypeList!= null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
-                || greatDelugeInitialWaterLevel != null
+//                || greatDelugeInitialWaterLevel != null
                 || greatDelugeWaterLevelIncrementScore != null
                 || greatDelugeWaterLevelIncrementRatio != null) {
             GreatDelugeAcceptor acceptor = new GreatDelugeAcceptor();
-            if (greatDelugeInitialWaterLevel != null) {
-                acceptor.setInitialWaterLevel(
-                        configPolicy.getScoreDefinition().parseScore(greatDelugeInitialWaterLevel));
-            }
+//            if (greatDelugeInitialWaterLevel != null) {
+//                acceptor.setInitialWaterLevel(
+//                        configPolicy.getScoreDefinition().parseScore(greatDelugeInitialWaterLevel));
+//            }
             if (greatDelugeWaterLevelIncrementScore != null) {
                 if (greatDelugeWaterLevelIncrementRatio != null) {
                     throw new IllegalArgumentException("The acceptor cannot have both a "
@@ -610,8 +610,8 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                 simulatedAnnealingStartingTemperature, inheritedConfig.getSimulatedAnnealingStartingTemperature());
         lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
                 inheritedConfig.getLateAcceptanceSize());
-        greatDelugeInitialWaterLevel = ConfigUtils.inheritOverwritableProperty(greatDelugeInitialWaterLevel,
-                inheritedConfig.getGreatDelugeInitialWaterLevel());
+//        greatDelugeInitialWaterLevel = ConfigUtils.inheritOverwritableProperty(greatDelugeInitialWaterLevel,
+//                inheritedConfig.getGreatDelugeInitialWaterLevel());
         greatDelugeWaterLevelIncrementScore = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementScore,
                 inheritedConfig.getGreatDelugeWaterLevelIncrementScore());
         greatDelugeWaterLevelIncrementRatio = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementRatio,
