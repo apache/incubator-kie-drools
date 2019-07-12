@@ -35,12 +35,12 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
+import org.drools.modelcompiler.builder.generator.POJOGenerator;
 import org.kie.api.builder.ReleaseId;
 
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.generateModel;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.compileType;
-import static org.drools.modelcompiler.builder.generator.POJOGenerator.generatePOJO;
 import static org.drools.modelcompiler.builder.generator.POJOGenerator.registerType;
 
 public class ModelBuilderImpl extends KnowledgeBuilderImpl {
@@ -146,7 +146,7 @@ public class ModelBuilderImpl extends KnowledgeBuilderImpl {
             return new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), isPattern, dialectCompiletimeRegistry, exprIdGenerator);
         });
         model.addImports(pkg.getTypeResolver().getImports());
-        generatePOJO(this, pkg, packageDescr, model);
+        new POJOGenerator(this, pkg, packageDescr, model).generatePOJO();
     }
 
     @Override

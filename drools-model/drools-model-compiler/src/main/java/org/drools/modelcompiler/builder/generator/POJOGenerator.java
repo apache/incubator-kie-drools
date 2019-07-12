@@ -84,20 +84,20 @@ public class POJOGenerator {
 
     public static final List<String> exprAnnotations = Arrays.asList( "duration", "timestamp" );
 
-    public static void generatePOJO(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
-        TypeResolver typeResolver = pkg.getTypeResolver();
+    private ModelBuilderImpl builder;
+    private InternalKnowledgePackage pkg;
+    private PackageDescr packageDescr;
+    private PackageModel packageModel;
+    private TypeResolver typeResolver;
 
-        for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
-            try {
-                processType( builder, packageModel, typeDescr, typeResolver.resolveType( typeDescr.getFullTypeName() ));
-            } catch (ClassNotFoundException e) {
-                packageModel.addGeneratedPOJO(POJOGenerator.toClassDeclaration(builder, typeDescr, packageDescr, pkg.getTypeResolver()));
-                packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName() + "." + typeDescr.getTypeName() ) );
-            }
-        }
-
-        new EnumGenerator(builder, pkg, packageModel).generate(packageDescr.getEnumDeclarations());
+    public POJOGenerator(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+        this.builder = builder;
+        this.pkg = pkg;
+        this.packageDescr = packageDescr;
+        this.packageModel = packageModel;
+        this.typeResolver = pkg.getTypeResolver();
     }
+
 
     public static Map<String, Class<?>> compileType(KnowledgeBuilderImpl kbuilder, ClassLoader packageClassLoader, List<GeneratedClassWithPackage> classesWithPackage) {
         return compileAll(kbuilder, packageClassLoader, classesWithPackage);
@@ -110,7 +110,22 @@ public class POJOGenerator {
         }
     }
 
-    private static void processType(ModelBuilderImpl builder, PackageModel packageModel, TypeDeclarationDescr typeDescr, Class<?> type) {
+    public void generatePOJO() {
+        TypeResolver typeResolver = pkg.getTypeResolver();
+
+        for (TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations()) {
+            try {
+                processType( typeDescr, typeResolver.resolveType( typeDescr.getFullTypeName() ));
+            } catch (ClassNotFoundException e) {
+                packageModel.addGeneratedPOJO(toClassDeclaration(typeDescr));
+                packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName() + "." + typeDescr.getTypeName() ) );
+            }
+        }
+
+        new EnumGenerator(builder, pkg, packageModel).generate(packageDescr.getEnumDeclarations());
+    }
+
+    private void processType(TypeDeclarationDescr typeDescr, Class<?> type) {
         MethodCallExpr typeMetaDataCall = registerTypeMetaData( type.getCanonicalName() );
 
         for (AnnotationDescr ann : typeDescr.getAnnotations()) {
@@ -137,7 +152,7 @@ public class POJOGenerator {
         return typeMetaDataCall;
     }
 
-    private static ClassOrInterfaceDeclaration toClassDeclaration(ModelBuilderImpl builder, TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr, TypeResolver typeResolver) {
+    private ClassOrInterfaceDeclaration toClassDeclaration(TypeDeclarationDescr typeDeclaration) {
         NodeList<Modifier> classModifiers = NodeList.nodeList(Modifier.publicModifier());
         String generatedClassName = typeDeclaration.getTypeName();
         ClassOrInterfaceDeclaration generatedClass = new ClassOrInterfaceDeclaration(classModifiers, false, generatedClassName);
@@ -156,7 +171,7 @@ public class POJOGenerator {
                 generatedClass.addFieldWithInitializer( PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.privateModifier().getKeyword()
                         , Modifier.staticModifier().getKeyword(), Modifier.finalModifier().getKeyword() );
             } else {
-                processAnnotation( builder, typeResolver, generatedClass, ann, softAnnotations );
+                processAnnotation( generatedClass, ann, softAnnotations );
             }
         }
         if (softAnnotations.size() > 0) {
@@ -230,7 +245,7 @@ public class POJOGenerator {
                         NormalAnnotationExpr annExpr = generatedClass.addAndGetAnnotation(annFqn);
                         annExpr.addPair( "value", quote(fieldName) );
                     } else {
-                        processAnnotation( builder, typeResolver, field, ann, null );
+                        processAnnotation( field, ann, null );
                     }
                 }
 
@@ -274,7 +289,7 @@ public class POJOGenerator {
         return generatedClass;
     }
 
-    private static void processAnnotation( ModelBuilderImpl builder, TypeResolver typeResolver, NodeWithAnnotations node, AnnotationDescr ann, List<AnnotationDescr> softAnnotations ) {
+    private void processAnnotation( NodeWithAnnotations node, AnnotationDescr ann, List<AnnotationDescr> softAnnotations ) {
         Class<?> annotationClass = predefinedClassLevelAnnotation.get( ann.getName() );
         if (annotationClass == null) {
             try {
@@ -336,25 +351,25 @@ public class POJOGenerator {
         fullArgumentsCtor.addParameter( fieldType, fieldName );
     }
 
-    private static List<TypeFieldDescr> findInheritedDeclaredFields(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
-        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclaration, packageDescr), packageDescr);
+    private List<TypeFieldDescr> findInheritedDeclaredFields(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
+        return findInheritedDeclaredFields(new ArrayList<>(), getSuperType(typeDeclaration));
     }
 
-    private static List<TypeFieldDescr> findInheritedDeclaredFields(List<TypeFieldDescr> fields, Optional<TypeDeclarationDescr> supertType, PackageDescr packageDescr) {
+    private List<TypeFieldDescr> findInheritedDeclaredFields(List<TypeFieldDescr> fields, Optional<TypeDeclarationDescr> supertType) {
         supertType.ifPresent( st -> {
-            findInheritedDeclaredFields(fields, getSuperType(st, packageDescr), packageDescr);
+            findInheritedDeclaredFields(fields, getSuperType(st));
             fields.addAll( st.getFields().values() );
         } );
         return fields;
     }
 
-    private static Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclaration, PackageDescr packageDescr) {
+    private Optional<TypeDeclarationDescr> getSuperType(TypeDeclarationDescr typeDeclaration) {
         return typeDeclaration.getSuperTypeName() != null ?
                 packageDescr.getTypeDeclarations().stream().filter( td -> td.getTypeName().equals( typeDeclaration.getSuperTypeName() ) ).findFirst() :
                 Optional.empty();
     }
 
-    private static MethodDeclaration generateEqualsMethod(String generatedClassName, Collection<Statement> equalsFieldStatement, boolean hasSuper) {
+    private MethodDeclaration generateEqualsMethod(String generatedClassName, Collection<Statement> equalsFieldStatement, boolean hasSuper) {
         NodeList<Statement> equalsStatements = nodeList(referenceEquals, classCheckEquals);
         equalsStatements.add(classCastStatement(generatedClassName));
         if (hasSuper) {
