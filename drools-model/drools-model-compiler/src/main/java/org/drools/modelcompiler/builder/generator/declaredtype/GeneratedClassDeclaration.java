@@ -1,4 +1,4 @@
-package org.drools.modelcompiler.builder.generator;
+package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
 import static java.util.stream.Collectors.joining;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.POJOGenerator.quote;
+import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 class GeneratedClassDeclaration {
 
@@ -374,7 +374,7 @@ class GeneratedClassDeclaration {
 
         final Type returnType = parseType(int.class.getSimpleName());
         final MethodDeclaration equals = new MethodDeclaration(NodeList.nodeList(Modifier.publicModifier()), returnType, HASH_CODE);
-        equals.addAnnotation("Override");
+        equals.addAnnotation(OVERRIDE);
         equals.setBody(new BlockStmt(hashCodeStatements));
         return equals;
     }
