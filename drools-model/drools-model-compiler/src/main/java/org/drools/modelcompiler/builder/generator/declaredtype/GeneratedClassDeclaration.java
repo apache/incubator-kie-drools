@@ -56,7 +56,6 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenera
 class GeneratedClassDeclaration {
 
     private static final String EQUALS = "equals";
-    private static final String HASH_CODE = "hashCode";
     private static final String TO_STRING = "toString";
     private static final String VALUE = "value";
     private static final String OVERRIDE = "Override";
@@ -120,8 +119,9 @@ class GeneratedClassDeclaration {
 
         TypeFieldDescr[] typeFields = typeFieldsSortedByPosition();
 
+        GeneratedHashcode generatedHashcode = new GeneratedHashcode(hasSuper);
+
         List<Statement> equalsFieldStatement = new ArrayList<>();
-        List<Statement> hashCodeFieldStatement = new ArrayList<>();
         List<String> toStringFieldStatement = new ArrayList<>();
         List<TypeFieldDescr> keyFields = new ArrayList<>();
 
@@ -168,7 +168,7 @@ class GeneratedClassDeclaration {
                     keyFields.add(typeFieldDescr);
                     field.addAnnotation(Key.class.getName());
                     equalsFieldStatement.add(generateEqualsForField(getter, fieldName));
-                    hashCodeFieldStatement.add(generateHashCodeForField(getter, fieldName));
+                    generatedHashcode.addHashCodeForField(fieldName, getter.getType());
                 } else if (ann.getName().equalsIgnoreCase("position")) {
                     field.addAndGetAnnotation(Position.class.getName()).addPair(VALUE, "" + ann.getValue());
                     hasPositionAnnotation = true;
@@ -213,7 +213,7 @@ class GeneratedClassDeclaration {
 
         if (!keyFields.isEmpty()) {
             generatedClass.addMember(generateEqualsMethod(generatedClassName, equalsFieldStatement, hasSuper));
-            generatedClass.addMember(generateHashCodeMethod(hashCodeFieldStatement, hasSuper));
+            generatedClass.addMember(generatedHashcode.generateHashCodeMethod());
         }
 
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
@@ -377,53 +377,6 @@ class GeneratedClassDeclaration {
                 .filter(n -> n.getName().toString().equals("__fieldName"))
                 .forEach(n -> n.replace(new FieldAccessExpr(n.getScope(), fieldName)));
         return statement;
-    }
-
-    private static MethodDeclaration generateHashCodeMethod(Collection<Statement> hashCodeFieldStatement, boolean hasSuper) {
-        final Statement header = parseStatement(hasSuper ? "int result = super.hashCode();" : "int result = 1;");
-        NodeList<Statement> hashCodeStatements = nodeList(header);
-        hashCodeStatements.addAll(hashCodeFieldStatement);
-        hashCodeStatements.add(parseStatement("return result;"));
-
-        final Type returnType = parseType(int.class.getSimpleName());
-        final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, HASH_CODE);
-        equals.addAnnotation(OVERRIDE);
-        equals.setBody(new BlockStmt(hashCodeStatements));
-        return equals;
-    }
-
-    private static Statement generateHashCodeForField(MethodDeclaration getter, String fieldName) {
-        Type type = getter.getType();
-        if (type instanceof ClassOrInterfaceType) {
-            return parseStatement(format("result = 31 * result + ({0} != null ? {0}.hashCode() : 0);", fieldName));
-        } else if (type instanceof ArrayType) {
-            Type componentType = ((ArrayType) type).getComponentType();
-            if (componentType instanceof PrimitiveType) {
-                return parseStatement(format("result = 31 * result + ({0} != null ? java.util.Arrays.hashCode(({1}[]){0}) : 0);", fieldName, componentType));
-            } else {
-                return parseStatement(format("result = 31 * result + ({0} != null ? java.util.Arrays.hashCode((Object[]){0}) : 0);", fieldName));
-            }
-        } else if (type instanceof PrimitiveType) {
-            String primitiveToInt = fieldName;
-            PrimitiveType.Primitive primitiveType = ((PrimitiveType) type).getType();
-            switch (primitiveType) {
-                case BOOLEAN:
-                    primitiveToInt = format("({0} ? 1231 : 1237)", fieldName);
-                    break;
-                case DOUBLE:
-                    primitiveToInt = format("(int) (Double.doubleToLongBits({0}) ^ (Double.doubleToLongBits({0}) >>> 32))", fieldName);
-                    break;
-                case FLOAT:
-                    primitiveToInt = format("Float.floatToIntBits({0})", fieldName);
-                    break;
-                case LONG:
-                    primitiveToInt = format("(int) ({0} ^ ({0} >>> 32))", fieldName);
-                    break;
-            }
-            return parseStatement(format("result = 31 * result + {0};", primitiveToInt));
-        } else {
-            throw new RuntimeException("Unknown type");
-        }
     }
 
     private static MethodDeclaration generateToStringMethod(String generatedClassName, List<String> toStringFieldStatement) {
