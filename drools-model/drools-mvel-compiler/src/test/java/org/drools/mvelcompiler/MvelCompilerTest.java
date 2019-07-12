@@ -41,6 +41,20 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testEnumField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ key = $p.gender.getKey(); } ",
+             "{ int key = $p.getGender().getKey(); }");
+    }
+
+    @Test
+    public void testEnumConstant() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ key = Gender.FEMALE.getKey(); } ",
+             "{ int key = Gender.FEMALE.getKey(); }");
+    }
+
+    @Test
     public void testPublicField() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ $p.parentPublic.getParent().name; } ",
@@ -69,6 +83,13 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ Person np = $p; np = $p; }",
              "{ org.drools.Person np = $p; np = $p; }");
+    }
+
+    @Test
+    public void testAssignmentUndeclared() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ np = $p; }",
+             "{ org.drools.Person np = $p; }");
     }
 
     @Test

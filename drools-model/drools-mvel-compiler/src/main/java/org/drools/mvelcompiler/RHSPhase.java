@@ -117,9 +117,9 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private Optional<TypedExpression> asFieldAccessTExpr(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
-        Optional<Type> typedExpression = arg.getScopeType();
+        Optional<Type> scopeType = arg.getScopeType();
 
-        Optional<Field> fieldType = typedExpression.flatMap(te -> {
+        Optional<Field> fieldType = scopeType.flatMap(te -> {
             Class parentClass = (Class) te;
             Field field = ClassUtils.getField(parentClass, n.asString());
             return Optional.ofNullable(field);
