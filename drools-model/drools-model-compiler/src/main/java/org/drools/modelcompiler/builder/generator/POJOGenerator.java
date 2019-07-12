@@ -164,22 +164,8 @@ public class POJOGenerator {
             generatedClass.addExtendedType( typeDeclaration.getSuperTypeName() );
         }
 
-        List<AnnotationDescr> softAnnotations = new ArrayList<>();
-        for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
-            if (ann.getName().equals( "serialVersionUID" )) {
-                LongLiteralExpr valueExpr = new LongLiteralExpr(ann.getValue( "value" ).toString());
-                generatedClass.addFieldWithInitializer( PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.privateModifier().getKeyword()
-                        , Modifier.staticModifier().getKeyword(), Modifier.finalModifier().getKeyword() );
-            } else {
-                processAnnotation( generatedClass, ann, softAnnotations );
-            }
-        }
-        if (softAnnotations.size() > 0) {
-            String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect( joining());
-            JavadocComment generatedClassJavadoc = new JavadocComment("<dl>" + softAnnDictionary + "</dl>");
-            generatedClass.setJavadocComment(generatedClassJavadoc);
-        }
-        
+        processAnnotation(typeDeclaration, generatedClass);
+
         generatedClass.addConstructor(Modifier.publicModifier().getKeyword()); // No-args ctor
 
         List<Statement> equalsFieldStatement = new ArrayList<>();
@@ -287,6 +273,24 @@ public class POJOGenerator {
         generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
 
         return generatedClass;
+    }
+
+    private void processAnnotation(TypeDeclarationDescr typeDeclaration, ClassOrInterfaceDeclaration generatedClass) {
+        List<AnnotationDescr> softAnnotations = new ArrayList<>();
+        for (AnnotationDescr ann : typeDeclaration.getAnnotations()) {
+            if (ann.getName().equals( "serialVersionUID" )) {
+                LongLiteralExpr valueExpr = new LongLiteralExpr(ann.getValue("value" ).toString());
+                generatedClass.addFieldWithInitializer(PrimitiveType.longType(), "serialVersionUID", valueExpr, Modifier.privateModifier().getKeyword()
+                        , Modifier.staticModifier().getKeyword(), Modifier.finalModifier().getKeyword() );
+            } else {
+                processAnnotation( generatedClass, ann, softAnnotations );
+            }
+        }
+        if (softAnnotations.size() > 0) {
+            String softAnnDictionary = softAnnotations.stream().map(a -> "<dt>" + a.getName() + "</dt><dd>" + a.getValuesAsString() + "</dd>").collect( joining());
+            JavadocComment generatedClassJavadoc = new JavadocComment("<dl>" + softAnnDictionary + "</dl>");
+            generatedClass.setJavadocComment(generatedClassJavadoc);
+        }
     }
 
     private void processAnnotation( NodeWithAnnotations node, AnnotationDescr ann, List<AnnotationDescr> softAnnotations ) {
