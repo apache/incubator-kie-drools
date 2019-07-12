@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -445,6 +446,7 @@ public class DeclaredTypesTest extends BaseModelTest {
     }
 
     @Test
+    @Ignore
     public void testEnum() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
