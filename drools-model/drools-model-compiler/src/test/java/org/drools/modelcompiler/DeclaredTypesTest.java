@@ -445,8 +445,6 @@ public class DeclaredTypesTest extends BaseModelTest {
 
 
         Collection<String> results = getObjectsIntoList(ksession, String.class);
-        assertEquals( 1, results.size() );
-        assertEquals( "Mario", results.iterator().next() );
     }
 
     @Test
