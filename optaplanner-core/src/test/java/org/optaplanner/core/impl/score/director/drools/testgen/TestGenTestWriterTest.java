@@ -126,7 +126,7 @@ public class TestGenTestWriterTest {
         }
 
         // then check line counts are the same
-        assertThat(actualLines).hasSize(expectedLines.size());
+        assertThat(actualLines).hasSameSizeAs(expectedLines);
 
         // finally check the whole string
         String expectedString = StringUtils.replace(new String(Files.readAllBytes(expected), StandardCharsets.UTF_8),
