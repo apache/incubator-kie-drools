@@ -442,9 +442,6 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "end";
 
         KieSession ksession = getKieSession( str );
-
-
-        Collection<String> results = getObjectsIntoList(ksession, String.class);
     }
 
     @Test
