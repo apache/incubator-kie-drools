@@ -1,0 +1,26 @@
+package org.drools.modelcompiler.builder.generator;
+
+import java.util.List;
+
+import org.drools.compiler.lang.descr.EnumDeclarationDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.modelcompiler.builder.ModelBuilderImpl;
+import org.drools.modelcompiler.builder.PackageModel;
+
+public class EnumGenerator {
+
+    private final ModelBuilderImpl builder;
+    private final InternalKnowledgePackage pkg;
+    private final PackageModel packageModel;
+
+    public EnumGenerator(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageModel packageModel) {
+        this.builder = builder;
+        this.pkg = pkg;
+        this.packageModel = packageModel;
+    }
+
+    public void generate(List<EnumDeclarationDescr> enumDeclarations) {
+
+
+    }
+}

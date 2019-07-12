@@ -95,6 +95,8 @@ public class POJOGenerator {
                 packageModel.addTypeMetaDataExpressions( registerTypeMetaData( pkg.getName() + "." + typeDescr.getTypeName() ) );
             }
         }
+
+        new EnumGenerator(builder, pkg, packageModel).generate(packageDescr.getEnumDeclarations());
     }
 
     public static Map<String, Class<?>> compileType(KnowledgeBuilderImpl kbuilder, ClassLoader packageClassLoader, List<GeneratedClassWithPackage> classesWithPackage) {
