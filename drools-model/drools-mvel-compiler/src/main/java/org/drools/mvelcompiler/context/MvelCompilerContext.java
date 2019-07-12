@@ -29,6 +29,14 @@ public class MvelCompilerContext {
         return declarations.findDeclaration(name);
     }
 
+    public Optional<Class<?>> findEnum(String name) {
+        try {
+            return Optional.of(typeResolver.resolveType(name));
+        } catch (ClassNotFoundException e) {
+            return Optional.empty();
+        }
+    }
+
     public Collection<Declaration> getCreatedDeclarsations() {
         return declarations.getCreatedDeclarsations();
     }
