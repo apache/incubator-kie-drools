@@ -21,7 +21,9 @@ import java.util.List;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.MemberValuePair;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -65,6 +67,22 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     public void withOptionalInjection(NodeWithAnnotations<?> node) {
         node.addAnnotation(new NormalAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Autowired"), NodeList.nodeList(new MemberValuePair("required", new BooleanLiteralExpr(false)))));
     }
+    
+    @Override
+    public void withIncomingMessage(NodeWithAnnotations<?> node, String channel) {
+        node.addAnnotation(new NormalAnnotationExpr(new Name("org.springframework.kafka.annotation.KafkaListener"), NodeList.nodeList(new MemberValuePair("topics", new StringLiteralExpr(channel)))));
+    }
+
+    @Override
+    public void withOutgoingMessage(NodeWithAnnotations<?> node, String channel) {
+        // currently no-op
+        
+    }
+    
+    @Override
+    public void withMessageProducer(MethodCallExpr produceMethod, String channel, String event) {
+        produceMethod.addArgument(new StringLiteralExpr(channel)).addArgument(new NameExpr(event));
+    }
 
     @Override
     public String multiInstanceInjectionType() {
@@ -74,6 +92,11 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     @Override
     public String applicationComponentType() {
         return "org.springframework.stereotype.Component";
+    }
+    
+    @Override
+    public String emitterType(String dataType) {
+        return "org.springframework.kafka.core.KafkaTemplate<String, "+ dataType + ">";
     }
 
 }

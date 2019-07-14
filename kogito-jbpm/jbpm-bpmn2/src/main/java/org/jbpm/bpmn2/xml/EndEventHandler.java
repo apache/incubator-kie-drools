@@ -183,6 +183,8 @@ public class EndEventHandler extends AbstractNodeHandler {
                 }
                 String variable = (String) endNode.getMetaData("MappingVariable");
                 endNode.setMetaData("MessageType", message.getType());
+                endNode.setMetaData("TriggerType", "ProduceMessage");
+                endNode.setMetaData("TriggerRef", message.getName());
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
 
                 actions.add(new DroolsConsequenceAction("java",

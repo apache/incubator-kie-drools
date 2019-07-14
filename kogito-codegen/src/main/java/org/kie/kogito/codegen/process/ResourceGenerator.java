@@ -16,12 +16,15 @@
 package org.kie.kogito.codegen.process;
 
 import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.process.CodegenUtils.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -69,6 +72,7 @@ public class ResourceGenerator {
     
     private List<UserTaskModelMetaData> userTasks;
     private Map<String, String> signals;
+    private List<TriggerMetaData> triggers;
     
     public ResourceGenerator(
             WorkflowProcess process,
@@ -98,6 +102,11 @@ public class ResourceGenerator {
     
     public ResourceGenerator withSignals(Map<String, String> signals) {
         this.signals = signals;
+        return this;
+    }
+    
+    public ResourceGenerator withTriggers(List<TriggerMetaData> triggers) {
+        this.triggers = triggers;
         return this;
     }
 
@@ -194,24 +203,27 @@ public class ResourceGenerator {
         }
         
         template.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
-        template.findAll(ClassOrInterfaceType.class).forEach(this::interpolateTypes);
+        template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, dataClazzName));
         template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
-                             this::isProcessField).forEach(this::annotateFields);
+                             fd -> isProcessField(fd)).forEach(this::annotateFields);
         } else {
             template.findAll(FieldDeclaration.class,
-                             this::isProcessField).forEach(fd -> initializeField(fd, template));
+                             fd -> isProcessField(fd)).forEach(fd -> initializeField(fd, template));
+        }
+        
+        // if triggers are not empty remove createResource method as there is another trigger to start process instances
+        if (triggers != null && !triggers.isEmpty()) {
+            Optional<MethodDeclaration> createResourceMethod = template.findFirst(MethodDeclaration.class).filter(md -> md.getNameAsString().equals("createResource_" + processName));
+            if (createResourceMethod.isPresent()) {
+                template.remove(createResourceMethod.get());
+            }
         }
 
         return clazz.toString();
     }
-
-    private boolean isProcessField(FieldDeclaration fd) {
-        return fd.getElementType().asClassOrInterfaceType().getNameAsString().equals("Process");
-    }
-
     private void annotateFields(FieldDeclaration fd) {       
         annotator.withNamedInjection(fd, processId);
     }
@@ -254,23 +266,7 @@ public class ResourceGenerator {
         
         identifier = name.getNameAsString();
         name.setName(identifier.replace("$TaskOutput$", userTask.getOutputMoodelClassSimpleName()));
-    }
-
-    private void interpolateTypes(ClassOrInterfaceType t) {
-        SimpleName returnType = t.asClassOrInterfaceType().getName();
-        interpolateTypes(returnType);
-        t.getTypeArguments().ifPresent(this::interpolateTypeArguments);
-    }
-
-    private void interpolateTypes(SimpleName returnType) {
-        String identifier = returnType.getIdentifier();
-        returnType.setIdentifier(identifier.replace("$Type$", dataClazzName));
-    }
-
-    private void interpolateTypeArguments(NodeList<Type> ta) {
-        ta.stream().map(Type::asClassOrInterfaceType)
-                .forEach(this::interpolateTypes);
-    }
+    }    
     
     private void interpolateMethods(MethodDeclaration m) {
         SimpleName methodName = m.getName();

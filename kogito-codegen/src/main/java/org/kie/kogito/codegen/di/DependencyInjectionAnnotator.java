@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.di;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
 /**
@@ -80,6 +81,22 @@ public interface DependencyInjectionAnnotator {
     void withOptionalInjection(NodeWithAnnotations<?> node);
     
     /**
+     * Annotates given node with incoming message that it should consume from
+     * @param node node to be annotated
+     * @param channel name of the channel messages should be consumer from
+     */
+    void withIncomingMessage(NodeWithAnnotations<?> node, String channel);
+    
+    /**
+     * Annotates given node with outgoing message that it should send to
+     * @param node node to be annotated
+     * @param channel name of the channel messages should be send to
+     */
+    void withOutgoingMessage(NodeWithAnnotations<?> node, String channel);
+    
+    void withMessageProducer(MethodCallExpr produceMethod, String channel, String event);
+    
+    /**
      * Returns type that allows to inject multiple instances of the same type
      * @return fully qualified class name
      */
@@ -90,4 +107,12 @@ public interface DependencyInjectionAnnotator {
      * @return fully qualified class name
      */
     String applicationComponentType();
+    
+    /**
+     * Returns type to be used as message emitter
+     * @param dataType type of the data produces by the emitter
+     * @return fully qualified class name 
+     */
+    String emitterType(String dataType);
+        
 }

@@ -91,7 +91,7 @@ public class UserTaskTest extends AbstractCodegenTest {
             }
         }
         // there must be two distinct paths for user tasks
-        assertThat(completeTaskPaths).hasSize(2).containsExactly("@javax.ws.rs.Path(value=/{id}/FirstTask/{workItemId})", 
+        assertThat(completeTaskPaths).hasSize(2).containsOnly("@javax.ws.rs.Path(value=/{id}/FirstTask/{workItemId})", 
                                                                  "@javax.ws.rs.Path(value=/{id}/SecondTask/{workItemId})");
     }
 }

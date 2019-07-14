@@ -103,11 +103,18 @@ public class StartEventHandler extends AbstractNodeHandler {
                 break;
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
-
+                
                 type = checkSignalAndConvertToRealSignalNam(parser, type);
 
                 if (type != null && type.trim().length() > 0) {
                     addTriggerWithInMappings(startNode, type);
+                }
+                startNode.setMetaData("MessageType", type);
+                startNode.setMetaData("TriggerType", "Signal");
+                Signal signal = findSignalByName(parser, type);
+                if (signal != null) {
+                    String eventType = signal.getStructureRef();
+                    startNode.setMetaData("TriggerRef", eventType);
                 }
             } else if ("messageEventDefinition".equals(nodeName)) {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
@@ -121,7 +128,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                     throw new IllegalArgumentException("Could not find message " + messageRef);
                 }
                 startNode.setMetaData("MessageType", message.getType());
-
+                startNode.setMetaData("TriggerType", "ConsumeMessage");
+                startNode.setMetaData("TriggerRef", message.getName());
 
                 addTriggerWithInMappings(startNode, "Message-" + message.getName());
             } else if ("timerEventDefinition".equals(nodeName)) {

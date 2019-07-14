@@ -16,8 +16,10 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,6 +45,8 @@ public class ProcessMetaData {
     private Set<String> subProcesses = new HashSet<>();
     
     private Map<String, String> signals = new HashMap<>();
+    
+    private List<TriggerMetaData> triggers = new ArrayList<>();
     
     private Map<String, CompilationUnit> generatedHandlers = new HashMap<>();
     private Set<CompilationUnit> generatedListeners = new HashSet<>();
@@ -154,8 +158,16 @@ public class ProcessMetaData {
 
     public void setSignals(Map<String, String> signals) {
         this.signals = signals;
+    }    
+    
+    public List<TriggerMetaData> getTriggers() {
+        return triggers;
     }
     
+    public void setTriggers(List<TriggerMetaData> triggers) {
+        this.triggers = triggers;
+    }
+
     @Override
     public String toString() {
         return "ProcessMetaData [processClassName=" + processClassName +

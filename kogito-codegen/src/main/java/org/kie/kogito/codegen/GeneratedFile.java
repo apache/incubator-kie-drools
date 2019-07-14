@@ -26,7 +26,9 @@ public class GeneratedFile {
         REST,
         RULE,
         MODEL,
-        CLASS;
+        CLASS,
+        MESSAGE_CONSUMER,
+        MESSAGE_PRODUCER;
     }
     
     private final String relativePath;

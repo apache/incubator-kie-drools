@@ -16,7 +16,9 @@
 
 package org.kie.kogito.codegen.di;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
@@ -61,6 +63,22 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     public void withOptionalInjection(NodeWithAnnotations<?> node) {
         withInjection(node);
     }
+    
+    @Override
+    public void withIncomingMessage(NodeWithAnnotations<?> node, String channel) {
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.eclipse.microprofile.reactive.messaging.Incoming"), new StringLiteralExpr(channel)));
+    }
+    
+    @Override
+    public void withOutgoingMessage(NodeWithAnnotations<?> node, String channel) {
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("io.smallrye.reactive.messaging.annotations.Stream"), new StringLiteralExpr(channel)));
+    }
+    
+    @Override
+    public void withMessageProducer(MethodCallExpr produceMethod, String channel, String event) {
+        produceMethod.addArgument(new NameExpr(event));
+    }
+    
 
     @Override
     public String multiInstanceInjectionType() {
@@ -70,6 +88,11 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     @Override
     public String applicationComponentType() {
         return "javax.enterprise.context.ApplicationScoped";
+    }
+
+    @Override
+    public String emitterType(String dataType) {
+        return "io.smallrye.reactive.messaging.annotations.Emitter<" + dataType + ">";
     }
 
 }

@@ -40,6 +40,7 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
+import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.kie.api.definition.process.Process;
@@ -176,7 +177,9 @@ public class ProcessCodegen implements Generator {
         List<ProcessGenerator> ps = new ArrayList<>();
         List<ProcessInstanceGenerator> pis = new ArrayList<>();
         List<ProcessExecutableModelGenerator> processExecutableModelGenerators = new ArrayList<>();
-        List<ResourceGenerator> rgs = new ArrayList<>();
+        List<ResourceGenerator> rgs = new ArrayList<>(); // REST resources
+        List<MessageConsumerGenerator> megs = new ArrayList<>(); // message endpoints/consumers
+        List<MessageProducerGenerator> mpgs = new ArrayList<>(); // message producers
 
         List<String> publicProcesses = new ArrayList<>();
 
@@ -235,6 +238,8 @@ public class ProcessCodegen implements Generator {
                     classPrefix,
                     modelClassGenerator.generate());
 
+            ProcessMetaData metaData = processIdToMetadata.get(workFlowProcess.getId());
+            
             // do not generate REST endpoint if the process is not "public"
             if (execModelGen.isPublic()) {
                 // create REST resource class for process
@@ -244,9 +249,33 @@ public class ProcessCodegen implements Generator {
                         execModelGen.className())
                         .withDependencyInjection(annotator)
                         .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
-                        .withSignals(processIdToMetadata.get(workFlowProcess.getId()).getSignals());
+                        .withSignals(metaData.getSignals())
+                        .withTriggers(metaData.getTriggers());
                 
                 rgs.add(resourceGenerator);
+            }
+                        
+            if (metaData.getTriggers() != null) {
+                
+                for (TriggerMetaData trigger : metaData.getTriggers()) {
+                    // generate message consumers for processes with message start events
+                    if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
+                    
+                        megs.add(new MessageConsumerGenerator(
+                                    workFlowProcess,
+                                    modelClassGenerator.className(),
+                                    execModelGen.className(),
+                                    trigger)
+                                        .withDependencyInjection(annotator));
+                    } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
+                        mpgs.add(new MessageProducerGenerator(
+                                                              workFlowProcess,
+                                                              modelClassGenerator.className(),
+                                                              execModelGen.className(),
+                                                              trigger)
+                                                                  .withDependencyInjection(annotator));
+                    }
+                }
             }
 
             moduleGenerator.addProcess(p);
@@ -273,6 +302,16 @@ public class ProcessCodegen implements Generator {
         for (ResourceGenerator resourceGenerator : rgs) {
             storeFile(Type.REST, resourceGenerator.generatedFilePath(),
                       resourceGenerator.generate());
+        }
+        
+        for (MessageConsumerGenerator messageConsumerGenerator : megs) {
+            storeFile(Type.MESSAGE_CONSUMER, messageConsumerGenerator.generatedFilePath(),
+                      messageConsumerGenerator.generate());
+        }
+        
+        for (MessageProducerGenerator messageProducerGenerator : mpgs) {
+            storeFile(Type.MESSAGE_PRODUCER, messageProducerGenerator.generatedFilePath(),
+                      messageProducerGenerator.generate());
         }
 
         for (ProcessGenerator p : ps) {

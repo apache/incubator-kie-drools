@@ -16,7 +16,12 @@
 
 package org.jbpm.ruleflow.core.factory;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
+import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EndNode;
@@ -45,6 +50,18 @@ public class EndNodeFactory extends NodeFactory {
 
     public EndNodeFactory terminate(boolean terminate) {
         getEndNode().setTerminate(terminate);
+        return this;
+    }
+    
+    public EndNodeFactory action(Action action) {
+        DroolsAction droolsAction = new DroolsAction();
+        droolsAction.setMetaData("Action", action);
+        List<DroolsAction> enterActions = getEndNode().getActions(EndNode.EVENT_NODE_ENTER);
+        if (enterActions == null) {
+            enterActions = new ArrayList<>();
+            getEndNode().setActions(EndNode.EVENT_NODE_ENTER, enterActions);
+        }
+        enterActions.add(droolsAction);
         return this;
     }
 }

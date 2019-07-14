@@ -16,10 +16,12 @@
 
 package org.jbpm.compiler.canonical;
 
+import java.util.Map;
+
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
-import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.node.StartNode;
+import org.kie.api.definition.process.Node;
 
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -34,6 +36,15 @@ public class StartNodeVisitor extends AbstractVisitor {
         addFactoryMethodWithArgsWithAssignment(body, StartNodeFactory.class, "startNode" + node.getId(), "startNode", new LongLiteralExpr(startNode.getId()));
         addFactoryMethodWithArgs(body, "startNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(startNode.getName(), "Start")));
         addFactoryMethodWithArgs(body, "startNode" + node.getId(), "done");
+        
+        if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {
+            Map<String, Object> nodeMetaData = startNode.getMetaData();
+            metadata.getTriggers().add(new TriggerMetaData((String)nodeMetaData.get("TriggerRef"), 
+                                                           (String)nodeMetaData.get("TriggerType"), 
+                                                           (String)nodeMetaData.get("MessageType"), 
+                                                           (String)nodeMetaData.get("TriggerMapping"),
+                                                           String.valueOf(node.getId())).validate());
+        }
         
     }
 }
