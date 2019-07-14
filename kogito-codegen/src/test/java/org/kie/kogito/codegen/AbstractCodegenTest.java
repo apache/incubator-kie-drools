@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,7 +37,6 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
-import org.kie.kogito.codegen.rules.RuleCodegen;
 
 public class AbstractCodegenTest {
     
@@ -89,7 +87,8 @@ public class AbstractCodegenTest {
         for (GeneratedFile entry : generatedFiles) {
             String fileName = entry.relativePath();
             sources[index++] = fileName;
-            srcMfs.write(fileName, entry.contents());            
+            srcMfs.write(fileName, entry.contents());   
+            
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());

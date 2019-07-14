@@ -40,6 +40,7 @@ import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.FaultNode;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.RuleSetNode;
@@ -93,6 +94,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 	    this.nodesVisitors.put(RuleSetNode.class, new RuleSetNodeVisitor());
 	    this.nodesVisitors.put(BoundaryEventNode.class, new BoundaryEventNodeVisitor());
 	    this.nodesVisitors.put(EventNode.class, new EventNodeVisitor());
+	    this.nodesVisitors.put(ForEachNode.class, new ForEachNodeVisitor(nodesVisitors));
     }
 
     public ProcessMetaData generate(WorkflowProcess process) {
@@ -195,11 +197,11 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
 	    visitInterfaces(process.getNodes(), body);
 
 	    // the process itself
-	    addFactoryMethodWithArgs(body, "name", new StringLiteralExpr(process.getName()));
-	    addFactoryMethodWithArgs(body, "packageName", new StringLiteralExpr(process.getPackageName()));
-	    addFactoryMethodWithArgs(body, "dynamic", new BooleanLiteralExpr(((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic()));
-	    addFactoryMethodWithArgs(body, "version", new StringLiteralExpr(getOrDefault(process.getVersion(), "1.0")));
-	    addFactoryMethodWithArgs(body, "visibility", new StringLiteralExpr(getOrDefault(((org.jbpm.workflow.core.WorkflowProcess) process).getVisibility(), WorkflowProcess.PUBLIC_VISIBILITY)));
+	    addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "name", new StringLiteralExpr(process.getName()));
+	    addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "packageName", new StringLiteralExpr(process.getPackageName()));
+	    addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "dynamic", new BooleanLiteralExpr(((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic()));
+	    addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "version", new StringLiteralExpr(getOrDefault(process.getVersion(), "1.0")));
+	    addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "visibility", new StringLiteralExpr(getOrDefault(((org.jbpm.workflow.core.WorkflowProcess) process).getVisibility(), WorkflowProcess.PUBLIC_VISIBILITY)));
 
 	    visitMetaData(process.getMetaData(), body, FACTORY_FIELD_NAME);
 
@@ -213,7 +215,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         visitConnections(process.getNodes(), body);
 
 
-        addFactoryMethodWithArgs(body, "validate");
+        addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "validate");
 
         MethodCallExpr getProcessMethod = new MethodCallExpr(new NameExpr(FACTORY_FIELD_NAME), "getProcess");
         body.addStatement(new ReturnStmt(getProcessMethod));
@@ -230,7 +232,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
                 }
                 ClassOrInterfaceType variableType = new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName());
                 ObjectCreationExpr variableValue = new ObjectCreationExpr(null, variableType, new NodeList<>(new StringLiteralExpr(variable.getType().getStringType())));
-                addFactoryMethodWithArgs(body, "variable", new StringLiteralExpr(variable.getName()), variableValue);
+                addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "variable", new StringLiteralExpr(variable.getName()), variableValue);
             }
 
         }
@@ -258,12 +260,12 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
     	if ((imports != null && !imports.isEmpty()) || (globals != null && globals.size() > 0) || !metaData.isEmpty()) {
     		if (imports != null) {
 	    		for (String s: imports) {
-	    			addFactoryMethodWithArgs(body, "imports", new StringLiteralExpr(s));
+	    			addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "imports", new StringLiteralExpr(s));
 	    		}
     		}
     		if (globals != null) {
 	    		for (Map.Entry<String, String> global: globals.entrySet()) {
-	    			addFactoryMethodWithArgs(body, "global", new StringLiteralExpr(global.getKey()), new StringLiteralExpr(global.getValue()));
+	    			addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "global", new StringLiteralExpr(global.getKey()), new StringLiteralExpr(global.getValue()));
 	    		}
     		}
     	}
@@ -335,7 +337,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
            return;
         }
 
-        addFactoryMethodWithArgs(body, "connection", new LongLiteralExpr(connection.getFrom().getId()),
+        addFactoryMethodWithArgs(FACTORY_FIELD_NAME, body, "connection", new LongLiteralExpr(connection.getFrom().getId()),
                                  new LongLiteralExpr(connection.getTo().getId()),
                                  new StringLiteralExpr(getOrDefault((String) ((ConnectionImpl) connection).getMetaData().get("UniqueId"),  "")));
     }

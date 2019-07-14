@@ -32,6 +32,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.core.util.StringUtils;
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
@@ -48,7 +49,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
     }
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
 
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/class-templates/SubProcessFactoryTemplate.java");
         Expression retValue = parse(resourceAsStream).findFirst(Expression.class).get();
@@ -57,7 +58,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         String subProcessId = subProcessNode.getProcessId();
         String nodeVar = "subProcessNode" + node.getId();
 
-        addFactoryMethodWithArgsWithAssignment(body, SubProcessNodeFactory.class, nodeVar, "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, SubProcessNodeFactory.class, nodeVar, "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
         addFactoryMethodWithArgs(body, nodeVar, "name", new StringLiteralExpr(getOrDefault(subProcessNode.getName(), "Call Activity")));
         addFactoryMethodWithArgs(body, nodeVar, "processId", new StringLiteralExpr(subProcessId));
         addFactoryMethodWithArgs(body, nodeVar, "processName", new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), "")));
@@ -94,8 +95,11 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         actionBody.addStatement(subProcessModel.newInstance("model"));
 
         for (Map.Entry<String, String> e : subProcessNode.getInMappings().entrySet()) {
-            actionBody.addStatement(makeAssignment(variableScope.findVariable(e.getValue())));
-            actionBody.addStatement(subProcessModel.callSetter("model", e.getKey(), new NameExpr(e.getValue())));
+            Variable v = variableScope.findVariable(extractVariableFromExpression(e.getValue()));
+            if (v != null) {
+                actionBody.addStatement(makeAssignment(v));
+                actionBody.addStatement(subProcessModel.callSetter("model", e.getKey(), e.getValue()));
+            }
         }
 
         actionBody.addStatement(new ReturnStmt(new NameExpr("model")));
@@ -128,4 +132,16 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
 
         return stmts;
     }
+    
+    protected String extractVariableFromExpression(String variableExpression) {
+
+        if (variableExpression.startsWith("#{")) {
+            
+            return variableExpression.substring(2, variableExpression.indexOf("."));
+        }
+        
+        return variableExpression;
+    }
+    
+    
 }

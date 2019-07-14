@@ -53,6 +53,16 @@ public class ForEachNodeFactory extends RuleFlowNodeContainerFactory {
     	getForEachNode().setVariable(variableName, dataType);
         return this;
     }
+    
+    public ForEachNodeFactory outputCollectionExpression(String collectionExpression) {
+        getForEachNode().setOutputCollectionExpression(collectionExpression);
+        return this;
+    }
+
+    public ForEachNodeFactory outputVariable(String variableName, DataType dataType) {
+        getForEachNode().setOutputVariable(variableName, dataType);
+        return this;
+    }
 
     public ForEachNodeFactory waitForCompletion(boolean waitForCompletion) {
     	getForEachNode().setWaitForCompletion(waitForCompletion);
@@ -67,6 +77,11 @@ public class ForEachNodeFactory extends RuleFlowNodeContainerFactory {
     public ForEachNodeFactory linkOutgoingConnections(long nodeId) {
     	this.linkedOutgoingNodeId = nodeId;
     	return this;
+    }
+    
+    public ForEachNodeFactory metaData(String name, Object value) {
+        getForEachNode().setMetaData(name, value);
+        return this;
     }
 
     public RuleFlowNodeContainerFactory done() {

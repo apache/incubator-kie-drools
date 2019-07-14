@@ -29,10 +29,10 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class EventNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         EventNode eventNode = (EventNode) node;
         
-        addFactoryMethodWithArgsWithAssignment(body, EventNodeFactory.class, "eventNode" + node.getId(), "eventNode", new LongLiteralExpr(eventNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, EventNodeFactory.class, "eventNode" + node.getId(), "eventNode", new LongLiteralExpr(eventNode.getId()));
         addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(eventNode.getName(), "Event")));
         addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "eventType", new StringLiteralExpr(eventNode.getType()));
         

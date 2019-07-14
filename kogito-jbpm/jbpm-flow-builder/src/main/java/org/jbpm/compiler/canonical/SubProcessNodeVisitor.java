@@ -31,9 +31,9 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class SubProcessNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         SubProcessNode subProcessNode = (SubProcessNode) node;
-        addFactoryMethodWithArgsWithAssignment(body, SubProcessNodeFactory.class, "subProcessNode" + node.getId(), "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, SubProcessNodeFactory.class, "subProcessNode" + node.getId(), "subProcessNode", new LongLiteralExpr(subProcessNode.getId()));
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(subProcessNode.getName(), "Call Activity")));
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "processId", new StringLiteralExpr(subProcessNode.getProcessId()));
         addFactoryMethodWithArgs(body, "subProcessNode" + node.getId(), "processName", new StringLiteralExpr(getOrDefault(subProcessNode.getProcessName(), "")));

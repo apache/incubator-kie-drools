@@ -115,4 +115,5 @@ public class ProcessToExecModelGeneratorTest {
         logger.info(modelMetadata.generate());
         assertEquals("com.myspace.demo.OrdersModel", modelMetadata.getModelClassName());
     }
+
 }

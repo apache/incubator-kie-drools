@@ -85,7 +85,7 @@ public class UserTaskTest extends AbstractCodegenTest {
                 Annotation[] annotations = m.getAnnotations();
                 for (Annotation annotation : annotations) {
                     if (annotation.annotationType().getSimpleName().equals("Path")) {
-                        completeTaskPaths.add(annotation.toString());
+                        completeTaskPaths.add(annotation.toString().replaceAll("\\\"", ""));
                     }
                 }
             }

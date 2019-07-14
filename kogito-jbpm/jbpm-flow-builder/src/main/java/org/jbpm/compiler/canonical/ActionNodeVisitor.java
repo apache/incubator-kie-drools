@@ -33,10 +33,10 @@ import com.github.javaparser.ast.type.UnknownType;
 public class ActionNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         ActionNode actionNode = (ActionNode) node;
         
-        addFactoryMethodWithArgsWithAssignment(body, ActionNodeFactory.class, "actionNode" + node.getId(), "actionNode", new LongLiteralExpr(actionNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, ActionNodeFactory.class, "actionNode" + node.getId(), "actionNode", new LongLiteralExpr(actionNode.getId()));
         addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(actionNode.getName(), "Script")));
         
         

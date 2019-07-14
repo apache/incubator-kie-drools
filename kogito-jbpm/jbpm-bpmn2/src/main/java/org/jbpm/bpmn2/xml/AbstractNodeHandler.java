@@ -60,6 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -371,6 +372,31 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             subNode = subNode.getNextSibling();
             String target = subNode.getTextContent();
             forEachNodeInputAssociation.put(target, source);
+        } else {
+            // targetRef
+            String to = subNode.getTextContent();            
+            // assignment
+            subNode = subNode.getNextSibling();
+            if (subNode != null) {
+                org.w3c.dom.Node subSubNode = subNode.getFirstChild();
+                NodeList nl = subSubNode.getChildNodes();
+                if (nl.getLength() > 1) {
+                    // not supported ?
+                    forEachNodeInputAssociation.put(to, subSubNode.getTextContent());
+                    return;
+                } else if (nl.getLength() == 0) {
+                    return;
+                }
+                Object result = null;
+                Object from = nl.item(0);
+                if (from instanceof Text) {
+                    result = ((Text) from).getTextContent();
+                } else {
+                    result = nl.item(0);
+                }
+                forEachNodeInputAssociation.put(to, result.toString());
+                
+            }
         }
     }
 

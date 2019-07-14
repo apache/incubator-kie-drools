@@ -15,7 +15,9 @@
 
 package org.kie.kogito.codegen.tests;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -76,5 +78,34 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
         assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
         assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
+    }
+    
+    @Test
+    public void testCallActivityTaskMultiInstance() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("subprocess/CallActivityMI.bpmn2", "subprocess/CallActivitySubProcess.bpmn2");        
+        assertThat(app).isNotNull();
+                
+        Process<? extends Model> p = app.processes().processById("ParentProcess");
+        
+        List<String> list = new ArrayList<String>();
+        list.add("first");
+        list.add("second");
+        List<String> listOut = new ArrayList<String>();
+        
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("list", list);
+        parameters.put("listOut", listOut);
+        m.fromMap(parameters);
+        
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        
+        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        Model result = (Model)processInstance.variables();
+        assertThat(result.toMap()).hasSize(4).containsKeys("x", "y", "list", "listOut");
+        assertThat((List<?>)result.toMap().get("listOut")).isNotNull().hasSize(2);
+        
     }
 }

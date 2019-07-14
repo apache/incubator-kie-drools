@@ -47,13 +47,18 @@ public abstract class AbstractVisitor {
 
     protected static final String FACTORY_FIELD_NAME = "factory";
     
+    
     public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
+    }
+    
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         
     }
 
-    protected MethodCallExpr addFactoryMethodWithArgs(BlockStmt body, String methodName, Expression... args) {
+    protected MethodCallExpr addFactoryMethodWithArgs(String factoryField, BlockStmt body, String methodName, Expression... args) {
 
-        return addFactoryMethodWithArgs(body, FACTORY_FIELD_NAME, methodName, args);
+        return addFactoryMethodWithArgs(body, factoryField, methodName, args);
     }
 
     protected MethodCallExpr addFactoryMethodWithArgs(BlockStmt body, String object, String methodName, Expression... args) {
@@ -67,10 +72,10 @@ public abstract class AbstractVisitor {
         return variableMethod;
     }
 
-    protected MethodCallExpr addFactoryMethodWithArgsWithAssignment(BlockStmt body, Class<?> typeClass, String variableName, String methodName, Expression... args) {
+    protected MethodCallExpr addFactoryMethodWithArgsWithAssignment(String factoryField, BlockStmt body, Class<?> typeClass, String variableName, String methodName, Expression... args) {
         ClassOrInterfaceType type = new ClassOrInterfaceType(null, typeClass.getCanonicalName());
 
-        MethodCallExpr variableMethod = new MethodCallExpr(new NameExpr(FACTORY_FIELD_NAME), methodName);
+        MethodCallExpr variableMethod = new MethodCallExpr(new NameExpr(factoryField), methodName);
 
         for (Expression arg : args) {
             variableMethod.addArgument(arg);

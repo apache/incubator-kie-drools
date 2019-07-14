@@ -28,10 +28,10 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 public class FaultNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         FaultNode faultNode = (FaultNode) node;
         
-        addFactoryMethodWithArgsWithAssignment(body, FaultNodeFactory.class, "faultNode" + node.getId(), "faultNode", new LongLiteralExpr(faultNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, FaultNodeFactory.class, "faultNode" + node.getId(), "faultNode", new LongLiteralExpr(faultNode.getId()));
         addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(faultNode.getName(), "Error")));
         if (faultNode.getFaultVariable() != null) {
             addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "setFaultVariable", new StringLiteralExpr(faultNode.getFaultVariable()));

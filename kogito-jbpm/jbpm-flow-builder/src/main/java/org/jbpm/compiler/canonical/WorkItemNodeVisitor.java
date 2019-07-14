@@ -44,11 +44,11 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 public class WorkItemNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         WorkItemNode workItemNode = (WorkItemNode) node;
         Work work = workItemNode.getWork();
         String workName = workItemName(workItemNode, metadata);
-        addFactoryMethodWithArgsWithAssignment(body, WorkItemNodeFactory.class, "workItemNode" + node.getId(), "workItemNode", new LongLiteralExpr(workItemNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, WorkItemNodeFactory.class, "workItemNode" + node.getId(), "workItemNode", new LongLiteralExpr(workItemNode.getId()));
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(workItemNode.getName(), work.getName())));
         addFactoryMethodWithArgs(body, "workItemNode" + node.getId(), "workName", new StringLiteralExpr(workName));
 

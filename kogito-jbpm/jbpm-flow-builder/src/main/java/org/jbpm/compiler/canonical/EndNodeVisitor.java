@@ -38,10 +38,10 @@ import com.github.javaparser.ast.type.UnknownType;
 public class EndNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         EndNode endNode = (EndNode) node;
         
-        addFactoryMethodWithArgsWithAssignment(body, EndNodeFactory.class, "endNode" + node.getId(), "endNode", new LongLiteralExpr(endNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, EndNodeFactory.class, "endNode" + node.getId(), "endNode", new LongLiteralExpr(endNode.getId()));
         addFactoryMethodWithArgs(body, "endNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(endNode.getName(), "End")));
         addFactoryMethodWithArgs(body, "endNode" + node.getId(), "terminate", new BooleanLiteralExpr(endNode.isTerminate()));
         

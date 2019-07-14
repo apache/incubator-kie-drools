@@ -95,6 +95,14 @@ public class ModelMetaData {
 
         return blockStmt;
     }
+    
+    public MethodCallExpr callSetter(String targetVar, String destField, String value) {
+        if (value.startsWith("#{")) {
+            value = value.substring(2, value.length() -1);
+        }
+        
+        return callSetter(targetVar, destField, new NameExpr(value));
+    }
 
     public MethodCallExpr callSetter(String targetVar, String destField, Expression value) {
         String type = variableScope.getType(destField);

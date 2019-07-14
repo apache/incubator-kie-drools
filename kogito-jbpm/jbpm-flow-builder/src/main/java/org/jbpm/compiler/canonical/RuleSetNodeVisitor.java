@@ -38,10 +38,10 @@ import com.github.javaparser.ast.type.UnknownType;
 public class RuleSetNodeVisitor extends AbstractVisitor {
 
     @Override
-    public void visitNode(Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+    public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         RuleSetNode ruleSetNode = (RuleSetNode) node;
         
-        addFactoryMethodWithArgsWithAssignment(body, RuleSetNodeFactory.class, "ruleSetNode" + node.getId(), "ruleSetNode", new LongLiteralExpr(ruleSetNode.getId()));
+        addFactoryMethodWithArgsWithAssignment(factoryField, body, RuleSetNodeFactory.class, "ruleSetNode" + node.getId(), "ruleSetNode", new LongLiteralExpr(ruleSetNode.getId()));
         addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(ruleSetNode.getName(), "Rule")));
         // build supplier for either KieRuntime or DMNRuntime
         BlockStmt actionBody = new BlockStmt();
