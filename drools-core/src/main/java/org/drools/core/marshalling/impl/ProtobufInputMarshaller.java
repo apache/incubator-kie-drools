@@ -242,12 +242,16 @@ public class ProtobufInputMarshaller {
                              ((WorkingMemoryEntryPoint) wmep).getObjectStore(),
                              pctxs );
 
+            context.wm.getFactHandleFactory().doRecycleIds( context.handles.keySet() );
+
             context.filter.fireRNEAs( context.wm );
 
             readTruthMaintenanceSystem( context,
                                         wmep,
                                         _ep,
                                         pctxs );
+
+            context.wm.getFactHandleFactory().stopRecycleIds();
         }
 
         cleanReaderContexts( pctxs );
