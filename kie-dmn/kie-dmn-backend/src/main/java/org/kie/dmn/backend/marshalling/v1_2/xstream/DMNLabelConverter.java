@@ -18,41 +18,27 @@ package org.kie.dmn.backend.marshalling.v1_2.xstream;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.dmndi.DMNLabel;
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
-
 
 public class DMNLabelConverter extends ShapeConverter {
 
-    private static final String TEXT = "Text";
+    public static final String TEXT = "Text";
 
     public DMNLabelConverter(XStream xstream) {
         super(xstream);
     }
 
     @Override
-    protected void parseElements(HierarchicalStreamReader reader, UnmarshallingContext context, Object parent) {
-        while ( reader.hasMoreChildren() ) {
-            reader.moveDown();
-            String nodeName = reader.getNodeName();
-            if (nodeName.equals(TEXT)) {
-                ((DMNLabel)parent).setText(reader.getValue());
-            } else {
-              Object object = readItem(
-                      reader,
-                      context,
-                      null );
-              if( object instanceof DMNModelInstrumentedBase ) {
-                  ((KieDMNModelInstrumentedBase) object).setParent((KieDMNModelInstrumentedBase) parent);
-                  ((KieDMNModelInstrumentedBase) parent).addChildren((KieDMNModelInstrumentedBase) object);
-              }
-              assignChildElement( parent, nodeName, object );
-            }
-            reader.moveUp();
+    protected void assignChildElement(Object parent, String nodeName, Object child) {
+        DMNLabel concrete = (DMNLabel) parent;
+
+        if (nodeName.equals(TEXT)) {
+            concrete.setText((String) child);
+        } else {
+            super.assignChildElement(parent, nodeName, child);
         }
     }
 
