@@ -19,7 +19,9 @@ package org.optaplanner.core.api.score.stream.common;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
+import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
@@ -163,6 +165,29 @@ public final class ConstraintCollectors {
                 },
                 resultContainer -> resultContainer[0]);
     }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Integer> sumBi(ToIntBiFunction<? super A, ? super B> groupValueMapping) {
+        return new BiConstraintCollector<>(
+                () -> new int[1],
+                (resultContainer, a, b) -> {
+                    int value = groupValueMapping.applyAsInt(a, b);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
+    public static <A, B> BiConstraintCollector<A, B, ?, Long> sumBi(ToLongBiFunction<? super A, ? super B> groupValueMapping) {
+        return new BiConstraintCollector<>(
+                () -> new long[1],
+                (resultContainer, a, b) -> {
+                    long value = groupValueMapping.applyAsLong(a, b);
+                    resultContainer[0] += value;
+                    return (() -> resultContainer[0] -= value);
+                },
+                resultContainer -> resultContainer[0]);
+    }
+
 
     private ConstraintCollectors() {
     }
