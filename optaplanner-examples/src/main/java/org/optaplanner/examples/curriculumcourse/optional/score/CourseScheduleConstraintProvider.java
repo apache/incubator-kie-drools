@@ -26,7 +26,6 @@ import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 
 import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
-import static org.optaplanner.core.api.score.stream.common.JoinerType.*;
 import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 
 public class CourseScheduleConstraintProvider implements ConstraintProvider {
@@ -76,10 +75,10 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "conflictingLecturesDifferentCourseInSamePeriod", HardSoftScore.ofHard(1));
         c.from(CourseConflict.class)
                 .join(Lecture.class,
-                        on(CourseConflict::getLeftCourse, EQUAL_TO, Lecture::getCourse))
+                        equalTo(CourseConflict::getLeftCourse, Lecture::getCourse))
                 .join(Lecture.class,
-                        on(argABi(CourseConflict::getRightCourse), EQUAL_TO, Lecture::getCourse),
-                        on(argBBi(Lecture::getPeriod), EQUAL_TO, Lecture::getPeriod))
+                        equalTo(argABi(CourseConflict::getRightCourse), Lecture::getCourse),
+                        equalTo(argBBi(Lecture::getPeriod), Lecture::getPeriod))
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
                 .penalize((courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
     }
@@ -89,9 +88,9 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "conflictingLecturesSameCourseInSamePeriod", HardSoftScore.ofHard(1));
         c.from(Lecture.class)
                 .join(Lecture.class,
-                        on(Lecture::getCourse, EQUAL_TO, Lecture::getCourse),
-                        on(Lecture::getPeriod, EQUAL_TO, Lecture::getPeriod),
-                        on(Lecture::getId, LESS_THAN, Lecture::getId))
+                        equalTo(Lecture::getCourse, Lecture::getCourse),
+                        equalTo(Lecture::getPeriod, Lecture::getPeriod),
+                        lessThan(Lecture::getId, Lecture::getId))
                 .penalize((lecture1, lecture2) -> 1 + lecture1.getCurriculumList().size());
     }
 
@@ -109,8 +108,8 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 "unavailablePeriodPenalty", HardSoftScore.ofHard(10));
         c.from(UnavailablePeriodPenalty.class)
                 .join(Lecture.class,
-                        on(UnavailablePeriodPenalty::getCourse, EQUAL_TO, Lecture::getCourse),
-                        on(UnavailablePeriodPenalty::getPeriod, EQUAL_TO, Lecture::getPeriod))
+                        equalTo(UnavailablePeriodPenalty::getCourse, Lecture::getCourse),
+                        equalTo(UnavailablePeriodPenalty::getPeriod, Lecture::getPeriod))
                 .penalize();
     }
 

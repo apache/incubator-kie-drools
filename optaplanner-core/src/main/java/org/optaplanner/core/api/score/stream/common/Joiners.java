@@ -86,11 +86,6 @@ public final class Joiners {
         return new SingleBiJoiner<>(leftMapping, JoinerType.GREATER_THAN_OR_EQUAL_TO, rightMapping);
     }
 
-    public static <A, B, Property_> BiJoiner<A, B> on(
-            Function<A, Property_> leftMapping, JoinerType joinerType, Function <B, Property_> rightMapping) {
-        return new SingleBiJoiner<>(leftMapping, joinerType, rightMapping);
-    }
-
     public static <A, B, Property_> BiJoiner<A, B> contains(
             Function<A, ? extends Collection<Property_>> leftMapping, Function <B, Property_> rightMapping) {
         return new SingleBiJoiner<>(leftMapping, JoinerType.CONTAINS, rightMapping);
@@ -136,11 +131,6 @@ public final class Joiners {
     }
 
     // TODO other TriJoiner methods
-
-    public static <A, B, C, Property_> TriJoiner<A, B, C> on(
-            BiFunction<A, B, Property_> leftMapping, JoinerType joinerType, Function <C, Property_> rightMapping) {
-        return new SingleTriJoiner<>(leftMapping, joinerType, rightMapping);
-    }
 
     // ************************************************************************
     // Extract arguments
