@@ -166,7 +166,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A, B> BiConstraintCollector<A, B, ?, Integer> sum(ToIntBiFunction<? super A, ? super B> groupValueMapping) {
+    public static <A, B> BiConstraintCollector<A, B, ?, Integer> sumLong(ToIntBiFunction<? super A, ? super B> groupValueMapping) {
         return new BiConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a, b) -> {
@@ -177,7 +177,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A, B> BiConstraintCollector<A, B, ?, Long> sum(ToLongBiFunction<? super A, ? super B> groupValueMapping) {
+    public static <A, B> BiConstraintCollector<A, B, ?, Long> sumLong(ToLongBiFunction<? super A, ? super B> groupValueMapping) {
         return new BiConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a, b) -> {
@@ -187,7 +187,6 @@ public final class ConstraintCollectors {
                 },
                 resultContainer -> resultContainer[0]);
     }
-
 
     private ConstraintCollectors() {
     }
