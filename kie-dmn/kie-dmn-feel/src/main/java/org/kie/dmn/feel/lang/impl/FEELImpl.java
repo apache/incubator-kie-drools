@@ -164,7 +164,7 @@ public class FEELImpl
     @Override
     public Object evaluate(CompiledExpression expr, EvaluationContext ctx) {
         CompiledFEELExpression e = (CompiledFEELExpression) expr;
-        return e.apply(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
+        return e.apply(ctx.current());
     }
 
     /**
