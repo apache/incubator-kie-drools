@@ -16,6 +16,8 @@
 
 package org.drools.core.spi;
 
+import java.util.Collection;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -70,4 +72,7 @@ public interface FactHandleFactory {
     long getNextRecency();
     
     void clear(int id, long counter);
+
+    void doRecycleIds( Collection<Integer> usedIds );
+    void stopRecycleIds();
 }
