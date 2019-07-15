@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.bi.SingleBiJoiner;
@@ -131,30 +130,6 @@ public final class Joiners {
     }
 
     // TODO other TriJoiner methods
-
-    // ************************************************************************
-    // Extract arguments
-    // ************************************************************************
-
-    public static <A, B, Property_> BiFunction<A, B, Property_> argABi(Function<A, Property_> mapping) {
-        return (A a, B b) -> mapping.apply(a);
-    }
-
-    public static <A, B, Property_> BiFunction<A, B, Property_> argBBi(Function<B, Property_> mapping) {
-        return (A a, B b) -> mapping.apply(b);
-    }
-
-    public static <A, B, C, Property_> TriFunction<A, B, C, Property_> argATri(Function<A, Property_> mapping) {
-        return (A a, B b, C c) -> mapping.apply(a);
-    }
-
-    public static <A, B, C, Property_> TriFunction<A, B, C, Property_> argBTri(Function<B, Property_> mapping) {
-        return (A a, B b, C c) -> mapping.apply(b);
-    }
-
-    public static <A, B, C, Property_> TriFunction<A, B, C, Property_> argCTri(Function<C, Property_> mapping) {
-        return (A a, B b, C c) -> mapping.apply(c);
-    }
 
     private Joiners() {}
 

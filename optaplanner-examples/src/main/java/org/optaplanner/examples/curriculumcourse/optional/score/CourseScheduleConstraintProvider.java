@@ -77,8 +77,8 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
                 .join(Lecture.class,
                         equalTo(CourseConflict::getLeftCourse, Lecture::getCourse))
                 .join(Lecture.class,
-                        equalTo(argABi(CourseConflict::getRightCourse), Lecture::getCourse),
-                        equalTo(argBBi(Lecture::getPeriod), Lecture::getPeriod))
+                        equalTo((courseConflict, lecture1) -> courseConflict.getRightCourse(), Lecture::getCourse),
+                        equalTo((courseConflict, lecture1) -> lecture1.getPeriod(), Lecture::getPeriod))
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
                 .penalize((courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
     }
