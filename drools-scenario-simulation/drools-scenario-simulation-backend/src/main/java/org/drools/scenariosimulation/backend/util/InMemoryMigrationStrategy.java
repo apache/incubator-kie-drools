@@ -18,9 +18,15 @@ package org.drools.scenariosimulation.backend.util;
 
 import java.util.function.Function;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.kie.soup.commons.xstream.XStreamUtils;
+
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.cleanUpUnusedNodes;
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.configureXStreamMappings;
 
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
@@ -112,5 +118,35 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             }
             return updateVersion(xmlPersistence.marshal(model), "1.4", "1.5");
         };
+    }
+
+    @Override
+    public Function<String, String> from1_5to1_6() {
+        return rawXml -> {
+            // We need to do those things here because to parse "old" xmls we need a differently configured Xstream
+            ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
+            if (rawXml == null ||  rawXml.trim().equals("")) {
+                return xmlPersistence.marshal(new ScenarioSimulationModel());
+            }
+            String input = cleanUpUnusedNodes(rawXml);
+            // Unmarshall the 1.5 format with "older" xstream configuration, that read "reference" attributes
+            Object o = getLocalXStream().fromXML(input);
+            ScenarioSimulationModel model = (ScenarioSimulationModel) o;
+
+            // Marshall the model with the "new" xstream configuration, that does not write "reference" attributes
+            return updateVersion(xmlPersistence.marshal(model), "1.5", "1.6");
+        };
+    }
+
+    /**
+     * Returns the <code>XStream</code> configured for scesim version <= 1.5
+     * @return
+     */
+    private XStream getLocalXStream() {
+        // We need this local instance to instantiate XStream with older settings
+        XStream toReturn = XStreamUtils.createTrustingXStream(new DomDriver());
+        toReturn.autodetectAnnotations(true);
+        configureXStreamMappings(toReturn);
+        return toReturn;
     }
 }

@@ -34,18 +34,6 @@ public class Scenario {
      */
     private final List<FactMappingValue> factMappingValues = new ArrayList<>();
 
-    /**
-     * Not used, to be removed.
-     */
-    @Deprecated
-    private SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
-
-    public Scenario() {
-    }
-
-    public Scenario(SimulationDescriptor simulationDescriptor) {
-        this.simulationDescriptor = simulationDescriptor;
-    }
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
@@ -118,7 +106,7 @@ public class Scenario {
     }
 
     Scenario cloneScenario() {
-        Scenario cloned = new Scenario(simulationDescriptor);
+        Scenario cloned = new Scenario();
         cloned.factMappingValues.addAll(factMappingValues.stream().map(FactMappingValue::cloneFactMappingValue).collect(toList()));
         return cloned;
     }

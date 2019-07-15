@@ -18,12 +18,14 @@ package org.drools.scenariosimulation.backend.util;
 import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -130,7 +132,17 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
         assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
-        assertTrue(!migrated.contains("dmoSession"));
+        assertFalse(migrated.contains("dmoSession"));
+    }
+
+    @Test
+    public void migrateIfNecessary_1_5_to_1_6() throws Exception {
+        String toMigrate = getFileContent("scesim-1-5-dmn.scesim");
+        assertTrue(toMigrate.contains("reference="));
+        String migrated = instance.migrateIfNecessary(toMigrate);
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.5\">"));
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
+        assertFalse(migrated.contains("reference="));
     }
 
     @Test
@@ -163,4 +175,5 @@ public class ScenarioSimulationXMLPersistenceTest {
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
         assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.DMN);
     }
+
 }
