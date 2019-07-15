@@ -115,6 +115,35 @@ public class RuleTemplateModelDRLPersistenceTest {
     }
 
     @Test
+    public void testOnlyRemoveSurroundingBrackets() {
+        TemplateModel m = new TemplateModel();
+        m.name = "t1";
+
+        FactPattern p = new FactPattern("Person");
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType(DataType.TYPE_STRING);
+        con.setFieldName("field1");
+        con.setOperator("in");
+        con.setValue("$f1");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_TEMPLATE);
+        p.addConstraint(con);
+
+        m.addLhsItem(p);
+
+        m.addRow(new String[]{"\"John\", \"John (jr)\""});
+
+        String expected = "rule \"t1_0\"" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "  Person( field1 in (\"John\",\" John (jr)\") )" +
+                "then \n" +
+                "end";
+
+        checkMarshall(expected,
+                      m);
+    }
+
+    @Test
     public void testSimpleSingleValue() {
         TemplateModel m = new TemplateModel();
         m.name = "t1";

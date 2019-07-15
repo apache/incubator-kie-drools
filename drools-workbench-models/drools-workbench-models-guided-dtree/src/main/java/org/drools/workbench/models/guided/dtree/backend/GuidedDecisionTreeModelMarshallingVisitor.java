@@ -432,10 +432,8 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
                                    final String strValue) {
         //Remove braces and convert to an Array of individual values
         String workingValue = strValue.trim();
-        if (workingValue.startsWith("(")) {
+        if (workingValue.startsWith("(") && workingValue.endsWith(")")) {
             workingValue = workingValue.substring(1);
-        }
-        if (workingValue.endsWith(")")) {
             workingValue = workingValue.substring(0,
                                                   workingValue.length() - 1);
         }
