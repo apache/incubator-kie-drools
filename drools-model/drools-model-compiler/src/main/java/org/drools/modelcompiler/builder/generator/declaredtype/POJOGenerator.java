@@ -33,7 +33,7 @@ public class POJOGenerator {
     private PackageDescr packageDescr;
     private PackageModel packageModel;
 
-    static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
+    private static final List<String> exprAnnotations = Arrays.asList("duration", "timestamp");
 
     public POJOGenerator(ModelBuilderImpl builder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
         this.builder = builder;

@@ -22,6 +22,15 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.GeneratedC
 
 interface GeneratedConstructor {
 
+    static GeneratedConstructor factory(TypeDeclarationDescr typeDeclaration, ClassOrInterfaceDeclaration generatedClass, TypeFieldDescr[] typeFields) {
+        if (typeFields.length < 65) {
+            return new FullArgumentConstructor(typeDeclaration, generatedClass);
+        } else {
+            return new NoConstructor();
+        }
+    }
+
+    void generateConstructor(Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields, List<TypeFieldDescr> keyFields);
 }
 
 class FullArgumentConstructor implements GeneratedConstructor {
@@ -34,68 +43,75 @@ class FullArgumentConstructor implements GeneratedConstructor {
         this.generatedClass = generatedClass;
     }
 
-    void generateConstructor( Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields, List<TypeFieldDescr> keyFields) {
-        // DeclareTest.testDeclaredTypeWithHundredsProps
-        boolean createFullArgsConstructor = typeFields.length < 65;
-        ConstructorDeclaration fullArgumentsCtor = null;
-        NodeList<Statement> ctorFieldStatement = null;
+    @Override
+    public void generateConstructor(Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields, List<TypeFieldDescr> keyFields) {
 
-        if (createFullArgsConstructor) {
-            fullArgumentsCtor = generatedClass.addConstructor(Modifier.publicModifier().getKeyword());
-            ctorFieldStatement = nodeList();
+        ConstructorDeclaration constructor = generatedClass.addConstructor(Modifier.publicModifier().getKeyword());
+        NodeList<Statement> fieldAssignStatement = nodeList();
 
-            MethodCallExpr superCall = new MethodCallExpr(null, "super");
-            for (TypeFieldDescr typeFieldDescr : inheritedFields) {
-                String fieldName = typeFieldDescr.getFieldName();
-                addCtorArg(fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName);
-                superCall.addArgument(fieldName);
-                if (typeFieldDescr.getAnnotation("key") != null) {
-                    keyFields.add(typeFieldDescr);
-                }
+        MethodCallExpr superCall = new MethodCallExpr(null, "super");
+        for (TypeFieldDescr typeFieldDescr : inheritedFields) {
+            String fieldName = typeFieldDescr.getFieldName();
+            addConstructorArgument(constructor, typeFieldDescr.getPattern().getObjectType(), fieldName);
+            superCall.addArgument(fieldName);
+            if (typeFieldDescr.getAnnotation("key") != null) {
+                keyFields.add(typeFieldDescr);
             }
-            ctorFieldStatement.add(new ExpressionStmt(superCall));
         }
+        fieldAssignStatement.add(new ExpressionStmt(superCall));
 
         for (TypeFieldDescr typeFieldDescr : typeFields) {
             String fieldName = typeFieldDescr.getFieldName();
             Type returnType = parseType(typeFieldDescr.getPattern().getObjectType());
-            if (createFullArgsConstructor) {
-                addCtorArg(fullArgumentsCtor, returnType, fieldName);
-                ctorFieldStatement.add(replaceFieldName(parseStatement("this.__fieldName = __fieldName;"), fieldName));
-            }
+            addConstructorArgument(constructor, returnType, fieldName);
+            fieldAssignStatement.add(fieldAssignment(fieldName));
 
-            if (createFullArgsConstructor) {
-                fullArgumentsCtor.setBody(new BlockStmt(ctorFieldStatement));
-            }
+            constructor.setBody(new BlockStmt(fieldAssignStatement));
         }
 
         if (!keyFields.isEmpty() && keyFields.size() != inheritedFields.size() + typeFields.length) {
-            ConstructorDeclaration keyArgumentsCtor = generatedClass.addConstructor(Modifier.publicModifier().getKeyword());
-            NodeList<Statement> ctorKeyFieldStatement = nodeList();
-            MethodCallExpr keySuperCall = new MethodCallExpr(null, "super");
-            ctorKeyFieldStatement.add(new ExpressionStmt(keySuperCall));
-
-            for (TypeFieldDescr typeFieldDescr : keyFields) {
-                String fieldName = typeFieldDescr.getFieldName();
-                addCtorArg(keyArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName);
-                if (typeDeclaration.getFields().get(fieldName) != null) {
-                    ctorKeyFieldStatement.add(replaceFieldName(parseStatement("this.__fieldName = __fieldName;"), fieldName));
-                } else {
-                    keySuperCall.addArgument(fieldName);
-                }
-            }
-
-            keyArgumentsCtor.setBody(new BlockStmt(ctorKeyFieldStatement));
+            generateKieFieldsConstructor(keyFields);
         }
     }
 
+    private void generateKieFieldsConstructor(List<TypeFieldDescr> keyFields) {
+        ConstructorDeclaration constructor = generatedClass.addConstructor(Modifier.publicModifier().getKeyword());
+        NodeList<Statement> fieldStatements = nodeList();
+        MethodCallExpr keySuperCall = new MethodCallExpr(null, "super");
+        fieldStatements.add(new ExpressionStmt(keySuperCall));
 
-    private static void addCtorArg(ConstructorDeclaration fullArgumentsCtor, String typeName, String fieldName) {
-        addCtorArg(fullArgumentsCtor, parseType(typeName), fieldName);
+        for (TypeFieldDescr typeFieldDescr : keyFields) {
+            String fieldName = typeFieldDescr.getFieldName();
+            addConstructorArgument(constructor, typeFieldDescr.getPattern().getObjectType(), fieldName);
+            if (typeDeclaration.getFields().get(fieldName) != null) {
+                fieldStatements.add(fieldAssignment(fieldName));
+            } else {
+                keySuperCall.addArgument(fieldName);
+            }
+        }
+
+        constructor.setBody(new BlockStmt(fieldStatements));
     }
 
-    private static void addCtorArg(ConstructorDeclaration fullArgumentsCtor, Type fieldType, String fieldName) {
-        fullArgumentsCtor.addParameter(fieldType, fieldName);
+    private Statement fieldAssignment(String fieldName) {
+        return replaceFieldName(parseStatement("this.__fieldName = __fieldName;"), fieldName);
+    }
+
+    private static void addConstructorArgument(ConstructorDeclaration constructor, String typeName, String fieldName) {
+        addConstructorArgument(constructor, parseType(typeName), fieldName);
+    }
+
+    private static void addConstructorArgument(ConstructorDeclaration constructor, Type fieldType, String fieldName) {
+        constructor.addParameter(fieldType, fieldName);
+    }
+}
+
+class NoConstructor implements GeneratedConstructor {
+
+    @Override
+    public void generateConstructor(Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields, List<TypeFieldDescr> keyFields) {
+        // Do not generate constructor here
+        // See DeclareTest.testDeclaredTypeWithHundredsProps
     }
 }
 

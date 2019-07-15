@@ -109,8 +109,7 @@ class GeneratedClassDeclaration {
         GeneratedToString generatedToString = new GeneratedToString(generatedClassName);
         GeneratedEqualsMethod generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
-        FullArgumentConstructor fullArgumentConstructor = new FullArgumentConstructor(typeDeclaration, generatedClass);
-
+        GeneratedConstructor fullArgumentConstructor = GeneratedConstructor.factory(typeDeclaration, generatedClass, typeFields);
 
         List<TypeFieldDescr> keyFields = new ArrayList<>();
         int position = inheritedFields.size();
