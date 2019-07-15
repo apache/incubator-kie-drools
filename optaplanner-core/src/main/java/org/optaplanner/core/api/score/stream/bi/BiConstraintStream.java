@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.impl.score.stream.tri.AbstractTriJoiner;
 
 /**
  * A {@link ConstraintStream} that matches two facts.
@@ -117,8 +118,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, TriJoiner)}.
      * <p>
-     * This method has overloaded methods with up to 4 {@link TriJoiner} parameters.
-     * To combine even more joiners, use this method in combination with {@link TriJoiner#and(TriJoiner)}.
+     * This method has overloaded methods with multiple {@link TriJoiner} parameters.
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact
@@ -133,7 +133,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2) {
-        return join(otherClass, joiner1.and(joiner2));
+        return join(otherClass, AbstractTriJoiner.merge(joiner1, joiner2));
     }
 
     /**
@@ -141,7 +141,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3) {
-        return join(otherClass, joiner1.and(joiner2).and(joiner3));
+        return join(otherClass, AbstractTriJoiner.merge(joiner1, joiner2, joiner3));
     }
 
     /**
@@ -149,7 +149,17 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C> joiner1,
             TriJoiner<A, B, C> joiner2, TriJoiner<A, B, C> joiner3, TriJoiner<A, B, C> joiner4) {
-        return join(otherClass, joiner1.and(joiner2).and(joiner3).and(joiner4));
+        return join(otherClass, AbstractTriJoiner.merge(joiner1, joiner2, joiner3, joiner4));
+    }
+
+    /**
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     * @see #join(Class, TriJoiner)
+     */
+    default <C> TriConstraintStream<A, B, C> join(Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
+        return join(otherClass, AbstractTriJoiner.merge(joiners));
     }
 
     // ************************************************************************

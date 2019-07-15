@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.bi;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -27,16 +26,10 @@ import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
 public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements BiJoiner<A, B> {
 
-    public abstract Function<A, Object[]> getLeftCombinedMapping();
-
-    public abstract JoinerType[] getJoinerTypes();
-
-    public abstract Function<B, Object[]> getRightCombinedMapping();
-
-    @Override
-    public BiJoiner<A, B> and(BiJoiner<A, B> other) {
-        List<SingleBiJoiner<A, B>> joinerList = new ArrayList<>();
-        for (BiJoiner<A, B> joiner : Arrays.asList(this, other)) {
+    @SafeVarargs
+    public final static <A, B> AbstractBiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
+        List<SingleBiJoiner<A, B>> joinerList = new ArrayList<>(joiners.length);
+        for (BiJoiner<A, B> joiner : joiners) {
             if (joiner instanceof SingleBiJoiner) {
                 joinerList.add((SingleBiJoiner<A, B>) joiner);
             } else if (joiner instanceof CompositeBiJoiner) {
@@ -47,5 +40,11 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
         }
         return new CompositeBiJoiner<>(joinerList);
     }
+
+    public abstract Function<A, Object[]> getLeftCombinedMapping();
+
+    public abstract JoinerType[] getJoinerTypes();
+
+    public abstract Function<B, Object[]> getRightCombinedMapping();
 
 }

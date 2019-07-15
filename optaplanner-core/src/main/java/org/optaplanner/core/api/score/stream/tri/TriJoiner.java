@@ -16,18 +16,6 @@
 
 package org.optaplanner.core.api.score.stream.tri;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.api.score.stream.common.JoinerType;
-
 public interface TriJoiner<A, B, C> {
-
-    // ************************************************************************
-    // Combine joiners
-    // ************************************************************************
-
-    TriJoiner<A, B, C> and(TriJoiner<A, B, C> other);
 
 }

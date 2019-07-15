@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.stream.tri;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -28,16 +27,10 @@ import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
 public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implements TriJoiner<A, B, C> {
 
-    public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
-
-    public abstract JoinerType[] getJoinerTypes();
-
-    public abstract Function<C, Object[]> getRightCombinedMapping();
-
-    @Override
-    public TriJoiner<A, B, C> and(TriJoiner<A, B, C> other) {
+    @SafeVarargs
+    public final static <A, B, C> TriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
         List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
-        for (TriJoiner<A, B, C> joiner : Arrays.asList(this, other)) {
+        for (TriJoiner<A, B, C> joiner : joiners) {
             if (joiner instanceof SingleTriJoiner) {
                 joinerList.add((SingleTriJoiner<A, B, C>) joiner);
             } else if (joiner instanceof CompositeTriJoiner) {
@@ -48,5 +41,11 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
         }
         return new CompositeTriJoiner<>(joinerList);
     }
+
+    public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
+
+    public abstract JoinerType[] getJoinerTypes();
+
+    public abstract Function<C, Object[]> getRightCombinedMapping();
 
 }

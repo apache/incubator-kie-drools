@@ -52,6 +52,10 @@ public final class Joiners {
         return new SingleBiJoiner<>(leftMapping, JoinerType.LESS_THAN, rightMapping);
     }
 
+    // TODO Support using a non-natural comparator:
+//    public static <A, B, Property_> BiJoiner<A, B> lessThan(
+//            Function<A, Property_> leftMapping, Function <B, Property_> rightMapping, Comparable<Property_> comparator);
+
     public static <A, Property_ extends Comparable<Property_>> BiJoiner<A, A> lessThanOrEqualTo(
             Function<A, Property_> mapping) {
         return lessThanOrEqualTo(mapping, mapping);

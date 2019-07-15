@@ -16,16 +16,6 @@
 
 package org.optaplanner.core.api.score.stream.bi;
 
-import java.util.function.Function;
-
-import org.optaplanner.core.api.score.stream.common.JoinerType;
-
 public interface BiJoiner<A, B> {
-
-    // ************************************************************************
-    // Combine joiners
-    // ************************************************************************
-
-    BiJoiner<A, B> and(BiJoiner<A, B> other);
 
 }

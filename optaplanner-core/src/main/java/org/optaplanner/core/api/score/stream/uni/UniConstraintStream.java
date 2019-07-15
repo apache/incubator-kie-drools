@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
+import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 
 /**
  * A {@link ConstraintStream} that matches one fact.
@@ -110,8 +111,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
      * <p>
-     * This method has overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * To combine 5 or more joiners, use this method in combination with {@link BiJoiner#and(BiJoiner)}.
+     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * @param otherClass never null
      * @param joiner never null
      * @param <B> the type of the second matched fact
@@ -125,7 +125,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @see #join(Class, BiJoiner)
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2) {
-        return join(otherClass, joiner1.and(joiner2));
+        return join(otherClass, AbstractBiJoiner.merge(joiner1, joiner2));
     }
 
     /**
@@ -133,7 +133,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3) {
-        return join(otherClass, joiner1.and(joiner2).and(joiner3));
+        return join(otherClass, AbstractBiJoiner.merge(joiner1, joiner2, joiner3));
     }
 
     /**
@@ -141,7 +141,17 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B> joiner1, BiJoiner<A, B> joiner2,
             BiJoiner<A, B> joiner3, BiJoiner<A, B> joiner4) {
-        return join(otherClass, joiner1.and(joiner2).and(joiner3).and(joiner4));
+        return join(otherClass, AbstractBiJoiner.merge(joiner1, joiner2, joiner3, joiner4));
+    }
+
+    /**
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     * @see #join(Class, BiJoiner)
+     */
+    default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
+        return join(otherClass, AbstractBiJoiner.merge(joiners));
     }
 
     /**
@@ -168,8 +178,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
      * <p>
-     * This method has overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * To combine 5 or more joiners, use this method in combination with {@link BiJoiner#and(BiJoiner)}.
+     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * @param joiner never null
      * @return a stream that matches every unique combination of A and another A for which the {@link BiJoiner} is true
      */
@@ -179,7 +188,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @see #joinOther(BiJoiner)
      */
     default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
-        return joinOther(joiner1.and(joiner2));
+        return joinOther(AbstractBiJoiner.merge(joiner1, joiner2));
     }
 
     /**
@@ -187,7 +196,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3) {
-        return joinOther(joiner1.and(joiner2).and(joiner3));
+        return joinOther(AbstractBiJoiner.merge(joiner1, joiner2, joiner3));
     }
 
     /**
@@ -195,7 +204,17 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
             BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
-        return joinOther(joiner1.and(joiner2).and(joiner3).and(joiner4));
+        return joinOther(AbstractBiJoiner.merge(joiner1, joiner2, joiner3, joiner4));
+    }
+
+    /**
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
+     * @see #joinOther(BiJoiner)
+     */
+    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A>... joiners) {
+        return joinOther(AbstractBiJoiner.merge(joiners));
     }
 
     // ************************************************************************
