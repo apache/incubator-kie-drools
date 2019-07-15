@@ -56,7 +56,6 @@ import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenera
 class GeneratedClassDeclaration {
 
     private static final String EQUALS = "equals";
-    private static final String TO_STRING = "toString";
     private static final String VALUE = "value";
     private static final String OVERRIDE = "Override";
 
@@ -90,7 +89,7 @@ class GeneratedClassDeclaration {
 
         Collection<TypeFieldDescr> inheritedFields = findInheritedDeclaredFields();
         if (inheritedFields.isEmpty() && typeDeclaration.getFields().isEmpty()) {
-            generatedClass.addMember(generateToStringMethod(generatedClassName, new ArrayList<>()));
+            generatedClass.addMember(new GeneratedToString(generatedClassName).method());
             return generatedClass;
         } else {
             return generateFullClass(generatedClassName, generatedClass, inheritedFields);
@@ -120,9 +119,9 @@ class GeneratedClassDeclaration {
         TypeFieldDescr[] typeFields = typeFieldsSortedByPosition();
 
         GeneratedHashcode generatedHashcode = new GeneratedHashcode(hasSuper);
+        GeneratedToString generatedToString = new GeneratedToString(generatedClassName);
 
         List<Statement> equalsFieldStatement = new ArrayList<>();
-        List<String> toStringFieldStatement = new ArrayList<>();
         List<TypeFieldDescr> keyFields = new ArrayList<>();
 
         boolean createFullArgsConstructor = typeFields.length < 65;
@@ -160,7 +159,7 @@ class GeneratedClassDeclaration {
             field.createSetter();
             MethodDeclaration getter = field.createGetter();
 
-            toStringFieldStatement.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
+            generatedToString.add(format("+ {0}+{1}", quote(fieldName + "="), fieldName));
 
             boolean hasPositionAnnotation = false;
             for (AnnotationDescr ann : typeFieldDescr.getAnnotations()) {
@@ -216,7 +215,7 @@ class GeneratedClassDeclaration {
             generatedClass.addMember(generatedHashcode.generateHashCodeMethod());
         }
 
-        generatedClass.addMember(generateToStringMethod(generatedClassName, toStringFieldStatement));
+        generatedClass.addMember(generatedToString.method());
         return generatedClass;
     }
 
@@ -377,20 +376,6 @@ class GeneratedClassDeclaration {
                 .filter(n -> n.getName().toString().equals("__fieldName"))
                 .forEach(n -> n.replace(new FieldAccessExpr(n.getScope(), fieldName)));
         return statement;
-    }
-
-    private static MethodDeclaration generateToStringMethod(String generatedClassName, List<String> toStringFieldStatement) {
-        final String header = format("return {0} + {1}", quote(generatedClassName), quote("( "));
-        final String body = String.join(format("+ {0}", quote(", ")), toStringFieldStatement);
-        final String close = format("+{0};", quote(" )"));
-
-        final Statement toStringStatement = parseStatement(header + body + close);
-
-        final Type returnType = parseType(String.class.getSimpleName());
-        final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, TO_STRING);
-        equals.addAnnotation("Override");
-        equals.setBody(new BlockStmt(nodeList(toStringStatement)));
-        return equals;
     }
 
     private static String getAnnotationValue(String annotationName, String valueName, Object value) {
