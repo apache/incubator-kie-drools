@@ -16,6 +16,9 @@
 
 package org.drools.core.common;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,25 +26,27 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.FactHandleFactory;
 
+import static java.util.stream.Collectors.toCollection;
+
 public abstract class AbstractFactHandleFactory
     implements
     FactHandleFactory  {
 
     /** The fact id. */
-    private AtomicInteger              id;
+    private IdsGenerator idGen;
 
     /** The number of facts created - used for recency. */
-    private AtomicLong                 counter;
+    private AtomicLong counter;
     
     public AbstractFactHandleFactory() {
         // starts at 0. So first assigned is 1.
         // 0 is hard coded to Initialfact
-        this.id = new AtomicInteger(0);
+        this.idGen = new IdsGenerator(0);
         this.counter = new AtomicLong(0);
     }
     
     public AbstractFactHandleFactory(int id, long counter) {
-        this.id = new AtomicInteger( id );
+        this.idGen = new IdsGenerator( id );
         this.counter = new AtomicLong( counter );
     }
 
@@ -99,7 +104,7 @@ public abstract class AbstractFactHandleFactory
     public abstract FactHandleFactory newInstance();
 
     public int getNextId() {
-        return this.id.incrementAndGet();
+        return idGen.getNextId();
     }
 
     public long getNextRecency() {
@@ -107,7 +112,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     public int getId() {
-        return this.id.get();
+        return idGen.getId();
     }
 
     public long getRecency() {
@@ -115,12 +120,62 @@ public abstract class AbstractFactHandleFactory
     }
     
     public void clear(int id, long counter) {
-        this.id = new AtomicInteger( id );
+        this.idGen = new IdsGenerator( id );
         this.counter = new AtomicLong( counter );
     }
 
-    public void reset() {
-        id.set(0);
-        counter.set(0);
+    public void doRecycleIds(Collection<Integer> usedIds) {
+        idGen.doRecycle( usedIds );
+    }
+
+    public void stopRecycleIds() {
+        idGen.stopRecycle();
+    }
+
+    private static class IdsGenerator {
+
+        /** The fact id. */
+        private AtomicInteger id;
+
+        private Queue<Integer> usedIds;
+        private int recycledId;
+
+        private IdsGenerator( int startId ) {
+            this.id = new AtomicInteger( startId );
+        }
+
+        public int getNextId() {
+            return hasRecycledId() ? recycledId++ : this.id.incrementAndGet();
+        }
+
+        private boolean hasRecycledId() {
+            if (usedIds != null) {
+                while ( !usedIds.isEmpty() ) {
+                    int firstUsedId = usedIds.peek();
+                    if ( recycledId < firstUsedId ) {
+                        return true;
+                    } else if ( recycledId == firstUsedId ) {
+                        recycledId++;
+                    }
+                    usedIds.poll();
+                }
+                usedIds = null;
+            }
+            return false;
+        }
+
+        public int getId() {
+            return this.id.get();
+        }
+
+        public void doRecycle(Collection<Integer> usedIds) {
+            this.usedIds = usedIds.stream().sorted().collect( toCollection( LinkedList::new ) );
+            this.usedIds.add( id.get()+1 );
+            this.recycledId = 1;
+        }
+
+        public void stopRecycle() {
+            this.usedIds = null;
+        }
     }
 }

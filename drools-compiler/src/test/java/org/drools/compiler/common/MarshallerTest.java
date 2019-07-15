@@ -2,6 +2,7 @@ package org.drools.compiler.common;
 
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.JavaSerializableResolverStrategy;
@@ -336,6 +337,41 @@ public class MarshallerTest {
             assertEquals(0, ksession.fireAllRules());
         } finally {
             ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testFromJoinWithPartialFiring() throws Exception {
+        String str =
+                "import java.util.Collection\n" +
+                        "rule R1 when\n" +
+                        "    Integer()\n" +
+                        "    String() from [ \"x\", \"y\", \"z\" ]\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession(null, env);
+            InternalFactHandle fh1 = ( InternalFactHandle ) ksession.insert( 1 );
+
+            assertEquals(2, ksession.fireAllRules(2));
+
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+            assertEquals(1, ksession.fireAllRules());
+
+            // old FH should keep its id
+            InternalFactHandle intFH = ( InternalFactHandle ) ksession.getFactHandles().iterator().next();
+            assertEquals( fh1.getId(), intFH.getId() );
+
+            // serialization/deserialization of derived FHs shouldn't consume more FH ids
+            assertEquals( fh1.getId() + 4, (( InternalFactHandle ) ksession.insert( 2 )).getId() );
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
         }
     }
 }
