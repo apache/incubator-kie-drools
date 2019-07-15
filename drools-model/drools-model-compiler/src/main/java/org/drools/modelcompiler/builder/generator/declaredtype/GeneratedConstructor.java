@@ -33,6 +33,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
     }
 
     void generateConstructor(ClassOrInterfaceDeclaration generatedClass, Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields, List<TypeFieldDescr> keyFields) {
+        // DeclareTest.testDeclaredTypeWithHundredsProps
         boolean createFullArgsConstructor = typeFields.length < 65;
         ConstructorDeclaration fullArgumentsCtor = null;
         NodeList<Statement> ctorFieldStatement = null;
