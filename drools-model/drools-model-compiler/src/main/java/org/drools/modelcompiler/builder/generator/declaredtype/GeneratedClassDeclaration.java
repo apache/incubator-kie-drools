@@ -25,8 +25,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.ArrayType;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.AnnotationDeclarationError;
@@ -50,17 +48,12 @@ import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
 import static java.util.stream.Collectors.joining;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 class GeneratedClassDeclaration {
 
-    private static final String EQUALS = "equals";
     private static final String VALUE = "value";
-    private static final String OVERRIDE = "Override";
-
-    private static final Statement referenceEquals = parseStatement("if (this == o) { return true; }");
-    private static final Statement classCheckEquals = parseStatement("if (o == null || getClass() != o.getClass()) { return false; }");
+    static final String OVERRIDE = "Override";
 
     private static final Map<String, Class<?>> predefinedClassLevelAnnotation = new HashMap<>();
 
@@ -120,8 +113,8 @@ class GeneratedClassDeclaration {
 
         GeneratedHashcode generatedHashcode = new GeneratedHashcode(hasSuper);
         GeneratedToString generatedToString = new GeneratedToString(generatedClassName);
+        GeneratedEqualsMethod generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
-        List<Statement> equalsFieldStatement = new ArrayList<>();
         List<TypeFieldDescr> keyFields = new ArrayList<>();
 
         boolean createFullArgsConstructor = typeFields.length < 65;
@@ -166,7 +159,7 @@ class GeneratedClassDeclaration {
                 if (ann.getName().equalsIgnoreCase("key")) {
                     keyFields.add(typeFieldDescr);
                     field.addAnnotation(Key.class.getName());
-                    equalsFieldStatement.add(generateEqualsForField(getter, fieldName));
+                    generatedEqualsMethod.add(getter, fieldName);
                     generatedHashcode.addHashCodeForField(fieldName, getter.getType());
                 } else if (ann.getName().equalsIgnoreCase("position")) {
                     field.addAndGetAnnotation(Position.class.getName()).addPair(VALUE, "" + ann.getValue());
@@ -211,8 +204,8 @@ class GeneratedClassDeclaration {
         }
 
         if (!keyFields.isEmpty()) {
-            generatedClass.addMember(generateEqualsMethod(generatedClassName, equalsFieldStatement, hasSuper));
-            generatedClass.addMember(generatedHashcode.generateHashCodeMethod());
+            generatedClass.addMember(generatedEqualsMethod.method());
+            generatedClass.addMember(generatedHashcode.method());
         }
 
         generatedClass.addMember(generatedToString.method());
@@ -319,54 +312,7 @@ class GeneratedClassDeclaration {
                 Optional.empty();
     }
 
-    private MethodDeclaration generateEqualsMethod(String generatedClassName, Collection<Statement> equalsFieldStatement, boolean hasSuper) {
-        NodeList<Statement> equalsStatements = nodeList(referenceEquals, classCheckEquals);
-        equalsStatements.add(classCastStatement(generatedClassName));
-        if (hasSuper) {
-            equalsStatements.add(parseStatement("if ( !super.equals( o ) ) return false;"));
-        }
-        equalsStatements.addAll(equalsFieldStatement);
-        equalsStatements.add(parseStatement("return true;"));
-
-        final Type returnType = parseType(boolean.class.getSimpleName());
-        final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, EQUALS);
-        equals.addParameter(Object.class, "o");
-        equals.addAnnotation(OVERRIDE);
-        equals.setBody(new BlockStmt(equalsStatements));
-        return equals;
-    }
-
-    private static Statement classCastStatement(String className) {
-        Statement statement = parseStatement("__className that = (__className) o;");
-        statement.findAll(ClassOrInterfaceType.class)
-                .stream()
-                .filter(n1 -> n1.getName().toString().equals("__className"))
-                .forEach(n -> n.replace(toClassOrInterfaceType(className)));
-        return statement;
-    }
-
-    private static Statement generateEqualsForField(MethodDeclaration getter, String fieldName) {
-
-        Type type = getter.getType();
-        Statement statement;
-        if (type instanceof ClassOrInterfaceType) {
-            statement = parseStatement(" if( __fieldName != null ? !__fieldName.equals(that.__fieldName) : that.__fieldName != null) { return false; }");
-        } else if (type instanceof ArrayType) {
-            Type componentType = ((ArrayType) type).getComponentType();
-            if (componentType instanceof PrimitiveType) {
-                statement = parseStatement(" if( !java.util.Arrays.equals((" + componentType + "[])__fieldName, (" + componentType + "[])that.__fieldName)) { return false; }");
-            } else {
-                statement = parseStatement(" if( !java.util.Arrays.equals((Object[])__fieldName, (Object[])that.__fieldName)) { return false; }");
-            }
-        } else if (type instanceof PrimitiveType) {
-            statement = parseStatement(" if( __fieldName != that.__fieldName) { return false; }");
-        } else {
-            throw new RuntimeException("Unknown type");
-        }
-        return replaceFieldName(statement, fieldName);
-    }
-
-    private static Statement replaceFieldName(Statement statement, String fieldName) {
+    static Statement replaceFieldName(Statement statement, String fieldName) {
         statement.findAll(NameExpr.class)
                 .stream()
                 .filter(n -> n.getName().toString().equals("__fieldName"))

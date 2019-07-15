@@ -16,11 +16,11 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
+import static org.drools.modelcompiler.builder.generator.declaredtype.GeneratedClassDeclaration.OVERRIDE;
 
 class GeneratedHashcode {
 
     private static final String HASH_CODE = "hashCode";
-    private static final String OVERRIDE = "Override";
     private List<Statement> hashCodeFieldStatement = new ArrayList<>();
 
     private final boolean hasSuper;
@@ -29,7 +29,7 @@ class GeneratedHashcode {
         this.hasSuper = hasSuper;
     }
 
-    MethodDeclaration generateHashCodeMethod() {
+    MethodDeclaration method() {
         final Statement header = parseStatement(hasSuper ? "int result = super.hashCode();" : "int result = 1;");
         NodeList<Statement> hashCodeStatements = nodeList(header);
         hashCodeStatements.addAll(hashCodeFieldStatement);

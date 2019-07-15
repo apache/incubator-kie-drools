@@ -13,6 +13,7 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
+import static org.drools.modelcompiler.builder.generator.declaredtype.GeneratedClassDeclaration.OVERRIDE;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedToString {
@@ -39,7 +40,7 @@ public class GeneratedToString {
 
         final Type returnType = parseType(String.class.getSimpleName());
         final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, TO_STRING);
-        equals.addAnnotation("Override");
+        equals.addAnnotation(OVERRIDE);
         equals.setBody(new BlockStmt(nodeList(toStringStatement)));
         return equals;
     }
