@@ -27,12 +27,14 @@ interface GeneratedConstructor {
 class FullArgumentConstructor implements GeneratedConstructor {
 
     private final TypeDeclarationDescr typeDeclaration;
+    private final ClassOrInterfaceDeclaration generatedClass;
 
-    FullArgumentConstructor(TypeDeclarationDescr typeDeclaration) {
+    FullArgumentConstructor(TypeDeclarationDescr typeDeclaration, ClassOrInterfaceDeclaration generatedClass) {
         this.typeDeclaration = typeDeclaration;
+        this.generatedClass = generatedClass;
     }
 
-    void generateConstructor(ClassOrInterfaceDeclaration generatedClass, Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields, List<TypeFieldDescr> keyFields) {
+    void generateConstructor( Collection<TypeFieldDescr> inheritedFields, TypeFieldDescr[] typeFields, List<TypeFieldDescr> keyFields) {
         // DeclareTest.testDeclaredTypeWithHundredsProps
         boolean createFullArgsConstructor = typeFields.length < 65;
         ConstructorDeclaration fullArgumentsCtor = null;

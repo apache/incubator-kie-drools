@@ -109,6 +109,9 @@ class GeneratedClassDeclaration {
         GeneratedToString generatedToString = new GeneratedToString(generatedClassName);
         GeneratedEqualsMethod generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
+        FullArgumentConstructor fullArgumentConstructor = new FullArgumentConstructor(typeDeclaration, generatedClass);
+
+
         List<TypeFieldDescr> keyFields = new ArrayList<>();
         int position = inheritedFields.size();
         for (TypeFieldDescr typeFieldDescr : typeFields) {
@@ -149,7 +152,7 @@ class GeneratedClassDeclaration {
             }
         }
 
-        new FullArgumentConstructor(typeDeclaration).generateConstructor(generatedClass, inheritedFields, typeFields, keyFields);
+        fullArgumentConstructor.generateConstructor(inheritedFields, typeFields, keyFields);
 
         if (!keyFields.isEmpty()) {
             generatedClass.addMember(generatedEqualsMethod.method());
