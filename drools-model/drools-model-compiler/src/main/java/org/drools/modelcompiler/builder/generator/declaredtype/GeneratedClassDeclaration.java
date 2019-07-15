@@ -116,35 +116,10 @@ class GeneratedClassDeclaration {
         GeneratedEqualsMethod generatedEqualsMethod = new GeneratedEqualsMethod(generatedClassName, hasSuper);
 
         List<TypeFieldDescr> keyFields = new ArrayList<>();
-
-        boolean createFullArgsConstructor = typeFields.length < 65;
-        ConstructorDeclaration fullArgumentsCtor = null;
-        NodeList<Statement> ctorFieldStatement = null;
-
-        if (createFullArgsConstructor) {
-            fullArgumentsCtor = generatedClass.addConstructor(Modifier.publicModifier().getKeyword());
-            ctorFieldStatement = nodeList();
-
-            MethodCallExpr superCall = new MethodCallExpr(null, "super");
-            for (TypeFieldDescr typeFieldDescr : inheritedFields) {
-                String fieldName = typeFieldDescr.getFieldName();
-                addCtorArg(fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName);
-                superCall.addArgument(fieldName);
-                if (typeFieldDescr.getAnnotation("key") != null) {
-                    keyFields.add(typeFieldDescr);
-                }
-            }
-            ctorFieldStatement.add(new ExpressionStmt(superCall));
-        }
-
         int position = inheritedFields.size();
         for (TypeFieldDescr typeFieldDescr : typeFields) {
             String fieldName = typeFieldDescr.getFieldName();
             Type returnType = parseType(typeFieldDescr.getPattern().getObjectType());
-            if (createFullArgsConstructor) {
-                addCtorArg(fullArgumentsCtor, returnType, fieldName);
-                ctorFieldStatement.add(replaceFieldName(parseStatement("this.__fieldName = __fieldName;"), fieldName));
-            }
 
             FieldDeclaration field = typeFieldDescr.getInitExpr() == null ?
                     generatedClass.addField(returnType, fieldName, Modifier.privateModifier().getKeyword()) :
@@ -177,6 +152,35 @@ class GeneratedClassDeclaration {
 
             if (!hasPositionAnnotation) {
                 field.addAndGetAnnotation(Position.class.getName()).addPair(VALUE, "" + position++);
+            }
+        }
+
+        boolean createFullArgsConstructor = typeFields.length < 65;
+        ConstructorDeclaration fullArgumentsCtor = null;
+        NodeList<Statement> ctorFieldStatement = null;
+
+        if (createFullArgsConstructor) {
+            fullArgumentsCtor = generatedClass.addConstructor(Modifier.publicModifier().getKeyword());
+            ctorFieldStatement = nodeList();
+
+            MethodCallExpr superCall = new MethodCallExpr(null, "super");
+            for (TypeFieldDescr typeFieldDescr : inheritedFields) {
+                String fieldName = typeFieldDescr.getFieldName();
+                addCtorArg(fullArgumentsCtor, typeFieldDescr.getPattern().getObjectType(), fieldName);
+                superCall.addArgument(fieldName);
+                if (typeFieldDescr.getAnnotation("key") != null) {
+                    keyFields.add(typeFieldDescr);
+                }
+            }
+            ctorFieldStatement.add(new ExpressionStmt(superCall));
+        }
+
+        for (TypeFieldDescr typeFieldDescr : typeFields) {
+            String fieldName = typeFieldDescr.getFieldName();
+            Type returnType = parseType(typeFieldDescr.getPattern().getObjectType());
+            if (createFullArgsConstructor) {
+                addCtorArg(fullArgumentsCtor, returnType, fieldName);
+                ctorFieldStatement.add(replaceFieldName(parseStatement("this.__fieldName = __fieldName;"), fieldName));
             }
 
             if (createFullArgsConstructor) {
