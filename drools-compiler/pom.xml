@@ -369,7 +369,7 @@
       </build>
     </profile>
     <profile>
-      <id>report-code-coverage</id>
+      <id>sonarcloud-analysis</id>
       <properties>
         <!-- Generated classes should not show up in Sonar. -->
         <sonar.exclusions>**/*Lexer.java</sonar.exclusions>

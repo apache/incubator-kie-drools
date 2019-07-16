@@ -61,7 +61,7 @@
 
   <profiles>
     <profile>
-      <id>report-code-coverage</id>
+      <id>sonarcloud-analysis</id>
       <properties>
         <!-- Excluding the entire module from coverage statistics. API modules like this one contain only interfaces
              and enums, thus nothing JaCoCo can measure. -->
