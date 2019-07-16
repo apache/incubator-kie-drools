@@ -296,7 +296,7 @@ public abstract class AccumulateVisitor {
                 functionDSL.addArgument( createAccSupplierExpr( accumulateFunction ) );
                 functionDSL.addArgument(context.getVarExpr(nameExpr));
 
-                addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
+                addBindingAsDeclaration(context, bindingId, accumulateFunction);
             } else if (accumulateFunctionParameter instanceof LiteralExpr) {
                 final Class<?> declarationClass = getLiteralExpressionType((LiteralExpr) accumulateFunctionParameter);
 
@@ -311,7 +311,7 @@ public abstract class AccumulateVisitor {
                 functionDSL.addArgument( createAccSupplierExpr( accumulateFunction ) );
                 functionDSL.addArgument(new MethodCallExpr(null, VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
 
-                addBindingAsDeclaration(context, bindingId, declarationClass, accumulateFunction);
+                addBindingAsDeclaration(context, bindingId, accumulateFunction);
             } else {
                 context.addCompilationError(new InvalidExpressionErrorResult("Invalid expression " + accumulateFunctionParameterStr));
                 return Optional.empty();
@@ -364,13 +364,9 @@ public abstract class AccumulateVisitor {
         context.addCompilationError(new InvalidExpressionErrorResult(String.format("Unknown accumulate function: '%s' on rule '%s'.", function.getFunction(), context.getRuleDescr().getName())));
     }
 
-    private void addBindingAsDeclaration(RuleContext context, String bindingId, Class<?> declarationClass, AccumulateFunction accumulateFunction) {
+    private void addBindingAsDeclaration(RuleContext context, String bindingId, AccumulateFunction accumulateFunction) {
         if (bindingId != null) {
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
-            if ((accumulateFunctionResultType == Comparable.class || accumulateFunctionResultType == Number.class) &&
-                    (Comparable.class.isAssignableFrom(declarationClass) || declarationClass.isPrimitive())) {
-                accumulateFunctionResultType = declarationClass;
-            }
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
         }
     }
