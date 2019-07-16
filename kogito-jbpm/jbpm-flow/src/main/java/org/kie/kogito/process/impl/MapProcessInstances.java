@@ -16,15 +16,15 @@
 package org.kie.kogito.process.impl;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
 
 class MapProcessInstances<T> implements ProcessInstances<T> {
 
-    private final HashMap<Long, ProcessInstance<T>> instances = new HashMap<>();
+    private final ConcurrentHashMap<Long, ProcessInstance<T>> instances = new ConcurrentHashMap<>();
 
     @Override
     public Optional<? extends ProcessInstance<T>> findById(long id) {
@@ -37,7 +37,9 @@ class MapProcessInstances<T> implements ProcessInstances<T> {
     }
 
     void update(long id, ProcessInstance<T> instance) {
-        instances.put(id, instance);
+        if (instance.status() == org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {
+            instances.put(id, instance);
+        }
     }
 
     void remove(long id) {

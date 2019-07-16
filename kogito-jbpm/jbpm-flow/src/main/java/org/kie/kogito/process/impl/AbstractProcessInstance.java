@@ -58,9 +58,10 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         
         ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+pid, completionEventListener, false);
         
+        
+        org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(pid);
         addToUnitOfWork((pi) -> process.instances().update(pi.id(), pi));
-        org.kie.api.runtime.process.ProcessInstance pi = this.rt.startProcessInstance(pid);
-        unbind(variables, pi.getVariables());
+        unbind(variables, processInstance.getVariables());
         
     }
     
