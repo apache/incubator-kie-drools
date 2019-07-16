@@ -25,7 +25,7 @@ import org.kie.dmn.model.api.dmndi.DMNLabel;
 
 public class DMNLabelConverter extends ShapeConverter {
 
-    private static final String TEXT = "Text";
+    public static final String TEXT = "Text";
 
     public DMNLabelConverter(XStream xstream) {
         super(xstream);

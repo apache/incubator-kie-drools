@@ -110,6 +110,11 @@ public class UnmarshalMarshalTest {
         assertEquals(21d, shape0sharedStyle.getFontSize(), 0.0d);
     }
 
+    @Test
+    public void test_DMNLabel_Text() throws Exception {
+        testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DMNLabel-Text.dmn");
+    }
+
     public void testRoundTripV12(String subdir, String xmlfile) throws Exception {
         testRoundTrip(subdir, xmlfile, MARSHALLER, DMN12_SCHEMA_SOURCE);
     }
