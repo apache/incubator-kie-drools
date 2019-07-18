@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.FactWithMap;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.PersonHolder;
@@ -9171,5 +9172,33 @@ public class Misc2Test extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
         assertEquals(2, fired);
+    }
+
+    @Test
+    public void testJitMapCoercion() {
+        String drl =
+                "package com.sample\n" +
+                "import " + FactWithMap.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  FactWithMap( $map : valueMap )\n" +
+                "  Person( $status : status, $map.get(\"key\") >= $status )\n" +
+                "then\n" +
+                "end";
+
+        // If without Jitting (e.g. ConstraintJittingThresholdOption.get(-1)), this test passes
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+
+        FactWithMap factWithMap = new FactWithMap();
+        factWithMap.getValueMap().put("key", new Integer(5)); // Integer
+        ksession.insert(factWithMap);
+
+        Person person = new Person();
+        person.setStatus("10"); // String
+        ksession.insert(person);
+
+        int fired = ksession.fireAllRules(); // Should not fire
+
+        assertEquals(0, fired);
     }
 }
