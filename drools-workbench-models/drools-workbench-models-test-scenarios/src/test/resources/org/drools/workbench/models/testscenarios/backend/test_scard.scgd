@@ -1,0 +1,34 @@
+<org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel>
+  <name>Scard</name>
+  <baselineScore>0.0</baselineScore>
+  <initialScore>20.0</initialScore>
+  <useReasonCodes>false</useReasonCodes>
+  <factName>Person</factName>
+  <fieldName>result</fieldName>
+  <reasonCodesAlgorithm></reasonCodesAlgorithm>
+  <reasonCodeField></reasonCodeField>
+  <characteristics>
+    <org.drools.workbench.models.guided.scorecard.shared.Characteristic>
+      <fact>Person</fact>
+      <field>name</field>
+      <baselineScore>0.0</baselineScore>
+      <reasonCode></reasonCode>
+      <attributes>
+        <org.drools.workbench.models.guided.scorecard.shared.Attribute>
+          <value>abc</value>
+          <partialScore>5.0</partialScore>
+          <reasonCode></reasonCode>
+          <operator>=</operator>
+        </org.drools.workbench.models.guided.scorecard.shared.Attribute>
+      </attributes>
+      <name>abc</name>
+      <dataType>String</dataType>
+    </org.drools.workbench.models.guided.scorecard.shared.Characteristic>
+  </characteristics>
+  <packageName>org.drools.workbench.models.testscenarios.backend</packageName>
+  <imports>
+    <imports/>
+  </imports>
+  <agendaGroup></agendaGroup>
+  <ruleFlowGroup></ruleFlowGroup>
+</org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel>

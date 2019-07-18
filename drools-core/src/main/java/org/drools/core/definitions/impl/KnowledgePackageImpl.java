@@ -46,7 +46,6 @@ import org.drools.core.definitions.rule.impl.GlobalImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.rule.Collect;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
@@ -61,12 +60,10 @@ import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.internal.assembler.KieAssemblers;
-import org.kie.api.internal.io.ResourceTypePackage;
-import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class KnowledgePackageImpl
@@ -75,6 +72,15 @@ public class KnowledgePackageImpl
         Externalizable {
 
     private static final long serialVersionUID = 510l;
+
+    private static final String[] implicitImports = new String[]{
+            "org.kie.api.definition.rule.*",
+            "org.kie.api.definition.type.*",
+            "org.drools.core.factmodel.traits.Alias",
+            "org.drools.core.factmodel.traits.Trait",
+            "org.drools.core.factmodel.traits.Traitable",
+            "org.drools.core.beliefsystem.abductive.Abductive",
+            "org.drools.core.beliefsystem.abductive.Abducible"};
 
     /**
      * Name of the pkg.
@@ -344,8 +350,10 @@ public class KnowledgePackageImpl
     }
 
     public void addImport(final ImportDeclaration importDecl) {
-        this.imports.put(importDecl.getTarget(),
-                         importDecl);
+        this.imports.put(importDecl.getTarget(), importDecl);
+        if (this.typeResolver != null) {
+            this.typeResolver.addImport( importDecl.getTarget() );
+        }
     }
 
     public Map<String, ImportDeclaration> getImports() {
@@ -644,8 +652,15 @@ public class KnowledgePackageImpl
         return typeResolver;
     }
 
-    public void setTypeResolver(TypeResolver typeResolver) {
-        this.typeResolver = typeResolver;
+    public void setClassLoader(ClassLoader classLoader) {
+        if (typeResolver != null && typeResolver.getClassLoader() == classLoader) {
+            return;
+        }
+        this.typeResolver = new ClassTypeResolver(new HashSet<String>(getImports().keySet()), classLoader, getName());
+        typeResolver.addImport(getName() + ".*");
+        for (String implicitImport : implicitImports) {
+            typeResolver.addImplicitImport(implicitImport);
+        }
         this.ruleUnitDescriptionLoader = new RuleUnitDescriptionLoader(typeResolver);
     }
 
@@ -814,7 +829,16 @@ public class KnowledgePackageImpl
             }
         }
 
-        return ClassUtils.deepClone(this, classLoader, cloningResources);
+        KnowledgePackageImpl clonedPkg = ClassUtils.deepClone(this, classLoader, cloningResources);
+        clonedPkg.setClassLoader( classLoader );
+
+        if (ruleUnitDescriptionLoader != null) {
+            for (String ruleUnit : ruleUnitDescriptionLoader.getDescriptions().keySet()) {
+                clonedPkg.getRuleUnitDescriptionLoader().getDescription( ruleUnit );
+            }
+        }
+        
+        return clonedPkg;
     }
 
     @Override

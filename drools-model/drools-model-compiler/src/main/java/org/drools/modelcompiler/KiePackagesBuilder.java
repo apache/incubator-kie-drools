@@ -133,8 +133,6 @@ import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
-import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import static java.util.stream.Collectors.toList;
 
@@ -215,9 +213,7 @@ public class KiePackagesBuilder {
     private KnowledgePackageImpl createKiePackage(String name) {
         KnowledgePackageImpl kpkg = new KnowledgePackageImpl( name );
         kpkg.setClassFieldAccessorCache(new ClassFieldAccessorCache( getClassLoader() ) );
-        TypeResolver typeResolver = new ClassTypeResolver( new HashSet<>( kpkg.getImports().keySet() ), getClassLoader(), name );
-        typeResolver.addImport( name + ".*" );
-        kpkg.setTypeResolver(typeResolver);
+        kpkg.setClassLoader( getClassLoader() );
         return kpkg;
     }
 

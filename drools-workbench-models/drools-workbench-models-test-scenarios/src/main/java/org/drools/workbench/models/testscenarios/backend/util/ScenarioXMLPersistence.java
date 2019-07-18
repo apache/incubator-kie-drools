@@ -33,6 +33,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.models.testscenarios.shared.VerifyScorecardScore;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Imports;
 
@@ -61,6 +62,7 @@ public class ScenarioXMLPersistence {
         xt.alias("expect-fact", VerifyFact.class);
         xt.alias("expect-field", VerifyField.class);
         xt.alias("expect-rule", VerifyRuleFired.class);
+        xt.alias("verify-scorecard-score", VerifyScorecardScore.class);
 
         xt.omitField(ExecutionTrace.class, "rulesFired");
 
