@@ -57,16 +57,48 @@ public class EvaluationUtil {
         return n1 != null && n2 != null && Double.compare( n1.doubleValue(), n2.doubleValue() ) > 0;
     }
 
+    public static boolean greaterThanNumbers(Number n1, Object n2) {
+        if(n2 instanceof Number){
+            return greaterThanNumbers(n1, (Number)n2);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public static boolean greaterThanNumbers(Long n1, Long n2) {
+        return n1 != null && n2 != null && n1.compareTo(n2) > 0;
+    }
+
     public static boolean lessThanNumbers(Number n1, Number n2) {
         return n1 != null && n2 != null && Double.compare( n1.doubleValue(), n2.doubleValue() ) < 0;
+    }
+
+    public static boolean lessThanNumbers(Number n1, Object n2) {
+        if(n2 instanceof Number){
+            return lessThanNumbers(n1, (Number)n2);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public static boolean lessThanNumbers(Long n1, Long n2) {
+        return n1 != null && n2 != null && n1.compareTo(n2) < 0;
     }
 
     public static boolean greaterOrEqualNumbers(Number n1, Number n2) {
         return n1 != null && n2 != null && Double.compare( n1.doubleValue(), n2.doubleValue() ) >= 0;
     }
 
+    public static boolean greaterOrEqualNumbers(Long n1, Long n2) {
+        return n1 != null && n2 != null && n1.compareTo(n2) >= 0;
+    }
+
     public static boolean lessOrEqualNumbers(Number n1, Number n2) {
         return n1 != null && n2 != null && Double.compare( n1.doubleValue(), n2.doubleValue() ) <= 0;
+    }
+
+    public static boolean lessOrEqualNumbers(Long n1, Long n2) {
+        return n1 != null && n2 != null && n1.compareTo(n2) <= 0;
     }
 
     public static boolean greaterThanStringsAsNumbers(String s1, String s2) {
