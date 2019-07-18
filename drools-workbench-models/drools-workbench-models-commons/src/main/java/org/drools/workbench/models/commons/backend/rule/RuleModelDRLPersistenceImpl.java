@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -4140,7 +4142,11 @@ public class RuleModelDRLPersistenceImpl
                 } else {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
                 }
-                con.setValue(value);
+                if (isNumberThatNeedsToBeTrimmed(value)) {
+                    con.setValue(trim(value));
+                } else {
+                    con.setValue(value);
+                }
             }
 
             final String type = RuleModelPersistenceHelper.inferDataTypeFromConstraint(m,
@@ -4158,7 +4164,46 @@ public class RuleModelDRLPersistenceImpl
 
             return type;
         }
+
+        private boolean isNumberThatNeedsToBeTrimmed(final String value) {
+            if (isBigDecimal(value) || isBigInteger(value)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private boolean isBigDecimal(final String value) {
+            if (value.endsWith("B")) {
+                try {
+                    new BigDecimal(trim(value));
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private boolean isBigInteger(final String value) {
+            if (value.endsWith("I")) {
+                try {
+                    new BigInteger(trim(value));
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private String trim(final String value) {
+            return value.substring(0, value.length() - 1);
+        }
     }
+
 
     /**
      * If the bound type is not in the DMO it probably hasn't been imported.
