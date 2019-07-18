@@ -16,6 +16,9 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -120,5 +123,103 @@ public class JittingTest extends CommonTestMethodBase {
         final KieSession kieSession = kieBase.newKieSession();
         kieSession.insert(new FactWithEnum(AnEnum.FIRST));
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testMvelJitDivision() {
+        // DROOLS-2928
+        String drl = "import " + Person.class.getName() + ";\n"
+                + "rule R1 when\n"
+                + "  Person( name == \"John\", $age1 : age )\n"
+                + "  Person( name == \"Paul\", age > ((2*$age1)/3) )\n"
+                + "then end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+
+        Person john = new Person("John", 20);
+        ksession.insert(john);
+        Person paul = new Person("Paul", 20);
+        ksession.insert(paul);
+
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
+    }
+
+    @Test
+    public void testJitMemberOf() {
+        // DROOLS-3794
+        String drl =
+                "import java.util.ArrayList;\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "declare Foo\n" +
+                "  barNames : List\n" +
+                "end\n" +
+                "\n" +
+                "declare Bar\n" +
+                "  name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "  when\n" +
+                "    not (Foo ())\n" +
+                "  then\n" +
+                "    List list = new ArrayList<String>();" +
+                "    list.add(null);" +
+                "    insert(new Foo(list));\n" +
+                "    insert(new Bar(null));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Add name\"\n" +
+                "  when\n" +
+                "    foo : Foo()\n" +
+                "    bar : Bar(name memberOf foo.barNames)\n" +
+                "  then\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+
+        int fired = ksession.fireAllRules();
+
+        assertEquals(2, fired);
+    }
+
+    @Test
+    public void testJitMapCoercion() {
+        checkJitMapCoercion("status < $map.get(\"key\")", true, 0);
+        checkJitMapCoercion("$map.get(\"key\") > status", true, 0);
+        checkJitMapCoercion("status > $map.get(\"key\")", true, 1);
+        checkJitMapCoercion("$map.get(\"key\") < status", true, 1);
+
+        checkJitMapCoercion("status < $map.get(\"key\")", false, 1);
+        checkJitMapCoercion("$map.get(\"key\") > status", false, 1);
+        checkJitMapCoercion("status > $map.get(\"key\")", false, 0);
+        checkJitMapCoercion("$map.get(\"key\") < status", false, 0);
+    }
+
+    public void checkJitMapCoercion(String constraint, boolean useInt, int expectedFires) {
+        // DROOLS-4334
+        String drl =
+                "package com.sample\n" +
+                "import " + Map.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $map : Map()\n" +
+                "  Person( " + constraint + " )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("key", useInt ? 5 : "a");
+        ksession.insert(valueMap);
+
+        Person person = new Person();
+        person.setStatus("10");
+        ksession.insert(person);
+
+        assertEquals(expectedFires, ksession.fireAllRules());
     }
 }

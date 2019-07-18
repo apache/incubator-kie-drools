@@ -248,4 +248,34 @@ public class EvaluatorHelper {
         }
         return false;
     }
+
+    public static boolean coercingComparison(Object obj1, Object obj2, String op) {
+        try {
+            double d1 = toDouble( obj1 );
+            double d2 = toDouble( obj2 );
+
+            switch (op) {
+                case "<": return d1 < d2;
+                case "<=": return d1 <= d2;
+                case ">": return d1 > d2;
+                case ">=": return d1 >= d2;
+            }
+
+        } catch (NumberFormatException nfe) { }
+
+        String s1 = obj1.toString();
+        String s2 = obj2.toString();
+        switch (op) {
+            case "<": return s1.compareTo( s2 ) < 0;
+            case "<=": return s1.compareTo( s2 ) <= 0;
+            case ">": return s1.compareTo( s2 ) > 0;
+            case ">=": return s1.compareTo( s2 ) >= 0;
+        }
+
+        throw new UnsupportedOperationException("Unable to compare " + obj1 + " and " + obj2);
+    }
+
+    private static double toDouble(Object obj) {
+        return obj instanceof Number ? ((Number)obj).doubleValue() : Double.parseDouble( obj.toString() );
+    }
 }
