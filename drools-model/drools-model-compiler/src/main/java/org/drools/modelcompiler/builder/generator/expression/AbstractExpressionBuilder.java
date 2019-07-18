@@ -20,10 +20,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -51,6 +53,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.constraint.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.constraint.parser.ast.expr.BigIntegerLiteralExpr;
 
+import static org.drools.constraint.parser.printer.PrintUtil.printConstraint;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
