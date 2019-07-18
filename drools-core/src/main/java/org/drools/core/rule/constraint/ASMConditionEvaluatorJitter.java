@@ -296,7 +296,7 @@ public class ASMConditionEvaluatorJitter {
             Expression left = singleCondition.getLeft();
             Expression right = singleCondition.getRight();
             Class<?> commonType = singleCondition.getOperation().needsSameType() ?
-                    findCommonClass(left.getType(), !left.canBeNull(), right.getType(), !right.canBeNull(), singleCondition.getOperation().isEquality()) :
+                    findCommonClass(left.getType(), !left.canBeNull(), right.getType(), !right.canBeNull(), singleCondition.getOperation()) :
                     null;
 
             if (commonType == Object.class && singleCondition.getOperation().isComparison()) {
@@ -466,13 +466,18 @@ public class ASMConditionEvaluatorJitter {
                             invokeVirtual(type, "equals", boolean.class, Object.class);
                         }
                     } else {
-                        if (type.isInterface()) {
-                            invokeInterface(type, "compareTo", int.class, type == Comparable.class ? Object.class : findComparingClass(type));
+                        if (type == CoercingComparisonType.class) {
+                            mv.visitLdcInsn(operation.toString());
+                            invokeStatic(EvaluatorHelper.class, "coercingComparison", boolean.class, Object.class, Object.class, String.class);
                         } else {
-                            invokeVirtual(type, "compareTo", int.class, findComparingClass(type));
+                            if (type.isInterface()) {
+                                invokeInterface(type, "compareTo", int.class, type == Comparable.class ? Object.class : findComparingClass(type));
+                            } else {
+                                invokeVirtual(type, "compareTo", int.class, findComparingClass(type));
+                            }
+                            mv.visitInsn(ICONST_0);
+                            jitPrimitiveOperation(operation == BooleanOperator.NE ? BooleanOperator.EQ : operation, int.class);
                         }
-                        mv.visitInsn(ICONST_0);
-                        jitPrimitiveOperation(operation == BooleanOperator.NE ? BooleanOperator.EQ : operation, int.class);
                     }
                     if (operation == BooleanOperator.NE) {
                         singleCondition.toggleNegation();
@@ -540,7 +545,7 @@ public class ASMConditionEvaluatorJitter {
                 return;
             }
 
-            Label notNullLabel = jitLeftIsNull(type == null || leftType == type ?
+            Label notNullLabel = jitLeftIsNull( type == null || !requiresCoercion( leftType, type ) ?
                     jitNullSafeOperationStart() :
                     jitNullSafeCoercion(leftType, type));
 
@@ -556,6 +561,10 @@ public class ASMConditionEvaluatorJitter {
             mv.visitLabel(notNullLabel);
         }
 
+        private boolean requiresCoercion( Class<?> fromType, Class<?> toType ) {
+            return fromType != toType && toType != CoercingComparisonType.class;
+        }
+
         private void prepareRightOperand(Expression right, Class<?> type, Class<?> rightType, Label shortcutEvaluation, BooleanOperator operation) {
             if (rightType.isPrimitive()) {
                 if (type != null) {
@@ -568,7 +577,7 @@ public class ASMConditionEvaluatorJitter {
             load(RIGHT_OPERAND);
 
             mv.visitJumpInsn( IFNULL, nullLabel );
-            if ( type != null && !isFixed( right ) && rightType != type ) {
+            if ( type != null && !isFixed( right ) && requiresCoercion( rightType, type ) ) {
                 castOrCoerceTo( RIGHT_OPERAND, rightType, type, nullLabel );
             }
 
@@ -1047,7 +1056,9 @@ public class ASMConditionEvaluatorJitter {
             throw new RuntimeException("Unknown operator: " + op);
         }
 
-        private Class<?> findCommonClass(Class<?> class1, boolean primitive1, Class<?> class2, boolean primitive2, boolean forEquality) {
+        private static class CoercingComparisonType { }
+
+        private Class<?> findCommonClass(Class<?> class1, boolean primitive1, Class<?> class2, boolean primitive2, BooleanOperator op) {
             Class<?> result = null;
             if (class1 == class2) {
                 result = class1;
@@ -1056,15 +1067,9 @@ public class ASMConditionEvaluatorJitter {
             } else if (class2 == NullType.class) {
                 result = convertFromPrimitiveType(class1);
             } else if (class1 == Object.class) {
-                result = convertFromPrimitiveType(class2);
-                if (Number.class.isAssignableFrom(result) && !result.getSimpleName().startsWith("Big")) {
-                    result = Double.class;
-                }
+                result = findCommonClassWithObject( class2, op );
             } else if (class2 == Object.class) {
-                result = convertFromPrimitiveType(class1);
-                if (Number.class.isAssignableFrom(result) && !result.getSimpleName().startsWith("Big")) {
-                    result = Double.class;
-                }
+                result = findCommonClassWithObject( class1, op );
             } else if (class1 == String.class && isCoercibleToString(class2)) {
                 result = convertFromPrimitiveType(class2);
             } else if (class2 == String.class && isCoercibleToString(class1)) {
@@ -1078,7 +1083,7 @@ public class ASMConditionEvaluatorJitter {
                 result = findCommonClass(class2, class1, primitive1);
             }
             if (result == null) {
-                if (forEquality) {
+                if (op.isEquality()) {
                     return Object.class;
                 } else {
                     throw new RuntimeException( "Cannot find a common class between " + class1.getName() + " and " + class2.getName() +
@@ -1087,6 +1092,18 @@ public class ASMConditionEvaluatorJitter {
                 }
             }
             return result == Number.class ? Double.class : result;
+        }
+
+        private Class<?> findCommonClassWithObject( Class<?> class2, BooleanOperator op ) {
+            Class<?> result;
+            result = convertFromPrimitiveType( class2 );
+            if ( Number.class.isAssignableFrom( result ) && !result.getSimpleName().startsWith( "Big" ) ) {
+                result = Double.class;
+            }
+            if ( op.isComparison() && String.class == result ) {
+                result = CoercingComparisonType.class;
+            }
+            return result;
         }
 
         private boolean isCoercibleToString(Class<?> clazz) {
