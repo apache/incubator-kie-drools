@@ -120,6 +120,14 @@ public class TypedExpression {
         return right;
     }
 
+    public boolean isNumberLiteral() {
+        return expression != null &&
+                (expression.isCharLiteralExpr()
+                        || expression.isIntegerLiteralExpr()
+                        || expression.isLongLiteralExpr()
+                        || expression.isDoubleLiteralExpr());
+    }
+
     public TypedExpression cloneWithNewExpression( Expression newExpression) {
         final TypedExpression cloned = new TypedExpression(newExpression, type, fieldName);
         cloned.unificationName = unificationName;

@@ -87,6 +87,10 @@ public class Person extends AbstractReactiveObject {
         return age;
     }
 
+    public Integer getAgeBoxed() {
+        return age;
+    }
+
     public Short getAgeAsShort() {
         return (short)age;
     }
