@@ -34,6 +34,7 @@ public class Scenario {
      */
     private final List<FactMappingValue> factMappingValues = new ArrayList<>();
 
+    private Integer rowHeight;
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
@@ -109,5 +110,13 @@ public class Scenario {
         Scenario cloned = new Scenario();
         cloned.factMappingValues.addAll(factMappingValues.stream().map(FactMappingValue::cloneFactMappingValue).collect(toList()));
         return cloned;
+    }
+
+    public Integer getRowHeight() {
+        return rowHeight;
+    }
+
+    public void setRowHeight(Integer rowHeight) {
+        this.rowHeight = rowHeight;
     }
 }

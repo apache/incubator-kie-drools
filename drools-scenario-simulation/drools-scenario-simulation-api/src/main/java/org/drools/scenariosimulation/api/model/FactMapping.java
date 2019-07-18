@@ -60,6 +60,8 @@ public class FactMapping {
      */
     private List<String> genericTypes;
 
+    private Integer columnWidth;
+
     public FactMapping() {
     }
 
@@ -190,5 +192,13 @@ public class FactMapping {
         return Objects.hash(
                 getExpressionElements(),
                 getExpressionIdentifier(), getFactIdentifier(), getClassName(), getFactAlias(), getExpressionAlias(), getGenericTypes());
+    }
+
+    public Integer getColumnWidth() {
+        return columnWidth;
+    }
+
+    public void setColumnWidth(Integer columnWidth) {
+        this.columnWidth = columnWidth;
     }
 }
