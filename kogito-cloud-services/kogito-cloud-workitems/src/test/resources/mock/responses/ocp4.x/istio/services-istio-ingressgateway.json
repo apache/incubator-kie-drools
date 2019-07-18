@@ -1,0 +1,112 @@
+{
+	"kind": "Service",
+	"apiVersion": "v1",
+	"metadata": {
+		"name": "istio-ingressgateway",
+		"namespace": "istio-system",
+		"labels": {
+			"app": "istio-ingressgateway",
+			"chart": "gateways",
+			"heritage": "Tiller",
+			"istio": "ingressgateway",
+			"maistra-version": "0.10.0",
+			"release": "istio"
+		},
+		"ownerReferences": [
+			{
+				"apiVersion": "istio.openshift.com/v1alpha3",
+				"kind": "ControlPlane",
+				"name": "minimal-istio",
+				"uid": "be2b0fc2-a7d9-11e9-b86c-02ff077e3f52",
+				"controller": true,
+				"blockOwnerDeletion": true
+			}
+		]
+	},
+	"spec": {
+		"ports": [
+			{
+				"name": "http2",
+				"protocol": "TCP",
+				"port": 80,
+				"targetPort": 80,
+				"nodePort": 31380
+			},
+			{
+				"name": "https",
+				"protocol": "TCP",
+				"port": 443,
+				"targetPort": 443,
+				"nodePort": 31390
+			},
+			{
+				"name": "tcp",
+				"protocol": "TCP",
+				"port": 31400,
+				"targetPort": 31400,
+				"nodePort": 31400
+			},
+			{
+				"name": "https-kiali",
+				"protocol": "TCP",
+				"port": 15029,
+				"targetPort": 15029,
+				"nodePort": 31184
+			},
+			{
+				"name": "https-prometheus",
+				"protocol": "TCP",
+				"port": 15030,
+				"targetPort": 15030,
+				"nodePort": 32448
+			},
+			{
+				"name": "https-grafana",
+				"protocol": "TCP",
+				"port": 15031,
+				"targetPort": 15031,
+				"nodePort": 32364
+			},
+			{
+				"name": "https-tracing",
+				"protocol": "TCP",
+				"port": 15032,
+				"targetPort": 15032,
+				"nodePort": 32760
+			},
+			{
+				"name": "tls",
+				"protocol": "TCP",
+				"port": 15443,
+				"targetPort": 15443,
+				"nodePort": 31520
+			},
+			{
+				"name": "status-port",
+				"protocol": "TCP",
+				"port": 15020,
+				"targetPort": 15020,
+				"nodePort": 31358
+			}
+		],
+		"selector": {
+			"app": "istio-ingressgateway",
+			"istio": "ingressgateway",
+			"maistra-version": "0.10.0",
+			"release": "istio"
+		},
+		"clusterIP": "172.30.101.218",
+		"type": "LoadBalancer",
+		"sessionAffinity": "None",
+		"externalTrafficPolicy": "Cluster"
+	},
+	"status": {
+		"loadBalancer": {
+			"ingress": [
+				{
+					"hostname": "example.com"
+				}
+			]
+		}
+	}
+}

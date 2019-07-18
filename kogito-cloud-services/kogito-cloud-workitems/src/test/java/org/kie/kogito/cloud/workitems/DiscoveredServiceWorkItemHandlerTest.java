@@ -15,18 +15,9 @@
 
 package org.kie.kogito.cloud.workitems;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemManager;
-import org.mockito.Mockito;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -37,6 +28,18 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClient;
+import org.kie.kogito.cloud.workitems.service.discovery.ServiceDiscovery;
+import org.mockito.Mockito;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DiscoveredServiceWorkItemHandlerTest {
     
@@ -106,5 +109,9 @@ public class DiscoveredServiceWorkItemHandlerTest {
             return httpClient;
         }
         
+        @Override
+        protected ServiceDiscovery buildServiceDiscovery(KogitoKubeClient kubeClient) {
+            return mock(ServiceDiscovery.class);
+        }
     }
 }

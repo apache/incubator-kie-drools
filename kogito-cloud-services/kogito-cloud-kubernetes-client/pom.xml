@@ -7,9 +7,9 @@
     <artifactId>kogito-cloud-services</artifactId>
     <version>8.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>kogito-cloud-workitems</artifactId>
-  <name>Kogito Cloud Work Items</name>
-  <description>Kogito Cloud Work Items</description>
+  <artifactId>kogito-cloud-kubernetes-client</artifactId>
+  <name>Kogito Cloud Kubernetes Client</name>
+  <description>Kogito Cloud Kubernetes Client</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,14 +17,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-cloud-kubernetes-client</artifactId>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-client</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
@@ -40,19 +39,17 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-server-mock</artifactId>
+      <version>${version.kubernetes-client}</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Logging -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Fabric8 client used exclusively for tests purposes only -->
-    <dependency>
-      <groupId>io.fabric8</groupId>
-      <artifactId>kubernetes-server-mock</artifactId>
-      <version>${version.kubernetes-client}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

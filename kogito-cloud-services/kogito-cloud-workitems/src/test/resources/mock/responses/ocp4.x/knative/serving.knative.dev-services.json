@@ -1,0 +1,91 @@
+{
+	"apiVersion": "serving.knative.dev/v1alpha1",
+	"kind": "ServiceList",
+	"metadata": {
+		"continue": ""
+	},
+	"items": [
+		{
+			"apiVersion": "serving.knative.dev/v1alpha1",
+			"kind": "Service",
+			"metadata": {
+				"annotations": {
+					"serving.knative.dev/creator": "kube:admin",
+					"serving.knative.dev/lastModifier": "kube:admin"
+				},
+				"labels": {
+					"department": "process",
+					"employeeValidation": "process",
+					"id": "process"
+				},
+				"name": "onboarding-hr",
+				"uid": "3c62c345-a8bd-11e9-83df-02ff077e3f52"
+			},
+			"spec": {
+				"template": {
+					"spec": {
+						"containers": [
+							{
+								"env": [
+									{
+										"name": "NAMESPACE",
+										"value": "test"
+									}
+								],
+								"image": "docker.io/mswiderski/onboarding-hr:0.1",
+								"name": "user-container",
+								"resources": {
+									"limits": {
+										"cpu": "1",
+										"memory": "200M"
+									},
+									"requests": {
+										"cpu": "400m",
+										"memory": "100M"
+									}
+								}
+							}
+						],
+						"timeoutSeconds": 300
+					}
+				},
+				"traffic": [
+					{
+						"latestRevision": true,
+						"percent": 100
+					}
+				]
+			},
+			"status": {
+				"address": {
+					"url": "http://onboarding-hr.test.svc.cluster.local"
+				},
+				"conditions": [
+					{
+						"status": "True",
+						"type": "ConfigurationsReady"
+					},
+					{
+						"status": "True",
+						"type": "Ready"
+					},
+					{
+						"status": "True",
+						"type": "RoutesReady"
+					}
+				],
+				"latestCreatedRevisionName": "onboarding-hr-zgjk8",
+				"latestReadyRevisionName": "onboarding-hr-zgjk8",
+				"observedGeneration": 1,
+				"traffic": [
+					{
+						"latestRevision": true,
+						"percent": 100,
+						"revisionName": "onboarding-hr-zgjk8"
+					}
+				],
+				"url": "http://onboarding-hr.test.apps.example.com"
+			}
+		}
+	]
+}
