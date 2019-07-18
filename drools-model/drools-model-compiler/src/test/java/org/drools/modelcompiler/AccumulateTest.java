@@ -1147,7 +1147,7 @@ public class AccumulateTest extends BaseModelTest {
     }
 
     @Test
-    public void testImplicitTypeCoercionInMax() {
+    public void testPatternMatchingOverNumberWhileAccumulatingShort() {
         String drl=
                 "import " + AccumulateResult.class.getCanonicalName() + "\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
