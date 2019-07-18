@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.Extension;
+import org.dmg.pmml.Header;
 import org.dmg.pmml.MiningField.UsageType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -47,29 +48,37 @@ public class PMMLInfo<M extends PMMLModelInfo> {
         PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
         List<PMMLModelInfo> models = new ArrayList<>();
         for (Model pm : pmml.getModels()) {
-            MiningSchema miningSchema = pm.getMiningSchema();
-            Collection<String> inputFields = new ArrayList<>();
-            miningSchema.getMiningFields()
-                        .stream()
-                        .filter(mf -> mf.getUsageType() == UsageType.ACTIVE)
-                        .forEach(fn -> inputFields.add(fn.getName().getValue()));
-            Collection<String> targetFields = new ArrayList<>();
-            miningSchema.getMiningFields()
-                        .stream()
-                        .filter(mf -> mf.getUsageType() == UsageType.PREDICTED)
-                        .forEach(fn -> targetFields.add(fn.getName().getValue()));
-            Collection<String> outputFields = new ArrayList<>();
-            if (pm.getOutput() != null && pm.getOutput().getOutputFields() != null) {
-                pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
-            }
-            models.add(new PMMLModelInfo(pm.getModelName(), inputFields, targetFields, outputFields));
+            models.add(pmmlToModelInfo(pm));
         }
+        PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models, pmmlToHeaderInfo(pmml, pmml.getHeader()));
+        return info;
+    }
+
+    public static PMMLHeaderInfo pmmlToHeaderInfo(PMML pmml, Header h) {
         Map<String, String> headerExtensions = new HashMap<>();
-        for (Extension ex : pmml.getHeader().getExtensions()) {
+        for (Extension ex : h.getExtensions()) {
             headerExtensions.put(ex.getName(), ex.getValue());
         }
-        PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models, new PMMLHeaderInfo("http://www.dmg.org/PMML-" + pmml.getBaseVersion().replace(".", "_"), headerExtensions));
-        return info;
+        return new PMMLHeaderInfo("http://www.dmg.org/PMML-" + pmml.getBaseVersion().replace(".", "_"), headerExtensions);
+    }
+
+    public static PMMLModelInfo pmmlToModelInfo(Model pm) {
+        MiningSchema miningSchema = pm.getMiningSchema();
+        Collection<String> inputFields = new ArrayList<>();
+        miningSchema.getMiningFields()
+                    .stream()
+                    .filter(mf -> mf.getUsageType() == UsageType.ACTIVE)
+                    .forEach(fn -> inputFields.add(fn.getName().getValue()));
+        Collection<String> targetFields = new ArrayList<>();
+        miningSchema.getMiningFields()
+                    .stream()
+                    .filter(mf -> mf.getUsageType() == UsageType.PREDICTED)
+                    .forEach(fn -> targetFields.add(fn.getName().getValue()));
+        Collection<String> outputFields = new ArrayList<>();
+        if (pm.getOutput() != null && pm.getOutput().getOutputFields() != null) {
+            pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
+        }
+        return new PMMLModelInfo(pm.getModelName(), inputFields, targetFields, outputFields);
     }
 
     public Collection<M> getModels() {

@@ -49,6 +49,8 @@ public class DMNSimulationUtilsTest {
                 .hasMessage("Retrieving the DMNModel has failed. Make sure the used DMN asset does not " +
                                     "produce any compilation errors and that the project does not " +
                                     "contain multiple DMN assets with the same name and namespace. " +
+                                    "In addition, check if the reference to the DMN file is correct " +
+                                    "in the Settings panel. " +
                                     "After addressing the issues, build the project again.");
     }
 

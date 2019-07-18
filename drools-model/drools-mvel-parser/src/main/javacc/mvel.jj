@@ -2602,7 +2602,7 @@ ModifyStatement ModifyStatement():
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
             (first = Statement()(<SEMICOLON>|EOL())?)* { begin=token(); all.add(first); }
             (
-                          (<COMMA>|EOL())
+                          (<COMMA>)*(EOL())*
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>

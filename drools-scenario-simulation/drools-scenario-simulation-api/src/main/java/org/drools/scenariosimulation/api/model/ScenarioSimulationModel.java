@@ -29,7 +29,7 @@ public class ScenarioSimulationModel
     }
 
     @XStreamAsAttribute()
-    private String version = "1.5";
+    private String version = "1.6";
 
     private Simulation simulation;
 

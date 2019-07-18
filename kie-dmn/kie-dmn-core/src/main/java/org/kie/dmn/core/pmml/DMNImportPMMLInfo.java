@@ -18,10 +18,21 @@ package org.kie.dmn.core.pmml;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.PMML;
+import org.dmg.pmml.Value;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
+import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Import;
 import org.slf4j.Logger;
@@ -38,11 +49,53 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
         this.i = i;
     }
 
-    public static Either<Exception, DMNImportPMMLInfo> from(InputStream is, DMNModelImpl model, Import i) {
+    public static Either<Exception, DMNImportPMMLInfo> from(InputStream is, DMNCompilerConfigurationImpl cc, DMNModelImpl model, Import i) {
         try {
-            PMMLInfo<?> prototype = PMMLInfo.from(is);
-            PMMLHeaderInfo h = prototype.getHeader();
-            List<DMNPMMLModelInfo> models = prototype.getModels().stream().map(proto -> DMNPMMLModelInfo.from(proto, model)).collect(Collectors.toList());
+            final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+            PMMLHeaderInfo h = PMMLInfo.pmmlToHeaderInfo(pmml, pmml.getHeader());
+            for (DataField df : pmml.getDataDictionary().getDataFields()) {
+                String dfName = df.getName().getValue();
+                BuiltInType ft = null;
+                switch (df.getDataType()) {
+                    case BOOLEAN:
+                        ft = BuiltInType.BOOLEAN;
+                        break;
+                    case DATE:
+                        ft = BuiltInType.DATE;
+                        break;
+                    case DATE_TIME:
+                        ft = BuiltInType.DATE_TIME;
+                        break;
+                    case DOUBLE:
+                    case FLOAT:
+                    case INTEGER:
+                        ft = BuiltInType.NUMBER;
+                        break;
+                    case STRING:
+                        ft = BuiltInType.STRING;
+                        break;
+                    case TIME:
+                        ft = BuiltInType.TIME;
+                        break;
+                    default:
+                        ft = BuiltInType.UNKNOWN;
+                        break;
+                }
+                List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
+                DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
+                List<UnaryTest> av = null;
+                if (df.getValues() != null && !df.getValues().isEmpty() && ft != BuiltInType.UNKNOWN) {
+                    final BuiltInType feelType = ft;
+                    String lov = df.getValues().stream().map(Value::getValue).map(o -> feelType == BuiltInType.STRING ? "\"" + o.toString() + "\"" : o.toString()).collect(Collectors.joining(","));
+                    av = feel.evaluateUnaryTests(lov, Collections.emptyMap());
+                }
+                DMNType type = new SimpleTypeImpl(i.getNamespace(), dfName, null, false, av, null, ft);
+                model.getTypeRegistry().registerType(type);
+            }
+            List<DMNPMMLModelInfo> models = pmml.getModels()
+                                                .stream()
+                                                .map(m -> PMMLInfo.pmmlToModelInfo(m))
+                                                .map(proto -> DMNPMMLModelInfo.from(proto, model, i)).collect(Collectors.toList());
             DMNImportPMMLInfo info = new DMNImportPMMLInfo(i, models, h);
             return Either.ofRight(info);
         } catch (Throwable e) {

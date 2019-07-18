@@ -62,6 +62,12 @@ public interface MigrationStrategy {
     Function<String, String> from1_4to1_5();
 
     /**
+     * Method to obtain the migration function from 1.5 to 1.6
+     * @return
+     */
+    Function<String, String> from1_5to1_6();
+
+    /**
      * Method to complete the migration. For instance it can be used to store the new value
      * @return
      */
@@ -73,4 +79,5 @@ public interface MigrationStrategy {
         return input.replaceAll("<ScenarioSimulationModel version=\"" + from + "\">",
                                 "<ScenarioSimulationModel version=\"" + to + "\">");
     }
+
 }

@@ -141,38 +141,9 @@
                   <groupId>org.jacoco</groupId>
                   <artifactId>org.jacoco.agent</artifactId>
                   <version>${version.jacoco.plugin}</version>
+                  <classifier>runtime</classifier>
                 </dependency>
               </dependencies>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-
-    <profile>
-      <id>report-code-coverage</id>
-      <properties>
-        <jacoco.master.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.master.exec.file>
-        <sonar.jacoco.reportPaths>${jacoco.master.exec.file}</sonar.jacoco.reportPaths>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.jacoco</groupId>
-              <artifactId>jacoco-maven-plugin</artifactId>
-              <version>${version.jacoco.plugin}</version>
-              <configuration>
-                <fileSets>
-                  <fileSet>
-                    <directory>${project.build.directory}</directory>
-                    <includes>
-                      <include>*.exec</include>
-                    </includes>
-                  </fileSet>
-                </fileSets>
-                <destFile>${jacoco.master.exec.file}</destFile>
-              </configuration>
             </plugin>
           </plugins>
         </pluginManagement>

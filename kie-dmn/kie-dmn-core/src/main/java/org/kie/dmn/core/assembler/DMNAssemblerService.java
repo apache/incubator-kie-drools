@@ -197,7 +197,7 @@ public class DMNAssemblerService implements KieAssemblerService {
         return model;
     }
 
-    private List<DMNProfile> getDMNProfiles(KnowledgeBuilderImpl kbuilderImpl) {
+    protected List<DMNProfile> getDMNProfiles(KnowledgeBuilderImpl kbuilderImpl) {
         ChainedProperties chainedProperties = kbuilderImpl.getBuilderConfiguration().getChainedProperties();
 
         List<DMNProfile> dmnProfiles = new ArrayList<>();

@@ -319,6 +319,7 @@ public class XStreamMarshaller
         xStream.alias("waypoint", Point.class);
         xStream.registerConverter(new PointConverter(xStream));
         xStream.alias("extension", DiagramElement.Extension.class);
+        xStream.alias(DMNLabelConverter.TEXT, String.class);
 
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );

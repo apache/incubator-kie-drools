@@ -23,6 +23,7 @@ import java.util.Optional;
 import com.github.javaparser.ast.expr.Expression;
 import org.drools.mvel.parser.printer.PrintUtil;
 
+import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class TypedExpression {
@@ -75,6 +76,14 @@ public class TypedExpression {
 
     public Class<?> getRawClass() {
         return toRawClass( type );
+    }
+
+    public Optional<Class<?>> getBoxedType() {
+        if(type instanceof Class<?>) {
+            return Optional.of(toNonPrimitiveType((Class<?>) type));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public boolean isPrimitive() {
