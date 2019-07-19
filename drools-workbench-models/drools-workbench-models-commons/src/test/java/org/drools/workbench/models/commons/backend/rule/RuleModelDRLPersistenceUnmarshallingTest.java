@@ -147,6 +147,102 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
+    public void testBigIntegerField() {
+
+        addModelField("org.test.Applicant",
+                      "reallyLongInteger",
+                      "java.math.BigInteger",
+                      "BigInteger");
+
+        String drl = "package org.test; \n"
+                + "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( reallyLongInteger < 12345I )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals("rule1",
+                     m.name);
+
+        assertEquals(1,
+                     m.lhs.length);
+        IPattern p = m.lhs[0];
+        assertTrue(p instanceof FactPattern);
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals(1,
+                     fp.getConstraintList().getConstraints().length);
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+
+        SingleFieldConstraint reallyLongInteger = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("Applicant",
+                     reallyLongInteger.getFactType());
+        assertEquals("BigInteger",
+                     reallyLongInteger.getFieldType());
+        assertEquals("reallyLongInteger",
+                     reallyLongInteger.getFieldName());
+        assertEquals("<",
+                     reallyLongInteger.getOperator());
+        assertEquals("12345",
+                     reallyLongInteger.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     reallyLongInteger.getConstraintValueType());
+    }
+
+    @Test
+    public void testBigDecimalField() {
+
+        addModelField("org.test.Applicant",
+                      "reallyLongDecimal",
+                      "java.math.BigDecimal",
+                      "BigDecimal");
+
+        String drl = "package org.test; \n"
+                + "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( reallyLongDecimal > 54321B )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals("rule1",
+                     m.name);
+
+        assertEquals(1,
+                     m.lhs.length);
+        IPattern p = m.lhs[0];
+        assertTrue(p instanceof FactPattern);
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals(1,
+                     fp.getConstraintList().getConstraints().length);
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+
+        SingleFieldConstraint reallyLongDecimal = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("Applicant",
+                     reallyLongDecimal.getFactType());
+        assertEquals("BigDecimal",
+                     reallyLongDecimal.getFieldType());
+        assertEquals("reallyLongDecimal",
+                     reallyLongDecimal.getFieldName());
+        assertEquals(">",
+                     reallyLongDecimal.getOperator());
+        assertEquals("54321",
+                     reallyLongDecimal.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     reallyLongDecimal.getConstraintValueType());
+    }
+
+    @Test
     public void testSingleFieldConstraint() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
