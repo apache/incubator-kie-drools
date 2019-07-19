@@ -25,10 +25,12 @@ import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 
@@ -155,7 +157,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     }
 
     /**
-     * Create a new {@link BiConstraintStream} for every unique combination of A and another A.
+     * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}.
      * <p>
      * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
      * than a {@link #joinOther(BiJoiner)},
@@ -163,12 +165,13 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * so it creates and checks almost every combination of A and A.
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
+     * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      * @return a stream that matches every unique combination of A and another A
      */
     BiConstraintStream<A, A> joinOther();
 
     /**
-     * Create a new {@link BiConstraintStream} for every unique combination of A and another A
+     * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}
      * for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
      * <p>
      * Important: This is faster and more scalable than a {@link #joinOther() join}
@@ -177,6 +180,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * so it doesn't create nor checks almost every combination of A and A.
      * <p>
      * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
+     * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      * <p>
      * This method has overloaded methods with multiple {@link BiJoiner} parameters.
      * @param joiner never null
