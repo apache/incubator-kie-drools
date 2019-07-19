@@ -22,10 +22,12 @@ import java.util.List;
 
 import org.drools.modelcompiler.domain.ChildFactWithObject;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.Result;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TypeCoercionTest extends BaseModelTest {
 
@@ -222,4 +224,35 @@ public class TypeCoercionTest extends BaseModelTest {
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test
+    public void testBetaJoinShortInt() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "   $p1 : Person(  $age : age )\n" +
+                "   $p2 :  Person(  ageAsShort == $age )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBetaJoinShortIntBoxed() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "rule R when\n" +
+                        "   $p1 : Person(  $age : ageBoxed )\n" +
+                        "   $p2 :  Person(  ageAsShort == $age )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession( str );
+        assertEquals(0, ksession.fireAllRules());
+    }
+
+
+
 }

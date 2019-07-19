@@ -18,6 +18,9 @@ public class Person extends AbstractReactiveObject {
     @Position(1)
     private int age;
 
+
+    private long ageLong;
+
     private Address address;
     private int id = 0;
     private String likes;
@@ -87,6 +90,10 @@ public class Person extends AbstractReactiveObject {
         return age;
     }
 
+    public Integer getAgeBoxed() {
+        return age;
+    }
+
     public Short getAgeAsShort() {
         return (short)age;
     }
@@ -102,6 +109,15 @@ public class Person extends AbstractReactiveObject {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public long getAgeLong() {
+        return ageLong;
+    }
+
+    public Person setAgeLong(long ageLong) {
+        this.ageLong = ageLong;
+        return this;
     }
 
     public int getId() {
