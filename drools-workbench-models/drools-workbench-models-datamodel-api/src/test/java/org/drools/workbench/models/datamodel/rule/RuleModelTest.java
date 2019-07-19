@@ -20,7 +20,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class RuleModelTest {
 
@@ -82,5 +84,36 @@ public class RuleModelTest {
         assertTrue(allLHSVariables.contains("$sfc1"));
         assertTrue(allLHSVariables.contains("$sfc2"));
         assertTrue(allLHSVariables.contains("$sfc3"));
+    }
+
+    @Test
+    public void testEmptyCompositeFactPatternIsIgnored_getLHSBoundField() {
+        model.addLhsItem(new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_NOT));
+
+        final SingleFieldConstraint lhsBoundField = model.getLHSBoundField("$sfc1");
+        assertNotNull(lhsBoundField);
+    }
+
+    @Test
+    public void testEmptyCompositeFactPatternIsIgnored_getBoundVariablesInScope() {
+        model.addLhsItem(new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_NOT));
+
+        final List<String> boundVariablesInScope = model.getBoundVariablesInScope(new BaseSingleFieldConstraint());
+        assertNotNull(boundVariablesInScope);
+    }
+
+    @Test
+    public void testEmptyCompositeFactPatternIsIgnored_getLHSBindingType() {
+        final FactPattern fp3 = new FactPattern();
+        fp3.setBoundName("$p3");
+        final SingleFieldConstraint sfc4 = new SingleFieldConstraint();
+        sfc4.setFieldBinding("$sfc4");
+        fp3.addConstraint(sfc4);
+
+        model.addLhsItem(new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_NOT));
+        model.addLhsItem(fp3);
+
+        final String type = model.getLHSBindingType("$sfc4");
+        assertNotNull(type);
     }
 }
