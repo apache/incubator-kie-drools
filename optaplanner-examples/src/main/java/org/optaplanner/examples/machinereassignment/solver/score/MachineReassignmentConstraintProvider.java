@@ -73,8 +73,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                                                                           HardSoftLongScore.ofHard(1L));
         constraint.from(MrProcessAssignment.class)
                 .joinOther(
-                        Joiners.equalTo(MrProcessAssignment::getMachine),
-                        Joiners.lessThan(MrProcessAssignment::getId)
+                        Joiners.equalTo(MrProcessAssignment::getMachine)
                 )
                 .filter((mrProcessAssignmentA, mrProcessAssignmentB) -> mrProcessAssignmentA.getService().equals(mrProcessAssignmentB.getService()))
                 .penalize();
@@ -121,8 +120,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                 .join(MrProcessAssignment.class,
                       Joiners.equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
                 )
-                .filter(
-                        (mrMachineCapacity, mrProcessAssignment) -> mrProcessAssignment.isMoved() && mrMachineCapacity.isTransientlyConsumed()
+                .filter((mrMachineCapacity, mrProcessAssignment) -> mrProcessAssignment.isMoved()
+                        && mrMachineCapacity.isTransientlyConsumed()
                 )
                 .groupBy(
                         (machineCapacity, processAssignment) -> machineCapacity, sumLong(
@@ -161,7 +160,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     private void balanceCost(ConstraintFactory constraintFactory) {
         throw new UnsupportedOperationException("Not yet implemented due to missing support for quad streams.");
 
-        /*
+        /* TODO: requires quad streams support and groupBy taking two collectors. Alternatively, use a shadow variable.
         Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraintName.BALANCE_COST.getName(),
                                                                           HardSoftLongScore.ofSoft(1L));
         constraint.from(MrBalancePenalty.class)
@@ -185,7 +184,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraintName.PROCESS_MOVE_COST.getName(),
                                                                           HardSoftLongScore.ofSoft(1L));
         constraint.from(MrProcessAssignment.class)
-                .filter(processAssignment -> processAssignment.isMoved())
+                .filter(MrProcessAssignment::isMoved)
                 .penalizeLong(MrProcessAssignment::getProcessMoveCost);
     }
 
@@ -195,11 +194,11 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     private void serviceMoveCost(ConstraintFactory constraintFactory) {
         throw new UnsupportedOperationException("Not yet implemented due to missing aggregation function.");
 
-        /*
+        /* TODO: requires max aggregation function
         Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraintName.SERVICE_MOVE_COST.getName(),
                                                                           HardSoftLongScore.ofSoft(1L));
         constraint.from(MrProcessAssignment.class)
-                .filter(processAssignment -> processAssignment.isMoved())
+                .filter(MrProcessAssignment::isMoved)
                 .groupBy(processAssignment -> processAssignment.getService(), ConstraintCollectors.count())
                 .penalizeLong();
 
@@ -213,7 +212,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraintName.MACHINE_MOVE_COST.getName(),
                                                                           HardSoftLongScore.ofSoft(1L));
         constraint.from(MrProcessAssignment.class)
-                .filter(processAssignment -> processAssignment.isMoved())
+                .filter(MrProcessAssignment::isMoved)
                 .penalizeLong(MrProcessAssignment::getMachineMoveCost);
     }
 }
