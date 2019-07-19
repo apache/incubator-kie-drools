@@ -19,7 +19,6 @@ package org.drools.modelcompiler.reproducer4342;
 import java.math.BigDecimal;
 
 import org.drools.modelcompiler.BaseModelTest;
-import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -32,7 +31,7 @@ public class Regression4342 extends BaseModelTest {
     }
 
     @Test
-    public void testPropertyReactvity() {
+    public void testAccumulateOverField() {
         String str =
                 "import java.lang.Number;\n" +
                         "import java.math.BigDecimal;\n" +
@@ -42,11 +41,11 @@ public class Regression4342 extends BaseModelTest {
                         "  dialect \"mvel\"\n" +
                         "  when\n" +
                         "    voucher : Voucher( )\n" +
-                        "    sumBilledAmounts : Number( ) from accumulate ( bill : Bill( billedAmount != null ),\n" +
+                        "    sumBilledAmounts : BigDecimal( ) from accumulate ( bill : Bill( billedAmount != null ),\n" +
                         "      sum(bill.billedAmount)) \n" +
                         "  then\n" +
                         "    modify( voucher ) {\n" +
-                        "        setTotal( BigDecimal.valueOf(sumBilledAmounts.doubleValue()) )\n" +
+                        "        setTotal( sumBilledAmounts )\n" +
                         "    }\n" +
                         "end\n";
 
@@ -64,6 +63,6 @@ public class Regression4342 extends BaseModelTest {
         int rulesFired = ksession.fireAllRules();
 
         assertEquals(1, rulesFired);
-        assertEquals(BigDecimal.valueOf(3000.0), vaucher.getTotal());
+        assertEquals(BigDecimal.valueOf(3000), vaucher.getTotal());
     }
 }
