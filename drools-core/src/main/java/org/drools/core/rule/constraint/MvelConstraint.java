@@ -459,7 +459,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             int exprPos = simpleExpression.indexOf(propertyName);
             int propNameEnd = exprPos + propertyName.length();
             if (simpleExpression.length() > propNameEnd + 1 && simpleExpression.charAt(propNameEnd) == '(') {
-                propertyName = getter2property(propertyName);
+                int argsEnd = simpleExpression.indexOf( ')', propNameEnd );
+                // the getter has to be used for property reactivity only if it's a true getter (doesn't have any argument)
+                if (simpleExpression.substring( propNameEnd+1, argsEnd ).trim().isEmpty()) {
+                    propertyName = getter2property(propertyName);
+                }
             }
         }
 
