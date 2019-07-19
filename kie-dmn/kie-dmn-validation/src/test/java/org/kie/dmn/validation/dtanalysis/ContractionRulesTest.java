@@ -46,11 +46,11 @@ public class ContractionRulesTest extends AbstractDTAnalysisTest {
         // Contraction count.
         assertThat(analysis.getContractions(), hasSize(2));
         List<Contraction> results = Arrays.asList(new Contraction(4,
-                                                                  5,
+                                                                  Arrays.asList(5),
                                                                   2,
                                                                   Arrays.asList(new Interval(RangeBoundary.CLOSED, new BigDecimal("0.35"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))),
                                                   new Contraction(3, 
-                                                                  6, 
+                                                                  Arrays.asList(6),
                                                                   1,
                                                                   Arrays.asList(new Interval(RangeBoundary.CLOSED, new BigDecimal("600"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))));
         assertThat(results, hasSize(2));
