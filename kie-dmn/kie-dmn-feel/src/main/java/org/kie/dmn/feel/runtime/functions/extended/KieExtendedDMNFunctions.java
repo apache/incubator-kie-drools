@@ -72,6 +72,7 @@ public class KieExtendedDMNFunctions {
                                                                         OverlapsFunction.INSTANCE,
                                                                         OverlappedByFunction.INSTANCE,
                                                                         MeetsFunction.INSTANCE,
+                                                                        MetByFunction.INSTANCE
 
     };
 
