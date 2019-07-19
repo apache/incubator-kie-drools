@@ -27,48 +27,43 @@ import static org.junit.Assert.*;
 
 public class Regression4342 extends BaseModelTest {
 
-    public Regression4342(RUN_TYPE testRunType ) {
-        super( testRunType );
+    public Regression4342(RUN_TYPE testRunType) {
+        super(testRunType);
     }
 
     @Test
     public void testPropertyReactvity() {
         String str =
-                "package com.myspace.reproducer_02425606;\n" +
-                        "\n" +
-                        "import java.lang.Number;\n" +
+                "import java.lang.Number;\n" +
                         "import java.math.BigDecimal;\n" +
                         "import org.drools.modelcompiler.reproducer4342.Bill;" +
                         "import org.drools.modelcompiler.reproducer4342.Voucher;" +
-                        "\n" +
                         "rule \"rule\"\n" +
                         "  dialect \"mvel\"\n" +
                         "  when\n" +
                         "    voucher : Voucher( )\n" +
-                        "    sumBilledAmounts : Number( ) from accumulate ( bill : Bill( billedAmount != null, $amount : billedAmount ),\n" +
-                        "      sum($amount)) \n" +
+                        "    sumBilledAmounts : Number( ) from accumulate ( bill : Bill( billedAmount != null ),\n" +
+                        "      sum(bill.billedAmount)) \n" +
                         "  then\n" +
                         "    modify( voucher ) {\n" +
                         "        setTotal( BigDecimal.valueOf(sumBilledAmounts.doubleValue()) )\n" +
                         "    }\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
-
+        KieSession ksession = getKieSession(str);
 
         Bill bill1 = new Bill(BigDecimal.valueOf(1000));
-        ksession.insert( bill1 );
+        ksession.insert(bill1);
 
         Bill bill2 = new Bill(BigDecimal.valueOf(2000));
-        ksession.insert( bill2 );
+        ksession.insert(bill2);
 
         Voucher vaucher = new Voucher();
         ksession.insert(vaucher);
 
         int rulesFired = ksession.fireAllRules();
 
-
-        assertEquals( 1, rulesFired );
-        assertEquals( BigDecimal.valueOf(3000.0), vaucher.getTotal() );
+        assertEquals(1, rulesFired);
+        assertEquals(BigDecimal.valueOf(3000.0), vaucher.getTotal());
     }
 }
