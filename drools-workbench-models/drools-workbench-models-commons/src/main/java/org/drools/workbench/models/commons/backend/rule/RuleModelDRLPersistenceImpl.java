@@ -4004,7 +4004,7 @@ public class RuleModelDRLPersistenceImpl
                 return null;
             }
             for (ModelField typeField : typeFields) {
-                if (typeField.getType().equals(DataType.TYPE_THIS)) {
+                if (typeField.getName().equals(DataType.TYPE_THIS)) {
                     return typeField;
                 }
             }
