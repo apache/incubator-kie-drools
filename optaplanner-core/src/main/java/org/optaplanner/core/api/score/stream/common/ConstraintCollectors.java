@@ -155,7 +155,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A> UniConstraintCollector<A, ?, Long> sum(ToLongFunction<? super A> groupValueMapping) {
+    public static <A> UniConstraintCollector<A, ?, Long> sumLong(ToLongFunction<? super A> groupValueMapping) {
         return new UniConstraintCollector<>(
                 () -> new long[1],
                 (resultContainer, a) -> {
@@ -166,7 +166,7 @@ public final class ConstraintCollectors {
                 resultContainer -> resultContainer[0]);
     }
 
-    public static <A, B> BiConstraintCollector<A, B, ?, Integer> sumLong(ToIntBiFunction<? super A, ? super B> groupValueMapping) {
+    public static <A, B> BiConstraintCollector<A, B, ?, Integer> sum(ToIntBiFunction<? super A, ? super B> groupValueMapping) {
         return new BiConstraintCollector<>(
                 () -> new int[1],
                 (resultContainer, a, b) -> {
