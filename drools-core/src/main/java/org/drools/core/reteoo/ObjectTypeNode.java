@@ -63,6 +63,7 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
 import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+import static org.drools.core.util.BitMaskUtil.toLong;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -664,7 +665,7 @@ public class ObjectTypeNode extends ObjectSource
             Date nextFireTime = trigger.hasNextFireTime();
             if (nextFireTime != null) {
                 outputCtx.writeShort(PersisterEnums.EXPIRE_TIMER);
-                outputCtx.writeInt(ejobCtx.getExpireAction().getFactHandle().getId());
+                outputCtx.writeLong(ejobCtx.getExpireAction().getFactHandle().getId());
                 outputCtx.writeLong(nextFireTime.getTime());
             }
         }
@@ -681,7 +682,8 @@ public class ObjectTypeNode extends ObjectSource
                 return ProtobufMessages.Timers.Timer.newBuilder()
                         .setType(ProtobufMessages.Timers.TimerType.EXPIRE)
                         .setExpire(ProtobufMessages.Timers.ExpireTimer.newBuilder()
-                                           .setHandleId(expireAction.getFactHandle().getId())
+                                           .setHandleId(expireAction.getFactHandle().getBaseId())
+                                           .setHandleIdExtended(expireAction.getFactHandle().getExtendedId())
                                            .setNextFireTimestamp(nextFireTime.getTime())
                                            .build())
                         .build();
@@ -698,7 +700,7 @@ public class ObjectTypeNode extends ObjectSource
         public void read(MarshallerReaderContext inCtx) throws IOException,
                                                                ClassNotFoundException {
 
-            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
+            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readLong() );
 
             long nextTimeStamp = inCtx.readLong();
 
@@ -716,7 +718,7 @@ public class ObjectTypeNode extends ObjectSource
         public void deserialize(MarshallerReaderContext inCtx,
                                 Timer _timer) throws ClassNotFoundException {
             ExpireTimer _expire = _timer.getExpire();
-            InternalFactHandle factHandle = inCtx.handles.get( _expire.getHandleId() );
+            InternalFactHandle factHandle = inCtx.handles.get( toLong( _expire.getHandleId(), _expire.getHandleIdExtended() ) );
 
             TimerService clock = inCtx.wm.getTimerService();
 

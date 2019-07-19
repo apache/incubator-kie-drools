@@ -53,6 +53,8 @@ import org.drools.core.util.KeyStoreHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
 
+import static org.drools.core.util.BitMaskUtil.toLong;
+
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException,
                                                                                               ClassNotFoundException {
@@ -147,24 +149,25 @@ public class PersisterHelper {
         for( Tuple entry = leftTuple; entry != null ; entry = entry.getParent() ) {
             if ( entry.getFactHandle() != null ) {
                 // can be null for eval, not and exists that have no right input
-                _tuple.addHandleId( entry.getFactHandle().getId() );
+                _tuple.addHandleId( entry.getFactHandle().getBaseId() );
+                _tuple.addHandleIdExtended( entry.getFactHandle().getExtendedId() );
             }
         }
         return _tuple.build();
     }
     
-    public static int[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
-        int[] tuple = new int[_tuple.getHandleIdCount()];
+    public static long[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
+        long[] tuple = new long[_tuple.getHandleIdCount()];
         for ( int i = 0; i < tuple.length; i++ ) {
             // needs to reverse the tuple elements 
-            tuple[i] = _tuple.getHandleId( tuple.length - i - 1 );
+            tuple[i] = toLong( _tuple.getHandleId( tuple.length - i - 1 ), _tuple.getHandleIdExtended( tuple.length - i - 1 ) );
         }
         return tuple;
     }
 
-    public static int[] createTupleArray(final Tuple leftTuple) {
+    public static long[] createTupleArray(final Tuple leftTuple) {
         if( leftTuple != null ) {
-            int[] tuple = new int[leftTuple.size()];
+            long[] tuple = new long[leftTuple.size()];
             // tuple iterations happens backwards
             int i = tuple.length;
             for( Tuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
@@ -176,14 +179,14 @@ public class PersisterHelper {
             }
             return tuple;
         } else {
-            return new int[0];
+            return new long[0];
         }
     }
 
-    private static Object[] toArrayOfObject(int[] ints) {
-        Object[] objects = new Object[ints.length];
-        for(int i = 0; i < ints.length; i++) {
-            objects[i] = ints[i];
+    private static Object[] toArrayOfObject(long[] longs) {
+        Object[] objects = new Object[longs.length];
+        for(int i = 0; i < longs.length; i++) {
+            objects[i] = longs[i];
         }
         return objects;
     }

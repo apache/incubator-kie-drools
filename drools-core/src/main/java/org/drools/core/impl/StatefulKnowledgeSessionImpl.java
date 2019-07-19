@@ -1109,7 +1109,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.initialFactHandle = initInitialFact(kBase, null);
     }
 
-    public void reset(int handleId,
+    public void reset(long handleId,
                       long handleCounter,
                       long propagationCounter) {
         if (nodeMemories != null) {
@@ -1683,7 +1683,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
             ProtobufMessages.ActionQueue.Assert.Builder _assert = ProtobufMessages.ActionQueue.Assert.newBuilder();
-            _assert.setHandleId( this.factHandle.getId() )
+            _assert.setHandleId( this.factHandle.getBaseId() )
+                   .setHandleIdExtended( this.factHandle.getExtendedId() )
                    .setRemoveLogical( this.removeLogical )
                    .setUpdateEqualsMap( this.updateEqualsMap );
 
@@ -1692,7 +1693,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 for( Tuple entry = this.tuple; entry != null; entry = entry.getParent() ) {
                     if ( entry.getFactHandle() != null ) {
                         // can be null for eval, not and exists that have no right input
-                        _tuple.addHandleId( entry.getFactHandle().getId() );
+                        _tuple.addHandleId( entry.getFactHandle().getBaseId() );
+                        _tuple.addHandleIdExtended( entry.getFactHandle().getExtendedId() );
                     }
                 }
                 _assert.setOriginPkgName( ruleOrigin.getPackageName() )
@@ -1768,7 +1770,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             return ProtobufMessages.ActionQueue.Action.newBuilder()
                                                       .setType(ProtobufMessages.ActionQueue.ActionType.EXPIRE)
                                                       .setExpire(ProtobufMessages.ActionQueue.Expire.newBuilder()
-                                                                                                    .setHandleId(this.factHandle.getId())
+                                                                                                    .setHandleId(this.factHandle.getBaseId())
+                                                                                                    .setHandleIdExtended(this.factHandle.getExtendedId())
                                                                                                     .setNodeId(this.node != null ? this.node.getId() : -1)
                                                                                                     .build())
                                                       .build();

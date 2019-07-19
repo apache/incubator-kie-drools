@@ -16,6 +16,17 @@
 
 package org.drools.core.base.mvel;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit.DroolsVarFactory;
 import org.drools.core.common.InternalFactHandle;
@@ -28,17 +39,6 @@ import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.integration.VariableResolverFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * An MVEL accumulator implementation
@@ -105,9 +105,9 @@ public class MVELAccumulator
      * @see org.kie.spi.Accumulator#createContext()
      */
     public Serializable createContext() {
-        Map<Integer, Object[]> shadow = null;
+        Map<Long, Object[]> shadow = null;
         if ( this.reverse != null ) {
-            shadow = new HashMap<Integer, Object[]>();
+            shadow = new HashMap<>();
         }
         return new MVELAccumulatorContext( shadow );
     }
@@ -309,9 +309,9 @@ public class MVELAccumulator
         private static final long                      serialVersionUID = 510l;
 
         private Object[]               variables;
-        private Map<Integer, Object[]> shadow;
+        private Map<Long, Object[]> shadow;
 
-        public MVELAccumulatorContext(Map<Integer,  Object[]> shadow) {
+        public MVELAccumulatorContext(Map<Long,  Object[]> shadow) {
             this.shadow = shadow;
         }
 
@@ -323,11 +323,11 @@ public class MVELAccumulator
             this.variables = variables;
         }
 
-        public Map<Integer, Object[]> getShadow() {
+        public Map<Long, Object[]> getShadow() {
             return shadow;
         }
 
-        public void setShadow(Map<Integer,  Object[]> shadow) {
+        public void setShadow(Map<Long,  Object[]> shadow) {
             this.shadow = shadow;
         }
         

@@ -95,6 +95,7 @@ message RuleData {
     optional ActionQueue action_queue = 11;
     optional TruthMaintenanceSystem OBSOLETE_tms = 12;
 
+    optional int32 last_id_extended = 13;
 }
 
 message RuntimeClassDef {
@@ -252,6 +253,8 @@ message FactHandle {
     optional bool is_justified = 11;
 
     optional int32 otn_count = 12;
+
+    optional int32 id_extended = 13;
 }
 
 message Activation {
@@ -266,11 +269,14 @@ message Activation {
     optional int32 handle_id = 9;
     repeated int32 logical_dependency = 10;
     optional bool evaluated = 11;
+    optional int32 handle_id_extended = 12;
+    repeated int32 logical_dependency_extended = 13;
 }
 
 message Tuple {
     repeated int32 handle_id = 1;
     repeated SerializedObject object = 2;
+    repeated int32 handle_id_extended = 3;
 }
 
 message SerializedObject {
@@ -293,11 +299,14 @@ message EqualityKey {
     optional int32 handle_id = 2;
     repeated int32 other_handle = 3;
     optional BeliefSet beliefSet = 4;
+    optional int32 handle_id_extended = 5;
+    repeated int32 other_handle_extended = 6;
 }
 
 message BeliefSet {
     optional int32 handle_id = 1;
     repeated LogicalDependency logicalDependency = 2;
+    optional int32 handle_id_extended = 3;
 }
 
 message LogicalDependency {
@@ -348,6 +357,7 @@ message ActionQueue {
         optional Activation activation = 2;
         optional bool fully_retract = 3;
         optional bool update = 4;
+        optional int32 handle_id_extended = 5;
 
     }
     message Propagate { optional int32 node_id = 1; }
@@ -358,10 +368,12 @@ message ActionQueue {
         optional string origin_pkg_name = 4;
         optional string origin_rule_name = 5;
         optional Tuple tuple = 6;
+        optional int32 handle_id_extended = 7;
     }
     message Expire {
         optional int32 handle_id = 1;
         optional int32 node_id = 2;
+        optional int32 handle_id_extended = 3;
     }
     message Signal {
         optional string type = 1;
@@ -401,6 +413,7 @@ message Timers {
         optional string entry_point_id = 2;
         optional string class_name = 3;
         optional int64 next_fire_timestamp = 4;
+        optional int32 handle_id_extended = 5;
     }
     message ActivationTimer {
         optional Activation activation = 1;
@@ -410,6 +423,7 @@ message Timers {
         optional int32 DEPRECATED_node_id = 1;
         optional int32 DEPRECATED_behavior_index = 2;
         optional int32 handle_id = 3;
+        optional int32 handle_id_extended = 4;
     }
     message TimerNodeTimer {
         optional int32 node_id = 1;

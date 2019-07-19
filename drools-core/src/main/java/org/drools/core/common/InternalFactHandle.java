@@ -29,10 +29,23 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.core.util.BitMaskUtil.toBaseInt;
+import static org.drools.core.util.BitMaskUtil.toExtendedInt;
+
 public interface InternalFactHandle
     extends
     FactHandle, Cloneable, Serializable {
-    int getId();
+    long getId();
+
+    // to be used only for marshalling/unmarshalling
+    default int getBaseId() {
+        return toBaseInt( getId() );
+    }
+
+    // to be used only for marshalling/unmarshalling
+    default int getExtendedId() {
+        return toExtendedInt( getId() );
+    }
 
     long getRecency();
 
@@ -205,7 +218,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             throw new UnsupportedOperationException();
         }
 

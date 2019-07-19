@@ -16,6 +16,10 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Date;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
@@ -35,16 +39,12 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.RuleRuntime;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Date;
-
 public class InputMarshaller {
 
     public static InternalFactHandle readFactHandle( MarshallerReaderContext context ) throws IOException,
             ClassNotFoundException {
         int type = context.stream.readInt();
-        int id = context.stream.readInt();
+        long id = context.stream.readLong();
         long recency = context.stream.readLong();
 
         long startTimeStamp = 0;

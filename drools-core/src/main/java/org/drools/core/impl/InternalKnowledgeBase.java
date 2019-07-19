@@ -72,7 +72,7 @@ public interface InternalKnowledgeBase extends KieBase {
 
     FactHandleFactory newFactHandleFactory();
 
-    FactHandleFactory newFactHandleFactory(int id, long counter) throws IOException;
+    FactHandleFactory newFactHandleFactory(long id, long counter) throws IOException;
 
     Map<String, Class<?>> getGlobals();
 

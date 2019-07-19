@@ -93,6 +93,9 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
 
+import static org.drools.core.util.BitMaskUtil.toBaseInt;
+import static org.drools.core.util.BitMaskUtil.toExtendedInt;
+
 /**
  * An output marshaller that uses ProtoBuf as the marshalling framework
  * in order to provide backward compatibility with marshalled sessions
@@ -140,7 +143,8 @@ public class ProtobufOutputMarshaller {
             if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
                 time = context.clockTime;
             }
-            _ruleData.setLastId( wm.getFactHandleFactory().getId() );
+            _ruleData.setLastId( toBaseInt( wm.getFactHandleFactory().getId() ) );
+            _ruleData.setLastIdExtended( toExtendedInt( wm.getFactHandleFactory().getId() ) );
             _ruleData.setLastRecency( wm.getFactHandleFactory().getRecency() );
 
             InternalFactHandle handle = context.wm.getInitialFactHandle();
@@ -148,7 +152,8 @@ public class ProtobufOutputMarshaller {
                 // can be null for RETE, if fireAllRules has not yet been called
                 ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
                         .setType( ProtobufMessages.FactHandle.HandleType.INITIAL_FACT )
-                        .setId( handle.getId() )
+                        .setId( handle.getBaseId() )
+                        .setIdExtended( handle.getExtendedId() )
                         .setRecency( handle.getRecency() )
                         .build();
                 _ruleData.setInitialFact( _ifh );
@@ -391,7 +396,8 @@ public class ProtobufOutputMarshaller {
         for ( LeftTuple leftTuple = it.next(); leftTuple != null; leftTuple = it.next() ) {
             InternalFactHandle handle = (InternalFactHandle) leftTuple.getContextObject();
             FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
-                    .setId( handle.getId() )
+                    .setId( handle.getBaseId() )
+                    .setIdExtended( handle.getExtendedId() )
                     .setRecency( handle.getRecency() )
                     .build();
 
@@ -403,7 +409,8 @@ public class ProtobufOutputMarshaller {
             while ( childLeftTuple != null ) {
                 RightTuple rightParent = childLeftTuple.getRightParent();
                 _context.addResult( ProtobufMessages.FactHandle.newBuilder()
-                        .setId( rightParent.getFactHandle().getId() )
+                        .setId( rightParent.getFactHandle().getBaseId() )
+                        .setIdExtended( rightParent.getFactHandle().getExtendedId() )
                         .setRecency( rightParent.getFactHandle().getRecency() )
                         .build() );
                 while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
@@ -487,13 +494,15 @@ public class ProtobufOutputMarshaller {
             for ( EqualityKey key : keys ) {
                 ProtobufMessages.EqualityKey.Builder _key = ProtobufMessages.EqualityKey.newBuilder();
                 _key.setStatus( key.getStatus() );
-                _key.setHandleId( key.getFactHandle().getId() );
+                _key.setHandleId( key.getFactHandle().getBaseId() );
+                _key.setHandleIdExtended( key.getFactHandle().getExtendedId() );
 
                 if ( key.size() > 1 ) {
                     // add all the other key's if they exist
                     FastIterator keyIter = key.fastIterator();
                     for ( DefaultFactHandle handle = key.getFirst().getNext(); handle != null; handle = (DefaultFactHandle) keyIter.next( handle ) ) {
-                        _key.addOtherHandle( handle.getId() );
+                        _key.addOtherHandle( handle.getBaseId() );
+                        _key.addOtherHandleExtended( handle.getExtendedId() );
                     }
                 }
 
@@ -513,7 +522,8 @@ public class ProtobufOutputMarshaller {
                                        org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey.Builder _key) throws IOException {
 
         ProtobufMessages.BeliefSet.Builder _beliefSet = ProtobufMessages.BeliefSet.newBuilder();
-        _beliefSet.setHandleId( beliefSet.getFactHandle().getId() );
+        _beliefSet.setHandleId( beliefSet.getFactHandle().getBaseId() );
+        _beliefSet.setHandleIdExtended( beliefSet.getFactHandle().getExtendedId() );
 
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
 
@@ -564,7 +574,7 @@ public class ProtobufOutputMarshaller {
 
         public int compare(EqualityKey key1,
                            EqualityKey key2) {
-            return key1.getFactHandle().getId() - key2.getFactHandle().getId();
+            return Long.compare( key1.getFactHandle().getId(), key2.getFactHandle().getId() );
         }
     }
 
@@ -588,7 +598,8 @@ public class ProtobufOutputMarshaller {
         ProtobufMessages.FactHandle.Builder _handle = ProtobufMessages.FactHandle.newBuilder();
 
         _handle.setType( getHandleType( handle ) );
-        _handle.setId( handle.getId() );
+        _handle.setId( handle.getBaseId() );
+        _handle.setIdExtended( handle.getExtendedId() );
         _handle.setRecency( handle.getRecency() );
 
         if ( _handle.getType() == ProtobufMessages.FactHandle.HandleType.EVENT ) {
@@ -664,7 +675,7 @@ public class ProtobufOutputMarshaller {
             Comparator<InternalFactHandle> {
         public int compare(InternalFactHandle h1,
                            InternalFactHandle h2) {
-            return Integer.compare(h1.getId(), h2.getId());
+            return Long.compare(h1.getId(), h2.getId());
         }
     }
 
@@ -682,7 +693,7 @@ public class ProtobufOutputMarshaller {
                 while ( result == 0 && t1 != null && t2 != null ) {
                     if ( t1.getFactHandle() != null && t2.getFactHandle() != null ) {
                         // can be null for eval, not and exists that have no right input
-                        result = t1.getFactHandle().getId() - t2.getFactHandle().getId();
+                        result = Long.compare(t1.getFactHandle().getId(), t2.getFactHandle().getId());
                     }
                     t1 = t1.getParent();
                     t2 = t2.getParent();
@@ -710,13 +721,15 @@ public class ProtobufOutputMarshaller {
         }
 
         if ( agendaItem.getActivationFactHandle() != null ) {
-            _activation.setHandleId( agendaItem.getActivationFactHandle().getId() );
+            _activation.setHandleId( agendaItem.getActivationFactHandle().getBaseId() );
+            _activation.setHandleIdExtended( agendaItem.getActivationFactHandle().getExtendedId() );
         }
 
         org.drools.core.util.LinkedList<LogicalDependency<M>> list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
             for ( LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext() ) {
-                _activation.addLogicalDependency( ((BeliefSet) node.getJustified()).getFactHandle().getId() );
+                _activation.addLogicalDependency( ((BeliefSet) node.getJustified()).getFactHandle().getBaseId() );
+                _activation.addLogicalDependencyExtended( ((BeliefSet) node.getJustified()).getFactHandle().getExtendedId() );
             }
         }
 
@@ -733,7 +746,8 @@ public class ProtobufOutputMarshaller {
             InternalFactHandle handle = entry.getFactHandle();
             if ( handle != null ) {
                  // can be null for eval, not and exists that have no right input
-                _tb.addHandleId( handle.getId() );
+                _tb.addHandleId( handle.getBaseId() );
+                _tb.addHandleIdExtended( handle.getExtendedId() );
 
                 if (serializeObjects) {
                     ObjectMarshallingStrategy marshallingStrategy = context.objectMarshallingStrategyStore.getStrategyObject( handle.getObject() );

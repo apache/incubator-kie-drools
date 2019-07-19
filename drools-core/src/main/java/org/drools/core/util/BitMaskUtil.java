@@ -38,4 +38,16 @@ public class BitMaskUtil {
     public static boolean isPositionSet(long mask, int pos) {
         return isSet(mask, 1L << pos);
     }
+
+    public static long toLong(int baseInt, int extendedInt) {
+        return ((long)extendedInt << 32) | baseInt & 0xFFFFFFFFL;
+    }
+
+    public static int toBaseInt(long l) {
+        return (int)l;
+    }
+
+    public static int toExtendedInt(long l) {
+        return (int)(l >> 32);
+    }
 }

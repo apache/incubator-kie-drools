@@ -79,6 +79,8 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
 
+import static org.drools.core.util.BitMaskUtil.toLong;
+
 /**
  * An input marshaller that uses protobuf. 
  * 
@@ -169,7 +171,7 @@ public class ProtobufInputMarshaller {
     private static InternalAgenda resetSession(StatefulKnowledgeSessionImpl session,
                                               MarshallerReaderContext context,
                                               ProtobufMessages.KnowledgeSession _session) {
-        session.reset( _session.getRuleData().getLastId(),
+        session.reset( toLong( _session.getRuleData().getLastId(), _session.getRuleData().getLastIdExtended() ),
                        _session.getRuleData().getLastRecency(),
                        1 );
         InternalAgenda agenda = (InternalAgenda) session.getAgenda();
@@ -185,7 +187,7 @@ public class ProtobufInputMarshaller {
                                                                     Environment environment,
                                                                     SessionConfiguration config,
                                                                     ProtobufMessages.KnowledgeSession _session) throws IOException {
-        FactHandleFactory handleFactory = context.kBase.newFactHandleFactory( _session.getRuleData().getLastId(),
+        FactHandleFactory handleFactory = context.kBase.newFactHandleFactory( toLong( _session.getRuleData().getLastId(), _session.getRuleData().getLastIdExtended() ),
                                                                                  _session.getRuleData().getLastRecency() );
 
         InternalAgenda agenda = context.kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.kBase, false );
@@ -336,7 +338,7 @@ public class ProtobufInputMarshaller {
     private static void readInitialFactHandle(MarshallerReaderContext context,
                                               RuleData _session,
                                               List<PropagationContext> pctxs) {
-        int ifhId = context.wm.getInitialFactHandle().getId();
+        long ifhId = context.wm.getInitialFactHandle().getId();
         context.handles.put( ifhId,
                              context.wm.getInitialFactHandle() );
 
@@ -507,7 +509,7 @@ public class ProtobufInputMarshaller {
         InternalFactHandle handle = null;
         switch ( _handle.getType() ) {
             case FACT : {
-                handle = new DefaultFactHandle( _handle.getId(),
+                handle = new DefaultFactHandle( toLong( _handle.getId(), _handle.getIdExtended() ),
                                                 object,
                                                 _handle.getRecency(),
                                                 (WorkingMemoryEntryPoint) entryPoint,
@@ -516,12 +518,12 @@ public class ProtobufInputMarshaller {
             }
             case QUERY : {
                 handle = new QueryElementFactHandle( object,
-                                                     _handle.getId(),
+                                                     toLong( _handle.getId(), _handle.getIdExtended() ),
                                                      _handle.getRecency() );
                 break;
             }
             case EVENT : {
-                handle = new EventFactHandle( _handle.getId(),
+                handle = new EventFactHandle( toLong( _handle.getId(), _handle.getIdExtended() ),
                                               object,
                                               _handle.getRecency(),
                                               _handle.getTimestamp(),
@@ -559,7 +561,7 @@ public class ProtobufInputMarshaller {
         ProtobufMessages.TruthMaintenanceSystem _tms = _ep.getTms();
 
         for ( ProtobufMessages.EqualityKey _key : _tms.getKeyList() ) {
-            InternalFactHandle handle = (InternalFactHandle) context.handles.get( _key.getHandleId() );
+            InternalFactHandle handle = (InternalFactHandle) context.handles.get( toLong( _key.getHandleId(), _key.getHandleIdExtended() ) );
 
             // ObjectTypeConf state is not marshalled, so it needs to be re-determined
             ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getEntryPointId(),
@@ -583,8 +585,8 @@ public class ProtobufInputMarshaller {
                                      pctxs );
             }
 
-            for ( Integer factHandleId : _key.getOtherHandleList() ) {
-                handle = context.handles.get( factHandleId );
+            for (int i = 0; i < _key.getOtherHandleList().size(); i++) {
+                handle = context.handles.get( toLong( _key.getOtherHandleList().get(i), _key.getOtherHandleExtendedList().get(i) ) );
                 key.addFactHandle( handle );
                 handle.setEqualityKey( key );
             }
@@ -603,7 +605,7 @@ public class ProtobufInputMarshaller {
                                                                             ClassNotFoundException {
         if( _key.hasBeliefSet() ) {
             ProtobufMessages.BeliefSet _beliefSet = _key.getBeliefSet();
-            InternalFactHandle handle = (InternalFactHandle) context.handles.get( _key.getHandleId() );
+            InternalFactHandle handle = (InternalFactHandle) context.handles.get( toLong( _key.getHandleId(), _key.getHandleIdExtended() ) );
             // phreak might serialize empty belief sets, so he have to handle it during deserialization 
             if( _beliefSet.getLogicalDependencyCount() > 0 ) {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
@@ -880,9 +882,9 @@ public class ProtobufInputMarshaller {
     }
 
     public static class TupleKey {
-        private final int[] tuple;
+        private final long[] tuple;
 
-        public TupleKey(int[] tuple) {
+        public TupleKey(long[] tuple) {
             super();
             this.tuple = tuple;
         }
@@ -905,5 +907,4 @@ public class ProtobufInputMarshaller {
             return true;
         }
     }
-
 }

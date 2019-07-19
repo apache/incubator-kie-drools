@@ -49,7 +49,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public KieRuntime                                                              kruntime;
     public final Map<Integer, BaseNode>                                            sinks;
 
-    public Map<Integer, InternalFactHandle>                                        handles;
+    public Map<Long, InternalFactHandle>                                           handles;
 
     public final Map<RightTupleKey, RightTuple>                                    rightTuples;
     public final Map<Integer, LeftTuple>                                           terminalTupleMap;
@@ -111,7 +111,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
         this.readersByInt = timerReaders;
 
-        this.handles = new HashMap<Integer, InternalFactHandle>();
+        this.handles = new HashMap<>();
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
         this.filter = new PBActivationsFilter();

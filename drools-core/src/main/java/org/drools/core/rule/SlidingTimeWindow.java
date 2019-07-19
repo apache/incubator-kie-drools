@@ -309,7 +309,7 @@ public class SlidingTimeWindow
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
             EventFactHandle handle = slCtx.peek();
-            outputCtx.writeInt( handle.getId() );
+            outputCtx.writeLong( handle.getId() );
         }
 
         public Timer serialize(JobContext jobCtx,
@@ -324,7 +324,8 @@ public class SlidingTimeWindow
             return ProtobufMessages.Timers.Timer.newBuilder()
                                                 .setType( ProtobufMessages.Timers.TimerType.BEHAVIOR )
                                                 .setBehavior( ProtobufMessages.Timers.BehaviorTimer.newBuilder()
-                                                                                                   .setHandleId( handle.getId() )
+                                                                                                   .setHandleId( handle.getBaseId() )
+                                                                                                   .setHandleIdExtended( handle.getExtendedId() )
                                                                                                    .build() )
                                                 .build();
         }

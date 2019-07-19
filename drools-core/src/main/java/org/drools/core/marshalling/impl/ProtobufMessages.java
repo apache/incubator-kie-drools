@@ -6212,6 +6212,15 @@ public final class ProtobufMessages {
      * <code>optional .org.drools.core.marshalling.TruthMaintenanceSystem OBSOLETE_tms = 12;</code>
      */
     org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystemOrBuilder getOBSOLETETmsOrBuilder();
+
+    /**
+     * <code>optional int32 last_id_extended = 13;</code>
+     */
+    boolean hasLastIdExtended();
+    /**
+     * <code>optional int32 last_id_extended = 13;</code>
+     */
+    int getLastIdExtended();
   }
   /**
    * <pre>
@@ -6234,6 +6243,7 @@ public final class ProtobufMessages {
       lastRecency_ = 0L;
       nodeMemory_ = java.util.Collections.emptyList();
       entryPoint_ = java.util.Collections.emptyList();
+      lastIdExtended_ = 0;
     }
 
     @java.lang.Override
@@ -6345,6 +6355,11 @@ public final class ProtobufMessages {
                 oBSOLETETms_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000020;
+              break;
+            }
+            case 104: {
+              bitField0_ |= 0x00000040;
+              lastIdExtended_ = input.readInt32();
               break;
             }
           }
@@ -6562,6 +6577,21 @@ public final class ProtobufMessages {
       return oBSOLETETms_ == null ? org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem.getDefaultInstance() : oBSOLETETms_;
     }
 
+    public static final int LAST_ID_EXTENDED_FIELD_NUMBER = 13;
+    private int lastIdExtended_;
+    /**
+     * <code>optional int32 last_id_extended = 13;</code>
+     */
+    public boolean hasLastIdExtended() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional int32 last_id_extended = 13;</code>
+     */
+    public int getLastIdExtended() {
+      return lastIdExtended_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -6597,6 +6627,9 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeMessage(12, getOBSOLETETms());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeInt32(13, lastIdExtended_);
       }
       unknownFields.writeTo(output);
     }
@@ -6637,6 +6670,10 @@ public final class ProtobufMessages {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, getOBSOLETETms());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(13, lastIdExtended_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -6688,6 +6725,11 @@ public final class ProtobufMessages {
         result = result && getOBSOLETETms()
             .equals(other.getOBSOLETETms());
       }
+      result = result && (hasLastIdExtended() == other.hasLastIdExtended());
+      if (hasLastIdExtended()) {
+        result = result && (getLastIdExtended()
+            == other.getLastIdExtended());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -6731,6 +6773,10 @@ public final class ProtobufMessages {
       if (hasOBSOLETETms()) {
         hash = (37 * hash) + OBSOLETE_TMS_FIELD_NUMBER;
         hash = (53 * hash) + getOBSOLETETms().hashCode();
+      }
+      if (hasLastIdExtended()) {
+        hash = (37 * hash) + LAST_ID_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getLastIdExtended();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -6911,6 +6957,8 @@ public final class ProtobufMessages {
           oBSOLETETmsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000080);
+        lastIdExtended_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -6993,6 +7041,10 @@ public final class ProtobufMessages {
         } else {
           result.oBSOLETETms_ = oBSOLETETmsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.lastIdExtended_ = lastIdExtended_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -7104,6 +7156,9 @@ public final class ProtobufMessages {
         }
         if (other.hasOBSOLETETms()) {
           mergeOBSOLETETms(other.getOBSOLETETms());
+        }
+        if (other.hasLastIdExtended()) {
+          setLastIdExtended(other.getLastIdExtended());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -8147,6 +8202,38 @@ public final class ProtobufMessages {
           oBSOLETETms_ = null;
         }
         return oBSOLETETmsBuilder_;
+      }
+
+      private int lastIdExtended_ ;
+      /**
+       * <code>optional int32 last_id_extended = 13;</code>
+       */
+      public boolean hasLastIdExtended() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional int32 last_id_extended = 13;</code>
+       */
+      public int getLastIdExtended() {
+        return lastIdExtended_;
+      }
+      /**
+       * <code>optional int32 last_id_extended = 13;</code>
+       */
+      public Builder setLastIdExtended(int value) {
+        bitField0_ |= 0x00000100;
+        lastIdExtended_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 last_id_extended = 13;</code>
+       */
+      public Builder clearLastIdExtended() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        lastIdExtended_ = 0;
+        onChanged();
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -27420,6 +27507,15 @@ public final class ProtobufMessages {
      * <code>optional int32 otn_count = 12;</code>
      */
     int getOtnCount();
+
+    /**
+     * <code>optional int32 id_extended = 13;</code>
+     */
+    boolean hasIdExtended();
+    /**
+     * <code>optional int32 id_extended = 13;</code>
+     */
+    int getIdExtended();
   }
   /**
    * <pre>
@@ -27450,6 +27546,7 @@ public final class ProtobufMessages {
       entryPoint_ = "";
       isJustified_ = false;
       otnCount_ = 0;
+      idExtended_ = 0;
     }
 
     @java.lang.Override
@@ -27548,6 +27645,11 @@ public final class ProtobufMessages {
             case 96: {
               bitField0_ |= 0x00000800;
               otnCount_ = input.readInt32();
+              break;
+            }
+            case 104: {
+              bitField0_ |= 0x00001000;
+              idExtended_ = input.readInt32();
               break;
             }
           }
@@ -27919,6 +28021,21 @@ public final class ProtobufMessages {
       return otnCount_;
     }
 
+    public static final int ID_EXTENDED_FIELD_NUMBER = 13;
+    private int idExtended_;
+    /**
+     * <code>optional int32 id_extended = 13;</code>
+     */
+    public boolean hasIdExtended() {
+      return ((bitField0_ & 0x00001000) == 0x00001000);
+    }
+    /**
+     * <code>optional int32 id_extended = 13;</code>
+     */
+    public int getIdExtended() {
+      return idExtended_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -27966,6 +28083,9 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         output.writeInt32(12, otnCount_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        output.writeInt32(13, idExtended_);
       }
       unknownFields.writeTo(output);
     }
@@ -28021,6 +28141,10 @@ public final class ProtobufMessages {
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(12, otnCount_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(13, idExtended_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -28097,6 +28221,11 @@ public final class ProtobufMessages {
         result = result && (getOtnCount()
             == other.getOtnCount());
       }
+      result = result && (hasIdExtended() == other.hasIdExtended());
+      if (hasIdExtended()) {
+        result = result && (getIdExtended()
+            == other.getIdExtended());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -28161,6 +28290,10 @@ public final class ProtobufMessages {
       if (hasOtnCount()) {
         hash = (37 * hash) + OTN_COUNT_FIELD_NUMBER;
         hash = (53 * hash) + getOtnCount();
+      }
+      if (hasIdExtended()) {
+        hash = (37 * hash) + ID_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getIdExtended();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -28319,6 +28452,8 @@ public final class ProtobufMessages {
         bitField0_ = (bitField0_ & ~0x00000400);
         otnCount_ = 0;
         bitField0_ = (bitField0_ & ~0x00000800);
+        idExtended_ = 0;
+        bitField0_ = (bitField0_ & ~0x00001000);
         return this;
       }
 
@@ -28391,6 +28526,10 @@ public final class ProtobufMessages {
           to_bitField0_ |= 0x00000800;
         }
         result.otnCount_ = otnCount_;
+        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+          to_bitField0_ |= 0x00001000;
+        }
+        result.idExtended_ = idExtended_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -28470,6 +28609,9 @@ public final class ProtobufMessages {
         }
         if (other.hasOtnCount()) {
           setOtnCount(other.getOtnCount());
+        }
+        if (other.hasIdExtended()) {
+          setIdExtended(other.getIdExtended());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -28989,6 +29131,38 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+
+      private int idExtended_ ;
+      /**
+       * <code>optional int32 id_extended = 13;</code>
+       */
+      public boolean hasIdExtended() {
+        return ((bitField0_ & 0x00001000) == 0x00001000);
+      }
+      /**
+       * <code>optional int32 id_extended = 13;</code>
+       */
+      public int getIdExtended() {
+        return idExtended_;
+      }
+      /**
+       * <code>optional int32 id_extended = 13;</code>
+       */
+      public Builder setIdExtended(int value) {
+        bitField0_ |= 0x00001000;
+        idExtended_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 id_extended = 13;</code>
+       */
+      public Builder clearIdExtended() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        idExtended_ = 0;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -29169,6 +29343,28 @@ public final class ProtobufMessages {
      * <code>optional bool evaluated = 11;</code>
      */
     boolean getEvaluated();
+
+    /**
+     * <code>optional int32 handle_id_extended = 12;</code>
+     */
+    boolean hasHandleIdExtended();
+    /**
+     * <code>optional int32 handle_id_extended = 12;</code>
+     */
+    int getHandleIdExtended();
+
+    /**
+     * <code>repeated int32 logical_dependency_extended = 13;</code>
+     */
+    java.util.List<java.lang.Integer> getLogicalDependencyExtendedList();
+    /**
+     * <code>repeated int32 logical_dependency_extended = 13;</code>
+     */
+    int getLogicalDependencyExtendedCount();
+    /**
+     * <code>repeated int32 logical_dependency_extended = 13;</code>
+     */
+    int getLogicalDependencyExtended(int index);
   }
   /**
    * Protobuf type {@code org.drools.core.marshalling.Activation}
@@ -29191,6 +29387,8 @@ public final class ProtobufMessages {
       handleId_ = 0;
       logicalDependency_ = java.util.Collections.emptyList();
       evaluated_ = false;
+      handleIdExtended_ = 0;
+      logicalDependencyExtended_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -29296,6 +29494,32 @@ public final class ProtobufMessages {
               evaluated_ = input.readBool();
               break;
             }
+            case 96: {
+              bitField0_ |= 0x00000100;
+              handleIdExtended_ = input.readInt32();
+              break;
+            }
+            case 104: {
+              if (!((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+                logicalDependencyExtended_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000400;
+              }
+              logicalDependencyExtended_.add(input.readInt32());
+              break;
+            }
+            case 106: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000400) == 0x00000400) && input.getBytesUntilLimit() > 0) {
+                logicalDependencyExtended_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000400;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                logicalDependencyExtended_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -29306,6 +29530,9 @@ public final class ProtobufMessages {
       } finally {
         if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
           logicalDependency_ = java.util.Collections.unmodifiableList(logicalDependency_);
+        }
+        if (((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
+          logicalDependencyExtended_ = java.util.Collections.unmodifiableList(logicalDependencyExtended_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -29577,6 +29804,43 @@ public final class ProtobufMessages {
       return evaluated_;
     }
 
+    public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 12;
+    private int handleIdExtended_;
+    /**
+     * <code>optional int32 handle_id_extended = 12;</code>
+     */
+    public boolean hasHandleIdExtended() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional int32 handle_id_extended = 12;</code>
+     */
+    public int getHandleIdExtended() {
+      return handleIdExtended_;
+    }
+
+    public static final int LOGICAL_DEPENDENCY_EXTENDED_FIELD_NUMBER = 13;
+    private java.util.List<java.lang.Integer> logicalDependencyExtended_;
+    /**
+     * <code>repeated int32 logical_dependency_extended = 13;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getLogicalDependencyExtendedList() {
+      return logicalDependencyExtended_;
+    }
+    /**
+     * <code>repeated int32 logical_dependency_extended = 13;</code>
+     */
+    public int getLogicalDependencyExtendedCount() {
+      return logicalDependencyExtended_.size();
+    }
+    /**
+     * <code>repeated int32 logical_dependency_extended = 13;</code>
+     */
+    public int getLogicalDependencyExtended(int index) {
+      return logicalDependencyExtended_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -29615,6 +29879,12 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeBool(11, evaluated_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeInt32(12, handleIdExtended_);
+      }
+      for (int i = 0; i < logicalDependencyExtended_.size(); i++) {
+        output.writeInt32(13, logicalDependencyExtended_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -29661,6 +29931,19 @@ public final class ProtobufMessages {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(11, evaluated_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(12, handleIdExtended_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < logicalDependencyExtended_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(logicalDependencyExtended_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getLogicalDependencyExtendedList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -29720,6 +30003,13 @@ public final class ProtobufMessages {
         result = result && (getEvaluated()
             == other.getEvaluated());
       }
+      result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+      if (hasHandleIdExtended()) {
+        result = result && (getHandleIdExtended()
+            == other.getHandleIdExtended());
+      }
+      result = result && getLogicalDependencyExtendedList()
+          .equals(other.getLogicalDependencyExtendedList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -29768,6 +30058,14 @@ public final class ProtobufMessages {
         hash = (37 * hash) + EVALUATED_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getEvaluated());
+      }
+      if (hasHandleIdExtended()) {
+        hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getHandleIdExtended();
+      }
+      if (getLogicalDependencyExtendedCount() > 0) {
+        hash = (37 * hash) + LOGICAL_DEPENDENCY_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getLogicalDependencyExtendedList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -29921,6 +30219,10 @@ public final class ProtobufMessages {
         bitField0_ = (bitField0_ & ~0x00000080);
         evaluated_ = false;
         bitField0_ = (bitField0_ & ~0x00000100);
+        handleIdExtended_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        logicalDependencyExtended_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
 
@@ -29986,6 +30288,15 @@ public final class ProtobufMessages {
           to_bitField0_ |= 0x00000080;
         }
         result.evaluated_ = evaluated_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.handleIdExtended_ = handleIdExtended_;
+        if (((bitField0_ & 0x00000400) == 0x00000400)) {
+          logicalDependencyExtended_ = java.util.Collections.unmodifiableList(logicalDependencyExtended_);
+          bitField0_ = (bitField0_ & ~0x00000400);
+        }
+        result.logicalDependencyExtended_ = logicalDependencyExtended_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -30067,6 +30378,19 @@ public final class ProtobufMessages {
         }
         if (other.hasEvaluated()) {
           setEvaluated(other.getEvaluated());
+        }
+        if (other.hasHandleIdExtended()) {
+          setHandleIdExtended(other.getHandleIdExtended());
+        }
+        if (!other.logicalDependencyExtended_.isEmpty()) {
+          if (logicalDependencyExtended_.isEmpty()) {
+            logicalDependencyExtended_ = other.logicalDependencyExtended_;
+            bitField0_ = (bitField0_ & ~0x00000400);
+          } else {
+            ensureLogicalDependencyExtendedIsMutable();
+            logicalDependencyExtended_.addAll(other.logicalDependencyExtended_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -30695,6 +31019,104 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+
+      private int handleIdExtended_ ;
+      /**
+       * <code>optional int32 handle_id_extended = 12;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 12;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 12;</code>
+       */
+      public Builder setHandleIdExtended(int value) {
+        bitField0_ |= 0x00000200;
+        handleIdExtended_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 12;</code>
+       */
+      public Builder clearHandleIdExtended() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        handleIdExtended_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> logicalDependencyExtended_ = java.util.Collections.emptyList();
+      private void ensureLogicalDependencyExtendedIsMutable() {
+        if (!((bitField0_ & 0x00000400) == 0x00000400)) {
+          logicalDependencyExtended_ = new java.util.ArrayList<java.lang.Integer>(logicalDependencyExtended_);
+          bitField0_ |= 0x00000400;
+         }
+      }
+      /**
+       * <code>repeated int32 logical_dependency_extended = 13;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getLogicalDependencyExtendedList() {
+        return java.util.Collections.unmodifiableList(logicalDependencyExtended_);
+      }
+      /**
+       * <code>repeated int32 logical_dependency_extended = 13;</code>
+       */
+      public int getLogicalDependencyExtendedCount() {
+        return logicalDependencyExtended_.size();
+      }
+      /**
+       * <code>repeated int32 logical_dependency_extended = 13;</code>
+       */
+      public int getLogicalDependencyExtended(int index) {
+        return logicalDependencyExtended_.get(index);
+      }
+      /**
+       * <code>repeated int32 logical_dependency_extended = 13;</code>
+       */
+      public Builder setLogicalDependencyExtended(
+          int index, int value) {
+        ensureLogicalDependencyExtendedIsMutable();
+        logicalDependencyExtended_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 logical_dependency_extended = 13;</code>
+       */
+      public Builder addLogicalDependencyExtended(int value) {
+        ensureLogicalDependencyExtendedIsMutable();
+        logicalDependencyExtended_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 logical_dependency_extended = 13;</code>
+       */
+      public Builder addAllLogicalDependencyExtended(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureLogicalDependencyExtendedIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, logicalDependencyExtended_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 logical_dependency_extended = 13;</code>
+       */
+      public Builder clearLogicalDependencyExtended() {
+        logicalDependencyExtended_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000400);
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -30784,6 +31206,19 @@ public final class ProtobufMessages {
      */
     org.drools.core.marshalling.impl.ProtobufMessages.SerializedObjectOrBuilder getObjectOrBuilder(
         int index);
+
+    /**
+     * <code>repeated int32 handle_id_extended = 3;</code>
+     */
+    java.util.List<java.lang.Integer> getHandleIdExtendedList();
+    /**
+     * <code>repeated int32 handle_id_extended = 3;</code>
+     */
+    int getHandleIdExtendedCount();
+    /**
+     * <code>repeated int32 handle_id_extended = 3;</code>
+     */
+    int getHandleIdExtended(int index);
   }
   /**
    * Protobuf type {@code org.drools.core.marshalling.Tuple}
@@ -30800,6 +31235,7 @@ public final class ProtobufMessages {
     private Tuple() {
       handleId_ = java.util.Collections.emptyList();
       object_ = java.util.Collections.emptyList();
+      handleIdExtended_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -30863,6 +31299,27 @@ public final class ProtobufMessages {
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.PARSER, extensionRegistry));
               break;
             }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                handleIdExtended_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              handleIdExtended_.add(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
+                handleIdExtended_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                handleIdExtended_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -30876,6 +31333,9 @@ public final class ProtobufMessages {
         }
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           object_ = java.util.Collections.unmodifiableList(object_);
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          handleIdExtended_ = java.util.Collections.unmodifiableList(handleIdExtended_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -30950,6 +31410,28 @@ public final class ProtobufMessages {
       return object_.get(index);
     }
 
+    public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 3;
+    private java.util.List<java.lang.Integer> handleIdExtended_;
+    /**
+     * <code>repeated int32 handle_id_extended = 3;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getHandleIdExtendedList() {
+      return handleIdExtended_;
+    }
+    /**
+     * <code>repeated int32 handle_id_extended = 3;</code>
+     */
+    public int getHandleIdExtendedCount() {
+      return handleIdExtended_.size();
+    }
+    /**
+     * <code>repeated int32 handle_id_extended = 3;</code>
+     */
+    public int getHandleIdExtended(int index) {
+      return handleIdExtended_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -30967,6 +31449,9 @@ public final class ProtobufMessages {
       }
       for (int i = 0; i < object_.size(); i++) {
         output.writeMessage(2, object_.get(i));
+      }
+      for (int i = 0; i < handleIdExtended_.size(); i++) {
+        output.writeInt32(3, handleIdExtended_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -30989,6 +31474,15 @@ public final class ProtobufMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, object_.get(i));
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < handleIdExtended_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(handleIdExtended_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getHandleIdExtendedList().size();
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -31009,6 +31503,8 @@ public final class ProtobufMessages {
           .equals(other.getHandleIdList());
       result = result && getObjectList()
           .equals(other.getObjectList());
+      result = result && getHandleIdExtendedList()
+          .equals(other.getHandleIdExtendedList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -31027,6 +31523,10 @@ public final class ProtobufMessages {
       if (getObjectCount() > 0) {
         hash = (37 * hash) + OBJECT_FIELD_NUMBER;
         hash = (53 * hash) + getObjectList().hashCode();
+      }
+      if (getHandleIdExtendedCount() > 0) {
+        hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getHandleIdExtendedList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -31166,6 +31666,8 @@ public final class ProtobufMessages {
         } else {
           objectBuilder_.clear();
         }
+        handleIdExtended_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -31203,6 +31705,11 @@ public final class ProtobufMessages {
         } else {
           result.object_ = objectBuilder_.build();
         }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          handleIdExtended_ = java.util.Collections.unmodifiableList(handleIdExtended_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.handleIdExtended_ = handleIdExtended_;
         onBuilt();
         return result;
       }
@@ -31279,6 +31786,16 @@ public final class ProtobufMessages {
               objectBuilder_.addAllMessages(other.object_);
             }
           }
+        }
+        if (!other.handleIdExtended_.isEmpty()) {
+          if (handleIdExtended_.isEmpty()) {
+            handleIdExtended_ = other.handleIdExtended_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureHandleIdExtendedIsMutable();
+            handleIdExtended_.addAll(other.handleIdExtended_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -31612,6 +32129,72 @@ public final class ProtobufMessages {
           object_ = null;
         }
         return objectBuilder_;
+      }
+
+      private java.util.List<java.lang.Integer> handleIdExtended_ = java.util.Collections.emptyList();
+      private void ensureHandleIdExtendedIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          handleIdExtended_ = new java.util.ArrayList<java.lang.Integer>(handleIdExtended_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <code>repeated int32 handle_id_extended = 3;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getHandleIdExtendedList() {
+        return java.util.Collections.unmodifiableList(handleIdExtended_);
+      }
+      /**
+       * <code>repeated int32 handle_id_extended = 3;</code>
+       */
+      public int getHandleIdExtendedCount() {
+        return handleIdExtended_.size();
+      }
+      /**
+       * <code>repeated int32 handle_id_extended = 3;</code>
+       */
+      public int getHandleIdExtended(int index) {
+        return handleIdExtended_.get(index);
+      }
+      /**
+       * <code>repeated int32 handle_id_extended = 3;</code>
+       */
+      public Builder setHandleIdExtended(
+          int index, int value) {
+        ensureHandleIdExtendedIsMutable();
+        handleIdExtended_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 handle_id_extended = 3;</code>
+       */
+      public Builder addHandleIdExtended(int value) {
+        ensureHandleIdExtendedIsMutable();
+        handleIdExtended_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 handle_id_extended = 3;</code>
+       */
+      public Builder addAllHandleIdExtended(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureHandleIdExtendedIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, handleIdExtended_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 handle_id_extended = 3;</code>
+       */
+      public Builder clearHandleIdExtended() {
+        handleIdExtended_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -34049,6 +34632,28 @@ public final class ProtobufMessages {
      * <code>optional .org.drools.core.marshalling.BeliefSet beliefSet = 4;</code>
      */
     org.drools.core.marshalling.impl.ProtobufMessages.BeliefSetOrBuilder getBeliefSetOrBuilder();
+
+    /**
+     * <code>optional int32 handle_id_extended = 5;</code>
+     */
+    boolean hasHandleIdExtended();
+    /**
+     * <code>optional int32 handle_id_extended = 5;</code>
+     */
+    int getHandleIdExtended();
+
+    /**
+     * <code>repeated int32 other_handle_extended = 6;</code>
+     */
+    java.util.List<java.lang.Integer> getOtherHandleExtendedList();
+    /**
+     * <code>repeated int32 other_handle_extended = 6;</code>
+     */
+    int getOtherHandleExtendedCount();
+    /**
+     * <code>repeated int32 other_handle_extended = 6;</code>
+     */
+    int getOtherHandleExtended(int index);
   }
   /**
    * Protobuf type {@code org.drools.core.marshalling.EqualityKey}
@@ -34066,6 +34671,8 @@ public final class ProtobufMessages {
       status_ = 0;
       handleId_ = 0;
       otherHandle_ = java.util.Collections.emptyList();
+      handleIdExtended_ = 0;
+      otherHandleExtended_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -34143,6 +34750,32 @@ public final class ProtobufMessages {
               bitField0_ |= 0x00000004;
               break;
             }
+            case 40: {
+              bitField0_ |= 0x00000008;
+              handleIdExtended_ = input.readInt32();
+              break;
+            }
+            case 48: {
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+                otherHandleExtended_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              otherHandleExtended_.add(input.readInt32());
+              break;
+            }
+            case 50: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020) && input.getBytesUntilLimit() > 0) {
+                otherHandleExtended_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                otherHandleExtended_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -34153,6 +34786,9 @@ public final class ProtobufMessages {
       } finally {
         if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
           otherHandle_ = java.util.Collections.unmodifiableList(otherHandle_);
+        }
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+          otherHandleExtended_ = java.util.Collections.unmodifiableList(otherHandleExtended_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -34244,6 +34880,43 @@ public final class ProtobufMessages {
       return beliefSet_ == null ? org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet.getDefaultInstance() : beliefSet_;
     }
 
+    public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 5;
+    private int handleIdExtended_;
+    /**
+     * <code>optional int32 handle_id_extended = 5;</code>
+     */
+    public boolean hasHandleIdExtended() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 handle_id_extended = 5;</code>
+     */
+    public int getHandleIdExtended() {
+      return handleIdExtended_;
+    }
+
+    public static final int OTHER_HANDLE_EXTENDED_FIELD_NUMBER = 6;
+    private java.util.List<java.lang.Integer> otherHandleExtended_;
+    /**
+     * <code>repeated int32 other_handle_extended = 6;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getOtherHandleExtendedList() {
+      return otherHandleExtended_;
+    }
+    /**
+     * <code>repeated int32 other_handle_extended = 6;</code>
+     */
+    public int getOtherHandleExtendedCount() {
+      return otherHandleExtended_.size();
+    }
+    /**
+     * <code>repeated int32 other_handle_extended = 6;</code>
+     */
+    public int getOtherHandleExtended(int index) {
+      return otherHandleExtended_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -34267,6 +34940,12 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(4, getBeliefSet());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(5, handleIdExtended_);
+      }
+      for (int i = 0; i < otherHandleExtended_.size(); i++) {
+        output.writeInt32(6, otherHandleExtended_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -34296,6 +34975,19 @@ public final class ProtobufMessages {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, getBeliefSet());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, handleIdExtended_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < otherHandleExtended_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(otherHandleExtended_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getOtherHandleExtendedList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -34330,6 +35022,13 @@ public final class ProtobufMessages {
         result = result && getBeliefSet()
             .equals(other.getBeliefSet());
       }
+      result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+      if (hasHandleIdExtended()) {
+        result = result && (getHandleIdExtended()
+            == other.getHandleIdExtended());
+      }
+      result = result && getOtherHandleExtendedList()
+          .equals(other.getOtherHandleExtendedList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -34356,6 +35055,14 @@ public final class ProtobufMessages {
       if (hasBeliefSet()) {
         hash = (37 * hash) + BELIEFSET_FIELD_NUMBER;
         hash = (53 * hash) + getBeliefSet().hashCode();
+      }
+      if (hasHandleIdExtended()) {
+        hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getHandleIdExtended();
+      }
+      if (getOtherHandleExtendedCount() > 0) {
+        hash = (37 * hash) + OTHER_HANDLE_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getOtherHandleExtendedList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -34499,6 +35206,10 @@ public final class ProtobufMessages {
           beliefSetBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        handleIdExtended_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        otherHandleExtended_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -34544,6 +35255,15 @@ public final class ProtobufMessages {
         } else {
           result.beliefSet_ = beliefSetBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.handleIdExtended_ = handleIdExtended_;
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          otherHandleExtended_ = java.util.Collections.unmodifiableList(otherHandleExtended_);
+          bitField0_ = (bitField0_ & ~0x00000020);
+        }
+        result.otherHandleExtended_ = otherHandleExtended_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -34604,6 +35324,19 @@ public final class ProtobufMessages {
         }
         if (other.hasBeliefSet()) {
           mergeBeliefSet(other.getBeliefSet());
+        }
+        if (other.hasHandleIdExtended()) {
+          setHandleIdExtended(other.getHandleIdExtended());
+        }
+        if (!other.otherHandleExtended_.isEmpty()) {
+          if (otherHandleExtended_.isEmpty()) {
+            otherHandleExtended_ = other.otherHandleExtended_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            ensureOtherHandleExtendedIsMutable();
+            otherHandleExtended_.addAll(other.otherHandleExtended_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -34880,6 +35613,104 @@ public final class ProtobufMessages {
         }
         return beliefSetBuilder_;
       }
+
+      private int handleIdExtended_ ;
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public Builder setHandleIdExtended(int value) {
+        bitField0_ |= 0x00000010;
+        handleIdExtended_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public Builder clearHandleIdExtended() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        handleIdExtended_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Integer> otherHandleExtended_ = java.util.Collections.emptyList();
+      private void ensureOtherHandleExtendedIsMutable() {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+          otherHandleExtended_ = new java.util.ArrayList<java.lang.Integer>(otherHandleExtended_);
+          bitField0_ |= 0x00000020;
+         }
+      }
+      /**
+       * <code>repeated int32 other_handle_extended = 6;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getOtherHandleExtendedList() {
+        return java.util.Collections.unmodifiableList(otherHandleExtended_);
+      }
+      /**
+       * <code>repeated int32 other_handle_extended = 6;</code>
+       */
+      public int getOtherHandleExtendedCount() {
+        return otherHandleExtended_.size();
+      }
+      /**
+       * <code>repeated int32 other_handle_extended = 6;</code>
+       */
+      public int getOtherHandleExtended(int index) {
+        return otherHandleExtended_.get(index);
+      }
+      /**
+       * <code>repeated int32 other_handle_extended = 6;</code>
+       */
+      public Builder setOtherHandleExtended(
+          int index, int value) {
+        ensureOtherHandleExtendedIsMutable();
+        otherHandleExtended_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 other_handle_extended = 6;</code>
+       */
+      public Builder addOtherHandleExtended(int value) {
+        ensureOtherHandleExtendedIsMutable();
+        otherHandleExtended_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 other_handle_extended = 6;</code>
+       */
+      public Builder addAllOtherHandleExtended(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureOtherHandleExtendedIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, otherHandleExtended_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 other_handle_extended = 6;</code>
+       */
+      public Builder clearOtherHandleExtended() {
+        otherHandleExtended_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -34965,6 +35796,15 @@ public final class ProtobufMessages {
      */
     org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependencyOrBuilder getLogicalDependencyOrBuilder(
         int index);
+
+    /**
+     * <code>optional int32 handle_id_extended = 3;</code>
+     */
+    boolean hasHandleIdExtended();
+    /**
+     * <code>optional int32 handle_id_extended = 3;</code>
+     */
+    int getHandleIdExtended();
   }
   /**
    * Protobuf type {@code org.drools.core.marshalling.BeliefSet}
@@ -34981,6 +35821,7 @@ public final class ProtobufMessages {
     private BeliefSet() {
       handleId_ = 0;
       logicalDependency_ = java.util.Collections.emptyList();
+      handleIdExtended_ = 0;
     }
 
     @java.lang.Override
@@ -35026,6 +35867,11 @@ public final class ProtobufMessages {
               }
               logicalDependency_.add(
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency.PARSER, extensionRegistry));
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000002;
+              handleIdExtended_ = input.readInt32();
               break;
             }
           }
@@ -35106,6 +35952,21 @@ public final class ProtobufMessages {
       return logicalDependency_.get(index);
     }
 
+    public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 3;
+    private int handleIdExtended_;
+    /**
+     * <code>optional int32 handle_id_extended = 3;</code>
+     */
+    public boolean hasHandleIdExtended() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int32 handle_id_extended = 3;</code>
+     */
+    public int getHandleIdExtended() {
+      return handleIdExtended_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -35124,6 +35985,9 @@ public final class ProtobufMessages {
       for (int i = 0; i < logicalDependency_.size(); i++) {
         output.writeMessage(2, logicalDependency_.get(i));
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(3, handleIdExtended_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -35139,6 +36003,10 @@ public final class ProtobufMessages {
       for (int i = 0; i < logicalDependency_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, logicalDependency_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, handleIdExtended_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -35163,6 +36031,11 @@ public final class ProtobufMessages {
       }
       result = result && getLogicalDependencyList()
           .equals(other.getLogicalDependencyList());
+      result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+      if (hasHandleIdExtended()) {
+        result = result && (getHandleIdExtended()
+            == other.getHandleIdExtended());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -35181,6 +36054,10 @@ public final class ProtobufMessages {
       if (getLogicalDependencyCount() > 0) {
         hash = (37 * hash) + LOGICALDEPENDENCY_FIELD_NUMBER;
         hash = (53 * hash) + getLogicalDependencyList().hashCode();
+      }
+      if (hasHandleIdExtended()) {
+        hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+        hash = (53 * hash) + getHandleIdExtended();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -35320,6 +36197,8 @@ public final class ProtobufMessages {
         } else {
           logicalDependencyBuilder_.clear();
         }
+        handleIdExtended_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -35357,6 +36236,10 @@ public final class ProtobufMessages {
         } else {
           result.logicalDependency_ = logicalDependencyBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.handleIdExtended_ = handleIdExtended_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -35427,6 +36310,9 @@ public final class ProtobufMessages {
               logicalDependencyBuilder_.addAllMessages(other.logicalDependency_);
             }
           }
+        }
+        if (other.hasHandleIdExtended()) {
+          setHandleIdExtended(other.getHandleIdExtended());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -35726,6 +36612,38 @@ public final class ProtobufMessages {
           logicalDependency_ = null;
         }
         return logicalDependencyBuilder_;
+      }
+
+      private int handleIdExtended_ ;
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      public Builder setHandleIdExtended(int value) {
+        bitField0_ |= 0x00000004;
+        handleIdExtended_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      public Builder clearHandleIdExtended() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        handleIdExtended_ = 0;
+        onChanged();
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -40296,6 +41214,15 @@ public final class ProtobufMessages {
        * <code>optional bool update = 4;</code>
        */
       boolean getUpdate();
+
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      boolean hasHandleIdExtended();
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      int getHandleIdExtended();
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.ActionQueue.LogicalRetract}
@@ -40313,6 +41240,7 @@ public final class ProtobufMessages {
         handleId_ = 0;
         fullyRetract_ = false;
         update_ = false;
+        handleIdExtended_ = 0;
       }
 
       @java.lang.Override
@@ -40372,6 +41300,11 @@ public final class ProtobufMessages {
               case 32: {
                 bitField0_ |= 0x00000008;
                 update_ = input.readBool();
+                break;
+              }
+              case 40: {
+                bitField0_ |= 0x00000010;
+                handleIdExtended_ = input.readInt32();
                 break;
               }
             }
@@ -40465,6 +41398,21 @@ public final class ProtobufMessages {
         return update_;
       }
 
+      public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 5;
+      private int handleIdExtended_;
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -40489,6 +41437,9 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           output.writeBool(4, update_);
         }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeInt32(5, handleIdExtended_);
+        }
         unknownFields.writeTo(output);
       }
 
@@ -40512,6 +41463,10 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBoolSize(4, update_);
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(5, handleIdExtended_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -40549,6 +41504,11 @@ public final class ProtobufMessages {
           result = result && (getUpdate()
               == other.getUpdate());
         }
+        result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+        if (hasHandleIdExtended()) {
+          result = result && (getHandleIdExtended()
+              == other.getHandleIdExtended());
+        }
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -40577,6 +41537,10 @@ public final class ProtobufMessages {
           hash = (37 * hash) + UPDATE_FIELD_NUMBER;
           hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
               getUpdate());
+        }
+        if (hasHandleIdExtended()) {
+          hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+          hash = (53 * hash) + getHandleIdExtended();
         }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
@@ -40720,6 +41684,8 @@ public final class ProtobufMessages {
           bitField0_ = (bitField0_ & ~0x00000004);
           update_ = false;
           bitField0_ = (bitField0_ & ~0x00000008);
+          handleIdExtended_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000010);
           return this;
         }
 
@@ -40764,6 +41730,10 @@ public final class ProtobufMessages {
             to_bitField0_ |= 0x00000008;
           }
           result.update_ = update_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.handleIdExtended_ = handleIdExtended_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -40817,6 +41787,9 @@ public final class ProtobufMessages {
           }
           if (other.hasUpdate()) {
             setUpdate(other.getUpdate());
+          }
+          if (other.hasHandleIdExtended()) {
+            setHandleIdExtended(other.getHandleIdExtended());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -41056,6 +42029,38 @@ public final class ProtobufMessages {
         public Builder clearUpdate() {
           bitField0_ = (bitField0_ & ~0x00000008);
           update_ = false;
+          onChanged();
+          return this;
+        }
+
+        private int handleIdExtended_ ;
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public boolean hasHandleIdExtended() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public int getHandleIdExtended() {
+          return handleIdExtended_;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public Builder setHandleIdExtended(int value) {
+          bitField0_ |= 0x00000010;
+          handleIdExtended_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public Builder clearHandleIdExtended() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          handleIdExtended_ = 0;
           onChanged();
           return this;
         }
@@ -41659,6 +42664,15 @@ public final class ProtobufMessages {
        * <code>optional .org.drools.core.marshalling.Tuple tuple = 6;</code>
        */
       org.drools.core.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
+
+      /**
+       * <code>optional int32 handle_id_extended = 7;</code>
+       */
+      boolean hasHandleIdExtended();
+      /**
+       * <code>optional int32 handle_id_extended = 7;</code>
+       */
+      int getHandleIdExtended();
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.ActionQueue.Assert}
@@ -41678,6 +42692,7 @@ public final class ProtobufMessages {
         updateEqualsMap_ = false;
         originPkgName_ = "";
         originRuleName_ = "";
+        handleIdExtended_ = 0;
       }
 
       @java.lang.Override
@@ -41749,6 +42764,11 @@ public final class ProtobufMessages {
                   tuple_ = subBuilder.buildPartial();
                 }
                 bitField0_ |= 0x00000020;
+                break;
+              }
+              case 56: {
+                bitField0_ |= 0x00000040;
+                handleIdExtended_ = input.readInt32();
                 break;
               }
             }
@@ -41926,6 +42946,21 @@ public final class ProtobufMessages {
         return tuple_ == null ? org.drools.core.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance() : tuple_;
       }
 
+      public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 7;
+      private int handleIdExtended_;
+      /**
+       * <code>optional int32 handle_id_extended = 7;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 7;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -41956,6 +42991,9 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
           output.writeMessage(6, getTuple());
         }
+        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          output.writeInt32(7, handleIdExtended_);
+        }
         unknownFields.writeTo(output);
       }
 
@@ -41985,6 +43023,10 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(6, getTuple());
+        }
+        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(7, handleIdExtended_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -42032,6 +43074,11 @@ public final class ProtobufMessages {
           result = result && getTuple()
               .equals(other.getTuple());
         }
+        result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+        if (hasHandleIdExtended()) {
+          result = result && (getHandleIdExtended()
+              == other.getHandleIdExtended());
+        }
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -42068,6 +43115,10 @@ public final class ProtobufMessages {
         if (hasTuple()) {
           hash = (37 * hash) + TUPLE_FIELD_NUMBER;
           hash = (53 * hash) + getTuple().hashCode();
+        }
+        if (hasHandleIdExtended()) {
+          hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+          hash = (53 * hash) + getHandleIdExtended();
         }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
@@ -42215,6 +43266,8 @@ public final class ProtobufMessages {
             tupleBuilder_.clear();
           }
           bitField0_ = (bitField0_ & ~0x00000020);
+          handleIdExtended_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000040);
           return this;
         }
 
@@ -42267,6 +43320,10 @@ public final class ProtobufMessages {
           } else {
             result.tuple_ = tupleBuilder_.build();
           }
+          if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+            to_bitField0_ |= 0x00000040;
+          }
+          result.handleIdExtended_ = handleIdExtended_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -42330,6 +43387,9 @@ public final class ProtobufMessages {
           }
           if (other.hasTuple()) {
             mergeTuple(other.getTuple());
+          }
+          if (other.hasHandleIdExtended()) {
+            setHandleIdExtended(other.getHandleIdExtended());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -42724,6 +43784,38 @@ public final class ProtobufMessages {
           }
           return tupleBuilder_;
         }
+
+        private int handleIdExtended_ ;
+        /**
+         * <code>optional int32 handle_id_extended = 7;</code>
+         */
+        public boolean hasHandleIdExtended() {
+          return ((bitField0_ & 0x00000040) == 0x00000040);
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 7;</code>
+         */
+        public int getHandleIdExtended() {
+          return handleIdExtended_;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 7;</code>
+         */
+        public Builder setHandleIdExtended(int value) {
+          bitField0_ |= 0x00000040;
+          handleIdExtended_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 7;</code>
+         */
+        public Builder clearHandleIdExtended() {
+          bitField0_ = (bitField0_ & ~0x00000040);
+          handleIdExtended_ = 0;
+          onChanged();
+          return this;
+        }
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
@@ -42794,6 +43886,15 @@ public final class ProtobufMessages {
        * <code>optional int32 node_id = 2;</code>
        */
       int getNodeId();
+
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      boolean hasHandleIdExtended();
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      int getHandleIdExtended();
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.ActionQueue.Expire}
@@ -42810,6 +43911,7 @@ public final class ProtobufMessages {
       private Expire() {
         handleId_ = 0;
         nodeId_ = 0;
+        handleIdExtended_ = 0;
       }
 
       @java.lang.Override
@@ -42851,6 +43953,11 @@ public final class ProtobufMessages {
               case 16: {
                 bitField0_ |= 0x00000002;
                 nodeId_ = input.readInt32();
+                break;
+              }
+              case 24: {
+                bitField0_ |= 0x00000004;
+                handleIdExtended_ = input.readInt32();
                 break;
               }
             }
@@ -42908,6 +44015,21 @@ public final class ProtobufMessages {
         return nodeId_;
       }
 
+      public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 3;
+      private int handleIdExtended_;
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 3;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -42926,6 +44048,9 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeInt32(2, nodeId_);
         }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeInt32(3, handleIdExtended_);
+        }
         unknownFields.writeTo(output);
       }
 
@@ -42941,6 +44066,10 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(2, nodeId_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(3, handleIdExtended_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -42968,6 +44097,11 @@ public final class ProtobufMessages {
           result = result && (getNodeId()
               == other.getNodeId());
         }
+        result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+        if (hasHandleIdExtended()) {
+          result = result && (getHandleIdExtended()
+              == other.getHandleIdExtended());
+        }
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -42986,6 +44120,10 @@ public final class ProtobufMessages {
         if (hasNodeId()) {
           hash = (37 * hash) + NODE_ID_FIELD_NUMBER;
           hash = (53 * hash) + getNodeId();
+        }
+        if (hasHandleIdExtended()) {
+          hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+          hash = (53 * hash) + getHandleIdExtended();
         }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
@@ -43120,6 +44258,8 @@ public final class ProtobufMessages {
           bitField0_ = (bitField0_ & ~0x00000001);
           nodeId_ = 0;
           bitField0_ = (bitField0_ & ~0x00000002);
+          handleIdExtended_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
 
@@ -43152,6 +44292,10 @@ public final class ProtobufMessages {
             to_bitField0_ |= 0x00000002;
           }
           result.nodeId_ = nodeId_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.handleIdExtended_ = handleIdExtended_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -43199,6 +44343,9 @@ public final class ProtobufMessages {
           }
           if (other.hasNodeId()) {
             setNodeId(other.getNodeId());
+          }
+          if (other.hasHandleIdExtended()) {
+            setHandleIdExtended(other.getHandleIdExtended());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -43288,6 +44435,38 @@ public final class ProtobufMessages {
         public Builder clearNodeId() {
           bitField0_ = (bitField0_ & ~0x00000002);
           nodeId_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private int handleIdExtended_ ;
+        /**
+         * <code>optional int32 handle_id_extended = 3;</code>
+         */
+        public boolean hasHandleIdExtended() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 3;</code>
+         */
+        public int getHandleIdExtended() {
+          return handleIdExtended_;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 3;</code>
+         */
+        public Builder setHandleIdExtended(int value) {
+          bitField0_ |= 0x00000004;
+          handleIdExtended_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 3;</code>
+         */
+        public Builder clearHandleIdExtended() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          handleIdExtended_ = 0;
           onChanged();
           return this;
         }
@@ -46975,6 +48154,15 @@ public final class ProtobufMessages {
        * <code>optional int64 next_fire_timestamp = 4;</code>
        */
       long getNextFireTimestamp();
+
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      boolean hasHandleIdExtended();
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      int getHandleIdExtended();
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.Timers.ExpireTimer}
@@ -46993,6 +48181,7 @@ public final class ProtobufMessages {
         entryPointId_ = "";
         className_ = "";
         nextFireTimestamp_ = 0L;
+        handleIdExtended_ = 0;
       }
 
       @java.lang.Override
@@ -47046,6 +48235,11 @@ public final class ProtobufMessages {
               case 32: {
                 bitField0_ |= 0x00000008;
                 nextFireTimestamp_ = input.readInt64();
+                break;
+              }
+              case 40: {
+                bitField0_ |= 0x00000010;
+                handleIdExtended_ = input.readInt32();
                 break;
               }
             }
@@ -47187,6 +48381,21 @@ public final class ProtobufMessages {
         return nextFireTimestamp_;
       }
 
+      public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 5;
+      private int handleIdExtended_;
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 5;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -47211,6 +48420,9 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           output.writeInt64(4, nextFireTimestamp_);
         }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeInt32(5, handleIdExtended_);
+        }
         unknownFields.writeTo(output);
       }
 
@@ -47232,6 +48444,10 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt64Size(4, nextFireTimestamp_);
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(5, handleIdExtended_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -47269,6 +48485,11 @@ public final class ProtobufMessages {
           result = result && (getNextFireTimestamp()
               == other.getNextFireTimestamp());
         }
+        result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+        if (hasHandleIdExtended()) {
+          result = result && (getHandleIdExtended()
+              == other.getHandleIdExtended());
+        }
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -47296,6 +48517,10 @@ public final class ProtobufMessages {
           hash = (37 * hash) + NEXT_FIRE_TIMESTAMP_FIELD_NUMBER;
           hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
               getNextFireTimestamp());
+        }
+        if (hasHandleIdExtended()) {
+          hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+          hash = (53 * hash) + getHandleIdExtended();
         }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
@@ -47434,6 +48659,8 @@ public final class ProtobufMessages {
           bitField0_ = (bitField0_ & ~0x00000004);
           nextFireTimestamp_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000008);
+          handleIdExtended_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000010);
           return this;
         }
 
@@ -47474,6 +48701,10 @@ public final class ProtobufMessages {
             to_bitField0_ |= 0x00000008;
           }
           result.nextFireTimestamp_ = nextFireTimestamp_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.handleIdExtended_ = handleIdExtended_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -47531,6 +48762,9 @@ public final class ProtobufMessages {
           }
           if (other.hasNextFireTimestamp()) {
             setNextFireTimestamp(other.getNextFireTimestamp());
+          }
+          if (other.hasHandleIdExtended()) {
+            setHandleIdExtended(other.getHandleIdExtended());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -47772,6 +49006,38 @@ public final class ProtobufMessages {
         public Builder clearNextFireTimestamp() {
           bitField0_ = (bitField0_ & ~0x00000008);
           nextFireTimestamp_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private int handleIdExtended_ ;
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public boolean hasHandleIdExtended() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public int getHandleIdExtended() {
+          return handleIdExtended_;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public Builder setHandleIdExtended(int value) {
+          bitField0_ |= 0x00000010;
+          handleIdExtended_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 5;</code>
+         */
+        public Builder clearHandleIdExtended() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          handleIdExtended_ = 0;
           onChanged();
           return this;
         }
@@ -48645,6 +49911,15 @@ public final class ProtobufMessages {
        * <code>optional int32 handle_id = 3;</code>
        */
       int getHandleId();
+
+      /**
+       * <code>optional int32 handle_id_extended = 4;</code>
+       */
+      boolean hasHandleIdExtended();
+      /**
+       * <code>optional int32 handle_id_extended = 4;</code>
+       */
+      int getHandleIdExtended();
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.Timers.BehaviorTimer}
@@ -48662,6 +49937,7 @@ public final class ProtobufMessages {
         dEPRECATEDNodeId_ = 0;
         dEPRECATEDBehaviorIndex_ = 0;
         handleId_ = 0;
+        handleIdExtended_ = 0;
       }
 
       @java.lang.Override
@@ -48708,6 +49984,11 @@ public final class ProtobufMessages {
               case 24: {
                 bitField0_ |= 0x00000004;
                 handleId_ = input.readInt32();
+                break;
+              }
+              case 32: {
+                bitField0_ |= 0x00000008;
+                handleIdExtended_ = input.readInt32();
                 break;
               }
             }
@@ -48780,6 +50061,21 @@ public final class ProtobufMessages {
         return handleId_;
       }
 
+      public static final int HANDLE_ID_EXTENDED_FIELD_NUMBER = 4;
+      private int handleIdExtended_;
+      /**
+       * <code>optional int32 handle_id_extended = 4;</code>
+       */
+      public boolean hasHandleIdExtended() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int32 handle_id_extended = 4;</code>
+       */
+      public int getHandleIdExtended() {
+        return handleIdExtended_;
+      }
+
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -48801,6 +50097,9 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeInt32(3, handleId_);
         }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeInt32(4, handleIdExtended_);
+        }
         unknownFields.writeTo(output);
       }
 
@@ -48820,6 +50119,10 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(3, handleId_);
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(4, handleIdExtended_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -48852,6 +50155,11 @@ public final class ProtobufMessages {
           result = result && (getHandleId()
               == other.getHandleId());
         }
+        result = result && (hasHandleIdExtended() == other.hasHandleIdExtended());
+        if (hasHandleIdExtended()) {
+          result = result && (getHandleIdExtended()
+              == other.getHandleIdExtended());
+        }
         result = result && unknownFields.equals(other.unknownFields);
         return result;
       }
@@ -48874,6 +50182,10 @@ public final class ProtobufMessages {
         if (hasHandleId()) {
           hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
           hash = (53 * hash) + getHandleId();
+        }
+        if (hasHandleIdExtended()) {
+          hash = (37 * hash) + HANDLE_ID_EXTENDED_FIELD_NUMBER;
+          hash = (53 * hash) + getHandleIdExtended();
         }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
@@ -49010,6 +50322,8 @@ public final class ProtobufMessages {
           bitField0_ = (bitField0_ & ~0x00000002);
           handleId_ = 0;
           bitField0_ = (bitField0_ & ~0x00000004);
+          handleIdExtended_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000008);
           return this;
         }
 
@@ -49046,6 +50360,10 @@ public final class ProtobufMessages {
             to_bitField0_ |= 0x00000004;
           }
           result.handleId_ = handleId_;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.handleIdExtended_ = handleIdExtended_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -49096,6 +50414,9 @@ public final class ProtobufMessages {
           }
           if (other.hasHandleId()) {
             setHandleId(other.getHandleId());
+          }
+          if (other.hasHandleIdExtended()) {
+            setHandleIdExtended(other.getHandleIdExtended());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -49217,6 +50538,38 @@ public final class ProtobufMessages {
         public Builder clearHandleId() {
           bitField0_ = (bitField0_ & ~0x00000004);
           handleId_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private int handleIdExtended_ ;
+        /**
+         * <code>optional int32 handle_id_extended = 4;</code>
+         */
+        public boolean hasHandleIdExtended() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 4;</code>
+         */
+        public int getHandleIdExtended() {
+          return handleIdExtended_;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 4;</code>
+         */
+        public Builder setHandleIdExtended(int value) {
+          bitField0_ |= 0x00000008;
+          handleIdExtended_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 handle_id_extended = 4;</code>
+         */
+        public Builder clearHandleIdExtended() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          handleIdExtended_ = 0;
           onChanged();
           return this;
         }
@@ -56048,7 +57401,7 @@ public final class ProtobufMessages {
       "rshalling.RuleData\022>\n\014process_data\030\004 \001(\013" +
       "2(.org.drools.core.marshalling.ProcessDa" +
       "ta\0223\n\006timers\030\005 \001(\0132#.org.drools.core.mar" +
-      "shalling.Timers*\005\010d\020\310\001\"\254\003\n\010RuleData\022\017\n\007l" +
+      "shalling.Timers*\005\010d\020\310\001\"\306\003\n\010RuleData\022\017\n\007l" +
       "ast_id\030\003 \001(\005\022\024\n\014last_recency\030\004 \001(\003\022=\n\014in" +
       "itial_fact\030\006 \001(\0132\'.org.drools.core.marsh" +
       "alling.FactHandle\0223\n\006agenda\030\010 \001(\0132#.org." +
@@ -56059,207 +57412,216 @@ public final class ProtobufMessages {
       "tion_queue\030\013 \001(\0132(.org.drools.core.marsh" +
       "alling.ActionQueue\022I\n\014OBSOLETE_tms\030\014 \001(\013" +
       "23.org.drools.core.marshalling.TruthMain" +
-      "tenanceSystem\";\n\017RuntimeClassDef\022\025\n\rclas" +
-      "s_fq_name\030\001 \002(\t\022\021\n\tclass_def\030\002 \002(\014\"\024\n\013Pr" +
-      "ocessData*\005\010\n\020\310\001\"\325\010\n\006Agenda\022\033\n\023dormant_a" +
-      "ctivations\030\001 \001(\005\022\032\n\022active_activations\030\002" +
-      " \001(\005\022E\n\014agenda_group\030\003 \003(\0132/.org.drools." +
-      "core.marshalling.Agenda.AgendaGroup\022C\n\013f" +
-      "ocus_stack\030\004 \001(\0132..org.drools.core.marsh" +
-      "alling.Agenda.FocusStack\022J\n\017rule_flow_gr" +
-      "oup\030\005 \003(\01321.org.drools.core.marshalling." +
-      "Agenda.RuleFlowGroup\0226\n\005match\030\006 \003(\0132\'.or" +
-      "g.drools.core.marshalling.Activation\022@\n\017" +
-      "rule_activation\030\007 \003(\0132\'.org.drools.core." +
-      "marshalling.Activation\032\370\002\n\013AgendaGroup\022\014" +
-      "\n\004name\030\001 \001(\t\022\021\n\tis_active\030\002 \001(\010\022\032\n\022is_au" +
-      "to_deactivate\030\003 \001(\010\022\035\n\025activated_for_rec" +
-      "ency\030\004 \001(\003\022\033\n\023cleared_for_recency\030\005 \001(\003\022" +
-      "6\n\005match\030\006 \003(\0132\'.org.drools.core.marshal" +
-      "ling.Activation\022S\n\rnode_instance\030\007 \003(\0132<" +
-      ".org.drools.core.marshalling.Agenda.Agen" +
-      "daGroup.NodeInstance\022\034\n\024has_rule_flow_li" +
-      "ster\030\010 \001(\010\032E\n\014NodeInstance\022\033\n\023process_in" +
-      "stance_id\030\001 \001(\003\022\030\n\020node_instance_id\030\002 \001(" +
-      "\t\032 \n\nFocusStack\022\022\n\ngroup_name\030\001 \003(\t\032\242\002\n\r" +
-      "RuleFlowGroup\022\014\n\004name\030\001 \001(\t\022\021\n\tis_active" +
-      "\030\002 \001(\010\022\032\n\022is_auto_deactivate\030\003 \001(\010\0226\n\005ma" +
-      "tch\030\004 \003(\0132\'.org.drools.core.marshalling." +
-      "Activation\022U\n\rnode_instance\030\005 \003(\0132>.org." +
-      "drools.core.marshalling.Agenda.RuleFlowG" +
-      "roup.NodeInstance\032E\n\014NodeInstance\022\033\n\023pro" +
-      "cess_instance_id\030\001 \001(\003\022\030\n\020node_instance_" +
-      "id\030\002 \001(\t\"\350\014\n\nNodeMemory\022\017\n\007node_id\030\001 \001(\005" +
-      "\022C\n\tnode_type\030\002 \001(\01620.org.drools.core.ma" +
-      "rshalling.NodeMemory.NodeType\022P\n\naccumul" +
-      "ate\030\003 \001(\0132<.org.drools.core.marshalling." +
-      "NodeMemory.AccumulateNodeMemory\022B\n\003ria\030\004" +
-      " \001(\01325.org.drools.core.marshalling.NodeM" +
-      "emory.RIANodeMemory\022D\n\004from\030\005 \001(\01326.org." +
-      "drools.core.marshalling.NodeMemory.FromN" +
-      "odeMemory\022U\n\rquery_element\030\006 \001(\0132>.org.d" +
-      "rools.core.marshalling.NodeMemory.QueryE" +
-      "lementNodeMemory\032\200\002\n\024AccumulateNodeMemor" +
-      "y\022_\n\007context\030\001 \003(\0132N.org.drools.core.mar" +
-      "shalling.NodeMemory.AccumulateNodeMemory" +
-      ".AccumulateContext\032\206\001\n\021AccumulateContext" +
-      "\0221\n\005tuple\030\001 \001(\0132\".org.drools.core.marsha" +
-      "lling.Tuple\022>\n\rresult_handle\030\002 \001(\0132\'.org" +
-      ".drools.core.marshalling.FactHandle\032\343\001\n\r" +
-      "RIANodeMemory\022Q\n\007context\030\001 \003(\0132@.org.dro" +
+      "tenanceSystem\022\030\n\020last_id_extended\030\r \001(\005\"" +
+      ";\n\017RuntimeClassDef\022\025\n\rclass_fq_name\030\001 \002(" +
+      "\t\022\021\n\tclass_def\030\002 \002(\014\"\024\n\013ProcessData*\005\010\n\020" +
+      "\310\001\"\325\010\n\006Agenda\022\033\n\023dormant_activations\030\001 \001" +
+      "(\005\022\032\n\022active_activations\030\002 \001(\005\022E\n\014agenda" +
+      "_group\030\003 \003(\0132/.org.drools.core.marshalli" +
+      "ng.Agenda.AgendaGroup\022C\n\013focus_stack\030\004 \001" +
+      "(\0132..org.drools.core.marshalling.Agenda." +
+      "FocusStack\022J\n\017rule_flow_group\030\005 \003(\01321.or" +
+      "g.drools.core.marshalling.Agenda.RuleFlo" +
+      "wGroup\0226\n\005match\030\006 \003(\0132\'.org.drools.core." +
+      "marshalling.Activation\022@\n\017rule_activatio" +
+      "n\030\007 \003(\0132\'.org.drools.core.marshalling.Ac" +
+      "tivation\032\370\002\n\013AgendaGroup\022\014\n\004name\030\001 \001(\t\022\021" +
+      "\n\tis_active\030\002 \001(\010\022\032\n\022is_auto_deactivate\030" +
+      "\003 \001(\010\022\035\n\025activated_for_recency\030\004 \001(\003\022\033\n\023" +
+      "cleared_for_recency\030\005 \001(\003\0226\n\005match\030\006 \003(\013" +
+      "2\'.org.drools.core.marshalling.Activatio" +
+      "n\022S\n\rnode_instance\030\007 \003(\0132<.org.drools.co" +
+      "re.marshalling.Agenda.AgendaGroup.NodeIn" +
+      "stance\022\034\n\024has_rule_flow_lister\030\010 \001(\010\032E\n\014" +
+      "NodeInstance\022\033\n\023process_instance_id\030\001 \001(" +
+      "\003\022\030\n\020node_instance_id\030\002 \001(\t\032 \n\nFocusStac" +
+      "k\022\022\n\ngroup_name\030\001 \003(\t\032\242\002\n\rRuleFlowGroup\022" +
+      "\014\n\004name\030\001 \001(\t\022\021\n\tis_active\030\002 \001(\010\022\032\n\022is_a" +
+      "uto_deactivate\030\003 \001(\010\0226\n\005match\030\004 \003(\0132\'.or" +
+      "g.drools.core.marshalling.Activation\022U\n\r" +
+      "node_instance\030\005 \003(\0132>.org.drools.core.ma" +
+      "rshalling.Agenda.RuleFlowGroup.NodeInsta" +
+      "nce\032E\n\014NodeInstance\022\033\n\023process_instance_" +
+      "id\030\001 \001(\003\022\030\n\020node_instance_id\030\002 \001(\t\"\350\014\n\nN" +
+      "odeMemory\022\017\n\007node_id\030\001 \001(\005\022C\n\tnode_type\030" +
+      "\002 \001(\01620.org.drools.core.marshalling.Node" +
+      "Memory.NodeType\022P\n\naccumulate\030\003 \001(\0132<.or" +
+      "g.drools.core.marshalling.NodeMemory.Acc" +
+      "umulateNodeMemory\022B\n\003ria\030\004 \001(\01325.org.dro" +
       "ols.core.marshalling.NodeMemory.RIANodeM" +
-      "emory.RIAContext\032\177\n\nRIAContext\0221\n\005tuple\030" +
-      "\001 \001(\0132\".org.drools.core.marshalling.Tupl" +
-      "e\022>\n\rresult_handle\030\002 \001(\0132\'.org.drools.co" +
-      "re.marshalling.FactHandle\032\366\002\n\016FromNodeMe" +
-      "mory\022S\n\007context\030\001 \003(\0132B.org.drools.core." +
-      "marshalling.NodeMemory.FromNodeMemory.Fr" +
-      "omContext\032\216\002\n\013FromContext\0221\n\005tuple\030\001 \001(\013" +
-      "2\".org.drools.core.marshalling.Tuple\0227\n\006" +
+      "emory\022D\n\004from\030\005 \001(\01326.org.drools.core.ma" +
+      "rshalling.NodeMemory.FromNodeMemory\022U\n\rq" +
+      "uery_element\030\006 \001(\0132>.org.drools.core.mar" +
+      "shalling.NodeMemory.QueryElementNodeMemo" +
+      "ry\032\200\002\n\024AccumulateNodeMemory\022_\n\007context\030\001" +
+      " \003(\0132N.org.drools.core.marshalling.NodeM" +
+      "emory.AccumulateNodeMemory.AccumulateCon" +
+      "text\032\206\001\n\021AccumulateContext\0221\n\005tuple\030\001 \001(" +
+      "\0132\".org.drools.core.marshalling.Tuple\022>\n" +
+      "\rresult_handle\030\002 \001(\0132\'.org.drools.core.m" +
+      "arshalling.FactHandle\032\343\001\n\rRIANodeMemory\022" +
+      "Q\n\007context\030\001 \003(\0132@.org.drools.core.marsh" +
+      "alling.NodeMemory.RIANodeMemory.RIAConte" +
+      "xt\032\177\n\nRIAContext\0221\n\005tuple\030\001 \001(\0132\".org.dr" +
+      "ools.core.marshalling.Tuple\022>\n\rresult_ha" +
+      "ndle\030\002 \001(\0132\'.org.drools.core.marshalling" +
+      ".FactHandle\032\366\002\n\016FromNodeMemory\022S\n\007contex" +
+      "t\030\001 \003(\0132B.org.drools.core.marshalling.No" +
+      "deMemory.FromNodeMemory.FromContext\032\216\002\n\013" +
+      "FromContext\0221\n\005tuple\030\001 \001(\0132\".org.drools." +
+      "core.marshalling.Tuple\0227\n\006handle\030\002 \003(\0132\'" +
+      ".org.drools.core.marshalling.FactHandle\022" +
+      "]\n\006object\030\003 \003(\0132M.org.drools.core.marsha" +
+      "lling.NodeMemory.FromNodeMemory.FromCont" +
+      "ext.FromObject\0324\n\nFromObject\022\026\n\016strategy" +
+      "_index\030\010 \001(\005\022\016\n\006object\030\t \001(\014\032\254\002\n\026QueryEl" +
+      "ementNodeMemory\022\\\n\007context\030\001 \003(\0132K.org.d" +
+      "rools.core.marshalling.NodeMemory.QueryE" +
+      "lementNodeMemory.QueryContext\032\263\001\n\014QueryC" +
+      "ontext\0221\n\005tuple\030\001 \001(\0132\".org.drools.core." +
+      "marshalling.Tuple\0227\n\006handle\030\002 \001(\0132\'.org." +
+      "drools.core.marshalling.FactHandle\0227\n\006re" +
+      "sult\030\003 \003(\0132\'.org.drools.core.marshalling" +
+      ".FactHandle\"@\n\010NodeType\022\016\n\nACCUMULATE\020\000\022" +
+      "\007\n\003RIA\020\001\022\010\n\004FROM\020\002\022\021\n\rQUERY_ELEMENT\020\003\"\342\001" +
+      "\n\nEntryPoint\022\026\n\016entry_point_id\030\001 \001(\t\0227\n\006" +
       "handle\030\002 \003(\0132\'.org.drools.core.marshalli" +
-      "ng.FactHandle\022]\n\006object\030\003 \003(\0132M.org.droo" +
-      "ls.core.marshalling.NodeMemory.FromNodeM" +
-      "emory.FromContext.FromObject\0324\n\nFromObje" +
-      "ct\022\026\n\016strategy_index\030\010 \001(\005\022\016\n\006object\030\t \001" +
-      "(\014\032\254\002\n\026QueryElementNodeMemory\022\\\n\007context" +
-      "\030\001 \003(\0132K.org.drools.core.marshalling.Nod" +
-      "eMemory.QueryElementNodeMemory.QueryCont" +
-      "ext\032\263\001\n\014QueryContext\0221\n\005tuple\030\001 \001(\0132\".or" +
-      "g.drools.core.marshalling.Tuple\0227\n\006handl" +
-      "e\030\002 \001(\0132\'.org.drools.core.marshalling.Fa" +
-      "ctHandle\0227\n\006result\030\003 \003(\0132\'.org.drools.co" +
-      "re.marshalling.FactHandle\"@\n\010NodeType\022\016\n" +
-      "\nACCUMULATE\020\000\022\007\n\003RIA\020\001\022\010\n\004FROM\020\002\022\021\n\rQUER" +
-      "Y_ELEMENT\020\003\"\342\001\n\nEntryPoint\022\026\n\016entry_poin" +
-      "t_id\030\001 \001(\t\0227\n\006handle\030\002 \003(\0132\'.org.drools." +
-      "core.marshalling.FactHandle\022@\n\003tms\030\003 \001(\013" +
-      "23.org.drools.core.marshalling.TruthMain" +
-      "tenanceSystem\022A\n\003otc\030\004 \003(\01324.org.drools." +
-      "core.marshalling.ObjectTypeConfiguration" +
-      "\"\345\002\n\nFactHandle\022@\n\004type\030\001 \001(\01622.org.droo" +
-      "ls.core.marshalling.FactHandle.HandleTyp" +
-      "e\022\n\n\002id\030\002 \001(\005\022\017\n\007recency\030\003 \001(\003\022\021\n\ttimest" +
-      "amp\030\004 \001(\003\022\020\n\010duration\030\005 \001(\003\022\022\n\nis_expire" +
-      "d\030\006 \001(\010\022\031\n\021activations_count\030\007 \001(\003\022\026\n\016st" +
-      "rategy_index\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022\023\n\013en" +
-      "try_point\030\n \001(\t\022\024\n\014is_justified\030\013 \001(\010\022\021\n" +
-      "\totn_count\030\014 \001(\005\">\n\nHandleType\022\020\n\014INITIA" +
-      "L_FACT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022\t\n\005EVENT\020\004" +
-      "\"\354\001\n\nActivation\0221\n\005tuple\030\002 \001(\0132\".org.dro" +
-      "ols.core.marshalling.Tuple\022\020\n\010salience\030\003" +
-      " \001(\005\022\024\n\014package_name\030\004 \001(\t\022\021\n\trule_name\030" +
-      "\005 \001(\t\022\030\n\020activation_group\030\007 \001(\t\022\024\n\014is_ac" +
-      "tivated\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logi" +
-      "cal_dependency\030\n \003(\005\022\021\n\tevaluated\030\013 \001(\010\"" +
-      "Y\n\005Tuple\022\021\n\thandle_id\030\001 \003(\005\022=\n\006object\030\002 " +
-      "\003(\0132-.org.drools.core.marshalling.Serial" +
-      "izedObject\":\n\020SerializedObject\022\026\n\016strate" +
-      "gy_index\030\001 \001(\005\022\016\n\006object\030\002 \001(\014\"\227\001\n\026Truth" +
-      "MaintenanceSystem\0225\n\003key\030\001 \003(\0132(.org.dro" +
-      "ols.core.marshalling.EqualityKey\022F\n\026OBSO" +
-      "LETE_justification\030\002 \003(\0132&.org.drools.co" +
-      "re.marshalling.BeliefSet\"<\n\027ObjectTypeCo" +
-      "nfiguration\022\014\n\004type\030\001 \001(\t\022\023\n\013tms_enabled" +
-      "\030\002 \001(\010\"\201\001\n\013EqualityKey\022\016\n\006status\030\001 \001(\005\022\021" +
-      "\n\thandle_id\030\002 \001(\005\022\024\n\014other_handle\030\003 \003(\005\022" +
-      "9\n\tbeliefSet\030\004 \001(\0132&.org.drools.core.mar" +
-      "shalling.BeliefSet\"i\n\tBeliefSet\022\021\n\thandl" +
+      "ng.FactHandle\022@\n\003tms\030\003 \001(\01323.org.drools." +
+      "core.marshalling.TruthMaintenanceSystem\022" +
+      "A\n\003otc\030\004 \003(\01324.org.drools.core.marshalli" +
+      "ng.ObjectTypeConfiguration\"\372\002\n\nFactHandl" +
+      "e\022@\n\004type\030\001 \001(\01622.org.drools.core.marsha" +
+      "lling.FactHandle.HandleType\022\n\n\002id\030\002 \001(\005\022" +
+      "\017\n\007recency\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\022\020\n\010d" +
+      "uration\030\005 \001(\003\022\022\n\nis_expired\030\006 \001(\010\022\031\n\021act" +
+      "ivations_count\030\007 \001(\003\022\026\n\016strategy_index\030\010" +
+      " \001(\005\022\016\n\006object\030\t \001(\014\022\023\n\013entry_point\030\n \001(" +
+      "\t\022\024\n\014is_justified\030\013 \001(\010\022\021\n\totn_count\030\014 \001" +
+      "(\005\022\023\n\013id_extended\030\r \001(\005\">\n\nHandleType\022\020\n" +
+      "\014INITIAL_FACT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022\t\n\005" +
+      "EVENT\020\004\"\255\002\n\nActivation\0221\n\005tuple\030\002 \001(\0132\"." +
+      "org.drools.core.marshalling.Tuple\022\020\n\010sal" +
+      "ience\030\003 \001(\005\022\024\n\014package_name\030\004 \001(\t\022\021\n\trul" +
+      "e_name\030\005 \001(\t\022\030\n\020activation_group\030\007 \001(\t\022\024" +
+      "\n\014is_activated\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022" +
+      "\032\n\022logical_dependency\030\n \003(\005\022\021\n\tevaluated" +
+      "\030\013 \001(\010\022\032\n\022handle_id_extended\030\014 \001(\005\022#\n\033lo" +
+      "gical_dependency_extended\030\r \003(\005\"u\n\005Tuple" +
+      "\022\021\n\thandle_id\030\001 \003(\005\022=\n\006object\030\002 \003(\0132-.or" +
+      "g.drools.core.marshalling.SerializedObje" +
+      "ct\022\032\n\022handle_id_extended\030\003 \003(\005\":\n\020Serial" +
+      "izedObject\022\026\n\016strategy_index\030\001 \001(\005\022\016\n\006ob" +
+      "ject\030\002 \001(\014\"\227\001\n\026TruthMaintenanceSystem\0225\n" +
+      "\003key\030\001 \003(\0132(.org.drools.core.marshalling" +
+      ".EqualityKey\022F\n\026OBSOLETE_justification\030\002" +
+      " \003(\0132&.org.drools.core.marshalling.Belie" +
+      "fSet\"<\n\027ObjectTypeConfiguration\022\014\n\004type\030" +
+      "\001 \001(\t\022\023\n\013tms_enabled\030\002 \001(\010\"\274\001\n\013EqualityK" +
+      "ey\022\016\n\006status\030\001 \001(\005\022\021\n\thandle_id\030\002 \001(\005\022\024\n" +
+      "\014other_handle\030\003 \003(\005\0229\n\tbeliefSet\030\004 \001(\0132&" +
+      ".org.drools.core.marshalling.BeliefSet\022\032" +
+      "\n\022handle_id_extended\030\005 \001(\005\022\035\n\025other_hand" +
+      "le_extended\030\006 \003(\005\"\205\001\n\tBeliefSet\022\021\n\thandl" +
       "e_id\030\001 \001(\005\022I\n\021logicalDependency\030\002 \003(\0132.." +
       "org.drools.core.marshalling.LogicalDepen" +
-      "dency\"\254\001\n\021LogicalDependency\022;\n\nactivatio" +
-      "n\030\002 \001(\0132\'.org.drools.core.marshalling.Ac" +
-      "tivation\022\035\n\025object_strategy_index\030\010 \001(\005\022" +
-      "\016\n\006object\030\t \001(\014\022\034\n\024value_strategy_index\030" +
-      "\n \001(\005\022\r\n\005value\030\013 \001(\014\"\377\013\n\013ActionQueue\022?\n\006" +
-      "action\030\001 \003(\0132/.org.drools.core.marshalli" +
-      "ng.ActionQueue.Action\032\264\005\n\006Action\022A\n\004type" +
-      "\030\001 \001(\01623.org.drools.core.marshalling.Act" +
-      "ionQueue.ActionType\022P\n\017behavior_expire\030\002" +
-      " \001(\01327.org.drools.core.marshalling.Actio" +
-      "nQueue.BehaviorExpire\022X\n\023deactivate_call" +
-      "back\030\003 \001(\0132;.org.drools.core.marshalling" +
-      ".ActionQueue.DeactivateCallback\022P\n\017logic" +
-      "al_retract\030\004 \001(\01327.org.drools.core.marsh" +
-      "alling.ActionQueue.LogicalRetract\022E\n\tpro" +
-      "pagate\030\005 \001(\01322.org.drools.core.marshalli" +
-      "ng.ActionQueue.Propagate\022?\n\006assert\030\006 \001(\013" +
+      "dency\022\032\n\022handle_id_extended\030\003 \001(\005\"\254\001\n\021Lo" +
+      "gicalDependency\022;\n\nactivation\030\002 \001(\0132\'.or" +
+      "g.drools.core.marshalling.Activation\022\035\n\025" +
+      "object_strategy_index\030\010 \001(\005\022\016\n\006object\030\t " +
+      "\001(\014\022\034\n\024value_strategy_index\030\n \001(\005\022\r\n\005val" +
+      "ue\030\013 \001(\014\"\323\014\n\013ActionQueue\022?\n\006action\030\001 \003(\013" +
       "2/.org.drools.core.marshalling.ActionQue" +
-      "ue.Assert\022?\n\006expire\030\007 \001(\0132/.org.drools.c" +
-      "ore.marshalling.ActionQueue.Expire\022?\n\006si" +
-      "gnal\030\010 \001(\0132/.org.drools.core.marshalling" +
-      ".ActionQueue.Signal\022_\n\027signal_process_in" +
-      "stance\030\t \001(\0132>.org.drools.core.marshalli" +
-      "ng.ActionQueue.SignalProcessInstance\032!\n\016" +
-      "BehaviorExpire\022\017\n\007node_id\030\001 \001(\005\032,\n\022Deact" +
-      "ivateCallback\022\026\n\016ruleflow_group\030\001 \001(\t\032\207\001" +
-      "\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001(\005\022;\n\na" +
-      "ctivation\030\002 \001(\0132\'.org.drools.core.marsha" +
-      "lling.Activation\022\025\n\rfully_retract\030\003 \001(\010\022" +
-      "\016\n\006update\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007node_id\030" +
-      "\001 \001(\005\032\264\001\n\006Assert\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016r" +
-      "emove_logical\030\002 \001(\010\022\031\n\021update_equals_map" +
-      "\030\003 \001(\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030\n\020origi" +
-      "n_rule_name\030\005 \001(\t\0221\n\005tuple\030\006 \001(\0132\".org.d" +
-      "rools.core.marshalling.Tuple\032,\n\006Expire\022\021" +
-      "\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Si" +
-      "gnal\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025Sig" +
-      "nalProcessInstance\022\014\n\004type\030\001 \001(\t\022\r\n\005even" +
-      "t\030\002 \001(\014\022\033\n\023process_instance_id\030\003 \001(\003\"\237\001\n" +
-      "\nActionType\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEAC" +
-      "TIVATE_CALLBACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r" +
-      "\n\tPROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n" +
-      "\006SIGNAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\337" +
-      "\007\n\006Timers\0228\n\005timer\030\001 \003(\0132).org.drools.co" +
-      "re.marshalling.Timers.Timer\032\342\002\n\005Timer\022;\n" +
-      "\004type\030\001 \001(\0162-.org.drools.core.marshallin" +
-      "g.Timers.TimerType\022?\n\006expire\030\002 \001(\0132/.org" +
-      ".drools.core.marshalling.Timers.ExpireTi" +
-      "mer\022G\n\nactivation\030\003 \001(\01323.org.drools.cor" +
-      "e.marshalling.Timers.ActivationTimer\022C\n\010" +
-      "behavior\030\004 \001(\01321.org.drools.core.marshal" +
-      "ling.Timers.BehaviorTimer\022F\n\ntimer_node\030" +
-      "\005 \001(\01322.org.drools.core.marshalling.Time" +
-      "rs.TimerNodeTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022" +
-      "\021\n\thandle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001" +
-      "(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fire_time" +
-      "stamp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;\n\nactiv" +
-      "ation\030\001 \001(\0132\'.org.drools.core.marshallin" +
-      "g.Activation\0225\n\007trigger\030\002 \001(\0132$.org.droo" +
-      "ls.core.marshalling.Trigger\032a\n\rBehaviorT" +
-      "imer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n\031DEPR" +
-      "ECATED_behavior_index\030\002 \001(\005\022\021\n\thandle_id" +
-      "\030\003 \001(\005\032\213\001\n\016TimerNodeTimer\022\017\n\007node_id\030\001 \001" +
-      "(\005\0221\n\005tuple\030\002 \001(\0132\".org.drools.core.mars" +
-      "halling.Tuple\0225\n\007trigger\030\003 \001(\0132$.org.dro" +
-      "ols.core.marshalling.Trigger\"R\n\tTimerTyp" +
-      "e\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIO" +
-      "R\020\003\022\013\n\007PROCESS\020\004\022\016\n\nTIMER_NODE\020\005\"\316\007\n\007Tri" +
-      "gger\022>\n\004type\030\001 \001(\01620.org.drools.core.mar" +
-      "shalling.Trigger.TriggerType\022>\n\004cron\030\002 \001" +
-      "(\01320.org.drools.core.marshalling.Trigger" +
-      ".CronTrigger\022F\n\010interval\030\003 \001(\01324.org.dro" +
-      "ols.core.marshalling.Trigger.IntervalTri" +
-      "gger\022D\n\003pit\030\004 \001(\01327.org.drools.core.mars" +
-      "halling.Trigger.PointInTimeTrigger\022N\n\004cm" +
-      "dt\030\005 \001(\0132@.org.drools.core.marshalling.T" +
-      "rigger.CompositeMaxDurationTrigger\032\247\001\n\013C" +
-      "ronTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_ti" +
-      "me\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat" +
-      "_count\030\004 \001(\005\022\027\n\017cron_expression\030\005 \001(\t\022\026\n" +
-      "\016next_fire_time\030\006 \001(\003\022\025\n\rcalendar_name\030\007" +
-      " \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart_time\030\001" +
-      " \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003" +
-      " \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016next_fire_" +
-      "time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcalendar_n" +
-      "ame\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026\n\016next_" +
-      "fire_time\030\001 \001(\003\032\221\001\n\033CompositeMaxDuration" +
-      "Trigger\022\034\n\024maxDurationTimestamp\030\001 \001(\003\022\030\n" +
-      "\020timerCurrentDate\030\002 \001(\003\022:\n\014timerTrigger\030" +
-      "\003 \001(\0132$.org.drools.core.marshalling.Trig" +
-      "ger\"T\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n\010INTERVAL" +
-      "\020\001\022\021\n\rPOINT_IN_TIME\020\002\022\032\n\026COMPOSITE_MAX_D" +
-      "URATION\020\003B4\n org.drools.core.marshalling" +
-      ".implB\020ProtobufMessages"
+      "ue.Action\032\264\005\n\006Action\022A\n\004type\030\001 \001(\01623.org" +
+      ".drools.core.marshalling.ActionQueue.Act" +
+      "ionType\022P\n\017behavior_expire\030\002 \001(\01327.org.d" +
+      "rools.core.marshalling.ActionQueue.Behav" +
+      "iorExpire\022X\n\023deactivate_callback\030\003 \001(\0132;" +
+      ".org.drools.core.marshalling.ActionQueue" +
+      ".DeactivateCallback\022P\n\017logical_retract\030\004" +
+      " \001(\01327.org.drools.core.marshalling.Actio" +
+      "nQueue.LogicalRetract\022E\n\tpropagate\030\005 \001(\013" +
+      "22.org.drools.core.marshalling.ActionQue" +
+      "ue.Propagate\022?\n\006assert\030\006 \001(\0132/.org.drool" +
+      "s.core.marshalling.ActionQueue.Assert\022?\n" +
+      "\006expire\030\007 \001(\0132/.org.drools.core.marshall" +
+      "ing.ActionQueue.Expire\022?\n\006signal\030\010 \001(\0132/" +
+      ".org.drools.core.marshalling.ActionQueue" +
+      ".Signal\022_\n\027signal_process_instance\030\t \001(\013" +
+      "2>.org.drools.core.marshalling.ActionQue" +
+      "ue.SignalProcessInstance\032!\n\016BehaviorExpi" +
+      "re\022\017\n\007node_id\030\001 \001(\005\032,\n\022DeactivateCallbac" +
+      "k\022\026\n\016ruleflow_group\030\001 \001(\t\032\243\001\n\016LogicalRet" +
+      "ract\022\021\n\thandle_id\030\001 \001(\005\022;\n\nactivation\030\002 " +
+      "\001(\0132\'.org.drools.core.marshalling.Activa" +
+      "tion\022\025\n\rfully_retract\030\003 \001(\010\022\016\n\006update\030\004 " +
+      "\001(\010\022\032\n\022handle_id_extended\030\005 \001(\005\032\034\n\tPropa" +
+      "gate\022\017\n\007node_id\030\001 \001(\005\032\320\001\n\006Assert\022\021\n\thand" +
+      "le_id\030\001 \001(\005\022\026\n\016remove_logical\030\002 \001(\010\022\031\n\021u" +
+      "pdate_equals_map\030\003 \001(\010\022\027\n\017origin_pkg_nam" +
+      "e\030\004 \001(\t\022\030\n\020origin_rule_name\030\005 \001(\t\0221\n\005tup" +
+      "le\030\006 \001(\0132\".org.drools.core.marshalling.T" +
+      "uple\022\032\n\022handle_id_extended\030\007 \001(\005\032H\n\006Expi" +
+      "re\022\021\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005\022\032" +
+      "\n\022handle_id_extended\030\003 \001(\005\032%\n\006Signal\022\014\n\004" +
+      "type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025SignalProce" +
+      "ssInstance\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\022" +
+      "\033\n\023process_instance_id\030\003 \001(\003\"\237\001\n\nActionT" +
+      "ype\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIVATE_C" +
+      "ALLBACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tPROPAG" +
+      "ATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SIGNAL\020" +
+      "\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\230\010\n\006Timer" +
+      "s\0228\n\005timer\030\001 \003(\0132).org.drools.core.marsh" +
+      "alling.Timers.Timer\032\342\002\n\005Timer\022;\n\004type\030\001 " +
+      "\001(\0162-.org.drools.core.marshalling.Timers" +
+      ".TimerType\022?\n\006expire\030\002 \001(\0132/.org.drools." +
+      "core.marshalling.Timers.ExpireTimer\022G\n\na" +
+      "ctivation\030\003 \001(\01323.org.drools.core.marsha" +
+      "lling.Timers.ActivationTimer\022C\n\010behavior" +
+      "\030\004 \001(\01321.org.drools.core.marshalling.Tim" +
+      "ers.BehaviorTimer\022F\n\ntimer_node\030\005 \001(\01322." +
+      "org.drools.core.marshalling.Timers.Timer" +
+      "NodeTimer*\005\010d\020\310\001\032\205\001\n\013ExpireTimer\022\021\n\thand" +
+      "le_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001(\t\022\022\n\nc" +
+      "lass_name\030\003 \001(\t\022\033\n\023next_fire_timestamp\030\004" +
+      " \001(\003\022\032\n\022handle_id_extended\030\005 \001(\005\032\205\001\n\017Act" +
+      "ivationTimer\022;\n\nactivation\030\001 \001(\0132\'.org.d" +
+      "rools.core.marshalling.Activation\0225\n\007tri" +
+      "gger\030\002 \001(\0132$.org.drools.core.marshalling" +
+      ".Trigger\032}\n\rBehaviorTimer\022\032\n\022DEPRECATED_" +
+      "node_id\030\001 \001(\005\022!\n\031DEPRECATED_behavior_ind" +
+      "ex\030\002 \001(\005\022\021\n\thandle_id\030\003 \001(\005\022\032\n\022handle_id" +
+      "_extended\030\004 \001(\005\032\213\001\n\016TimerNodeTimer\022\017\n\007no" +
+      "de_id\030\001 \001(\005\0221\n\005tuple\030\002 \001(\0132\".org.drools." +
+      "core.marshalling.Tuple\0225\n\007trigger\030\003 \001(\0132" +
+      "$.org.drools.core.marshalling.Trigger\"R\n" +
+      "\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014" +
+      "\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\022\016\n\nTIMER_NODE\020" +
+      "\005\"\316\007\n\007Trigger\022>\n\004type\030\001 \001(\01620.org.drools" +
+      ".core.marshalling.Trigger.TriggerType\022>\n" +
+      "\004cron\030\002 \001(\01320.org.drools.core.marshallin" +
+      "g.Trigger.CronTrigger\022F\n\010interval\030\003 \001(\0132" +
+      "4.org.drools.core.marshalling.Trigger.In" +
+      "tervalTrigger\022D\n\003pit\030\004 \001(\01327.org.drools." +
+      "core.marshalling.Trigger.PointInTimeTrig" +
+      "ger\022N\n\004cmdt\030\005 \001(\0132@.org.drools.core.mars" +
+      "halling.Trigger.CompositeMaxDurationTrig" +
+      "ger\032\247\001\n\013CronTrigger\022\022\n\nstart_time\030\001 \001(\003\022" +
+      "\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022" +
+      "\024\n\014repeat_count\030\004 \001(\005\022\027\n\017cron_expression" +
+      "\030\005 \001(\t\022\026\n\016next_fire_time\030\006 \001(\003\022\025\n\rcalend" +
+      "ar_name\030\007 \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nsta" +
+      "rt_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repea" +
+      "t_limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016n" +
+      "ext_fire_time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rc" +
+      "alendar_name\030\010 \003(\t\032,\n\022PointInTimeTrigger" +
+      "\022\026\n\016next_fire_time\030\001 \001(\003\032\221\001\n\033CompositeMa" +
+      "xDurationTrigger\022\034\n\024maxDurationTimestamp" +
+      "\030\001 \001(\003\022\030\n\020timerCurrentDate\030\002 \001(\003\022:\n\014time" +
+      "rTrigger\030\003 \001(\0132$.org.drools.core.marshal" +
+      "ling.Trigger\"T\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n" +
+      "\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002\022\032\n\026COMPOS" +
+      "ITE_MAX_DURATION\020\003B4\n org.drools.core.ma" +
+      "rshalling.implB\020ProtobufMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -56314,7 +57676,7 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_RuleData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_RuleData_descriptor,
-        new java.lang.String[] { "LastId", "LastRecency", "InitialFact", "Agenda", "NodeMemory", "EntryPoint", "ActionQueue", "OBSOLETETms", });
+        new java.lang.String[] { "LastId", "LastRecency", "InitialFact", "Agenda", "NodeMemory", "EntryPoint", "ActionQueue", "OBSOLETETms", "LastIdExtended", });
     internal_static_org_drools_core_marshalling_RuntimeClassDef_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_org_drools_core_marshalling_RuntimeClassDef_fieldAccessorTable = new
@@ -56434,19 +57796,19 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_FactHandle_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_FactHandle_descriptor,
-        new java.lang.String[] { "Type", "Id", "Recency", "Timestamp", "Duration", "IsExpired", "ActivationsCount", "StrategyIndex", "Object", "EntryPoint", "IsJustified", "OtnCount", });
+        new java.lang.String[] { "Type", "Id", "Recency", "Timestamp", "Duration", "IsExpired", "ActivationsCount", "StrategyIndex", "Object", "EntryPoint", "IsJustified", "OtnCount", "IdExtended", });
     internal_static_org_drools_core_marshalling_Activation_descriptor =
       getDescriptor().getMessageTypes().get(12);
     internal_static_org_drools_core_marshalling_Activation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Activation_descriptor,
-        new java.lang.String[] { "Tuple", "Salience", "PackageName", "RuleName", "ActivationGroup", "IsActivated", "HandleId", "LogicalDependency", "Evaluated", });
+        new java.lang.String[] { "Tuple", "Salience", "PackageName", "RuleName", "ActivationGroup", "IsActivated", "HandleId", "LogicalDependency", "Evaluated", "HandleIdExtended", "LogicalDependencyExtended", });
     internal_static_org_drools_core_marshalling_Tuple_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_org_drools_core_marshalling_Tuple_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Tuple_descriptor,
-        new java.lang.String[] { "HandleId", "Object", });
+        new java.lang.String[] { "HandleId", "Object", "HandleIdExtended", });
     internal_static_org_drools_core_marshalling_SerializedObject_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_org_drools_core_marshalling_SerializedObject_fieldAccessorTable = new
@@ -56470,13 +57832,13 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_EqualityKey_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_EqualityKey_descriptor,
-        new java.lang.String[] { "Status", "HandleId", "OtherHandle", "BeliefSet", });
+        new java.lang.String[] { "Status", "HandleId", "OtherHandle", "BeliefSet", "HandleIdExtended", "OtherHandleExtended", });
     internal_static_org_drools_core_marshalling_BeliefSet_descriptor =
       getDescriptor().getMessageTypes().get(18);
     internal_static_org_drools_core_marshalling_BeliefSet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_BeliefSet_descriptor,
-        new java.lang.String[] { "HandleId", "LogicalDependency", });
+        new java.lang.String[] { "HandleId", "LogicalDependency", "HandleIdExtended", });
     internal_static_org_drools_core_marshalling_LogicalDependency_descriptor =
       getDescriptor().getMessageTypes().get(19);
     internal_static_org_drools_core_marshalling_LogicalDependency_fieldAccessorTable = new
@@ -56512,7 +57874,7 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_ActionQueue_LogicalRetract_descriptor,
-        new java.lang.String[] { "HandleId", "Activation", "FullyRetract", "Update", });
+        new java.lang.String[] { "HandleId", "Activation", "FullyRetract", "Update", "HandleIdExtended", });
     internal_static_org_drools_core_marshalling_ActionQueue_Propagate_descriptor =
       internal_static_org_drools_core_marshalling_ActionQueue_descriptor.getNestedTypes().get(4);
     internal_static_org_drools_core_marshalling_ActionQueue_Propagate_fieldAccessorTable = new
@@ -56524,13 +57886,13 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_ActionQueue_Assert_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_ActionQueue_Assert_descriptor,
-        new java.lang.String[] { "HandleId", "RemoveLogical", "UpdateEqualsMap", "OriginPkgName", "OriginRuleName", "Tuple", });
+        new java.lang.String[] { "HandleId", "RemoveLogical", "UpdateEqualsMap", "OriginPkgName", "OriginRuleName", "Tuple", "HandleIdExtended", });
     internal_static_org_drools_core_marshalling_ActionQueue_Expire_descriptor =
       internal_static_org_drools_core_marshalling_ActionQueue_descriptor.getNestedTypes().get(6);
     internal_static_org_drools_core_marshalling_ActionQueue_Expire_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_ActionQueue_Expire_descriptor,
-        new java.lang.String[] { "HandleId", "NodeId", });
+        new java.lang.String[] { "HandleId", "NodeId", "HandleIdExtended", });
     internal_static_org_drools_core_marshalling_ActionQueue_Signal_descriptor =
       internal_static_org_drools_core_marshalling_ActionQueue_descriptor.getNestedTypes().get(7);
     internal_static_org_drools_core_marshalling_ActionQueue_Signal_fieldAccessorTable = new
@@ -56560,7 +57922,7 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_Timers_ExpireTimer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Timers_ExpireTimer_descriptor,
-        new java.lang.String[] { "HandleId", "EntryPointId", "ClassName", "NextFireTimestamp", });
+        new java.lang.String[] { "HandleId", "EntryPointId", "ClassName", "NextFireTimestamp", "HandleIdExtended", });
     internal_static_org_drools_core_marshalling_Timers_ActivationTimer_descriptor =
       internal_static_org_drools_core_marshalling_Timers_descriptor.getNestedTypes().get(2);
     internal_static_org_drools_core_marshalling_Timers_ActivationTimer_fieldAccessorTable = new
@@ -56572,7 +57934,7 @@ public final class ProtobufMessages {
     internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_descriptor,
-        new java.lang.String[] { "DEPRECATEDNodeId", "DEPRECATEDBehaviorIndex", "HandleId", });
+        new java.lang.String[] { "DEPRECATEDNodeId", "DEPRECATEDBehaviorIndex", "HandleId", "HandleIdExtended", });
     internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor =
       internal_static_org_drools_core_marshalling_Timers_descriptor.getNestedTypes().get(4);
     internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_fieldAccessorTable = new

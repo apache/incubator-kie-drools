@@ -82,7 +82,8 @@ public class BeliefSystemLogicalCallback
 
     public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
         ProtobufMessages.ActionQueue.LogicalRetract _retract = ProtobufMessages.ActionQueue.LogicalRetract.newBuilder()
-                                                                                           .setHandleId( this.handle.getId() )
+                                                                                           .setHandleId( this.handle.getBaseId() )
+                                                                                           .setHandleIdExtended( this.handle.getExtendedId() )
                                                                                            .setActivation( PersisterHelper.createActivation( this.activation.getRule().getPackageName(),
                                                                                                                                              this.activation.getRule().getName(),
                                                                                                                                              this.activation.getTuple() ) )
