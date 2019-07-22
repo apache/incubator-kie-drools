@@ -87,17 +87,21 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         AbstractBiJoiner<A, B> castedJoiner = (AbstractBiJoiner<A, B>) joiner;
         BavetIndexFactory indexFactory = new BavetIndexFactory(castedJoiner);
         BavetJoinBiConstraintStream<Solution_, A, B> biStream = new BavetJoinBiConstraintStream<>(constraint);
-        BavetJoinLeftBridgeUniConstraintStream<Solution_, A, B> leftBridge = new BavetJoinLeftBridgeUniConstraintStream<>(
-                constraint, biStream, castedJoiner.getLeftCombinedMapping(), indexFactory);
+        BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge = new BavetJoinBridgeUniConstraintStream<>(
+                constraint, biStream, true, castedJoiner.getLeftCombinedMapping(), indexFactory);
         childStreamList.add(leftBridge);
-        BavetJoinRightBridgeUniConstraintStream<Solution_, A, B> rightBridge = new BavetJoinRightBridgeUniConstraintStream<>(
-                constraint, biStream, castedJoiner.getRightCombinedMapping(), indexFactory);
+        BavetJoinBridgeUniConstraintStream<Solution_, B> rightBridge = new BavetJoinBridgeUniConstraintStream<>(
+                constraint, biStream, false, castedJoiner.getRightCombinedMapping(), indexFactory);
         other.childStreamList.add(rightBridge);
         return biStream;
     }
 
     @Override
     public BiConstraintStream<A, A> joinOther() {
+//        EntityDescriptor<Solution_> entityDescriptor = constraint.getConstraintFactory().getSolutionDescriptor()
+//                .findEntityDescriptor(fromClass);
+//
+//        return join(this, Joiners.lessThan(entityDescriptor.get));
         throw new UnsupportedOperationException(); // TODO
     }
 
@@ -192,9 +196,14 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     public BavetAbstractUniNode<A> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
-        buildPolicy.updateNodeOrderMaximum(nodeOrder);
-
         BavetAbstractUniNode<A> node = createNode(buildPolicy, constraintWeight, nodeOrder, parentNode);
+        node = processNode(buildPolicy, nodeOrder, parentNode, node);
+        createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
+        return node;
+    }
+
+    protected BavetAbstractUniNode<A> processNode(BavetNodeBuildPolicy<Solution_> buildPolicy, int nodeOrder, BavetAbstractUniNode<A> parentNode, BavetAbstractUniNode<A> node) {
+        buildPolicy.updateNodeOrderMaximum(nodeOrder);
         BavetAbstractUniNode<A> sharedNode = buildPolicy.retrieveSharedNode(node);
         if (sharedNode != node) {
             // Share node
@@ -204,15 +213,18 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                 parentNode.addChildNode(node);
             }
         }
-
-        assertChildStreamListSize();
-        for (BavetAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
-            childStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, node);
-        }
         return node;
     }
 
-    protected abstract void assertChildStreamListSize();
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> node) {
+        if (childStreamList.isEmpty()) {
+            throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
+                    + "Maybe don't create it.");
+        }
+        for (BavetAbstractUniConstraintStream<Solution_, A> childStream : childStreamList) {
+            childStream.createNodeChain(buildPolicy, constraintWeight, nodeOrder + 1, node);
+        }
+    }
 
     protected abstract BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode);

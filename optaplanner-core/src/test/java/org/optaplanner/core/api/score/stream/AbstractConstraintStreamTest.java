@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.testdata.TestdataLavishSolution;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -75,8 +76,18 @@ public abstract class AbstractConstraintStreamTest {
                         .noneMatch(constraintMatch
                                 -> constraintMatch.getJustificationList().equals(assertableMatch.justificationList)
                                 && ((SimpleScore) constraintMatch.getScore()).getScore() == assertableMatch.score)) {
-                    fail("The assertableMatch (" + assertableMatch + ") does not exist in the constraintMatchSet ("
+                    fail("The assertableMatch (" + assertableMatch + ") is lacking,"
+                            + " it's not in the constraintMatchSet ("
                             + constraintMatchTotal.getConstraintMatchSet() + ").");
+                }
+            }
+            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                if (Arrays.stream(assertableMatches)
+                        .noneMatch(assertableMatch
+                                -> assertableMatch.justificationList.equals(constraintMatch.getJustificationList())
+                                && assertableMatch.score == ((SimpleScore) constraintMatch.getScore()).getScore())) {
+                    fail("The constraintMatch (" + constraintMatch + ") is in excess,"
+                            + " it's not in the assertableMatches (" + Arrays.toString(assertableMatches) + ").");
                 }
             }
             assertEquals(assertableMatches.length, constraintMatchTotal.getConstraintMatchCount());

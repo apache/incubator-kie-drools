@@ -39,14 +39,6 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
     // ************************************************************************
 
     @Override
-    protected void assertChildStreamListSize() {
-        if (childStreamList.isEmpty()) {
-            throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
-                    + "Maybe don't create it.");
-        }
-    }
-
-    @Override
     protected BavetFilterBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
         return new BavetFilterBiNode<>(buildPolicy.getSession(), nodeOrder, parentNode, predicate);

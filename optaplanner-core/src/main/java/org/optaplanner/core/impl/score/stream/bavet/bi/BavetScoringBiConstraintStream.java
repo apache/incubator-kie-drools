@@ -83,14 +83,6 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B> extends Bavet
     // ************************************************************************
 
     @Override
-    protected void assertChildStreamListSize() {
-        if (!childStreamList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
-        }
-    }
-
-    @Override
     protected BavetScoringBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
         if (!positive) {
@@ -152,6 +144,14 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B> extends Bavet
                 constraintWeight, scoreImpacter);
         buildPolicy.addScoringNode(node);
         return node;
+    }
+
+    @Override
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> node) {
+        if (!childStreamList.isEmpty()) {
+            throw new IllegalStateException("Impossible state: the stream (" + this
+                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
+        }
     }
 
     @Override

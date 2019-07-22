@@ -38,14 +38,6 @@ public final class BavetGroupedBiConstraintStream<Solution_, GroupKey_, ResultCo
     // ************************************************************************
 
     @Override
-    protected void assertChildStreamListSize() {
-        if (childStreamList.isEmpty()) {
-            throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
-                    + "Maybe don't create it.");
-        }
-    }
-
-    @Override
     public BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<GroupKey_, Result_> parentNode) {
         return (BavetGroupedBiNode<GroupKey_, ResultContainer_, Result_>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);

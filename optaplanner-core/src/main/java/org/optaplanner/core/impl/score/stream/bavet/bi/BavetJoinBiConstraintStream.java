@@ -18,9 +18,12 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniNode;
 
-public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B> {
+public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbstractBiConstraintStream<Solution_, A, B>
+        implements BavetJoinConstraintStream<Solution_> {
 
     public BavetJoinBiConstraintStream(BavetConstraint<Solution_> bavetConstraint) {
         super(bavetConstraint);
@@ -30,28 +33,22 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     // Node creation
     // ************************************************************************
 
-    @Override
-    protected void assertChildStreamListSize() {
-        if (childStreamList.isEmpty()) {
-            throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
-                    + "Maybe don't create it.");
-        }
-    }
-
-    @Override
     public BavetJoinBiNode<A, B> createNodeChain(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
-        return (BavetJoinBiNode<A, B>) super.createNodeChain(buildPolicy, constraintWeight, nodeOrder, parentNode);
+            Score<?> constraintWeight, int nodeOrder, BavetJoinBridgeUniNode<?> leftNode_, BavetJoinBridgeUniNode<?> rightNode_) {
+        BavetJoinBridgeUniNode<A> leftNode = (BavetJoinBridgeUniNode<A>) leftNode_;
+        BavetJoinBridgeUniNode<B> rightNode = (BavetJoinBridgeUniNode<B>) rightNode_;
+        BavetJoinBiNode<A, B> node = new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder, leftNode, rightNode);
+        leftNode.setChildTupleRefresher(node::refreshChildTuplesLeft); // TODO don't register if shared
+        rightNode.setChildTupleRefresher(node::refreshChildTuplesRight);
+        node = (BavetJoinBiNode<A, B>) processNode(buildPolicy, nodeOrder, null, node); // TODO Sharing never happens
+        createChildNodeChains(buildPolicy, constraintWeight, nodeOrder, node);
+        return node;
     }
 
     @Override
     protected BavetJoinBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
-        if (parentNode != null) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") cannot have a parentNode (" + parentNode + ").");
-        }
-        return new BavetJoinBiNode<>(buildPolicy.getSession(), nodeOrder);
+        throw new IllegalStateException("Impossible state: this code is never called.");
     }
 
     @Override

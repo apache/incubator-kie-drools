@@ -19,19 +19,20 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinTuple;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
 
-public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
+public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
+        implements BavetJoinTuple {
 
     private final BavetJoinBiNode<A, B> node;
-    private final BavetJoinLeftBridgeUniTuple<A, B> aTuple;
-    private final BavetJoinRightBridgeUniTuple<A, B> bTuple;
+    private final BavetJoinBridgeUniTuple<A> aTuple;
+    private final BavetJoinBridgeUniTuple<B> bTuple;
 
     protected List<BavetAbstractBiTuple<A, B>> childTupleList = null;
 
     public BavetJoinBiTuple(BavetJoinBiNode<A, B> node,
-            BavetJoinLeftBridgeUniTuple<A, B> aTuple, BavetJoinRightBridgeUniTuple<A, B> bTuple) {
+            BavetJoinBridgeUniTuple<A> aTuple, BavetJoinBridgeUniTuple<B> bTuple) {
         this.node = node;
         this.aTuple = aTuple;
         this.bTuple = bTuple;
@@ -67,11 +68,11 @@ public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B> {
         return bTuple.getFactA();
     }
 
-    public BavetJoinLeftBridgeUniTuple<A, B> getATuple() {
+    public BavetJoinBridgeUniTuple<A> getATuple() {
         return aTuple;
     }
 
-    public BavetJoinRightBridgeUniTuple<A, B> getBTuple() {
+    public BavetJoinBridgeUniTuple<B> getBTuple() {
         return bTuple;
     }
 

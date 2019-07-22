@@ -54,12 +54,12 @@ public class TestdataLavishEntity extends TestdataObject {
     }
 
     public TestdataLavishEntity(String code, TestdataLavishEntityGroup entityGroup) {
-        super(code);
-        this.entityGroup = entityGroup;
+        this(code, entityGroup, null);
     }
 
     public TestdataLavishEntity(String code, TestdataLavishEntityGroup entityGroup, TestdataLavishValue value) {
-        this(code, entityGroup);
+        super(code);
+        this.entityGroup = entityGroup;
         this.value = value;
     }
 

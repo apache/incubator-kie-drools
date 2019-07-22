@@ -18,24 +18,27 @@ package org.optaplanner.core.impl.score.stream.bavet.bi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinLeftBridgeUniTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniNode;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinRightBridgeUniTuple;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniNode;
+import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
 
 public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> {
 
-    private BavetJoinLeftBridgeUniNode<A, B> leftParentNode;
-    private BavetJoinRightBridgeUniNode<A, B> rightParentNode;
+    private final BavetJoinBridgeUniNode<A> leftParentNode;
+    private final BavetJoinBridgeUniNode<B> rightParentNode;
 
     private final List<BavetAbstractBiNode<A, B>> childNodeList = new ArrayList<>();
 
-    public BavetJoinBiNode(BavetConstraintSession session, int nodeOrder) {
+    public BavetJoinBiNode(BavetConstraintSession session, int nodeOrder,
+            BavetJoinBridgeUniNode<A> leftParentNode, BavetJoinBridgeUniNode<B> rightParentNode) {
         super(session, nodeOrder);
+        this.leftParentNode = leftParentNode;
+        this.rightParentNode = rightParentNode;
     }
 
     @Override
@@ -60,7 +63,7 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> {
     }
 
     public BavetJoinBiTuple<A, B> createTuple(
-            BavetJoinLeftBridgeUniTuple<A, B> aTuple, BavetJoinRightBridgeUniTuple<A, B> bTuple) {
+            BavetJoinBridgeUniTuple<A> aTuple, BavetJoinBridgeUniTuple<B> bTuple) {
         return new BavetJoinBiTuple<>(this, aTuple, bTuple);
     }
 
@@ -82,11 +85,63 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> {
         tuple.refreshed();
     }
 
-    public BavetIndex<A, BavetJoinLeftBridgeUniTuple<A, B>> getLeftIndex() {
+    public void refreshChildTuplesLeft(BavetJoinBridgeUniTuple<A> aParentTuple) {
+        Set<BavetJoinTuple> aTupleSet = aParentTuple.getChildTupleSet();
+        for (BavetJoinTuple tuple_ : aTupleSet) {
+            BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) tuple_;
+            boolean removed = tuple.getBTuple().getChildTupleSet().remove(tuple);
+            if (!removed) {
+                throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactA()
+                        + ")'s tuple cannot be removed from the other fact (" + tuple.getFactB()
+                        + ")'s join bridge.");
+            }
+            session.transitionTuple(tuple, BavetTupleState.DYING);
+        }
+        aTupleSet.clear();
+        if (aParentTuple.isActive()) {
+            Set<BavetJoinBridgeUniTuple<B>> bParentTupleList = getRightIndex().get(aParentTuple.getIndexProperties());
+            for (BavetJoinBridgeUniTuple<B> bParentTuple : bParentTupleList) {
+                if (!bParentTuple.isDirty()) {
+                    BavetJoinBiTuple<A, B> childTuple = createTuple(aParentTuple, bParentTuple);
+                    aTupleSet.add(childTuple);
+                    bParentTuple.getChildTupleSet().add(childTuple);
+                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                }
+            }
+        }
+    }
+
+    public void refreshChildTuplesRight(BavetJoinBridgeUniTuple<B> bParentTuple) {
+        Set<BavetJoinTuple> bTupleSet = bParentTuple.getChildTupleSet();
+        for (BavetJoinTuple uncastTuple : bTupleSet) {
+            BavetJoinBiTuple<A, B> tuple = (BavetJoinBiTuple<A, B>) uncastTuple;
+            boolean removed = tuple.getATuple().getChildTupleSet().remove(tuple);
+            if (!removed) {
+                throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactA()
+                        + ")'s tuple cannot be removed from the other fact (" + tuple.getFactB()
+                        + ")'s join bridge.");
+            }
+            session.transitionTuple(tuple, BavetTupleState.DYING);
+        }
+        bTupleSet.clear();
+        if (bParentTuple.isActive()) {
+            Set<BavetJoinBridgeUniTuple<A>> aParentTupleList = getLeftIndex().get(bParentTuple.getIndexProperties());
+            for (BavetJoinBridgeUniTuple<A> aParentTuple : aParentTupleList) {
+                if (!aParentTuple.isDirty()) {
+                    BavetJoinBiTuple<A, B> childTuple = createTuple(aParentTuple, bParentTuple);
+                    aParentTuple.getChildTupleSet().add(childTuple);
+                    bTupleSet.add(childTuple);
+                    session.transitionTuple(childTuple, BavetTupleState.CREATING);
+                }
+            }
+        }
+    }
+
+    public BavetIndex<A, BavetJoinBridgeUniTuple<A>> getLeftIndex() {
         return leftParentNode.getIndex();
     }
 
-    public BavetIndex<B, BavetJoinRightBridgeUniTuple<A, B>> getRightIndex() {
+    public BavetIndex<B, BavetJoinBridgeUniTuple<B>> getRightIndex() {
         return rightParentNode.getIndex();
     }
 
@@ -98,13 +153,5 @@ public final class BavetJoinBiNode<A, B> extends BavetAbstractBiNode<A, B> {
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public void setLeftParentNode(BavetJoinLeftBridgeUniNode<A, B> leftParentNode) {
-        this.leftParentNode = leftParentNode;
-    }
-
-    public void setRightParentNode(BavetJoinRightBridgeUniNode<A, B> rightParentNode) {
-        this.rightParentNode = rightParentNode;
-    }
 
 }

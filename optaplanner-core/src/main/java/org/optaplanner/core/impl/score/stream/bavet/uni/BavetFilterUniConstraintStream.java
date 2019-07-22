@@ -39,14 +39,6 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
     // ************************************************************************
 
     @Override
-    protected void assertChildStreamListSize() {
-        if (childStreamList.isEmpty()) {
-            throw new IllegalStateException("The stream (" + this + ") leads to nowhere.\n"
-                    + "Maybe don't create it.");
-        }
-    }
-
-    @Override
     protected BavetAbstractUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
             Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
         return new BavetFilterUniNode<>(buildPolicy.getSession(), nodeOrder, parentNode, predicate);

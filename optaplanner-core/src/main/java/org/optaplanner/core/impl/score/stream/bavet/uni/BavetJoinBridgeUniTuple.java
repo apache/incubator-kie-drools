@@ -19,26 +19,51 @@ package org.optaplanner.core.impl.score.stream.bavet.uni;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinTuple;
 
-public abstract class BavetJoinBridgeUniTuple<A> extends BavetAbstractUniTuple<A> {
+public final class BavetJoinBridgeUniTuple<A> extends BavetAbstractUniTuple<A>
+        implements BavetJoinBridgeTuple {
 
     protected final BavetAbstractUniTuple<A> parentTuple;
+    private final BavetJoinBridgeUniNode<A> node;
 
+    protected Set<BavetJoinTuple> childTupleSet = new LinkedHashSet<>(); // TODO capacity
     private Object[] indexProperties;
 
-    public BavetJoinBridgeUniTuple(BavetAbstractUniTuple<A> parentTuple) {
+    public BavetJoinBridgeUniTuple(BavetJoinBridgeUniNode<A> node,
+            BavetAbstractUniTuple<A> parentTuple) {
         this.parentTuple = parentTuple;
+        this.node = node;
+    }
+
+    @Override
+    public void refresh() {
+        node.refresh(this);
+    }
+
+    @Override
+    public String toString() {
+        return "JoinBridge(" + getFactA() + ") with " + childTupleSet.size() + " children";
+    }
+
+    // ************************************************************************
+    // Getters/setters
+    // ************************************************************************
+
+    @Override
+    public BavetJoinBridgeUniNode<A> getNode() {
+        return node;
+    }
+
+    public Set<BavetJoinTuple> getChildTupleSet() {
+        return childTupleSet;
     }
 
     @Override
     public A getFactA() {
         return parentTuple.getFactA();
     }
-
-    // ************************************************************************
-    // Getters/setters
-    // ************************************************************************
 
     public Object[] getIndexProperties() {
         return indexProperties;
@@ -47,5 +72,4 @@ public abstract class BavetJoinBridgeUniTuple<A> extends BavetAbstractUniTuple<A
     public void setIndexProperties(Object[] indexProperties) {
         this.indexProperties = indexProperties;
     }
-
 }
