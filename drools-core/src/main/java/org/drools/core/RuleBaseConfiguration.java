@@ -57,7 +57,7 @@ import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.internal.conf.SequentialAgendaOption;
-import org.kie.internal.conf.SequentialOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.internal.utils.ChainedProperties;

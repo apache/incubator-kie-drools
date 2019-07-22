@@ -1894,4 +1894,73 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return quantity;
         }
     }
+
+    public static class StrangeGetter {
+        private int value;
+        private int another;
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue( int value ) {
+            this.value = value;
+        }
+
+        public int getValue(int ignored) {
+            return value;
+        }
+
+        public int getAnother() {
+            return another;
+        }
+
+        public void setAnother( int another ) {
+            this.another = another;
+        }
+    }
+
+    @Test
+    public void testGetterWithoutArgShouldBePropReactve() {
+        // DROOLS-4288
+        final String str1 =
+                "import " + StrangeGetter.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "        $s: StrangeGetter(getValue() == 1)\n" +
+                "    then\n" +
+                "        modify($s) { setAnother(10) }\n" +
+                "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        StrangeGetter bean = new StrangeGetter();
+        bean.setValue( 1 );
+        ksession.insert( bean );
+
+        assertEquals( 1, ksession.fireAllRules(3) );
+    }
+
+    @Test
+    public void testGetterWithArgShouldNotBePropReactve() {
+        // DROOLS-4288
+        final String str1 =
+                "import " + StrangeGetter.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "        $s: StrangeGetter(getValue(1) == 1)\n" +
+                "    then\n" +
+                "        modify($s) { setAnother(10) }\n" +
+                "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        StrangeGetter bean = new StrangeGetter();
+        bean.setValue( 1 );
+        ksession.insert( bean );
+
+        assertEquals( 3, ksession.fireAllRules(3) );
+    }
 }

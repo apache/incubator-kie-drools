@@ -1146,4 +1146,65 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(5, list.get(0).intValue());
     }
 
+    @Test
+    public void testPatternMatchingOverNumberWhileAccumulatingShort() {
+        String drl=
+                "import " + AccumulateResult.class.getCanonicalName() + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule \"accumulate_max_short_using_double\"\n" +
+                "	dialect \"java\"\n" +
+                "	when\n" +
+                "		$accumulateResult : AccumulateResult( resultAccumulated == false ) \n" +
+                "		\n" +
+                "		$maxOfAllShort : Number() from accumulate (\n" +
+                "		$accumulateTest_short_max : Person( $age : ageAsShort);max($age))\n" +
+                "		\n" +
+                "then\n" +
+                "		$accumulateResult.setResultAccumulated(true);\n" +
+                "		$accumulateResult.setMaxShortValue($maxOfAllShort.shortValue()\n);\n" +
+                "		update($accumulateResult);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        AccumulateResult result = new AccumulateResult(false);
+
+        ksession.insert(result);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        assertEquals(true, result.isResultAccumulated());
+        assertEquals(40, result.getMaxShortValue());
+    }
+
+    public static class AccumulateResult {
+
+        private boolean resultAccumulated;
+        private short maxShortValue;
+
+        public AccumulateResult(boolean resultAccumulated) {
+            this.resultAccumulated = resultAccumulated;
+        }
+
+        public boolean isResultAccumulated() {
+            return resultAccumulated;
+        }
+
+        public void setResultAccumulated(boolean resultAccumulated) {
+            this.resultAccumulated = resultAccumulated;
+        }
+
+        public short getMaxShortValue() {
+            return maxShortValue;
+        }
+
+        public void setMaxShortValue(short maxShortValue) {
+            this.maxShortValue = maxShortValue;
+        }
+    }
 }

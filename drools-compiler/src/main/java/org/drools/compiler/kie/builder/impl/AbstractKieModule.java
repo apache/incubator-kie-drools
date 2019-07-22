@@ -248,6 +248,7 @@ public abstract class AbstractKieModule
         kbConf.setOption(kBaseModel.getEqualsBehavior());
         kbConf.setOption(kBaseModel.getEventProcessingMode());
         kbConf.setOption(kBaseModel.getDeclarativeAgenda());
+        kbConf.setOption(kBaseModel.getSequential());
         return kbConf;
     }
 
