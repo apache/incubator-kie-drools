@@ -43,7 +43,7 @@ public class RuleScenarioRunner extends AbstractScenarioRunner {
     }
 
     @Override
-    protected AbstractRunnerHelper newRunnerHelper(SimulationDescriptor simulationDescriptor) {
-        return new RuleScenarioRunnerHelper(simulationDescriptor);
+    protected AbstractRunnerHelper newRunnerHelper() {
+        return new RuleScenarioRunnerHelper();
     }
 }

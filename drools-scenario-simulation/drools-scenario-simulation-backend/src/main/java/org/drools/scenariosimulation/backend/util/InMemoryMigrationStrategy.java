@@ -125,7 +125,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
         return rawXml -> {
             // We need to do those things here because to parse "old" xmls we need a differently configured Xstream
             ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
-            if (rawXml == null ||  rawXml.trim().equals("")) {
+            if (rawXml == null || rawXml.trim().equals("")) {
                 return xmlPersistence.marshal(new ScenarioSimulationModel());
             }
             String input = cleanUpUnusedNodes(rawXml);

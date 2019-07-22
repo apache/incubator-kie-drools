@@ -79,5 +79,4 @@ public interface MigrationStrategy {
         return input.replaceAll("<ScenarioSimulationModel version=\"" + from + "\">",
                                 "<ScenarioSimulationModel version=\"" + to + "\">");
     }
-
 }

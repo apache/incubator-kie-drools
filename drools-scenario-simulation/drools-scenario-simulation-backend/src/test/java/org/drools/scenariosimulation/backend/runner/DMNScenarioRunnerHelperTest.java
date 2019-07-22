@@ -47,7 +47,6 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -71,7 +70,7 @@ import static org.mockito.Mockito.when;
 public class DMNScenarioRunnerHelperTest {
 
     @Mock
-    protected RequestContext requestContextMock;
+    protected Map<String, Object> requestContextMock;
 
     @Mock
     protected DMNResult dmnResultMock;
@@ -143,8 +142,8 @@ public class DMNScenarioRunnerHelperTest {
         scenario2.addMappingValue(disputeFactIdentifier, amountGivenExpressionIdentifier, AMOUNT);
         amountNameExpectedFactMappingValue = scenario2.addMappingValue(disputeFactIdentifier, amountExpectedExpressionIdentifier, AMOUNT);
 
-        when(requestContextMock.getOutput(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
-        when(requestContextMock.getOutput(DMNScenarioExecutableBuilder.DMN_MODEL)).thenReturn(dmnModelMock);
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_RESULT)).thenReturn(dmnResultMock);
+        when(requestContextMock.get(DMNScenarioExecutableBuilder.DMN_MODEL)).thenReturn(dmnModelMock);
     }
 
     @Test

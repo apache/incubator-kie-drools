@@ -16,7 +16,9 @@
 
 package org.drools.scenariosimulation.backend.fluent;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
@@ -27,6 +29,7 @@ import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.KieBase;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
@@ -55,10 +58,15 @@ public class RuleStatelessScenarioExecutableBuilderTest {
     @Mock
     private StatelessKieSession statelessKieSessionMock;
 
+    @Mock
+    private KieBase kieBaseMock;
+
     @Test
     public void testBuilder() {
-        String sessionName = "sessionName";
         when(kieContainerMock.newStatelessKieSession(anyString())).thenReturn(statelessKieSessionMock);
+        when(statelessKieSessionMock.getKieBase()).thenReturn(kieBaseMock);
+        when(kieBaseMock.getKiePackages()).thenReturn(Collections.emptyList());
+        String sessionName = "sessionName";
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(kieContainerMock, sessionName);
 
         when(kieContainerMock.getKieSessionModel(anyString())).thenReturn(null);
@@ -67,37 +75,43 @@ public class RuleStatelessScenarioExecutableBuilderTest {
 
         when(kieContainerMock.getKieSessionModel(anyString())).thenReturn(mock(KieSessionModel.class));
 
-        builder.run();
+        Map<String, Object> result = builder.run();
         verify(kieContainerMock, times(1)).newStatelessKieSession(eq(sessionName));
+        assertTrue(result.containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER));
+        assertTrue(result.containsKey(RuleScenarioExecutableBuilder.RULES_AVAILABLE));
     }
 
     @Test
     public void generateCommands() {
         RuleStatelessScenarioExecutableBuilder builder = new RuleStatelessScenarioExecutableBuilder(null, null);
 
-        Command<ExecutionResults> batchCommand = builder.generateCommands();
+        Command<ExecutionResults> batchCommand = builder.generateCommands(null);
+        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
         assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
         assertFalse(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
         assertFalse(verifyCommand(batchCommand, InsertElementsCommand.class));
         assertFalse(verifyCommand(batchCommand, ValidateFactCommand.class));
 
         builder.setActiveAgendaGroup("test");
-        batchCommand = builder.generateCommands();
+        batchCommand = builder.generateCommands(null);
 
+        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
         assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
         assertTrue(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
         assertFalse(verifyCommand(batchCommand, InsertElementsCommand.class));
         assertFalse(verifyCommand(batchCommand, ValidateFactCommand.class));
 
         builder.insert(new Object());
-        batchCommand = builder.generateCommands();
+        batchCommand = builder.generateCommands(null);
+        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
         assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
         assertTrue(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
         assertTrue(verifyCommand(batchCommand, InsertElementsCommand.class));
         assertFalse(verifyCommand(batchCommand, ValidateFactCommand.class));
 
         builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(FactIdentifier.EMPTY, null));
-        batchCommand = builder.generateCommands();
+        batchCommand = builder.generateCommands(null);
+        assertTrue(verifyCommand(batchCommand, AddCoverageListenerCommand.class));
         assertTrue(verifyCommand(batchCommand, FireAllRulesCommand.class));
         assertTrue(verifyCommand(batchCommand, AgendaGroupSetFocusCommand.class));
         assertTrue(verifyCommand(batchCommand, InsertElementsCommand.class));
