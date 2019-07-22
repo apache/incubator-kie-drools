@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_d543cf45-3100-4426-b99e-caaf45afcc02" id="_d543cf45-3100-4426-b99e-caaf45afcc02" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_d543cf45-3100-4426-b99e-caaf45afcc02" exporter="DMN Modeler" exporterVersion="6.2.5.2" triso:logoChoice="Default">
+    <semantic:inputData id="_e9abc387-7dfa-46d6-91b2-cf0c40bf110e" name="x">
+        <semantic:variable name="x" id="_670654db-264e-4f3b-9ca7-2c07d869356b" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:inputData id="_89a0ce6a-0296-404e-9cf3-c8dae85679fc" name="y">
+        <semantic:variable name="y" id="_48536512-7e5b-4fbc-96fa-6b262d58ba1f" typeRef="number"/>
+    </semantic:inputData>
+    <semantic:decision id="_df252847-9329-451b-ac6c-1d028980b344" name="my decision">
+        <semantic:variable name="my decision" id="_11a356fb-82e9-4628-b344-7b6b70dc542a" typeRef="number"/>
+        <semantic:informationRequirement id="_77d6ca47-1d1d-4dec-8de4-7564cc74c3bc">
+            <semantic:requiredInput href="#_e9abc387-7dfa-46d6-91b2-cf0c40bf110e"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement id="_a41194cf-90f7-48e4-b741-c4b65bc87623">
+            <semantic:requiredInput href="#_89a0ce6a-0296-404e-9cf3-c8dae85679fc"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_eb02106a-cee1-47f5-a9d9-3160c5ac868b" hitPolicy="RULE ORDER" outputLabel="my decision" typeRef="number" triso:expressionId="_58825a54-dbdd-4464-9b49-eaa27d87b0de">
+            <semantic:input id="_2eec37a5-e313-474a-b2ed-d3761e8c151a">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>x</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:input id="_26d6836f-1183-4959-b78b-2c388606ed4a">
+                <semantic:inputExpression typeRef="number">
+                    <semantic:text>y</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_7e36bdc7-b8fc-4476-9d8d-46212cb05ba6" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_4128c11d-b5bc-4fe8-b9eb-c6b23bc81c2e">
+                <semantic:inputEntry id="_efea186a-add9-4615-8b39-52c7d5278ce8">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_fd6544b5-3fd3-4c85-b358-6241430b0220">
+                    <semantic:text>&gt;=30</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_97af9062-37cb-4cb8-a603-99d0007b4f0d">
+                    <semantic:text>3</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_f58d181b-f747-4579-855d-2bf55decdb53">
+                <semantic:inputEntry id="_35baa190-aeb5-48c8-973a-f746d644892c">
+                    <semantic:text>&gt;=60</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_6ef8bca0-2b29-4ee7-a498-371977254ea3">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_95681a96-4e32-43cc-80ce-f3c1849be6b7">
+                    <semantic:text>3</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+            <semantic:rule id="_cacc9668-f1b4-4b03-977e-83b8bb44abf1">
+                <semantic:inputEntry id="_7d3e87c1-2c38-4614-a290-e6039e81e61f">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry id="_fe9e51a8-c8c6-432e-86f6-69bf665fc54a">
+                    <semantic:text>-</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_5e1a8e56-e0c6-47fa-ada2-db1779a5d05d">
+                    <semantic:text>0</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

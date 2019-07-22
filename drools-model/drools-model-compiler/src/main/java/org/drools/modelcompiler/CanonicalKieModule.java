@@ -52,7 +52,6 @@ import org.drools.core.common.ResourceProvider;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.Drools;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -81,6 +80,7 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 
 import static java.util.stream.Collectors.toList;
+
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.util.StringUtil.fileNameToClass;
@@ -528,6 +528,7 @@ public class CanonicalKieModule implements InternalKieModule {
             kbConf.setOption( kBaseModel.getEqualsBehavior() );
             kbConf.setOption( kBaseModel.getEventProcessingMode() );
             kbConf.setOption( kBaseModel.getDeclarativeAgenda() );
+            kbConf.setOption( kBaseModel.getSequential() );
         }
         return kbConf;
     }
