@@ -44,7 +44,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.conf.SequentialOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.Mockito;
 

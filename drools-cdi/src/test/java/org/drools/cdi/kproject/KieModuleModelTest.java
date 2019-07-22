@@ -32,6 +32,7 @@ import org.kie.api.builder.model.WorkItemHandlerModel;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -57,6 +58,7 @@ public class KieModuleModelTest {
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .setDeclarativeAgenda( DeclarativeAgendaOption.ENABLED )
+                .setSequential( SequentialOption.YES )
                 .addInclude("OtherKBase")
                 .addPackage("org.kie.pkg1")
                 .addPackage("org.kie.pkg2");
@@ -106,6 +108,7 @@ public class KieModuleModelTest {
         assertEquals(EqualityBehaviorOption.EQUALITY, kieBaseModelXML.getEqualsBehavior());
         assertEquals(EventProcessingOption.STREAM, kieBaseModelXML.getEventProcessingMode());
         assertEquals(DeclarativeAgendaOption.ENABLED, kieBaseModelXML.getDeclarativeAgenda());
+        assertEquals(SequentialOption.YES, kieBaseModelXML.getSequential());
         assertFalse(kieBaseModelXML.isDefault());
         assertEquals("org.kie.pkg1", kieBaseModelXML.getPackages().get(0));
         assertEquals("org.kie.pkg2", kieBaseModelXML.getPackages().get(1));

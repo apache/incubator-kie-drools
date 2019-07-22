@@ -55,7 +55,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.conf.SequentialOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;

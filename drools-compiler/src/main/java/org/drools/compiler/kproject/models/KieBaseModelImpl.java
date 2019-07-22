@@ -15,6 +15,17 @@
 
 package org.drools.compiler.kproject.models;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -28,20 +39,11 @@ import org.kie.api.builder.model.RuleTemplateModel;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.SequentialOption;
 import org.kie.api.io.ResourceType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import static org.drools.core.util.IoUtils.recursiveListFile;
+import static org.kie.api.conf.SequentialOption.YES;
 
 public class KieBaseModelImpl
         implements
@@ -58,6 +60,8 @@ public class KieBaseModelImpl
     private EventProcessingOption        eventProcessingMode = EventProcessingOption.CLOUD;
 
     private DeclarativeAgendaOption      declarativeAgenda = DeclarativeAgendaOption.DISABLED;
+
+    private SequentialOption             sequential = SequentialOption.NO;
 
     private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
@@ -252,6 +256,17 @@ public class KieBaseModelImpl
     }
 
     @Override
+    public SequentialOption getSequential() {
+        return sequential;
+    }
+
+    @Override
+    public KieBaseModel setSequential(SequentialOption sequential) {
+        this.sequential = sequential;
+        return this;
+    }
+
+    @Override
     public KieBaseModel setScope(String scope) {
         this.scope = scope;
         return this;
@@ -319,6 +334,9 @@ public class KieBaseModelImpl
             if ( kBase.getDeclarativeAgenda() != null ) {
                 writer.addAttribute( "declarativeAgenda", kBase.getDeclarativeAgenda().toString().toLowerCase() );
             }
+            if ( kBase.getSequential() != null ) {
+                writer.addAttribute( "sequential", kBase.getSequential() == YES ? "true" : "false" );
+            }
 
             if ( kBase.getScope() != null ) {
                 writer.addAttribute( "scope", kBase.getScope() );
@@ -383,6 +401,11 @@ public class KieBaseModelImpl
             String declarativeAgenda = reader.getAttribute( "declarativeAgenda" );
             if ( declarativeAgenda != null ) {
                 kBase.setDeclarativeAgenda( DeclarativeAgendaOption.determineDeclarativeAgenda( declarativeAgenda ) );
+            }
+
+            String sequential = reader.getAttribute( "sequential" );
+            if ( sequential != null ) {
+                kBase.setSequential( SequentialOption.determineSequential( sequential ) );
             }
 
             String scope = reader.getAttribute( "scope" );
