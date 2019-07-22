@@ -27,16 +27,16 @@ public enum JoinerType {
     INTERSECTING_WITH,
     DISJOINT;
 
-    public JoinerType opposite() {
+    public JoinerType flip() {
         switch (this) {
             case LESS_THAN:
-                return GREATER_THAN_OR_EQUAL_TO;
-            case LESS_THAN_OR_EQUAL_TO:
                 return GREATER_THAN;
+            case LESS_THAN_OR_EQUAL_TO:
+                return GREATER_THAN_OR_EQUAL_TO;
             case GREATER_THAN:
-                return LESS_THAN_OR_EQUAL_TO;
-            case GREATER_THAN_OR_EQUAL_TO:
                 return LESS_THAN;
+            case GREATER_THAN_OR_EQUAL_TO:
+                return LESS_THAN_OR_EQUAL_TO;
             default:
                 throw new IllegalStateException("The joinerType (" + this + ") is not supported.");
         }

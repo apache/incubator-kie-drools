@@ -42,12 +42,13 @@ public class BavetIndexFactory {
         }
     }
 
-    public <A, Tuple_ extends BavetJoinBridgeUniTuple<A>> BavetIndex<A, Tuple_> buildIndex(boolean left) {
+    public <A, Tuple_ extends BavetJoinBridgeUniTuple<A>> BavetIndex<A, Tuple_> buildIndex(boolean isLeftBridge) {
         JoinerType lastJoinerType = joinerTypes[joinerTypes.length - 1];
         if (lastJoinerType == JoinerType.EQUAL_TO) {
             return new BavetEqualsIndex<>();
         } else {
-            return new BavetEqualsAndComparisonIndex<>(left ? lastJoinerType : lastJoinerType.opposite());
+            // Use flip() to model A < B as B > A
+            return new BavetEqualsAndComparisonIndex<>(isLeftBridge ? lastJoinerType : lastJoinerType.flip());
         }
     }
 
