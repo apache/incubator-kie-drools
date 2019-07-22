@@ -92,7 +92,7 @@
           <resourcePackages>
             <resourcePackage>org.kie.kogito.examples</resourcePackage>
           </resourcePackages>
-          <outputDirectory>${basedir}/target/classes/META-INF/resources/docs/</outputDirectory>
+          <outputDirectory>\${basedir}/target/classes/META-INF/resources/docs/</outputDirectory>
           <outputFilename>swagger</outputFilename>
           <outputFormats>JSON,YAML</outputFormats>
           <prettyPrint>true</prettyPrint>
