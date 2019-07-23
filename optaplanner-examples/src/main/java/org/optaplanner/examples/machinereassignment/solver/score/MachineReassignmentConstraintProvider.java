@@ -21,12 +21,12 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.common.ConstraintCollectors;
-import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
-import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.sumLong;
+import static org.optaplanner.core.api.score.stream.common.ConstraintCollectors.*;
+import static org.optaplanner.core.api.score.stream.common.Joiners.*;
 
 public class MachineReassignmentConstraintProvider implements ConstraintProvider {
 
@@ -54,7 +54,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.MAXIMUM_CAPACITY, HardSoftLongScore.ofHard(1L));
         constraint.from(MrMachineCapacity.class)
                 .join(MrProcessAssignment.class,
-                      Joiners.equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
+                      equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
                 )
                 .groupBy(
                         (machineCapacity, processAssignment) -> machineCapacity, sumLong(
@@ -71,9 +71,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     private void serviceConflict(ConstraintFactory constraintFactory) {
         Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.SERVICE_CONFLICT,
                                                                           HardSoftLongScore.ofHard(1L));
-        constraint.from(MrProcessAssignment.class)
-                .joinOther(
-                        Joiners.equalTo(MrProcessAssignment::getMachine)
+        constraint.fromUniquePair(MrProcessAssignment.class, equalTo(MrProcessAssignment::getMachine)
                 )
                 .filter((mrProcessAssignmentA, mrProcessAssignmentB) -> mrProcessAssignmentA.getService().equals(mrProcessAssignmentB.getService()))
                 .penalize();
@@ -101,9 +99,9 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                                                                           HardSoftLongScore.ofHard(1L));
         constraint.from(MrServiceDependency.class)
                 .join(MrProcessAssignment.class,
-                      Joiners.equalTo(MrServiceDependency::getFromService, MrProcessAssignment::getService))
+                      equalTo(MrServiceDependency::getFromService, MrProcessAssignment::getService))
                 .join(MrProcessAssignment.class,
-                      Joiners.equalTo((serviceDependency, processAssignment) -> serviceDependency.getToService(), MrProcessAssignment::getService))
+                      equalTo((serviceDependency, processAssignment) -> serviceDependency.getToService(), MrProcessAssignment::getService))
                 .filter((mrServiceDependency, mrProcessAssignmentFrom, mrProcessAssignmentTo) ->
                                 !mrProcessAssignmentFrom.getNeighborhood().equals(mrProcessAssignmentTo.getNeighborhood()))
                 .penalize();
@@ -118,7 +116,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                                                                           HardSoftLongScore.ofHard(1L));
         constraint.from(MrMachineCapacity.class)
                 .join(MrProcessAssignment.class,
-                      Joiners.equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
+                      equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getOriginalMachine)
                 )
                 .filter((mrMachineCapacity, mrProcessAssignment) -> mrProcessAssignment.isMoved()
                         && mrMachineCapacity.isTransientlyConsumed()
@@ -142,7 +140,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                                                                           HardSoftLongScore.ofSoft(1L));
         constraint.from(MrMachineCapacity.class)
                 .join(MrProcessAssignment.class,
-                      Joiners.equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
+                      equalTo(MrMachineCapacity::getMachine, MrProcessAssignment::getMachine)
                 )
                 .groupBy(
                         (machineCapacity, processAssignment) -> machineCapacity, sumLong(

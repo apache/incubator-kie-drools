@@ -22,9 +22,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
+import org.optaplanner.core.api.score.stream.bi.BiJoiner;
+import org.optaplanner.core.api.score.stream.common.Joiners;
+import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
@@ -54,6 +60,10 @@ public final class BavetConstraint<Solution_> implements Constraint {
         return constraintWeight;
     }
 
+    // ************************************************************************
+    // From
+    // ************************************************************************
+
     @Override
     public <A> BavetAbstractUniConstraintStream<Solution_, A> from(Class<A> fromClass) {
         BavetAbstractUniConstraintStream<Solution_, A> stream = fromUnfiltered(fromClass);
@@ -70,6 +80,24 @@ public final class BavetConstraint<Solution_> implements Constraint {
         BavetFromUniConstraintStream<Solution_, A> stream = new BavetFromUniConstraintStream<>(this, fromClass);
         streamList.add((BavetFromUniConstraintStream<Solution_, Object>) stream);
         return stream;
+    }
+
+    @Override
+    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
+        MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
+        if (planningIdMemberAccessor == null) {
+            throw new IllegalArgumentException("The fromClass (" + fromClass + ") has no member with a @"
+                    + PlanningId.class.getSimpleName() + " annotation,"
+                    + " so the pairs can be made unique ([A,B] vs [B,A]).");
+        }
+        // TODO Breaks node sharing + involves unneeded indirection
+        Function<A, Comparable> planningIdGetter = (fact) -> (Comparable<?>) planningIdMemberAccessor.executeGetter(fact);
+        return from(fromClass).join(fromClass, joiner, Joiners.lessThan(planningIdGetter));
     }
 
     // ************************************************************************

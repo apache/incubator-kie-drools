@@ -96,20 +96,6 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return biStream;
     }
 
-    @Override
-    public BiConstraintStream<A, A> joinOther() {
-//        EntityDescriptor<Solution_> entityDescriptor = constraint.getConstraintFactory().getSolutionDescriptor()
-//                .findEntityDescriptor(fromClass);
-//
-//        return join(this, Joiners.lessThan(entityDescriptor.get));
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
-    public BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
     // ************************************************************************
     // Group by
     // ************************************************************************

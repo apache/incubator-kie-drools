@@ -202,8 +202,8 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entity3, entity3));
     }
 
-    @Test @Ignore("TODO implement it") // TODO
-    public void joinOther_0() {
+    @Test
+    public void fromUniquePair_0() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 0);
         TestdataLavishEntity entityB = new TestdataLavishEntity("B", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
@@ -216,8 +216,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().add(entityC);
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataLavishEntity.class)
-                    .joinOther()
+            constraint.fromUniquePair(TestdataLavishEntity.class)
                     .penalize();
         });
 
@@ -229,8 +228,8 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
                 assertMatch(entityB, entityC));
     }
 
-    @Test @Ignore("TODO implement it") // TODO
-    public void joinOther_1Equals() {
+    @Test
+    public void fromUniquePair_1Equals() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 0);
         TestdataLavishEntity entityB = new TestdataLavishEntity("B", solution.getFirstEntityGroup(),
                 solution.getFirstValue());
@@ -246,49 +245,9 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
         solution.getEntityList().add(entityC);
 
         InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataLavishEntity.class)
-                    .joinOther(
-                            equalTo(TestdataLavishEntity::getIntegerProperty)
-                    )
-                    .penalize();
-        });
-
-        // From scratch
-        scoreDirector.setWorkingSolution(solution);
-        assertScore(scoreDirector,
-                assertMatch(entityA, entityB));
-
-        // Incremental
-        scoreDirector.beforeProblemPropertyChanged(entityB);
-        entityB.setIntegerProperty(10);
-        scoreDirector.afterProblemPropertyChanged(entityB);
-        assertScore(scoreDirector,
-                assertMatch(entityB, entityC));
-    }
-
-    @Test // TODO remove this test if the joinOther test is unignored
-    public void temp_joinOther_1Equals() {
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 0);
-        TestdataLavishEntity entityB = new TestdataLavishEntity("B", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        entityB.setIntegerProperty(2);
-        solution.getEntityList().add(entityB);
-        TestdataLavishEntity entityA = new TestdataLavishEntity("A", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        entityA.setIntegerProperty(2);
-        solution.getEntityList().add(entityA);
-        TestdataLavishEntity entityC = new TestdataLavishEntity("C", solution.getFirstEntityGroup(),
-                solution.getFirstValue());
-        entityC.setIntegerProperty(10);
-        solution.getEntityList().add(entityC);
-
-        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
-            constraint.from(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntity.class,
-                            equalTo(TestdataLavishEntity::getIntegerProperty),
-                            lessThan(TestdataLavishEntity::getCode)
-                    )
-                    .penalize();
+            constraint.fromUniquePair(TestdataLavishEntity.class,
+                    equalTo(TestdataLavishEntity::getIntegerProperty)
+            ).penalize();
         });
 
         // From scratch

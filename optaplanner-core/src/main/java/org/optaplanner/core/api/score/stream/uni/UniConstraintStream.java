@@ -25,12 +25,10 @@ import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
 
@@ -154,71 +152,6 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass, BiJoiner<A, B>... joiners) {
         return join(otherClass, AbstractBiJoiner.merge(joiners));
-    }
-
-    /**
-     * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}.
-     * <p>
-     * Important: {@link BiConstraintStream#filter(BiPredicate) Filtering} this is slower and less scalable
-     * than a {@link #joinOther(BiJoiner)},
-     * because it does barely applies hashing and/or indexing on the properties,
-     * so it creates and checks almost every combination of A and A.
-     * <p>
-     * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
-     * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
-     * @return a stream that matches every unique combination of A and another A
-     */
-    BiConstraintStream<A, A> joinOther();
-
-    /**
-     * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}
-     * for which the {@link BiJoiner} is true (for the properties it extracts from both facts).
-     * <p>
-     * Important: This is faster and more scalable than a {@link #joinOther() join}
-     * followed by a {@link BiConstraintStream#filter(BiPredicate) filter},
-     * because it applies hashing and/or indexing on the properties,
-     * so it doesn't create nor checks almost every combination of A and A.
-     * <p>
-     * This method is syntactic sugar for {@link #join(UniConstraintStream, BiJoiner)}.
-     * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
-     * <p>
-     * This method has overloaded methods with multiple {@link BiJoiner} parameters.
-     * @param joiner never null
-     * @return a stream that matches every unique combination of A and another A for which the {@link BiJoiner} is true
-     */
-    BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner);
-
-    /**
-     * @see #joinOther(BiJoiner)
-     */
-    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2) {
-        return joinOther(AbstractBiJoiner.merge(joiner1, joiner2));
-    }
-
-    /**
-     * @see #joinOther(BiJoiner)
-     */
-    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
-            BiJoiner<A, A> joiner3) {
-        return joinOther(AbstractBiJoiner.merge(joiner1, joiner2, joiner3));
-    }
-
-    /**
-     * @see #joinOther(BiJoiner)
-     */
-    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A> joiner1, BiJoiner<A, A> joiner2,
-            BiJoiner<A, A> joiner3, BiJoiner<A, A> joiner4) {
-        return joinOther(AbstractBiJoiner.merge(joiner1, joiner2, joiner3, joiner4));
-    }
-
-    /**
-     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
-     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
-     * Therefore, there are overloaded methods with up to 4 {@link BiJoiner} parameters.
-     * @see #joinOther(BiJoiner)
-     */
-    default BiConstraintStream<A, A> joinOther(BiJoiner<A, A>... joiners) {
-        return joinOther(AbstractBiJoiner.merge(joiners));
     }
 
     // ************************************************************************
