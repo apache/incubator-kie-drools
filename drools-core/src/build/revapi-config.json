@@ -47,16 +47,6 @@
       "ignore": [
         {
           "code": "java.method.numberOfParametersChanged",
-          "old": "method void org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand::<init>(org.kie.api.pmml.PMMLRequestData, java.lang.Boolean)",
-          "new": "method void org.drools.core.command.runtime.pmml.ApplyPmmlModelCommand::<init>(org.kie.api.pmml.PMMLRequestData, java.util.List<java.lang.Object>, java.lang.Boolean)",
-          "package": "org.drools.core.command.runtime.pmml",
-          "classSimpleName": "ApplyPmmlModelCommand",
-          "methodName": "<init>",
-          "elementKind": "constructor",
-          "justification": "Added new parameter for external objects to be passed in"
-        },
-        {
-          "code": "java.method.numberOfParametersChanged",
           "old": "method org.drools.core.WorkingMemoryEntryPoint org.drools.core.common.DefaultFactHandle::getEntryPoint()",
           "new": "method org.drools.core.WorkingMemoryEntryPoint org.drools.core.common.DefaultFactHandle::getEntryPoint(org.drools.core.common.InternalWorkingMemory)",
           "package": "org.drools.core.common",
