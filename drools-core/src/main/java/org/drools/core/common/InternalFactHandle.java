@@ -32,7 +32,7 @@ import org.kie.api.runtime.rule.FactHandle;
 public interface InternalFactHandle
     extends
     FactHandle, Cloneable, Serializable {
-    int getId();
+    long getId();
 
     long getRecency();
 
@@ -205,7 +205,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             throw new UnsupportedOperationException();
         }
 

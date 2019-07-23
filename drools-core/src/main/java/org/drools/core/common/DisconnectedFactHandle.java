@@ -51,8 +51,8 @@ public class DisconnectedFactHandle
         Externalizable {
 
     @XmlElement
-    @XmlSchemaType(name="int")
-    private int    id;
+    @XmlSchemaType(name="long")
+    private long    id;
 
     @XmlElement
     @XmlSchemaType(name="int")
@@ -85,7 +85,7 @@ public class DisconnectedFactHandle
     public DisconnectedFactHandle() {
     }
 
-    public DisconnectedFactHandle(int id,
+    public DisconnectedFactHandle(long id,
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
@@ -101,7 +101,7 @@ public class DisconnectedFactHandle
         this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
 
-    public DisconnectedFactHandle(int id,
+    public DisconnectedFactHandle(long id,
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
@@ -188,7 +188,7 @@ public class DisconnectedFactHandle
         return null;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 

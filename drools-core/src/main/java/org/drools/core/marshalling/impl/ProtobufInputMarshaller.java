@@ -336,7 +336,7 @@ public class ProtobufInputMarshaller {
     private static void readInitialFactHandle(MarshallerReaderContext context,
                                               RuleData _session,
                                               List<PropagationContext> pctxs) {
-        int ifhId = context.wm.getInitialFactHandle().getId();
+        long ifhId = context.wm.getInitialFactHandle().getId();
         context.handles.put( ifhId,
                              context.wm.getInitialFactHandle() );
 
@@ -583,7 +583,7 @@ public class ProtobufInputMarshaller {
                                      pctxs );
             }
 
-            for ( Integer factHandleId : _key.getOtherHandleList() ) {
+            for ( Long factHandleId : _key.getOtherHandleList() ) {
                 handle = context.handles.get( factHandleId );
                 key.addFactHandle( handle );
                 handle.setEqualityKey( key );
@@ -880,9 +880,9 @@ public class ProtobufInputMarshaller {
     }
 
     public static class TupleKey {
-        private final int[] tuple;
+        private final long[] tuple;
 
-        public TupleKey(int[] tuple) {
+        public TupleKey(long[] tuple) {
             super();
             this.tuple = tuple;
         }

@@ -1109,7 +1109,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.initialFactHandle = initInitialFact(kBase, null);
     }
 
-    public void reset(int handleId,
+    public void reset(long handleId,
                       long handleCounter,
                       long propagationCounter) {
         if (nodeMemories != null) {
