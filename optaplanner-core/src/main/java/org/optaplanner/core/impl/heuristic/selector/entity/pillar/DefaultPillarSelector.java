@@ -18,11 +18,14 @@ package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -252,22 +255,29 @@ public class DefaultPillarSelector extends AbstractSelector
         @Override
         protected List<Object> createUpcomingSelection() {
             List<Object> basePillar = selectBasePillar();
+            int basePillarSize = basePillar.size();
+            if (basePillarSize == 1) { // no subpillar to select
+                return basePillar;
+            }
             // Known issue/compromise: Every subPillar should have same probability, but doesn't.
             // Instead, every subPillar size has the same probability.
-            int basePillarSize = basePillar.size();
-            int min = (minimumSubPillarSize > basePillarSize) ? basePillarSize : minimumSubPillarSize;
-            int max = (maximumSubPillarSize > basePillarSize) ? basePillarSize : maximumSubPillarSize;
+            int min = Math.min(minimumSubPillarSize, basePillarSize);
+            int max = Math.min(maximumSubPillarSize, basePillarSize);
             int subPillarSize = min + workingRandom.nextInt(max - min + 1);
-            // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
-            // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
-            Object[] sandboxPillar = basePillar.toArray(); // Clone to avoid changing basePillar
-            List<Object> subPillar = new ArrayList<>(subPillarSize);
-            for (int i = 0; i < subPillarSize; i++) {
-                int index = i + workingRandom.nextInt(basePillarSize - i);
-                subPillar.add(sandboxPillar[index]);
-                sandboxPillar[index] = sandboxPillar[i];
+            if (subPillarSize == basePillarSize) { // subpillar is equal to the base pillar, use shortcut
+                return basePillar;
+            } else if (subPillarSize == 1) { // subpillar is just one element, use shortcut
+                final int randomIndex = workingRandom.nextInt(basePillarSize);
+                final Object randomElement = basePillar.get(randomIndex);
+                return Collections.singletonList(randomElement);
+            } else {
+                /// subpillar will be a reasonably sized subset of the base pillar, so we construct it iteratively
+                return IntStream.generate(() -> workingRandom.nextInt(basePillarSize))
+                        .distinct()
+                        .limit(subPillarSize)
+                        .mapToObj(basePillar::get)
+                        .collect(Collectors.toCollection(() -> new ArrayList<>(subPillarSize)));
             }
-            return subPillar;
         }
 
         private List<Object> selectBasePillar() {
