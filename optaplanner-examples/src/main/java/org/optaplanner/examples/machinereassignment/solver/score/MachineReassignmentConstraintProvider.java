@@ -86,8 +86,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         Constraint constraint = constraintFactory.newConstraintWithWeight(MrConstraints.SERVICE_LOCATION_SPREAD,
                                                                           HardSoftLongScore.ofHard(1L));
         constraint.from(MrProcessAssignment.class)
-                .groupBy(processAssignment -> processAssignment.getService(),
-                         ConstraintCollectors.countDistinct(processAssignment -> processAssignment.getLocation()))
+                .groupBy(MrProcessAssignment::getService,
+                         ConstraintCollectors.countDistinct(MrProcessAssignment::getLocation))
                 .filter((mrService, distinctLocationCount) -> mrService.getLocationSpread() > distinctLocationCount)
                 .penalize();
     }
