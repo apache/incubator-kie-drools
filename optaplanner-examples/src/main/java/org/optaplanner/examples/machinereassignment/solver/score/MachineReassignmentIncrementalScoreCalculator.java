@@ -458,23 +458,23 @@ public class MachineReassignmentIncrementalScoreCalculator
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         ConstraintMatchTotal maximumCapacityMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.MAXIMUM_CAPACITY.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.MAXIMUM_CAPACITY, HardSoftLongScore.ZERO);
         ConstraintMatchTotal serviceConflictMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.SERVICE_CONFLICT.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.SERVICE_CONFLICT, HardSoftLongScore.ZERO);
         ConstraintMatchTotal serviceLocationSpreadMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.SERVICE_LOCATION_SPREAD.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.SERVICE_LOCATION_SPREAD, HardSoftLongScore.ZERO);
         ConstraintMatchTotal serviceDependencyMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.SERVICE_DEPENDENCY.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.SERVICE_DEPENDENCY, HardSoftLongScore.ZERO);
         ConstraintMatchTotal loadCostMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.LOAD_COST.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.LOAD_COST, HardSoftLongScore.ZERO);
         ConstraintMatchTotal balanceCostMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.BALANCE_COST.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.BALANCE_COST, HardSoftLongScore.ZERO);
         ConstraintMatchTotal processMoveCostMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.PROCESS_MOVE_COST.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.PROCESS_MOVE_COST, HardSoftLongScore.ZERO);
         ConstraintMatchTotal serviceMoveCostMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.SERVICE_MOVE_COST.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.SERVICE_MOVE_COST, HardSoftLongScore.ZERO);
         ConstraintMatchTotal machineMoveCostMatchTotal = new ConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, MrConstraintName.MACHINE_MOVE_COST.getName(), HardSoftLongScore.ZERO);
+                CONSTRAINT_PACKAGE, MrConstraints.MACHINE_MOVE_COST, HardSoftLongScore.ZERO);
 
         for (MrServiceScorePart serviceScorePart : serviceScorePartMap.values()) {
             MrService service = serviceScorePart.service;
