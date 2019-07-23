@@ -16,11 +16,11 @@ package org.kie.kogito.cloud.kubernetes.client.operations;
 
 import java.util.HashMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MapWalkerTest {
 
@@ -33,12 +33,11 @@ public class MapWalkerTest {
         final MapWalker walker = new MapWalker(new HashMap<>(), true);
         assertThat(walker.mapToListMap("test").listToMap(0).asMap(), notNullValue());
     }
-    
-    @Test(expected = IllegalArgumentException.class)
+
+    @Test
     public void whenMapIsEmptyAndIsNotSafe() {
         final MapWalker walker = new MapWalker(new HashMap<>());
-       walker.mapToListMap("test").listToMap(0).asMap();
-       fail("Should explode an exception while is not safe walking through an empty map");
+        assertThrows(IllegalArgumentException.class, () -> walker.mapToListMap("test").listToMap(0).asMap());
     }
 
 }

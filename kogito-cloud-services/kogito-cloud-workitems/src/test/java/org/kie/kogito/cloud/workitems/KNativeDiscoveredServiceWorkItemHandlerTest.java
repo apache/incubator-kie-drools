@@ -17,11 +17,11 @@ package org.kie.kogito.cloud.workitems;
 
 import io.fabric8.kubernetes.api.model.KubernetesList;
 import io.fabric8.kubernetes.client.dsl.RecreateFromServerGettable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class KNativeDiscoveredServiceWorkItemHandlerTest extends BaseKubernetesDiscoveredServiceTest {
 

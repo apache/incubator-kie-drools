@@ -19,9 +19,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -32,17 +32,17 @@ public class KubeClientConfigTest {
     public static final Path KUBE_CONFIG_PATH = Paths.get(System.getProperty("user.home") + "/.kube/config");
     public static final Path KUBE_CONFIG_DIR = Paths.get(System.getProperty("user.home") + "/.kube");
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException {
         if (!Files.exists(KUBE_CONFIG_PATH)) {
-            if(!Files.exists(KUBE_CONFIG_DIR)) {
+            if (!Files.exists(KUBE_CONFIG_DIR)) {
                 Files.createDirectories(KUBE_CONFIG_DIR);
             }
             Files.createFile(KUBE_CONFIG_PATH);
         }
     }
 
-    @After
+    @AfterEach
     public void teardown() throws IOException {
         if (Files.exists(KUBE_CONFIG_PATH) && Files.readAllBytes(KUBE_CONFIG_PATH).length == 0) {
             Files.delete(KUBE_CONFIG_PATH);

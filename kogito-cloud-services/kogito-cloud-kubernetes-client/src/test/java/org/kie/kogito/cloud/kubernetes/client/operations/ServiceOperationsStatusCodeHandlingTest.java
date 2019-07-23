@@ -17,7 +17,7 @@ package org.kie.kogito.cloud.kubernetes.client.operations;
 import java.net.HttpURLConnection;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClientException;
 import org.kie.kogito.cloud.kubernetes.client.MockKubernetesServerSupport;
 
@@ -25,10 +25,11 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Test cases where
+ * Service Operations test cases that integrates with a mock Kubernetes server to validate HTTP Rest API handling.
  */
 public class ServiceOperationsStatusCodeHandlingTest extends MockKubernetesServerSupport {
 
@@ -66,9 +67,9 @@ public class ServiceOperationsStatusCodeHandlingTest extends MockKubernetesServe
         }
     }
 
-    @Test(expected = KogitoKubeClientException.class)
+    @Test
     public void whenServerError() {
         getServer().expect().get().withPath("/api/v1/services").andReturn(HttpURLConnection.HTTP_BAD_GATEWAY, null).once();
-        this.getKubeClient().services().list(null).asMap();
+        assertThrows(KogitoKubeClientException.class, () -> this.getKubeClient().services().list(null).asMap());
     }
 }

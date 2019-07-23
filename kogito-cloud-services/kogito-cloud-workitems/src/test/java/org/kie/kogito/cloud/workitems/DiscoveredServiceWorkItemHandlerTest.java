@@ -28,8 +28,8 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClient;
@@ -46,7 +46,7 @@ public class DiscoveredServiceWorkItemHandlerTest {
     
     private OkHttpClient httpClient;
 
-    @Before
+    @BeforeEach
     public void setup() {
         httpClient = mock(OkHttpClient.class);
     }

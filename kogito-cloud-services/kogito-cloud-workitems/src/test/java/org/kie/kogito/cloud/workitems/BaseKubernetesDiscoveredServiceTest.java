@@ -19,8 +19,8 @@ import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ServiceResource;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
@@ -46,8 +46,7 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
         this.enableIstio = enableIstio;
     }
 
-    // will be changed to junit5 extensions once migrated
-    @Before
+    @BeforeEach
     public void before() {
         server.before();
         if (this.enableIstio) {
@@ -55,8 +54,7 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
         }
     }
 
-    // will be changed to junit5 extensions once migrated
-    @After
+    @AfterEach
     public void after() {
         server.after();
     }

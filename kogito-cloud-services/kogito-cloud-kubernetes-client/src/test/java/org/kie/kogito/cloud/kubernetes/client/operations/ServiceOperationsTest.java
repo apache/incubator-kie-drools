@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloud.kubernetes.client.MockKubernetesServerSupport;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
