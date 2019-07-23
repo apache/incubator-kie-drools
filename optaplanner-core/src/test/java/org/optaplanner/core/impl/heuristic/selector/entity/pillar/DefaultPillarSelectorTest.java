@@ -226,11 +226,11 @@ public class DefaultPillarSelectorTest {
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, d], [c, e, f]
         when(workingRandom.nextInt(anyInt())).thenReturn(
-                0, 0, 0, // [a]
-                2, 1, 0, 0, // [c, e, f]
-                1, 0, 0, // [b, d]
+                0, // [a]
+                2, 1, 0, 1, // [c, e, f]
+                1, 1, // [b, d]
                 1, 0, 1); // [b, d]
-        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b]", "[d]");
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b, d]", "[d]");
         pillarSelector.stepEnded(stepScopeA1);
 
         b.setValue(val3);
@@ -242,11 +242,11 @@ public class DefaultPillarSelectorTest {
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, c, e], [d], [f]
         when(workingRandom.nextInt(anyInt())).thenReturn(
-                3, 0, 0, // [f]
-                1, 2, 2, 0, 0, // [b, c, e]
+                3, // [f]
+                1, 2, // [b, c, e]
                 1, 0, 0, // [b, c, e]
-                2, 0, 0); // [d]
-        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[e, c, b]", "[b]", "[d]");
+                2); // [d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[b, c, e]", "[b]", "[d]");
         pillarSelector.stepEnded(stepScopeA2);
 
         pillarSelector.phaseEnded(phaseScopeA);
@@ -261,11 +261,11 @@ public class DefaultPillarSelectorTest {
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, c, e], [d], [f]
         when(workingRandom.nextInt(anyInt())).thenReturn(
-                3, 0, 0, // [f]
-                1, 2, 2, 0, 0, // [b, c, e]
+                3, // [f]
+                1, 2, // [b, c, e]
                 1, 0, 0, // [b, c, e]
-                2, 0, 0); // [d]
-        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[e, c, b]", "[b]", "[d]");
+                2); // [d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[f]", "[b, c, e]", "[b]", "[d]");
         pillarSelector.stepEnded(stepScopeB1);
 
         pillarSelector.phaseEnded(phaseScopeB);
@@ -312,11 +312,10 @@ public class DefaultPillarSelectorTest {
         // nextInt pattern: pillarIndex, subPillarSize, element 0, element 1, element 2, ...
         // Expected pillar cache: [a], [b, d], [c, e, f]
         when(workingRandom.nextInt(anyInt())).thenReturn(
-                0, 0, 0, // [a] If the pillar is less than the minimum, the minimum is reduced
-                2, 0, 0, 0, // [c, e, f]
-                1, 0, 0, 0, // [b, d]
-                1, 0, 1, 0); // [b, d]
-        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b, d]", "[d, b]");
+                0, // [a]
+                2, 0, 0, 1, // [c, e, f]
+                1, 0); // [b, d]
+        assertCodesOfNeverEndingPillarSelector(pillarSelector, "[a]", "[c, e]", "[b, d]");
         pillarSelector.stepEnded(stepScopeA1);
 
         pillarSelector.phaseEnded(phaseScopeA);
