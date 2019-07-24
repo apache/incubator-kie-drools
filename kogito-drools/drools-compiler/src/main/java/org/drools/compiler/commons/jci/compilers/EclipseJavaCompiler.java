@@ -34,7 +34,6 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
-import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.Compiler;
 import org.eclipse.jdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.jdt.internal.compiler.ICompilerRequestor;
@@ -135,7 +134,6 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
             if (content == null) {
                 return null;
-                //throw new RuntimeException("resource " + fileName + " could not be found");
             }
 
             return new String(content, IoUtils.UTF8_CHARSET).toCharArray();
@@ -237,19 +235,15 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     result.append(pCompoundTypeName[i]);
                 }
 
-                //log.debug("finding compoundTypeName=" + result.toString());
-
                 return findType(result.toString());
             }
 
             public NameEnvironmentAnswer findType( final char[] pTypeName, final char[][] pPackageName ) {
                 final StringBuilder result = new StringBuilder();
-                for (int i = 0; i < pPackageName.length; i++) {
-                    result.append(pPackageName[i]);
+                for (char[] chars : pPackageName) {
+                    result.append(chars);
                     result.append('.');
                 }
-
-//                log.debug("finding typeName=" + new String(typeName) + " packageName=" + result.toString());
 
                 result.append(pTypeName);
                 return findType(result.toString());
@@ -268,10 +262,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
                 }
 
-                InputStream is = null;
-                ByteArrayOutputStream baos = null;
-                try {
-                    is = pClassLoader.getResourceAsStream(resourceName);
+                try (InputStream is = pClassLoader.getResourceAsStream(resourceName)) {
                     if (is == null) {
                         return null;
                     }
@@ -280,44 +271,26 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                         // check it really is a class, this issue is due to windows case sensitivity issues for the class org.kie.Process and path org/droosl/process
                         try {
                             pClassLoader.loadClass( pClazzName );
-                        } catch ( ClassNotFoundException e ) {
-                            return null;
-                        } catch ( NoClassDefFoundError e ) {
+                        } catch ( ClassNotFoundException | NoClassDefFoundError e ) {
                             return null;
                         }
                     }
 
                     final byte[] buffer = new byte[8192];
-                    baos = new ByteArrayOutputStream(buffer.length);
-                    int count;
-                    while ((count = is.read(buffer, 0, buffer.length)) > 0) {
-                        baos.write(buffer, 0, count);
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream(buffer.length)) {
+                        int count;
+                        while ((count = is.read(buffer, 0, buffer.length)) > 0) {
+                            baos.write(buffer, 0, count);
+                        }
+                        baos.flush();
+                        return createNameEnvironmentAnswer(pClazzName, baos.toByteArray());
                     }
-                    baos.flush();
-                    return createNameEnvironmentAnswer(pClazzName, baos.toByteArray());
                 } catch ( final IOException e ) {
                     throw new RuntimeException( "could not read class",
                                                 e );
                 } catch ( final ClassFormatException e ) {
                     throw new RuntimeException( "wrong class format",
                                                 e );
-                } finally {
-                    try {
-                        if (baos != null ) {
-                            baos.close();
-                        }
-                    } catch ( final IOException oe ) {
-                        throw new RuntimeException( "could not close output stream",
-                                                    oe );
-                    }
-                    try {
-                        if ( is != null ) {
-                            is.close();
-                        }
-                    } catch ( final IOException ie ) {
-                        throw new RuntimeException( "could not close input stream",
-                                                    ie );
-                    }
                 }
             }
 
@@ -335,10 +308,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             private boolean isPackage( final String pClazzName ) {
-                InputStream is = null;
-                try {
-                    is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName));
-
+                try (InputStream is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName))) {
                     if (is != null) {
                         if (ClassUtils.isWindows() || ClassUtils.isOSX()) {
                             // check it really is a class, this issue is due to windows case sensitivity issues for the class org.kie.Process and path org/droosl/process
@@ -348,23 +318,14 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                                 if (cls != null) {
                                     return false;
                                 }
-                            } catch (ClassNotFoundException e) {
-                                return true;
-                            } catch (NoClassDefFoundError e) {
+                            } catch (ClassNotFoundException | NoClassDefFoundError e) {
                                 return true;
                             }
                         }
                     }
-                    boolean result = is == null && !isSourceAvailable(pClazzName, pReader);
-                    return result;
-                } finally {
-                    if ( is != null ) {
-                        try {
-                            is.close();
-                        } catch ( IOException e ) {
-                            throw new RuntimeException( "Unable to close stream for resource: " + pClazzName );
-                        }
-                    }
+                    return is == null && !isSourceAvailable(pClazzName, pReader);
+                } catch (IOException e) {
+                    throw new RuntimeException("Cannot open or close resource stream!", e);
                 }
             }
 
@@ -392,33 +353,29 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
         };
 
-        final ICompilerRequestor compilerRequestor = new ICompilerRequestor() {
-            public void acceptResult( final CompilationResult pResult ) {
-                if (pResult.hasProblems()) {
-                    final IProblem[] iproblems = pResult.getProblems();
-                    for (int i = 0; i < iproblems.length; i++) {
-                        final IProblem iproblem = iproblems[i];
-                        final CompilationProblem problem = new EclipseCompilationProblem(iproblem);
-                        if (problemHandler != null) {
-                            problemHandler.handle(problem);
-                        }
-                        problems.add(problem);
+        final ICompilerRequestor compilerRequestor = pResult -> {
+            if (pResult.hasProblems()) {
+                final IProblem[] iproblems = pResult.getProblems();
+                for (final IProblem iproblem : iproblems) {
+                    final CompilationProblem problem = new EclipseCompilationProblem(iproblem);
+                    if (problemHandler != null) {
+                        problemHandler.handle(problem);
                     }
+                    problems.add(problem);
                 }
-                if (!pResult.hasErrors()) {
-                    final ClassFile[] clazzFiles = pResult.getClassFiles();
-                    for (int i = 0; i < clazzFiles.length; i++) {
-                        final ClassFile clazzFile = clazzFiles[i];
-                        final char[][] compoundName = clazzFile.getCompoundName();
-                        final StringBuilder clazzName = new StringBuilder();
-                        for (int j = 0; j < compoundName.length; j++) {
-                            if (j != 0) {
-                                clazzName.append('.');
-                            }
-                            clazzName.append(compoundName[j]);
+            }
+            if (!pResult.hasErrors()) {
+                final ClassFile[] clazzFiles = pResult.getClassFiles();
+                for (final ClassFile clazzFile : clazzFiles) {
+                    final char[][] compoundName = clazzFile.getCompoundName();
+                    final StringBuilder clazzName = new StringBuilder();
+                    for (int j = 0; j < compoundName.length; j++) {
+                        if (j != 0) {
+                            clazzName.append('.');
                         }
-                        pStore.write(clazzName.toString().replace('.', '/') + ".class", clazzFile.getBytes());
+                        clazzName.append(compoundName[j]);
                     }
+                    pStore.write(clazzName.toString().replace('.', '/') + ".class", clazzFile.getBytes());
                 }
             }
         };

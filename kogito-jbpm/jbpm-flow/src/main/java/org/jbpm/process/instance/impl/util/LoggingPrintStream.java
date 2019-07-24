@@ -47,7 +47,7 @@ public class LoggingPrintStream extends PrintStream {
     
     }    
     
-    private void write(String s) { 
+    private void writeString(String s) {
         synchronized (buffer) {            
             buffer.append(s);
         }
@@ -61,39 +61,39 @@ public class LoggingPrintStream extends PrintStream {
     }
     
     public void print(boolean b) {
-        write(b ? "true" : "false");
+        writeString(b ? "true" : "false");
     }
     
     public void print(char c) {
-        write(String.valueOf(c));
+        writeString(String.valueOf(c));
     }
     
     public void print(int i) {
-        write(String.valueOf(i));
+        writeString(String.valueOf(i));
     }
     
     public void print(long l) {
-        write(String.valueOf(l));
+        writeString(String.valueOf(l));
     }
     
     public void print(float f) {
-        write(String.valueOf(f));
+        writeString(String.valueOf(f));
     }
     
     public void print(double d) {
-        write(String.valueOf(d));
+        writeString(String.valueOf(d));
     }
     
     public void print(char s[]) {
-        write(String.valueOf(s));
+        writeString(String.valueOf(s));
     }
     
     public void print(String s) {
-        write(s == null ? "null" : s);
+        writeString(s == null ? "null" : s);
     }
     
     public void print(Object obj) {
-        write(String.valueOf(obj));
+        writeString(String.valueOf(obj));
     }
     
     public void println() {

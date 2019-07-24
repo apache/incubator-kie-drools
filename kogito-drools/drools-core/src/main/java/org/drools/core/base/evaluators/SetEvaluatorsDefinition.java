@@ -616,6 +616,9 @@ public class SetEvaluatorsDefinition
                    operator );
         }
 
+        public BaseNotMemberOfEvaluator() {
+        }
+
         public ValueType getCoercedValueType() {
             // during evaluation, always coerce to object
             return ValueType.OBJECT_TYPE;

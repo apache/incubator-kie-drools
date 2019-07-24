@@ -46,6 +46,9 @@ public abstract class BaseDoubleClassFieldWriter extends BaseClassFieldWriter {
                valueType );
     }
 
+    public BaseDoubleClassFieldWriter() {
+    }
+
     public void setValue(final Object bean,
                          final Object value) {
         setDoubleValue( bean,

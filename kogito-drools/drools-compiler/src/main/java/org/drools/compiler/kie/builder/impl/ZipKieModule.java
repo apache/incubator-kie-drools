@@ -15,8 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -32,6 +30,8 @@ import java.util.zip.ZipFile;
 
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class ZipKieModule extends AbstractKieModule implements InternalKieModule, Serializable {
     private File file;
@@ -82,13 +82,11 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
     }
 
     private void indexZipFile(java.io.File jarFile) {
-        Map<String, List<String>> folders = new HashMap<String, List<String>>();
-        zipEntries = new HashMap<String, byte[]>();
-        fileNames = new ArrayList<String>();
+        Map<String, List<String>> folders = new HashMap<>();
+        zipEntries = new HashMap<>();
+        fileNames = new ArrayList<>();
 
-        ZipFile zipFile = null;
-        try {
-            zipFile = new ZipFile( jarFile );
+        try (ZipFile zipFile = new ZipFile( jarFile )) {
             Enumeration< ? extends ZipEntry> entries = zipFile.entries();
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
@@ -107,23 +105,11 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
                 }
                 int lastSlashPos = entryName.lastIndexOf( '/' );
                 String folderName = lastSlashPos < 0 ? "" : entryName.substring( 0, lastSlashPos );
-                List<String> folder = folders.get(folderName);
-                if (folder == null) {
-                    folder = new ArrayList<String>();
-                    folders.put( folderName, folder );
-                }
+                List<String> folder = folders.computeIfAbsent(folderName, k -> new ArrayList<>());
                 folder.add(lastSlashPos < 0 ? entryName : entryName.substring( lastSlashPos+1 ));
             }
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to get all ZipFile entries: " + jarFile, e );
-        } finally {
-            if ( zipFile != null ) {
-                try {
-                    zipFile.close();
-                } catch ( IOException e ) {
-                    throw new RuntimeException( "Unable to get all ZipFile entries: " + jarFile, e );
-                }
-            }
         }
 
         for (Map.Entry<String, List<String>> folder : folders.entrySet()) {

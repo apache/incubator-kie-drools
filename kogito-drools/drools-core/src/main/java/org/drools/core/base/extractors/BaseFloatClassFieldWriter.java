@@ -46,6 +46,9 @@ public abstract class BaseFloatClassFieldWriter extends BaseClassFieldWriter {
                valueType );
     }
 
+    public BaseFloatClassFieldWriter() {
+    }
+
     public void setValue(final Object bean,
                          final Object value) {
         setFloatValue( bean,

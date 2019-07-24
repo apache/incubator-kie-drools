@@ -204,6 +204,9 @@ public class KieBuilderSetImpl implements KieBuilderSet {
             setSourcePath( decode( resourceName ) );
         }
 
+        public DummyResource() {
+        }
+
         @Override
         public URL getURL() throws IOException {
             throw new UnsupportedOperationException();

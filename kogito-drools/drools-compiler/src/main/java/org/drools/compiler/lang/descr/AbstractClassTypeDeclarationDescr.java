@@ -37,6 +37,8 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
     private QualifiedName                type;
     private Map<String, TypeFieldDescr>  fields;
 
+    public AbstractClassTypeDeclarationDescr() {}
+
     public AbstractClassTypeDeclarationDescr( String name ) {
         this.type = new QualifiedName( name, null );
     }

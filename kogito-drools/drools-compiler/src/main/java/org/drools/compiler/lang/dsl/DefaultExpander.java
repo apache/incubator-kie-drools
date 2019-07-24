@@ -184,21 +184,22 @@ public class DefaultExpander
 
         if ( showResult ) {
             StringBuffer show = new StringBuffer();
-            Formatter fmt = new Formatter( show );
-            int offset = 0;
-            int nlPos;
-            int iLine = 1;
-            while ( (nlPos = buf.indexOf( nl,
-                                          offset )) >= 0 ) {
-                fmt.format( "%4d  %s%n",
-                            iLine++,
-                            buf.substring( offset,
-                                           nlPos ) );
-                offset = nlPos + 1;
+            try (Formatter fmt = new Formatter( show )) {
+                int offset = 0;
+                int nlPos;
+                int iLine = 1;
+                while ( (nlPos = buf.indexOf( nl,
+                                              offset )) >= 0 ) {
+                    fmt.format( "%4d  %s%n",
+                                iLine++,
+                                buf.substring( offset,
+                                               nlPos ) );
+                    offset = nlPos + 1;
+                }
+                logger.info( "=== DRL xpanded from DSLR ===" );
+                logger.info( show.toString() );
+                logger.info( "=============================" );
             }
-            logger.info( "=== DRL xpanded from DSLR ===" );
-            logger.info( show.toString() );
-            logger.info( "=============================" );
         }
 
         return buf.toString();

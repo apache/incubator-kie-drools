@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -387,7 +388,7 @@ public class PackageModel {
         rulesClass.addImplementedType(Model.class);
 
         BodyDeclaration<?> dateFormatter = parseBodyDeclaration(
-                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
+                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask(), Locale.ENGLISH);\n");
         rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> string2dateMethodMethod = parseBodyDeclaration(
