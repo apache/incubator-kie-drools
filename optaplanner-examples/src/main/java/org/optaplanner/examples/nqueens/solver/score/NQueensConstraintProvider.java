@@ -35,31 +35,31 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected void horizontalConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Horizontal conflict", SimpleScore.of(1));
-        c.from(Queen.class)
-                .join(Queen.class,
-                        Joiners.equalTo(Queen::getRowIndex),
-                        Joiners.lessThan(Queen::getId))
-                .penalize();
+        c.fromUniquePair(Queen.class,
+                Joiners.equalTo(Queen::getRowIndex)
+        ).penalize();
+        // fromUniquePair() is syntactic sugar for from().join(..., lessThan(getId())
+//        c.from(Queen.class)
+//                .join(Queen.class,
+//                        Joiners.equalTo(Queen::getRowIndex),
+//                        Joiners.lessThan(Queen::getId))
+//                .penalize();
     }
 
     protected void ascendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Ascending diagonal conflict", SimpleScore.of(1));
-        c.from(Queen.class)
-                .join(Queen.class,
-                        Joiners.equalTo(Queen::getAscendingDiagonalIndex),
-                        Joiners.lessThan(Queen::getId))
-                .penalize();
+        c.fromUniquePair(Queen.class,
+                Joiners.equalTo(Queen::getAscendingDiagonalIndex)
+        ).penalize();
     }
 
     protected void descendingDiagonalConflict(ConstraintFactory constraintFactory) {
         Constraint c = constraintFactory.newConstraintWithWeight(
                 "Descending diagonal conflict", SimpleScore.of(1));
-        c.from(Queen.class)
-                .join(Queen.class,
-                        Joiners.equalTo(Queen::getDescendingDiagonalIndex),
-                        Joiners.lessThan(Queen::getId))
-                .penalize();
+        c.fromUniquePair(Queen.class,
+                Joiners.equalTo(Queen::getDescendingDiagonalIndex)
+        ).penalize();
     }
 
 }
