@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,8 +41,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class AccumulateTest extends BaseModelTest {
 
@@ -1186,6 +1186,7 @@ public class AccumulateTest extends BaseModelTest {
 
         private boolean resultAccumulated;
         private short maxShortValue;
+        private BigDecimal bigDecimalValue;
 
         public AccumulateResult(boolean resultAccumulated) {
             this.resultAccumulated = resultAccumulated;
@@ -1206,5 +1207,48 @@ public class AccumulateTest extends BaseModelTest {
         public void setMaxShortValue(short maxShortValue) {
             this.maxShortValue = maxShortValue;
         }
+
+        public BigDecimal getBigDecimalValue() {
+            return bigDecimalValue;
+        }
+
+        public void setBigDecimalValue(BigDecimal bigDecimalValue) {
+            this.bigDecimalValue = bigDecimalValue;
+        }
+    }
+
+
+    @Test
+    public void testAccumulateOverField() {
+        String str =
+                "import java.lang.Number;\n" +
+                        "import java.math.BigDecimal;\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "import " + AccumulateResult.class.getCanonicalName() + ";" +
+                        "global java.util.List list;\n" +
+                        "rule \"rule\"\n" +
+                        "  dialect \"mvel\"\n" +
+                        "  when\n" +
+                        "    $r : AccumulateResult()\n" +
+                        "    $sumMoney : BigDecimal( ) from accumulate ( $p : Person( money != null ),\n" +
+                        "      sum($p.money)) \n" +
+                        "  then\n" +
+                        "    modify( $r ) {\n" +
+                        "        setBigDecimalValue( $sumMoney )\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mario", BigDecimal.valueOf(1000)));
+        ksession.insert(new Person("Luca", BigDecimal.valueOf(2000)));
+
+        AccumulateResult result = new AccumulateResult(false);
+        ksession.insert(result);
+
+        int rulesFired = ksession.fireAllRules();
+
+        assertEquals(1, rulesFired);
+        assertEquals(BigDecimal.valueOf(3000), result.getBigDecimalValue());
     }
 }

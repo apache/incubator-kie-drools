@@ -222,7 +222,7 @@ public abstract class AccumulateVisitor {
                         return Optional.empty();
                     }
                 });
-            } else if (accumulateFunctionParameter.isMethodCallExpr() || accumulateFunctionParameter.isArrayAccessExpr()) {
+            } else if (accumulateFunctionParameter.isMethodCallExpr() || accumulateFunctionParameter.isArrayAccessExpr() || accumulateFunctionParameter.isFieldAccessExpr()) {
 
                 final Expression parameterConverted;
                 if(accumulateFunctionParameter.isArrayAccessExpr()) {
@@ -230,8 +230,15 @@ public abstract class AccumulateVisitor {
                             .toTypedExpression(accumulateFunctionParameter)
                     .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call"  + accumulateFunctionParameter))
                     .getExpression();
-                } else {
+                } else if(accumulateFunctionParameter.isMethodCallExpr()){
                     parameterConverted = DrlxParseUtil.sanitizeDrlNameExpr((MethodCallExpr) accumulateFunctionParameter);
+                } else if(accumulateFunctionParameter.isFieldAccessExpr()){
+                    parameterConverted = new ExpressionTyper(context, Object.class, null, false)
+                            .toTypedExpression(accumulateFunctionParameter)
+                            .getTypedExpression().orElseThrow(() -> new RuntimeException("Cannot convert expression to method call"  + accumulateFunctionParameter))
+                            .getExpression();
+                } else {
+                    parameterConverted = accumulateFunctionParameter;
                 }
 
                 final DrlxParseUtil.RemoveRootNodeResult methodCallWithoutRootNode = DrlxParseUtil.removeRootNode(parameterConverted);
@@ -256,7 +263,7 @@ public abstract class AccumulateVisitor {
                 final Class accumulateFunctionResultType = accumulateFunction.getResultType();
                 final String bindExpressionVariable = context.getExprId(accumulateFunctionResultType, typedExpression.toString());
 
-                final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, accumulateFunctionParameterStr);
+                final DrlxParseResult drlxParseResult = new ConstraintParser(context, context.getPackageModel()).drlxParse(Object.class, rootNodeName, printConstraint(parameterConverted));
 
                 newBinding = drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<NewBinding>>() {
                        @Override
