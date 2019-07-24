@@ -61,17 +61,7 @@ public class DDTAInputEntry {
     }
 
     public boolean adjOrOverlap(DDTAInputEntry other) {
-        List<Interval> otherIntervals = new ArrayList<>(other.intervals);
-        for (Interval i : intervals) {
-            List<Interval> adjOrOverlapWithI = new ArrayList<>();
-            for (Interval o : otherIntervals) {
-                if (i.leftAdjOrOverlap(o) || o.leftAdjOrOverlap(i)) {
-                    adjOrOverlapWithI.add(o);
-                }
-            }
-            otherIntervals.removeAll(adjOrOverlapWithI);
-        }
-        return otherIntervals.isEmpty();
+        return Interval.adjOrOverlap(this.intervals, other.intervals);
     }
 
 }
