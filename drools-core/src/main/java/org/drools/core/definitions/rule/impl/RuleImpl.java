@@ -392,6 +392,7 @@ public class RuleImpl implements Externalizable,
         return this;
     }
 
+    @Override
     public boolean isMainAgendaGroup() {
         return AgendaGroup.MAIN.equals( agendaGroup );
     }
@@ -872,11 +873,6 @@ public class RuleImpl implements Externalizable,
 
     public boolean hasRuleUnit() {
         return ruleUnitClassName != null;
-    }
-
-    @Override
-    public boolean isDefaultGroup() {
-        return AgendaGroup.MAIN.equals(agendaGroup);
     }
 
     public static class SafeSalience implements Salience, Serializable {

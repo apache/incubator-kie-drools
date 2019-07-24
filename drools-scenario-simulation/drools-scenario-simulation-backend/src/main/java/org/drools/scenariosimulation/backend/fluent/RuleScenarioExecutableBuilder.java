@@ -67,11 +67,12 @@ public interface RuleScenarioExecutableBuilder {
      */
     default Set<String> getAvailableRules(KieBase kieBase, String activeAgendaGroup) {
         Set<String> toReturn = new HashSet<>();
-        boolean hasActiveAgendaGroup = activeAgendaGroup != null;
         for (KiePackage kiePackage : kieBase.getKiePackages()) {
             for (Rule rule : kiePackage.getRules()) {
                 InternalRule internalRule = (InternalRule) rule;
-                if (!hasActiveAgendaGroup && internalRule.isDefaultGroup()) {
+
+                // main agenda group is always executed after the active one
+                if (internalRule.isMainAgendaGroup()) {
                     toReturn.add(internalRule.getFullyQualifiedName());
                 } else if (Objects.equals(activeAgendaGroup, internalRule.getAgendaGroup())) {
                     toReturn.add(internalRule.getFullyQualifiedName());

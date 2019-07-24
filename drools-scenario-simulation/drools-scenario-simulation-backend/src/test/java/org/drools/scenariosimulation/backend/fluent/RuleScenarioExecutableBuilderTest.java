@@ -52,7 +52,6 @@ public class RuleScenarioExecutableBuilderTest {
         Map<String, List<String>> packagesToRules = new HashMap<>();
         packagesToRules.put("package1", Arrays.asList("rule1", "rule2", "rule3"));
         packagesToRules.put("package2", Arrays.asList("rule4", "rule5", "rule6"));
-        packagesToRules.put("package3", Arrays.asList("rule7", "rule8", "rule9"));
 
         Map<String, String> ruleToAgendaGroup = new HashMap<>();
         ruleToAgendaGroup.put("rule1", "agenda1");
@@ -63,13 +62,13 @@ public class RuleScenarioExecutableBuilderTest {
         RuleScenarioExecutableBuilder builder = RuleScenarioExecutableBuilder.createBuilder(null, null, false);
 
         Set<String> agenda1 = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup), "agenda1");
-        assertEquals(3, agenda1.size());
+        assertEquals(5, agenda1.size());
 
         Set<String> agenda2 = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup), "agenda2");
-        assertEquals(1, agenda2.size());
+        assertEquals(3, agenda2.size());
 
         Set<String> noAgenda = builder.getAvailableRules(createKieBaseMock(packagesToRules, ruleToAgendaGroup), null);
-        assertEquals(5, noAgenda.size());
+        assertEquals(2, noAgenda.size());
     }
 
     private KieBase createKieBaseMock(Map<String, List<String>> packagesToRules, Map<String, String> ruleToAgendaGroup) {
@@ -96,7 +95,7 @@ public class RuleScenarioExecutableBuilderTest {
     private InternalRule createRuleMock(String fullName, String agendaGroup) {
         InternalRule ruleMock = mock(InternalRule.class);
         when(ruleMock.getFullyQualifiedName()).thenReturn(fullName);
-        when(ruleMock.isDefaultGroup()).thenReturn(agendaGroup == null);
+        when(ruleMock.isMainAgendaGroup()).thenReturn(agendaGroup == null);
         when(ruleMock.getAgendaGroup()).thenReturn(agendaGroup);
         return ruleMock;
     }
