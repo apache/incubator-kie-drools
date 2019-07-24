@@ -62,9 +62,10 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
     public void testRemoveAndAddSomething() {
         final KieServices ks = KieServices.Factory.get();
 
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         final KieContainer kieContainer = KieHelper.getKieContainer(
-                ks.newReleaseId("org.kie", "dmn-test", "1.0.0"),
-                wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+                releaseId,
+                wrapWithDroolsModelResource(ks, releaseId, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
@@ -75,7 +76,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final ReleaseId v101 = ks.newReleaseId("org.kie", "dmn-test", "1.0.1");
         KieHelper.createAndDeployJar(ks,
                                      v101,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string-itIT.dmn", this.getClass())));
+                                     wrapWithDroolsModelResource(ks, v101, ks.getResources().newClassPathResource("0001-input-data-string-itIT.dmn", this.getClass())));
 
         final Results updateResults = kieContainer.updateToVersion(v101);
         assertThat(updateResults.hasMessages(Level.ERROR), is(false));
@@ -95,9 +96,10 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
     public void testReplace() {
         final KieServices ks = KieServices.Factory.get();
 
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         final KieContainer kieContainer = KieHelper.getKieContainer(
-                ks.newReleaseId("org.kie", "dmn-test", "1.0.0"),
-                wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+                releaseId,
+                wrapWithDroolsModelResource(ks, releaseId, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
@@ -110,7 +112,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         newClassPathResource.setTargetPath("0001-input-data-string.dmn");
         KieHelper.createAndDeployJar(ks,
                                      v101,
-                                     wrapWithDroolsModelResource(ks, newClassPathResource));
+                                     wrapWithDroolsModelResource(ks, v101, newClassPathResource));
 
         final Results updateResults = kieContainer.updateToVersion(v101);
         assertThat(updateResults.hasMessages(Level.ERROR), is(false));
@@ -133,7 +135,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         KieContainer kieContainer = KieHelper.getKieContainer(
                 v100,
-                wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+                wrapWithDroolsModelResource(ks, v100, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
 
         DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
@@ -146,7 +148,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         newClassPathResource.setTargetPath("0001-input-data-string.dmn");
         KieHelper.createAndDeployJar(ks,
                                      v101,
-                                     wrapWithDroolsModelResource(ks, newClassPathResource));
+                                     wrapWithDroolsModelResource(ks, v101, newClassPathResource));
 
         Results updateResults = kieContainer.updateToVersion(v101);
         assertThat(updateResults.hasMessages(Level.ERROR), is(false));
@@ -191,7 +193,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         KieHelper.createAndDeployJar(ks,
                                      v100,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+                                     wrapWithDroolsModelResource(ks, v100, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
 
         KieContainer kieContainer = ks.newKieContainer(v100);
 
@@ -215,7 +217,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         KieHelper.createAndDeployJar(ks,
                                      v100,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+                                     wrapWithDroolsModelResource(ks, v100, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
 
         KieContainer kieContainer = ks.newKieContainer(v100);
 
@@ -236,7 +238,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         newClassPathResource.setTargetPath("0001-input-data-string.dmn");
         KieHelper.createAndDeployJar(ks,
                                      v101,
-                                     wrapWithDroolsModelResource(ks, newClassPathResource));
+                                     wrapWithDroolsModelResource(ks, v101, newClassPathResource));
 
         final Results updateResults = kieContainer.updateToVersion(v101);
         assertThat(updateResults.hasMessages(Level.ERROR), is(false));
@@ -253,7 +255,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         KieHelper.createAndDeployJar(ks,
                                      v100,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+                                     wrapWithDroolsModelResource(ks, v100, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
 
         KieContainer kieContainer = ks.newKieContainer(v100);
         KieSession kieSession = kieContainer.newKieSession();
@@ -287,7 +289,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         final KieModule kieModule = KieHelper.createAndDeployJar(ks,
                                                                  v100,
-                                                                 wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
+                                                                 wrapWithDroolsModelResource(ks, v100, ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass())));
 
         final KieContainer kieContainer = ks.newKieContainer(v100);
         final KieSession kieSession = kieContainer.newKieSession();
@@ -323,7 +325,7 @@ public class DMNUpdateTest extends BaseInterpretedVsCompiledTestCanonicalKieModu
         final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
         final KieModule kieModule = KieHelper.createAndDeployJar(ks,
                                                                  v100,
-                                                                 wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("v1_2/dmn-hotcold.dmn", this.getClass())));
+                                                                 wrapWithDroolsModelResource(ks, v100, ks.getResources().newClassPathResource("v1_2/dmn-hotcold.dmn", this.getClass())));
 
         final KieContainer kieContainer = ks.newKieContainer(v100);
         final KieSession kieSession = kieContainer.newKieSession();
