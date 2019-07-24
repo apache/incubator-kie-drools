@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
 import org.kie.dmn.core.compiler.ExecModelCompilerOption;
 
@@ -55,17 +56,17 @@ public abstract class BaseInterpretedVsCompiledTestCanonicalKieModule {
         System.clearProperty(ExecModelCompilerOption.PROPERTY_NAME);
     }
 
-    public Resource[] wrapWithDroolsModelResource(KieServices ks, Resource... original) {
+    public Resource[] wrapWithDroolsModelResource(KieServices ks, ReleaseId releaseId, Resource... original) {
         List<Resource> resources = new ArrayList<>(Arrays.asList(original));
         if(canonicalKieModule) {
-            resources.add(getDroolsModelResource(ks));
+            resources.add(getDroolsModelResource(ks, releaseId));
         }
         return resources.toArray(new Resource[0]);
     }
 
-    private Resource getDroolsModelResource(KieServices ks) {
+    private Resource getDroolsModelResource(KieServices ks, ReleaseId releaseId) {
         return ks.getResources()
                 .newClassPathResource("/org/kie/dmn/core/drools-model", this.getClass())
-                .setTargetPath(CanonicalKieModule.MODEL_FILE_DIRECTORY + CanonicalKieModule.MODEL_FILE_NAME);
+                .setTargetPath(CanonicalKieModule.getModelFileWithGAV(releaseId));
     }
 }

@@ -265,4 +265,38 @@ public class Interval {
         }
         return this.toString();
     }
+
+    public static List<Interval> normalizeDiscrete(List<Interval> intervals, List<Object> discreteValues) {
+        List<Interval> results = new ArrayList<>();
+        for (Interval curInterval : intervals) {
+            if (curInterval.lowerBound.getBoundaryType() == RangeBoundary.CLOSED && curInterval.upperBound.getBoundaryType() == RangeBoundary.OPEN) {
+                int lowerIdx = discreteValues.indexOf(curInterval.lowerBound.getValue());
+                int upperIdx = discreteValues.indexOf(curInterval.upperBound.getValue());
+                if (upperIdx - lowerIdx >= 2 && lowerIdx >= 0 && upperIdx >= 0) {
+                    Comparable<?> previousOfUpper = (Comparable<?>) discreteValues.get(upperIdx - 1);
+                    Interval newInterval = new Interval(RangeBoundary.CLOSED, curInterval.lowerBound.getValue(), previousOfUpper, RangeBoundary.CLOSED, 0, 0);
+                    results.add(newInterval);
+                } else {
+                    results.add(curInterval); // add as-is.
+                }
+            } else {
+                results.add(curInterval); // add as-is.
+            }
+        }
+        return results;
+    }
+
+    public static boolean adjOrOverlap(List<Interval> intervalsA, List<Interval> intervalsB) {
+        List<Interval> otherIntervals = new ArrayList<>(intervalsB);
+        for (Interval i : intervalsA) {
+            List<Interval> adjOrOverlapWithI = new ArrayList<>();
+            for (Interval o : otherIntervals) {
+                if (i.leftAdjOrOverlap(o) || o.leftAdjOrOverlap(i)) {
+                    adjOrOverlapWithI.add(o);
+                }
+            }
+            otherIntervals.removeAll(adjOrOverlapWithI);
+        }
+        return otherIntervals.isEmpty();
+    }
 }

@@ -17,6 +17,7 @@
 package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -226,10 +227,9 @@ public class DTAnalysis {
             results.add(new DMNDTAnalysisMessage(this,
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_CONTRACTION_RULE,
-                                                                       x.rule,
-                                                                       x.pairedRule,
+                                                                       x.impactedRules(),
                                                                        x.adjacentDimension),
-                                                 Msg.DTANALYSIS_CONTRACTION_RULE.getType(), Collections.singletonList(x.rule)));
+                                                 Msg.DTANALYSIS_CONTRACTION_RULE.getType(), x.impactedRules()));
         }
         return results;
     }
@@ -271,9 +271,8 @@ public class DTAnalysis {
                                                  Severity.WARN,
                                                  MsgUtil.createMessage(Msg.DTANALYSIS_2NDNFVIOLATION,
                                                                        c.adjacentDimension,
-                                                                       c.rule,
-                                                                       c.pairedRule),
-                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), Collections.singletonList(c.rule)));
+                                                                       c.impactedRules()),
+                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), c.impactedRules()));
         }
         return results;
     }
@@ -510,7 +509,7 @@ public class DTAnalysis {
     }
 
     private boolean areRulesContraction(Integer a, Integer b) {
-        return contractions.stream().filter(s -> (s.rule == b && s.pairedRule == a) || (s.rule == a && s.pairedRule == b)).findAny().isPresent();
+        return contractions.stream().filter(s -> (s.rule == b && s.pairedRules.contains(a)) || (s.rule == a && s.pairedRules.contains(b))).findAny().isPresent();
     }
 
     private boolean areRulesInNonContractionCache(Integer a, Integer b) {
@@ -551,7 +550,13 @@ public class DTAnalysis {
                         allIntervals.addAll(curInputEntries.get(detectedAdjacentOrOverlap - 1).getIntervals());
                         allIntervals.addAll(otherInputEntries.get(detectedAdjacentOrOverlap - 1).getIntervals());
                         List<Interval> flatten = Interval.flatten(allIntervals);
-                        contractions.add(new Contraction(ruleId, otherRuleId, detectedAdjacentOrOverlap, flatten));
+                        DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(detectedAdjacentOrOverlap - 1);
+                        if (ddtaInputClause.isDiscreteDomain()) {
+                            flatten = Interval.normalizeDiscrete(flatten, ddtaInputClause.getDiscreteValues());
+                        }
+                        Contraction contraction = new Contraction(ruleId, Arrays.asList(otherRuleId), detectedAdjacentOrOverlap, flatten);
+                        LOG.debug("NEW CONTRACTION: {}", contraction);
+                        contractions.add(contraction);
                     } else {
                         cacheNonContractingRules.computeIfAbsent(otherRuleId, x -> new HashSet<>()).add(ruleId);
                         cacheNonContractingRules.computeIfAbsent(ruleId, x -> new HashSet<>()).add(otherRuleId);
@@ -559,6 +564,67 @@ public class DTAnalysis {
                 }
             }
         }
+        if (!this.contractions.isEmpty()) {
+            normalizeContractions(); // early normalization call to suite for consistent 2NF computations.
+        }
+    }
+
+    private void normalizeContractions() {
+        int prevSize = this.overlaps.size();
+        internalNormalizeContractions();
+        int curSize = this.overlaps.size();
+        if (curSize != prevSize) {
+            normalizeContractions();
+        }
+    }
+
+    private void internalNormalizeContractions() {
+        List<Contraction> newCollection = new ArrayList<>();
+        List<Contraction> collectionProcessing = new ArrayList<>();
+        collectionProcessing.addAll(this.contractions);
+        while (!collectionProcessing.isEmpty()) {
+            List<Contraction> toBeRemoved = new ArrayList<>();
+            List<Contraction> toBeAdded = new ArrayList<>();
+            Contraction cur = collectionProcessing.remove(0);
+            for (Contraction other : collectionProcessing) {
+                if (cur == null) {
+                    break;
+                }
+                if (cur.adjacentDimension == other.adjacentDimension && Interval.adjOrOverlap(cur.dimensionAsContracted, other.dimensionAsContracted)) {
+                    List<Interval> intervals = new ArrayList<>();
+                    intervals.addAll(cur.dimensionAsContracted);
+                    intervals.addAll(other.dimensionAsContracted);
+                    List<Interval> flatten = Interval.flatten(intervals);
+                    DDTAInputClause ddtaInputClause = ddtaTable.getInputs().get(cur.adjacentDimension - 1);
+                    if (ddtaInputClause.isDiscreteDomain()) {
+                        flatten = Interval.normalizeDiscrete(flatten, ddtaInputClause.getDiscreteValues());
+                    }
+                    Set<Integer> allRules = new HashSet<>();
+                    allRules.add(cur.rule);
+                    allRules.add(other.rule);
+                    allRules.addAll(cur.pairedRules);
+                    allRules.addAll(other.pairedRules);
+                    Integer mainRuleId = Collections.min(allRules);
+                    allRules.remove(mainRuleId);
+                    Contraction merged = new Contraction(mainRuleId, allRules, cur.adjacentDimension, flatten);
+                    LOG.debug("MERGED CONTRACTION: {}", merged);
+                    cur = null;
+                    toBeRemoved.add(other);
+                    toBeAdded.add(merged);
+                }
+            }
+            for (Contraction x : toBeRemoved) {
+                collectionProcessing.remove(x);
+            }
+            for (Contraction x : toBeAdded) {
+                collectionProcessing.add(0, x);
+            }
+            if (cur != null) {
+                newCollection.add(cur);
+            }
+        }
+        this.contractions.clear();
+        this.contractions.addAll(newCollection);
     }
 
     public List<Contraction> getContractions() {
