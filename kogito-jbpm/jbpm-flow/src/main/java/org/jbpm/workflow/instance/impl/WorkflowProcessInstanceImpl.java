@@ -71,6 +71,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.internal.process.CorrelationKey;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -349,6 +350,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         // TODO move most of this to ProcessInstanceImpl
         if (state == ProcessInstance.STATE_COMPLETED
                 || state == ProcessInstance.STATE_ABORTED) {
+            
             if (this.slaCompliance == SLA_PENDING) {
                 if (System.currentTimeMillis() > slaDueDate.getTime()) {
                     // completion of the process instance is after expected SLA due date, mark it accordingly

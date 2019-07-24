@@ -68,6 +68,7 @@ public class ResourceGenerator {
     private String dataClazzName;
     private String modelfqcn;
     private final String processName;
+    private final String appCanonicalName;
     private DependencyInjectionAnnotator annotator;
     
     private List<UserTaskModelMetaData> userTasks;
@@ -77,11 +78,13 @@ public class ResourceGenerator {
     public ResourceGenerator(
             WorkflowProcess process,
             String modelfqcn,
-            String processfqcn) {
+            String processfqcn,
+            String appCanonicalName) {
         this.process = process;
         this.packageName = process.getPackageName();
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
+        this.appCanonicalName = appCanonicalName;
         String classPrefix = StringUtils.capitalize(processName);
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = packageName.replace(".", "/") + "/" + resourceClazzName + ".java";
@@ -208,10 +211,16 @@ public class ResourceGenerator {
 
         if (useInjection()) {
             template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(this::annotateFields);
+                             fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
+            
+            template.findAll(FieldDeclaration.class,
+                             fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
         } else {
             template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(fd -> initializeField(fd, template));
+                             fd -> isProcessField(fd)).forEach(fd -> initializeProcessField(fd, template));
+            
+            template.findAll(FieldDeclaration.class,
+                             fd -> isApplicationField(fd)).forEach(fd -> initializeApplicationField(fd, template));
         }
         
         // if triggers are not empty remove createResource method as there is another trigger to start process instances
@@ -224,19 +233,14 @@ public class ResourceGenerator {
 
         return clazz.toString();
     }
-    private void annotateFields(FieldDeclaration fd) {       
-        annotator.withNamedInjection(fd, processId);
+
+    
+    private void initializeProcessField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
+        fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(processClazzName));
     }
     
-    private void initializeField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
-        BlockStmt body = new BlockStmt();
-        AssignExpr assignExpr = new AssignExpr(
-                                               new FieldAccessExpr(new ThisExpr(), "process"),
-                                               new ObjectCreationExpr().setType(processClazzName),
-                                               AssignExpr.Operator.ASSIGN);
-        
-        body.addStatement(assignExpr);
-        template.addConstructor(Keyword.PUBLIC).setBody(body);
+    private void initializeApplicationField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {        
+        fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(appCanonicalName));
     }
 
     private void interpolateStrings(StringLiteralExpr vv) {

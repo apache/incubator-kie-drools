@@ -38,6 +38,8 @@ import org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.marshalling.impl.JBPMMessages.VariableContainer;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.services.time.manager.TimerInstance;
 import org.kie.services.time.manager.TimerManager;
 import org.kie.services.time.manager.TimerManager.ProcessJobContext;
@@ -120,6 +122,7 @@ public class ProtobufProcessMarshaller
         for ( JBPMMessages.ProcessInstance _instance : _pdata.getExtension( JBPMMessages.processInstance ) ) {
             context.parameterObject = _instance;
             ProcessInstance processInstance = ProcessMarshallerRegistry.INSTANCE.getMarshaller( _instance.getProcessType() ).readProcessInstance( context );
+            ((WorkflowProcessInstanceImpl)processInstance).reconnect();
             processInstanceList.add( processInstance );
         }
         return processInstanceList;
@@ -266,6 +269,7 @@ public class ProtobufProcessMarshaller
             ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( value );
             Integer index = context.getStrategyIndex( strategy );
             builder.setStrategyIndex( index )
+                   .setDataType(strategy.getType(value.getClass()))
                    .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
                                                                      context,
                                                                      value ) ) );
@@ -277,13 +281,15 @@ public class ProtobufProcessMarshaller
         Map<String, Variable> marshalledVariables = new HashMap<String, Variable>();
         for(String key : variables.keySet()){
             JBPMMessages.Variable.Builder builder = JBPMMessages.Variable.newBuilder().setName( key );
-            if(variables.get(key) != null){
-                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( variables.get(key) );
+            Object variable = variables.get(key);
+            if(variable != null){
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( variable );
                 Integer index = context.getStrategyIndex( strategy );
                 builder.setStrategyIndex( index )
+                    .setDataType(strategy.getType(variable.getClass()))
                    .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
                                                                      context,
-                                                                     variables.get(key) ) ) );
+                                                                     variable ) ) );
 
             }
 
@@ -324,7 +330,8 @@ public class ProtobufProcessMarshaller
             return null;
         }
         ObjectMarshallingStrategy strategy = context.usedStrategies.get( _variable.getStrategyIndex() );
-        Object value = strategy.unmarshal( context.strategyContexts.get( strategy ),
+        Object value = strategy.unmarshal( _variable.getDataType(), 
+                                           context.strategyContexts.get( strategy ),
                                            context,
                                            _variable.getValue().toByteArray(),
                                            (context.kBase == null)?null:context.kBase.getRootClassLoader() );

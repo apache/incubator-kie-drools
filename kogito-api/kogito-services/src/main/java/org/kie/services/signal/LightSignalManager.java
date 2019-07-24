@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 
@@ -60,6 +61,17 @@ public class LightSignalManager implements SignalManager {
 	
 	public void signalEvent(String type, Object event) {
 	    if (!listeners.containsKey(type)) {
+	        
+	        if (event instanceof ProcessInstance) {
+	            
+	            if (listeners.containsKey(((ProcessInstance) event).getProcessId())) {
+	                listeners.getOrDefault(((ProcessInstance) event).getProcessId(), Collections.emptyList())
+	                .forEach(e -> e.signalEvent(type, event));
+	                
+	                return;
+	            }
+	        }
+	        
 	        signalManagerHub.publish(type, event);
 	    }
 	    
@@ -72,5 +84,22 @@ public class LightSignalManager implements SignalManager {
 	public void signalEvent(long processInstanceId, String type, Object event) {
 		instanceResolver.find(processInstanceId)
 				.ifPresent(signalable -> signalable.signalEvent(type, event));
-	}	
+	}
+
+    @Override
+    public boolean accept(String type, Object event) {
+        if (listeners.containsKey(type)) {
+            return true;
+        }
+        
+        // handle processInstance events that are registered as child processes
+        if (event instanceof ProcessInstance) {
+            
+            if (listeners.containsKey(((ProcessInstance) event).getProcessId())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }	
 }

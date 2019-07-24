@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
@@ -54,6 +55,21 @@ public class GeneratorInterfaceTest {
             @Override
             public void setDependencyInjection(DependencyInjectionAnnotator annotator) {
 
+            }
+
+            @Override
+            public void setProjectDirectory(Path projectDirectory) {
+                
+            }
+
+            @Override
+            public void setContext(GeneratorContext context) {
+                
+            }
+
+            @Override
+            public GeneratorContext context() {
+                return null;
             }
         };
     }

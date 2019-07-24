@@ -683,4 +683,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         
     }
 
+    @Override
+    public InternalKnowledgeRuntime getInternalKieRuntime() {
+        return this.kruntime;
+    }
 }

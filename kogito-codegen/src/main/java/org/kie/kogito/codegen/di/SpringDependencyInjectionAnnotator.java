@@ -19,6 +19,8 @@ package org.kie.kogito.codegen.di;
 import java.util.List;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -28,6 +30,7 @@ import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
@@ -97,6 +100,16 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     @Override
     public String emitterType(String dataType) {
         return "org.springframework.kafka.core.KafkaTemplate<String, "+ dataType + ">";
+    }
+
+    @Override
+    public MethodDeclaration withProcessInitMethod(MethodCallExpr produceMethod) {
+        return new MethodDeclaration()
+                .addModifier(Keyword.PUBLIC)
+                .setName("init")
+                .setType(void.class)
+                .addAnnotation("javax.annotation.PostConstruct")
+                .setBody(new BlockStmt().addStatement(produceMethod));
     }
 
 }

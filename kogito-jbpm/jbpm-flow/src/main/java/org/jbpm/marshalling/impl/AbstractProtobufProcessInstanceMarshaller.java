@@ -16,14 +16,22 @@
 
 package org.jbpm.marshalling.impl;
 
-import com.google.protobuf.ExtensionRegistry;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceContent.RuleSetNode.TextMapEntry;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceType;
@@ -44,6 +52,7 @@ import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.jbpm.workflow.instance.node.JoinInstance;
+import org.jbpm.workflow.instance.node.LambdaSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.MilestoneNodeInstance;
 import org.jbpm.workflow.instance.node.RuleSetNodeInstance;
 import org.jbpm.workflow.instance.node.StateNodeInstance;
@@ -54,18 +63,11 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.protobuf.ExtensionRegistry;
 
 /**
  * Default implementation of a process instance marshaller.
@@ -238,7 +240,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
            
         } else if ( nodeInstance instanceof HumanTaskNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.Builder _task = JBPMMessages.ProcessInstance.NodeInstanceContent.HumanTaskNode.newBuilder()
-                    .setWorkItemId( ((HumanTaskNodeInstance) nodeInstance).getWorkItemId() );
+                    .setWorkItemId( ((HumanTaskNodeInstance) nodeInstance).getWorkItemId() )
+                    .setWorkitem(writeWorkItem(context, ((HumanTaskNodeInstance) nodeInstance).getWorkItem()));
             List<Long> timerInstances =
                     ((HumanTaskNodeInstance) nodeInstance).getTimerInstances();
             if ( timerInstances != null ) {
@@ -252,7 +255,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     .setHumanTask( _task.build() );
         } else if ( nodeInstance instanceof WorkItemNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.Builder _wi = JBPMMessages.ProcessInstance.NodeInstanceContent.WorkItemNode.newBuilder()
-                    .setWorkItemId( ((WorkItemNodeInstance) nodeInstance).getWorkItemId() );
+                    .setWorkItemId( ((WorkItemNodeInstance) nodeInstance).getWorkItemId() )
+                    .setWorkitem(writeWorkItem(context, ((WorkItemNodeInstance) nodeInstance).getWorkItem()));
             
             List<Long> timerInstances =
                     ((WorkItemNodeInstance) nodeInstance).getTimerInstances();
@@ -265,6 +269,19 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.WORK_ITEM_NODE )
                     .setWorkItem( _wi.build() );
+        } else if ( nodeInstance instanceof LambdaSubProcessNodeInstance ) {
+            JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder _sp = JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.newBuilder()
+                    .setProcessInstanceId( ((LambdaSubProcessNodeInstance) nodeInstance).getProcessInstanceId() );
+            List<Long> timerInstances =
+                    ((LambdaSubProcessNodeInstance) nodeInstance).getTimerInstances();
+            if ( timerInstances != null ) {
+                for ( Long id : timerInstances ) {
+                    _sp.addTimerInstanceId( id );
+                }
+            }
+            _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
+                    .setType( NodeInstanceType.SUB_PROCESS_NODE )
+                    .setSubProcess( _sp.build() );
         } else if ( nodeInstance instanceof SubProcessNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.Builder _sp = JBPMMessages.ProcessInstance.NodeInstanceContent.SubProcessNode.newBuilder()
                     .setProcessInstanceId( ((SubProcessNodeInstance) nodeInstance).getProcessInstanceId() );
@@ -473,10 +490,75 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         return _content.build();
     }
 
+
+    public static JBPMMessages.WorkItem writeWorkItem(MarshallerWriteContext context,
+                                                      WorkItem workItem) throws IOException {
+        return writeWorkItem( context, workItem, true );
+    }
+    public static JBPMMessages.WorkItem writeWorkItem(MarshallerWriteContext context,
+                                                      WorkItem workItem,
+                                                      boolean includeVariables) throws IOException {
+        JBPMMessages.WorkItem.Builder _workItem = JBPMMessages.WorkItem.newBuilder()
+                .setId( workItem.getId() )
+                .setProcessInstancesId( workItem.getProcessInstanceId() )
+                .setName( workItem.getName() )
+                .setState( workItem.getState() );
+
+        if (workItem instanceof org.drools.core.process.instance.WorkItem) {
+            if (((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId() != null){
+            _workItem.setDeploymentId(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId());
+            }
+            _workItem.setNodeId(((org.drools.core.process.instance.WorkItem)workItem).getNodeId())
+            .setNodeInstanceId(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
+        }
+
+        if ( includeVariables ) {
+            Map<String, Object> parameters = workItem.getParameters();
+            for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
+                _workItem.addVariable( ProtobufProcessMarshaller.marshallVariable( context, entry.getKey(), entry.getValue() ) );
+            }
+        }
+        return _workItem.build();
+    }
+
+    public static WorkItem readWorkItem(MarshallerReaderContext context,
+                                        JBPMMessages.WorkItem _workItem ) throws IOException {
+        return readWorkItem( context,
+                             _workItem,
+                             true );
+    }
+
+    public static WorkItem readWorkItem(MarshallerReaderContext context,
+                                        JBPMMessages.WorkItem _workItem,
+                                        boolean includeVariables) throws IOException {
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setId( _workItem.getId() );
+        workItem.setProcessInstanceId( _workItem.getProcessInstancesId() );
+        workItem.setName( _workItem.getName() );
+        workItem.setState( _workItem.getState() );
+        workItem.setDeploymentId(_workItem.getDeploymentId());
+        workItem.setNodeId(_workItem.getNodeId());
+        workItem.setNodeInstanceId(_workItem.getNodeInstanceId());
+
+        if ( includeVariables ) {
+            for ( JBPMMessages.Variable _variable : _workItem.getVariableList() ) {
+                try {
+                    Object value = ProtobufProcessMarshaller.unmarshallVariableValue( context, _variable );
+                    workItem.setParameter( _variable.getName(),
+                                           value );
+                } catch ( ClassNotFoundException e ) {
+                    System.out.println("Error reading work item parameter " + _variable.getName() + " " + _variable.getDataType());
+                    throw new IllegalArgumentException(e);
+//                    throw new IllegalArgumentException( "Could not reload parameter " + _variable.getName() + " for work item " + _workItem );
+                }
+            }
+        }
+        
+
+        return workItem;
+    }
     // Input methods
     public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException {
-        InternalKnowledgeBase ruleBase = context.kBase;
-        InternalWorkingMemory wm = context.wm;
         
         JBPMMessages.ProcessInstance _instance = (org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance) context.parameterObject;
         if( _instance == null ) {
@@ -505,7 +587,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         	processInstance.setProcessXml( processXml );
         	process = processInstance.getProcess();
         } else {
-            process = ruleBase.getProcess( processId );
+            process = context.processes.get( processId );
             if (process == null) {
             	throw new RuntimeException("Could not find process " + processId + " when restoring process instance " + processInstance.getId());
             }
@@ -524,7 +606,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.internalSetSlaTimerId(_instance.getSlaTimerId());
         
         long nodeInstanceCounter = _instance.getNodeInstanceCounter();
-        processInstance.setKnowledgeRuntime( wm.getKnowledgeRuntime() );
+        processInstance.setKnowledgeRuntime( context.wm != null ? context.wm.getKnowledgeRuntime() : null);
+        
         processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
         for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 
             processInstance.addCompletedNodeId(completedNodeId);
@@ -578,8 +661,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             for ( JBPMMessages.IterationLevel _level : _instance.getIterationLevelsList()) {
                 processInstance.getIterationLevels().put(_level.getId(), _level.getLevel());
             }
-        }        
-    	processInstance.reconnect();
+        }            	
         return processInstance;
     }
 
@@ -724,6 +806,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case HUMAN_TASK_NODE :
                 nodeInstance = new HumanTaskNodeInstance();
                 ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId( _content.getHumanTask().getWorkItemId() );
+                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readWorkItem(context, _content.getHumanTask().getWorkitem()) );
                 if ( _content.getHumanTask().getTimerInstanceIdCount() > 0 ) {
                     List<Long> timerInstances = new ArrayList<Long>();
                     for ( Long _timerId : _content.getHumanTask().getTimerInstanceIdList() ) {
@@ -736,6 +819,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             case WORK_ITEM_NODE :
                 nodeInstance = new WorkItemNodeInstance();
                 ((WorkItemNodeInstance) nodeInstance).internalSetWorkItemId( _content.getWorkItem().getWorkItemId() );
+                ((WorkItemNodeInstance) nodeInstance).internalSetWorkItem( (org.drools.core.process.instance.WorkItem) readWorkItem(context, _content.getHumanTask().getWorkitem()) );
                 if ( _content.getWorkItem().getTimerInstanceIdCount() > 0 ) {
                     List<Long> timerInstances = new ArrayList<Long>();
                     for ( Long _timerId : _content.getWorkItem().getTimerInstanceIdList() ) {
@@ -756,6 +840,17 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     ((SubProcessNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
                 }
                 break;
+            case SUB_PROCESS_NODE :
+                nodeInstance = new LambdaSubProcessNodeInstance();
+                ((LambdaSubProcessNodeInstance) nodeInstance).internalSetProcessInstanceId( _content.getSubProcess().getProcessInstanceId() );
+                if ( _content.getSubProcess().getTimerInstanceIdCount() > 0 ) {
+                    List<Long> timerInstances = new ArrayList<Long>();
+                    for ( Long _timerId : _content.getSubProcess().getTimerInstanceIdList() ) {
+                        timerInstances.add( _timerId );
+                    }
+                    ((LambdaSubProcessNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
+                }
+                break;                
             case MILESTONE_NODE :
                 nodeInstance = new MilestoneNodeInstance();
                 if ( _content.getMilestone().getTimerInstanceIdCount() > 0 ) {

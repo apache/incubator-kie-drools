@@ -16,12 +16,15 @@
 
 package org.kie.kogito.codegen.di;
 
+import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 
 public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
@@ -79,6 +82,15 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
         produceMethod.addArgument(new NameExpr(event));
     }
     
+    @Override
+    public MethodDeclaration withProcessInitMethod(MethodCallExpr produceMethod) {
+        return new MethodDeclaration()
+                .addModifier(Keyword.PUBLIC)
+                .setName("init")
+                .setType(void.class)
+                .addAnnotation("javax.annotation.PostConstruct")
+                .setBody(new BlockStmt().addStatement(produceMethod));
+    }
 
     @Override
     public String multiInstanceInjectionType() {

@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.signal.SignalManagerHub;
 
 
 public class DefaultSignalManagerHub implements SignalManagerHub {
-    
     
     private ConcurrentHashMap<String, List<SignalManager>> signalManagers = new ConcurrentHashMap<>();
 
@@ -33,6 +33,11 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
     public void publish(String type, Object signalData) {
         signalManagers.getOrDefault(type, Collections.emptyList())
         .forEach(e -> e.signalEvent(type, signalData));
+        
+        if (signalData instanceof ProcessInstance) {
+            signalManagers.getOrDefault(((ProcessInstance) signalData).getProcessId(), Collections.emptyList())
+            .forEach(e -> e.signalEvent(type, signalData));
+        }
     }
 
     @Override
@@ -62,7 +67,5 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
             return v;
         });
     }
-
-
 
 }

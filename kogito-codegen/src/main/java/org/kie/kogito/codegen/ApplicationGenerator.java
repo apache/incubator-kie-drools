@@ -84,6 +84,9 @@ public class ApplicationGenerator {
     private final List<BodyDeclaration<?>> factoryMethods;
     private ConfigGenerator configGenerator = new ConfigGenerator();
     private List<Generator> generators = new ArrayList<>();
+    
+    private GeneratorContext context = new GeneratorContext();
+    private boolean persistence; 
 
     public ApplicationGenerator(String packageName, File targetDirectory) {
         if (packageName == null) {
@@ -173,10 +176,14 @@ public class ApplicationGenerator {
         this.hasRuleUnits = hasRuleUnits;
         return this;
     }
+   
+   public ApplicationGenerator withPersistence(boolean persistence) {
+       this.persistence = persistence;
+       return this;
+   }
 
     public Collection<GeneratedFile> generate() {
-        List<GeneratedFile> generatedFiles =
-                generateComponents();
+        List<GeneratedFile> generatedFiles = generateComponents();
         generators.forEach(gen -> gen.updateConfig(configGenerator));
         generators.forEach(gen -> writeLabelsImageMetadata(gen.getLabels()));
         generatedFiles.add(generateApplicationDescriptor());
@@ -199,6 +206,8 @@ public class ApplicationGenerator {
         this.generators.add(generator);
         generator.setPackageName(packageName);
         generator.setDependencyInjection(annotator);
+        generator.setProjectDirectory(targetDirectory.getParentFile().toPath());
+        generator.setContext(context);
         return generator;
     }
     
@@ -220,7 +229,7 @@ public class ApplicationGenerator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }    
 
     public static String log(String source) {
         if ( logger.isDebugEnabled() ) {

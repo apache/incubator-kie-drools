@@ -18,6 +18,10 @@ package org.kie.kogito.maven.plugin;
 import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.project.MavenProject;
+import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
 
 public abstract class AbstractKieMojo extends AbstractMojo {
 
@@ -32,4 +36,21 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         }
     }
 
+    protected DependencyInjectionAnnotator discoverDependencyInjectionAnnotator(boolean dependencyInjection, MavenProject project) {
+        if (!dependencyInjection) {
+            return null;
+        }
+
+        boolean hasSpring = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("spring"));
+        if (hasSpring) {
+            return new SpringDependencyInjectionAnnotator();
+        }
+
+        boolean hasQuarkus = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("quarkus"));
+        if (hasQuarkus) {
+            return new CDIDependencyInjectionAnnotator();
+        }
+
+        throw new IllegalStateException("Unable to find dependency injection annotator");
+    }
 }

@@ -152,7 +152,7 @@ public class ProcessToExecModelGenerator extends AbstractVisitor {
         String packageName = process.getPackageName();
         String name = extractModelClassName(process.getId());
 
-        return new ModelMetaData(packageName, name,
+        return new ModelMetaData(process.getId(), packageName, name,
                                  VariableDeclarations.of((VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE)));
     }
 

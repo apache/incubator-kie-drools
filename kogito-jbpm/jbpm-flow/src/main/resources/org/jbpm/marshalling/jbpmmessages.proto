@@ -106,11 +106,13 @@ message ProcessInstance {
             optional int64 work_item_id = 1;
             repeated int64 timer_instance_id = 2;
             optional int64 error_handling_process_instance_id = 3;
+            optional WorkItem workitem = 4;
         }
         message WorkItemNode {
             optional int64 work_item_id = 1;
             repeated int64 timer_instance_id = 2;
             optional int64 error_handling_process_instance_id = 3;
+            optional WorkItem workitem = 4;
         }
         message SubProcessNode {
             optional int64 process_instance_id = 1;
@@ -159,6 +161,7 @@ message ProcessInstance {
         DYNAMIC_NODE = 11;
         EVENT_SUBPROCESS_NODE = 12;
         ASYNC_EVENT_NODE = 13;
+        SUB_PROCESS_NODE = 14;
     }
 }
 
@@ -167,6 +170,7 @@ message Variable {
     // the actual object reference
     optional int32 strategy_index = 2;
     optional bytes value = 3;
+    optional string data_type = 4;
 }
 
 extend org.drools.core.marshalling.Timers.Timer {

@@ -15,6 +15,7 @@
 
 package org.kie.kogito.process.bpmn2;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.kogito.Model;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.AbstractProcess;
@@ -50,6 +52,11 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
         super(config);
         process = p;
     }
+    
+    @Override
+    public ProcessInstance<BpmnVariables> createInstance(Model m) {
+        return new BpmnProcessInstance(this, BpmnVariables.create(m.toMap()), this.createLegacyProcessRuntime());
+    }
 
     public ProcessInstance<BpmnVariables> createInstance() {
         return new BpmnProcessInstance(this, BpmnVariables.create(), this.createLegacyProcessRuntime());
@@ -71,9 +78,16 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
             throw new BpmnProcessReaderException(e);
         }
     }
+    
 
     @Override
     public Process legacyProcess() {
         return process;
+    }
+
+
+    @Override
+    public BpmnVariables createModel() {        
+        return BpmnVariables.create(new HashMap<String, Object>());
     }
 }

@@ -62,6 +62,7 @@ public class CollectingUnitOfWork implements UnitOfWork {
         if (work == null) {
             throw new NullPointerException("Work must be non null");
         }
+        collectedWork.remove(work);
         collectedWork.add(work);
     }
 

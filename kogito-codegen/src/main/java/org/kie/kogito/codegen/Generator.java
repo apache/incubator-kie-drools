@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -50,6 +51,12 @@ public interface Generator {
     void setPackageName(String packageName);
 
     void setDependencyInjection(DependencyInjectionAnnotator annotator);
+    
+    void setProjectDirectory(Path projectDirectory);
+    
+    void setContext(GeneratorContext context);
+    
+    GeneratorContext context();
     
     default Map<String, String> getLabels() {
         return Collections.emptyMap();

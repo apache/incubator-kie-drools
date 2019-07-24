@@ -27,5 +27,7 @@ public interface SignalManager {
 	void addEventListener(String type, EventListener eventListener);
 	
 	void removeEventListener(String type, EventListener eventListener);
+	
+	boolean accept(String type, Object event);
 
 }

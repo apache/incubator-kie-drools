@@ -3,6 +3,7 @@ package org.kie.kogito.codegen.process;
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.kie.kogito.codegen.process.CodegenUtils.interpolateArguments;
 import static org.kie.kogito.codegen.process.CodegenUtils.interpolateTypes;
+import static org.kie.kogito.codegen.process.CodegenUtils.isApplicationField;
 import static org.kie.kogito.codegen.process.CodegenUtils.isProcessField;
 
 import org.drools.core.util.StringUtils;
@@ -34,6 +35,7 @@ public class MessageConsumerGenerator {
     private String dataClazzName;
     private String modelfqcn;
     private final String processName;
+    private final String appCanonicalName;
     private DependencyInjectionAnnotator annotator;
     
     private TriggerMetaData trigger;
@@ -42,6 +44,7 @@ public class MessageConsumerGenerator {
             WorkflowProcess process,
             String modelfqcn,
             String processfqcn,
+            String appCanonicalName,
             TriggerMetaData trigger) {
         this.process = process;
         this.trigger = trigger;
@@ -54,6 +57,7 @@ public class MessageConsumerGenerator {
         this.modelfqcn = modelfqcn;
         this.dataClazzName = modelfqcn.substring(modelfqcn.lastIndexOf('.') + 1);
         this.processClazzName = processfqcn;
+        this.appCanonicalName = appCanonicalName;
     }
 
     public MessageConsumerGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
@@ -90,26 +94,28 @@ public class MessageConsumerGenerator {
             annotator.withApplicationComponent(template);
             
             template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(this::annotateFields);
+                             fd -> isProcessField(fd)).forEach(fd -> annotator.withNamedInjection(fd, processId));
+            template.findAll(FieldDeclaration.class,
+                             fd -> isApplicationField(fd)).forEach(fd -> annotator.withInjection(fd));
             
             template.findAll(MethodDeclaration.class).stream().filter(md -> md.getNameAsString().equals("consume")).forEach(md -> annotator.withIncomingMessage(md, trigger.getName()));
         } else {
             template.findAll(FieldDeclaration.class,
-                             fd -> isProcessField(fd)).forEach(fd -> initializeField(fd, template));
+                             fd -> isProcessField(fd)).forEach(fd -> initializeProcessField(fd, template));
+            
+            template.findAll(FieldDeclaration.class,
+                             fd -> isApplicationField(fd)).forEach(fd -> initializeApplicationField(fd, template));
         }
         
         return clazz.toString();
     }
     
-    private void initializeField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
-        BlockStmt body = new BlockStmt();
-        AssignExpr assignExpr = new AssignExpr(
-                                               new FieldAccessExpr(new ThisExpr(), "process"),
-                                               new ObjectCreationExpr().setType(processClazzName),
-                                               AssignExpr.Operator.ASSIGN);
-        
-        body.addStatement(assignExpr);
-        template.addConstructor(Keyword.PUBLIC).setBody(body);
+    private void initializeProcessField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {
+        fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(processClazzName));
+    }
+    
+    private void initializeApplicationField(FieldDeclaration fd, ClassOrInterfaceDeclaration template) {        
+        fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(appCanonicalName));
     }
     
     private void interpolateStrings(MethodCallExpr vv) {

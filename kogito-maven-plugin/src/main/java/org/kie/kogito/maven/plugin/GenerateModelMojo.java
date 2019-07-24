@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,10 +13,13 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -27,9 +32,6 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.di.CDIDependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.di.SpringDependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
 import org.kie.kogito.codegen.rules.RuleCodegen;
@@ -94,6 +96,9 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     @Parameter(property = "kogito.di.enabled", defaultValue = "true")
     private boolean dependencyInjection;
+    
+    @Parameter(property = "kogito.persistence.enabled", defaultValue = "false")
+    private boolean persistence;
 
     @Parameter(required = true, defaultValue = "${project.basedir}/src/main/resources")
     private File kieSourcesDirectory;
@@ -156,15 +161,17 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     private ApplicationGenerator createApplicationGenerator(boolean generateRuleUnits, boolean generateProcesses) throws IOException, MojoExecutionException {
         String appPackageName = project.getGroupId();
-        Path projectPath = projectDir.toPath();
+        
         // safe guard to not generate application classes that would clash with interfaces
         if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
             appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
         }
-
+        boolean usePersistence = persistence ? true : hasClassOnClasspath("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
+        
         ApplicationGenerator appGen =
                 new ApplicationGenerator(appPackageName, targetDirectory)
-                        .withDependencyInjection(discoverDependencyInjectionAnnotator());
+                        .withDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project))
+                        .withPersistence(usePersistence);
 
         if (generateRuleUnits) {
             appGen.withGenerator(IncrementalRuleCodegen.ofPath(kieSourcesDirectory.toPath()))
@@ -177,11 +184,13 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
 
         if (generateProcesses) {
+            
             appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))
                     .withWorkItemHandlerConfig(
                             customWorkItemConfigExists(appPackageName))
                     .withProcessEventListenerConfig(
-                            customProcessListenerConfigExists(appPackageName));
+                            customProcessListenerConfigExists(appPackageName))
+                    .withPersistence(usePersistence);            
         }
 
         return appGen;
@@ -251,21 +260,35 @@ public class GenerateModelMojo extends AbstractKieMojo {
         }
     }
 
-    protected DependencyInjectionAnnotator discoverDependencyInjectionAnnotator() {
-        if (!dependencyInjection) {
-            return null;
+    
+    protected boolean hasClassOnClasspath(String className) {
+        URLClassLoader cl = null;
+        try {
+            Set<Artifact> elements = project.getDependencyArtifacts();
+            URL[] urls = new URL[elements.size()];
+            
+            int i = 0;
+            Iterator<Artifact> it = elements.iterator();
+            while (it.hasNext()) {
+                Artifact artifact = (Artifact) it.next();
+                
+                urls[i] = artifact.getFile().toURI().toURL();
+                i++;
+            }
+            
+            cl = new URLClassLoader(urls);
+            cl.loadClass(className);
+            
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (cl != null) {
+                try {
+                    cl.close();
+                } catch (IOException e) {
+                }
+            }
         }
-
-        boolean hasSpring = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("spring"));
-        if (hasSpring) {
-            return new SpringDependencyInjectionAnnotator();
-        }
-
-        boolean hasQuarkus = project.getDependencies().stream().anyMatch(d -> d.getArtifactId().contains("quarkus"));
-        if (hasQuarkus) {
-            return new CDIDependencyInjectionAnnotator();
-        }
-
-        throw new IllegalStateException("Unable to find dependency injection annotator");
     }
 }

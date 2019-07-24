@@ -13,6 +13,7 @@
   <description>Various Add-Ons to the runtimes modules (administration, monitoring, etc)</description>
   <modules>
     <module>monitoring-prometheus-addon</module>
+    <module>persistence</module>
   </modules>
 
   <dependencyManagement>

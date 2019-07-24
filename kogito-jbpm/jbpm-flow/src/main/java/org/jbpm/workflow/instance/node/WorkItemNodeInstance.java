@@ -116,6 +116,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         // TODO WorkItemNodeInstance.isInversionOfControl
         return false;
     }
+    
+    public void internalRegisterWorkItem() {
+        ((WorkItemManager) ((ProcessInstance) getProcessInstance())
+                .getKnowledgeRuntime().getWorkItemManager()).internalAddWorkItem(workItem);
+    }
 
     public void internalTrigger(final NodeInstance from, String type) {
         super.internalTrigger(from, type);

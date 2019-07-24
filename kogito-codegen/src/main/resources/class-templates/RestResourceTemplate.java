@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 
 
 import org.kie.api.runtime.process.WorkItemNotFoundException;
+import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
@@ -23,6 +24,8 @@ import org.kie.kogito.process.WorkItem;
 public class $Type$Resource {
 
     Process<$Type$> process;
+    
+    Application application;
 
     @POST()
     @Produces(MediaType.APPLICATION_JSON)
@@ -31,10 +34,13 @@ public class $Type$Resource {
         if (resource == null) {
             resource = new $Type$();
         }
+        final $Type$ value = resource;
 
-        ProcessInstance<$Type$> pi = process.createInstance(resource);
-        pi.start();
-        return pi.variables();
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            ProcessInstance<$Type$> pi = process.createInstance(value);
+            pi.start();
+            return pi.variables();
+        });
     }
 
     @GET()
@@ -58,16 +64,18 @@ public class $Type$Resource {
     @DELETE()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ deleteResource_$name$(@PathParam("id") Long id) {
-        ProcessInstance<$Type$> pi = process.instances()
-                .findById(id)
-                .orElse(null);
-        if (pi == null) {
-            return null;
-        } else {
-            pi.abort();
-            return pi.variables();
-        }
+    public $Type$ deleteResource_$name$(@PathParam("id") final Long id) {
+        return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            ProcessInstance<$Type$> pi = process.instances()
+                    .findById(id)
+                    .orElse(null);
+            if (pi == null) {
+                return null;
+            } else {
+                pi.abort();
+                return pi.variables();
+            }
+        });
     }
     
     @GET()

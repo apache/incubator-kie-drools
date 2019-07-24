@@ -37,8 +37,12 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractCodegenTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AbstractCodegenTest.class);
     
     private TestClassLoader classloader;
 
@@ -87,8 +91,8 @@ public class AbstractCodegenTest {
         for (GeneratedFile entry : generatedFiles) {
             String fileName = entry.relativePath();
             sources[index++] = fileName;
-            srcMfs.write(fileName, entry.contents());   
-            
+            srcMfs.write(fileName, entry.contents());
+            log(new String(entry.contents()));
         }
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());
@@ -105,6 +109,10 @@ public class AbstractCodegenTest {
     
     protected ClassLoader testClassLoader() {
         return classloader;
+    }
+    
+    protected void log(String content) {
+        logger.debug(content);
     }
 
     private static class TestClassLoader extends URLClassLoader {

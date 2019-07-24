@@ -21,22 +21,46 @@ import org.jbpm.process.instance.LightProcessRuntime;
 import org.jbpm.process.instance.LightProcessRuntimeContext;
 import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.process.instance.ProcessRuntimeServiceProvider;
+import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.kogito.Model;
+import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstances;
+import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.Signal;
 
 public abstract class AbstractProcess<T extends Model> implements Process<T> {
 
-    protected final MapProcessInstances<T> instances;
+    protected ProcessInstancesFactory processInstancesFactory;
+
+    protected MutableProcessInstances<T> instances;
 
     protected final ProcessRuntimeServiceProvider services;
 
+    protected CompletionEventListener completionEventListener = new CompletionEventListener();
+
+    protected AbstractProcess() {
+        this(new LightProcessRuntimeServiceProvider());
+    }
+
+    protected AbstractProcess(ProcessConfig config) {
+        this(new ConfiguredProcessServices(config));
+    }
+    
     protected AbstractProcess(ProcessRuntimeServiceProvider services) {
         this.services = services;
-        this.instances = new MapProcessInstances<>();        
+        this.instances = new MapProcessInstances<>();   
+        
+        registerListeners();
+    }
+
+    
+    @Override
+    public String id() {
+        return legacyProcess().getId();
     }
 
     @Override
@@ -49,16 +73,9 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         return createInstance((T) m);
     }
 
-    protected AbstractProcess() {
-        this(new LightProcessRuntimeServiceProvider());
-    }
-
-    protected AbstractProcess(ProcessConfig config) {
-        this(new ConfiguredProcessServices(config));
-    }
 
     @Override
-    public MapProcessInstances<T> instances() {
+    public ProcessInstances<T> instances() {
         return instances;
     }
 
@@ -67,18 +84,53 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         instances().values().forEach(pi -> pi.send(signal));
     }
     
+    @SuppressWarnings("unchecked")
     public Process<T> configure() {
+        if (isProcessFactorySet()) {
+            this.instances = (MutableProcessInstances<T>) processInstancesFactory.createProcessInstances(this);
+        }
         //services.getWorkItemManager().registerWorkItemHandler(name, handlerConfig.forName(name)
         //services.getEventSupport().addEventListener(listener)
         
+
         return this;
     }
 
-    protected abstract org.kie.api.definition.process.Process legacyProcess();
+    protected void registerListeners() {
+        
+    }
+
+    public abstract org.kie.api.definition.process.Process legacyProcess();
 
     protected ProcessRuntime createLegacyProcessRuntime() {        
         return new LightProcessRuntime(
                 new LightProcessRuntimeContext(Collections.singletonList(legacyProcess())),
                 services);
+    }
+
+    protected boolean isProcessFactorySet() {
+        return processInstancesFactory != null;
+    }    
+    
+    public void setProcessInstancesFactory(ProcessInstancesFactory processInstancesFactory) {
+        this.processInstancesFactory = processInstancesFactory;
+    }
+    
+    private class CompletionEventListener implements EventListener {
+        
+        @Override
+        public void signalEvent(String type, Object event) {
+            if (type.startsWith("processInstanceCompleted:")) {
+                org.kie.api.runtime.process.ProcessInstance pi = (org.kie.api.runtime.process.ProcessInstance) event;
+                if (!id().equals(pi.getProcessId())) {
+                    instances().findById(pi.getParentProcessInstanceId()).ifPresent(p -> p.send(Sig.of(type, event)));
+                }
+            }
+        }
+        
+        @Override
+        public String[] getEventTypes() {
+            return new String[0];
+        }
     }
 }

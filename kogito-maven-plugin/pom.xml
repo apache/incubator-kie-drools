@@ -214,6 +214,13 @@
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
     </dependency>
+    
+    <!-- classpath scanning -->
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>${version.org.reflections}</version>
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>

@@ -15,6 +15,7 @@
 
 package org.kie.kogito.codegen.di;
 
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
@@ -95,6 +96,8 @@ public interface DependencyInjectionAnnotator {
     void withOutgoingMessage(NodeWithAnnotations<?> node, String channel);
     
     void withMessageProducer(MethodCallExpr produceMethod, String channel, String event);
+    
+    MethodDeclaration withProcessInitMethod(MethodCallExpr produceMethod);
     
     /**
      * Returns type that allows to inject multiple instances of the same type

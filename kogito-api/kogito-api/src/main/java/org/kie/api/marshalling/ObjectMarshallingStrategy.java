@@ -60,7 +60,8 @@ public interface ObjectMarshallingStrategy {
      *
      * @return the unmarshalled Object
      */
-    public Object unmarshal( Context context,
+    public Object unmarshal( String dataType, 
+                             Context context,
                              ObjectInputStream is,
                              byte[] object,
                              ClassLoader classloader ) throws IOException, ClassNotFoundException;
@@ -69,6 +70,10 @@ public interface ObjectMarshallingStrategy {
      * Creates a new marshalling context
      */
     public Context createContext();
+    
+    default String getType(Class<?> clazz) {
+        return clazz.getCanonicalName();
+    }
 
     public static interface Context {
         /**

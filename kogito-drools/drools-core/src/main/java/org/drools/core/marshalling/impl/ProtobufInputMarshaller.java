@@ -489,7 +489,8 @@ public class ProtobufInputMarshaller {
         ObjectMarshallingStrategy strategy = null;
         if ( _handle.hasStrategyIndex() ) {
             strategy = context.usedStrategies.get( _handle.getStrategyIndex() );
-            object = strategy.unmarshal( context.strategyContexts.get( strategy ),
+            object = strategy.unmarshal( null, 
+                                         context.strategyContexts.get( strategy ),
                                          context,
                                          _handle.getObject().toByteArray(),
                                          (context.kBase == null) ? null : context.kBase.getRootClassLoader() );
@@ -618,7 +619,8 @@ public class ProtobufInputMarshaller {
                     ObjectMarshallingStrategy strategy = null;
                     if ( _logicalDependency.hasObjectStrategyIndex() ) {
                         strategy = context.usedStrategies.get( _logicalDependency.getObjectStrategyIndex() );
-                        object = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                        object = strategy.unmarshal( null, 
+                                                     context.strategyContexts.get( strategy ),
                                                      context,
                                                      _logicalDependency.getObject().toByteArray(),
                                                      (context.kBase == null) ? null : context.kBase.getRootClassLoader() );
@@ -627,7 +629,8 @@ public class ProtobufInputMarshaller {
                     Object value = null;
                     if ( _logicalDependency.hasValueStrategyIndex() ) {
                         strategy = context.usedStrategies.get( _logicalDependency.getValueStrategyIndex() );
-                        value = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                        value = strategy.unmarshal( null, 
+                                                    context.strategyContexts.get( strategy ),
                                                     context,
                                                     _logicalDependency.getValue().toByteArray(),
                                                     (context.kBase == null) ? null : context.kBase.getRootClassLoader() );
@@ -664,7 +667,8 @@ public class ProtobufInputMarshaller {
                     ObjectMarshallingStrategy strategy = context.usedStrategies.get( _object.getStrategyIndex() );
 
                     try {
-                        objects[i++] = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                        objects[i++] = strategy.unmarshal( null, 
+                                                           context.strategyContexts.get( strategy ),
                                                            context,
                                                            _object.getObject().toByteArray(),
                                                            (context.kBase == null) ? null : context.kBase.getRootClassLoader() );

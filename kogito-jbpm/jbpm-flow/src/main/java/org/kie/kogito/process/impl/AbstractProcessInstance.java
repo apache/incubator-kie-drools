@@ -20,20 +20,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.kogito.Model;
+import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceNotFoundExteption;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.uow.WorkUnit;
+import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
 
@@ -42,47 +46,90 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     private final ProcessRuntime rt;
     private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance;
     
+    private Integer status;
+    private Long id;
+    
+    private Supplier<org.kie.api.runtime.process.ProcessInstance> reloadSupplier;
+    
     private CompletionEventListener completionEventListener = new CompletionEventListener();
 
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this.process = process;
         this.rt = rt;
         this.variables = variables;
+        
+        Map<String, Object> map = bind(variables);
+        String processId = process.legacyProcess().getId();
+        this.legacyProcessInstance = rt.createProcessInstance(processId, map);
+        this.id = legacyProcessInstance.getId();
+        this.status = org.kie.api.runtime.process.ProcessInstance.STATE_PENDING;
+    }
+    
+    // for marshaller/persistence only
+    public void internalSetProcessInstance(org.kie.api.runtime.process.ProcessInstance legacyProcessInstance) {
+        if (this.legacyProcessInstance != null && this.status != org.kie.api.runtime.process.ProcessInstance.STATE_PENDING) {
+            throw new IllegalStateException("Impossible to override process instance that already exists");
+        }
+        this.legacyProcessInstance = legacyProcessInstance;
+        this.status = legacyProcessInstance.getState();
+        this.id = legacyProcessInstance.getId();
+        ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).setKnowledgeRuntime( ((InternalProcessRuntime)rt).getInternalKieRuntime() );
+        ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).reconnect();
+        
+        ((WorkflowProcessInstanceImpl) this.legacyProcessInstance).setMetaData("KogitoProcessInstance", this);
+        ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+this.id, completionEventListener, false);
+        
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : ((WorkflowProcessInstance)legacyProcessInstance).getNodeInstances()) {
+            if (nodeInstance instanceof WorkItemNodeInstance) {
+                ((WorkItemNodeInstance) nodeInstance).internalRegisterWorkItem();
+            }
+        }
+        
+        
+        unbind(variables, legacyProcessInstance.getVariables());
+    }
+    
+    public org.kie.api.runtime.process.ProcessInstance internalGetProcessInstance() {
+        return legacyProcessInstance;
+    }
+    
+    public void internalRemoveProcessInstance(Supplier<org.kie.api.runtime.process.ProcessInstance> reloadSupplier) {
+        this.reloadSupplier = reloadSupplier;
+        this.legacyProcessInstance = null;
     }
 
     public void start() {
-        Map<String, Object> map = bind(variables);
-        String id = process.legacyProcess().getId();
-        this.legacyProcessInstance = rt.createProcessInstance(id, map);
-        long pid = legacyProcessInstance.getId();
+        if (this.status != org.kie.api.runtime.process.ProcessInstance.STATE_PENDING) {
+            throw new IllegalStateException("Impossible to start process instance that already was started");
+        }
+        this.status = org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+        ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+this.id, completionEventListener, false);
         
-        ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+pid, completionEventListener, false);
         
-        
-        org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(pid);
-        addToUnitOfWork((pi) -> process.instances().update(pi.id(), pi));
+        org.kie.api.runtime.process.ProcessInstance processInstance = this.rt.startProcessInstance(this.id);
+        addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
         unbind(variables, processInstance.getVariables());
         
     }
     
     protected void addToUnitOfWork(Consumer<ProcessInstance<T>> action) {
-        ((InternalProcessRuntime) rt).getUnitOfWorkManager().currentUnitOfWork().intercept(WorkUnit.create(this, action));
+        ((InternalProcessRuntime) rt).getUnitOfWorkManager().currentUnitOfWork().intercept(new ProcessInstanceWorkUnit(this, action));
     }
 
     public void abort() {
-        if (legacyProcessInstance == null) {
+        if (legacyProcessInstance() == null) {
             return;
         }
-        long pid = legacyProcessInstance.getId();
-        unbind(variables, legacyProcessInstance.getVariables());        
+        long pid = legacyProcessInstance().getId();
+        unbind(variables, legacyProcessInstance().getVariables());        
         this.rt.abortProcessInstance(pid);
-        addToUnitOfWork((pi) -> process.instances().remove(pi.id()));
+        addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
     }
 
     @Override
     public <S> void send(Signal<S> signal) {
-        legacyProcessInstance.signalEvent(signal.channel(), signal.payload());
-        unbind(variables, legacyProcessInstance.getVariables());
+        legacyProcessInstance().signalEvent(signal.channel(), signal.payload());
+        removeOnFinish();
     }
 
     @Override
@@ -97,17 +144,28 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public int status() {
-        return legacyProcessInstance.getState();
+        return this.status;
     }
 
     @Override
     public long id() {
-        return legacyProcessInstance.getId();
+        return this.id;
+    }
+    
+    private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance() {
+        if (this.legacyProcessInstance == null) {
+            this.legacyProcessInstance = reloadSupplier.get();
+            if (this.legacyProcessInstance == null) {
+                throw new ProcessInstanceNotFoundExteption(id);
+            }
+        }
+        
+        return this.legacyProcessInstance;
     }
 
     @Override
     public WorkItem workItem(Long workItemId) {
-        WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) ((WorkflowProcessInstance)legacyProcessInstance).getNodeInstances()
+        WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
                 .stream()
                 .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId() == workItemId)
                 .findFirst()
@@ -117,10 +175,10 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public List<WorkItem> workItems() {
-        return ((WorkflowProcessInstance)legacyProcessInstance).getNodeInstances()
+        return ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
                 .stream()
                 .filter(ni -> ni instanceof WorkItemNodeInstance)
-                .map(ni -> new BaseWorkItem(((WorkItemNodeInstance)ni).getWorkItemId(), (String)((WorkItemNodeInstance)ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName())))
+                .map(ni -> new BaseWorkItem(((WorkItemNodeInstance)ni).getWorkItemId(), (String)((WorkItemNodeInstance)ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()), ((WorkItemNodeInstance)ni).getWorkItem().getParameters()))
                 .collect(Collectors.toList());
         
     }
@@ -128,23 +186,29 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     @Override
     public void completeWorkItem(long id, Map<String, Object> variables) {
         this.rt.getWorkItemManager().completeWorkItem(id, variables);
-        unbind(this.variables, legacyProcessInstance.getVariables());
         removeOnFinish();
     }
     
     @Override
     public void abortWorkItem(long id) {
         this.rt.getWorkItemManager().abortWorkItem(id);
-        unbind(this.variables, legacyProcessInstance.getVariables());
         removeOnFinish();
     }
     
     protected void removeOnFinish() {
 
-        if (status() != org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {            
+        if (legacyProcessInstance.getState() != org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {            
             ((WorkflowProcessInstance)legacyProcessInstance).removeEventListener("processInstanceCompleted:"+legacyProcessInstance.getId(), completionEventListener, false);
-            addToUnitOfWork((pi) -> process.instances().remove(pi.id()));
+
+            this.status = legacyProcessInstance.getState();
+            this.id = legacyProcessInstance.getId();
+            
+            addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
+            
+        } else {
+            addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).update(pi.id(), pi));
         }
+        unbind(this.variables, legacyProcessInstance().getVariables());
     }
 
     // this must be overridden at compile time
@@ -177,8 +241,39 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             throw new Error(e);
         }
         vmap.put("$v", variables);
-    }
+    }    
     
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AbstractProcessInstance other = (AbstractProcessInstance) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (status == null) {
+            if (other.status != null)
+                return false;
+        } else if (!status.equals(other.status))
+            return false;
+        return true;
+    }
+
     private class CompletionEventListener implements EventListener {
         
         @Override

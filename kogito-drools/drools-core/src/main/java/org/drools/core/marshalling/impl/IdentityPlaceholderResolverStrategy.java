@@ -95,7 +95,8 @@ public class IdentityPlaceholderResolverStrategy
         return intToByteArray( id.intValue() );
     }
 
-    public Object unmarshal(Context context,
+    public Object unmarshal(String dataType, 
+                            Context context,
                             ObjectInputStream is,
                             byte[] object, 
                             ClassLoader classloader ) {

@@ -69,7 +69,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractVisitor {
         Map<String, String> outputTypes = (Map<String, String>) subProcessNode.getMetaData("BPMN.OutputTypes");
 
         String subProcessModelClassName = ProcessToExecModelGenerator.extractModelClassName(subProcessId);
-        ModelMetaData subProcessModel = new ModelMetaData(metadata.getPackageName(), subProcessModelClassName, VariableDeclarations.of(inputTypes));
+        ModelMetaData subProcessModel = new ModelMetaData(subProcessId, metadata.getPackageName(), subProcessModelClassName, VariableDeclarations.of(inputTypes));
 
         retValue.findAll(ClassOrInterfaceType.class)
                 .stream()

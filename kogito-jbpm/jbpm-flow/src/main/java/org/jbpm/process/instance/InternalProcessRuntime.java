@@ -16,6 +16,7 @@
 
 package org.jbpm.process.instance;
 
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.event.ProcessEventSupport;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -32,5 +33,7 @@ public interface InternalProcessRuntime extends org.drools.core.runtime.process.
 	ProcessEventSupport getProcessEventSupport();
 	
 	UnitOfWorkManager getUnitOfWorkManager();
+	
+	InternalKnowledgeRuntime getInternalKieRuntime();
 
 }

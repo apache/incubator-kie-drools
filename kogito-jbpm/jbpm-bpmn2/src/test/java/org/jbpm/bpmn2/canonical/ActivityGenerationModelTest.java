@@ -50,6 +50,7 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
@@ -362,13 +363,48 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         .hasSize(1)
         .contains("org.jbpm.bpmn2.objects.HelloService.hello");
     }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testUserTaskProcessWithMarshalling() throws Exception {
+        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+
+        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.legacyProcess());
+        String content = metaData.getGeneratedClassModel().toString();
+        assertThat(content).isNotNull();
+        log(content);
+
+        Map<String, String> classData = new HashMap<>();
+        classData.put("org.drools.bpmn2.UserTaskProcess", content);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+
+        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Human Task", workItemHandler));
+        ProcessInstance<BpmnVariables> processInstance = processes.get("UserTask").createInstance(BpmnVariables.create(Collections.singletonMap("s", "test")));
+
+        processInstance.start();
+        assertEquals(STATE_ACTIVE, processInstance.status());
+        
+        ProcessInstanceMarshaller marshaller = new ProcessInstanceMarshaller();
+        
+        byte[] data = marshaller.marhsallProcessInstance(processInstance);
+        assertNotNull(data);
+        
+        processInstance = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(data, process);
+
+
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        processInstance.completeWorkItem(workItem.getId(), null);
+        assertEquals(STATE_COMPLETED, processInstance.status());
+    }
 
     /*
      * Helper methods
      */
 
     protected void log(String content) {
-        logger.info(content);
+        logger.debug(content);
     }
 
     protected Map<String, BpmnProcess> createProcesses(Map<String, String> classData, Map<String, WorkItemHandler> handlers) throws Exception {

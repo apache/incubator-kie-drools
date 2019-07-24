@@ -46,13 +46,13 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
+import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.GeneratedFile.Type;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.xml.sax.SAXException;
 
@@ -61,7 +61,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 /**
  * Entry point to process code generation
  */
-public class ProcessCodegen implements Generator {
+public class ProcessCodegen extends AbstractGenerator {
 
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
 
@@ -122,6 +122,8 @@ public class ProcessCodegen implements Generator {
     private final Map<String, WorkflowProcess> processes;
     private final Map<String, String> labels = new HashMap<>();
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
+    
+    private boolean persistence;
 
     public ProcessCodegen(
             Collection<? extends Process> processes) {
@@ -165,6 +167,11 @@ public class ProcessCodegen implements Generator {
 
     public ProcessCodegen withProcessEventListenerConfig(String customProcessListenerConfigExists) {
         this.processEventListenerConfigClass = customProcessListenerConfigExists;
+        return this;
+    }
+
+    public ProcessCodegen withPersistence(boolean persistence) {
+        this.persistence = persistence;
         return this;
     }
 
@@ -230,8 +237,10 @@ public class ProcessCodegen implements Generator {
                     processes,
                     classPrefix,
                     modelClassGenerator.className(),
-                    applicationCanonicalName)
-                    .withDependencyInjection(annotator);
+                    applicationCanonicalName, 
+                    context)
+                    .withDependencyInjection(annotator)
+                    .withPersistence(persistence);
 
             ProcessInstanceGenerator pi = new ProcessInstanceGenerator(
                     workFlowProcess.getPackageName(),
@@ -246,7 +255,8 @@ public class ProcessCodegen implements Generator {
                 ResourceGenerator resourceGenerator = new ResourceGenerator(
                         workFlowProcess,
                         modelClassGenerator.className(),
-                        execModelGen.className())
+                        execModelGen.className(),
+                        applicationCanonicalName)
                         .withDependencyInjection(annotator)
                         .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                         .withSignals(metaData.getSignals())
@@ -265,6 +275,7 @@ public class ProcessCodegen implements Generator {
                                     workFlowProcess,
                                     modelClassGenerator.className(),
                                     execModelGen.className(),
+                                    applicationCanonicalName,
                                     trigger)
                                         .withDependencyInjection(annotator));
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {

@@ -9,16 +9,18 @@ public class $Type$Resource {
     @POST()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ completeTask(@PathParam("id") Long id, @PathParam("workItemId") Long workItemId, $TaskOutput$ model) {
+    public $Type$ completeTask(@PathParam("id") final Long id, @PathParam("workItemId") final Long workItemId, final $TaskOutput$ model) {
         try {
-            ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-            if (pi == null) {
-                return null;
-            } else {
-                pi.completeWorkItem(workItemId, model.toMap());
-                
-                return pi.variables();
-            }
+            return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+                ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
+                if (pi == null) {
+                    return null;
+                } else {
+                    pi.completeWorkItem(workItemId, model.toMap());
+                    
+                    return pi.variables();
+                }
+            });
         } catch (WorkItemNotFoundException e) {
             return null;
         }
@@ -48,17 +50,20 @@ public class $Type$Resource {
     @DELETE()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ abortTask(@PathParam("id") Long id, @PathParam("workItemId") Long workItemId) {
+    public $Type$ abortTask(@PathParam("id") final Long id, @PathParam("workItemId") final Long workItemId) {
         
         try {
-            ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
-            if (pi == null) {
-                return null;
-            } else {
-                pi.abortWorkItem(workItemId);
-                
-                return pi.variables();
-            }
+            
+            return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+                ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
+                if (pi == null) {
+                    return null;
+                } else {
+                    pi.abortWorkItem(workItemId);
+                    
+                    return pi.variables();
+                }
+            });
         } catch (WorkItemNotFoundException e) {
             return null;
         }

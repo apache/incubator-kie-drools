@@ -215,5 +215,10 @@ public class DefaultSignalManager implements SignalManager {
             return null;
         }
 		
-	}	
+	}
+
+    @Override
+    public boolean accept(String type, Object event) {
+        return processEventListeners.containsKey(type);
+    }	
 }

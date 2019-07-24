@@ -24,5 +24,5 @@ public interface SignalManagerHub {
     
     void subscribe(String type, SignalManager signalManager);
     
-    void unsubscribe(String type, SignalManager signalManager);
+    void unsubscribe(String type, SignalManager signalManager);    
 }

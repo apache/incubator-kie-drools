@@ -33,4 +33,8 @@ public class CodegenUtils {
     public static boolean isProcessField(FieldDeclaration fd) {
         return fd.getElementType().asClassOrInterfaceType().getNameAsString().equals("Process");
     }
+    
+    public static boolean isApplicationField(FieldDeclaration fd) {
+        return fd.getElementType().asClassOrInterfaceType().getNameAsString().equals("Application");
+    }
 }

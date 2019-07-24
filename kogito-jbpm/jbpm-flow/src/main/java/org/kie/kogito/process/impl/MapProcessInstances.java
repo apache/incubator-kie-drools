@@ -19,10 +19,10 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstances;
 
-class MapProcessInstances<T> implements ProcessInstances<T> {
+class MapProcessInstances<T> implements MutableProcessInstances<T> {
 
     private final ConcurrentHashMap<Long, ProcessInstance<T>> instances = new ConcurrentHashMap<>();
 
@@ -36,13 +36,15 @@ class MapProcessInstances<T> implements ProcessInstances<T> {
         return instances.values();
     }
 
-    void update(long id, ProcessInstance<T> instance) {
-        if (instance.status() == org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {
+    @Override
+    public void update(long id, ProcessInstance<T> instance) {
+        if (isActive(instance)) {
             instances.put(id, instance);
         }
     }
 
-    void remove(long id) {
+    @Override
+    public void remove(long id) {
         instances.remove(id);
     }
 }

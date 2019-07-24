@@ -56,7 +56,7 @@ public class LightWorkItemManager implements WorkItemManager{
             handler.executeWorkItem(workItem, this);
         } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
                                                     workItem.getName() );
-    }
+    }    
 
     public void internalAddWorkItem(WorkItem workItem) {
         workItems.put(workItem.getId(), workItem);

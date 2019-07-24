@@ -31,14 +31,14 @@ import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.kie.api.KieServices;
+import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
-import org.kie.kogito.codegen.Generator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
-public class RuleCodegen implements Generator {
+public class RuleCodegen extends AbstractGenerator {
 
     private String packageName;
     private RuleUnitContainerGenerator moduleGenerator;

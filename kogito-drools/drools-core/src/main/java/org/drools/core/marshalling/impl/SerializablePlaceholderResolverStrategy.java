@@ -69,7 +69,8 @@ public class SerializablePlaceholderResolverStrategy
         return PersisterHelper.intToByteArray( index );
     }
 
-    public Object unmarshal(Context context,
+    public Object unmarshal(String dataType,
+                            Context context,
                             ObjectInputStream is,
                             byte[] object, 
                             ClassLoader classloader) throws IOException, ClassNotFoundException {

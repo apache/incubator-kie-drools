@@ -16,9 +16,15 @@
 
 package org.jbpm.compiler.canonical;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.drools.core.util.StringUtils;
+import org.kie.internal.kogito.codegen.Generated;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -32,8 +38,11 @@ import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -42,20 +51,17 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.StringUtils;
-import org.jbpm.process.core.context.variable.Variable;
-
-import static com.github.javaparser.StaticJavaParser.parse;
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class ModelMetaData {
 
+    private final String processId;
     private final String packageName;
-    private String modelClassSimpleName;
+    private final String modelClassSimpleName;
     private final VariableDeclarations variableScope;
     private String modelClassName;
 
-    public ModelMetaData(String packageName, String modelClassSimpleName, VariableDeclarations variableScope) {
+    public ModelMetaData(String processId, String packageName, String modelClassSimpleName, VariableDeclarations variableScope) {
+        this.processId = processId;
         this.packageName = packageName;
         this.modelClassSimpleName = modelClassSimpleName;
         this.variableScope = variableScope;
@@ -118,10 +124,6 @@ public class ModelMetaData {
         return new MethodCallExpr(new NameExpr(targetVar), getter);
     }
 
-    private FieldDeclaration declareField(Variable variable) {
-        return declareField(variable.getName(), variable.getType().getStringType());
-    }
-
     private CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/ModelTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
@@ -131,7 +133,9 @@ public class ModelMetaData {
             throw new RuntimeException("Cannot find class declaration in the template");
         }
         ClassOrInterfaceDeclaration modelClass = processMethod.get();
-
+        modelClass.addAnnotation(new NormalAnnotationExpr(new Name(Generated.class.getCanonicalName()), NodeList.nodeList(new MemberValuePair("value", new StringLiteralExpr("kogit-codegen")), 
+                                                                                                                          new MemberValuePair("reference", new StringLiteralExpr(processId)),
+                                                                                                                          new MemberValuePair("name", new StringLiteralExpr(StringUtils.capitalize(ProcessToExecModelGenerator.extractProcessId(processId)))))));
         modelClass.setName(modelClassSimpleName);
 
         // setup of the toMap method body
@@ -140,8 +144,7 @@ public class ModelMetaData {
         VariableDeclarationExpr paramsField = new VariableDeclarationExpr(toMap, "params");
         toMapBody.addStatement(new AssignExpr(paramsField, new ObjectCreationExpr(null, new ClassOrInterfaceType(null, HashMap.class.getSimpleName()), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
-        // setup of static fromMap method body
-        ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, modelClass.getNameAsString());
+        // setup of static fromMap method body        
         BlockStmt staticFromMap = new BlockStmt();
 
         FieldAccessExpr idField = new FieldAccessExpr(new ThisExpr(), "id");

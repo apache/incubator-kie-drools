@@ -104,7 +104,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
             if ( strats == null ) {
-                strats = new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()};
+                strats = new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT  )};
             }
             this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStoreImpl( strats );
         }

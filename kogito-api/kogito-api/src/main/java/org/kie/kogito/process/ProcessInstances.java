@@ -23,4 +23,5 @@ public interface ProcessInstances<T> {
     Optional<? extends ProcessInstance<T>> findById(long i);
 
     Collection<? extends ProcessInstance<T>> values();
+
 }

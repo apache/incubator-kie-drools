@@ -150,7 +150,7 @@ public class ApplicationGeneratorTest {
         mockLabels.put("testKey", "testValue");
         when(mockGenerator.getLabels()).thenReturn(mockLabels);
 
-        final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
+        final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target/classes"));
         appGenerator.withGenerator(mockGenerator);
 
         final Collection<GeneratedFile> generatedFiles = appGenerator.generate();
@@ -162,7 +162,7 @@ public class ApplicationGeneratorTest {
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.factoryMethod()).hasSize(1);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.classDeclaration()).hasSize(1);
 
-        assertImageMetadata(Paths.get("target"), mockLabels);
+        assertImageMetadata(Paths.get("target/classes"), mockLabels);
     }
 
     @Test

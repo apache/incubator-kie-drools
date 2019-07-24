@@ -644,4 +644,9 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         }
     }
 
+    @Override
+    public InternalKnowledgeRuntime getInternalKieRuntime() {
+        return this.knowledgeRuntime;
+    }
+
 }

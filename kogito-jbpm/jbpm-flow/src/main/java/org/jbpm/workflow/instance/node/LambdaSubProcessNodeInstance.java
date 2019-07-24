@@ -37,22 +37,18 @@ import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
-import org.jbpm.process.instance.impl.util.VariableUtil;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessFactory;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Node;
-import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.KieInternalServices;
-import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.process.CorrelationKeyFactory;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +61,6 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(LambdaSubProcessNodeInstance.class);
 
-    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
-    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
 
     private long processInstanceId;
@@ -75,6 +69,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         return (SubProcessNode) getNode();
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void internalTrigger(final NodeInstance from, String type) {
     	super.internalTrigger(from, type);
     	// if node instance was cancelled, abort
@@ -86,53 +81,19 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
                 "A SubProcess node only accepts default incoming connections!");
         }
 
-        String processId = getSubProcessNode().getProcessId();
-
         ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
         context.setNodeInstance(this);
         SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
         Object o = subProcessFactory.bind(context);
         org.kie.kogito.process.ProcessInstance<?> processInstance = subProcessFactory.createInstance(o);
+ 
+        org.kie.api.runtime.process.ProcessInstance legacyProcessInstance = ((AbstractProcessInstance<?>)processInstance).internalGetProcessInstance();
+        ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
+        ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
+        ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
+        ((ProcessInstanceImpl) legacyProcessInstance).setParentProcessInstanceId(getProcessInstance().getId());
+        ((ProcessInstanceImpl) legacyProcessInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
         
-
-//            KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
-//            if (getSubProcessNode().getMetaData("MICollectionInput") != null) {
-//                // remove foreach input variable to avoid problems when running in variable strict mode
-//                parameters.remove(getSubProcessNode().getMetaData("MICollectionInput"));
-//            }
-
-            if (((WorkflowProcessInstanceImpl)getProcessInstance()).getCorrelationKey() != null) {
-                // in case there is correlation key on parent instance pass it along to child so it can be easily correlated
-                // since correlation key must be unique for active instances it appends processId and timestamp
-                List<String> businessKeys = new ArrayList<String>();
-                businessKeys.add(((WorkflowProcessInstanceImpl)getProcessInstance()).getCorrelationKey());
-                businessKeys.add(processId);
-                businessKeys.add(String.valueOf(System.currentTimeMillis()));
-                CorrelationKeyFactory correlationKeyFactory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
-                CorrelationKey subProcessCorrelationKey = correlationKeyFactory.newCorrelationKey(businessKeys);
-                throw new UnsupportedOperationException("correlation key is unsupported");
-//                processInstance = (ProcessInstance) ((CorrelationAwareProcessRuntime)kruntime).createProcessInstance(processId, subProcessCorrelationKey, parameters);
-            } else {
-//                processInstance = ( ProcessInstance ) kruntime.createProcessInstance(processId, parameters);
-            }
-//	    	this.processInstanceId = processInstance.getId();
-//	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
-//	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
-//	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
-//	    	((ProcessInstanceImpl) processInstance).setParentProcessInstanceId(getProcessInstance().getId());
-//	    	((ProcessInstanceImpl) processInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
-//
-//	    	kruntime.startProcessInstance(processInstance.getId());
-//	    	if (!getSubProcessNode().isWaitForCompletion()) {
-//	    		triggerCompleted();
-//	    	} else if (processInstance.getState() == ProcessInstance.STATE_COMPLETED
-//	    	        || processInstance.getState() == ProcessInstance.STATE_ABORTED) {
-//	    	    processInstanceCompleted(processInstance);
-//	    	} else {
-//	    		addProcessListener();
-//	    	}
-
-
         processInstance.start();
         this.processInstanceId = processInstance.id();
         
@@ -145,50 +106,6 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         } else {
             addProcessListener();
         }
-    }
-
-    private Map<String, Object> prepareParameters() {
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        for (Iterator<DataAssociation> iterator =  getSubProcessNode().getInAssociations().iterator(); iterator.hasNext(); ) {
-        	DataAssociation mapping = iterator.next();
-        	Object parameterValue = null;
-        	if (mapping.getTransformation() != null) {
-            	Transformation transformation = mapping.getTransformation();
-            	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-            	if (transformer != null) {
-            		parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(mapping));
-
-            	}
-            } else {
-
-	            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-	                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getSources().get(0));
-	            if (variableScopeInstance != null) {
-	                parameterValue = variableScopeInstance.getVariable(mapping.getSources().get(0));
-	            } else {
-	            	try {
-	            		parameterValue = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new NodeInstanceResolverFactory(this));
-	            	} catch (Throwable t) {
-	            	    parameterValue = VariableUtil.resolveVariable(mapping.getSources().get(0), this);
-	                    if (parameterValue != null) {
-	                        parameters.put(mapping.getTarget(), parameterValue);
-	                    } else {
-    	            	    logger.error("Could not find variable scope for variable {}", mapping.getSources().get(0));
-    	            	    logger.error("when trying to execute SubProcess node {}", getSubProcessNode().getName());
-    	            	    logger.error("Continuing without setting parameter.");
-	                    }
-	            	}
-	            }
-            }
-            if (parameterValue != null) {
-            	parameters.put(mapping.getTarget(),parameterValue);
-            }
-        }
-        return parameters;
-    }
-
-    private Process getProcess(String processId) {
-        return null;
     }
 
     public void cancel() {
@@ -272,7 +189,17 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void handleOutMappings(ProcessInstance processInstance) {
+        
+        SubProcessFactory subProcessFactory = getSubProcessNode().getSubProcessFactory();
+        ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+        context.setNodeInstance(this);
+        org.kie.kogito.process.ProcessInstance<?> pi = ((org.kie.kogito.process.ProcessInstance<?>)processInstance.getMetaData().get("KogitoProcessInstance"));
+        if (pi != null) {
+            subProcessFactory.unbind(context, pi.variables());
+        }
+        
         VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
 	        processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
         SubProcessNode subProcessNode = getSubProcessNode();
