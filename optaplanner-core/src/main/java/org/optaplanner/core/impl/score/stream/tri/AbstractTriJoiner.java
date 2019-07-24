@@ -31,13 +31,20 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
     public final static <A, B, C> TriJoiner<A, B, C> merge(TriJoiner<A, B, C>... joiners) {
         List<SingleTriJoiner<A, B, C>> joinerList = new ArrayList<>();
         for (TriJoiner<A, B, C> joiner : joiners) {
-            if (joiner instanceof SingleTriJoiner) {
+            if (joiner instanceof NoneTriJoiner) {
+                // Ignore it
+            } else if (joiner instanceof SingleTriJoiner) {
                 joinerList.add((SingleTriJoiner<A, B, C>) joiner);
             } else if (joiner instanceof CompositeTriJoiner) {
                 joinerList.addAll(((CompositeTriJoiner<A, B, C>) joiner).getJoinerList());
             } else {
                 throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
             }
+        }
+        if (joinerList.size() == 0) {
+            return new NoneTriJoiner<>();
+        } else if (joinerList.size() == 1) {
+            return joinerList.get(0);
         }
         return new CompositeTriJoiner<>(joinerList);
     }

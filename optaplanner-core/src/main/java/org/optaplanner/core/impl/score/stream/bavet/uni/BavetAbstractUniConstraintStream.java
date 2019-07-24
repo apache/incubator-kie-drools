@@ -64,11 +64,6 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream) {
-        throw new UnsupportedOperationException(); // TODO
-    }
-
-    @Override
     public <B> BiConstraintStream<A, B> join(
                 UniConstraintStream<B> otherStream, BiJoiner<A, B> joiner) {
         if (!(otherStream instanceof BavetAbstractUniConstraintStream)) {

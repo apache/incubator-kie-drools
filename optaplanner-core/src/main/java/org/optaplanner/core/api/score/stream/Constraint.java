@@ -29,6 +29,7 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.common.Joiners;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 public interface Constraint {
 
@@ -68,7 +69,9 @@ public interface Constraint {
      * It automatically adds a {@link Joiners#lessThan(Function) lessThan} joiner on the {@link PlanningId} of A.
      * @return a stream that matches every unique combination of A and another A
      */
-    <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass);
+    default <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass) {
+        return fromUniquePair(fromClass, new NoneBiJoiner<>());
+    }
 
     /**
      * Create a new {@link BiConstraintStream} for every unique combination of A and another A with a higher {@link PlanningId}

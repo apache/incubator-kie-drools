@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bi.NoneBiJoiner;
 
 /**
  * A {@link ConstraintStream} that matches one fact.
@@ -66,7 +67,9 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @param <B> the type of the second matched fact
      * @return a stream that matches every combination of A and B
      */
-    <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream);
+    default <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream) {
+        return join(otherStream, new NoneBiJoiner<>());
+    }
 
     /**
      * Create a new {@link BiConstraintStream} for every combination of A and B for which the {@link BiJoiner}
@@ -97,7 +100,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * @return a stream that matches every combination of A and B
      */
     default <B> BiConstraintStream<A, B> join(Class<B> otherClass) {
-        return join(getConstraint().from(otherClass));
+        return join(otherClass, new NoneBiJoiner<>());
     }
 
     /**

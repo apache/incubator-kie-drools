@@ -30,13 +30,20 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
     public final static <A, B> AbstractBiJoiner<A, B> merge(BiJoiner<A, B>... joiners) {
         List<SingleBiJoiner<A, B>> joinerList = new ArrayList<>(joiners.length);
         for (BiJoiner<A, B> joiner : joiners) {
-            if (joiner instanceof SingleBiJoiner) {
+            if (joiner instanceof NoneBiJoiner) {
+                // Ignore it
+            } else if (joiner instanceof SingleBiJoiner) {
                 joinerList.add((SingleBiJoiner<A, B>) joiner);
             } else if (joiner instanceof CompositeBiJoiner) {
                 joinerList.addAll(((CompositeBiJoiner<A, B>) joiner).getJoinerList());
             } else {
                 throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
             }
+        }
+        if (joinerList.size() == 0) {
+            return new NoneBiJoiner<>();
+        } else if (joinerList.size() == 1) {
+            return joinerList.get(0);
         }
         return new CompositeBiJoiner<>(joinerList);
     }

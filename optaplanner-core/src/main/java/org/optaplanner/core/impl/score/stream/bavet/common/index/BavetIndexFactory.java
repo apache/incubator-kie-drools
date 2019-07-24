@@ -26,9 +26,6 @@ public class BavetIndexFactory {
 
     public <B, A> BavetIndexFactory(AbstractBiJoiner<A, B> joiner) {
         joinerTypes = joiner.getJoinerTypes();
-        if (joinerTypes.length == 0) {
-            throw new IllegalArgumentException("The joiner (" + joiner + ") must not be empty.");
-        }
         for (int i = 0; i < joinerTypes.length; i++) {
             if (joinerTypes[i] != JoinerType.EQUAL_TO && i != (joinerTypes.length - 1)) {
                 throw new IllegalArgumentException("The joinerType (" + joinerTypes[i]
@@ -43,6 +40,9 @@ public class BavetIndexFactory {
     }
 
     public <A, Tuple_ extends BavetJoinBridgeUniTuple<A>> BavetIndex<A, Tuple_> buildIndex(boolean isLeftBridge) {
+        if (joinerTypes.length == 0) {
+            return new BavetNoneIndex<>();
+        }
         JoinerType lastJoinerType = joinerTypes[joinerTypes.length - 1];
         if (lastJoinerType == JoinerType.EQUAL_TO) {
             return new BavetEqualsIndex<>();

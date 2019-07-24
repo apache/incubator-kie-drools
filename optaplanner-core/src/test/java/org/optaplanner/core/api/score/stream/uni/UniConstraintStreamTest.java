@@ -85,6 +85,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     public void filter_entity() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
         solution.getEntityList().add(entity1);
         TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup, solution.getFirstValue());
@@ -120,9 +121,42 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     // ************************************************************************
 
     @Test
+    public void join_0() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
+        TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
+        solution.getValueGroupList().add(valueGroup);
+        TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
+
+
+        InnerScoreDirector<TestdataLavishSolution> scoreDirector = buildScoreDirector((constraint) -> {
+            constraint.from(TestdataLavishValueGroup.class)
+                    .join(TestdataLavishEntityGroup.class)
+                    .penalize();
+        });
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstValueGroup(), solution.getFirstEntityGroup()),
+                assertMatch(solution.getFirstValueGroup(), entityGroup),
+                assertMatch(valueGroup, solution.getFirstEntityGroup()),
+                assertMatch(valueGroup, entityGroup));
+
+        // Incremental
+        scoreDirector.beforeProblemFactRemoved(entityGroup);
+        solution.getEntityGroupList().remove(entityGroup);
+        scoreDirector.afterProblemFactRemoved(entityGroup);
+        assertScore(scoreDirector,
+                assertMatch(solution.getFirstValueGroup(), solution.getFirstEntityGroup()),
+                assertMatch(valueGroup, solution.getFirstEntityGroup()));
+    }
+
+    @Test
     public void join_1Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
         solution.getEntityList().add(entity1);
         TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", solution.getFirstEntityGroup(),
@@ -161,6 +195,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     public void join_2Equal() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
         entity1.setIntegerProperty(7);
         solution.getEntityList().add(entity1);
@@ -276,6 +311,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     public void groupBy_1Mapping1Collector_count() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
         solution.getEntityList().add(entity1);
         TestdataLavishEntity entity2 = new TestdataLavishEntity("MyEntity 2", entityGroup, solution.getFirstValue());
@@ -309,6 +345,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     public void groupBy_1Mapping1Collector_countDistinct() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
         entity1.setStringProperty("A");
         solution.getEntityList().add(entity1);
@@ -520,6 +557,7 @@ public class UniConstraintStreamTest extends AbstractConstraintStreamTest {
     public void globalNodeOrder() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
+        solution.getEntityGroupList().add(entityGroup);
         TestdataLavishEntity entity1 = new TestdataLavishEntity("MyEntity 1", entityGroup, solution.getFirstValue());
         entity1.setStringProperty("MyString1");
         solution.getEntityList().add(entity1);

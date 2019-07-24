@@ -83,11 +83,6 @@ public final class BavetConstraint<Solution_> implements Constraint {
     }
 
     @Override
-    public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public <A> BiConstraintStream<A, A> fromUniquePair(Class<A> fromClass, BiJoiner<A, A> joiner) {
         MemberAccessor planningIdMemberAccessor = ConfigUtils.findPlanningIdMemberAccessor(fromClass);
         if (planningIdMemberAccessor == null) {
