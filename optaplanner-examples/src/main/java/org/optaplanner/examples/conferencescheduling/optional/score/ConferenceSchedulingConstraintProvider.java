@@ -35,7 +35,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         speakerUnavailableTimeslot(constraintFactory);
         speakerConflict(constraintFactory);
         talkPrerequisiteTalks(constraintFactory);
-        talkPrerequisiteTalks(constraintFactory);
+        talkMutuallyExclusiveTalksTags(constraintFactory);
 //        consecutiveTalksPause(constraintFactory); // TODO
         crowdControl(constraintFactory);
 
