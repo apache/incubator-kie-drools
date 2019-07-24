@@ -188,7 +188,9 @@ public class CanonicalKieModule implements InternalKieModule {
                     continue;
                 }
                 KieBaseModelImpl includeKBaseModel = ( KieBaseModelImpl ) kieProject.getKieBaseModel( include );
-                models.addAll( (( CanonicalKieModule ) includeModule).getModelForKBase( includeKBaseModel ) );
+                CanonicalKieModule canonicalInclude = (CanonicalKieModule) includeModule;
+                canonicalInclude.setModuleClassLoader((ProjectClassLoader)kieProject.getClassLoader());
+                models.addAll( canonicalInclude.getModelForKBase( includeKBaseModel ) );
                 processes.addAll( findProcesses( includeModule, includeKBaseModel ) );
             }
         }

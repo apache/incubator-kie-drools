@@ -52,7 +52,7 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         final ReleaseId releaseId_v10 = ks.newReleaseId("org.kie", "dmn-test-PR1997", "1.0");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v10,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/20180731-pr1997.dmn", this.getClass())
+                                     wrapWithDroolsModelResource(ks, releaseId_v10, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/20180731-pr1997.dmn", this.getClass())
                                        .setTargetPath("20180731-pr1997.dmn"),
                                      ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v1/Person.java", this.getClass())
                                        .setTargetPath("acme/Person.java")));
@@ -64,7 +64,7 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         final ReleaseId releaseId_v11 = ks.newReleaseId("org.kie", "dmn-test-PR1997", "1.1");
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v11,
-                                     wrapWithDroolsModelResource(ks, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/20180731-pr1997.dmn", this.getClass())
+                                     wrapWithDroolsModelResource(ks, releaseId_v11, ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/20180731-pr1997.dmn", this.getClass())
                                        .setTargetPath("20180731-pr1997.dmn"),
                                      ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/v2/Person.java", this.getClass())
                                        .setTargetPath("acme/Person.java")));
@@ -109,6 +109,7 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v10,
                                      wrapWithDroolsModelResource(ks,
+                                                                 releaseId_v10,
                                                                  ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-100/air-conditioning-control.dmn", this.getClass())
                                                                    .setTargetPath("air-conditioning-control.dmn"),
                                                                  ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-100/air-conditioning-data-types.dmn", this.getClass())
@@ -120,6 +121,7 @@ public class DMNIncrementalCompilationTest extends BaseInterpretedVsCompiledTest
         KieHelper.createAndDeployJar(ks,
                                      releaseId_v11,
                                      wrapWithDroolsModelResource(ks,
+                                                                 releaseId_v11,
                                                                  ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-101/air-conditioning-control.dmn", this.getClass())
                                                                    .setTargetPath("air-conditioning-control.dmn"),
                                                                  ks.getResources().newClassPathResource("/org/kie/dmn/core/incrementalcompilation/import-itemdef-101/air-conditioning-data-types.dmn", this.getClass())
