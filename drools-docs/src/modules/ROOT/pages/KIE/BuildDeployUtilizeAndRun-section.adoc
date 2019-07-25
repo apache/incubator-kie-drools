@@ -7,4 +7,4 @@ include::BuildDeployUtilizeAndRun/KIEDeploying-section.adoc[leveloffset=+1]
 include::BuildDeployUtilizeAndRun/KIERunning-section.adoc[leveloffset=+1]
 include::BuildDeployUtilizeAndRun/KIEDeployCheatSheets-section.adoc[leveloffset=+1]
 include::BuildDeployUtilizeAndRun/KIEExamples-section.adoc[leveloffset=+1]
-
+include::BuildDeployUtilizeAndRun/kie-scanner-proc.adoc[leveloffset=+1]
