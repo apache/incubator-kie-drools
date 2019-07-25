@@ -49,7 +49,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public KieRuntime                                                              kruntime;
     public final Map<Integer, BaseNode>                                            sinks;
 
-    public Map<Integer, InternalFactHandle>                                        handles;
+    public Map<Long, InternalFactHandle>                                           handles;
 
     public final Map<RightTupleKey, RightTuple>                                    rightTuples;
     public final Map<Integer, LeftTuple>                                           terminalTupleMap;
@@ -111,12 +111,12 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
         this.readersByInt = timerReaders;
 
-        this.handles = new HashMap<Integer, InternalFactHandle>();
-        this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
-        this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
+        this.handles = new HashMap<>();
+        this.rightTuples = new HashMap<>();
+        this.terminalTupleMap = new HashMap<>();
         this.filter = new PBActivationsFilter();
-        this.entryPoints = new HashMap<String, EntryPointId>();
-        this.propagationContexts = new HashMap<Long, PropagationContext>();
+        this.entryPoints = new HashMap<>();
+        this.propagationContexts = new HashMap<>();
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
             if ( strats == null ) {
@@ -127,15 +127,15 @@ public class MarshallerReaderContext extends ObjectInputStream {
         else {
             this.resolverStrategyFactory = resolverStrategyFactory;
         }
-        this.usedStrategies = new HashMap<Integer, ObjectMarshallingStrategy>();
-        this.strategyContexts = new HashMap<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context>();
+        this.usedStrategies = new HashMap<>();
+        this.strategyContexts = new HashMap<>();
 
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
         this.env = env;
 
-        this.nodeMemories = new HashMap<Integer, Object>();
-        this.timerNodeSchedulers = new HashMap<Integer, Map<ProtobufInputMarshaller.TupleKey, PhreakTimerNode.Scheduler>>();
+        this.nodeMemories = new HashMap<>();
+        this.timerNodeSchedulers = new HashMap<>();
 
         this.parameterObject = null;
     }
@@ -159,7 +159,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public void addTimerNodeScheduler( int nodeId, TupleKey key, Scheduler scheduler ) {
         Map<TupleKey, Scheduler> timers = timerNodeSchedulers.get( nodeId );
         if( timers == null ) {
-            timers = new HashMap<ProtobufInputMarshaller.TupleKey, PhreakTimerNode.Scheduler>();
+            timers = new HashMap<>();
             timerNodeSchedulers.put( nodeId, timers );
         }
         timers.put( key, scheduler );

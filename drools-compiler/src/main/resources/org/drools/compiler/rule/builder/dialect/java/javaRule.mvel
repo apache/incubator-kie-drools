@@ -53,7 +53,7 @@ public static class @{className} implements java.io.Serializable {
                            @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws java.lang.Exception {
         @if{supportsReverse == "true"}
-        this.reverseMap.put( Integer.valueOf( handle.getId() ),
+        this.reverseMap.put( Long.valueOf( handle.getId() ),
                              new ReverseSnapshot(
                                @foreach{declr : declarations}@{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
                                @foreach{declr : innerDeclarations}@{declr.identifier}@end{","}
@@ -68,7 +68,7 @@ public static class @{className} implements java.io.Serializable {
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                            ) throws java.lang.Exception {
         @if{supportsReverse == "true"}
-        ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( Integer.valueOf( handle.getId() ) );
+        ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( Long.valueOf( handle.getId() ) );
         @foreach{declr : declarations}@{declr.typeName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @end{}

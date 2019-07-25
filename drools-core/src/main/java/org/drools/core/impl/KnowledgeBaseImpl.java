@@ -631,7 +631,7 @@ public class KnowledgeBaseImpl
         return this.factHandleFactory.newInstance();
     }
 
-    public FactHandleFactory newFactHandleFactory(int id,
+    public FactHandleFactory newFactHandleFactory(long id,
                                                   long counter) {
         return this.factHandleFactory.newInstance(id,
                                                   counter);

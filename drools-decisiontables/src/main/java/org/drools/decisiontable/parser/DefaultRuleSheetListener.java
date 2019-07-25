@@ -352,8 +352,9 @@ implements RuleSheetListener {
      * This gets called each time a "new" rule table is found.
      */
     private void initRuleTable(final int row,
-            final int column,
-            final String value) {
+                               final int column,
+                               final String value,
+                               boolean firstTable) {
         preInitRuleTable( row, column, value );
         this._isInRuleTable = true;
         this._actions = new HashMap<Integer, ActionType>();
@@ -373,8 +374,10 @@ implements RuleSheetListener {
         this._currentEscapeQuotesFlag = getFlagValue(ESCAPE_QUOTES_FLAG, true);
         this._currentNumericDisabledFlag = getFlagValue(NUMERIC_DISABLED_FLAG, false);
 
-        this._currentSalience = getNumericValue( MAX_SALIENCE_TAG, this._currentSalience );
-        this._minSalienceTag = getNumericValue(MIN_SALIENCE_TAG, this._minSalienceTag);
+        if (firstTable) {
+            this._currentSalience = getNumericValue( MAX_SALIENCE_TAG, this._currentSalience );
+            this._minSalienceTag = getNumericValue( MIN_SALIENCE_TAG, this._minSalienceTag );
+        }
 
         String headCell = RuleSheetParserUtil.rc2name( this._ruleStartRow, this._ruleStartColumn );
         String ruleCell = RuleSheetParserUtil.rc2name( this._ruleRow, this._ruleStartColumn );
@@ -432,7 +435,7 @@ implements RuleSheetListener {
             final String value) {
         String testVal = value.trim().toLowerCase();
         if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
-            initRuleTable( row, column, value.trim() );
+            initRuleTable( row, column, value.trim(), true );
         } else {
             this._propertiesListener.newCell( row, column, value, RuleSheetListener.NON_MERGED );
         }
@@ -446,7 +449,7 @@ implements RuleSheetListener {
         String testVal = trimVal.toLowerCase();
         if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
             finishRuleTable();
-            initRuleTable( row, column, trimVal );
+            initRuleTable( row, column, trimVal, false );
             return;
         }
 
