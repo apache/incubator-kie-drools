@@ -357,7 +357,7 @@ public class PackageModel {
         rulesClass.addImplementedType(Model.class);
 
         BodyDeclaration<?> dateFormatter = parseBodyDeclaration(
-                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask());\n");
+                "public final static DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD + " = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask(), Locale.ENGLISH);\n");
         rulesClass.addMember(dateFormatter);
 
         BodyDeclaration<?> string2dateMethodMethod = parseBodyDeclaration(
