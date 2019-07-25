@@ -19,7 +19,6 @@ package org.drools.core.common;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -45,7 +44,7 @@ public abstract class AbstractFactHandleFactory
         this.counter = new AtomicLong(0);
     }
     
-    public AbstractFactHandleFactory(int id, long counter) {
+    public AbstractFactHandleFactory(long id, long counter) {
         this.idGen = new IdsGenerator( id );
         this.counter = new AtomicLong( counter );
     }
@@ -67,7 +66,7 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public final InternalFactHandle newFactHandle(int id,
+    public final InternalFactHandle newFactHandle(long id,
                                                   Object object,
                                                   ObjectTypeConf conf,
                                                   InternalWorkingMemory workingMemory,
@@ -79,16 +78,6 @@ public abstract class AbstractFactHandleFactory
                               workingMemory,
                               wmEntryPoint );
     }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
-     */
-    public abstract InternalFactHandle newFactHandle(int id,
-                                                     Object object,
-                                                     long recency,
-                                                     ObjectTypeConf conf,
-                                                     InternalWorkingMemory workingMemory,
-                                                     WorkingMemoryEntryPoint wmEntryPoint );
 
     public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
         factHandle.setRecency( getNextRecency() );
@@ -103,7 +92,7 @@ public abstract class AbstractFactHandleFactory
      */
     public abstract FactHandleFactory newInstance();
 
-    public int getNextId() {
+    public long getNextId() {
         return idGen.getNextId();
     }
 
@@ -111,7 +100,7 @@ public abstract class AbstractFactHandleFactory
         return this.counter.incrementAndGet();
     }
 
-    public int getId() {
+    public long getId() {
         return idGen.getId();
     }
 
@@ -119,12 +108,12 @@ public abstract class AbstractFactHandleFactory
         return this.counter.get();
     }
     
-    public void clear(int id, long counter) {
+    public void clear(long id, long counter) {
         this.idGen = new IdsGenerator( id );
         this.counter = new AtomicLong( counter );
     }
 
-    public void doRecycleIds(Collection<Integer> usedIds) {
+    public void doRecycleIds(Collection<Long> usedIds) {
         idGen.doRecycle( usedIds );
     }
 
@@ -135,23 +124,23 @@ public abstract class AbstractFactHandleFactory
     private static class IdsGenerator {
 
         /** The fact id. */
-        private AtomicInteger id;
+        private AtomicLong id;
 
-        private Queue<Integer> usedIds;
-        private int recycledId;
+        private Queue<Long> usedIds;
+        private long recycledId;
 
-        private IdsGenerator( int startId ) {
-            this.id = new AtomicInteger( startId );
+        private IdsGenerator( long startId ) {
+            this.id = new AtomicLong( startId );
         }
 
-        public int getNextId() {
+        public long getNextId() {
             return hasRecycledId() ? recycledId++ : this.id.incrementAndGet();
         }
 
         private boolean hasRecycledId() {
             if (usedIds != null) {
                 while ( !usedIds.isEmpty() ) {
-                    int firstUsedId = usedIds.peek();
+                    long firstUsedId = usedIds.peek();
                     if ( recycledId < firstUsedId ) {
                         return true;
                     } else if ( recycledId == firstUsedId ) {
@@ -164,11 +153,11 @@ public abstract class AbstractFactHandleFactory
             return false;
         }
 
-        public int getId() {
+        public long getId() {
             return this.id.get();
         }
 
-        public void doRecycle(Collection<Integer> usedIds) {
+        public void doRecycle(Collection<Long> usedIds) {
             this.usedIds = usedIds.stream().sorted().collect( toCollection( LinkedList::new ) );
             this.usedIds.add( id.get()+1 );
             this.recycledId = 1;

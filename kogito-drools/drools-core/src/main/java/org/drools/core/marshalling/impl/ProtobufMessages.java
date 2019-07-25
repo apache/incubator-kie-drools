@@ -222,13 +222,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               org.drools.core.marshalling.impl.ProtobufMessages.Version.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -278,6 +271,13 @@ public final class ProtobufMessages {
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef.PARSER, extensionRegistry));
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -301,6 +301,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_fieldAccessorTable
@@ -386,13 +387,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
                 id_ = input.readInt32();
@@ -407,6 +401,13 @@ public final class ProtobufMessages {
               case 26: {
                 bitField0_ |= 0x00000004;
                 data_ = input.readBytes();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -426,6 +427,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_StrategyIndex_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_StrategyIndex_fieldAccessorTable
@@ -507,6 +509,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -516,6 +519,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -530,6 +534,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -675,6 +680,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -682,6 +688,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -705,6 +712,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_StrategyIndex_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_StrategyIndex_fieldAccessorTable
@@ -727,6 +735,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           id_ = 0;
@@ -738,15 +747,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_StrategyIndex_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex result = buildPartial();
           if (!result.isInitialized()) {
@@ -755,6 +767,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex result = new org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex(this);
           int from_bitField0_ = bitField0_;
@@ -776,32 +789,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex)other);
@@ -829,10 +849,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -994,11 +1016,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -1020,6 +1044,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<StrategyIndex>
           PARSER = new com.google.protobuf.AbstractParser<StrategyIndex>() {
+        @java.lang.Override
         public StrategyIndex parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1037,6 +1062,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -1249,6 +1275,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -1268,6 +1295,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       com.google.protobuf.GeneratedMessageV3
@@ -1292,6 +1320,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -1462,6 +1491,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -1469,6 +1499,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Header prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -1493,6 +1524,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_fieldAccessorTable
@@ -1519,6 +1551,7 @@ public final class ProtobufMessages {
           getRuntimeClassDefinitionsFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         if (versionBuilder_ == null) {
@@ -1550,15 +1583,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Header_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Header getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Header.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Header build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Header result = buildPartial();
         if (!result.isInitialized()) {
@@ -1567,6 +1603,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Header buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Header result = new org.drools.core.marshalling.impl.ProtobufMessages.Header(this);
         int from_bitField0_ = bitField0_;
@@ -1614,55 +1651,66 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.Header, Type> extension,
           Type value) {
         return (Builder) super.setExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.Header, java.util.List<Type>> extension,
           int index, Type value) {
         return (Builder) super.setExtension(extension, index, value);
       }
+      @java.lang.Override
       public <Type> Builder addExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.Header, java.util.List<Type>> extension,
           Type value) {
         return (Builder) super.addExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder clearExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.Header, ?> extension) {
         return (Builder) super.clearExtension(extension);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Header) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Header)other);
@@ -1741,6 +1789,7 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         for (int i = 0; i < getRuntimeClassDefinitionsCount(); i++) {
           if (!getRuntimeClassDefinitions(i).isInitialized()) {
@@ -1753,6 +1802,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2772,11 +2822,13 @@ public final class ProtobufMessages {
         }
         return runtimeClassDefinitionsBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -2798,6 +2850,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Header>
         PARSER = new com.google.protobuf.AbstractParser<Header>() {
+      @java.lang.Override
       public Header parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2815,6 +2868,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Header getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -2894,13 +2948,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
               versionMajor_ = input.readInt32();
@@ -2914,6 +2961,13 @@ public final class ProtobufMessages {
             case 24: {
               bitField0_ |= 0x00000004;
               versionRevision_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -2933,6 +2987,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Version_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Version_fieldAccessorTable
@@ -2987,6 +3042,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -2996,6 +3052,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -3010,6 +3067,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -3156,6 +3214,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -3163,6 +3222,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Version prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -3186,6 +3246,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Version_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Version_fieldAccessorTable
@@ -3208,6 +3269,7 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         versionMajor_ = 0;
@@ -3219,15 +3281,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Version_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Version getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Version.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Version build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Version result = buildPartial();
         if (!result.isInitialized()) {
@@ -3236,6 +3301,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Version buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Version result = new org.drools.core.marshalling.impl.ProtobufMessages.Version(this);
         int from_bitField0_ = bitField0_;
@@ -3257,32 +3323,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Version) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Version)other);
@@ -3308,10 +3381,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -3426,11 +3501,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -3452,6 +3529,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Version>
         PARSER = new com.google.protobuf.AbstractParser<Version>() {
+      @java.lang.Override
       public Version parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -3469,6 +3547,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Version getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -3543,13 +3622,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -3559,6 +3631,13 @@ public final class ProtobufMessages {
             case 18: {
               bitField0_ |= 0x00000002;
               signature_ = input.readBytes();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -3578,6 +3657,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Signature_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Signature_fieldAccessorTable
@@ -3644,6 +3724,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -3653,6 +3734,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -3664,6 +3746,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -3796,6 +3879,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -3803,6 +3887,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Signature prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -3826,6 +3911,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Signature_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Signature_fieldAccessorTable
@@ -3848,6 +3934,7 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         keyAlias_ = "";
@@ -3857,15 +3944,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Signature_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Signature getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Signature.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Signature build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Signature result = buildPartial();
         if (!result.isInitialized()) {
@@ -3874,6 +3964,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Signature buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Signature result = new org.drools.core.marshalling.impl.ProtobufMessages.Signature(this);
         int from_bitField0_ = bitField0_;
@@ -3891,32 +3982,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Signature) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Signature)other);
@@ -3941,10 +4039,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -4074,11 +4174,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -4100,6 +4202,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Signature>
         PARSER = new com.google.protobuf.AbstractParser<Signature>() {
+      @java.lang.Override
       public Signature parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -4117,6 +4220,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Signature getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -4205,13 +4309,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               bitField0_ |= 0x00000001;
               signature_ = input.readBytes();
@@ -4221,6 +4318,13 @@ public final class ProtobufMessages {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
               id_ = bs;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -4240,6 +4344,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeBase_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeBase_fieldAccessorTable
@@ -4318,6 +4423,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -4331,6 +4437,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       com.google.protobuf.GeneratedMessageV3
@@ -4346,6 +4453,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -4482,6 +4590,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -4489,6 +4598,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -4513,6 +4623,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeBase_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeBase_fieldAccessorTable
@@ -4535,6 +4646,7 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         signature_ = com.google.protobuf.ByteString.EMPTY;
@@ -4544,15 +4656,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeBase_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase build() {
         org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase result = buildPartial();
         if (!result.isInitialized()) {
@@ -4561,6 +4676,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase result = new org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase(this);
         int from_bitField0_ = bitField0_;
@@ -4578,55 +4694,66 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase, Type> extension,
           Type value) {
         return (Builder) super.setExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase, java.util.List<Type>> extension,
           int index, Type value) {
         return (Builder) super.setExtension(extension, index, value);
       }
+      @java.lang.Override
       public <Type> Builder addExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase, java.util.List<Type>> extension,
           Type value) {
         return (Builder) super.addExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder clearExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase, ?> extension) {
         return (Builder) super.clearExtension(extension);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase)other);
@@ -4652,6 +4779,7 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         if (!extensionsAreInitialized()) {
           return false;
@@ -4659,6 +4787,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -4812,11 +4941,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -4838,6 +4969,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<KnowledgeBase>
         PARSER = new com.google.protobuf.AbstractParser<KnowledgeBase>() {
+      @java.lang.Override
       public KnowledgeBase parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -4855,6 +4987,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeBase getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -4965,13 +5098,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
               multithread_ = input.readBool();
@@ -5021,6 +5147,13 @@ public final class ProtobufMessages {
               bitField0_ |= 0x00000010;
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -5038,6 +5171,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeSession_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeSession_fieldAccessorTable
@@ -5140,6 +5274,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -5165,6 +5300,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       com.google.protobuf.GeneratedMessageV3
@@ -5189,6 +5325,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -5367,6 +5504,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -5374,6 +5512,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -5398,6 +5537,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeSession_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeSession_fieldAccessorTable
@@ -5423,6 +5563,7 @@ public final class ProtobufMessages {
           getTimersFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         multithread_ = false;
@@ -5450,15 +5591,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_KnowledgeSession_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession build() {
         org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession result = buildPartial();
         if (!result.isInitialized()) {
@@ -5467,6 +5611,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession result = new org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession(this);
         int from_bitField0_ = bitField0_;
@@ -5508,55 +5653,66 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession, Type> extension,
           Type value) {
         return (Builder) super.setExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession, java.util.List<Type>> extension,
           int index, Type value) {
         return (Builder) super.setExtension(extension, index, value);
       }
+      @java.lang.Override
       public <Type> Builder addExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession, java.util.List<Type>> extension,
           Type value) {
         return (Builder) super.addExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder clearExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession, ?> extension) {
         return (Builder) super.clearExtension(extension);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession)other);
@@ -5589,6 +5745,7 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         if (hasProcessData()) {
           if (!getProcessData().isInitialized()) {
@@ -5606,6 +5763,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -6042,11 +6200,13 @@ public final class ProtobufMessages {
         }
         return timersBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -6068,6 +6228,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<KnowledgeSession>
         PARSER = new com.google.protobuf.AbstractParser<KnowledgeSession>() {
+      @java.lang.Override
       public KnowledgeSession parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -6085,6 +6246,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.KnowledgeSession getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -6096,13 +6258,13 @@ public final class ProtobufMessages {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 last_id = 3;</code>
+     * <code>optional int64 last_id = 3;</code>
      */
     boolean hasLastId();
     /**
-     * <code>optional int32 last_id = 3;</code>
+     * <code>optional int64 last_id = 3;</code>
      */
-    int getLastId();
+    long getLastId();
 
     /**
      * <code>optional int64 last_recency = 4;</code>
@@ -6230,7 +6392,7 @@ public final class ProtobufMessages {
       super(builder);
     }
     private RuleData() {
-      lastId_ = 0;
+      lastId_ = 0L;
       lastRecency_ = 0L;
       nodeMemory_ = java.util.Collections.emptyList();
       entryPoint_ = java.util.Collections.emptyList();
@@ -6260,16 +6422,9 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 24: {
               bitField0_ |= 0x00000001;
-              lastId_ = input.readInt32();
+              lastId_ = input.readInt64();
               break;
             }
             case 32: {
@@ -6347,6 +6502,13 @@ public final class ProtobufMessages {
               bitField0_ |= 0x00000020;
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -6370,6 +6532,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuleData_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuleData_fieldAccessorTable
@@ -6379,17 +6542,17 @@ public final class ProtobufMessages {
 
     private int bitField0_;
     public static final int LAST_ID_FIELD_NUMBER = 3;
-    private int lastId_;
+    private long lastId_;
     /**
-     * <code>optional int32 last_id = 3;</code>
+     * <code>optional int64 last_id = 3;</code>
      */
     public boolean hasLastId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional int32 last_id = 3;</code>
+     * <code>optional int64 last_id = 3;</code>
      */
-    public int getLastId() {
+    public long getLastId() {
       return lastId_;
     }
 
@@ -6563,6 +6726,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -6572,10 +6736,11 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(3, lastId_);
+        output.writeInt64(3, lastId_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt64(4, lastRecency_);
@@ -6601,6 +6766,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -6608,7 +6774,7 @@ public final class ProtobufMessages {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, lastId_);
+          .computeInt64Size(3, lastId_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -6701,7 +6867,8 @@ public final class ProtobufMessages {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasLastId()) {
         hash = (37 * hash) + LAST_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getLastId();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getLastId());
       }
       if (hasLastRecency()) {
         hash = (37 * hash) + LAST_RECENCY_FIELD_NUMBER;
@@ -6807,6 +6974,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -6814,6 +6982,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.RuleData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -6841,6 +7010,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuleData_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuleData_fieldAccessorTable
@@ -6869,9 +7039,10 @@ public final class ProtobufMessages {
           getOBSOLETETmsFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
-        lastId_ = 0;
+        lastId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         lastRecency_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -6914,15 +7085,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuleData_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.RuleData getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.RuleData.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.RuleData build() {
         org.drools.core.marshalling.impl.ProtobufMessages.RuleData result = buildPartial();
         if (!result.isInitialized()) {
@@ -6931,6 +7105,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.RuleData buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.RuleData result = new org.drools.core.marshalling.impl.ProtobufMessages.RuleData(this);
         int from_bitField0_ = bitField0_;
@@ -6998,32 +7173,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.RuleData) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.RuleData)other);
@@ -7110,10 +7292,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -7133,34 +7317,34 @@ public final class ProtobufMessages {
       }
       private int bitField0_;
 
-      private int lastId_ ;
+      private long lastId_ ;
       /**
-       * <code>optional int32 last_id = 3;</code>
+       * <code>optional int64 last_id = 3;</code>
        */
       public boolean hasLastId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int32 last_id = 3;</code>
+       * <code>optional int64 last_id = 3;</code>
        */
-      public int getLastId() {
+      public long getLastId() {
         return lastId_;
       }
       /**
-       * <code>optional int32 last_id = 3;</code>
+       * <code>optional int64 last_id = 3;</code>
        */
-      public Builder setLastId(int value) {
+      public Builder setLastId(long value) {
         bitField0_ |= 0x00000001;
         lastId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 last_id = 3;</code>
+       * <code>optional int64 last_id = 3;</code>
        */
       public Builder clearLastId() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        lastId_ = 0;
+        lastId_ = 0L;
         onChanged();
         return this;
       }
@@ -8148,11 +8332,13 @@ public final class ProtobufMessages {
         }
         return oBSOLETETmsBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -8174,6 +8360,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<RuleData>
         PARSER = new com.google.protobuf.AbstractParser<RuleData>() {
+      @java.lang.Override
       public RuleData parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -8191,6 +8378,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.RuleData getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -8265,13 +8453,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -8281,6 +8462,13 @@ public final class ProtobufMessages {
             case 18: {
               bitField0_ |= 0x00000002;
               classDef_ = input.readBytes();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -8300,6 +8488,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuntimeClassDef_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuntimeClassDef_fieldAccessorTable
@@ -8366,6 +8555,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -8383,6 +8573,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -8394,6 +8585,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -8526,6 +8718,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -8533,6 +8726,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -8556,6 +8750,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuntimeClassDef_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuntimeClassDef_fieldAccessorTable
@@ -8578,6 +8773,7 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         classFqName_ = "";
@@ -8587,15 +8783,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_RuntimeClassDef_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef build() {
         org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef result = buildPartial();
         if (!result.isInitialized()) {
@@ -8604,6 +8803,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef result = new org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef(this);
         int from_bitField0_ = bitField0_;
@@ -8621,32 +8821,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef)other);
@@ -8671,6 +8878,7 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         if (!hasClassFqName()) {
           return false;
@@ -8681,6 +8889,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -8810,11 +9019,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -8836,6 +9047,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<RuntimeClassDef>
         PARSER = new com.google.protobuf.AbstractParser<RuntimeClassDef>() {
+      @java.lang.Override
       public RuntimeClassDef parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -8853,6 +9065,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.RuntimeClassDef getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -8927,6 +9140,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ProcessData_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ProcessData_fieldAccessorTable
@@ -8935,6 +9149,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -8948,6 +9163,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       com.google.protobuf.GeneratedMessageV3
@@ -8957,6 +9173,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -9068,6 +9285,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -9075,6 +9293,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ProcessData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -9099,6 +9318,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ProcessData_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ProcessData_fieldAccessorTable
@@ -9121,20 +9341,24 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ProcessData_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ProcessData getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ProcessData build() {
         org.drools.core.marshalling.impl.ProtobufMessages.ProcessData result = buildPartial();
         if (!result.isInitialized()) {
@@ -9143,61 +9367,73 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ProcessData buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.ProcessData result = new org.drools.core.marshalling.impl.ProtobufMessages.ProcessData(this);
         onBuilt();
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.ProcessData, Type> extension,
           Type value) {
         return (Builder) super.setExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder setExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.ProcessData, java.util.List<Type>> extension,
           int index, Type value) {
         return (Builder) super.setExtension(extension, index, value);
       }
+      @java.lang.Override
       public <Type> Builder addExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.ProcessData, java.util.List<Type>> extension,
           Type value) {
         return (Builder) super.addExtension(extension, value);
       }
+      @java.lang.Override
       public <Type> Builder clearExtension(
           com.google.protobuf.GeneratedMessage.GeneratedExtension<
               org.drools.core.marshalling.impl.ProtobufMessages.ProcessData, ?> extension) {
         return (Builder) super.clearExtension(extension);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ProcessData) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ProcessData)other);
@@ -9215,6 +9451,7 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         if (!extensionsAreInitialized()) {
           return false;
@@ -9222,6 +9459,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -9239,11 +9477,13 @@ public final class ProtobufMessages {
         }
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -9265,6 +9505,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<ProcessData>
         PARSER = new com.google.protobuf.AbstractParser<ProcessData>() {
+      @java.lang.Override
       public ProcessData parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -9282,6 +9523,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.ProcessData getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -9476,13 +9718,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
               dormantActivations_ = input.readInt32();
@@ -9542,6 +9777,13 @@ public final class ProtobufMessages {
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Activation.PARSER, extensionRegistry));
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -9571,6 +9813,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_fieldAccessorTable
@@ -9736,13 +9979,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
@@ -9792,6 +10028,13 @@ public final class ProtobufMessages {
                 hasRuleFlowLister_ = input.readBool();
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -9815,6 +10058,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_fieldAccessorTable
@@ -9890,13 +10134,6 @@ public final class ProtobufMessages {
                 case 0:
                   done = true;
                   break;
-                default: {
-                  if (!parseUnknownField(
-                      input, unknownFields, extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
                 case 8: {
                   bitField0_ |= 0x00000001;
                   processInstanceId_ = input.readInt64();
@@ -9906,6 +10143,13 @@ public final class ProtobufMessages {
                   com.google.protobuf.ByteString bs = input.readBytes();
                   bitField0_ |= 0x00000002;
                   nodeInstanceId_ = bs;
+                  break;
+                }
+                default: {
+                  if (!parseUnknownField(
+                      input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
                   break;
                 }
               }
@@ -9925,6 +10169,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_fieldAccessorTable
@@ -9991,6 +10236,7 @@ public final class ProtobufMessages {
         }
 
         private byte memoizedIsInitialized = -1;
+        @java.lang.Override
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
           if (isInitialized == 1) return true;
@@ -10000,6 +10246,7 @@ public final class ProtobufMessages {
           return true;
         }
 
+        @java.lang.Override
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -10011,6 +10258,7 @@ public final class ProtobufMessages {
           unknownFields.writeTo(output);
         }
 
+        @java.lang.Override
         public int getSerializedSize() {
           int size = memoizedSize;
           if (size != -1) return size;
@@ -10144,6 +10392,7 @@ public final class ProtobufMessages {
               .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
+        @java.lang.Override
         public Builder newBuilderForType() { return newBuilder(); }
         public static Builder newBuilder() {
           return DEFAULT_INSTANCE.toBuilder();
@@ -10151,6 +10400,7 @@ public final class ProtobufMessages {
         public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance prototype) {
           return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
+        @java.lang.Override
         public Builder toBuilder() {
           return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
@@ -10174,6 +10424,7 @@ public final class ProtobufMessages {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor;
           }
 
+          @java.lang.Override
           protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
               internalGetFieldAccessorTable() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_fieldAccessorTable
@@ -10196,6 +10447,7 @@ public final class ProtobufMessages {
                     .alwaysUseFieldBuilders) {
             }
           }
+          @java.lang.Override
           public Builder clear() {
             super.clear();
             processInstanceId_ = 0L;
@@ -10205,15 +10457,18 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getDefaultInstanceForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.getDefaultInstance();
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance build() {
             org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance result = buildPartial();
             if (!result.isInitialized()) {
@@ -10222,6 +10477,7 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance buildPartial() {
             org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance result = new org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance(this);
             int from_bitField0_ = bitField0_;
@@ -10239,32 +10495,39 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public Builder clone() {
             return (Builder) super.clone();
           }
+          @java.lang.Override
           public Builder setField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.setField(field, value);
           }
+          @java.lang.Override
           public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
           }
+          @java.lang.Override
           public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
           }
+          @java.lang.Override
           public Builder setRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               int index, java.lang.Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
           }
+          @java.lang.Override
           public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.addRepeatedField(field, value);
           }
+          @java.lang.Override
           public Builder mergeFrom(com.google.protobuf.Message other) {
             if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance) {
               return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance)other);
@@ -10289,10 +10552,12 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public final boolean isInitialized() {
             return true;
           }
 
+          @java.lang.Override
           public Builder mergeFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -10419,11 +10684,13 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
+          @java.lang.Override
           public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.setUnknownFields(unknownFields);
           }
 
+          @java.lang.Override
           public final Builder mergeUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
@@ -10445,6 +10712,7 @@ public final class ProtobufMessages {
 
         @java.lang.Deprecated public static final com.google.protobuf.Parser<NodeInstance>
             PARSER = new com.google.protobuf.AbstractParser<NodeInstance>() {
+          @java.lang.Override
           public NodeInstance parsePartialFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -10462,6 +10730,7 @@ public final class ProtobufMessages {
           return PARSER;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getDefaultInstanceForType() {
           return DEFAULT_INSTANCE;
         }
@@ -10657,6 +10926,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -10666,6 +10936,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -10695,6 +10966,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -10904,6 +11176,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -10911,6 +11184,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -10934,6 +11208,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_fieldAccessorTable
@@ -10958,6 +11233,7 @@ public final class ProtobufMessages {
             getNodeInstanceFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           name_ = "";
@@ -10987,15 +11263,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup result = buildPartial();
           if (!result.isInitialized()) {
@@ -11004,6 +11283,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup result = new org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup(this);
           int from_bitField0_ = bitField0_;
@@ -11055,32 +11335,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup)other);
@@ -11169,10 +11456,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -11907,11 +12196,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -11933,6 +12224,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<AgendaGroup>
           PARSER = new com.google.protobuf.AbstractParser<AgendaGroup>() {
+        @java.lang.Override
         public AgendaGroup parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -11950,6 +12242,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -12019,13 +12312,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 com.google.protobuf.ByteString bs = input.readBytes();
                 if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -12033,6 +12319,13 @@ public final class ProtobufMessages {
                   mutable_bitField0_ |= 0x00000001;
                 }
                 groupName_.add(bs);
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -12055,6 +12348,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_FocusStack_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_FocusStack_fieldAccessorTable
@@ -12092,6 +12386,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -12101,6 +12396,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         for (int i = 0; i < groupName_.size(); i++) {
@@ -12109,6 +12405,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -12230,6 +12527,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -12237,6 +12535,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -12260,6 +12559,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_FocusStack_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_FocusStack_fieldAccessorTable
@@ -12282,6 +12582,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           groupName_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -12289,15 +12590,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_FocusStack_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack result = buildPartial();
           if (!result.isInitialized()) {
@@ -12306,6 +12610,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack result = new org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack(this);
           int from_bitField0_ = bitField0_;
@@ -12318,32 +12623,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack)other);
@@ -12370,10 +12682,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -12485,11 +12799,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -12511,6 +12827,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<FocusStack>
           PARSER = new com.google.protobuf.AbstractParser<FocusStack>() {
+        @java.lang.Override
         public FocusStack parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -12528,6 +12845,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -12662,13 +12980,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
@@ -12703,6 +13014,13 @@ public final class ProtobufMessages {
                     input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.PARSER, extensionRegistry));
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -12726,6 +13044,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable
@@ -12801,13 +13120,6 @@ public final class ProtobufMessages {
                 case 0:
                   done = true;
                   break;
-                default: {
-                  if (!parseUnknownField(
-                      input, unknownFields, extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
                 case 8: {
                   bitField0_ |= 0x00000001;
                   processInstanceId_ = input.readInt64();
@@ -12817,6 +13129,13 @@ public final class ProtobufMessages {
                   com.google.protobuf.ByteString bs = input.readBytes();
                   bitField0_ |= 0x00000002;
                   nodeInstanceId_ = bs;
+                  break;
+                }
+                default: {
+                  if (!parseUnknownField(
+                      input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
                   break;
                 }
               }
@@ -12836,6 +13155,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable
@@ -12902,6 +13222,7 @@ public final class ProtobufMessages {
         }
 
         private byte memoizedIsInitialized = -1;
+        @java.lang.Override
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
           if (isInitialized == 1) return true;
@@ -12911,6 +13232,7 @@ public final class ProtobufMessages {
           return true;
         }
 
+        @java.lang.Override
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -12922,6 +13244,7 @@ public final class ProtobufMessages {
           unknownFields.writeTo(output);
         }
 
+        @java.lang.Override
         public int getSerializedSize() {
           int size = memoizedSize;
           if (size != -1) return size;
@@ -13055,6 +13378,7 @@ public final class ProtobufMessages {
               .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
+        @java.lang.Override
         public Builder newBuilderForType() { return newBuilder(); }
         public static Builder newBuilder() {
           return DEFAULT_INSTANCE.toBuilder();
@@ -13062,6 +13386,7 @@ public final class ProtobufMessages {
         public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance prototype) {
           return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
+        @java.lang.Override
         public Builder toBuilder() {
           return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
@@ -13085,6 +13410,7 @@ public final class ProtobufMessages {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
           }
 
+          @java.lang.Override
           protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
               internalGetFieldAccessorTable() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_NodeInstance_fieldAccessorTable
@@ -13107,6 +13433,7 @@ public final class ProtobufMessages {
                     .alwaysUseFieldBuilders) {
             }
           }
+          @java.lang.Override
           public Builder clear() {
             super.clear();
             processInstanceId_ = 0L;
@@ -13116,15 +13443,18 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_NodeInstance_descriptor;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance getDefaultInstanceForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.getDefaultInstance();
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance build() {
             org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance result = buildPartial();
             if (!result.isInitialized()) {
@@ -13133,6 +13463,7 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance buildPartial() {
             org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance result = new org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance(this);
             int from_bitField0_ = bitField0_;
@@ -13150,32 +13481,39 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public Builder clone() {
             return (Builder) super.clone();
           }
+          @java.lang.Override
           public Builder setField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.setField(field, value);
           }
+          @java.lang.Override
           public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
           }
+          @java.lang.Override
           public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
           }
+          @java.lang.Override
           public Builder setRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               int index, java.lang.Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
           }
+          @java.lang.Override
           public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.addRepeatedField(field, value);
           }
+          @java.lang.Override
           public Builder mergeFrom(com.google.protobuf.Message other) {
             if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance) {
               return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance)other);
@@ -13200,10 +13538,12 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public final boolean isInitialized() {
             return true;
           }
 
+          @java.lang.Override
           public Builder mergeFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -13330,11 +13670,13 @@ public final class ProtobufMessages {
             onChanged();
             return this;
           }
+          @java.lang.Override
           public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.setUnknownFields(unknownFields);
           }
 
+          @java.lang.Override
           public final Builder mergeUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
@@ -13356,6 +13698,7 @@ public final class ProtobufMessages {
 
         @java.lang.Deprecated public static final com.google.protobuf.Parser<NodeInstance>
             PARSER = new com.google.protobuf.AbstractParser<NodeInstance>() {
+          @java.lang.Override
           public NodeInstance parsePartialFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -13373,6 +13716,7 @@ public final class ProtobufMessages {
           return PARSER;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance getDefaultInstanceForType() {
           return DEFAULT_INSTANCE;
         }
@@ -13523,6 +13867,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -13532,6 +13877,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -13552,6 +13898,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -13719,6 +14066,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -13726,6 +14074,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -13749,6 +14098,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_fieldAccessorTable
@@ -13773,6 +14123,7 @@ public final class ProtobufMessages {
             getNodeInstanceFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           name_ = "";
@@ -13796,15 +14147,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_RuleFlowGroup_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup result = buildPartial();
           if (!result.isInitialized()) {
@@ -13813,6 +14167,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup result = new org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup(this);
           int from_bitField0_ = bitField0_;
@@ -13852,32 +14207,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup)other);
@@ -13957,10 +14319,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -14599,11 +14963,13 @@ public final class ProtobufMessages {
           }
           return nodeInstanceBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -14625,6 +14991,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<RuleFlowGroup>
           PARSER = new com.google.protobuf.AbstractParser<RuleFlowGroup>() {
+        @java.lang.Override
         public RuleFlowGroup parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -14642,6 +15009,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -14849,6 +15217,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -14858,6 +15227,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -14884,6 +15254,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -15070,6 +15441,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -15077,6 +15449,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Agenda prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -15104,6 +15477,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_fieldAccessorTable
@@ -15131,6 +15505,7 @@ public final class ProtobufMessages {
           getRuleActivationFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         dormantActivations_ = 0;
@@ -15170,15 +15545,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Agenda getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Agenda.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Agenda build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Agenda result = buildPartial();
         if (!result.isInitialized()) {
@@ -15187,6 +15565,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Agenda buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Agenda result = new org.drools.core.marshalling.impl.ProtobufMessages.Agenda(this);
         int from_bitField0_ = bitField0_;
@@ -15248,32 +15627,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Agenda) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Agenda)other);
@@ -15403,10 +15789,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -16583,11 +16971,13 @@ public final class ProtobufMessages {
         }
         return ruleActivationBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -16609,6 +16999,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Agenda>
         PARSER = new com.google.protobuf.AbstractParser<Agenda>() {
+      @java.lang.Override
       public Agenda parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -16626,6 +17017,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Agenda getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -16747,13 +17139,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
               nodeId_ = input.readInt32();
@@ -16761,6 +17146,7 @@ public final class ProtobufMessages {
             }
             case 16: {
               int rawValue = input.readEnum();
+                @SuppressWarnings("deprecation")
               org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType value = org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(2, rawValue);
@@ -16822,6 +17208,13 @@ public final class ProtobufMessages {
               bitField0_ |= 0x00000020;
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -16839,6 +17232,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_fieldAccessorTable
@@ -17022,13 +17416,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                   context_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext>();
@@ -17036,6 +17423,13 @@ public final class ProtobufMessages {
                 }
                 context_.add(
                     input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.PARSER, extensionRegistry));
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -17058,6 +17452,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable
@@ -17134,13 +17529,6 @@ public final class ProtobufMessages {
                 case 0:
                   done = true;
                   break;
-                default: {
-                  if (!parseUnknownField(
-                      input, unknownFields, extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
                 case 10: {
                   org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder subBuilder = null;
                   if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -17167,6 +17555,13 @@ public final class ProtobufMessages {
                   bitField0_ |= 0x00000002;
                   break;
                 }
+                default: {
+                  if (!parseUnknownField(
+                      input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -17184,6 +17579,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable
@@ -17235,6 +17631,7 @@ public final class ProtobufMessages {
         }
 
         private byte memoizedIsInitialized = -1;
+        @java.lang.Override
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
           if (isInitialized == 1) return true;
@@ -17244,6 +17641,7 @@ public final class ProtobufMessages {
           return true;
         }
 
+        @java.lang.Override
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -17255,6 +17653,7 @@ public final class ProtobufMessages {
           unknownFields.writeTo(output);
         }
 
+        @java.lang.Override
         public int getSerializedSize() {
           int size = memoizedSize;
           if (size != -1) return size;
@@ -17388,6 +17787,7 @@ public final class ProtobufMessages {
               .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
+        @java.lang.Override
         public Builder newBuilderForType() { return newBuilder(); }
         public static Builder newBuilder() {
           return DEFAULT_INSTANCE.toBuilder();
@@ -17395,6 +17795,7 @@ public final class ProtobufMessages {
         public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext prototype) {
           return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
+        @java.lang.Override
         public Builder toBuilder() {
           return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
@@ -17418,6 +17819,7 @@ public final class ProtobufMessages {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
           }
 
+          @java.lang.Override
           protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
               internalGetFieldAccessorTable() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_fieldAccessorTable
@@ -17442,6 +17844,7 @@ public final class ProtobufMessages {
               getResultHandleFieldBuilder();
             }
           }
+          @java.lang.Override
           public Builder clear() {
             super.clear();
             if (tupleBuilder_ == null) {
@@ -17459,15 +17862,18 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_AccumulateContext_descriptor;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext getDefaultInstanceForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.getDefaultInstance();
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext build() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext result = buildPartial();
             if (!result.isInitialized()) {
@@ -17476,6 +17882,7 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext buildPartial() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext(this);
             int from_bitField0_ = bitField0_;
@@ -17501,32 +17908,39 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public Builder clone() {
             return (Builder) super.clone();
           }
+          @java.lang.Override
           public Builder setField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.setField(field, value);
           }
+          @java.lang.Override
           public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
           }
+          @java.lang.Override
           public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
           }
+          @java.lang.Override
           public Builder setRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               int index, java.lang.Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
           }
+          @java.lang.Override
           public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.addRepeatedField(field, value);
           }
+          @java.lang.Override
           public Builder mergeFrom(com.google.protobuf.Message other) {
             if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext) {
               return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext)other);
@@ -17549,10 +17963,12 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public final boolean isInitialized() {
             return true;
           }
 
+          @java.lang.Override
           public Builder mergeFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -17807,11 +18223,13 @@ public final class ProtobufMessages {
             }
             return resultHandleBuilder_;
           }
+          @java.lang.Override
           public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.setUnknownFields(unknownFields);
           }
 
+          @java.lang.Override
           public final Builder mergeUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
@@ -17833,6 +18251,7 @@ public final class ProtobufMessages {
 
         @java.lang.Deprecated public static final com.google.protobuf.Parser<AccumulateContext>
             PARSER = new com.google.protobuf.AbstractParser<AccumulateContext>() {
+          @java.lang.Override
           public AccumulateContext parsePartialFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -17850,6 +18269,7 @@ public final class ProtobufMessages {
           return PARSER;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext getDefaultInstanceForType() {
           return DEFAULT_INSTANCE;
         }
@@ -17892,6 +18312,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -17901,6 +18322,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         for (int i = 0; i < context_.size(); i++) {
@@ -17909,6 +18331,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -18026,6 +18449,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -18033,6 +18457,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -18056,6 +18481,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_fieldAccessorTable
@@ -18079,6 +18505,7 @@ public final class ProtobufMessages {
             getContextFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           if (contextBuilder_ == null) {
@@ -18090,15 +18517,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_AccumulateNodeMemory_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory build() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory result = buildPartial();
           if (!result.isInitialized()) {
@@ -18107,6 +18537,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory(this);
           int from_bitField0_ = bitField0_;
@@ -18123,32 +18554,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory)other);
@@ -18191,10 +18629,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -18453,11 +18893,13 @@ public final class ProtobufMessages {
           }
           return contextBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -18479,6 +18921,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<AccumulateNodeMemory>
           PARSER = new com.google.protobuf.AbstractParser<AccumulateNodeMemory>() {
+        @java.lang.Override
         public AccumulateNodeMemory parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -18496,6 +18939,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.AccumulateNodeMemory getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -18570,13 +19014,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                   context_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext>();
@@ -18584,6 +19021,13 @@ public final class ProtobufMessages {
                 }
                 context_.add(
                     input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.PARSER, extensionRegistry));
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -18606,6 +19050,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable
@@ -18682,13 +19127,6 @@ public final class ProtobufMessages {
                 case 0:
                   done = true;
                   break;
-                default: {
-                  if (!parseUnknownField(
-                      input, unknownFields, extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
                 case 10: {
                   org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder subBuilder = null;
                   if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -18715,6 +19153,13 @@ public final class ProtobufMessages {
                   bitField0_ |= 0x00000002;
                   break;
                 }
+                default: {
+                  if (!parseUnknownField(
+                      input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -18732,6 +19177,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable
@@ -18783,6 +19229,7 @@ public final class ProtobufMessages {
         }
 
         private byte memoizedIsInitialized = -1;
+        @java.lang.Override
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
           if (isInitialized == 1) return true;
@@ -18792,6 +19239,7 @@ public final class ProtobufMessages {
           return true;
         }
 
+        @java.lang.Override
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -18803,6 +19251,7 @@ public final class ProtobufMessages {
           unknownFields.writeTo(output);
         }
 
+        @java.lang.Override
         public int getSerializedSize() {
           int size = memoizedSize;
           if (size != -1) return size;
@@ -18936,6 +19385,7 @@ public final class ProtobufMessages {
               .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
+        @java.lang.Override
         public Builder newBuilderForType() { return newBuilder(); }
         public static Builder newBuilder() {
           return DEFAULT_INSTANCE.toBuilder();
@@ -18943,6 +19393,7 @@ public final class ProtobufMessages {
         public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext prototype) {
           return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
+        @java.lang.Override
         public Builder toBuilder() {
           return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
@@ -18966,6 +19417,7 @@ public final class ProtobufMessages {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
           }
 
+          @java.lang.Override
           protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
               internalGetFieldAccessorTable() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_RIAContext_fieldAccessorTable
@@ -18990,6 +19442,7 @@ public final class ProtobufMessages {
               getResultHandleFieldBuilder();
             }
           }
+          @java.lang.Override
           public Builder clear() {
             super.clear();
             if (tupleBuilder_ == null) {
@@ -19007,15 +19460,18 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_RIAContext_descriptor;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext getDefaultInstanceForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext.getDefaultInstance();
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext build() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext result = buildPartial();
             if (!result.isInitialized()) {
@@ -19024,6 +19480,7 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext buildPartial() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext(this);
             int from_bitField0_ = bitField0_;
@@ -19049,32 +19506,39 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public Builder clone() {
             return (Builder) super.clone();
           }
+          @java.lang.Override
           public Builder setField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.setField(field, value);
           }
+          @java.lang.Override
           public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
           }
+          @java.lang.Override
           public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
           }
+          @java.lang.Override
           public Builder setRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               int index, java.lang.Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
           }
+          @java.lang.Override
           public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.addRepeatedField(field, value);
           }
+          @java.lang.Override
           public Builder mergeFrom(com.google.protobuf.Message other) {
             if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext) {
               return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext)other);
@@ -19097,10 +19561,12 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public final boolean isInitialized() {
             return true;
           }
 
+          @java.lang.Override
           public Builder mergeFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -19355,11 +19821,13 @@ public final class ProtobufMessages {
             }
             return resultHandleBuilder_;
           }
+          @java.lang.Override
           public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.setUnknownFields(unknownFields);
           }
 
+          @java.lang.Override
           public final Builder mergeUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
@@ -19381,6 +19849,7 @@ public final class ProtobufMessages {
 
         @java.lang.Deprecated public static final com.google.protobuf.Parser<RIAContext>
             PARSER = new com.google.protobuf.AbstractParser<RIAContext>() {
+          @java.lang.Override
           public RIAContext parsePartialFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -19398,6 +19867,7 @@ public final class ProtobufMessages {
           return PARSER;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.RIAContext getDefaultInstanceForType() {
           return DEFAULT_INSTANCE;
         }
@@ -19440,6 +19910,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -19449,6 +19920,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         for (int i = 0; i < context_.size(); i++) {
@@ -19457,6 +19929,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -19574,6 +20047,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -19581,6 +20055,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -19604,6 +20079,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_fieldAccessorTable
@@ -19627,6 +20103,7 @@ public final class ProtobufMessages {
             getContextFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           if (contextBuilder_ == null) {
@@ -19638,15 +20115,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_RIANodeMemory_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory build() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory result = buildPartial();
           if (!result.isInitialized()) {
@@ -19655,6 +20135,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory(this);
           int from_bitField0_ = bitField0_;
@@ -19671,32 +20152,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory)other);
@@ -19739,10 +20227,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -20001,11 +20491,13 @@ public final class ProtobufMessages {
           }
           return contextBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -20027,6 +20519,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<RIANodeMemory>
           PARSER = new com.google.protobuf.AbstractParser<RIANodeMemory>() {
+        @java.lang.Override
         public RIANodeMemory parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -20044,6 +20537,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.RIANodeMemory getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -20118,13 +20612,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                   context_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext>();
@@ -20132,6 +20619,13 @@ public final class ProtobufMessages {
                 }
                 context_.add(
                     input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.PARSER, extensionRegistry));
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -20154,6 +20648,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable
@@ -20267,13 +20762,6 @@ public final class ProtobufMessages {
                 case 0:
                   done = true;
                   break;
-                default: {
-                  if (!parseUnknownField(
-                      input, unknownFields, extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
                 case 10: {
                   org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder subBuilder = null;
                   if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -20305,6 +20793,13 @@ public final class ProtobufMessages {
                       input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.PARSER, extensionRegistry));
                   break;
                 }
+                default: {
+                  if (!parseUnknownField(
+                      input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -20328,6 +20823,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable
@@ -20398,13 +20894,6 @@ public final class ProtobufMessages {
                   case 0:
                     done = true;
                     break;
-                  default: {
-                    if (!parseUnknownField(
-                        input, unknownFields, extensionRegistry, tag)) {
-                      done = true;
-                    }
-                    break;
-                  }
                   case 64: {
                     bitField0_ |= 0x00000001;
                     strategyIndex_ = input.readInt32();
@@ -20413,6 +20902,13 @@ public final class ProtobufMessages {
                   case 74: {
                     bitField0_ |= 0x00000002;
                     object_ = input.readBytes();
+                    break;
+                  }
+                  default: {
+                    if (!parseUnknownField(
+                        input, unknownFields, extensionRegistry, tag)) {
+                      done = true;
+                    }
                     break;
                   }
                 }
@@ -20432,6 +20928,7 @@ public final class ProtobufMessages {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_FromObject_descriptor;
           }
 
+          @java.lang.Override
           protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
               internalGetFieldAccessorTable() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_FromObject_fieldAccessorTable
@@ -20471,6 +20968,7 @@ public final class ProtobufMessages {
           }
 
           private byte memoizedIsInitialized = -1;
+          @java.lang.Override
           public final boolean isInitialized() {
             byte isInitialized = memoizedIsInitialized;
             if (isInitialized == 1) return true;
@@ -20480,6 +20978,7 @@ public final class ProtobufMessages {
             return true;
           }
 
+          @java.lang.Override
           public void writeTo(com.google.protobuf.CodedOutputStream output)
                               throws java.io.IOException {
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -20491,6 +20990,7 @@ public final class ProtobufMessages {
             unknownFields.writeTo(output);
           }
 
+          @java.lang.Override
           public int getSerializedSize() {
             int size = memoizedSize;
             if (size != -1) return size;
@@ -20624,6 +21124,7 @@ public final class ProtobufMessages {
                 .parseWithIOException(PARSER, input, extensionRegistry);
           }
 
+          @java.lang.Override
           public Builder newBuilderForType() { return newBuilder(); }
           public static Builder newBuilder() {
             return DEFAULT_INSTANCE.toBuilder();
@@ -20631,6 +21132,7 @@ public final class ProtobufMessages {
           public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject prototype) {
             return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
           }
+          @java.lang.Override
           public Builder toBuilder() {
             return this == DEFAULT_INSTANCE
                 ? new Builder() : new Builder().mergeFrom(this);
@@ -20654,6 +21156,7 @@ public final class ProtobufMessages {
               return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_FromObject_descriptor;
             }
 
+            @java.lang.Override
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
                 internalGetFieldAccessorTable() {
               return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_FromObject_fieldAccessorTable
@@ -20676,6 +21179,7 @@ public final class ProtobufMessages {
                       .alwaysUseFieldBuilders) {
               }
             }
+            @java.lang.Override
             public Builder clear() {
               super.clear();
               strategyIndex_ = 0;
@@ -20685,15 +21189,18 @@ public final class ProtobufMessages {
               return this;
             }
 
+            @java.lang.Override
             public com.google.protobuf.Descriptors.Descriptor
                 getDescriptorForType() {
               return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_FromObject_descriptor;
             }
 
+            @java.lang.Override
             public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject getDefaultInstanceForType() {
               return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject.getDefaultInstance();
             }
 
+            @java.lang.Override
             public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject build() {
               org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject result = buildPartial();
               if (!result.isInitialized()) {
@@ -20702,6 +21209,7 @@ public final class ProtobufMessages {
               return result;
             }
 
+            @java.lang.Override
             public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject buildPartial() {
               org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject(this);
               int from_bitField0_ = bitField0_;
@@ -20719,32 +21227,39 @@ public final class ProtobufMessages {
               return result;
             }
 
+            @java.lang.Override
             public Builder clone() {
               return (Builder) super.clone();
             }
+            @java.lang.Override
             public Builder setField(
                 com.google.protobuf.Descriptors.FieldDescriptor field,
                 java.lang.Object value) {
               return (Builder) super.setField(field, value);
             }
+            @java.lang.Override
             public Builder clearField(
                 com.google.protobuf.Descriptors.FieldDescriptor field) {
               return (Builder) super.clearField(field);
             }
+            @java.lang.Override
             public Builder clearOneof(
                 com.google.protobuf.Descriptors.OneofDescriptor oneof) {
               return (Builder) super.clearOneof(oneof);
             }
+            @java.lang.Override
             public Builder setRepeatedField(
                 com.google.protobuf.Descriptors.FieldDescriptor field,
                 int index, java.lang.Object value) {
               return (Builder) super.setRepeatedField(field, index, value);
             }
+            @java.lang.Override
             public Builder addRepeatedField(
                 com.google.protobuf.Descriptors.FieldDescriptor field,
                 java.lang.Object value) {
               return (Builder) super.addRepeatedField(field, value);
             }
+            @java.lang.Override
             public Builder mergeFrom(com.google.protobuf.Message other) {
               if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject) {
                 return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject)other);
@@ -20767,10 +21282,12 @@ public final class ProtobufMessages {
               return this;
             }
 
+            @java.lang.Override
             public final boolean isInitialized() {
               return true;
             }
 
+            @java.lang.Override
             public Builder mergeFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -20856,11 +21373,13 @@ public final class ProtobufMessages {
               onChanged();
               return this;
             }
+            @java.lang.Override
             public final Builder setUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
               return super.setUnknownFields(unknownFields);
             }
 
+            @java.lang.Override
             public final Builder mergeUnknownFields(
                 final com.google.protobuf.UnknownFieldSet unknownFields) {
               return super.mergeUnknownFields(unknownFields);
@@ -20882,6 +21401,7 @@ public final class ProtobufMessages {
 
           @java.lang.Deprecated public static final com.google.protobuf.Parser<FromObject>
               PARSER = new com.google.protobuf.AbstractParser<FromObject>() {
+            @java.lang.Override
             public FromObject parsePartialFrom(
                 com.google.protobuf.CodedInputStream input,
                 com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -20899,6 +21419,7 @@ public final class ProtobufMessages {
             return PARSER;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.FromObject getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
           }
@@ -20998,6 +21519,7 @@ public final class ProtobufMessages {
         }
 
         private byte memoizedIsInitialized = -1;
+        @java.lang.Override
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
           if (isInitialized == 1) return true;
@@ -21007,6 +21529,7 @@ public final class ProtobufMessages {
           return true;
         }
 
+        @java.lang.Override
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -21021,6 +21544,7 @@ public final class ProtobufMessages {
           unknownFields.writeTo(output);
         }
 
+        @java.lang.Override
         public int getSerializedSize() {
           int size = memoizedSize;
           if (size != -1) return size;
@@ -21161,6 +21685,7 @@ public final class ProtobufMessages {
               .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
+        @java.lang.Override
         public Builder newBuilderForType() { return newBuilder(); }
         public static Builder newBuilder() {
           return DEFAULT_INSTANCE.toBuilder();
@@ -21168,6 +21693,7 @@ public final class ProtobufMessages {
         public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext prototype) {
           return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
+        @java.lang.Override
         public Builder toBuilder() {
           return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
@@ -21191,6 +21717,7 @@ public final class ProtobufMessages {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
           }
 
+          @java.lang.Override
           protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
               internalGetFieldAccessorTable() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_fieldAccessorTable
@@ -21216,6 +21743,7 @@ public final class ProtobufMessages {
               getObjectFieldBuilder();
             }
           }
+          @java.lang.Override
           public Builder clear() {
             super.clear();
             if (tupleBuilder_ == null) {
@@ -21239,15 +21767,18 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_FromContext_descriptor;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext getDefaultInstanceForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.getDefaultInstance();
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext build() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext result = buildPartial();
             if (!result.isInitialized()) {
@@ -21256,6 +21787,7 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext buildPartial() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext(this);
             int from_bitField0_ = bitField0_;
@@ -21291,32 +21823,39 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public Builder clone() {
             return (Builder) super.clone();
           }
+          @java.lang.Override
           public Builder setField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.setField(field, value);
           }
+          @java.lang.Override
           public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
           }
+          @java.lang.Override
           public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
           }
+          @java.lang.Override
           public Builder setRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               int index, java.lang.Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
           }
+          @java.lang.Override
           public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.addRepeatedField(field, value);
           }
+          @java.lang.Override
           public Builder mergeFrom(com.google.protobuf.Message other) {
             if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext) {
               return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext)other);
@@ -21388,10 +21927,12 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public final boolean isInitialized() {
             return true;
           }
 
+          @java.lang.Override
           public Builder mergeFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -22008,11 +22549,13 @@ public final class ProtobufMessages {
             }
             return objectBuilder_;
           }
+          @java.lang.Override
           public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.setUnknownFields(unknownFields);
           }
 
+          @java.lang.Override
           public final Builder mergeUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
@@ -22034,6 +22577,7 @@ public final class ProtobufMessages {
 
         @java.lang.Deprecated public static final com.google.protobuf.Parser<FromContext>
             PARSER = new com.google.protobuf.AbstractParser<FromContext>() {
+          @java.lang.Override
           public FromContext parsePartialFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -22051,6 +22595,7 @@ public final class ProtobufMessages {
           return PARSER;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.FromContext getDefaultInstanceForType() {
           return DEFAULT_INSTANCE;
         }
@@ -22093,6 +22638,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -22102,6 +22648,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         for (int i = 0; i < context_.size(); i++) {
@@ -22110,6 +22657,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -22227,6 +22775,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -22234,6 +22783,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -22257,6 +22807,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_fieldAccessorTable
@@ -22280,6 +22831,7 @@ public final class ProtobufMessages {
             getContextFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           if (contextBuilder_ == null) {
@@ -22291,15 +22843,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_FromNodeMemory_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory build() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory result = buildPartial();
           if (!result.isInitialized()) {
@@ -22308,6 +22863,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory(this);
           int from_bitField0_ = bitField0_;
@@ -22324,32 +22880,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory)other);
@@ -22392,10 +22955,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -22654,11 +23219,13 @@ public final class ProtobufMessages {
           }
           return contextBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -22680,6 +23247,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<FromNodeMemory>
           PARSER = new com.google.protobuf.AbstractParser<FromNodeMemory>() {
+        @java.lang.Override
         public FromNodeMemory parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -22697,6 +23265,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.FromNodeMemory getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -22771,13 +23340,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                   context_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext>();
@@ -22785,6 +23347,13 @@ public final class ProtobufMessages {
                 }
                 context_.add(
                     input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.PARSER, extensionRegistry));
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -22807,6 +23376,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable
@@ -22908,13 +23478,6 @@ public final class ProtobufMessages {
                 case 0:
                   done = true;
                   break;
-                default: {
-                  if (!parseUnknownField(
-                      input, unknownFields, extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
                 case 10: {
                   org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder subBuilder = null;
                   if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -22950,6 +23513,13 @@ public final class ProtobufMessages {
                       input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.PARSER, extensionRegistry));
                   break;
                 }
+                default: {
+                  if (!parseUnknownField(
+                      input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -22970,6 +23540,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable
@@ -23056,6 +23627,7 @@ public final class ProtobufMessages {
         }
 
         private byte memoizedIsInitialized = -1;
+        @java.lang.Override
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
           if (isInitialized == 1) return true;
@@ -23065,6 +23637,7 @@ public final class ProtobufMessages {
           return true;
         }
 
+        @java.lang.Override
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                             throws java.io.IOException {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -23079,6 +23652,7 @@ public final class ProtobufMessages {
           unknownFields.writeTo(output);
         }
 
+        @java.lang.Override
         public int getSerializedSize() {
           int size = memoizedSize;
           if (size != -1) return size;
@@ -23222,6 +23796,7 @@ public final class ProtobufMessages {
               .parseWithIOException(PARSER, input, extensionRegistry);
         }
 
+        @java.lang.Override
         public Builder newBuilderForType() { return newBuilder(); }
         public static Builder newBuilder() {
           return DEFAULT_INSTANCE.toBuilder();
@@ -23229,6 +23804,7 @@ public final class ProtobufMessages {
         public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext prototype) {
           return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
         }
+        @java.lang.Override
         public Builder toBuilder() {
           return this == DEFAULT_INSTANCE
               ? new Builder() : new Builder().mergeFrom(this);
@@ -23252,6 +23828,7 @@ public final class ProtobufMessages {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
           }
 
+          @java.lang.Override
           protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
               internalGetFieldAccessorTable() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_fieldAccessorTable
@@ -23277,6 +23854,7 @@ public final class ProtobufMessages {
               getResultFieldBuilder();
             }
           }
+          @java.lang.Override
           public Builder clear() {
             super.clear();
             if (tupleBuilder_ == null) {
@@ -23300,15 +23878,18 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_QueryContext_descriptor;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext getDefaultInstanceForType() {
             return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext.getDefaultInstance();
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext build() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext result = buildPartial();
             if (!result.isInitialized()) {
@@ -23317,6 +23898,7 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext buildPartial() {
             org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext(this);
             int from_bitField0_ = bitField0_;
@@ -23351,32 +23933,39 @@ public final class ProtobufMessages {
             return result;
           }
 
+          @java.lang.Override
           public Builder clone() {
             return (Builder) super.clone();
           }
+          @java.lang.Override
           public Builder setField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.setField(field, value);
           }
+          @java.lang.Override
           public Builder clearField(
               com.google.protobuf.Descriptors.FieldDescriptor field) {
             return (Builder) super.clearField(field);
           }
+          @java.lang.Override
           public Builder clearOneof(
               com.google.protobuf.Descriptors.OneofDescriptor oneof) {
             return (Builder) super.clearOneof(oneof);
           }
+          @java.lang.Override
           public Builder setRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               int index, java.lang.Object value) {
             return (Builder) super.setRepeatedField(field, index, value);
           }
+          @java.lang.Override
           public Builder addRepeatedField(
               com.google.protobuf.Descriptors.FieldDescriptor field,
               java.lang.Object value) {
             return (Builder) super.addRepeatedField(field, value);
           }
+          @java.lang.Override
           public Builder mergeFrom(com.google.protobuf.Message other) {
             if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext) {
               return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext)other);
@@ -23425,10 +24014,12 @@ public final class ProtobufMessages {
             return this;
           }
 
+          @java.lang.Override
           public final boolean isInitialized() {
             return true;
           }
 
+          @java.lang.Override
           public Builder mergeFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -23923,11 +24514,13 @@ public final class ProtobufMessages {
             }
             return resultBuilder_;
           }
+          @java.lang.Override
           public final Builder setUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.setUnknownFields(unknownFields);
           }
 
+          @java.lang.Override
           public final Builder mergeUnknownFields(
               final com.google.protobuf.UnknownFieldSet unknownFields) {
             return super.mergeUnknownFields(unknownFields);
@@ -23949,6 +24542,7 @@ public final class ProtobufMessages {
 
         @java.lang.Deprecated public static final com.google.protobuf.Parser<QueryContext>
             PARSER = new com.google.protobuf.AbstractParser<QueryContext>() {
+          @java.lang.Override
           public QueryContext parsePartialFrom(
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -23966,6 +24560,7 @@ public final class ProtobufMessages {
           return PARSER;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.QueryContext getDefaultInstanceForType() {
           return DEFAULT_INSTANCE;
         }
@@ -24008,6 +24603,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -24017,6 +24613,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         for (int i = 0; i < context_.size(); i++) {
@@ -24025,6 +24622,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -24142,6 +24740,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -24149,6 +24748,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -24172,6 +24772,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_fieldAccessorTable
@@ -24195,6 +24796,7 @@ public final class ProtobufMessages {
             getContextFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           if (contextBuilder_ == null) {
@@ -24206,15 +24808,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_QueryElementNodeMemory_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory build() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory result = buildPartial();
           if (!result.isInitialized()) {
@@ -24223,6 +24828,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory(this);
           int from_bitField0_ = bitField0_;
@@ -24239,32 +24845,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory)other);
@@ -24307,10 +24920,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -24569,11 +25184,13 @@ public final class ProtobufMessages {
           }
           return contextBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -24595,6 +25212,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<QueryElementNodeMemory>
           PARSER = new com.google.protobuf.AbstractParser<QueryElementNodeMemory>() {
+        @java.lang.Override
         public QueryElementNodeMemory parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -24612,6 +25230,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.QueryElementNodeMemory getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -24646,6 +25265,7 @@ public final class ProtobufMessages {
      * <code>optional .org.drools.core.marshalling.NodeMemory.NodeType node_type = 2;</code>
      */
     public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType getNodeType() {
+      @SuppressWarnings("deprecation")
       org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType result = org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType.valueOf(nodeType_);
       return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType.ACCUMULATE : result;
     }
@@ -24735,6 +25355,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -24744,6 +25365,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -24767,6 +25389,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -24951,6 +25574,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -24958,6 +25582,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -24981,6 +25606,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_fieldAccessorTable
@@ -25007,6 +25633,7 @@ public final class ProtobufMessages {
           getQueryElementFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         nodeId_ = 0;
@@ -25040,15 +25667,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_NodeMemory_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory build() {
         org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory result = buildPartial();
         if (!result.isInitialized()) {
@@ -25057,6 +25687,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory result = new org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory(this);
         int from_bitField0_ = bitField0_;
@@ -25106,32 +25737,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory)other);
@@ -25166,10 +25804,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -25232,6 +25872,7 @@ public final class ProtobufMessages {
        * <code>optional .org.drools.core.marshalling.NodeMemory.NodeType node_type = 2;</code>
        */
       public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType getNodeType() {
+        @SuppressWarnings("deprecation")
         org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType result = org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType.valueOf(nodeType_);
         return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory.NodeType.ACCUMULATE : result;
       }
@@ -25728,11 +26369,13 @@ public final class ProtobufMessages {
         }
         return queryElementBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -25754,6 +26397,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<NodeMemory>
         PARSER = new com.google.protobuf.AbstractParser<NodeMemory>() {
+      @java.lang.Override
       public NodeMemory parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -25771,6 +26415,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -25902,13 +26547,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -25946,6 +26584,13 @@ public final class ProtobufMessages {
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration.PARSER, extensionRegistry));
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -25969,6 +26614,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EntryPoint_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EntryPoint_fieldAccessorTable
@@ -26111,6 +26757,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -26120,6 +26767,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -26137,6 +26785,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -26289,6 +26938,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -26296,6 +26946,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -26323,6 +26974,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EntryPoint_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EntryPoint_fieldAccessorTable
@@ -26348,6 +27000,7 @@ public final class ProtobufMessages {
           getOtcFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         entryPointId_ = "";
@@ -26373,15 +27026,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EntryPoint_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint build() {
         org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint result = buildPartial();
         if (!result.isInitialized()) {
@@ -26390,6 +27046,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint result = new org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint(this);
         int from_bitField0_ = bitField0_;
@@ -26429,32 +27086,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint)other);
@@ -26531,10 +27195,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -27227,11 +27893,13 @@ public final class ProtobufMessages {
         }
         return otcBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -27253,6 +27921,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<EntryPoint>
         PARSER = new com.google.protobuf.AbstractParser<EntryPoint>() {
+      @java.lang.Override
       public EntryPoint parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -27270,6 +27939,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -27290,13 +27960,13 @@ public final class ProtobufMessages {
     org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType getType();
 
     /**
-     * <code>optional int32 id = 2;</code>
+     * <code>optional int64 id = 2;</code>
      */
     boolean hasId();
     /**
-     * <code>optional int32 id = 2;</code>
+     * <code>optional int64 id = 2;</code>
      */
-    int getId();
+    long getId();
 
     /**
      * <code>optional int64 recency = 3;</code>
@@ -27439,7 +28109,7 @@ public final class ProtobufMessages {
     }
     private FactHandle() {
       type_ = 1;
-      id_ = 0;
+      id_ = 0L;
       recency_ = 0L;
       timestamp_ = 0L;
       duration_ = 0L;
@@ -27476,15 +28146,9 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               int rawValue = input.readEnum();
+                @SuppressWarnings("deprecation")
               org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType value = org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
@@ -27496,7 +28160,7 @@ public final class ProtobufMessages {
             }
             case 16: {
               bitField0_ |= 0x00000002;
-              id_ = input.readInt32();
+              id_ = input.readInt64();
               break;
             }
             case 24: {
@@ -27550,6 +28214,13 @@ public final class ProtobufMessages {
               otnCount_ = input.readInt32();
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -27567,6 +28238,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_FactHandle_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_FactHandle_fieldAccessorTable
@@ -27695,22 +28367,23 @@ public final class ProtobufMessages {
      * <code>optional .org.drools.core.marshalling.FactHandle.HandleType type = 1;</code>
      */
     public org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType getType() {
+      @SuppressWarnings("deprecation")
       org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType result = org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType.valueOf(type_);
       return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType.INITIAL_FACT : result;
     }
 
     public static final int ID_FIELD_NUMBER = 2;
-    private int id_;
+    private long id_;
     /**
-     * <code>optional int32 id = 2;</code>
+     * <code>optional int64 id = 2;</code>
      */
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int32 id = 2;</code>
+     * <code>optional int64 id = 2;</code>
      */
-    public int getId() {
+    public long getId() {
       return id_;
     }
 
@@ -27920,6 +28593,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -27929,13 +28603,14 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeEnum(1, type_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, id_);
+        output.writeInt64(2, id_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt64(3, recency_);
@@ -27970,6 +28645,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -27981,7 +28657,7 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, id_);
+          .computeInt64Size(2, id_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
@@ -28114,7 +28790,8 @@ public final class ProtobufMessages {
       }
       if (hasId()) {
         hash = (37 * hash) + ID_FIELD_NUMBER;
-        hash = (53 * hash) + getId();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getId());
       }
       if (hasRecency()) {
         hash = (37 * hash) + RECENCY_FIELD_NUMBER;
@@ -28237,6 +28914,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -28244,6 +28922,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.FactHandle prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -28271,6 +28950,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_FactHandle_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_FactHandle_fieldAccessorTable
@@ -28293,11 +28973,12 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         type_ = 1;
         bitField0_ = (bitField0_ & ~0x00000001);
-        id_ = 0;
+        id_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
         recency_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -28322,15 +29003,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_FactHandle_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.FactHandle getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.FactHandle build() {
         org.drools.core.marshalling.impl.ProtobufMessages.FactHandle result = buildPartial();
         if (!result.isInitialized()) {
@@ -28339,6 +29023,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.FactHandle buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.FactHandle result = new org.drools.core.marshalling.impl.ProtobufMessages.FactHandle(this);
         int from_bitField0_ = bitField0_;
@@ -28396,32 +29081,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.FactHandle) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.FactHandle)other);
@@ -28476,10 +29168,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -28510,6 +29204,7 @@ public final class ProtobufMessages {
        * <code>optional .org.drools.core.marshalling.FactHandle.HandleType type = 1;</code>
        */
       public org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType getType() {
+        @SuppressWarnings("deprecation")
         org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType result = org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType.valueOf(type_);
         return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.FactHandle.HandleType.INITIAL_FACT : result;
       }
@@ -28535,34 +29230,34 @@ public final class ProtobufMessages {
         return this;
       }
 
-      private int id_ ;
+      private long id_ ;
       /**
-       * <code>optional int32 id = 2;</code>
+       * <code>optional int64 id = 2;</code>
        */
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional int32 id = 2;</code>
+       * <code>optional int64 id = 2;</code>
        */
-      public int getId() {
+      public long getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 2;</code>
+       * <code>optional int64 id = 2;</code>
        */
-      public Builder setId(int value) {
+      public Builder setId(long value) {
         bitField0_ |= 0x00000002;
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 2;</code>
+       * <code>optional int64 id = 2;</code>
        */
       public Builder clearId() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        id_ = 0;
+        id_ = 0L;
         onChanged();
         return this;
       }
@@ -28989,11 +29684,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -29015,6 +29712,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<FactHandle>
         PARSER = new com.google.protobuf.AbstractParser<FactHandle>() {
+      @java.lang.Override
       public FactHandle parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -29032,6 +29730,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.FactHandle getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -29140,26 +29839,26 @@ public final class ProtobufMessages {
     boolean getIsActivated();
 
     /**
-     * <code>optional int32 handle_id = 9;</code>
+     * <code>optional int64 handle_id = 9;</code>
      */
     boolean hasHandleId();
     /**
-     * <code>optional int32 handle_id = 9;</code>
+     * <code>optional int64 handle_id = 9;</code>
      */
-    int getHandleId();
+    long getHandleId();
 
     /**
-     * <code>repeated int32 logical_dependency = 10;</code>
+     * <code>repeated int64 logical_dependency = 10;</code>
      */
-    java.util.List<java.lang.Integer> getLogicalDependencyList();
+    java.util.List<java.lang.Long> getLogicalDependencyList();
     /**
-     * <code>repeated int32 logical_dependency = 10;</code>
+     * <code>repeated int64 logical_dependency = 10;</code>
      */
     int getLogicalDependencyCount();
     /**
-     * <code>repeated int32 logical_dependency = 10;</code>
+     * <code>repeated int64 logical_dependency = 10;</code>
      */
-    int getLogicalDependency(int index);
+    long getLogicalDependency(int index);
 
     /**
      * <code>optional bool evaluated = 11;</code>
@@ -29188,7 +29887,7 @@ public final class ProtobufMessages {
       ruleName_ = "";
       activationGroup_ = "";
       isActivated_ = false;
-      handleId_ = 0;
+      handleId_ = 0L;
       logicalDependency_ = java.util.Collections.emptyList();
       evaluated_ = false;
     }
@@ -29217,13 +29916,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 18: {
               org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -29267,26 +29959,26 @@ public final class ProtobufMessages {
             }
             case 72: {
               bitField0_ |= 0x00000040;
-              handleId_ = input.readInt32();
+              handleId_ = input.readInt64();
               break;
             }
             case 80: {
               if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
-                logicalDependency_ = new java.util.ArrayList<java.lang.Integer>();
+                logicalDependency_ = new java.util.ArrayList<java.lang.Long>();
                 mutable_bitField0_ |= 0x00000080;
               }
-              logicalDependency_.add(input.readInt32());
+              logicalDependency_.add(input.readInt64());
               break;
             }
             case 82: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000080) == 0x00000080) && input.getBytesUntilLimit() > 0) {
-                logicalDependency_ = new java.util.ArrayList<java.lang.Integer>();
+                logicalDependency_ = new java.util.ArrayList<java.lang.Long>();
                 mutable_bitField0_ |= 0x00000080;
               }
               while (input.getBytesUntilLimit() > 0) {
-                logicalDependency_.add(input.readInt32());
+                logicalDependency_.add(input.readInt64());
               }
               input.popLimit(limit);
               break;
@@ -29294,6 +29986,13 @@ public final class ProtobufMessages {
             case 88: {
               bitField0_ |= 0x00000080;
               evaluated_ = input.readBool();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -29316,6 +30015,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Activation_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Activation_fieldAccessorTable
@@ -29526,39 +30226,39 @@ public final class ProtobufMessages {
     }
 
     public static final int HANDLE_ID_FIELD_NUMBER = 9;
-    private int handleId_;
+    private long handleId_;
     /**
-     * <code>optional int32 handle_id = 9;</code>
+     * <code>optional int64 handle_id = 9;</code>
      */
     public boolean hasHandleId() {
       return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional int32 handle_id = 9;</code>
+     * <code>optional int64 handle_id = 9;</code>
      */
-    public int getHandleId() {
+    public long getHandleId() {
       return handleId_;
     }
 
     public static final int LOGICAL_DEPENDENCY_FIELD_NUMBER = 10;
-    private java.util.List<java.lang.Integer> logicalDependency_;
+    private java.util.List<java.lang.Long> logicalDependency_;
     /**
-     * <code>repeated int32 logical_dependency = 10;</code>
+     * <code>repeated int64 logical_dependency = 10;</code>
      */
-    public java.util.List<java.lang.Integer>
+    public java.util.List<java.lang.Long>
         getLogicalDependencyList() {
       return logicalDependency_;
     }
     /**
-     * <code>repeated int32 logical_dependency = 10;</code>
+     * <code>repeated int64 logical_dependency = 10;</code>
      */
     public int getLogicalDependencyCount() {
       return logicalDependency_.size();
     }
     /**
-     * <code>repeated int32 logical_dependency = 10;</code>
+     * <code>repeated int64 logical_dependency = 10;</code>
      */
-    public int getLogicalDependency(int index) {
+    public long getLogicalDependency(int index) {
       return logicalDependency_.get(index);
     }
 
@@ -29578,6 +30278,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -29587,6 +30288,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -29608,10 +30310,10 @@ public final class ProtobufMessages {
         output.writeBool(8, isActivated_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeInt32(9, handleId_);
+        output.writeInt64(9, handleId_);
       }
       for (int i = 0; i < logicalDependency_.size(); i++) {
-        output.writeInt32(10, logicalDependency_.get(i));
+        output.writeInt64(10, logicalDependency_.get(i));
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeBool(11, evaluated_);
@@ -29619,6 +30321,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -29647,13 +30350,13 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(9, handleId_);
+          .computeInt64Size(9, handleId_);
       }
       {
         int dataSize = 0;
         for (int i = 0; i < logicalDependency_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(logicalDependency_.get(i));
+            .computeInt64SizeNoTag(logicalDependency_.get(i));
         }
         size += dataSize;
         size += 1 * getLogicalDependencyList().size();
@@ -29758,7 +30461,8 @@ public final class ProtobufMessages {
       }
       if (hasHandleId()) {
         hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getHandleId();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getHandleId());
       }
       if (getLogicalDependencyCount() > 0) {
         hash = (37 * hash) + LOGICAL_DEPENDENCY_FIELD_NUMBER;
@@ -29844,6 +30548,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -29851,6 +30556,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Activation prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -29874,6 +30580,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Activation_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Activation_fieldAccessorTable
@@ -29897,6 +30604,7 @@ public final class ProtobufMessages {
           getTupleFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         if (tupleBuilder_ == null) {
@@ -29915,7 +30623,7 @@ public final class ProtobufMessages {
         bitField0_ = (bitField0_ & ~0x00000010);
         isActivated_ = false;
         bitField0_ = (bitField0_ & ~0x00000020);
-        handleId_ = 0;
+        handleId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000040);
         logicalDependency_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -29924,15 +30632,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Activation_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Activation getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Activation.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Activation build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Activation result = buildPartial();
         if (!result.isInitialized()) {
@@ -29941,6 +30652,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Activation buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Activation result = new org.drools.core.marshalling.impl.ProtobufMessages.Activation(this);
         int from_bitField0_ = bitField0_;
@@ -29991,32 +30703,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Activation) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Activation)other);
@@ -30073,10 +30792,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -30566,88 +31287,88 @@ public final class ProtobufMessages {
         return this;
       }
 
-      private int handleId_ ;
+      private long handleId_ ;
       /**
-       * <code>optional int32 handle_id = 9;</code>
+       * <code>optional int64 handle_id = 9;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>optional int32 handle_id = 9;</code>
+       * <code>optional int64 handle_id = 9;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
       /**
-       * <code>optional int32 handle_id = 9;</code>
+       * <code>optional int64 handle_id = 9;</code>
        */
-      public Builder setHandleId(int value) {
+      public Builder setHandleId(long value) {
         bitField0_ |= 0x00000040;
         handleId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 handle_id = 9;</code>
+       * <code>optional int64 handle_id = 9;</code>
        */
       public Builder clearHandleId() {
         bitField0_ = (bitField0_ & ~0x00000040);
-        handleId_ = 0;
+        handleId_ = 0L;
         onChanged();
         return this;
       }
 
-      private java.util.List<java.lang.Integer> logicalDependency_ = java.util.Collections.emptyList();
+      private java.util.List<java.lang.Long> logicalDependency_ = java.util.Collections.emptyList();
       private void ensureLogicalDependencyIsMutable() {
         if (!((bitField0_ & 0x00000080) == 0x00000080)) {
-          logicalDependency_ = new java.util.ArrayList<java.lang.Integer>(logicalDependency_);
+          logicalDependency_ = new java.util.ArrayList<java.lang.Long>(logicalDependency_);
           bitField0_ |= 0x00000080;
          }
       }
       /**
-       * <code>repeated int32 logical_dependency = 10;</code>
+       * <code>repeated int64 logical_dependency = 10;</code>
        */
-      public java.util.List<java.lang.Integer>
+      public java.util.List<java.lang.Long>
           getLogicalDependencyList() {
         return java.util.Collections.unmodifiableList(logicalDependency_);
       }
       /**
-       * <code>repeated int32 logical_dependency = 10;</code>
+       * <code>repeated int64 logical_dependency = 10;</code>
        */
       public int getLogicalDependencyCount() {
         return logicalDependency_.size();
       }
       /**
-       * <code>repeated int32 logical_dependency = 10;</code>
+       * <code>repeated int64 logical_dependency = 10;</code>
        */
-      public int getLogicalDependency(int index) {
+      public long getLogicalDependency(int index) {
         return logicalDependency_.get(index);
       }
       /**
-       * <code>repeated int32 logical_dependency = 10;</code>
+       * <code>repeated int64 logical_dependency = 10;</code>
        */
       public Builder setLogicalDependency(
-          int index, int value) {
+          int index, long value) {
         ensureLogicalDependencyIsMutable();
         logicalDependency_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated int32 logical_dependency = 10;</code>
+       * <code>repeated int64 logical_dependency = 10;</code>
        */
-      public Builder addLogicalDependency(int value) {
+      public Builder addLogicalDependency(long value) {
         ensureLogicalDependencyIsMutable();
         logicalDependency_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated int32 logical_dependency = 10;</code>
+       * <code>repeated int64 logical_dependency = 10;</code>
        */
       public Builder addAllLogicalDependency(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
+          java.lang.Iterable<? extends java.lang.Long> values) {
         ensureLogicalDependencyIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
             values, logicalDependency_);
@@ -30655,7 +31376,7 @@ public final class ProtobufMessages {
         return this;
       }
       /**
-       * <code>repeated int32 logical_dependency = 10;</code>
+       * <code>repeated int64 logical_dependency = 10;</code>
        */
       public Builder clearLogicalDependency() {
         logicalDependency_ = java.util.Collections.emptyList();
@@ -30695,11 +31416,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -30721,6 +31444,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Activation>
         PARSER = new com.google.protobuf.AbstractParser<Activation>() {
+      @java.lang.Override
       public Activation parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -30738,6 +31462,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Activation getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -30749,17 +31474,17 @@ public final class ProtobufMessages {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated int32 handle_id = 1;</code>
+     * <code>repeated int64 handle_id = 1;</code>
      */
-    java.util.List<java.lang.Integer> getHandleIdList();
+    java.util.List<java.lang.Long> getHandleIdList();
     /**
-     * <code>repeated int32 handle_id = 1;</code>
+     * <code>repeated int64 handle_id = 1;</code>
      */
     int getHandleIdCount();
     /**
-     * <code>repeated int32 handle_id = 1;</code>
+     * <code>repeated int64 handle_id = 1;</code>
      */
-    int getHandleId(int index);
+    long getHandleId(int index);
 
     /**
      * <code>repeated .org.drools.core.marshalling.SerializedObject object = 2;</code>
@@ -30826,30 +31551,23 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                handleId_ = new java.util.ArrayList<java.lang.Integer>();
+                handleId_ = new java.util.ArrayList<java.lang.Long>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              handleId_.add(input.readInt32());
+              handleId_.add(input.readInt64());
               break;
             }
             case 10: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
-                handleId_ = new java.util.ArrayList<java.lang.Integer>();
+                handleId_ = new java.util.ArrayList<java.lang.Long>();
                 mutable_bitField0_ |= 0x00000001;
               }
               while (input.getBytesUntilLimit() > 0) {
-                handleId_.add(input.readInt32());
+                handleId_.add(input.readInt64());
               }
               input.popLimit(limit);
               break;
@@ -30861,6 +31579,13 @@ public final class ProtobufMessages {
               }
               object_.add(
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.PARSER, extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -30886,6 +31611,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Tuple_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Tuple_fieldAccessorTable
@@ -30894,24 +31620,24 @@ public final class ProtobufMessages {
     }
 
     public static final int HANDLE_ID_FIELD_NUMBER = 1;
-    private java.util.List<java.lang.Integer> handleId_;
+    private java.util.List<java.lang.Long> handleId_;
     /**
-     * <code>repeated int32 handle_id = 1;</code>
+     * <code>repeated int64 handle_id = 1;</code>
      */
-    public java.util.List<java.lang.Integer>
+    public java.util.List<java.lang.Long>
         getHandleIdList() {
       return handleId_;
     }
     /**
-     * <code>repeated int32 handle_id = 1;</code>
+     * <code>repeated int64 handle_id = 1;</code>
      */
     public int getHandleIdCount() {
       return handleId_.size();
     }
     /**
-     * <code>repeated int32 handle_id = 1;</code>
+     * <code>repeated int64 handle_id = 1;</code>
      */
-    public int getHandleId(int index) {
+    public long getHandleId(int index) {
       return handleId_.get(index);
     }
 
@@ -30951,6 +31677,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -30960,10 +31687,11 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       for (int i = 0; i < handleId_.size(); i++) {
-        output.writeInt32(1, handleId_.get(i));
+        output.writeInt64(1, handleId_.get(i));
       }
       for (int i = 0; i < object_.size(); i++) {
         output.writeMessage(2, object_.get(i));
@@ -30971,6 +31699,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -30980,7 +31709,7 @@ public final class ProtobufMessages {
         int dataSize = 0;
         for (int i = 0; i < handleId_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(handleId_.get(i));
+            .computeInt64SizeNoTag(handleId_.get(i));
         }
         size += dataSize;
         size += 1 * getHandleIdList().size();
@@ -31103,6 +31832,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -31110,6 +31840,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Tuple prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -31133,6 +31864,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Tuple_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Tuple_fieldAccessorTable
@@ -31156,6 +31888,7 @@ public final class ProtobufMessages {
           getObjectFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         handleId_ = java.util.Collections.emptyList();
@@ -31169,15 +31902,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Tuple_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Tuple getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Tuple build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Tuple result = buildPartial();
         if (!result.isInitialized()) {
@@ -31186,6 +31922,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Tuple buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Tuple result = new org.drools.core.marshalling.impl.ProtobufMessages.Tuple(this);
         int from_bitField0_ = bitField0_;
@@ -31207,32 +31944,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Tuple) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Tuple)other);
@@ -31285,10 +32029,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -31308,56 +32054,56 @@ public final class ProtobufMessages {
       }
       private int bitField0_;
 
-      private java.util.List<java.lang.Integer> handleId_ = java.util.Collections.emptyList();
+      private java.util.List<java.lang.Long> handleId_ = java.util.Collections.emptyList();
       private void ensureHandleIdIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          handleId_ = new java.util.ArrayList<java.lang.Integer>(handleId_);
+          handleId_ = new java.util.ArrayList<java.lang.Long>(handleId_);
           bitField0_ |= 0x00000001;
          }
       }
       /**
-       * <code>repeated int32 handle_id = 1;</code>
+       * <code>repeated int64 handle_id = 1;</code>
        */
-      public java.util.List<java.lang.Integer>
+      public java.util.List<java.lang.Long>
           getHandleIdList() {
         return java.util.Collections.unmodifiableList(handleId_);
       }
       /**
-       * <code>repeated int32 handle_id = 1;</code>
+       * <code>repeated int64 handle_id = 1;</code>
        */
       public int getHandleIdCount() {
         return handleId_.size();
       }
       /**
-       * <code>repeated int32 handle_id = 1;</code>
+       * <code>repeated int64 handle_id = 1;</code>
        */
-      public int getHandleId(int index) {
+      public long getHandleId(int index) {
         return handleId_.get(index);
       }
       /**
-       * <code>repeated int32 handle_id = 1;</code>
+       * <code>repeated int64 handle_id = 1;</code>
        */
       public Builder setHandleId(
-          int index, int value) {
+          int index, long value) {
         ensureHandleIdIsMutable();
         handleId_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated int32 handle_id = 1;</code>
+       * <code>repeated int64 handle_id = 1;</code>
        */
-      public Builder addHandleId(int value) {
+      public Builder addHandleId(long value) {
         ensureHandleIdIsMutable();
         handleId_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated int32 handle_id = 1;</code>
+       * <code>repeated int64 handle_id = 1;</code>
        */
       public Builder addAllHandleId(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
+          java.lang.Iterable<? extends java.lang.Long> values) {
         ensureHandleIdIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
             values, handleId_);
@@ -31365,7 +32111,7 @@ public final class ProtobufMessages {
         return this;
       }
       /**
-       * <code>repeated int32 handle_id = 1;</code>
+       * <code>repeated int64 handle_id = 1;</code>
        */
       public Builder clearHandleId() {
         handleId_ = java.util.Collections.emptyList();
@@ -31613,11 +32359,13 @@ public final class ProtobufMessages {
         }
         return objectBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -31639,6 +32387,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Tuple>
         PARSER = new com.google.protobuf.AbstractParser<Tuple>() {
+      @java.lang.Override
       public Tuple parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -31656,6 +32405,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Tuple getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -31725,13 +32475,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
               strategyIndex_ = input.readInt32();
@@ -31740,6 +32483,13 @@ public final class ProtobufMessages {
             case 18: {
               bitField0_ |= 0x00000002;
               object_ = input.readBytes();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -31759,6 +32509,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_fieldAccessorTable
@@ -31798,6 +32549,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -31807,6 +32559,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -31818,6 +32571,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -31951,6 +32705,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -31958,6 +32713,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -31981,6 +32737,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_fieldAccessorTable
@@ -32003,6 +32760,7 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         strategyIndex_ = 0;
@@ -32012,15 +32770,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_SerializedObject_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject build() {
         org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject result = buildPartial();
         if (!result.isInitialized()) {
@@ -32029,6 +32790,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject result = new org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject(this);
         int from_bitField0_ = bitField0_;
@@ -32046,32 +32808,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject)other);
@@ -32094,10 +32863,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -32183,11 +32954,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -32209,6 +32982,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<SerializedObject>
         PARSER = new com.google.protobuf.AbstractParser<SerializedObject>() {
+      @java.lang.Override
       public SerializedObject parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -32226,6 +33000,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.SerializedObject getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -32325,13 +33100,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                 key_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey>();
@@ -32348,6 +33116,13 @@ public final class ProtobufMessages {
               }
               oBSOLETEJustification_.add(
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet.PARSER, extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -32373,6 +33148,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_fieldAccessorTable
@@ -32451,6 +33227,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -32460,6 +33237,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       for (int i = 0; i < key_.size(); i++) {
@@ -32471,6 +33249,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -32598,6 +33377,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -32605,6 +33385,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -32628,6 +33409,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_fieldAccessorTable
@@ -32652,6 +33434,7 @@ public final class ProtobufMessages {
           getOBSOLETEJustificationFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         if (keyBuilder_ == null) {
@@ -32669,15 +33452,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_TruthMaintenanceSystem_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem build() {
         org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem result = buildPartial();
         if (!result.isInitialized()) {
@@ -32686,6 +33472,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem result = new org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem(this);
         int from_bitField0_ = bitField0_;
@@ -32711,32 +33498,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem)other);
@@ -32805,10 +33599,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -33307,11 +34103,13 @@ public final class ProtobufMessages {
         }
         return oBSOLETEJustificationBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -33333,6 +34131,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<TruthMaintenanceSystem>
         PARSER = new com.google.protobuf.AbstractParser<TruthMaintenanceSystem>() {
+      @java.lang.Override
       public TruthMaintenanceSystem parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -33350,6 +34149,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.TruthMaintenanceSystem getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -33424,13 +34224,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
@@ -33440,6 +34233,13 @@ public final class ProtobufMessages {
             case 16: {
               bitField0_ |= 0x00000002;
               tmsEnabled_ = input.readBool();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -33459,6 +34259,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_fieldAccessorTable
@@ -33525,6 +34326,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -33534,6 +34336,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -33545,6 +34348,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -33678,6 +34482,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -33685,6 +34490,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -33708,6 +34514,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_fieldAccessorTable
@@ -33730,6 +34537,7 @@ public final class ProtobufMessages {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         type_ = "";
@@ -33739,15 +34547,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ObjectTypeConfiguration_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration build() {
         org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration result = buildPartial();
         if (!result.isInitialized()) {
@@ -33756,6 +34567,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration result = new org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration(this);
         int from_bitField0_ = bitField0_;
@@ -33773,32 +34585,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration)other);
@@ -33823,10 +34642,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -33953,11 +34774,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -33979,6 +34802,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<ObjectTypeConfiguration>
         PARSER = new com.google.protobuf.AbstractParser<ObjectTypeConfiguration>() {
+      @java.lang.Override
       public ObjectTypeConfiguration parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -33996,6 +34820,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -34016,26 +34841,26 @@ public final class ProtobufMessages {
     int getStatus();
 
     /**
-     * <code>optional int32 handle_id = 2;</code>
+     * <code>optional int64 handle_id = 2;</code>
      */
     boolean hasHandleId();
     /**
-     * <code>optional int32 handle_id = 2;</code>
+     * <code>optional int64 handle_id = 2;</code>
      */
-    int getHandleId();
+    long getHandleId();
 
     /**
-     * <code>repeated int32 other_handle = 3;</code>
+     * <code>repeated int64 other_handle = 3;</code>
      */
-    java.util.List<java.lang.Integer> getOtherHandleList();
+    java.util.List<java.lang.Long> getOtherHandleList();
     /**
-     * <code>repeated int32 other_handle = 3;</code>
+     * <code>repeated int64 other_handle = 3;</code>
      */
     int getOtherHandleCount();
     /**
-     * <code>repeated int32 other_handle = 3;</code>
+     * <code>repeated int64 other_handle = 3;</code>
      */
-    int getOtherHandle(int index);
+    long getOtherHandle(int index);
 
     /**
      * <code>optional .org.drools.core.marshalling.BeliefSet beliefSet = 4;</code>
@@ -34064,7 +34889,7 @@ public final class ProtobufMessages {
     }
     private EqualityKey() {
       status_ = 0;
-      handleId_ = 0;
+      handleId_ = 0L;
       otherHandle_ = java.util.Collections.emptyList();
     }
 
@@ -34092,13 +34917,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
               status_ = input.readInt32();
@@ -34106,26 +34924,26 @@ public final class ProtobufMessages {
             }
             case 16: {
               bitField0_ |= 0x00000002;
-              handleId_ = input.readInt32();
+              handleId_ = input.readInt64();
               break;
             }
             case 24: {
               if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                otherHandle_ = new java.util.ArrayList<java.lang.Integer>();
+                otherHandle_ = new java.util.ArrayList<java.lang.Long>();
                 mutable_bitField0_ |= 0x00000004;
               }
-              otherHandle_.add(input.readInt32());
+              otherHandle_.add(input.readInt64());
               break;
             }
             case 26: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
-                otherHandle_ = new java.util.ArrayList<java.lang.Integer>();
+                otherHandle_ = new java.util.ArrayList<java.lang.Long>();
                 mutable_bitField0_ |= 0x00000004;
               }
               while (input.getBytesUntilLimit() > 0) {
-                otherHandle_.add(input.readInt32());
+                otherHandle_.add(input.readInt64());
               }
               input.popLimit(limit);
               break;
@@ -34141,6 +34959,13 @@ public final class ProtobufMessages {
                 beliefSet_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000004;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -34163,6 +34988,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EqualityKey_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EqualityKey_fieldAccessorTable
@@ -34187,39 +35013,39 @@ public final class ProtobufMessages {
     }
 
     public static final int HANDLE_ID_FIELD_NUMBER = 2;
-    private int handleId_;
+    private long handleId_;
     /**
-     * <code>optional int32 handle_id = 2;</code>
+     * <code>optional int64 handle_id = 2;</code>
      */
     public boolean hasHandleId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int32 handle_id = 2;</code>
+     * <code>optional int64 handle_id = 2;</code>
      */
-    public int getHandleId() {
+    public long getHandleId() {
       return handleId_;
     }
 
     public static final int OTHER_HANDLE_FIELD_NUMBER = 3;
-    private java.util.List<java.lang.Integer> otherHandle_;
+    private java.util.List<java.lang.Long> otherHandle_;
     /**
-     * <code>repeated int32 other_handle = 3;</code>
+     * <code>repeated int64 other_handle = 3;</code>
      */
-    public java.util.List<java.lang.Integer>
+    public java.util.List<java.lang.Long>
         getOtherHandleList() {
       return otherHandle_;
     }
     /**
-     * <code>repeated int32 other_handle = 3;</code>
+     * <code>repeated int64 other_handle = 3;</code>
      */
     public int getOtherHandleCount() {
       return otherHandle_.size();
     }
     /**
-     * <code>repeated int32 other_handle = 3;</code>
+     * <code>repeated int64 other_handle = 3;</code>
      */
-    public int getOtherHandle(int index) {
+    public long getOtherHandle(int index) {
       return otherHandle_.get(index);
     }
 
@@ -34245,6 +35071,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -34254,16 +35081,17 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeInt32(1, status_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, handleId_);
+        output.writeInt64(2, handleId_);
       }
       for (int i = 0; i < otherHandle_.size(); i++) {
-        output.writeInt32(3, otherHandle_.get(i));
+        output.writeInt64(3, otherHandle_.get(i));
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(4, getBeliefSet());
@@ -34271,6 +35099,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -34282,13 +35111,13 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, handleId_);
+          .computeInt64Size(2, handleId_);
       }
       {
         int dataSize = 0;
         for (int i = 0; i < otherHandle_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(otherHandle_.get(i));
+            .computeInt64SizeNoTag(otherHandle_.get(i));
         }
         size += dataSize;
         size += 1 * getOtherHandleList().size();
@@ -34347,7 +35176,8 @@ public final class ProtobufMessages {
       }
       if (hasHandleId()) {
         hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getHandleId();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getHandleId());
       }
       if (getOtherHandleCount() > 0) {
         hash = (37 * hash) + OTHER_HANDLE_FIELD_NUMBER;
@@ -34432,6 +35262,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -34439,6 +35270,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -34462,6 +35294,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EqualityKey_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EqualityKey_fieldAccessorTable
@@ -34485,11 +35318,12 @@ public final class ProtobufMessages {
           getBeliefSetFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         status_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        handleId_ = 0;
+        handleId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
         otherHandle_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -34502,15 +35336,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_EqualityKey_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey build() {
         org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey result = buildPartial();
         if (!result.isInitialized()) {
@@ -34519,6 +35356,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey result = new org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey(this);
         int from_bitField0_ = bitField0_;
@@ -34549,32 +35387,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey)other);
@@ -34610,10 +35455,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -34665,88 +35512,88 @@ public final class ProtobufMessages {
         return this;
       }
 
-      private int handleId_ ;
+      private long handleId_ ;
       /**
-       * <code>optional int32 handle_id = 2;</code>
+       * <code>optional int64 handle_id = 2;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional int32 handle_id = 2;</code>
+       * <code>optional int64 handle_id = 2;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
       /**
-       * <code>optional int32 handle_id = 2;</code>
+       * <code>optional int64 handle_id = 2;</code>
        */
-      public Builder setHandleId(int value) {
+      public Builder setHandleId(long value) {
         bitField0_ |= 0x00000002;
         handleId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 handle_id = 2;</code>
+       * <code>optional int64 handle_id = 2;</code>
        */
       public Builder clearHandleId() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        handleId_ = 0;
+        handleId_ = 0L;
         onChanged();
         return this;
       }
 
-      private java.util.List<java.lang.Integer> otherHandle_ = java.util.Collections.emptyList();
+      private java.util.List<java.lang.Long> otherHandle_ = java.util.Collections.emptyList();
       private void ensureOtherHandleIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-          otherHandle_ = new java.util.ArrayList<java.lang.Integer>(otherHandle_);
+          otherHandle_ = new java.util.ArrayList<java.lang.Long>(otherHandle_);
           bitField0_ |= 0x00000004;
          }
       }
       /**
-       * <code>repeated int32 other_handle = 3;</code>
+       * <code>repeated int64 other_handle = 3;</code>
        */
-      public java.util.List<java.lang.Integer>
+      public java.util.List<java.lang.Long>
           getOtherHandleList() {
         return java.util.Collections.unmodifiableList(otherHandle_);
       }
       /**
-       * <code>repeated int32 other_handle = 3;</code>
+       * <code>repeated int64 other_handle = 3;</code>
        */
       public int getOtherHandleCount() {
         return otherHandle_.size();
       }
       /**
-       * <code>repeated int32 other_handle = 3;</code>
+       * <code>repeated int64 other_handle = 3;</code>
        */
-      public int getOtherHandle(int index) {
+      public long getOtherHandle(int index) {
         return otherHandle_.get(index);
       }
       /**
-       * <code>repeated int32 other_handle = 3;</code>
+       * <code>repeated int64 other_handle = 3;</code>
        */
       public Builder setOtherHandle(
-          int index, int value) {
+          int index, long value) {
         ensureOtherHandleIsMutable();
         otherHandle_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated int32 other_handle = 3;</code>
+       * <code>repeated int64 other_handle = 3;</code>
        */
-      public Builder addOtherHandle(int value) {
+      public Builder addOtherHandle(long value) {
         ensureOtherHandleIsMutable();
         otherHandle_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated int32 other_handle = 3;</code>
+       * <code>repeated int64 other_handle = 3;</code>
        */
       public Builder addAllOtherHandle(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
+          java.lang.Iterable<? extends java.lang.Long> values) {
         ensureOtherHandleIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
             values, otherHandle_);
@@ -34754,7 +35601,7 @@ public final class ProtobufMessages {
         return this;
       }
       /**
-       * <code>repeated int32 other_handle = 3;</code>
+       * <code>repeated int64 other_handle = 3;</code>
        */
       public Builder clearOtherHandle() {
         otherHandle_ = java.util.Collections.emptyList();
@@ -34880,11 +35727,13 @@ public final class ProtobufMessages {
         }
         return beliefSetBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -34906,6 +35755,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<EqualityKey>
         PARSER = new com.google.protobuf.AbstractParser<EqualityKey>() {
+      @java.lang.Override
       public EqualityKey parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -34923,6 +35773,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -34934,13 +35785,13 @@ public final class ProtobufMessages {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 handle_id = 1;</code>
+     * <code>optional int64 handle_id = 1;</code>
      */
     boolean hasHandleId();
     /**
-     * <code>optional int32 handle_id = 1;</code>
+     * <code>optional int64 handle_id = 1;</code>
      */
-    int getHandleId();
+    long getHandleId();
 
     /**
      * <code>repeated .org.drools.core.marshalling.LogicalDependency logicalDependency = 2;</code>
@@ -34979,7 +35830,7 @@ public final class ProtobufMessages {
       super(builder);
     }
     private BeliefSet() {
-      handleId_ = 0;
+      handleId_ = 0L;
       logicalDependency_ = java.util.Collections.emptyList();
     }
 
@@ -35007,16 +35858,9 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               bitField0_ |= 0x00000001;
-              handleId_ = input.readInt32();
+              handleId_ = input.readInt64();
               break;
             }
             case 18: {
@@ -35026,6 +35870,13 @@ public final class ProtobufMessages {
               }
               logicalDependency_.add(
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency.PARSER, extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -35048,6 +35899,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_BeliefSet_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_BeliefSet_fieldAccessorTable
@@ -35057,17 +35909,17 @@ public final class ProtobufMessages {
 
     private int bitField0_;
     public static final int HANDLE_ID_FIELD_NUMBER = 1;
-    private int handleId_;
+    private long handleId_;
     /**
-     * <code>optional int32 handle_id = 1;</code>
+     * <code>optional int64 handle_id = 1;</code>
      */
     public boolean hasHandleId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional int32 handle_id = 1;</code>
+     * <code>optional int64 handle_id = 1;</code>
      */
-    public int getHandleId() {
+    public long getHandleId() {
       return handleId_;
     }
 
@@ -35107,6 +35959,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -35116,10 +35969,11 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(1, handleId_);
+        output.writeInt64(1, handleId_);
       }
       for (int i = 0; i < logicalDependency_.size(); i++) {
         output.writeMessage(2, logicalDependency_.get(i));
@@ -35127,6 +35981,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -35134,7 +35989,7 @@ public final class ProtobufMessages {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, handleId_);
+          .computeInt64Size(1, handleId_);
       }
       for (int i = 0; i < logicalDependency_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -35176,7 +36031,8 @@ public final class ProtobufMessages {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasHandleId()) {
         hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getHandleId();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getHandleId());
       }
       if (getLogicalDependencyCount() > 0) {
         hash = (37 * hash) + LOGICALDEPENDENCY_FIELD_NUMBER;
@@ -35257,6 +36113,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -35264,6 +36121,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -35287,6 +36145,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_BeliefSet_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_BeliefSet_fieldAccessorTable
@@ -35310,9 +36169,10 @@ public final class ProtobufMessages {
           getLogicalDependencyFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
-        handleId_ = 0;
+        handleId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         if (logicalDependencyBuilder_ == null) {
           logicalDependency_ = java.util.Collections.emptyList();
@@ -35323,15 +36183,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_BeliefSet_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet build() {
         org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet result = buildPartial();
         if (!result.isInitialized()) {
@@ -35340,6 +36203,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet result = new org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet(this);
         int from_bitField0_ = bitField0_;
@@ -35362,32 +36226,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet)other);
@@ -35433,10 +36304,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -35456,34 +36329,34 @@ public final class ProtobufMessages {
       }
       private int bitField0_;
 
-      private int handleId_ ;
+      private long handleId_ ;
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      public Builder setHandleId(int value) {
+      public Builder setHandleId(long value) {
         bitField0_ |= 0x00000001;
         handleId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       public Builder clearHandleId() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        handleId_ = 0;
+        handleId_ = 0L;
         onChanged();
         return this;
       }
@@ -35727,11 +36600,13 @@ public final class ProtobufMessages {
         }
         return logicalDependencyBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -35753,6 +36628,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<BeliefSet>
         PARSER = new com.google.protobuf.AbstractParser<BeliefSet>() {
+      @java.lang.Override
       public BeliefSet parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -35770,6 +36646,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.BeliefSet getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -35888,13 +36765,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 18: {
               org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -35928,6 +36798,13 @@ public final class ProtobufMessages {
               value_ = input.readBytes();
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -35945,6 +36822,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_LogicalDependency_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_LogicalDependency_fieldAccessorTable
@@ -36051,6 +36929,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -36060,6 +36939,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -36080,6 +36960,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -36252,6 +37133,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -36259,6 +37141,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -36282,6 +37165,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_LogicalDependency_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_LogicalDependency_fieldAccessorTable
@@ -36305,6 +37189,7 @@ public final class ProtobufMessages {
           getActivationFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         if (activationBuilder_ == null) {
@@ -36324,15 +37209,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_LogicalDependency_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency build() {
         org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency result = buildPartial();
         if (!result.isInitialized()) {
@@ -36341,6 +37229,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency result = new org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency(this);
         int from_bitField0_ = bitField0_;
@@ -36374,32 +37263,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency)other);
@@ -36431,10 +37327,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -36737,11 +37635,13 @@ public final class ProtobufMessages {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -36763,6 +37663,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<LogicalDependency>
         PARSER = new com.google.protobuf.AbstractParser<LogicalDependency>() {
+      @java.lang.Override
       public LogicalDependency parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -36780,6 +37681,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.LogicalDependency getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -36854,13 +37756,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                 action_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action>();
@@ -36868,6 +37763,13 @@ public final class ProtobufMessages {
               }
               action_.add(
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action.PARSER, extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -36890,6 +37792,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_fieldAccessorTable
@@ -37218,15 +38121,9 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 int rawValue = input.readEnum();
+                  @SuppressWarnings("deprecation")
                 org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType value = org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType.valueOf(rawValue);
                 if (value == null) {
                   unknownFields.mergeVarintField(1, rawValue);
@@ -37340,6 +38237,13 @@ public final class ProtobufMessages {
                 bitField0_ |= 0x00000100;
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -37357,6 +38261,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Action_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Action_fieldAccessorTable
@@ -37385,6 +38290,7 @@ public final class ProtobufMessages {
        * <code>optional .org.drools.core.marshalling.ActionQueue.ActionType type = 1;</code>
        */
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType getType() {
+        @SuppressWarnings("deprecation")
         org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType result = org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType.valueOf(type_);
         return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType.BEHAVIOR_EXPIRE : result;
       }
@@ -37570,6 +38476,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -37579,6 +38486,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -37611,6 +38519,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -37834,6 +38743,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -37841,6 +38751,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -37864,6 +38775,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Action_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Action_fieldAccessorTable
@@ -37894,6 +38806,7 @@ public final class ProtobufMessages {
             getSignalProcessInstanceFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           type_ = 1;
@@ -37949,15 +38862,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Action_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action result = buildPartial();
           if (!result.isInitialized()) {
@@ -37966,6 +38882,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action(this);
           int from_bitField0_ = bitField0_;
@@ -38043,32 +38960,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action)other);
@@ -38112,10 +39036,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -38154,6 +39080,7 @@ public final class ProtobufMessages {
          * <code>optional .org.drools.core.marshalling.ActionQueue.ActionType type = 1;</code>
          */
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType getType() {
+          @SuppressWarnings("deprecation")
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType result = org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType.valueOf(type_);
           return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.ActionType.BEHAVIOR_EXPIRE : result;
         }
@@ -39166,11 +40093,13 @@ public final class ProtobufMessages {
           }
           return signalProcessInstanceBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -39192,6 +40121,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Action>
           PARSER = new com.google.protobuf.AbstractParser<Action>() {
+        @java.lang.Override
         public Action parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -39209,6 +40139,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -39268,16 +40199,16 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
+              case 8: {
+                bitField0_ |= 0x00000001;
+                nodeId_ = input.readInt32();
+                break;
+              }
               default: {
                 if (!parseUnknownField(
                     input, unknownFields, extensionRegistry, tag)) {
                   done = true;
                 }
-                break;
-              }
-              case 8: {
-                bitField0_ |= 0x00000001;
-                nodeId_ = input.readInt32();
                 break;
               }
             }
@@ -39297,6 +40228,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_BehaviorExpire_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable
@@ -39321,6 +40253,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -39330,6 +40263,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -39338,6 +40272,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -39458,6 +40393,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -39465,6 +40401,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -39488,6 +40425,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_BehaviorExpire_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_BehaviorExpire_fieldAccessorTable
@@ -39510,6 +40448,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           nodeId_ = 0;
@@ -39517,15 +40456,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_BehaviorExpire_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire result = buildPartial();
           if (!result.isInitialized()) {
@@ -39534,6 +40476,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire(this);
           int from_bitField0_ = bitField0_;
@@ -39547,32 +40490,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire)other);
@@ -39592,10 +40542,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -39646,11 +40598,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -39672,6 +40626,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<BehaviorExpire>
           PARSER = new com.google.protobuf.AbstractParser<BehaviorExpire>() {
+        @java.lang.Override
         public BehaviorExpire parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -39689,6 +40644,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.BehaviorExpire getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -39753,17 +40709,17 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
+              case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000001;
+                ruleflowGroup_ = bs;
+                break;
+              }
               default: {
                 if (!parseUnknownField(
                     input, unknownFields, extensionRegistry, tag)) {
                   done = true;
                 }
-                break;
-              }
-              case 10: {
-                com.google.protobuf.ByteString bs = input.readBytes();
-                bitField0_ |= 0x00000001;
-                ruleflowGroup_ = bs;
                 break;
               }
             }
@@ -39783,6 +40739,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_DeactivateCallback_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable
@@ -39834,6 +40791,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -39843,6 +40801,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -39851,6 +40810,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -39970,6 +40930,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -39977,6 +40938,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -40000,6 +40962,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_DeactivateCallback_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_DeactivateCallback_fieldAccessorTable
@@ -40022,6 +40985,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           ruleflowGroup_ = "";
@@ -40029,15 +40993,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_DeactivateCallback_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback result = buildPartial();
           if (!result.isInitialized()) {
@@ -40046,6 +41013,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback(this);
           int from_bitField0_ = bitField0_;
@@ -40059,32 +41027,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback)other);
@@ -40106,10 +41081,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -40204,11 +41181,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -40230,6 +41209,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<DeactivateCallback>
           PARSER = new com.google.protobuf.AbstractParser<DeactivateCallback>() {
+        @java.lang.Override
         public DeactivateCallback parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -40247,6 +41227,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.DeactivateCallback getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -40258,13 +41239,13 @@ public final class ProtobufMessages {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       boolean hasHandleId();
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      int getHandleId();
+      long getHandleId();
 
       /**
        * <code>optional .org.drools.core.marshalling.Activation activation = 2;</code>
@@ -40310,7 +41291,7 @@ public final class ProtobufMessages {
         super(builder);
       }
       private LogicalRetract() {
-        handleId_ = 0;
+        handleId_ = 0L;
         fullyRetract_ = false;
         update_ = false;
       }
@@ -40339,16 +41320,9 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
-                handleId_ = input.readInt32();
+                handleId_ = input.readInt64();
                 break;
               }
               case 18: {
@@ -40374,6 +41348,13 @@ public final class ProtobufMessages {
                 update_ = input.readBool();
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -40391,6 +41372,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_LogicalRetract_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable
@@ -40400,17 +41382,17 @@ public final class ProtobufMessages {
 
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
-      private int handleId_;
+      private long handleId_;
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
 
@@ -40466,6 +41448,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -40475,10 +41458,11 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, handleId_);
+          output.writeInt64(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeMessage(2, getActivation());
@@ -40492,6 +41476,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -40499,7 +41484,7 @@ public final class ProtobufMessages {
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(1, handleId_);
+            .computeInt64Size(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
@@ -40562,7 +41547,8 @@ public final class ProtobufMessages {
         hash = (19 * hash) + getDescriptor().hashCode();
         if (hasHandleId()) {
           hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-          hash = (53 * hash) + getHandleId();
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getHandleId());
         }
         if (hasActivation()) {
           hash = (37 * hash) + ACTIVATION_FIELD_NUMBER;
@@ -40653,6 +41639,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -40660,6 +41647,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -40683,6 +41671,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_LogicalRetract_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_LogicalRetract_fieldAccessorTable
@@ -40706,9 +41695,10 @@ public final class ProtobufMessages {
             getActivationFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
-          handleId_ = 0;
+          handleId_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000001);
           if (activationBuilder_ == null) {
             activation_ = null;
@@ -40723,15 +41713,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_LogicalRetract_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract result = buildPartial();
           if (!result.isInitialized()) {
@@ -40740,6 +41733,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract(this);
           int from_bitField0_ = bitField0_;
@@ -40769,32 +41763,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract)other);
@@ -40823,10 +41824,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -40846,34 +41849,34 @@ public final class ProtobufMessages {
         }
         private int bitField0_;
 
-        private int handleId_ ;
+        private long handleId_ ;
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public int getHandleId() {
+        public long getHandleId() {
           return handleId_;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public Builder setHandleId(int value) {
+        public Builder setHandleId(long value) {
           bitField0_ |= 0x00000001;
           handleId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public Builder clearHandleId() {
           bitField0_ = (bitField0_ & ~0x00000001);
-          handleId_ = 0;
+          handleId_ = 0L;
           onChanged();
           return this;
         }
@@ -41059,11 +42062,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -41085,6 +42090,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<LogicalRetract>
           PARSER = new com.google.protobuf.AbstractParser<LogicalRetract>() {
+        @java.lang.Override
         public LogicalRetract parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -41102,6 +42108,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -41161,16 +42168,16 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
+              case 8: {
+                bitField0_ |= 0x00000001;
+                nodeId_ = input.readInt32();
+                break;
+              }
               default: {
                 if (!parseUnknownField(
                     input, unknownFields, extensionRegistry, tag)) {
                   done = true;
                 }
-                break;
-              }
-              case 8: {
-                bitField0_ |= 0x00000001;
-                nodeId_ = input.readInt32();
                 break;
               }
             }
@@ -41190,6 +42197,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Propagate_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Propagate_fieldAccessorTable
@@ -41214,6 +42222,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -41223,6 +42232,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -41231,6 +42241,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -41351,6 +42362,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -41358,6 +42370,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -41381,6 +42394,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Propagate_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Propagate_fieldAccessorTable
@@ -41403,6 +42417,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           nodeId_ = 0;
@@ -41410,15 +42425,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Propagate_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate result = buildPartial();
           if (!result.isInitialized()) {
@@ -41427,6 +42445,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate(this);
           int from_bitField0_ = bitField0_;
@@ -41440,32 +42459,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate)other);
@@ -41485,10 +42511,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -41539,11 +42567,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -41565,6 +42595,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Propagate>
           PARSER = new com.google.protobuf.AbstractParser<Propagate>() {
+        @java.lang.Override
         public Propagate parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -41582,6 +42613,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Propagate getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -41593,13 +42625,13 @@ public final class ProtobufMessages {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       boolean hasHandleId();
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      int getHandleId();
+      long getHandleId();
 
       /**
        * <code>optional bool remove_logical = 2;</code>
@@ -41673,7 +42705,7 @@ public final class ProtobufMessages {
         super(builder);
       }
       private Assert() {
-        handleId_ = 0;
+        handleId_ = 0L;
         removeLogical_ = false;
         updateEqualsMap_ = false;
         originPkgName_ = "";
@@ -41704,16 +42736,9 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
-                handleId_ = input.readInt32();
+                handleId_ = input.readInt64();
                 break;
               }
               case 16: {
@@ -41751,6 +42776,13 @@ public final class ProtobufMessages {
                 bitField0_ |= 0x00000020;
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -41768,6 +42800,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Assert_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Assert_fieldAccessorTable
@@ -41777,17 +42810,17 @@ public final class ProtobufMessages {
 
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
-      private int handleId_;
+      private long handleId_;
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
 
@@ -41927,6 +42960,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -41936,10 +42970,11 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, handleId_);
+          output.writeInt64(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeBool(2, removeLogical_);
@@ -41959,6 +42994,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -41966,7 +43002,7 @@ public final class ProtobufMessages {
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(1, handleId_);
+            .computeInt64Size(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
@@ -42045,7 +43081,8 @@ public final class ProtobufMessages {
         hash = (19 * hash) + getDescriptor().hashCode();
         if (hasHandleId()) {
           hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-          hash = (53 * hash) + getHandleId();
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getHandleId());
         }
         if (hasRemoveLogical()) {
           hash = (37 * hash) + REMOVE_LOGICAL_FIELD_NUMBER;
@@ -42144,6 +43181,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -42151,6 +43189,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -42174,6 +43213,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Assert_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Assert_fieldAccessorTable
@@ -42197,9 +43237,10 @@ public final class ProtobufMessages {
             getTupleFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
-          handleId_ = 0;
+          handleId_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000001);
           removeLogical_ = false;
           bitField0_ = (bitField0_ & ~0x00000002);
@@ -42218,15 +43259,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Assert_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert result = buildPartial();
           if (!result.isInitialized()) {
@@ -42235,6 +43279,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert(this);
           int from_bitField0_ = bitField0_;
@@ -42272,32 +43317,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert)other);
@@ -42336,10 +43388,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -42359,34 +43413,34 @@ public final class ProtobufMessages {
         }
         private int bitField0_;
 
-        private int handleId_ ;
+        private long handleId_ ;
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public int getHandleId() {
+        public long getHandleId() {
           return handleId_;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public Builder setHandleId(int value) {
+        public Builder setHandleId(long value) {
           bitField0_ |= 0x00000001;
           handleId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public Builder clearHandleId() {
           bitField0_ = (bitField0_ & ~0x00000001);
-          handleId_ = 0;
+          handleId_ = 0L;
           onChanged();
           return this;
         }
@@ -42724,11 +43778,13 @@ public final class ProtobufMessages {
           }
           return tupleBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -42750,6 +43806,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Assert>
           PARSER = new com.google.protobuf.AbstractParser<Assert>() {
+        @java.lang.Override
         public Assert parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -42767,6 +43824,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -42778,13 +43836,13 @@ public final class ProtobufMessages {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       boolean hasHandleId();
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      int getHandleId();
+      long getHandleId();
 
       /**
        * <code>optional int32 node_id = 2;</code>
@@ -42808,7 +43866,7 @@ public final class ProtobufMessages {
         super(builder);
       }
       private Expire() {
-        handleId_ = 0;
+        handleId_ = 0L;
         nodeId_ = 0;
       }
 
@@ -42836,21 +43894,21 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
-                handleId_ = input.readInt32();
+                handleId_ = input.readInt64();
                 break;
               }
               case 16: {
                 bitField0_ |= 0x00000002;
                 nodeId_ = input.readInt32();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -42870,6 +43928,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Expire_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Expire_fieldAccessorTable
@@ -42879,17 +43938,17 @@ public final class ProtobufMessages {
 
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
-      private int handleId_;
+      private long handleId_;
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
 
@@ -42909,6 +43968,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -42918,10 +43978,11 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, handleId_);
+          output.writeInt64(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeInt32(2, nodeId_);
@@ -42929,6 +43990,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -42936,7 +43998,7 @@ public final class ProtobufMessages {
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(1, handleId_);
+            .computeInt64Size(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
@@ -42981,7 +44043,8 @@ public final class ProtobufMessages {
         hash = (19 * hash) + getDescriptor().hashCode();
         if (hasHandleId()) {
           hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-          hash = (53 * hash) + getHandleId();
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getHandleId());
         }
         if (hasNodeId()) {
           hash = (37 * hash) + NODE_ID_FIELD_NUMBER;
@@ -43062,6 +44125,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -43069,6 +44133,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -43092,6 +44157,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Expire_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Expire_fieldAccessorTable
@@ -43114,24 +44180,28 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
-          handleId_ = 0;
+          handleId_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000001);
           nodeId_ = 0;
           bitField0_ = (bitField0_ & ~0x00000002);
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Expire_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire result = buildPartial();
           if (!result.isInitialized()) {
@@ -43140,6 +44210,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire(this);
           int from_bitField0_ = bitField0_;
@@ -43157,32 +44228,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire)other);
@@ -43205,10 +44283,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -43228,34 +44308,34 @@ public final class ProtobufMessages {
         }
         private int bitField0_;
 
-        private int handleId_ ;
+        private long handleId_ ;
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public int getHandleId() {
+        public long getHandleId() {
           return handleId_;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public Builder setHandleId(int value) {
+        public Builder setHandleId(long value) {
           bitField0_ |= 0x00000001;
           handleId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public Builder clearHandleId() {
           bitField0_ = (bitField0_ & ~0x00000001);
-          handleId_ = 0;
+          handleId_ = 0L;
           onChanged();
           return this;
         }
@@ -43291,11 +44371,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -43317,6 +44399,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Expire>
           PARSER = new com.google.protobuf.AbstractParser<Expire>() {
+        @java.lang.Override
         public Expire parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -43334,6 +44417,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Expire getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -43408,13 +44492,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
@@ -43424,6 +44501,13 @@ public final class ProtobufMessages {
               case 18: {
                 bitField0_ |= 0x00000002;
                 event_ = input.readBytes();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -43443,6 +44527,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Signal_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Signal_fieldAccessorTable
@@ -43509,6 +44594,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -43518,6 +44604,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -43529,6 +44616,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -43661,6 +44749,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -43668,6 +44757,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -43691,6 +44781,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Signal_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Signal_fieldAccessorTable
@@ -43713,6 +44804,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           type_ = "";
@@ -43722,15 +44814,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_Signal_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal result = buildPartial();
           if (!result.isInitialized()) {
@@ -43739,6 +44834,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal(this);
           int from_bitField0_ = bitField0_;
@@ -43756,32 +44852,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal)other);
@@ -43806,10 +44909,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -43939,11 +45044,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -43965,6 +45072,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Signal>
           PARSER = new com.google.protobuf.AbstractParser<Signal>() {
+        @java.lang.Override
         public Signal parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -43982,6 +45090,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Signal getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -44066,13 +45175,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
@@ -44087,6 +45189,13 @@ public final class ProtobufMessages {
               case 24: {
                 bitField0_ |= 0x00000004;
                 processInstanceId_ = input.readInt64();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -44106,6 +45215,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_SignalProcessInstance_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable
@@ -44187,6 +45297,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -44196,6 +45307,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -44210,6 +45322,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -44356,6 +45469,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -44363,6 +45477,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -44386,6 +45501,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_SignalProcessInstance_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_SignalProcessInstance_fieldAccessorTable
@@ -44408,6 +45524,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           type_ = "";
@@ -44419,15 +45536,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_SignalProcessInstance_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance build() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance result = buildPartial();
           if (!result.isInitialized()) {
@@ -44436,6 +45556,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance(this);
           int from_bitField0_ = bitField0_;
@@ -44457,32 +45578,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance)other);
@@ -44510,10 +45638,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -44675,11 +45805,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -44701,6 +45833,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<SignalProcessInstance>
           PARSER = new com.google.protobuf.AbstractParser<SignalProcessInstance>() {
+        @java.lang.Override
         public SignalProcessInstance parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -44718,6 +45851,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.SignalProcessInstance getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -44760,6 +45894,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -44769,6 +45904,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       for (int i = 0; i < action_.size(); i++) {
@@ -44777,6 +45913,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -44894,6 +46031,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -44901,6 +46039,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -44924,6 +46063,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_fieldAccessorTable
@@ -44947,6 +46087,7 @@ public final class ProtobufMessages {
           getActionFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         if (actionBuilder_ == null) {
@@ -44958,15 +46099,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_ActionQueue_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue build() {
         org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue result = buildPartial();
         if (!result.isInitialized()) {
@@ -44975,6 +46119,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue result = new org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue(this);
         int from_bitField0_ = bitField0_;
@@ -44991,32 +46136,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue)other);
@@ -45059,10 +46211,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -45321,11 +46475,13 @@ public final class ProtobufMessages {
         }
         return actionBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -45347,6 +46503,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<ActionQueue>
         PARSER = new com.google.protobuf.AbstractParser<ActionQueue>() {
+      @java.lang.Override
       public ActionQueue parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -45364,6 +46521,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -45438,13 +46596,6 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                 timer_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer>();
@@ -45452,6 +46603,13 @@ public final class ProtobufMessages {
               }
               timer_.add(
                   input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer.PARSER, extensionRegistry));
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
               break;
             }
           }
@@ -45474,6 +46632,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_fieldAccessorTable
@@ -45705,15 +46864,9 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 int rawValue = input.readEnum();
+                  @SuppressWarnings("deprecation")
                 org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType value = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType.valueOf(rawValue);
                 if (value == null) {
                   unknownFields.mergeVarintField(1, rawValue);
@@ -45775,6 +46928,13 @@ public final class ProtobufMessages {
                 bitField0_ |= 0x00000010;
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -45792,6 +46952,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_Timer_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_Timer_fieldAccessorTable
@@ -45812,6 +46973,7 @@ public final class ProtobufMessages {
        * <code>optional .org.drools.core.marshalling.Timers.TimerType type = 1;</code>
        */
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType getType() {
+        @SuppressWarnings("deprecation")
         org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType result = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType.valueOf(type_);
         return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType.EXPIRE : result;
       }
@@ -45901,6 +47063,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -45914,6 +47077,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         com.google.protobuf.GeneratedMessageV3
@@ -45938,6 +47102,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -46113,6 +47278,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -46120,6 +47286,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -46144,6 +47311,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_Timer_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_Timer_fieldAccessorTable
@@ -46170,6 +47338,7 @@ public final class ProtobufMessages {
             getTimerNodeFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           type_ = 1;
@@ -46201,15 +47370,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_Timer_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer result = buildPartial();
           if (!result.isInitialized()) {
@@ -46218,6 +47390,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer result = new org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer(this);
           int from_bitField0_ = bitField0_;
@@ -46263,55 +47436,66 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public <Type> Builder setExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer, Type> extension,
             Type value) {
           return (Builder) super.setExtension(extension, value);
         }
+        @java.lang.Override
         public <Type> Builder setExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer, java.util.List<Type>> extension,
             int index, Type value) {
           return (Builder) super.setExtension(extension, index, value);
         }
+        @java.lang.Override
         public <Type> Builder addExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer, java.util.List<Type>> extension,
             Type value) {
           return (Builder) super.addExtension(extension, value);
         }
+        @java.lang.Override
         public <Type> Builder clearExtension(
             com.google.protobuf.GeneratedMessage.GeneratedExtension<
                 org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer, ?> extension) {
           return (Builder) super.clearExtension(extension);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer)other);
@@ -46344,6 +47528,7 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           if (!extensionsAreInitialized()) {
             return false;
@@ -46351,6 +47536,7 @@ public final class ProtobufMessages {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -46381,6 +47567,7 @@ public final class ProtobufMessages {
          * <code>optional .org.drools.core.marshalling.Timers.TimerType type = 1;</code>
          */
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType getType() {
+          @SuppressWarnings("deprecation")
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType result = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType.valueOf(type_);
           return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType.EXPIRE : result;
         }
@@ -46877,11 +48064,13 @@ public final class ProtobufMessages {
           }
           return timerNodeBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -46903,6 +48092,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<Timer>
           PARSER = new com.google.protobuf.AbstractParser<Timer>() {
+        @java.lang.Override
         public Timer parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -46920,6 +48110,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -46931,13 +48122,13 @@ public final class ProtobufMessages {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       boolean hasHandleId();
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      int getHandleId();
+      long getHandleId();
 
       /**
        * <code>optional string entry_point_id = 2;</code>
@@ -46989,7 +48180,7 @@ public final class ProtobufMessages {
         super(builder);
       }
       private ExpireTimer() {
-        handleId_ = 0;
+        handleId_ = 0L;
         entryPointId_ = "";
         className_ = "";
         nextFireTimestamp_ = 0L;
@@ -47019,16 +48210,9 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
-                handleId_ = input.readInt32();
+                handleId_ = input.readInt64();
                 break;
               }
               case 18: {
@@ -47048,6 +48232,13 @@ public final class ProtobufMessages {
                 nextFireTimestamp_ = input.readInt64();
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -47065,6 +48256,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ExpireTimer_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ExpireTimer_fieldAccessorTable
@@ -47074,17 +48266,17 @@ public final class ProtobufMessages {
 
       private int bitField0_;
       public static final int HANDLE_ID_FIELD_NUMBER = 1;
-      private int handleId_;
+      private long handleId_;
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int32 handle_id = 1;</code>
+       * <code>optional int64 handle_id = 1;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
 
@@ -47188,6 +48380,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -47197,10 +48390,11 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, handleId_);
+          output.writeInt64(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 2, entryPointId_);
@@ -47214,6 +48408,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -47221,7 +48416,7 @@ public final class ProtobufMessages {
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(1, handleId_);
+            .computeInt64Size(1, handleId_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, entryPointId_);
@@ -47282,7 +48477,8 @@ public final class ProtobufMessages {
         hash = (19 * hash) + getDescriptor().hashCode();
         if (hasHandleId()) {
           hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-          hash = (53 * hash) + getHandleId();
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getHandleId());
         }
         if (hasEntryPointId()) {
           hash = (37 * hash) + ENTRY_POINT_ID_FIELD_NUMBER;
@@ -47372,6 +48568,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -47379,6 +48576,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -47402,6 +48600,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ExpireTimer_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ExpireTimer_fieldAccessorTable
@@ -47424,9 +48623,10 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
-          handleId_ = 0;
+          handleId_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000001);
           entryPointId_ = "";
           bitField0_ = (bitField0_ & ~0x00000002);
@@ -47437,15 +48637,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ExpireTimer_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer result = buildPartial();
           if (!result.isInitialized()) {
@@ -47454,6 +48657,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer result = new org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer(this);
           int from_bitField0_ = bitField0_;
@@ -47479,32 +48683,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer)other);
@@ -47537,10 +48748,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -47560,34 +48773,34 @@ public final class ProtobufMessages {
         }
         private int bitField0_;
 
-        private int handleId_ ;
+        private long handleId_ ;
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public int getHandleId() {
+        public long getHandleId() {
           return handleId_;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
-        public Builder setHandleId(int value) {
+        public Builder setHandleId(long value) {
           bitField0_ |= 0x00000001;
           handleId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int32 handle_id = 1;</code>
+         * <code>optional int64 handle_id = 1;</code>
          */
         public Builder clearHandleId() {
           bitField0_ = (bitField0_ & ~0x00000001);
-          handleId_ = 0;
+          handleId_ = 0L;
           onChanged();
           return this;
         }
@@ -47775,11 +48988,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -47801,6 +49016,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<ExpireTimer>
           PARSER = new com.google.protobuf.AbstractParser<ExpireTimer>() {
+        @java.lang.Override
         public ExpireTimer parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -47818,6 +49034,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -47893,13 +49110,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 10: {
                 org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder subBuilder = null;
                 if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -47926,6 +49136,13 @@ public final class ProtobufMessages {
                 bitField0_ |= 0x00000002;
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -47943,6 +49160,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ActivationTimer_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ActivationTimer_fieldAccessorTable
@@ -47994,6 +49212,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -48003,6 +49222,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -48014,6 +49234,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -48147,6 +49368,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -48154,6 +49376,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -48177,6 +49400,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ActivationTimer_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ActivationTimer_fieldAccessorTable
@@ -48201,6 +49425,7 @@ public final class ProtobufMessages {
             getTriggerFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           if (activationBuilder_ == null) {
@@ -48218,15 +49443,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_ActivationTimer_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer result = buildPartial();
           if (!result.isInitialized()) {
@@ -48235,6 +49463,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer result = new org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer(this);
           int from_bitField0_ = bitField0_;
@@ -48260,32 +49489,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer)other);
@@ -48308,10 +49544,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -48566,11 +49804,13 @@ public final class ProtobufMessages {
           }
           return triggerBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -48592,6 +49832,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<ActivationTimer>
           PARSER = new com.google.protobuf.AbstractParser<ActivationTimer>() {
+        @java.lang.Override
         public ActivationTimer parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -48609,6 +49850,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -48638,13 +49880,13 @@ public final class ProtobufMessages {
       int getDEPRECATEDBehaviorIndex();
 
       /**
-       * <code>optional int32 handle_id = 3;</code>
+       * <code>optional int64 handle_id = 3;</code>
        */
       boolean hasHandleId();
       /**
-       * <code>optional int32 handle_id = 3;</code>
+       * <code>optional int64 handle_id = 3;</code>
        */
-      int getHandleId();
+      long getHandleId();
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.Timers.BehaviorTimer}
@@ -48661,7 +49903,7 @@ public final class ProtobufMessages {
       private BehaviorTimer() {
         dEPRECATEDNodeId_ = 0;
         dEPRECATEDBehaviorIndex_ = 0;
-        handleId_ = 0;
+        handleId_ = 0L;
       }
 
       @java.lang.Override
@@ -48688,13 +49930,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
                 dEPRECATEDNodeId_ = input.readInt32();
@@ -48707,7 +49942,14 @@ public final class ProtobufMessages {
               }
               case 24: {
                 bitField0_ |= 0x00000004;
-                handleId_ = input.readInt32();
+                handleId_ = input.readInt64();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
                 break;
               }
             }
@@ -48727,6 +49969,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_fieldAccessorTable
@@ -48766,21 +50009,22 @@ public final class ProtobufMessages {
       }
 
       public static final int HANDLE_ID_FIELD_NUMBER = 3;
-      private int handleId_;
+      private long handleId_;
       /**
-       * <code>optional int32 handle_id = 3;</code>
+       * <code>optional int64 handle_id = 3;</code>
        */
       public boolean hasHandleId() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int32 handle_id = 3;</code>
+       * <code>optional int64 handle_id = 3;</code>
        */
-      public int getHandleId() {
+      public long getHandleId() {
         return handleId_;
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -48790,6 +50034,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -48799,11 +50044,12 @@ public final class ProtobufMessages {
           output.writeInt32(2, dEPRECATEDBehaviorIndex_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          output.writeInt32(3, handleId_);
+          output.writeInt64(3, handleId_);
         }
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -48819,7 +50065,7 @@ public final class ProtobufMessages {
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(3, handleId_);
+            .computeInt64Size(3, handleId_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -48873,7 +50119,8 @@ public final class ProtobufMessages {
         }
         if (hasHandleId()) {
           hash = (37 * hash) + HANDLE_ID_FIELD_NUMBER;
-          hash = (53 * hash) + getHandleId();
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getHandleId());
         }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
@@ -48950,6 +50197,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -48957,6 +50205,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -48980,6 +50229,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_fieldAccessorTable
@@ -49002,26 +50252,30 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           dEPRECATEDNodeId_ = 0;
           bitField0_ = (bitField0_ & ~0x00000001);
           dEPRECATEDBehaviorIndex_ = 0;
           bitField0_ = (bitField0_ & ~0x00000002);
-          handleId_ = 0;
+          handleId_ = 0L;
           bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer result = buildPartial();
           if (!result.isInitialized()) {
@@ -49030,6 +50284,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer result = new org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer(this);
           int from_bitField0_ = bitField0_;
@@ -49051,32 +50306,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer)other);
@@ -49102,10 +50364,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -49189,42 +50453,44 @@ public final class ProtobufMessages {
           return this;
         }
 
-        private int handleId_ ;
+        private long handleId_ ;
         /**
-         * <code>optional int32 handle_id = 3;</code>
+         * <code>optional int64 handle_id = 3;</code>
          */
         public boolean hasHandleId() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         /**
-         * <code>optional int32 handle_id = 3;</code>
+         * <code>optional int64 handle_id = 3;</code>
          */
-        public int getHandleId() {
+        public long getHandleId() {
           return handleId_;
         }
         /**
-         * <code>optional int32 handle_id = 3;</code>
+         * <code>optional int64 handle_id = 3;</code>
          */
-        public Builder setHandleId(int value) {
+        public Builder setHandleId(long value) {
           bitField0_ |= 0x00000004;
           handleId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int32 handle_id = 3;</code>
+         * <code>optional int64 handle_id = 3;</code>
          */
         public Builder clearHandleId() {
           bitField0_ = (bitField0_ & ~0x00000004);
-          handleId_ = 0;
+          handleId_ = 0L;
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -49246,6 +50512,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<BehaviorTimer>
           PARSER = new com.google.protobuf.AbstractParser<BehaviorTimer>() {
+        @java.lang.Override
         public BehaviorTimer parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -49263,6 +50530,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -49348,13 +50616,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
                 nodeId_ = input.readInt32();
@@ -49386,6 +50647,13 @@ public final class ProtobufMessages {
                 bitField0_ |= 0x00000004;
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -49403,6 +50671,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_fieldAccessorTable
@@ -49469,6 +50738,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -49478,6 +50748,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -49492,6 +50763,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -49638,6 +50910,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -49645,6 +50918,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -49668,6 +50942,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_fieldAccessorTable
@@ -49692,6 +50967,7 @@ public final class ProtobufMessages {
             getTriggerFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           nodeId_ = 0;
@@ -49711,15 +50987,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer result = buildPartial();
           if (!result.isInitialized()) {
@@ -49728,6 +51007,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer result = new org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer(this);
           int from_bitField0_ = bitField0_;
@@ -49757,32 +51037,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer)other);
@@ -49808,10 +51095,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -50098,11 +51387,13 @@ public final class ProtobufMessages {
           }
           return triggerBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -50124,6 +51415,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<TimerNodeTimer>
           PARSER = new com.google.protobuf.AbstractParser<TimerNodeTimer>() {
+        @java.lang.Override
         public TimerNodeTimer parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -50141,6 +51433,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -50183,6 +51476,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -50198,6 +51492,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       for (int i = 0; i < timer_.size(); i++) {
@@ -50206,6 +51501,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -50323,6 +51619,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -50330,6 +51627,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Timers prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -50353,6 +51651,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_fieldAccessorTable
@@ -50376,6 +51675,7 @@ public final class ProtobufMessages {
           getTimerFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         if (timerBuilder_ == null) {
@@ -50387,15 +51687,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Timers.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Timers result = buildPartial();
         if (!result.isInitialized()) {
@@ -50404,6 +51707,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Timers buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Timers result = new org.drools.core.marshalling.impl.ProtobufMessages.Timers(this);
         int from_bitField0_ = bitField0_;
@@ -50420,32 +51724,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Timers) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Timers)other);
@@ -50488,6 +51799,7 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         for (int i = 0; i < getTimerCount(); i++) {
           if (!getTimer(i).isInitialized()) {
@@ -50497,6 +51809,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -50755,11 +52068,13 @@ public final class ProtobufMessages {
         }
         return timerBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -50781,6 +52096,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Timers>
         PARSER = new com.google.protobuf.AbstractParser<Timers>() {
+      @java.lang.Override
       public Timers parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -50798,6 +52114,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Timers getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -50909,15 +52226,9 @@ public final class ProtobufMessages {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               int rawValue = input.readEnum();
+                @SuppressWarnings("deprecation")
               org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType value = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
@@ -50979,6 +52290,13 @@ public final class ProtobufMessages {
               bitField0_ |= 0x00000010;
               break;
             }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -50996,6 +52314,7 @@ public final class ProtobufMessages {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_fieldAccessorTable
@@ -51239,13 +52558,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
                 startTime_ = input.readInt64();
@@ -51286,6 +52598,13 @@ public final class ProtobufMessages {
                 calendarName_.add(bs);
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -51306,6 +52625,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CronTrigger_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CronTrigger_fieldAccessorTable
@@ -51461,6 +52781,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -51470,6 +52791,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -51496,6 +52818,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -51697,6 +53020,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -51704,6 +53028,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -51727,6 +53052,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CronTrigger_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CronTrigger_fieldAccessorTable
@@ -51749,6 +53075,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           startTime_ = 0L;
@@ -51768,15 +53095,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CronTrigger_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger result = buildPartial();
           if (!result.isInitialized()) {
@@ -51785,6 +53115,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger result = new org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger(this);
           int from_bitField0_ = bitField0_;
@@ -51823,32 +53154,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger)other);
@@ -51895,10 +53233,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -52246,11 +53586,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -52272,6 +53614,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<CronTrigger>
           PARSER = new com.google.protobuf.AbstractParser<CronTrigger>() {
+        @java.lang.Override
         public CronTrigger parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -52289,6 +53632,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CronTrigger getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -52418,13 +53762,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
                 startTime_ = input.readInt64();
@@ -52464,6 +53801,13 @@ public final class ProtobufMessages {
                 calendarName_.add(bs);
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -52484,6 +53828,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_IntervalTrigger_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_IntervalTrigger_fieldAccessorTable
@@ -52612,6 +53957,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -52621,6 +53967,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -52647,6 +53994,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -52850,6 +54198,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -52857,6 +54206,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -52880,6 +54230,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_IntervalTrigger_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_IntervalTrigger_fieldAccessorTable
@@ -52902,6 +54253,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           startTime_ = 0L;
@@ -52921,15 +54273,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_IntervalTrigger_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger result = buildPartial();
           if (!result.isInitialized()) {
@@ -52938,6 +54293,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger result = new org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger(this);
           int from_bitField0_ = bitField0_;
@@ -52976,32 +54332,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger)other);
@@ -53046,10 +54409,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -53353,11 +54718,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -53379,6 +54746,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<IntervalTrigger>
           PARSER = new com.google.protobuf.AbstractParser<IntervalTrigger>() {
+        @java.lang.Override
         public IntervalTrigger parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -53396,6 +54764,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.IntervalTrigger getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -53455,16 +54824,16 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
+              case 8: {
+                bitField0_ |= 0x00000001;
+                nextFireTime_ = input.readInt64();
+                break;
+              }
               default: {
                 if (!parseUnknownField(
                     input, unknownFields, extensionRegistry, tag)) {
                   done = true;
                 }
-                break;
-              }
-              case 8: {
-                bitField0_ |= 0x00000001;
-                nextFireTime_ = input.readInt64();
                 break;
               }
             }
@@ -53484,6 +54853,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_PointInTimeTrigger_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable
@@ -53508,6 +54878,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -53517,6 +54888,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -53525,6 +54897,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -53646,6 +55019,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -53653,6 +55027,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -53676,6 +55051,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_PointInTimeTrigger_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_PointInTimeTrigger_fieldAccessorTable
@@ -53698,6 +55074,7 @@ public final class ProtobufMessages {
                   .alwaysUseFieldBuilders) {
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           nextFireTime_ = 0L;
@@ -53705,15 +55082,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_PointInTimeTrigger_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger result = buildPartial();
           if (!result.isInitialized()) {
@@ -53722,6 +55102,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger result = new org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger(this);
           int from_bitField0_ = bitField0_;
@@ -53735,32 +55116,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger)other);
@@ -53780,10 +55168,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -53834,11 +55224,13 @@ public final class ProtobufMessages {
           onChanged();
           return this;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -53860,6 +55252,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<PointInTimeTrigger>
           PARSER = new com.google.protobuf.AbstractParser<PointInTimeTrigger>() {
+        @java.lang.Override
         public PointInTimeTrigger parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -53877,6 +55270,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PointInTimeTrigger getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -53959,13 +55353,6 @@ public final class ProtobufMessages {
               case 0:
                 done = true;
                 break;
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
               case 8: {
                 bitField0_ |= 0x00000001;
                 maxDurationTimestamp_ = input.readInt64();
@@ -53989,6 +55376,13 @@ public final class ProtobufMessages {
                 bitField0_ |= 0x00000004;
                 break;
               }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -54006,6 +55400,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CompositeMaxDurationTrigger_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CompositeMaxDurationTrigger_fieldAccessorTable
@@ -54066,6 +55461,7 @@ public final class ProtobufMessages {
       }
 
       private byte memoizedIsInitialized = -1;
+      @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
@@ -54075,6 +55471,7 @@ public final class ProtobufMessages {
         return true;
       }
 
+      @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -54089,6 +55486,7 @@ public final class ProtobufMessages {
         unknownFields.writeTo(output);
       }
 
+      @java.lang.Override
       public int getSerializedSize() {
         int size = memoizedSize;
         if (size != -1) return size;
@@ -54237,6 +55635,7 @@ public final class ProtobufMessages {
             .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
+      @java.lang.Override
       public Builder newBuilderForType() { return newBuilder(); }
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
@@ -54244,6 +55643,7 @@ public final class ProtobufMessages {
       public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+      @java.lang.Override
       public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
             ? new Builder() : new Builder().mergeFrom(this);
@@ -54267,6 +55667,7 @@ public final class ProtobufMessages {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CompositeMaxDurationTrigger_descriptor;
         }
 
+        @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CompositeMaxDurationTrigger_fieldAccessorTable
@@ -54290,6 +55691,7 @@ public final class ProtobufMessages {
             getTimerTriggerFieldBuilder();
           }
         }
+        @java.lang.Override
         public Builder clear() {
           super.clear();
           maxDurationTimestamp_ = 0L;
@@ -54305,15 +55707,18 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_CompositeMaxDurationTrigger_descriptor;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger getDefaultInstanceForType() {
           return org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger.getDefaultInstance();
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger build() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger result = buildPartial();
           if (!result.isInitialized()) {
@@ -54322,6 +55727,7 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger buildPartial() {
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger result = new org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger(this);
           int from_bitField0_ = bitField0_;
@@ -54347,32 +55753,39 @@ public final class ProtobufMessages {
           return result;
         }
 
+        @java.lang.Override
         public Builder clone() {
           return (Builder) super.clone();
         }
+        @java.lang.Override
         public Builder setField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.setField(field, value);
         }
+        @java.lang.Override
         public Builder clearField(
             com.google.protobuf.Descriptors.FieldDescriptor field) {
           return (Builder) super.clearField(field);
         }
+        @java.lang.Override
         public Builder clearOneof(
             com.google.protobuf.Descriptors.OneofDescriptor oneof) {
           return (Builder) super.clearOneof(oneof);
         }
+        @java.lang.Override
         public Builder setRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             int index, java.lang.Object value) {
           return (Builder) super.setRepeatedField(field, index, value);
         }
+        @java.lang.Override
         public Builder addRepeatedField(
             com.google.protobuf.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return (Builder) super.addRepeatedField(field, value);
         }
+        @java.lang.Override
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger) {
             return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger)other);
@@ -54398,10 +55811,12 @@ public final class ProtobufMessages {
           return this;
         }
 
+        @java.lang.Override
         public final boolean isInitialized() {
           return true;
         }
 
+        @java.lang.Override
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -54602,11 +56017,13 @@ public final class ProtobufMessages {
           }
           return timerTriggerBuilder_;
         }
+        @java.lang.Override
         public final Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
+        @java.lang.Override
         public final Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
@@ -54628,6 +56045,7 @@ public final class ProtobufMessages {
 
       @java.lang.Deprecated public static final com.google.protobuf.Parser<CompositeMaxDurationTrigger>
           PARSER = new com.google.protobuf.AbstractParser<CompositeMaxDurationTrigger>() {
+        @java.lang.Override
         public CompositeMaxDurationTrigger parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -54645,6 +56063,7 @@ public final class ProtobufMessages {
         return PARSER;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.CompositeMaxDurationTrigger getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
@@ -54664,6 +56083,7 @@ public final class ProtobufMessages {
      * <code>optional .org.drools.core.marshalling.Trigger.TriggerType type = 1;</code>
      */
     public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType getType() {
+      @SuppressWarnings("deprecation")
       org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType result = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType.valueOf(type_);
       return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType.CRON : result;
     }
@@ -54753,6 +56173,7 @@ public final class ProtobufMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -54762,6 +56183,7 @@ public final class ProtobufMessages {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -54782,6 +56204,7 @@ public final class ProtobufMessages {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -54953,6 +56376,7 @@ public final class ProtobufMessages {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -54960,6 +56384,7 @@ public final class ProtobufMessages {
     public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Trigger prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -54983,6 +56408,7 @@ public final class ProtobufMessages {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_fieldAccessorTable
@@ -55009,6 +56435,7 @@ public final class ProtobufMessages {
           getCmdtFieldBuilder();
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         type_ = 0;
@@ -55040,15 +56467,18 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Trigger_descriptor;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger getDefaultInstanceForType() {
         return org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger build() {
         org.drools.core.marshalling.impl.ProtobufMessages.Trigger result = buildPartial();
         if (!result.isInitialized()) {
@@ -55057,6 +56487,7 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger buildPartial() {
         org.drools.core.marshalling.impl.ProtobufMessages.Trigger result = new org.drools.core.marshalling.impl.ProtobufMessages.Trigger(this);
         int from_bitField0_ = bitField0_;
@@ -55102,32 +56533,39 @@ public final class ProtobufMessages {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Trigger) {
           return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Trigger)other);
@@ -55159,10 +56597,12 @@ public final class ProtobufMessages {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -55193,6 +56633,7 @@ public final class ProtobufMessages {
        * <code>optional .org.drools.core.marshalling.Trigger.TriggerType type = 1;</code>
        */
       public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType getType() {
+        @SuppressWarnings("deprecation")
         org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType result = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType.valueOf(type_);
         return result == null ? org.drools.core.marshalling.impl.ProtobufMessages.Trigger.TriggerType.CRON : result;
       }
@@ -55689,11 +57130,13 @@ public final class ProtobufMessages {
         }
         return cmdtBuilder_;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -55715,6 +57158,7 @@ public final class ProtobufMessages {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Trigger>
         PARSER = new com.google.protobuf.AbstractParser<Trigger>() {
+      @java.lang.Override
       public Trigger parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -55732,6 +57176,7 @@ public final class ProtobufMessages {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.drools.core.marshalling.impl.ProtobufMessages.Trigger getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -56049,7 +57494,7 @@ public final class ProtobufMessages {
       "2(.org.drools.core.marshalling.ProcessDa" +
       "ta\0223\n\006timers\030\005 \001(\0132#.org.drools.core.mar" +
       "shalling.Timers*\005\010d\020\310\001\"\254\003\n\010RuleData\022\017\n\007l" +
-      "ast_id\030\003 \001(\005\022\024\n\014last_recency\030\004 \001(\003\022=\n\014in" +
+      "ast_id\030\003 \001(\003\022\024\n\014last_recency\030\004 \001(\003\022=\n\014in" +
       "itial_fact\030\006 \001(\0132\'.org.drools.core.marsh" +
       "alling.FactHandle\0223\n\006agenda\030\010 \001(\0132#.org." +
       "drools.core.marshalling.Agenda\022<\n\013node_m" +
@@ -56138,7 +57583,7 @@ public final class ProtobufMessages {
       "core.marshalling.ObjectTypeConfiguration" +
       "\"\345\002\n\nFactHandle\022@\n\004type\030\001 \001(\01622.org.droo" +
       "ls.core.marshalling.FactHandle.HandleTyp" +
-      "e\022\n\n\002id\030\002 \001(\005\022\017\n\007recency\030\003 \001(\003\022\021\n\ttimest" +
+      "e\022\n\n\002id\030\002 \001(\003\022\017\n\007recency\030\003 \001(\003\022\021\n\ttimest" +
       "amp\030\004 \001(\003\022\020\n\010duration\030\005 \001(\003\022\022\n\nis_expire" +
       "d\030\006 \001(\010\022\031\n\021activations_count\030\007 \001(\003\022\026\n\016st" +
       "rategy_index\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022\023\n\013en" +
@@ -56149,9 +57594,9 @@ public final class ProtobufMessages {
       "ols.core.marshalling.Tuple\022\020\n\010salience\030\003" +
       " \001(\005\022\024\n\014package_name\030\004 \001(\t\022\021\n\trule_name\030" +
       "\005 \001(\t\022\030\n\020activation_group\030\007 \001(\t\022\024\n\014is_ac" +
-      "tivated\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logi" +
-      "cal_dependency\030\n \003(\005\022\021\n\tevaluated\030\013 \001(\010\"" +
-      "Y\n\005Tuple\022\021\n\thandle_id\030\001 \003(\005\022=\n\006object\030\002 " +
+      "tivated\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\003\022\032\n\022logi" +
+      "cal_dependency\030\n \003(\003\022\021\n\tevaluated\030\013 \001(\010\"" +
+      "Y\n\005Tuple\022\021\n\thandle_id\030\001 \003(\003\022=\n\006object\030\002 " +
       "\003(\0132-.org.drools.core.marshalling.Serial" +
       "izedObject\":\n\020SerializedObject\022\026\n\016strate" +
       "gy_index\030\001 \001(\005\022\016\n\006object\030\002 \001(\014\"\227\001\n\026Truth" +
@@ -56161,10 +57606,10 @@ public final class ProtobufMessages {
       "re.marshalling.BeliefSet\"<\n\027ObjectTypeCo" +
       "nfiguration\022\014\n\004type\030\001 \001(\t\022\023\n\013tms_enabled" +
       "\030\002 \001(\010\"\201\001\n\013EqualityKey\022\016\n\006status\030\001 \001(\005\022\021" +
-      "\n\thandle_id\030\002 \001(\005\022\024\n\014other_handle\030\003 \003(\005\022" +
+      "\n\thandle_id\030\002 \001(\003\022\024\n\014other_handle\030\003 \003(\003\022" +
       "9\n\tbeliefSet\030\004 \001(\0132&.org.drools.core.mar" +
       "shalling.BeliefSet\"i\n\tBeliefSet\022\021\n\thandl" +
-      "e_id\030\001 \001(\005\022I\n\021logicalDependency\030\002 \003(\0132.." +
+      "e_id\030\001 \001(\003\022I\n\021logicalDependency\030\002 \003(\0132.." +
       "org.drools.core.marshalling.LogicalDepen" +
       "dency\"\254\001\n\021LogicalDependency\022;\n\nactivatio" +
       "n\030\002 \001(\0132\'.org.drools.core.marshalling.Ac" +
@@ -56192,16 +57637,16 @@ public final class ProtobufMessages {
       "ng.ActionQueue.SignalProcessInstance\032!\n\016" +
       "BehaviorExpire\022\017\n\007node_id\030\001 \001(\005\032,\n\022Deact" +
       "ivateCallback\022\026\n\016ruleflow_group\030\001 \001(\t\032\207\001" +
-      "\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001(\005\022;\n\na" +
+      "\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001(\003\022;\n\na" +
       "ctivation\030\002 \001(\0132\'.org.drools.core.marsha" +
       "lling.Activation\022\025\n\rfully_retract\030\003 \001(\010\022" +
       "\016\n\006update\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007node_id\030" +
-      "\001 \001(\005\032\264\001\n\006Assert\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016r" +
+      "\001 \001(\005\032\264\001\n\006Assert\022\021\n\thandle_id\030\001 \001(\003\022\026\n\016r" +
       "emove_logical\030\002 \001(\010\022\031\n\021update_equals_map" +
       "\030\003 \001(\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030\n\020origi" +
       "n_rule_name\030\005 \001(\t\0221\n\005tuple\030\006 \001(\0132\".org.d" +
       "rools.core.marshalling.Tuple\032,\n\006Expire\022\021" +
-      "\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Si" +
+      "\n\thandle_id\030\001 \001(\003\022\017\n\007node_id\030\002 \001(\005\032%\n\006Si" +
       "gnal\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025Sig" +
       "nalProcessInstance\022\014\n\004type\030\001 \001(\t\022\r\n\005even" +
       "t\030\002 \001(\014\022\033\n\023process_instance_id\030\003 \001(\003\"\237\001\n" +
@@ -56220,7 +57665,7 @@ public final class ProtobufMessages {
       "ling.Timers.BehaviorTimer\022F\n\ntimer_node\030" +
       "\005 \001(\01322.org.drools.core.marshalling.Time" +
       "rs.TimerNodeTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022" +
-      "\021\n\thandle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001" +
+      "\021\n\thandle_id\030\001 \001(\003\022\026\n\016entry_point_id\030\002 \001" +
       "(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fire_time" +
       "stamp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;\n\nactiv" +
       "ation\030\001 \001(\0132\'.org.drools.core.marshallin" +
@@ -56228,7 +57673,7 @@ public final class ProtobufMessages {
       "ls.core.marshalling.Trigger\032a\n\rBehaviorT" +
       "imer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n\031DEPR" +
       "ECATED_behavior_index\030\002 \001(\005\022\021\n\thandle_id" +
-      "\030\003 \001(\005\032\213\001\n\016TimerNodeTimer\022\017\n\007node_id\030\001 \001" +
+      "\030\003 \001(\003\032\213\001\n\016TimerNodeTimer\022\017\n\007node_id\030\001 \001" +
       "(\005\0221\n\005tuple\030\002 \001(\0132\".org.drools.core.mars" +
       "halling.Tuple\0225\n\007trigger\030\003 \001(\0132$.org.dro" +
       "ols.core.marshalling.Trigger\"R\n\tTimerTyp" +

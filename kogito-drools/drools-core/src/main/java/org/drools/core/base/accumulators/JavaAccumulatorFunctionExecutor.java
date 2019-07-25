@@ -81,7 +81,7 @@ public class JavaAccumulatorFunctionExecutor
         JavaAccumulatorFunctionContext context = new JavaAccumulatorFunctionContext();
         context.context = this.function.createContext();
         if ( this.function.supportsReverse() ) {
-            context.reverseSupport = new HashMap<Integer, Object>();
+            context.reverseSupport = new HashMap<>();
         }
         return context;
     }
@@ -187,7 +187,7 @@ public class JavaAccumulatorFunctionExecutor
         implements
         Externalizable {
         public Serializable               context;
-        public Map<Integer, Object>       reverseSupport;
+        public Map<Long, Object>       reverseSupport;
 
         public JavaAccumulatorFunctionContext() {
         }
@@ -196,7 +196,7 @@ public class JavaAccumulatorFunctionExecutor
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             context = (Externalizable) in.readObject();
-            reverseSupport = (Map<Integer, Object>) in.readObject();
+            reverseSupport = (Map<Long, Object>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {

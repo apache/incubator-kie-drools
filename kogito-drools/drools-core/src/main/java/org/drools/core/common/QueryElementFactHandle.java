@@ -35,18 +35,18 @@ public class QueryElementFactHandle
     implements
     InternalFactHandle {
     private Object object;
-    private int id;
+    private long id;
     private int identityHashCode;
     private long recency;
     private boolean                 negated;
 
     protected QueryElementFactHandle() {}
 
-    public QueryElementFactHandle(Object object, int id, long recency) {
+    public QueryElementFactHandle(Object object, long id, long recency) {
         this( object, id, DefaultFactHandle.determineIdentityHashCode( object ), recency );
     }
 
-    public QueryElementFactHandle(Object object, int id, int identityHashCode, long recency) {
+    public QueryElementFactHandle(Object object, long id, int identityHashCode, long recency) {
         this.object = object;
         this.id = id;
         this.recency = recency;
@@ -63,7 +63,7 @@ public class QueryElementFactHandle
         this.negated = negated;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 

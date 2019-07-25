@@ -61,7 +61,7 @@ public class BeliefSystemLogicalCallback
     }
 
     public BeliefSystemLogicalCallback(MarshallerReaderContext context) throws IOException {
-        this.handle = context.handles.get( context.readInt() );
+        this.handle = context.handles.get( context.readLong() );
         this.context = context.propagationContexts.get( context.readLong() );
         this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getContextObject();
     }

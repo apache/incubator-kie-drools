@@ -62,7 +62,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
      * @param timestamp the timestamp of the occurrence of this event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
-    public EventFactHandle(int id,
+    public EventFactHandle(long id,
                            Object object,
                            long recency,
                            long timestamp,
@@ -71,7 +71,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         this( id, object, recency, timestamp, duration, wmEntryPoint, false );
     }
 
-    public EventFactHandle(int id,
+    public EventFactHandle(long id,
                            Object object,
                            long recency,
                            long timestamp,

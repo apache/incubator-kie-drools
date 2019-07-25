@@ -44,7 +44,7 @@ public class InputMarshaller {
     public static InternalFactHandle readFactHandle( MarshallerReaderContext context ) throws IOException,
             ClassNotFoundException {
         int type = context.stream.readInt();
-        int id = context.stream.readInt();
+        long id = context.stream.readLong();
         long recency = context.stream.readLong();
 
         long startTimeStamp = 0;

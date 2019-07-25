@@ -595,7 +595,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     protected String toExternalString() {
         StringBuilder builder = new StringBuilder();
         builder.append( String.format( "%08X", System.identityHashCode( this ) ) ).append( ":" );
-        int[] ids = new int[this.index+1];
+        long[] ids = new long[this.index+1];
         LeftTuple entry = this;
         while( entry != null ) {
             ids[entry.getIndex()] = entry.getFactHandle().getId();

@@ -659,7 +659,7 @@ public class ObjectTypeNode extends ObjectSource
             // ExpireJob, no state
             ExpireJobContext ejobCtx = (ExpireJobContext) jobCtx;
             WorkingMemoryReteExpireAction expireAction = ejobCtx.getExpireAction();
-            outputCtx.writeInt( expireAction.getFactHandle().getId() );
+            outputCtx.writeLong( expireAction.getFactHandle().getId() );
 
             DefaultJobHandle jobHandle = (DefaultJobHandle) ejobCtx.getJobHandle();
             PointInTimeTrigger trigger = (PointInTimeTrigger) jobHandle.getTimerJobInstance().getTrigger();
@@ -691,7 +691,7 @@ public class ObjectTypeNode extends ObjectSource
         public void read(MarshallerReaderContext inCtx) throws IOException,
                                                                ClassNotFoundException {
 
-            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
+            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readLong() );
 
             long nextTimeStamp = inCtx.readLong();
 

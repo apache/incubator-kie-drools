@@ -564,7 +564,7 @@ public class ProtobufOutputMarshaller {
 
         public int compare(EqualityKey key1,
                            EqualityKey key2) {
-            return key1.getFactHandle().getId() - key2.getFactHandle().getId();
+            return Long.compare( key1.getFactHandle().getId(), key2.getFactHandle().getId() );
         }
     }
 
@@ -664,7 +664,7 @@ public class ProtobufOutputMarshaller {
             Comparator<InternalFactHandle> {
         public int compare(InternalFactHandle h1,
                            InternalFactHandle h2) {
-            return Integer.compare(h1.getId(), h2.getId());
+            return Long.compare(h1.getId(), h2.getId());
         }
     }
 
@@ -682,7 +682,7 @@ public class ProtobufOutputMarshaller {
                 while ( result == 0 && t1 != null && t2 != null ) {
                     if ( t1.getFactHandle() != null && t2.getFactHandle() != null ) {
                         // can be null for eval, not and exists that have no right input
-                        result = t1.getFactHandle().getId() - t2.getFactHandle().getId();
+                        result = Long.compare(t1.getFactHandle().getId(), t2.getFactHandle().getId());
                     }
                     t1 = t1.getParent();
                     t2 = t2.getParent();

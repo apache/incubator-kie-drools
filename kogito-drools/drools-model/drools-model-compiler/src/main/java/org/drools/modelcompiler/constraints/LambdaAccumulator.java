@@ -38,7 +38,7 @@ public abstract class LambdaAccumulator implements Accumulator {
 
     private final org.kie.api.runtime.rule.AccumulateFunction accumulateFunction;
     protected final List<String> sourceVariables;
-    private Map<Integer, Object> reverseSupport;
+    private Map<Long, Object> reverseSupport;
 
 
     protected LambdaAccumulator(org.kie.api.runtime.rule.AccumulateFunction accumulateFunction, List<String> sourceVariables) {

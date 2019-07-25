@@ -105,9 +105,9 @@ public class MVELAccumulator
      * @see org.kie.spi.Accumulator#createContext()
      */
     public Serializable createContext() {
-        Map<Integer, Object[]> shadow = null;
+        Map<Long, Object[]> shadow = null;
         if ( this.reverse != null ) {
-            shadow = new HashMap<Integer, Object[]>();
+            shadow = new HashMap<>();
         }
         return new MVELAccumulatorContext( shadow );
     }
@@ -259,7 +259,7 @@ public class MVELAccumulator
 
     @Override
     public Declaration[] getRequiredDeclarations() {
-        Set<Declaration> declarationSet = new HashSet<Declaration>();
+        Set<Declaration> declarationSet = new HashSet<>();
         if ( initUnit != null ) {
             declarationSet.addAll( Arrays.asList( initUnit.getPreviousDeclarations() ) );
         }
@@ -309,9 +309,9 @@ public class MVELAccumulator
         private static final long                      serialVersionUID = 510l;
 
         private Object[]               variables;
-        private Map<Integer, Object[]> shadow;
+        private Map<Long, Object[]> shadow;
 
-        public MVELAccumulatorContext(Map<Integer,  Object[]> shadow) {
+        public MVELAccumulatorContext(Map<Long, Object[]> shadow) {
             this.shadow = shadow;
         }
 
@@ -323,11 +323,11 @@ public class MVELAccumulator
             this.variables = variables;
         }
 
-        public Map<Integer, Object[]> getShadow() {
+        public Map<Long, Object[]> getShadow() {
             return shadow;
         }
 
-        public void setShadow(Map<Integer,  Object[]> shadow) {
+        public void setShadow(Map<Long,  Object[]> shadow) {
             this.shadow = shadow;
         }
         

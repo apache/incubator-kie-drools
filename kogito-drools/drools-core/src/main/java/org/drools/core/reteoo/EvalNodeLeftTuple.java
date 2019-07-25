@@ -179,7 +179,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("%08X",
                                      System.identityHashCode(this))).append(":");
-        int[] ids = new int[getIndex() + 1];
+        long[] ids = new long[getIndex() + 1];
         LeftTuple entry = this;
         while (entry != null) {
             ids[entry.getIndex()] = entry.getFactHandle().getId();

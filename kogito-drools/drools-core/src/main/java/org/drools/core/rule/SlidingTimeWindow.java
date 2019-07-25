@@ -309,7 +309,7 @@ public class SlidingTimeWindow
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
             EventFactHandle handle = slCtx.peek();
-            outputCtx.writeInt( handle.getId() );
+            outputCtx.writeLong( handle.getId() );
         }
 
         public Timer serialize(JobContext jobCtx,
@@ -344,7 +344,7 @@ public class SlidingTimeWindow
 
         public void deserialize(MarshallerReaderContext inCtx,
                                 Timer _timer) throws ClassNotFoundException {
-            int i = _timer.getBehavior().getHandleId();
+            long i = _timer.getBehavior().getHandleId();
         }
     }
 

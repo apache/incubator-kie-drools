@@ -31,7 +31,7 @@ import org.kie.kogito.rules.DataHandle;
 public interface InternalFactHandle
     extends
     FactHandle, Cloneable {
-    int getId();
+    long getId();
 
     long getRecency();
 
@@ -194,7 +194,7 @@ public interface InternalFactHandle
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             throw new UnsupportedOperationException();
         }
 
