@@ -94,7 +94,8 @@ public class RuleScenarioExecutableBuilderTest {
 
     private InternalRule createRuleMock(String fullName, String agendaGroup) {
         InternalRule ruleMock = mock(InternalRule.class);
-        when(ruleMock.getFullyQualifiedName()).thenReturn(fullName);
+        when(ruleMock.getName()).thenReturn(fullName);
+        when(ruleMock.getPackageName()).thenReturn("");
         when(ruleMock.isMainAgendaGroup()).thenReturn(agendaGroup == null);
         when(ruleMock.getAgendaGroup()).thenReturn(agendaGroup);
         return ruleMock;

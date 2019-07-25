@@ -24,6 +24,8 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.internal.definition.rule.InternalRule;
 
+import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.prettyFullyQualifiedName;
+
 public class CoverageAgendaListener extends DefaultAgendaEventListener {
 
     protected Map<String, Integer> ruleExecuted = new HashMap<>();
@@ -31,7 +33,7 @@ public class CoverageAgendaListener extends DefaultAgendaEventListener {
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent beforeMatchFiredEvent) {
         InternalRule rule = (InternalRule) beforeMatchFiredEvent.getMatch().getRule();
-        String ruleKey = rule.getFullyQualifiedName();
+        String ruleKey = prettyFullyQualifiedName(rule);
         ruleExecuted.compute(ruleKey, (r, counter) -> counter == null ? 1 : counter + 1);
     }
 

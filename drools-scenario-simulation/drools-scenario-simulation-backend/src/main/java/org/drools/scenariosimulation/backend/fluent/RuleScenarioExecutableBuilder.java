@@ -73,13 +73,18 @@ public interface RuleScenarioExecutableBuilder {
 
                 // main agenda group is always executed after the active one
                 if (internalRule.isMainAgendaGroup()) {
-                    toReturn.add(internalRule.getFullyQualifiedName());
+                    toReturn.add(prettyFullyQualifiedName(internalRule));
                 } else if (Objects.equals(activeAgendaGroup, internalRule.getAgendaGroup())) {
-                    toReturn.add(internalRule.getFullyQualifiedName());
+                    toReturn.add(prettyFullyQualifiedName(internalRule));
                 }
             }
         }
 
         return toReturn;
+    }
+
+    static String prettyFullyQualifiedName(Rule rule) {
+        String packageName = rule.getPackageName();
+        return rule.getName() + (packageName != null && !packageName.isEmpty() ? " (" + packageName + ")" : "");
     }
 }

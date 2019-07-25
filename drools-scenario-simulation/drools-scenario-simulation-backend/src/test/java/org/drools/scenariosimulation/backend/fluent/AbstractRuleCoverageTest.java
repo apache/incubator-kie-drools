@@ -41,7 +41,8 @@ public abstract class AbstractRuleCoverageTest {
         BeforeMatchFiredEvent eventMock = mock(BeforeMatchFiredEvent.class);
         Match matchMock = mock(Match.class);
         InternalRule ruleMock = mock(InternalRule.class);
-        when(ruleMock.getFullyQualifiedName()).thenReturn(ruleName);
+        when(ruleMock.getName()).thenReturn(ruleName);
+        when(ruleMock.getPackageName()).thenReturn("");
         when(matchMock.getRule()).thenReturn(ruleMock);
         when(eventMock.getMatch()).thenReturn(matchMock);
         return eventMock;
