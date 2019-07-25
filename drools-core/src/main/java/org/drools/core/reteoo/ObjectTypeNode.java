@@ -664,7 +664,7 @@ public class ObjectTypeNode extends ObjectSource
             Date nextFireTime = trigger.hasNextFireTime();
             if (nextFireTime != null) {
                 outputCtx.writeShort(PersisterEnums.EXPIRE_TIMER);
-                outputCtx.writeInt(ejobCtx.getExpireAction().getFactHandle().getId());
+                outputCtx.writeLong(ejobCtx.getExpireAction().getFactHandle().getId());
                 outputCtx.writeLong(nextFireTime.getTime());
             }
         }
@@ -698,7 +698,7 @@ public class ObjectTypeNode extends ObjectSource
         public void read(MarshallerReaderContext inCtx) throws IOException,
                                                                ClassNotFoundException {
 
-            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
+            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readLong() );
 
             long nextTimeStamp = inCtx.readLong();
 

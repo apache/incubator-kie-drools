@@ -316,14 +316,14 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
 
         private final Map<RuleUnit.Identity, InternalFactHandle> childHandles = new HashMap<>();
 
-        private final int id;
+        private final long id;
         private long recency;
 
         private final int identityHashCode;
 
         private boolean negated = false;
 
-        DataSourceFactHandle( InternalDataSource<?> dataSource, int id, long recency, Object object ) {
+        DataSourceFactHandle( InternalDataSource<?> dataSource, long id, long recency, Object object ) {
             this.dataSource = dataSource;
             this.id = id;
             this.recency = recency;
@@ -344,7 +344,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
         }
 
         @Override
-        public int getId() {
+        public long getId() {
             return id;
         }
 

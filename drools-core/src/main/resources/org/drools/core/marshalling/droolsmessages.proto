@@ -83,7 +83,7 @@ message KnowledgeSession {
 
 // the Rule Data serialization format
 message RuleData {
-    optional int32 last_id = 3;
+    optional int64 last_id = 3;
     optional int64 last_recency = 4;
 
     optional FactHandle initial_fact = 6;
@@ -233,7 +233,7 @@ message FactHandle {
     }
 
     optional HandleType type = 1;
-    optional int32 id = 2;
+    optional int64 id = 2;
     optional int64 recency = 3;
 
     // event only attributes
@@ -263,13 +263,13 @@ message Activation {
     //optional int64 propagation_number = 6;
     optional string activation_group = 7;
     optional bool is_activated = 8;
-    optional int32 handle_id = 9;
-    repeated int32 logical_dependency = 10;
+    optional int64 handle_id = 9;
+    repeated int64 logical_dependency = 10;
     optional bool evaluated = 11;
 }
 
 message Tuple {
-    repeated int32 handle_id = 1;
+    repeated int64 handle_id = 1;
     repeated SerializedObject object = 2;
 }
 
@@ -290,13 +290,13 @@ message ObjectTypeConfiguration {
 
 message EqualityKey {
     optional int32 status = 1;
-    optional int32 handle_id = 2;
-    repeated int32 other_handle = 3;
+    optional int64 handle_id = 2;
+    repeated int64 other_handle = 3;
     optional BeliefSet beliefSet = 4;
 }
 
 message BeliefSet {
-    optional int32 handle_id = 1;
+    optional int64 handle_id = 1;
     repeated LogicalDependency logicalDependency = 2;
 }
 
@@ -344,7 +344,7 @@ message ActionQueue {
     message BehaviorExpire { optional int32 node_id = 1; }
     message DeactivateCallback { optional string ruleflow_group = 1; }
     message LogicalRetract {
-        optional int32 handle_id = 1;
+        optional int64 handle_id = 1;
         optional Activation activation = 2;
         optional bool fully_retract = 3;
         optional bool update = 4;
@@ -352,7 +352,7 @@ message ActionQueue {
     }
     message Propagate { optional int32 node_id = 1; }
     message Assert {
-        optional int32 handle_id = 1;
+        optional int64 handle_id = 1;
         optional bool remove_logical = 2;
         optional bool update_equals_map = 3;
         optional string origin_pkg_name = 4;
@@ -360,7 +360,7 @@ message ActionQueue {
         optional Tuple tuple = 6;
     }
     message Expire {
-        optional int32 handle_id = 1;
+        optional int64 handle_id = 1;
         optional int32 node_id = 2;
     }
     message Signal {
@@ -397,7 +397,7 @@ message Timers {
     }
 
     message ExpireTimer {
-        optional int32 handle_id = 1;
+        optional int64 handle_id = 1;
         optional string entry_point_id = 2;
         optional string class_name = 3;
         optional int64 next_fire_timestamp = 4;
@@ -409,7 +409,7 @@ message Timers {
     message BehaviorTimer {
         optional int32 DEPRECATED_node_id = 1;
         optional int32 DEPRECATED_behavior_index = 2;
-        optional int32 handle_id = 3;
+        optional int64 handle_id = 3;
     }
     message TimerNodeTimer {
         optional int32 node_id = 1;

@@ -72,7 +72,7 @@ public class OldOutputMarshallerMethods {
             int type,
             InternalFactHandle handle) throws IOException {
         stream.writeInt( type );
-        stream.writeInt( handle.getId() );
+        stream.writeLong( handle.getId() );
         stream.writeLong( handle.getRecency() );
 
         if ( type == 2) {
