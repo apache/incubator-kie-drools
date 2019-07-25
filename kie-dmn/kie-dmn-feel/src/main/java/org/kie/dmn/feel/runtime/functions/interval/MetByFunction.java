@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,12 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-public class MetByFunction
-        extends BaseFEELFunction {
+public class MetByFunction extends BaseFEELFunction {
 
     public static final MetByFunction INSTANCE = new MetByFunction();
 
     public MetByFunction() {
-        super( "met by" );
+        super("met by");
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "range1" ) Range range1, @ParameterName( "range2" ) Range range2) {
@@ -40,14 +39,14 @@ public class MetByFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range2", "cannot be null"));
         }
         try {
-            boolean result =
-                    range2.getHighBoundary() == Range.RangeBoundary.CLOSED &&
-                    range1.getLowBoundary() == Range.RangeBoundary.CLOSED &&
-                    range1.getLowEndPoint().compareTo( range2.getHighEndPoint() ) == 0;
+            boolean result = range1.getLowBoundary() == Range.RangeBoundary.CLOSED &&
+                             range2.getHighBoundary() == Range.RangeBoundary.CLOSED &&
+                             range1.getLowEndPoint().compareTo(range2.getHighEndPoint()) == 0;
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
             // values are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
         }
     }
+
 }

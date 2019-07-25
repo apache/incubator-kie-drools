@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.functions.interval;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
@@ -40,11 +41,20 @@ public class OverlapsFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range2", "cannot be null"));
         }
         try {
-            boolean result =
-                    range1.getLowEndPoint().compareTo( range2.getLowEndPoint() ) < 0 &&
-                    range1.getHighEndPoint().compareTo( range2.getLowEndPoint() ) > 0 &&
-                    range1.getHighEndPoint().compareTo( range2.getHighEndPoint() ) < 0;
-            return FEELFnResult.ofResult( result );
+            boolean result = (range1.getLowEndPoint().compareTo(range2.getLowEndPoint()) < 0 ||
+                              (range1.getLowEndPoint().compareTo(range2.getLowEndPoint()) == 0 &&
+                               range1.getLowBoundary() == RangeBoundary.CLOSED &&
+                               range2.getLowBoundary() == RangeBoundary.OPEN)) &&
+                             (range1.getHighEndPoint().compareTo(range2.getLowEndPoint()) > 0 ||
+                              (range1.getHighEndPoint().compareTo(range2.getLowEndPoint()) == 0 &&
+                               range1.getHighBoundary() == RangeBoundary.CLOSED &&
+                               range2.getLowBoundary() == RangeBoundary.CLOSED)) &&
+                             (range1.getHighEndPoint().compareTo(range2.getHighEndPoint()) < 0 ||
+                              (range1.getHighEndPoint().compareTo(range2.getHighEndPoint()) == 0 &&
+                               (range1.getHighBoundary() == RangeBoundary.OPEN ||
+                                range2.getHighBoundary() == RangeBoundary.CLOSED)));
+
+            return FEELFnResult.ofResult(result);
         } catch( Exception e ) {
             // values are not comparable
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "range1", "cannot be compared to range2"));
