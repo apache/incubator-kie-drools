@@ -189,18 +189,29 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilder buildAll() {
-        return buildAll( KieModuleKieProject::new, o -> true );
+        BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> projectClass;
+        try {
+            Class<?> canonicalModelKieProjectClass = Class.forName("org.drools.modelcompiler.ExecutableModelProject");
+            projectClass = getSupplier(canonicalModelKieProjectClass);
+        } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
+            log.warn("drools-model-compiler not found on the classpath, defaulting to plain DRL compilation");
+            projectClass = KieModuleKieProject::new;
+        }
+        return buildAll(projectClass);
     }
 
     @Override
     public KieBuilder buildAll( Class<? extends ProjectType> projectClass ) {
         try {
-            BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier =
-                    (BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject>) projectClass.getField( "SUPPLIER" ).get( null );
-            return buildAll( kprojectSupplier, o -> true );
+            BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> kprojectSupplier = getSupplier(projectClass);
+            return buildAll( kprojectSupplier, o -> true);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException( e );
         }
+    }
+
+    private BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> getSupplier(Class<?> canonicalModelKieProjectClass) throws IllegalAccessException, NoSuchFieldException {
+        return (BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject>) canonicalModelKieProjectClass.getField("SUPPLIER").get(null);
     }
 
     @Override
