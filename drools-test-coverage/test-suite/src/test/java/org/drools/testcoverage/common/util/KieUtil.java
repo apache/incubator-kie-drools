@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -112,7 +113,7 @@ public final class KieUtil {
         if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
             kbuilder.buildAll(kieBaseTestConfiguration.getExecutableModelProjectClass().get());
         } else {
-            kbuilder.buildAll();
+            kbuilder.buildAll(DrlProject.class);
         }
 
         // Messages from KieBuilder with increasing severity

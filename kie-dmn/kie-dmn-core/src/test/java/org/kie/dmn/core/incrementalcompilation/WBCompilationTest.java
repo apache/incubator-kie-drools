@@ -15,6 +15,7 @@
 
 package org.kie.dmn.core.incrementalcompilation;
 
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -84,7 +85,7 @@ public class WBCompilationTest {
         KieFileSystem kfs = ks.newKieFileSystem();
 
         kfs.write("src/main/resources/org/kie/scanner/dmn1.dmn", DMN_1);
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         kfs.write("src/main/resources/org/kie/scanner/dmn2.dmn", DMN_2);

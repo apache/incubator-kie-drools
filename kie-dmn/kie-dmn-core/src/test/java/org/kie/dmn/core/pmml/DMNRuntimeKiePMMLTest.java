@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.pmml;
 
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -77,7 +78,7 @@ public class DMNRuntimeKiePMMLTest {
         KieFileSystem kfs = ks.newKieFileSystem();
 
         kfs.write("src/main/resources/org/acme/test_scorecard.pmml", ks.getResources().newClassPathResource("test_scorecard.pmml", DMNRuntimeKiePMMLTest.class));
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
         kfs.write("src/main/resources/org/acme/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard_NOPMMLmodelName.dmn", DMNRuntimeKiePMMLTest.class));
