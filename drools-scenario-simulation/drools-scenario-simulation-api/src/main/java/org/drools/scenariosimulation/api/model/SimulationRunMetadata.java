@@ -16,7 +16,6 @@
 package org.drools.scenariosimulation.api.model;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,9 +29,7 @@ public class SimulationRunMetadata {
 
     protected Map<String, Integer> outputCounter = new HashMap<>();
 
-    protected Map<ScenarioWithIndex, List<String>> scenarioCounter = new HashMap<>();
-
-    protected List<ScenarioWithIndex> scenarios;
+    protected Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter = new HashMap<>();
 
     public SimulationRunMetadata() {
         // CDI
@@ -41,7 +38,7 @@ public class SimulationRunMetadata {
     public SimulationRunMetadata(int available,
                                  int executed,
                                  Map<String, Integer> outputCounter,
-                                 Map<ScenarioWithIndex, List<String>> scenarioCounter) {
+                                 Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter) {
         this.available = available;
         this.executed = executed;
         this.outputCounter.putAll(outputCounter);
@@ -65,7 +62,7 @@ public class SimulationRunMetadata {
         return outputCounter;
     }
 
-    public Map<ScenarioWithIndex, List<String>> getScenarioCounter() {
+    public Map<ScenarioWithIndex, Map<String, Integer>> getScenarioCounter() {
         return scenarioCounter;
     }
 }

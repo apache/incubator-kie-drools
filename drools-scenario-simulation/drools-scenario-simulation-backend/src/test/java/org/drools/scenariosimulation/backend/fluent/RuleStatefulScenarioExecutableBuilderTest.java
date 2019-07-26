@@ -15,22 +15,32 @@
  */
 package org.drools.scenariosimulation.backend.fluent;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.command.ExecutableCommand;
+import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieContainerFluent;
 import org.kie.internal.builder.fluent.KieSessionFluent;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -55,6 +65,12 @@ public class RuleStatefulScenarioExecutableBuilderTest {
     @Mock
     private KieSessionFluent kieSessionFluentMock;
 
+    @Mock
+    private RequestContext requestContextMock;
+
+    @Captor
+    private ArgumentCaptor<ExecutableCommand<?>> commandArgumentCaptor;
+
     @Test
     public void testPseudoClock() {
         KieContainer kieContainerMock = mock(KieContainer.class);
@@ -72,6 +88,9 @@ public class RuleStatefulScenarioExecutableBuilderTest {
         when(executableBuilderMock.setKieContainer(any(KieContainer.class))).thenReturn(kieContainerFluent);
         when(kieContainerFluent.newSessionCustomized(anyString(), any())).thenReturn(kieSessionFluentMock);
         when(kieSessionFluentMock.dispose()).thenReturn(executableBuilderMock);
+        when(kieSessionFluentMock.addCommand(any())).thenReturn(kieSessionFluentMock);
+        when(executableRunnerMock.execute(any(Executable.class))).thenReturn(requestContextMock);
+        when(requestContextMock.getOutputs()).thenReturn(Collections.emptyMap());
 
         RuleStatefulScenarioExecutableBuilder builder = new RuleStatefulScenarioExecutableBuilder(null, null) {
             @Override
@@ -104,9 +123,16 @@ public class RuleStatefulScenarioExecutableBuilderTest {
         reset(kieContainerFluent);
 
         builder.addInternalCondition(String.class, obj -> null, new ScenarioResult(indexFI, null));
-        builder.run();
+        Map<String, Object> result = builder.run();
 
         verify(kieSessionFluentMock, times(1)).fireAllRules();
-        verify(kieSessionFluentMock, times(1)).addCommand(any(ValidateFactCommand.class));
+        verify(kieSessionFluentMock, times(3)).addCommand(commandArgumentCaptor.capture());
+
+        List<ExecutableCommand<?>> allAddCommands = commandArgumentCaptor.getAllValues();
+        assertTrue(allAddCommands.stream().map(Object::getClass).anyMatch(ValidateFactCommand.class::isAssignableFrom));
+        assertTrue(allAddCommands.stream().map(Object::getClass).anyMatch(AddCoverageListenerCommand.class::isAssignableFrom));
+
+        assertTrue(result.containsKey(RuleScenarioExecutableBuilder.COVERAGE_LISTENER));
+        verify(kieSessionFluentMock, times(1)).out(eq(RULES_AVAILABLE));
     }
 }

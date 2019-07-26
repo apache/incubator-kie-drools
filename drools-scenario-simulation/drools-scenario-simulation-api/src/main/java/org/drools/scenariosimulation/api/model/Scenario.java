@@ -34,7 +34,6 @@ public class Scenario {
      */
     private final List<FactMappingValue> factMappingValues = new ArrayList<>();
 
-
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
      * <p>

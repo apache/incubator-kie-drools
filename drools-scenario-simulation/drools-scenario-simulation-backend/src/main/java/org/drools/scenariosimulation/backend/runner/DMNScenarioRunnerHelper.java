@@ -37,7 +37,6 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -49,10 +48,10 @@ import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SU
 public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
     @Override
-    public RequestContext executeScenario(KieContainer kieContainer,
-                                          ScenarioRunnerData scenarioRunnerData,
-                                          ExpressionEvaluator expressionEvaluator,
-                                          SimulationDescriptor simulationDescriptor) {
+    protected Map<String, Object> executeScenario(KieContainer kieContainer,
+                                                  ScenarioRunnerData scenarioRunnerData,
+                                                  ExpressionEvaluator expressionEvaluator,
+                                                  SimulationDescriptor simulationDescriptor) {
         if (!ScenarioSimulationModel.Type.DMN.equals(simulationDescriptor.getType())) {
             throw new ScenarioException("Impossible to run a not-DMN simulation with DMN runner");
         }
@@ -62,13 +61,14 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             executableBuilder.setValue(input.getFactIdentifier().getName(), input.getValue());
         }
 
-        return executableBuilder.run();
+        return executableBuilder.run().getOutputs();
     }
 
     @Override
-    protected ScenarioResultMetadata extractResultMetadata(RequestContext requestContext, ScenarioWithIndex scenarioWithIndex) {
-        DMNModel dmnModel = requestContext.getOutput(DMNScenarioExecutableBuilder.DMN_MODEL);
-        DMNResult dmnResult = requestContext.getOutput(DMNScenarioExecutableBuilder.DMN_RESULT);
+    protected ScenarioResultMetadata extractResultMetadata(Map<String, Object> requestContext,
+                                                           ScenarioWithIndex scenarioWithIndex) {
+        DMNModel dmnModel = (DMNModel) requestContext.get(DMNScenarioExecutableBuilder.DMN_MODEL);
+        DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
 
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
 
@@ -86,11 +86,11 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     }
 
     @Override
-    public void verifyConditions(SimulationDescriptor simulationDescriptor,
-                                 ScenarioRunnerData scenarioRunnerData,
-                                 ExpressionEvaluator expressionEvaluator,
-                                 RequestContext requestContext) {
-        DMNResult dmnResult = requestContext.getOutput(DMNScenarioExecutableBuilder.DMN_RESULT);
+    protected void verifyConditions(SimulationDescriptor simulationDescriptor,
+                                    ScenarioRunnerData scenarioRunnerData,
+                                    ExpressionEvaluator expressionEvaluator,
+                                    Map<String, Object> requestContext) {
+        DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
 
         for (ScenarioExpect output : scenarioRunnerData.getExpects()) {
             FactIdentifier factIdentifier = output.getFactIdentifier();
@@ -133,7 +133,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         List<ExpressionElement> elementsWithoutClass = factMapping.getExpressionElementsWithoutClass();
 
         // DMN engine doesn't generate the whole object when no entry of the decision table match
-        if(resultRaw != null) {
+        if (resultRaw != null) {
             for (ExpressionElement expressionElement : elementsWithoutClass) {
                 if (!(resultRaw instanceof Map)) {
                     throw new ScenarioException("Wrong resultRaw structure because it is not a complex type as expected");
@@ -156,7 +156,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+    protected Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
         Map<String, Object> toReturn = new HashMap<>();
         for (Map.Entry<List<String>, Object> listObjectEntry : params.entrySet()) {
 

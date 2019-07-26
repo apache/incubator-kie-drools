@@ -72,6 +72,11 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 

@@ -112,12 +112,12 @@ public abstract class AbstractScenarioRunner extends Runner {
 
     protected void internalRunScenario(ScenarioWithIndex scenarioWithIndex, ScenarioRunnerData scenarioRunnerData) {
         ExpressionEvaluator expressionEvaluator = createExpressionEvaluator();
-        newRunnerHelper(getSimulationDescriptor()).run(getKieContainer(),
-                                                       getSimulationDescriptor(),
-                                                       scenarioWithIndex,
-                                                       expressionEvaluator,
-                                                       getClassLoader(),
-                                                       scenarioRunnerData);
+        newRunnerHelper().run(getKieContainer(),
+                              getSimulationDescriptor(),
+                              scenarioWithIndex,
+                              expressionEvaluator,
+                              getClassLoader(),
+                              scenarioRunnerData);
     }
 
     public ExpressionEvaluator createExpressionEvaluator() {
@@ -176,5 +176,5 @@ public abstract class AbstractScenarioRunner extends Runner {
         }
     }
 
-    protected abstract AbstractRunnerHelper newRunnerHelper(SimulationDescriptor simulationDescriptor);
+    protected abstract AbstractRunnerHelper newRunnerHelper();
 }

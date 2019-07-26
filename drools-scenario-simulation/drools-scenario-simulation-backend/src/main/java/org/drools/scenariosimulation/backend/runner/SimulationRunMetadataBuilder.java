@@ -40,18 +40,18 @@ public class SimulationRunMetadataBuilder {
     public SimulationRunMetadata build() {
         int available = 0;
         Map<String, Integer> outputCounter = new HashMap<>();
-        Map<ScenarioWithIndex, List<String>> scenarioCounter = new HashMap<>();
+        Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter = new HashMap<>();
         for (ScenarioResultMetadata scenarioResultMetadatum : scenarioResultMetadata) {
             // this value is the same for all the scenarios
             available = scenarioResultMetadatum.getAvailable().size();
-            scenarioResultMetadatum.getExecuted()
-                    .forEach(name -> outputCounter.compute(name,
-                                                           (key, number) -> number == null ? 1 : number + 1));
+            scenarioResultMetadatum.getExecutedWithCounter()
+                    .forEach((name, counter) -> outputCounter.compute(name,
+                                                                      (key, number) -> number == null ? counter : number + counter));
         }
 
         for (ScenarioResultMetadata scenarioResultMetadatum : scenarioResultMetadata) {
             scenarioCounter.put(scenarioResultMetadatum.getScenarioWithIndex(),
-                                new ArrayList<>(scenarioResultMetadatum.getExecuted()));
+                                scenarioResultMetadatum.getExecutedWithCounter());
         }
         return new SimulationRunMetadata(available, outputCounter.keySet().size(), outputCounter, scenarioCounter);
     }

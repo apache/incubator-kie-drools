@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -27,37 +28,35 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluator;
+import org.drools.scenariosimulation.backend.fluent.CoverageAgendaListener;
 import org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder;
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioExpect;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
+import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.util.ScenarioBeanUtil;
 import org.drools.scenariosimulation.backend.util.ScenarioBeanWrapper;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.RequestContext;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
+import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.COVERAGE_LISTENER;
+import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.RULES_AVAILABLE;
 import static org.drools.scenariosimulation.backend.fluent.RuleScenarioExecutableBuilder.createBuilder;
 import static org.drools.scenariosimulation.backend.util.ScenarioBeanUtil.fillBean;
 
 public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
-    private final SimulationDescriptor simulationDescriptor;
-
-    public RuleScenarioRunnerHelper(SimulationDescriptor simulationDescriptor) {
-        this.simulationDescriptor = simulationDescriptor;
-    }
-
     @Override
-    public RequestContext executeScenario(KieContainer kieContainer,
-                                          ScenarioRunnerData scenarioRunnerData,
-                                          ExpressionEvaluator expressionEvaluator,
-                                          SimulationDescriptor simulationDescriptor) {
+    protected Map<String, Object> executeScenario(KieContainer kieContainer,
+                                                  ScenarioRunnerData scenarioRunnerData,
+                                                  ExpressionEvaluator expressionEvaluator,
+                                                  SimulationDescriptor simulationDescriptor) {
         if (!Type.RULE.equals(simulationDescriptor.getType())) {
             throw new ScenarioException("Impossible to run a not-RULE simulation with RULE runner");
         }
@@ -86,11 +85,27 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         return ruleScenarioExecutableBuilder.run();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void verifyConditions(SimulationDescriptor simulationDescriptor,
-                                 ScenarioRunnerData scenarioRunnerData,
-                                 ExpressionEvaluator expressionEvaluator,
-                                 RequestContext requestContext) {
+    protected ScenarioResultMetadata extractResultMetadata(Map<String, Object> requestContext, ScenarioWithIndex scenarioWithIndex) {
+        CoverageAgendaListener coverageAgendaListener = (CoverageAgendaListener) requestContext.get(COVERAGE_LISTENER);
+        Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
+
+        Set<String> availableRules = (Set<String>) requestContext.get(RULES_AVAILABLE);
+
+        ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
+
+        scenarioResultMetadata.addAllAvailable(availableRules);
+        scenarioResultMetadata.addAllExecuted(ruleExecuted);
+
+        return scenarioResultMetadata;
+    }
+
+    @Override
+    protected void verifyConditions(SimulationDescriptor simulationDescriptor,
+                                    ScenarioRunnerData scenarioRunnerData,
+                                    ExpressionEvaluator expressionEvaluator,
+                                    Map<String, Object> requestContext) {
 
         for (ScenarioGiven input : scenarioRunnerData.getGivens()) {
             FactIdentifier factIdentifier = input.getFactIdentifier();

@@ -48,7 +48,7 @@ public class AbstractScenarioRunnerTest {
                                            "",
                                            BaseExpressionEvaluator::new) {
                     @Override
-                    protected AbstractRunnerHelper newRunnerHelper(SimulationDescriptor simulationDescriptor) {
+                    protected AbstractRunnerHelper newRunnerHelper() {
                         return null;
                     }
                 });
