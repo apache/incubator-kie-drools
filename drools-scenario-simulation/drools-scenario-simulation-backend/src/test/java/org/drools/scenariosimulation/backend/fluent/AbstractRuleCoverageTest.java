@@ -33,7 +33,6 @@ public abstract class AbstractRuleCoverageTest {
             BeforeMatchFiredEvent beforeMatchFiredEventMock = createBeforeMatchFiredEventMock(ruleToNumberOfTimes.getKey());
             IntStream.range(0, ruleToNumberOfTimes.getValue()).forEach(i -> coverageAgendaListener.beforeMatchFired(beforeMatchFiredEventMock));
         }
-        ;
         return coverageAgendaListener;
     }
 
