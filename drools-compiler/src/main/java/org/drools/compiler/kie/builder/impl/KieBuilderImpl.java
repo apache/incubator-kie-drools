@@ -499,19 +499,28 @@ public class KieBuilderImpl
     }
 
     @Override
+    public KieModule getKieModule(Class<? extends ProjectType> projectClass) {
+        return getKieModule( false , projectClass);
+    }
+
+    @Override
     public KieModule getKieModuleIgnoringErrors() {
         return getKieModule( true );
     }
 
-    private KieModule getKieModule( boolean ignoreErrors ) {
+    private KieModule getKieModule(boolean ignoreErrors, Class<? extends ProjectType> projectClass) {
         if ( !isBuilt() ) {
-            buildAll();
+            buildAll(projectClass);
         }
 
         if ( !ignoreErrors && ( getResults().hasMessages( Level.ERROR ) || kModule == null ) ) {
             throw new RuntimeException( "Unable to get KieModule, Errors Existed: " + getResults() );
         }
         return kModule;
+    }
+
+    private KieModule getKieModule( boolean ignoreErrors ) {
+        return getKieModule(ignoreErrors, DrlProject.class);
     }
 
     private boolean isBuilt() {
