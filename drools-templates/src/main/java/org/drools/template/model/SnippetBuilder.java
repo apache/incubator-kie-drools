@@ -16,12 +16,13 @@
 
 package org.drools.template.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.drools.core.util.StringUtils.splitArgumentsList;
 
 /**
  * This utility class exists to convert rule script snippets to actual code. The
@@ -51,8 +52,6 @@ public class SnippetBuilder {
 
     private final SnippetType type;
 
-    private final Pattern delimiter;
-
     private final boolean trim;
 
     /**
@@ -70,7 +69,6 @@ public class SnippetBuilder {
         this.trim = trim;
         this._template = snippetTemplate;
         this.type = getType( _template );
-        this.delimiter = Pattern.compile( "(.*?[^\\\\])(,|\\z)" );
     }
 
     public static SnippetType getType( String template ) {
@@ -140,13 +138,8 @@ public class SnippetBuilder {
     }
 
     private String[] split( String input ) {
-        Matcher m = delimiter.matcher( input );
-        List<String> result = new ArrayList<String>();
-        while ( m.find() ) {
-            result.add( m.group( 1 ).replaceAll( "\\\\,", "," ) );
-        }
-        return result.toArray( new String[ result.size() ] );
-
+        List<String> splitList = splitArgumentsList(input, false);
+        return splitList.toArray(new String[splitList.size()]);
     }
 
     /**
