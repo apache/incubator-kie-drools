@@ -16,8 +16,6 @@
 
 package org.drools.core.util;
 
-import static java.lang.Character.isWhitespace;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +31,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+
+import static java.lang.Character.isWhitespace;
 
 /**
  * Ripped form commons StringUtil, unless specified:
@@ -953,14 +953,18 @@ public class StringUtils {
     }
 
     public static List<String> splitStatements(CharSequence string) {
-        return codeAwareSplitOnChar(string, ';');
+        return codeAwareSplitOnChar(string, ';', true);
     }
 
     public static List<String> splitArgumentsList(CharSequence string) {
-        return codeAwareSplitOnChar(string, ',');
+        return splitArgumentsList(string, true);
     }
 
-    private static List<String> codeAwareSplitOnChar(CharSequence string, char ch) {
+    public static List<String> splitArgumentsList(CharSequence string, boolean trimArgs) {
+        return codeAwareSplitOnChar(string, ',', trimArgs);
+    }
+
+    private static List<String> codeAwareSplitOnChar(CharSequence string, char ch, boolean trimArgs) {
         List<String> args = new ArrayList<String>();
         int lastStart = 0;
         int nestedParam = 0;
@@ -968,7 +972,8 @@ public class StringUtils {
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt( i ) == ch) {
                 if (!isQuoted && nestedParam == 0) {
-                    args.add(string.subSequence(lastStart, i).toString().trim());
+                    String arg = string.subSequence(lastStart, i).toString();
+                    args.add(trimArgs ? arg.trim() : arg);
                     lastStart = i+1;
                 }
             } else {
@@ -998,13 +1003,14 @@ public class StringUtils {
                 }
             }
         }
-        String lastArg = string.subSequence(lastStart, string.length()).toString().trim();
+        String arg = string.subSequence(lastStart, string.length()).toString();
+        String lastArg = trimArgs ? arg.trim() : arg;
         if (lastArg.length() > 0) {
             args.add(lastArg);
         }
         return args;
     }
-    
+
     /**
      * Compares two string being equals ignoring whitespaces, but preserving whitespace between double-quotes
      * The two inputs MUST BE valid DRL/Java syntax (this validation is NOT performed by this method, this method assumes they are).
@@ -1171,6 +1177,15 @@ public class StringUtils {
             }
         }
         return inSingleLineComment || inMultiLineComment;
+    }
+
+    public static String replaceOutOfQuotes( String s, String oldValue, String newValue ) {
+        for (int i = s.indexOf( oldValue ); i >= 0; i = s.indexOf( oldValue, i+newValue.length() )) {
+            if ( !isInQuotes( s, i ) ) {
+                s = s.substring( 0, i ) + newValue + s.substring( i+oldValue.length() );
+            }
+        }
+        return s;
     }
 
     private static boolean isInQuotes( String str, int i ) {
