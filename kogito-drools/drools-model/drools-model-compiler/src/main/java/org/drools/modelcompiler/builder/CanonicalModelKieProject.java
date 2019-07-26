@@ -54,11 +54,11 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
     public static final String PROJECT_RUNTIME_CLASS = "org.drools.project.model.ProjectRuntime";
     public static final String PROJECT_RUNTIME_RESOURCE_CLASS = PROJECT_RUNTIME_CLASS.replace('.', '/') + ".class";
-    protected static final String PROJECT_RUNTIME_SOURCE = "src/main/java/" + PROJECT_RUNTIME_CLASS.replace('.', '/') + ".java";
+    protected static final String PROJECT_RUNTIME_SOURCE = PROJECT_RUNTIME_CLASS.replace('.', '/') + ".java";
 
     public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
     public static final String PROJECT_MODEL_RESOURCE_CLASS = PROJECT_MODEL_CLASS.replace('.', '/') + ".class";
-    protected static final String PROJECT_MODEL_SOURCE = "src/main/java/" + PROJECT_MODEL_CLASS.replace('.', '/') + ".java";
+    protected static final String PROJECT_MODEL_SOURCE = PROJECT_MODEL_CLASS.replace('.', '/') + ".java";    
 
     private final boolean isPattern;
 
