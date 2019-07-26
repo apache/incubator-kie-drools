@@ -61,8 +61,8 @@ public class FinishedByFunction
                              range1.getHighEndPoint().compareTo(range2.getHighEndPoint()) == 0 &&
                              (range1.getLowEndPoint().compareTo(range2.getLowEndPoint()) < 0 ||
                               (range1.getLowEndPoint().compareTo(range2.getLowEndPoint()) == 0 &&
-                               range1.getLowBoundary() == RangeBoundary.CLOSED &&
-                               range2.getLowBoundary() == RangeBoundary.OPEN));
+                               (range1.getLowBoundary() == RangeBoundary.CLOSED ||
+                                range2.getLowBoundary() == RangeBoundary.OPEN)));
             return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
             // values are not comparable

@@ -98,24 +98,25 @@ public class FEELTemporalFunctionsTest extends BaseFEELTest {
                 { "finishes( [5..10], [1..10] )", true, null },
                 { "finishes( [5..10), [1..10] )", false, null },
                 { "finishes( [5..10), [1..10) )", true, null },
-                { "finishes( [1..10], [1..10] )", false, null },
+                { "finishes( [1..10], [1..10] )", true, null },
                 { "finishes( (1..10], [1..10] )", true, null },
                 
                 { "finishes( [5..11], [1..10] )", false, null }, // additional
-                { "finishes( (1..10], (1..10] )", false, null }, // additional
                 { "finishes( [0..10], [1..10] )", false, null }, // additional
+                { "finishes( [1..10], (1..10] )", false, null }, // additional
                 
                 { "finished by( [1..10], 10 )", true, null },
                 { "finished by( [1..10), 10 )  ", false, null },
                 { "finished by( [1..10], [5..10] ) ", true, null },
                 { "finished by( [1..10], [5..10) ) ", false, null },
                 { "finished by( [1..10), [5..10) ) ", true, null },
-                { "finished by( [1..10], [1..10] ) ", false, null },
+                { "finished by( [1..10], [1..10] ) ", true, null },
                 { "finished by( [1..10], (1..10] ) ", true, null },
                 
                 { "finished by( [1..10], [5..11] )", false, null }, // additional
-                { "finished by( (1..10], (1..10] )", false, null }, // additional
                 { "finished by( [1..10], [0..10] )", false, null }, // additional
+                { "finished by( (1..10], [1..10] )", false, null }, // additional
+                { "finished by( (1..10], (1..10] )", true, null }, // additional
                 
                 { "includes( [1..10], 5 )", true, null },
                 { "includes( [1..10], 12 )", false, null },
