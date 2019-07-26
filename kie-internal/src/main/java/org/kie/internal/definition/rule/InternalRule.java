@@ -122,4 +122,16 @@ public interface InternalRule extends Rule {
      */
     Calendar getDateExpires();
 
+    /**
+     * Returns the fully qualified name of the rule (package + rule name)
+     *
+     * @return the fully qualified name of the rule
+     */
+    String getFullyQualifiedName();
+
+    /**
+     * Returns true if the rule is part of default agenda group. False otherwise
+     * @return
+     */
+    boolean isMainAgendaGroup();
 }
