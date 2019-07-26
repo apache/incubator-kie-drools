@@ -22,6 +22,7 @@ import java.util.Map;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.SequentialOption;
 
 /**
  * KieBaseModel is a model allowing to programmatically define a KieBase
@@ -119,6 +120,17 @@ public interface KieBaseModel {
      * Default is DeclarativeAgendaOption.DISABLED
      */
     KieBaseModel setDeclarativeAgenda(DeclarativeAgendaOption declarativeAgenda);
+
+    /**
+     * Returns the SequentialOption of this KieBaseModel
+     */
+    SequentialOption getSequential();
+
+    /**
+     * Sets the SequentialOption for this KieBaseModel
+     * Default is SequentialOption.NO
+     */
+    KieBaseModel setSequential(SequentialOption sequential);
 
     /**
      * Sets the CDI scope for this KieBaseModel

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.internal.conf;
-
-import org.kie.api.conf.SingleValueKieBaseOption;
+package org.kie.api.conf;
 
 /**
  * An Enum for Sequential option.
@@ -52,4 +50,12 @@ public enum SequentialOption implements SingleValueKieBaseOption {
         return this.value;
     }
 
+    public static SequentialOption determineSequential(String option) {
+        if ( YES.name().equalsIgnoreCase(option) || "true".equalsIgnoreCase(option) ) {
+            return YES;
+        } else if ( NO.name().equalsIgnoreCase(option) || "false".equalsIgnoreCase(option) ) {
+            return NO;
+        }
+        throw new IllegalArgumentException( "Illegal enum value '" + option + "' for DeclarativeAgendaOption" );
+    }
 }
