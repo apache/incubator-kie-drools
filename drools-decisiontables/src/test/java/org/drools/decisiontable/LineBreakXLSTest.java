@@ -1,5 +1,10 @@
 package org.drools.decisiontable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.sample.FactData;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -11,11 +16,6 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class LineBreakXLSTest {
 
@@ -70,5 +70,32 @@ public class LineBreakXLSTest {
 
         assertEquals(30, john.getAge());
         assertFalse(john.isAlive());
+    }
+
+    @Test
+    public void testMultipleLinesInCells() {
+
+        // DROOLS-4358
+        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtconf.setInputType(DecisionTableInputType.XLS);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource("MultiLinesInCells.xls", getClass()), ResourceType.DTABLE, dtconf);
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+
+        KieSession ksession = kbase.newKieSession();
+
+        Person john = new Person("John");
+        john.setAge(20);
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        ksession.dispose();
+
+        assertEquals(30, john.getAge());
+        assertEquals("ssss\nxxxx", john.getName());
     }
 }
