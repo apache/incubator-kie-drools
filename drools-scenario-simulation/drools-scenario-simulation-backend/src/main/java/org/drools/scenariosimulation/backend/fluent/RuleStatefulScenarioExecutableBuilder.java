@@ -31,16 +31,19 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieSessionFluent;
+import org.kie.internal.command.RegistryContext;
 
 public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecutableBuilder {
 
     private final KieSessionFluent kieSessionFluent;
     private final ExecutableBuilder executableBuilder;
     private final Map<FactIdentifier, List<FactCheckerHandle>> internalConditions = new HashMap<>();
+    private String agendaGroupName = null;
 
     private final static String DEFAULT_APPLICATION = "defaultApplication";
 
@@ -75,12 +78,14 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
     }
 
     @Override
-    public void setActiveAgendaGroup(String agendaGroup) {
-        kieSessionFluent.setActiveAgendaGroup(agendaGroup);
+    public void setActiveAgendaGroup(String agendaGroupName) {
+        this.agendaGroupName = agendaGroupName;
+        kieSessionFluent.setActiveAgendaGroup(agendaGroupName);
     }
 
     @Override
     public void setActiveRuleFlowGroup(String ruleFlowGroup) {
+        this.agendaGroupName = ruleFlowGroup;
         kieSessionFluent.setActiveRuleFlowGroup(ruleFlowGroup);
     }
 
@@ -90,8 +95,17 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
     }
 
     @Override
-    public RequestContext run() {
+    public Map<String, Object> run() {
         Objects.requireNonNull(executableBuilder, "Executable builder is null, please invoke create(KieContainer, )");
+
+        CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
+
+        kieSessionFluent.addCommand(new AddCoverageListenerCommand(coverageAgendaListener));
+
+        kieSessionFluent.addCommand(context -> {
+            KieSession kieSession = ((RegistryContext) context).lookup(KieSession.class);
+            return getAvailableRules(kieSession.getKieBase(), agendaGroupName);
+        }).out(RULES_AVAILABLE);
 
         kieSessionFluent.fireAllRules();
         internalConditions.values()
@@ -99,7 +113,11 @@ public class RuleStatefulScenarioExecutableBuilder implements RuleScenarioExecut
 
         kieSessionFluent.dispose().end();
 
-        return createExecutableRunner().execute(executableBuilder.getExecutable());
+        RequestContext execute = createExecutableRunner().execute(executableBuilder.getExecutable());
+        Map<String, Object> toReturn = new HashMap<>(execute.getOutputs());
+
+        toReturn.put(COVERAGE_LISTENER, coverageAgendaListener);
+        return toReturn;
     }
 
     protected ExecutableBuilder createExecutableBuilder() {

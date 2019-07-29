@@ -339,6 +339,7 @@ public class RuleImpl implements Externalizable,
         return this.name;
     }
 
+    @Override
     public String getFullyQualifiedName() {
         return getPackageName() + "." + getName();
     }
@@ -351,25 +352,25 @@ public class RuleImpl implements Externalizable,
     public Salience getSalience() {
         return this.salience;
     }
-    
+
     /**
      * Retrieve the <code>Rule</code> salience value.
-     * 
+     *
      * @return The salience value.
      */
     public int getSalienceValue() {
     	return getSalience().getValue();
     }
-    
+
     /**
 	 * Returns <code>true</code> if the rule uses dynamic salience, <code>false</code> otherwise.
-	 * 
+	 *
 	 * @return <code>true</code> if the rule uses dynamic salience, else <code>false</code>.
 	 */
     public boolean isSalienceDynamic() {
     	return getSalience().isDynamic();
     }
-    
+
     /**
      * Set the <code>Rule<code> salience.
      *
@@ -391,6 +392,7 @@ public class RuleImpl implements Externalizable,
         return this;
     }
 
+    @Override
     public boolean isMainAgendaGroup() {
         return AgendaGroup.MAIN.equals( agendaGroup );
     }
@@ -914,8 +916,8 @@ public class RuleImpl implements Externalizable,
                                 final WorkingMemory workingMemory) {
             return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> delegate.getValue(tuple, declrs, rule, workingMemory), KiePolicyHelper.getAccessContext());
         }
-    }
 
+    }
     public static String getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
         try (InputStream is = cls.getClassLoader().getResourceAsStream(resource)) {
             byte[] data = readBytesFromInputStream( is );

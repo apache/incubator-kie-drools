@@ -93,7 +93,7 @@ public class SnippetBuilderTest {
     public void testMultiPlaceHolderEscapedComma() {
         final String snippet = "rulesOutputRouting.set( $1, $2, $3, $4, $5 );";
         final SnippetBuilder snip = new SnippetBuilder(snippet);
-        final String result = snip.build("\"80\",\"Department Manager\",toa.getPersonExpense().getEntityCode(\"Part Of\"\\,\"Office\"),10004,30");
+        final String result = snip.build("\"80\",\"Department Manager\",toa.getPersonExpense().getEntityCode(\"Part Of\",\"Office\"),10004,30");
         assertEquals("rulesOutputRouting.set( \"80\", \"Department Manager\", toa.getPersonExpense().getEntityCode(\"Part Of\",\"Office\"), 10004, 30 );",
                      result);
 

@@ -101,6 +101,10 @@ public class Person {
         this.canBuyAlcohol = canBuyAlcohol;
     }
 
+    public void setName( String name ) {
+        this.name = name;
+    }
+
     public String toString() {
         return "[Person name='" + this.name + "']";
     }

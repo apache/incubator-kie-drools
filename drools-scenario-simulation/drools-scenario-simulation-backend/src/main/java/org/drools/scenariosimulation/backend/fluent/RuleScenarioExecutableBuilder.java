@@ -16,14 +16,24 @@
 
 package org.drools.scenariosimulation.backend.fluent;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.backend.runner.model.ResultWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.RequestContext;
+import org.kie.internal.definition.rule.InternalRule;
 
 public interface RuleScenarioExecutableBuilder {
+
+    String COVERAGE_LISTENER = "COVERAGE_LISTENER";
+    String RULES_AVAILABLE = "RULES_AVAILABLE";
 
     static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String kieSessionName, boolean stateless) {
         if (stateless) {
@@ -47,5 +57,34 @@ public interface RuleScenarioExecutableBuilder {
 
     void insert(Object element);
 
-    RequestContext run();
+    Map<String, Object> run();
+
+    /**
+     * Method to calculate actual number of available rules filtered by active agenda group
+     * @param kieBase
+     * @param activeAgendaGroup name of the active agenda group. Use <code>null</code> if default one
+     * @return
+     */
+    default Set<String> getAvailableRules(KieBase kieBase, String activeAgendaGroup) {
+        Set<String> toReturn = new HashSet<>();
+        for (KiePackage kiePackage : kieBase.getKiePackages()) {
+            for (Rule rule : kiePackage.getRules()) {
+                InternalRule internalRule = (InternalRule) rule;
+
+                // main agenda group is always executed after the active one
+                if (internalRule.isMainAgendaGroup()) {
+                    toReturn.add(prettyFullyQualifiedName(internalRule));
+                } else if (Objects.equals(activeAgendaGroup, internalRule.getAgendaGroup())) {
+                    toReturn.add(prettyFullyQualifiedName(internalRule));
+                }
+            }
+        }
+
+        return toReturn;
+    }
+
+    static String prettyFullyQualifiedName(Rule rule) {
+        String packageName = rule.getPackageName();
+        return rule.getName() + (packageName != null && !packageName.isEmpty() ? " (" + packageName + ")" : "");
+    }
 }

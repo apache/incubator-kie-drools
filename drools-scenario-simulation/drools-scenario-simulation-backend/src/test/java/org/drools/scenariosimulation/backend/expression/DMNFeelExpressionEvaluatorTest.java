@@ -57,7 +57,6 @@ public class DMNFeelExpressionEvaluatorTest {
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Syntax error:");
-
     }
 
     @Test

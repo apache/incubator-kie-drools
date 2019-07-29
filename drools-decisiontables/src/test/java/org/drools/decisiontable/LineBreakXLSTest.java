@@ -71,4 +71,32 @@ public class LineBreakXLSTest {
         assertEquals(30, john.getAge());
         assertFalse(john.isAlive());
     }
+
+    @Test
+    public void testMultipleLinesInCells() {
+        // DROOLS-4358
+
+        DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtconf.setInputType(DecisionTableInputType.XLS);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newClassPathResource("MultiLinesInCells.xls", getClass()), ResourceType.DTABLE, dtconf);
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+
+        KieSession ksession = kbase.newKieSession();
+
+        Person john = new Person("John");
+        john.setAge(20);
+        john.setAlive(true);
+        ksession.insert(john);
+        ksession.fireAllRules();
+
+        ksession.dispose();
+
+        assertEquals(30, john.getAge());
+        assertEquals("ssss\nxxxx", john.getName());
+    }
 }

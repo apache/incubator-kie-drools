@@ -32,7 +32,6 @@ import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
@@ -75,7 +74,7 @@ public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecu
     }
 
     @Override
-    public RequestContext run() {
+    public Map<String, Object> run() {
         KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(sessionName);
         if (kieSessionModel == null) {
             throw new ScenarioException("Impossible to find a KieSession with name " + sessionName);
@@ -84,14 +83,23 @@ public class RuleStatelessScenarioExecutableBuilder implements RuleScenarioExecu
 
         StatelessKieSession statelessKieSession = kieContainer.newStatelessKieSession(sessionName);
 
-        statelessKieSession.execute(generateCommands());
+        CoverageAgendaListener coverageAgendaListener = new CoverageAgendaListener();
 
-        return null;
+        statelessKieSession.execute(generateCommands(coverageAgendaListener));
+
+        Map<String, Object> toReturn = new HashMap<>();
+
+        toReturn.put(COVERAGE_LISTENER, coverageAgendaListener);
+        toReturn.put(RULES_AVAILABLE, getAvailableRules(statelessKieSession.getKieBase(), agendaGroup));
+        return toReturn;
     }
 
-    protected Command<ExecutionResults> generateCommands() {
+    protected Command<ExecutionResults> generateCommands(CoverageAgendaListener coverageAgendaListener) {
 
         List<Command<?>> toReturn = new ArrayList<>();
+
+        toReturn.add(new AddCoverageListenerCommand(coverageAgendaListener));
+
         if (agendaGroup != null) {
             toReturn.add(commands.newAgendaGroupSetFocus(agendaGroup));
         }
