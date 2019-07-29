@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
+import java.time.Clock;
+
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -24,12 +26,19 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
 
     private final long unimprovedTimeMillisSpentLimit;
 
+    private final Clock clock;
+
     public UnimprovedTimeMillisSpentTermination(long unimprovedTimeMillisSpentLimit) {
+        this(unimprovedTimeMillisSpentLimit, Clock.systemUTC());
+    }
+
+    protected UnimprovedTimeMillisSpentTermination(long unimprovedTimeMillisSpentLimit, Clock clock) {
         this.unimprovedTimeMillisSpentLimit = unimprovedTimeMillisSpentLimit;
         if (unimprovedTimeMillisSpentLimit <= 0L) {
             throw new IllegalArgumentException("The unimprovedTimeMillisSpentLimit (" + unimprovedTimeMillisSpentLimit
-                    + ") cannot be negative.");
+                                                       + ") cannot be negative.");
         }
+        this.clock = clock;
     }
 
     public long getUnimprovedTimeMillisSpentLimit() {
@@ -53,7 +62,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
     }
 
     protected boolean isTerminated(long bestSolutionTimeMillis) {
-        long now = System.currentTimeMillis();
+        long now = clock.millis();
         long unimprovedTimeMillisSpent = now - bestSolutionTimeMillis;
         return unimprovedTimeMillisSpent >= unimprovedTimeMillisSpentLimit;
     }
@@ -75,7 +84,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
     }
 
     protected double calculateTimeGradient(long bestSolutionTimeMillis) {
-        long now = System.currentTimeMillis();
+        long now = clock.millis();
         long unimprovedTimeMillisSpent = now - bestSolutionTimeMillis;
         double timeGradient = ((double) unimprovedTimeMillisSpent) / ((double) unimprovedTimeMillisSpentLimit);
         return Math.min(timeGradient, 1.0);
