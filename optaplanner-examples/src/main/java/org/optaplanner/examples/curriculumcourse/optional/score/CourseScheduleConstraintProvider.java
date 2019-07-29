@@ -35,13 +35,13 @@ public class CourseScheduleConstraintProvider implements ConstraintProvider {
         // TODO replace the 2 conflictingLectures constraints with these
 //        teacherConflict(constraintFactory);
 //        curriculumConflict(constraintFactory);
-        conflictingLecturesDifferentCourseInSamePeriod(constraintFactory);
+        conflictingLecturesDifferentCourseInSamePeriod(constraintFactory); // TODO Doesn't work
         conflictingLecturesSameCourseInSamePeriod(constraintFactory);
-        roomOccupancy(constraintFactory);
+        roomOccupancy(constraintFactory); // TODO Doesn't work
         unavailablePeriodPenalty(constraintFactory);
         roomCapacity(constraintFactory);
         minimumWorkingDays(constraintFactory);
-        curriculumCompactness(constraintFactory);
+        curriculumCompactness(constraintFactory); // TODO Fix it
         roomStability(constraintFactory);
     }
 
