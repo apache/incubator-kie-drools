@@ -55,7 +55,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     ResourceTypePackageRegistry getResourceTypePackages();
 
-    Map<String, String> getGlobals();
+    Map<String, Class<?>> getGlobals();
 
     @Deprecated
     Map<String, Process> getRuleFlows();

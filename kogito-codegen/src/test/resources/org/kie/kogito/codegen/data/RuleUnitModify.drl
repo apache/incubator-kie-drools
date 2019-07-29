@@ -1,5 +1,5 @@
 package org.kie.kogito.codegen.data;
-unit AdultUnitModify;
+unit AdultUnit;
 
 import org.kie.kogito.codegen.data.Person
 import org.kie.kogito.codegen.data.Results

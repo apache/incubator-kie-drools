@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.rules;
+package org.kie.kogito.codegen;
 
-import javax.json.bind.annotation.JsonbTypeDeserializer;
-import org.kie.kogito.rules.impl.DataStreamDeserializer;
+import java.nio.charset.StandardCharsets;
 
-@JsonbTypeDeserializer(DataStreamDeserializer.class)
-public interface DataStream<T> extends DataSource<T> {
-    void append( T... ts );
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
+
+public interface FileGenerator {
+    String generatedFilePath();
+
+    String generate();
+
+    default GeneratedFile generateFile(GeneratedFile.Type fileType) {
+        return new GeneratedFile(fileType,
+                                 generatedFilePath(),
+                                 log( generate() ).getBytes( StandardCharsets.UTF_8));
+    }
 }

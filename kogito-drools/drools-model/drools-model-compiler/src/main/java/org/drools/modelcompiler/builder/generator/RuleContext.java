@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -36,11 +37,14 @@ import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.kie.kogito.rules.DataSource;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
+import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class RuleContext {
 
@@ -124,6 +128,26 @@ public class RuleContext {
             ruleUnitDescr = ruDescr.get();
         } else if (!useNamingConvention) {
             addCompilationError( new UnknownRuleUnitError( unitName ) );
+        }
+    }
+
+    private void processUnitData() {
+        findUnitDescr();
+        if (ruleUnitDescr != null) {
+            for (Map.Entry<String, Method> unitVar : ruleUnitDescr.getUnitVarAccessors().entrySet()) {
+                String unitVarName = unitVar.getKey();
+                java.lang.reflect.Type type = unitVar.getValue().getGenericReturnType();
+                Class<?> rawClass = toRawClass( type );
+                Class<?> resolvedType = ruleUnitDescr.getDatasourceType( unitVarName ).orElse( rawClass );
+
+                Type declType = classToReferenceType( rawClass );
+                addRuleUnitVar( unitVarName, resolvedType );
+
+                getPackageModel().addGlobal( unitVarName, rawClass );
+                if ( DataSource.class.isAssignableFrom( rawClass ) ) {
+                    getPackageModel().addEntryPoint( unitVarName );
+                }
+            }
         }
     }
 
@@ -306,7 +330,7 @@ public class RuleContext {
 
     public void setDescr(RuleDescr descr) {
         this.descr = descr;
-        findUnitDescr();
+        processUnitData();
     }
 
     public String getRuleName() {

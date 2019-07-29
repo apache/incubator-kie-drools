@@ -16,7 +16,11 @@
 
 package org.kie.api.runtime.rule;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,4 +35,25 @@ public interface QueryResults extends Iterable<QueryResultsRow> {
     Iterator<QueryResultsRow> iterator();
 
     int size();
+
+    default List<Map<String, Object>> toList() {
+        String[] columns = getIdentifiers();
+        List<Map<String, Object>> results = new ArrayList<>(size());
+        for (QueryResultsRow row : this) {
+            Map<String, Object> map = new HashMap<>();
+            for (String col : columns) {
+                map.put(col, row.get( col ));
+            }
+            results.add(map);
+        }
+        return results;
+    }
+
+    default List<Object> toList(String identifier) {
+        List<Object> results = new ArrayList<>(size());
+        for (QueryResultsRow row : this) {
+            results.add(row.get( identifier ));
+        }
+        return results;
+    }
 }

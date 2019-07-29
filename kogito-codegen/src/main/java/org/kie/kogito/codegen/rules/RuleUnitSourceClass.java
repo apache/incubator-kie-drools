@@ -15,6 +15,9 @@
 
 package org.kie.kogito.codegen.rules;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -27,15 +30,19 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-
+import org.drools.modelcompiler.builder.QueryModel;
+import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.impl.AbstractRuleUnit;
 
+import static java.util.stream.Collectors.toList;
+
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-public class RuleUnitSourceClass {
+public class RuleUnitSourceClass implements FileGenerator {
 
+    private final Class<?> ruleUnit;
     private final String packageName;
     private final String typeName;
     private final String generatedSourceFile;
@@ -44,10 +51,12 @@ public class RuleUnitSourceClass {
     private final String targetCanonicalName;
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
+    private Collection<QueryModel> queries;
 
-    public RuleUnitSourceClass(String packageName, String typeName, String generatedSourceFile) {
-        this.packageName = packageName;
-        this.typeName = typeName;
+    public RuleUnitSourceClass(Class<?> ruleUnit, String generatedSourceFile) {
+        this.ruleUnit = ruleUnit;
+        this.packageName = ruleUnit.getPackage().getName();
+        this.typeName = ruleUnit.getSimpleName();
         this.generatedSourceFile = generatedSourceFile;
         this.canonicalName = packageName + "." + typeName;
         this.targetTypeName = typeName + "RuleUnit";
@@ -59,6 +68,14 @@ public class RuleUnitSourceClass {
         return new RuleUnitInstanceSourceClass(packageName, typeName, classLoader);
     }
 
+    public List<QueryEndpointSourceClass> queries() {
+        return queries.stream()
+                .filter( query -> !query.hasParameters() )
+                .map( query -> new QueryEndpointSourceClass( ruleUnit, query, annotator ) )
+                .collect( toList() );
+    }
+
+    @Override
     public String generatedFilePath() {
         return generatedFilePath;
     }
@@ -71,6 +88,7 @@ public class RuleUnitSourceClass {
         return targetTypeName;
     }
 
+    @Override
     public String generate() {
         return compilationUnit().toString();
     }
@@ -146,6 +164,11 @@ public class RuleUnitSourceClass {
 
     public RuleUnitSourceClass withDependencyInjection(DependencyInjectionAnnotator annotator) {
         this.annotator = annotator;
+        return this;
+    }
+
+    public RuleUnitSourceClass withQueries( Collection<QueryModel> queries ) {
+        this.queries = queries;
         return this;
     }
 }

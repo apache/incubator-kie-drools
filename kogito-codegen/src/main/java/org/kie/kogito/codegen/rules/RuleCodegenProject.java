@@ -15,16 +15,16 @@
 
 package org.kie.kogito.codegen.rules;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
-import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_SOURCE;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
@@ -35,10 +35,9 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import static com.github.javaparser.StaticJavaParser.parse;
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
+import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_SOURCE;
 
 public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject implements KieBuilder.ProjectType {
 
@@ -77,9 +76,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                 if (!ruleUnits.isEmpty()) {
                     hasRuleUnits = true;
                     for (Class<?> ruleUnit : ruleUnits) {
-                        RuleUnitSourceClass ruSource = new RuleUnitSourceClass( ruleUnit.getPackage().getName(),
-                                                                                ruleUnit.getSimpleName(),
-                                                                                packageModel.getRulesFileName() )
+                        RuleUnitSourceClass ruSource = new RuleUnitSourceClass( ruleUnit, packageModel.getRulesFileName() )
                                 .withDependencyInjection(annotator );
                         moduleGenerator.addRuleUnit( ruSource );
                         unitsMap.put(ruleUnit, ruSource.targetCanonicalName());

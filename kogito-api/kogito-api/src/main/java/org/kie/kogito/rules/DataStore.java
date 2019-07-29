@@ -15,6 +15,10 @@
 
 package org.kie.kogito.rules;
 
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import org.kie.kogito.rules.impl.DataStoreDeserializer;
+
+@JsonbTypeDeserializer(DataStoreDeserializer.class)
 public interface DataStore<T> extends DataSource<T> {
 
     DataHandle add(T object );

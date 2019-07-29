@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -61,7 +60,6 @@ import org.drools.model.Rule;
 import org.drools.model.WindowReference;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModuleSourceClass;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.kie.api.runtime.rule.AccumulateFunction;
@@ -135,6 +133,7 @@ public class PackageModel {
 
     private final String pkgUUID;
     private Set<Class<?>> ruleUnits = new HashSet<>();
+    private Map<Class<?>, Set<QueryModel>> queriesByRuleUnit = new HashMap<>();
 
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, boolean isPattern, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this("", name, configuration, isPattern, dialectCompiletimeRegistry, exprIdGenerator);
@@ -240,18 +239,7 @@ public class PackageModel {
     }
 
     public void addGlobals(InternalKnowledgePackage pkg) {
-        Map<String, Class<?>> transformed;
-        transformed = pkg.getGlobals()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap( Entry::getKey, e -> {
-                    try {
-                        return pkg.getTypeResolver().resolveType(e.getValue());
-                    } catch (ClassNotFoundException e1) {
-                        throw new UnsupportedOperationException("Class not found", e1);
-                    }
-                }));
-        globals.putAll(transformed);
+        globals.putAll( pkg.getGlobals() );
     }
 
     public void addGlobal(String name, Class<?> type) {
@@ -348,6 +336,15 @@ public class PackageModel {
 
     public Collection<Class<?>> getRuleUnits() {
         return ruleUnits;
+    }
+
+    public void addQueryInRuleUnit(Class<?> ruleUnitType, QueryModel query) {
+        addRuleUnit(ruleUnitType);
+        queriesByRuleUnit.computeIfAbsent( ruleUnitType, k -> new HashSet<>() ).add(query);
+    }
+
+    public Collection<QueryModel> getQueriesInRuleUnit(Class<?> ruleUnitType) {
+        return queriesByRuleUnit.getOrDefault( ruleUnitType, Collections.emptySet() );
     }
 
     public static class RuleSourceResult {

@@ -90,7 +90,7 @@ public class KnowledgePackageImpl
 
     private Set<String> staticImports;
 
-    private Map<String, String> globals;
+    private Map<String, Class<?>> globals;
 
     private Map<String, FactTemplate> factTemplates;
 
@@ -213,8 +213,8 @@ public class KnowledgePackageImpl
 
     public Collection<Global> getGlobalVariables() {
         List<Global> list = new ArrayList<Global>(getGlobals().size());
-        for (Map.Entry<String, String> global : getGlobals().entrySet()) {
-            list.add(new GlobalImpl(global.getKey(), global.getValue()));
+        for (Map.Entry<String, Class<?>> global : getGlobals().entrySet()) {
+            list.add(new GlobalImpl(global.getKey(), global.getValue().getName()));
         }
         return Collections.unmodifiableCollection(list);
     }
@@ -297,7 +297,7 @@ public class KnowledgePackageImpl
         this.functions = (Map<String, Function>) in.readObject();
         this.accumulateFunctions = (Map<String, AccumulateFunction>) in.readObject();
         this.factTemplates = (Map) in.readObject();
-        this.globals = (Map<String, String>) in.readObject();
+        this.globals = (Map<String, Class<?>>) in.readObject();
         this.valid = in.readBoolean();
         this.needStreamMode = in.readBoolean();
         this.rules = (Map<String, RuleImpl>) in.readObject();
@@ -427,17 +427,16 @@ public class KnowledgePackageImpl
     public void addGlobal(final String identifier,
                           final Class<?> clazz) {
         if (this.globals == Collections.EMPTY_MAP) {
-            this.globals = new HashMap<String, String>(1);
+            this.globals = new HashMap<>();
         }
-        this.globals.put(identifier,
-                         clazz.getName());
+        this.globals.put(identifier, clazz);
     }
 
     public void removeGlobal(final String identifier) {
         this.globals.remove(identifier);
     }
 
-    public Map<String, String> getGlobals() {
+    public Map<String, Class<?>> getGlobals() {
         return this.globals;
     }
 

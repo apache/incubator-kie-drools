@@ -30,13 +30,14 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.util.ClassUtils;
-import org.kie.api.runtime.KieSession;
-import org.kie.kogito.rules.DataSource;
 import org.drools.core.ruleunit.impl.AbstractRuleUnitInstance;
 import org.drools.core.ruleunit.impl.EntryPointDataProcessor;
+import org.drools.core.util.ClassUtils;
+import org.kie.api.runtime.KieSession;
+import org.kie.kogito.codegen.FileGenerator;
+import org.kie.kogito.rules.DataSource;
 
-public class RuleUnitInstanceSourceClass {
+public class RuleUnitInstanceSourceClass implements FileGenerator {
 
     private final String packageName;
     private final String typeName;
@@ -65,10 +66,12 @@ public class RuleUnitInstanceSourceClass {
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
     }
 
+    @Override
     public String generatedFilePath() {
         return generatedFilePath;
     }
 
+    @Override
     public String generate() {
         return compilationUnit().toString();
     }

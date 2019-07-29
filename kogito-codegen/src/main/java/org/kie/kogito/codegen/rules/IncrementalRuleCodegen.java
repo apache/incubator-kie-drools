@@ -66,7 +66,6 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.kie.kogito.codegen.ApplicationGenerator.log;
-import static org.kie.kogito.codegen.rules.RuleUnitsRegisterClass.RULE_UNIT_REGISTER_SOURCE;
 
 public class IncrementalRuleCodegen implements Generator {
 
@@ -256,10 +255,9 @@ public class IncrementalRuleCodegen implements Generator {
             if (!ruleUnits.isEmpty()) {
                 hasRuleUnits = true;
                 for (Class<?> ruleUnit : ruleUnits) {
-                    RuleUnitSourceClass ruSource = new RuleUnitSourceClass(ruleUnit.getPackage().getName(),
-                                                                           ruleUnit.getSimpleName(),
-                                                                           pkgModel.getRulesFileName())
-                            .withDependencyInjection(annotator);
+                    RuleUnitSourceClass ruSource = new RuleUnitSourceClass(ruleUnit, pkgModel.getRulesFileName())
+                            .withDependencyInjection(annotator)
+                            .withQueries( pkgModel.getQueriesInRuleUnit( ruleUnit ) );
                     moduleGenerator.addRuleUnit(ruSource);
                     unitsMap.put(ruleUnit, ruSource.targetCanonicalName());
                 }
@@ -267,19 +265,17 @@ public class IncrementalRuleCodegen implements Generator {
         }
 
         if (hasRuleUnits) {
-            generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE,
-                                                 RULE_UNIT_REGISTER_SOURCE,
-                                                 log(new RuleUnitsRegisterClass(unitsMap).generate()).getBytes(StandardCharsets.UTF_8)));
+            generatedFiles.add( new RuleUnitsRegisterClass(unitsMap).generateFile(GeneratedFile.Type.RULE) );
 
             for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
-                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE,
-                                                     ruleUnit.generatedFilePath(),
-                                                     log(ruleUnit.generate()).getBytes(StandardCharsets.UTF_8)));
+                generatedFiles.add( ruleUnit.generateFile(GeneratedFile.Type.RULE) );
 
                 RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance(contextClassLoader);
-                generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE,
-                                                     ruleUnitInstance.generatedFilePath(),
-                                                     log(ruleUnitInstance.generate()).getBytes(StandardCharsets.UTF_8)));
+                generatedFiles.add( ruleUnitInstance.generateFile(GeneratedFile.Type.RULE) );
+
+                for (QueryEndpointSourceClass query : ruleUnit.queries()) {
+                    generatedFiles.add( query.generateFile(GeneratedFile.Type.QUERY) );
+                }
             }
         } else if (annotator != null && !hotReloadMode) {
             for (KieBaseModel kBaseModel : kieModuleModel.getKieBaseModels().values()) {

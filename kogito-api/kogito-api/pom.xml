@@ -31,6 +31,17 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>javax.json.bind</groupId>
+      <artifactId>javax.json.bind-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- test -->
     <dependency>
       <groupId>ch.qos.logback</groupId>

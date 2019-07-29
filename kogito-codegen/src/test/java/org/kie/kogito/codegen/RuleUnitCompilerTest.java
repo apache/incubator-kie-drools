@@ -16,12 +16,12 @@
 
 package org.kie.kogito.codegen;
 
+import java.util.List;
 import java.util.concurrent.Future;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Executor;
 import org.kie.kogito.codegen.data.AdultUnit;
-import org.kie.kogito.codegen.data.AdultUnitModify;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.rules.DataHandle;
 import org.kie.kogito.rules.RuleUnit;
@@ -29,6 +29,7 @@ import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.impl.RuleUnitRegistry;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,17 +64,40 @@ public class RuleUnitCompilerTest extends AbstractCodegenTest {
     public void testRuleUnitModify() throws Exception {
         generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitModify.drl");
 
-        AdultUnitModify adults = new AdultUnitModify();
+        AdultUnit adults = new AdultUnit();
 
         Person sofia = new Person( "Sofia", 7 );
         DataHandle dhSofia = adults.getPersons().add(sofia);
 
-        RuleUnit<AdultUnitModify> unit = RuleUnitRegistry.create(AdultUnitModify.class);
-        RuleUnitInstance<AdultUnitModify> instance = unit.createInstance(adults);
+        RuleUnit<AdultUnit> unit = RuleUnitRegistry.create(AdultUnit.class);
+        RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
         assertEquals(2, instance.fire() );
 
         assertTrue( adults.getResults().getResults().containsAll( asList("Sofia") ) );
+    }
+
+    @Test
+    public void testRuleUnitQuery() throws Exception {
+        generateCodeRulesOnly("org/kie/kogito/codegen/data/RuleUnitQuery.drl");
+
+        AdultUnit adults = new AdultUnit();
+
+        adults.getPersons().add(new Person( "Mario", 45 ));
+        adults.getPersons().add(new Person( "Marilena", 47 ));
+        adults.getPersons().add(new Person( "Sofia", 7 ));
+
+        RuleUnit<AdultUnit> unit = RuleUnitRegistry.create(AdultUnit.class);
+        RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
+
+        List<String> results = instance.executeQuery( "FindAdults" )
+                .stream()
+                .map( m -> m.get("$name") )
+                .map( String.class::cast )
+                .collect( toList() );
+
+        assertEquals( 2, results.size() );
+        assertTrue( results.containsAll( asList("Mario", "Marilena") ) );
     }
 
     @Test

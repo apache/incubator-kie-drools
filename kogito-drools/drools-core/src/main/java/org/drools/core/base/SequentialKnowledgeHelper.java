@@ -111,8 +111,8 @@ public class SequentialKnowledgeHelper
         return this.activation;
     }
 
-    //    public QueryResults getQueryResults(final String query) {
-    //        return this.workingMemory.getQueryResults( query );
+    //    public QueryResults executeQuery(final String query) {
+    //        return this.workingMemory.executeQuery( query );
     //    }
     //
     //    public AgendaGroup getFocus() {

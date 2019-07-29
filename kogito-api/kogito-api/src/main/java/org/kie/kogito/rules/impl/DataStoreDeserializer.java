@@ -14,34 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.codegen.data;
+package org.kie.kogito.rules.impl;
+
+import java.util.List;
 
 import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitMemory;
 
-public class AdultUnitModify implements RuleUnitMemory {
-    private int adultAge = 18;
-    private DataStore<Person> persons = DataSource.createStore();
-    private Results results = new Results();
+public class DataStoreDeserializer extends AbstractDataSourceDeserializer<DataStore> {
 
-    public AdultUnitModify( ) {
-        this( DataSource.createStore() );
-    }
-
-    public AdultUnitModify( DataStore<Person> persons ) {
-        this.persons = persons;
-    }
-
-    public DataStore<Person> getPersons() {
-        return persons;
-    }
-
-    public int getAdultAge() {
-        return adultAge;
-    }
-
-    public Results getResults() {
-        return results;
+    @Override
+    protected DataStore toDataSource( List deserialized ) {
+        DataStore ds = DataSource.createStore();
+        deserialized.forEach( ds::add );
+        return ds;
     }
 }

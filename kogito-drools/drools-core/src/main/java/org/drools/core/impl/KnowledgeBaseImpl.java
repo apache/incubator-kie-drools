@@ -1226,31 +1226,21 @@ public class KnowledgeBaseImpl
             pkg.addStaticImport(staticImport);
         }
 
-        String lastIdent = null;
-        String lastType = null;
-        try {
-            // merge globals
-            if (newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP) {
-                Map<String, String> globals = pkg.getGlobals();
-                // Add globals
-                for (final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet()) {
-                    final String identifier = entry.getKey();
-                    final String type = entry.getValue();
-                    lastIdent = identifier;
-                    lastType = type;
-                    if (globals.containsKey( identifier ) && !globals.get( identifier ).equals( type )) {
-                        throw new RuntimeException(pkg.getName() + " cannot be integrated");
-                    } else {
-                        Class<?> globalType = this.rootClassLoader.loadClass( type );
-                        pkg.addGlobal( identifier, globalType );
-                        // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
-                        addGlobal( identifier, globalType );
-                    }
+        // merge globals
+        if (newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP) {
+            Map<String, Class<?>> globals = pkg.getGlobals();
+            // Add globals
+            for (final Map.Entry<String, Class<?>> entry : newPkg.getGlobals().entrySet()) {
+                final String identifier = entry.getKey();
+                final Class<?> type = entry.getValue();
+                if (globals.containsKey( identifier ) && !globals.get( identifier ).equals( type )) {
+                    throw new RuntimeException(pkg.getName() + " cannot be integrated");
+                } else {
+                    pkg.addGlobal( identifier, type );
+                    // this isn't a package merge, it's adding to the rulebase, but I've put it here for convienience
+                    addGlobal( identifier, type );
                 }
             }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( "Unable to resolve class '" + lastType +
-                                        "' for global '" + lastIdent + "'" );
         }
 
         // merge entry point declarations

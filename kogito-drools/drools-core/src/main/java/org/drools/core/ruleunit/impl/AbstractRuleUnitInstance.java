@@ -16,6 +16,8 @@
 package org.drools.core.ruleunit.impl;
 
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -39,6 +41,11 @@ public class AbstractRuleUnitInstance<T extends RuleUnitMemory> implements RuleU
 
     public int fire() {
         return runtime.fireAllRules();
+    }
+
+    public List<Map<String, Object>> executeQuery( String query, Object... arguments) {
+        fire();
+        return runtime.getQueryResults(query, arguments).toList();
     }
 
     @Override

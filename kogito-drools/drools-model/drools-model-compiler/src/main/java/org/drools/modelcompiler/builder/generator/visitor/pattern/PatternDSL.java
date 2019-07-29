@@ -38,6 +38,8 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateD
 
 public abstract class PatternDSL implements DSLNode {
 
+    public static final String GENERATED_PATTERN_PREFIX = "_GENERATED_";
+
     protected final RuleContext context;
     protected final PackageModel packageModel;
     protected final PatternDescr pattern;
@@ -97,7 +99,7 @@ public abstract class PatternDSL implements DSLNode {
             final String patternNameAggregated = findFirstInnerBinding(pattern, constraintDescrs, patternType)
                     .map(ib -> context.getAggregatePatternMap().putIfAbsent(ib, generatedName))
                     .orElse(generatedName);
-            pattern.setIdentifier(patternNameAggregated);
+            pattern.setIdentifier(GENERATED_PATTERN_PREFIX + patternNameAggregated);
         }
     }
 
