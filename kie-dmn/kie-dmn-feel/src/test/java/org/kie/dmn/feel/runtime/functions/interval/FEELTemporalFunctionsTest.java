@@ -64,34 +64,92 @@ public class FEELTemporalFunctionsTest extends BaseFEELTest {
                 { "met by( [6..10], [1..5] )", false, null },
                 
                 { "overlaps( [1..5], [3..8] )", true, null },
+                { "overlaps( [3..8], [1..5] )", true, null },
+                { "overlaps( [1..8], [3..5] )", true, null },
+                { "overlaps( [3..5], [1..8] )", true, null },
                 { "overlaps( [1..5], [6..8] )", false, null },
+                { "overlaps( [6..8], [1..5] )", false, null },
                 { "overlaps( [1..5], [5..8] )", true, null },
                 { "overlaps( [1..5], (5..8] )", false, null },
                 { "overlaps( [1..5), [5..8] )", false, null },
-                { "overlaps( [1..5), (1..5] )", true, null },
-                { "overlaps( [1..5], (1..5] )", true, null },
-                { "overlaps( [1..5), [1..5] )", false, null },
-                { "overlaps( [1..5], [1..5] )", false, null },
-                
-                { "overlaps( [1..5], (1..5) )", false, null }, // additional
-                { "overlaps( [1..6], (1..5] )", false, null }, // additional
-                { "overlaps( (1..5], (1..5] )", false, null }, // additional
-                { "overlaps( [2..5], (1..5] )", false, null }, // additional
+                { "overlaps( [1..5), (5..8] )", false, null },
+                { "overlaps( [5..8], [1..5] )", true, null },
+                { "overlaps( (5..8], [1..5] )", false, null },
+                { "overlaps( [5..8], [1..5) )", false, null },
+                { "overlaps( (5..8], [1..5) )", false, null },
 
-                { "overlapped by( [3..8], [1..5])", true, null },
-                { "overlapped by( [6..8], [1..5])", false, null },
-                { "overlapped by( [5..8], [1..5])", true, null },
-                { "overlapped by( (5..8], [1..5])", false, null },
-                { "overlapped by( [5..8], [1..5))", false, null },
-                { "overlapped by( (1..5], [1..5) )", true, null },
-                { "overlapped by( (1..5], [1..5] )", true, null },
-                { "overlapped by( [1..5], [1..5) )", false, null },
-                { "overlapped by( [1..5], [1..5] )", false, null },
+                { "overlapped by( [1..5], [3..8] )", true, null },
+                { "overlapped by( [3..8], [1..5] )", true, null },
+                { "overlapped by( [1..8], [3..5] )", true, null },
+                { "overlapped by( [3..5], [1..8] )", true, null },
+                { "overlapped by( [1..5], [6..8] )", false, null },
+                { "overlapped by( [6..8], [1..5] )", false, null },
+                { "overlapped by( [1..5], [5..8] )", true, null },
+                { "overlapped by( [1..5], (5..8] )", false, null },
+                { "overlapped by( [1..5), [5..8] )", false, null },
+                { "overlapped by( [1..5), (5..8] )", false, null },
+                { "overlapped by( [5..8], [1..5] )", true, null },
+                { "overlapped by( (5..8], [1..5] )", false, null },
+                { "overlapped by( [5..8], [1..5) )", false, null },
+                { "overlapped by( (5..8], [1..5) )", false, null },
                 
-                { "overlapped by( (1..5), [1..5] )", false, null }, // additional
-                { "overlapped by( (1..5], [1..6] )", false, null }, // additional
-                { "overlapped by( (1..5], (1..5] )", false, null }, // additional
-                { "overlapped by( (1..5], [2..5] )", false, null }, // additional
+                { "overlaps before( [1..5], [3..8] )", true, null },
+                { "overlaps before( [1..5], [6..8] )", false, null },
+                { "overlaps before( [1..5], [5..8] )", true, null },
+                { "overlaps before( [1..5], (5..8] )", false, null },
+                { "overlaps before( [1..5), [5..8] )", false, null },
+                { "overlaps before( [1..5), (1..5] )", true, null },
+                { "overlaps before( [1..5], (1..5] )", true, null },
+                { "overlaps before( [1..5), [1..5] )", false, null },
+                { "overlaps before( [1..5], [1..5] )", false, null },
+                
+                { "overlaps before( [1..5], (1..5) )", false, null }, // additional
+                { "overlaps before( [1..6], (1..5] )", false, null }, // additional
+                { "overlaps before( (1..5], (1..5] )", false, null }, // additional
+                { "overlaps before( [2..5], (1..5] )", false, null }, // additional
+
+                { "overlapped before by( [3..8], [1..5])", true, null },
+                { "overlapped before by( [6..8], [1..5])", false, null },
+                { "overlapped before by( [5..8], [1..5])", true, null },
+                { "overlapped before by( (5..8], [1..5])", false, null },
+                { "overlapped before by( [5..8], [1..5))", false, null },
+                { "overlapped before by( (1..5], [1..5) )", true, null },
+                { "overlapped before by( (1..5], [1..5] )", true, null },
+                { "overlapped before by( [1..5], [1..5) )", false, null },
+                { "overlapped before by( [1..5], [1..5] )", false, null },
+                
+                { "overlapped before by( (1..5), [1..5] )", false, null }, // additional
+                { "overlapped before by( (1..5], [1..6] )", false, null }, // additional
+                { "overlapped before by( (1..5], (1..5] )", false, null }, // additional
+                { "overlapped before by( (1..5], [2..5] )", false, null }, // additional
+                
+                { "overlapped after by( [1..5], [3..8] )", true, null },
+                { "overlapped after by( [1..5], [6..8] )", false, null },
+                { "overlapped after by( [1..5], [5..8] )", true, null },
+                { "overlapped after by( [1..5], (5..8] )", false, null },
+                { "overlapped after by( [1..5), [5..8] )", false, null },
+                { "overlapped after by( [1..5), (1..5] )", true, null },
+                { "overlapped after by( [1..5], (1..5] )", true, null },
+                { "overlapped after by( [1..5), [1..5] )", false, null },
+                { "overlapped after by( [1..5], [1..5] )", false, null },
+                { "overlapped after by( [1..5], (1..5) )", false, null }, // additional
+                { "overlapped after by( [1..6], (1..5] )", false, null }, // additional
+                { "overlapped after by( (1..5], (1..5] )", false, null }, // additional
+                { "overlapped after by( [2..5], (1..5] )", false, null }, // additional
+
+                { "overlaps after( [3..8], [1..5])", true, null },
+                { "overlaps after( [6..8], [1..5])", false, null },
+                { "overlaps after( [5..8], [1..5])", true, null },
+                { "overlaps after( (5..8], [1..5])", false, null },
+                { "overlaps after( [5..8], [1..5))", false, null },
+                { "overlaps after( (1..5], [1..5) )", true, null },
+                { "overlaps after( (1..5], [1..5] )", true, null },
+                { "overlaps after( [1..5], [1..5) )", false, null },
+                { "overlaps after( [1..5], [1..5] )", false, null },
+                { "overlaps after( (1..5), [1..5] )", false, null }, // additional
+                { "overlaps after( (1..5], [1..6] )", false, null }, // additional
+                { "overlaps after( (1..5], (1..5] )", false, null }, // additional
+                { "overlaps after( (1..5], [2..5] )", false, null }, // additional
                 
                 { "finishes( 10, [1..10] )", true, null },
                 { "finishes( 10, [1..10) ) ", false, null },

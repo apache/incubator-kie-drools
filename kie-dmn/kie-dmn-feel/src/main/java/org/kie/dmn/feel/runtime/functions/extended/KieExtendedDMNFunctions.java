@@ -28,7 +28,11 @@ import org.kie.dmn.feel.runtime.functions.interval.FinishesFunction;
 import org.kie.dmn.feel.runtime.functions.interval.IncludesFunction;
 import org.kie.dmn.feel.runtime.functions.interval.MeetsFunction;
 import org.kie.dmn.feel.runtime.functions.interval.MetByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlappedAfterByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlappedBeforeByFunction;
 import org.kie.dmn.feel.runtime.functions.interval.OverlappedByFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsAfterFunction;
+import org.kie.dmn.feel.runtime.functions.interval.OverlapsBeforeFunction;
 import org.kie.dmn.feel.runtime.functions.interval.OverlapsFunction;
 import org.kie.dmn.feel.runtime.functions.interval.StartedByFunction;
 import org.kie.dmn.feel.runtime.functions.interval.StartsFunction;
@@ -83,6 +87,10 @@ public class KieExtendedDMNFunctions {
                                                                         IncludesFunction.INSTANCE,
                                                                         OverlapsFunction.INSTANCE,
                                                                         OverlappedByFunction.INSTANCE,
+                                                                        OverlapsBeforeFunction.INSTANCE,
+                                                                        OverlappedBeforeByFunction.INSTANCE,
+                                                                        OverlapsAfterFunction.INSTANCE,
+                                                                        OverlappedAfterByFunction.INSTANCE,
                                                                         MeetsFunction.INSTANCE,
                                                                         MetByFunction.INSTANCE
 

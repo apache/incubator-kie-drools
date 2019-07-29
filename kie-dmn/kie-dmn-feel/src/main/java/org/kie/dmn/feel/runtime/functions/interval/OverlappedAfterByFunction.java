@@ -21,16 +21,16 @@ import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-public class OverlappedByFunction
+public class OverlappedAfterByFunction
         extends BaseFEELFunction {
 
-    public static final OverlappedByFunction INSTANCE = new OverlappedByFunction();
+    public static final OverlappedAfterByFunction INSTANCE = new OverlappedAfterByFunction();
 
-    public OverlappedByFunction() {
-        super( "overlapped by" );
+    public OverlappedAfterByFunction() {
+        super("overlapped after by");
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "range1" ) Range range1, @ParameterName( "range2" ) Range range2) {
-        return OverlapsFunction.INSTANCE.invoke(range1, range2);
+        return OverlappedBeforeByFunction.INSTANCE.invoke(range2, range1);
     }
 }
