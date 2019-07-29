@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.conferencescheduling.optional.score;
 
+import java.util.function.Function;
+
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -113,7 +115,7 @@ public class ConferenceSchedulingConstraintProvider implements ConstraintProvide
         Constraint c = constraintFactory.newConstraint(ConferenceConstraintConfiguration.TALK_PREREQUISITE_TALKS);
         c.from(Talk.class)
                 .join(Talk.class,
-                        contains(Talk::getPrerequisiteTalkSet, (Talk talk2) -> talk2),
+                        contains(Talk::getPrerequisiteTalkSet, Function.identity()),
                         lessThan(talk1 -> talk1.getTimeslot().getStartDateTime(),
                                 talk2 -> talk2.getTimeslot().getEndDateTime()))
                 .penalize(Talk::combinedDurationInMinutes);
