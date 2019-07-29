@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -41,6 +43,8 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     private static final String MAIN_JAVA_DIRECTORY = "main/java";
     private static final String JAVA_FILE_SUFFIX = ".java";
+
+    public static final List<String> DROOLS_EXTENSIONS = Arrays.asList(".drl", ".xls", ".xlsx", ".csv");
 
     public static final PathMatcher drlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.drl");
 
@@ -141,7 +145,12 @@ public class GenerateModelMojo extends AbstractKieMojo {
 
     private boolean rulesExist() throws IOException {
         try (final Stream<Path> paths = Files.walk(projectDir.toPath())) {
-            return paths.anyMatch(p -> p.toString().toLowerCase().endsWith(".drl"));
+            return paths.map(p -> p.toString().toLowerCase())
+                    .map(p -> {
+                        int dot = p.lastIndexOf( '.' );
+                        return dot > 0 ? p.substring( dot ) : "";
+                    })
+                    .anyMatch( DROOLS_EXTENSIONS::contains );
         }
     }
 
