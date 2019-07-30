@@ -68,6 +68,7 @@ import org.kie.kogito.rules.RuleUnitMemory;
 import static java.util.stream.Collectors.toList;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.modelcompiler.builder.PackageModel.DATE_TIME_FORMATTER_FIELD;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
@@ -215,7 +216,7 @@ public class ModelGenerator {
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
 
         ruleVariablesBlock.addStatement( new ReturnStmt("rule") );
-        packageModel.putRuleMethod(ruleMethodName, ruleMethod);
+        packageModel.putRuleMethod(ruleUnitDescr != null ? ruleUnitDescr.getRuleUnitClass().getSimpleName() : DEFAULT_RULE_UNIT, ruleMethod);
     }
 
     private static AndDescr getExtendedLhs(PackageDescr packageDescr, RuleDescr ruleDescr) {

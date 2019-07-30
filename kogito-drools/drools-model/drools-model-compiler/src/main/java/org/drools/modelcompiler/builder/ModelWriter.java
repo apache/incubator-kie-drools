@@ -52,9 +52,9 @@ public class ModelWriter {
             String rulesSourceName = "src/main/java/" + folderName + "/" + rulesFileName + ".java";
             String rulesSource = prettyPrinter.print( rulesSourceResult.getMainRuleClass() );
             addSource( srcMfs, sourceFiles, pkgModel, rulesSourceName, rulesSource );
-            modelFiles.add( pkgName + "." + rulesFileName );
+            modelFiles.addAll( rulesSourceResult.getModels() );
             // manage additional classes, please notice to not add to modelFiles.
-            for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
+            for (CompilationUnit cu : rulesSourceResult.getModelClasses()) {
                 String addFileName = cu.findFirst( ClassOrInterfaceDeclaration.class ).get().getNameAsString();
                 String sourceName = "src/main/java/" + folderName + "/" + addFileName + ".java";
                 addSource( srcMfs, sourceFiles, pkgModel, sourceName, prettyPrinter.print( cu ) );

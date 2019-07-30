@@ -37,7 +37,7 @@ public class IncrementalRuleCodegenTest {
                                 new File("src/test/resources/org/kie/kogito/codegen/rules/pkg1/file1.drl")),
                         ResourceType.DRL);
 
-        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(2, 1, generatedFiles.size());
     }
 
@@ -48,7 +48,7 @@ public class IncrementalRuleCodegenTest {
                         Arrays.asList(new File("src/test/resources/org/kie/kogito/codegen/rules/pkg1").listFiles()),
                         ResourceType.DRL);
 
-        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(4, 1, generatedFiles.size());
     }
 
@@ -59,7 +59,7 @@ public class IncrementalRuleCodegenTest {
                         Paths.get("src/test/resources/org/kie/kogito/codegen/rules"),
                         ResourceType.DRL);
 
-        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(7, 3, 1, generatedFiles.size());
     }
 
@@ -70,7 +70,7 @@ public class IncrementalRuleCodegenTest {
                         Collections.singleton(
                                 new File("src/test/resources/org/drools/simple/candrink/CanDrink.xls")));
 
-        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(2, 1, generatedFiles.size());
     }
 
@@ -81,21 +81,20 @@ public class IncrementalRuleCodegenTest {
                         Paths.get("src/test/resources/org/kie/kogito/codegen/rules/myunit"),
                         ResourceType.DRL);
 
-        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
+        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
         assertRules(1, 1, 1, generatedFiles.size());
     }
 
     private static void assertRules(int expectedRules, int expectedPackages, int expectedUnits, int actualGeneratedFiles) {
         assertEquals(expectedRules +
                              expectedPackages * 2 + /* package descriptor for rules + package metadata */
-                             2 +/* ProjectModel + ProjectRuntime */
-                             expectedUnits * 2 +/* ruleUnit + ruleUnit instance */
+                             expectedUnits * 3 +/* ruleUnit + ruleUnit instance + unit model */
                              1 /* rule unit register */, actualGeneratedFiles);
     }
 
     private static void assertRules(int expectedRules, int expectedPackages, int actualGeneratedFiles) {
         assertEquals(expectedRules +
-                             expectedPackages * 2 + /* package descriptor for rules + package metadata */
-                             2 /* ProjectModel + ProjectRuntime */, actualGeneratedFiles);
+                             expectedPackages * 2 /* package descriptor for rules + package metadata */
+                             , actualGeneratedFiles);
     }
 }

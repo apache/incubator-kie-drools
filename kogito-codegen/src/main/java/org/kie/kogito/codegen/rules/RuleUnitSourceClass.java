@@ -25,7 +25,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -129,9 +128,7 @@ public class RuleUnitSourceClass implements FileGenerator {
         return new MethodCallExpr(
                 new NameExpr("org.drools.modelcompiler.builder.KieBaseBuilder"),
                 "createKieBaseFromModel").addArgument(
-                new ObjectCreationExpr().setType("org.drools.model.impl.UnitModelImpl")
-                        .addArgument(new ObjectCreationExpr().setType(generatedSourceFile))
-                        .addArgument(new StringLiteralExpr(canonicalName)));
+                new ObjectCreationExpr().setType(packageName + "." + generatedSourceFile + "_" + typeName) );
     }
 
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {

@@ -223,19 +223,19 @@ public class IncrementalRuleCodegen implements Generator {
                 generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, pojoSourceName, source));
             }
 
-            PackageModel.RuleSourceResult rulesSourceResult = pkgModel.getRulesSource(true);
+            PackageModel.RuleSourceResult rulesSourceResult = pkgModel.getRulesSource(hotReloadMode);
+            fqn.addAll(rulesSourceResult.getModels());
+
             // main rules file:
             String rulesSource = prettyPrinter.print(rulesSourceResult.getMainRuleClass());
 
             String rulesFileName = pkgModel.getRulesFileName();
             String rulesSourceName = pojoName(folderName, rulesFileName);
 
-            fqn.add(pkgName + "." + rulesFileName);
-
             ApplicationGenerator.log(rulesSource);
             generatedFiles.add(new GeneratedFile(GeneratedFile.Type.RULE, rulesSourceName, rulesSource));
 
-            for (CompilationUnit cu : rulesSourceResult.getSplitted()) {
+            for (CompilationUnit cu : rulesSourceResult.getModelClasses()) {
                 final Optional<ClassOrInterfaceDeclaration> classOptional = cu.findFirst(ClassOrInterfaceDeclaration.class);
                 if (classOptional.isPresent()) {
                     String addSource = prettyPrinter.print(cu);

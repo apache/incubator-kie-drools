@@ -36,6 +36,8 @@ import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
 
+    public static String QUERY_METHOD_PREFIX = "query_";
+
     public static void processQueryDef(PackageModel packageModel, QueryDescr queryDescr, RuleContext context) {
         context.setDescr(queryDescr);
         String queryName = queryDescr.getName();
@@ -102,7 +104,7 @@ public class QueryGenerator {
         }
 
         final Type queryType = parseType(Query.class.getCanonicalName());
-        MethodDeclaration queryMethod = new MethodDeclaration(NodeList.nodeList(Modifier.privateModifier()), queryType, "query_" + toId(queryDescr.getName()));
+        MethodDeclaration queryMethod = new MethodDeclaration(NodeList.nodeList(Modifier.privateModifier()), queryType, QUERY_METHOD_PREFIX + toId(queryDescr.getName()));
 
         BlockStmt queryBody = new BlockStmt();
         ModelGenerator.createVariables(kbuilder, queryBody, packageModel, context);
@@ -128,7 +130,7 @@ public class QueryGenerator {
             context.addDeclaration(argument, getClassFromContext(context.getTypeResolver(), type));
             QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getTypeResolver(), type));
             context.getQueryParameters().add(queryParameter);
-            packageModel.putQueryVariable("query_" + toId( descr.getName() ), queryParameter);
+            packageModel.putQueryVariable(QUERY_METHOD_PREFIX + toId( descr.getName() ), queryParameter);
         }
     }
 
