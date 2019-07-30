@@ -2537,7 +2537,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("hardcoded decision"), is("John Doe"));
+        assertThat(result.get("D4"), is("Contains r1"));
 
     }
 }
