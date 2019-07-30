@@ -1888,4 +1888,26 @@ public class CompilerTest extends BaseModelTest {
         assertEquals("Mario is very old", result.getValue());
 
     }
+
+    @Test
+    public void testMapPrimitiveComparison() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "    $m : Map()\n" +
+                "    Person(age == $m['age'] )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("age", 20);
+        Person john = new Person("John", 20);
+
+        ksession.insert( map );
+        ksession.insert( john );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
