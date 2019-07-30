@@ -54,6 +54,7 @@ import static org.drools.core.util.StringUtils.lcFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class ConstraintParser {
@@ -395,11 +396,11 @@ public class ConstraintParser {
         return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
     }
 
-    private static Boolean isNumber(TypedExpression left) {
+    static Boolean isNumber(TypedExpression left) {
         return left.getBoxedType().map(ConstraintParser::isNumericType).orElse(false);
     }
 
-    private static Expression uncastExpr(Expression e) {
+    static Expression uncastExpr(Expression e) {
         if(e == null) { // Not sure why a null should be here - check QueryTest.testPositionalRecursiveQuery
             return null;
         }
@@ -416,31 +417,14 @@ public class ConstraintParser {
         }
 
         if ( isComparisonOperator( operator ) ) {
-            String methodName = getComparisonMethodName(operator, left, right);
-            if (methodName != null) {
-                MethodCallExpr compareMethod = new MethodCallExpr( null, methodName );
-                compareMethod.addArgument(uncastExpr(left.getExpression()));
-                compareMethod.addArgument(uncastExpr(right.getExpression()));
-                return compareMethod;
-            }
+            SpecialComparisonCase methodName = specialComparisonFactory(left, right);
+            return methodName.createCompareMethod(operator);
         }
 
         return new BinaryExpr( left.getExpression(), right.getExpression(), operator );
     }
 
-    private static String getComparisonMethodName(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
-        String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
-        if (left.getType() == String.class && right.getType() == String.class) {
-            return methodName + "StringsAsNumbers";
-        } else if (isNumber(left) || isNumber(right)) {
-            return methodName + "Numbers";
-        } else if (Comparable.class.isAssignableFrom(left.getRawClass()) && Comparable.class.isAssignableFrom(right.getRawClass())) {
-            return methodName;
-        }
-        return null;
-    }
-
-    private static String operatorToName(BinaryExpr.Operator operator) {
+    static String operatorToName(BinaryExpr.Operator operator) {
         switch (operator.asString()) {
             case "==" : return "equals";
             case "!=" : return "notEquals";
