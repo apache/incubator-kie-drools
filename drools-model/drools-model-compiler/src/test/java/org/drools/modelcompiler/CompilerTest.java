@@ -1888,4 +1888,22 @@ public class CompilerTest extends BaseModelTest {
         assertEquals("Mario is very old", result.getValue());
 
     }
+
+    @Test
+    public void testMapAbbreviatedComparison() {
+        final String drl1 =
+                "import java.util.Map;\n" +
+                "rule R1 when\n" +
+                "    Map(this['money'] >= 65 && <= 75)\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        final Map<String, Object> map = new HashMap<>();
+        map.put("money", new BigDecimal(70));
+
+        ksession.insert( map );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
