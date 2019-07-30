@@ -1,9 +1,18 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.isNumber;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.operatorToName;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.uncastExpr;
@@ -28,9 +37,24 @@ abstract class SpecialComparisonCase {
         if (left.getType() == String.class && right.getType() == String.class) {
             return new StringAsNumber(left, right);
         } else if (isNumber(left) || isNumber(right)) {
-            return new NumberComparisonWithoutCast(left, right);
+            Optional<Class<?>> leftCast = typeNeedsCast(left.getType());
+            Optional<Class<?>> rightCast = typeNeedsCast(right.getType());
+            if (leftCast.isPresent() || rightCast.isPresent()) {
+                return new NumberComparisonWithCast(left, right, leftCast, rightCast);
+            } else {
+                return new NumberComparisonWithoutCast(left, right);
+            }
         } else {
             return new PlainEvaluation(left, right);
+        }
+    }
+
+    private static Optional<Class<?>> typeNeedsCast(Type t) {
+        boolean needCast = t.equals(Object.class) || Map.class.isAssignableFrom((Class<?>) t) || List.class.isAssignableFrom((Class<?>) t);
+        if (needCast) {
+            return Optional.of((Class<?>) t);
+        } else {
+            return Optional.empty();
         }
     }
 }
@@ -63,6 +87,33 @@ class NumberComparisonWithoutCast extends SpecialComparisonCase {
         MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
         compareMethod.addArgument(uncastExpr(left.getExpression()));
         compareMethod.addArgument(uncastExpr(right.getExpression()));
+        return compareMethod;
+    }
+}
+
+class NumberComparisonWithCast extends SpecialComparisonCase {
+
+    Optional<Class<?>> leftTypeCast;
+    Optional<Class<?>> rightTypeCast;
+
+    NumberComparisonWithCast(TypedExpression left, TypedExpression right, Optional<Class<?>> leftTypeCast, Optional<Class<?>> rightTypeCast) {
+        super(left, right);
+        this.leftTypeCast = leftTypeCast;
+        this.rightTypeCast = rightTypeCast;
+    }
+
+    @Override
+    public MethodCallExpr createCompareMethod(BinaryExpr.Operator operator) {
+        String methodName = getMethodName(operator) + "Numbers";
+        MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
+
+        ClassOrInterfaceType numberClass = toClassOrInterfaceType(Number.class);
+
+        compareMethod.addArgument(leftTypeCast.<Expression>map(t -> new CastExpr(numberClass, left.getExpression()))
+                                          .orElse(left.getExpression()));
+        compareMethod.addArgument(rightTypeCast.<Expression>map(t -> new CastExpr(numberClass, right.getExpression()))
+
+                                          .orElse(right.getExpression()));
         return compareMethod;
     }
 }
