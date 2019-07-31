@@ -220,4 +220,12 @@ The following expression returns the second-to-last element of a list `x`:
 ----
 x[-2]
 ----
+
+Elements in a list can also be counted by the function `count`, which uses the list of elements as the parameter.
+
+For example, the following expression returns `4`:
+
+----
+count([ 2, 3, 4, 5 ])
+----
 --
