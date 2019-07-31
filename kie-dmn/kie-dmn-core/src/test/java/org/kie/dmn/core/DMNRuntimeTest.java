@@ -2523,9 +2523,19 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
     }
 
     @Test
-    public void testDTinputExprCollectionWithAllowedValues() {
-        // DROOLS-4379 DMN decision table input expr collection with allowedValues
+    public void testDTinputExprCollectionWithAllowedValuesA() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-4379.dmn", this.getClass());
+        testDTinputExprCollectionWithAllowedValues(runtime);
+    }
+
+    @Test
+    public void testDTinputExprCollectionWithAllowedValuesB() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-4379b.dmn", this.getClass());
+        testDTinputExprCollectionWithAllowedValues(runtime);
+    }
+
+    private void testDTinputExprCollectionWithAllowedValues(final DMNRuntime runtime) {
+        // DROOLS-4379 DMN decision table input expr collection with allowedValues
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_95436b7a-7268-4713-bf84-58bff10407b4", "Dessin 1");
         assertThat(dmnModel, notNullValue());
         assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
