@@ -875,16 +875,10 @@ public class ExpressionTyper {
         if (expression instanceof BinaryExpr) {
             BinaryExpr be = (BinaryExpr) expression;
             return findLeftLeafOfNameExpr(be.getLeft());
-        } else if (expression instanceof DrlNameExpr) {
-            return (Expression) expression;
-        } else if (expression instanceof ThisExpr) {
-            return (Expression) expression;
         } else if (expression instanceof PointFreeExpr) {
             return findLeftLeafOfNameExpr(((PointFreeExpr) expression).getLeft());
-        } else if (expression instanceof Expression) { // TODO put this as default
-            return (Expression) expression;
         } else {
-            throw new UnsupportedOperationException("Unknown expression: " + expression);
+            return (Expression) expression;
         }
     }
 
