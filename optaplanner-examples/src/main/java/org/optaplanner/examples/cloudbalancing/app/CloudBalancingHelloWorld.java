@@ -21,8 +21,12 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+import org.optaplanner.examples.cloudbalancing.optional.benchmark.CloudBalancingBenchmarkHelloWorld;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 
+/**
+ * To benchmark this solver config, run {@link CloudBalancingBenchmarkHelloWorld} instead.
+ */
 public class CloudBalancingHelloWorld {
 
     public static void main(String[] args) {

@@ -62,7 +62,7 @@ public abstract class PlannerBenchmarkFactory {
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public static <Solution_> PlannerBenchmarkFactory createFromSolverFactory(SolverFactory<Solution_> solverFactory,
-                                                                              File benchmarkDirectory) {
+            File benchmarkDirectory) {
         SolverConfigContext solverConfigContext = ((AbstractSolverFactory) solverFactory).getSolverConfigContext();
         PlannerBenchmarkFactory plannerBenchmarkFactory = (solverConfigContext == null)
                 ? new EmptyPlannerBenchmarkFactory() : new EmptyPlannerBenchmarkFactory(solverConfigContext);
@@ -131,7 +131,7 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromKieContainerXmlResource(KieContainer kieContainer,
-                                                                            String benchmarkConfigResource) {
+            String benchmarkConfigResource) {
         return new XStreamXmlPlannerBenchmarkFactory(new SolverConfigContext(kieContainer))
                 .configure(benchmarkConfigResource);
     }
@@ -394,4 +394,5 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public abstract <Solution_> PlannerBenchmark buildPlannerBenchmark(List<Solution_> problemList);
+
 }

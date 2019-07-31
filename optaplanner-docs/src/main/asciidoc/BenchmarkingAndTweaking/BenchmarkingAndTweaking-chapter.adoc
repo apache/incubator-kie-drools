@@ -61,8 +61,8 @@ load a few datasets and benchmark them. For example, with 3 datasets:
         CloudBalance dataset1 = ...;
         CloudBalance dataset2 = ...;
         CloudBalance dataset3 = ...;
-        PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark(dataset1, dataset2, dataset3);
-        plannerBenchmark.benchmarkAndShowReportInBrowser();
+        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark(dataset1, dataset2, dataset3);
+        benchmark.benchmarkAndShowReportInBrowser();
 ----
 
 This generates a benchmark report in `local/benchmarkReport` and shows it in your browser when it's finished.
@@ -81,10 +81,10 @@ Configure it with a benchmark configuration XML file, provided as a classpath re
 
 [source,java,options="nowrap"]
 ----
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        plannerBenchmark.benchmark();
+        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
+        benchmark.benchmarkAndShowReportInBrowser();
 ----
 
 A benchmark configuration file looks like this:
@@ -1074,9 +1074,9 @@ And build it with the class ``PlannerBenchmarkFactory``:
 
 [source,java,options="nowrap"]
 ----
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
                 "org/optaplanner/examples/cloudbalancing/optional/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark();
 ----
 
 
@@ -1091,29 +1091,34 @@ This is useful to:
 
 * **Report on the impact of code changes**: Run the same benchmark configuration before and after the code changes, then aggregate a report.
 * **Report on the impact of dependency upgrades**: Run the same benchmark configuration before and after upgrading the dependency, then aggregate a report.
-* **Condense a too verbose report**: Select only the interesting solver benchmarks from the existing report. This especially useful on template reports to make the graphs readable.
+* **Summarize a too verbose report**: Select only the interesting solver benchmarks from the existing report. This especially useful on template reports to make the graphs readable.
 * **Partially rerun a benchmark**: Rerun part of an existing report (for example only the failed or invalid solvers), then recreate the original intended report with the new values.
 
-To use it, provide a `PlannerBenchmarkFactory` to the `BenchmarkAggregatorFrame` to display the GUI:
+Compose the aggregated report in the Benchmark aggregator UI:
+
+image::BenchmarkingAndTweaking/benchmarkAggregatorScreenshot.png[align="center"]
+
+To display that UI, provide a `PlannerBenchmarkFactory` to the `BenchmarkAggregatorFrame`:
 
 [source,java,options="nowrap"]
 ----
     public static void main(String[] args) {
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
-        BenchmarkAggregatorFrame.createAndDisplay(plannerBenchmarkFactory);
+        PlannerBenchmarkFactory benchmarkFactory = ...;
+        BenchmarkAggregatorFrame.createAndDisplay(benchmarkFactory);
     }
 ----
 
-[WARNING]
+[NOTE]
 ====
-Despite that it uses a benchmark configuration as input, it ignores all elements of that configuration, except for the elements `<benchmarkDirectory>` and ``<benchmarkReport>``.
+Despite that it uses a benchmark configuration as input, it ignores all elements of that configuration,
+except for the elements `<benchmarkDirectory>` and ``<benchmarkReport>``.
 ====
 
-In the GUI, select the interesting benchmarks and click the button to generate the report.
+In the GUI, select the interesting benchmarks and click the button to generate the aggregated report.
 
 [NOTE]
 ====
 All the input reports which are being merged should have been generated with the same Planner version (excluding hotfix differences) as the ``BenchmarkAggregator``.
-Using reports from different Planner major or minor versions are not guaranteed to succeed and deliver correct information, because the benchmark report data structure often changes.
+Using reports from different Planner major or minor versions are not guaranteed to succeed and deliver correct information,
+because the benchmark report data structure often changes.
 ====

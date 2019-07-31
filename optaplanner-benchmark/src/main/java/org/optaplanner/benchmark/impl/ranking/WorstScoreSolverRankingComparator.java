@@ -48,7 +48,7 @@ public class WorstScoreSolverRankingComparator implements Comparator<SolverBench
                 return comparison;
             }
         }
-        return aSize == bSize ? 0 : aSize < bSize ? -1 : 1;
+        return Integer.compare(aSize, bSize);
     }
 
 }
