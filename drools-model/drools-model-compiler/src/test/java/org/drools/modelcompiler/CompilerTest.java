@@ -1906,4 +1906,20 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( map );
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testHalfBinary() {
+        final String drl1 =
+                "rule R1 when\n" +
+                "    Integer(this > 2 && < 5)\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( 3 );
+        ksession.insert( 4 );
+        ksession.insert( 6 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
 }
