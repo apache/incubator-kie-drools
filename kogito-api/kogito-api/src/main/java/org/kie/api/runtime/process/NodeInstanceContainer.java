@@ -39,6 +39,6 @@ public interface NodeInstanceContainer {
      * @param nodeInstanceId
      * @return the node instance with the given id
      */
-    NodeInstance getNodeInstance(long nodeInstanceId);
+    NodeInstance getNodeInstance(String nodeInstanceId);
 
 }

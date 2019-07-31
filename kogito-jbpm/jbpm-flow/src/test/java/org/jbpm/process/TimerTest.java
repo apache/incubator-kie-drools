@@ -67,7 +67,7 @@ public class TimerTest extends AbstractBaseTest  {
         	}
         };
         processInstance.setKnowledgeRuntime(((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
-        processInstance.setId(1234);
+        processInstance.setId("1234");
         InternalProcessRuntime processRuntime = ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime());
         processRuntime.getProcessInstanceManager().internalAddProcessInstance(processInstance);
 

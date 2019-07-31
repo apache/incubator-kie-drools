@@ -17,6 +17,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,6 +57,7 @@ public class SplitInstance extends NodeInstanceImpl {
             throw new IllegalArgumentException(
                 "A Split only accepts default incoming connections!");
         }
+        triggerTime = new Date();
         final Split split = getSplit();
         
         try { 

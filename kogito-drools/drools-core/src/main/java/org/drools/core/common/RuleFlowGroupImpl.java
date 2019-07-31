@@ -53,7 +53,7 @@ public class RuleFlowGroupImpl
     private boolean                     autoDeactivate   = true;
 //    private LinkedList<ActivationNode>  list;
     private List<RuleFlowGroupListener> listeners;
-    private Map<Long, String>           nodeInstances    = new HashMap<Long, String>();
+    private Map<String, String>           nodeInstances    = new HashMap<String, String>();
 
 //    private long activatedForRecency;
 //    private long clearedForRecency;
@@ -316,19 +316,19 @@ public class RuleFlowGroupImpl
         return null;
     }
     
-    public void addNodeInstance(Long processInstanceId,
+    public void addNodeInstance(String processInstanceId,
                                 String nodeInstanceId) {
         nodeInstances.put( processInstanceId,
                            nodeInstanceId );
     }
 
-    public void removeNodeInstance(Long processInstanceId,
+    public void removeNodeInstance(String processInstanceId,
                                    String nodeInstanceId) {
         nodeInstances.put( processInstanceId,
                            nodeInstanceId );
     }
 
-    public Map<Long, String> getNodeInstances() {
+    public Map<String, String> getNodeInstances() {
         return nodeInstances;
     }
     

@@ -54,7 +54,7 @@ public class $Type$Resource {
     @GET()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ getResource_$name$(@PathParam("id") Long id) {
+    public $Type$ getResource_$name$(@PathParam("id") String id) {
         return process.instances()
                 .findById(id)
                 .map(ProcessInstance::variables)
@@ -64,7 +64,7 @@ public class $Type$Resource {
     @DELETE()
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ deleteResource_$name$(@PathParam("id") final Long id) {
+    public $Type$ deleteResource_$name$(@PathParam("id") final String id) {
         return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
             ProcessInstance<$Type$> pi = process.instances()
                     .findById(id)
@@ -81,7 +81,7 @@ public class $Type$Resource {
     @GET()
     @Path("/{id}/tasks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<Long, String> getTasks_$name$(@PathParam("id") Long id) {
+    public Map<String, String> getTasks_$name$(@PathParam("id") String id) {
         return process.instances()
                 .findById(id)
                 .map(ProcessInstance::workItems)

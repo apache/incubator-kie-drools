@@ -9,7 +9,7 @@ public class $Type$Resource {
     @POST()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ completeTask(@PathParam("id") final Long id, @PathParam("workItemId") final Long workItemId, final $TaskOutput$ model) {
+    public $Type$ completeTask(@PathParam("id") final String id, @PathParam("workItemId") final String workItemId, final $TaskOutput$ model) {
         try {
             return org.kie.kogito.services.uow.UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
                 ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
@@ -30,7 +30,7 @@ public class $Type$Resource {
     @GET()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $TaskInput$ getTask(@PathParam("id") Long id, @PathParam("workItemId") Long workItemId) {
+    public $TaskInput$ getTask(@PathParam("id") String id, @PathParam("workItemId") String workItemId) {
         try {
             ProcessInstance<$Type$> pi = process.instances().findById(id).orElse(null);
             if (pi == null) {
@@ -50,7 +50,7 @@ public class $Type$Resource {
     @DELETE()
     @Path("/{id}/$taskname$/{workItemId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public $Type$ abortTask(@PathParam("id") final Long id, @PathParam("workItemId") final Long workItemId) {
+    public $Type$ abortTask(@PathParam("id") final String id, @PathParam("workItemId") final String workItemId) {
         
         try {
             

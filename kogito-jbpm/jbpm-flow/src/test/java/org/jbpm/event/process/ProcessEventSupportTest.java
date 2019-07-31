@@ -16,9 +16,10 @@
 
 package org.jbpm.event.process;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -40,7 +41,6 @@ import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -52,8 +52,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProcessEventSupportTest extends AbstractBaseTest {
     
@@ -629,50 +627,4 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         assertEquals( "org.drools.core.process.event", ((ProcessStartedEvent) processEventList.get(15)).getProcessInstance().getProcessId());
     }
 
-	@Test
-    public void testDefaultParentProcessIdValueInProcessEventListener() throws Exception {
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        // create a simple package with one process to test the events
-        RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.core.process.event");
-        process.setName("Event Process");
-        
-        StartNode startNode = new StartNode();
-        startNode.setName("Start");
-        startNode.setId(1);
-        process.addNode(startNode);
-
-        EndNode endNode = new EndNode();
-        endNode.setName("End");
-        endNode.setId(3);
-        process.addNode(endNode);
-
-        new ConnectionImpl(
-            startNode, Node.CONNECTION_DEFAULT_TYPE,
-            endNode, Node.CONNECTION_DEFAULT_TYPE
-        );
-
-        final InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
-        pkg.addProcess(process);
-        List<KiePackage> pkgs = new ArrayList<KiePackage>();
-        pkgs.add( pkg );
-        kbase.addPackages( pkgs );
-
-        KieSession session = kbase.newKieSession();
-        final AtomicLong parentProcessId = new AtomicLong(0L);
-        final ProcessEventListener processEventListener = new DefaultProcessEventListener() {
-
-            public void afterProcessStarted(ProcessStartedEvent event) {
-                parentProcessId.set(event.getProcessInstance().getParentProcessInstanceId());
-            }
-
-        };
-        session.addEventListener( processEventListener );
-
-        // execute the process
-        session.startProcess("org.drools.core.process.event");
-        assertEquals(parentProcessId.longValue(), -1L);
-
-    }
 }

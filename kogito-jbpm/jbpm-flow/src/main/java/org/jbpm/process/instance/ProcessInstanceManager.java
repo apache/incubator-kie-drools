@@ -23,9 +23,9 @@ import org.kie.api.runtime.process.ProcessInstance;
 
 public interface ProcessInstanceManager {
 
-    ProcessInstance getProcessInstance(long id);
+    ProcessInstance getProcessInstance(String id);
     
-    ProcessInstance getProcessInstance(long id, boolean readOnly);
+    ProcessInstance getProcessInstance(String id, boolean readOnly);
 
     ProcessInstance getProcessInstance(CorrelationKey correlationKey);
     

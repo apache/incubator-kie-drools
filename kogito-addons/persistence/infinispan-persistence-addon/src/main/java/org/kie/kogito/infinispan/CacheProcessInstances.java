@@ -31,7 +31,7 @@ import org.kie.kogito.process.impl.marshalling.ProcessInstanceMarshaller;
 @SuppressWarnings({"rawtypes"})
 public class CacheProcessInstances implements MutableProcessInstances {
         
-    private final RemoteCache<Long, byte[]> cache;
+    private final RemoteCache<String, byte[]> cache;
     private ProcessInstanceMarshaller marshaller;
     
     private org.kie.kogito.process.Process<?> process;
@@ -45,7 +45,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     
     @Override
-    public Optional<? extends ProcessInstance> findById(long id) {
+    public Optional<? extends ProcessInstance> findById(String id) {
         byte[] data = cache.get(id);
         if (data == null) {
             return Optional.empty();
@@ -65,7 +65,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void update(long id, ProcessInstance instance) {
+    public void update(String id, ProcessInstance instance) {
         if (isActive(instance)) {
             byte[] data = marshaller.marhsallProcessInstance(instance);
             
@@ -83,7 +83,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
     }
 
     @Override
-    public void remove(long id) {
+    public void remove(String id) {
         cache.remove(id);
     }
 

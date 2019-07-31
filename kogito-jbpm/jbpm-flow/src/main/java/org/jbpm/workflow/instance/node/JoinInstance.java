@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +56,7 @@ public class JoinInstance extends NodeInstanceImpl {
             throw new IllegalArgumentException(
                 "An ActionNode only accepts default incoming connections!");
         }
+        triggerTime = new Date();
         final Join join = getJoin();
         switch ( join.getType() ) {
             case Join.TYPE_XOR :

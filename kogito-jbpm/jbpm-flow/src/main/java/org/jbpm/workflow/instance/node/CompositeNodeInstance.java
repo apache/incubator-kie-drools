@@ -21,11 +21,12 @@ import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LIS
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -42,7 +43,6 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
@@ -56,8 +56,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     private static final long serialVersionUID = 510l;
 
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
-
-    private AtomicLong singleNodeInstanceCounter = null; // set during NodeInstance creation (*NodeFactory)
+    
     private int state = ProcessInstance.STATE_ACTIVE;
     private Map<String, Integer> iterationLevels = new HashMap<String, Integer>();
     private int currentLevel;
@@ -81,8 +80,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     public void setProcessInstance(WorkflowProcessInstance processInstance) {
-    	super.setProcessInstance(processInstance);
-    	this.singleNodeInstanceCounter = ((WorkflowProcessInstanceImpl) processInstance).internalGetNodeInstanceCounter();
+    	super.setProcessInstance(processInstance);    	
     	registerExternalEventNodeListeners();
     }
 
@@ -182,11 +180,10 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     public void addNodeInstance(final NodeInstance nodeInstance) {
-        if (nodeInstance.getId() == -1) {
+        if (nodeInstance.getId() == null) {
             // assign new id only if it does not exist as it might already be set by marshalling 
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
-            long id = singleNodeInstanceCounter.incrementAndGet();  
-            ((NodeInstanceImpl) nodeInstance).setId(id);
+            ((NodeInstanceImpl) nodeInstance).setId(UUID.randomUUID().toString());
         }
         this.nodeInstances.add(nodeInstance);
     }
@@ -214,18 +211,18 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return Collections.unmodifiableCollection(result);
     }
 
-	public NodeInstance getNodeInstance(long nodeInstanceId) {
+	public NodeInstance getNodeInstance(String nodeInstanceId) {
 		for (NodeInstance nodeInstance: nodeInstances) {
-			if (nodeInstance.getId() == nodeInstanceId) {
+			if (nodeInstance.getId().equals(nodeInstanceId)) {
 				return nodeInstance;
 			}
 		}
 		return null;
 	}
 
-	public NodeInstance getNodeInstance(long nodeInstanceId, boolean recursive) {
+	public NodeInstance getNodeInstance(String nodeInstanceId, boolean recursive) {
 		for (NodeInstance nodeInstance: getNodeInstances(recursive)) {
-			if (nodeInstance.getId() == nodeInstanceId) {
+			if (nodeInstance.getId().equals(nodeInstanceId)) {
 				return nodeInstance;
 			}
 		}
@@ -330,6 +327,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         }
 
         public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
+            triggerTime = new Date();
             triggerCompleted();
         }
 
@@ -348,6 +346,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         }
 
         public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
+            triggerTime = new Date();
             triggerCompleted();
         }
 

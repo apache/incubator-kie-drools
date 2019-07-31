@@ -37,16 +37,16 @@ public class SuspendProcessInstanceCommand implements ExecutableCommand<Object>,
     private static final long serialVersionUID = 5824052805419980114L;
     
     @XmlAttribute
-    @XmlSchemaType(name="long")
-    private Long processInstanceId;
+    @XmlSchemaType(name="string")
+    private String processInstanceId;
 
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
     @Override
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 

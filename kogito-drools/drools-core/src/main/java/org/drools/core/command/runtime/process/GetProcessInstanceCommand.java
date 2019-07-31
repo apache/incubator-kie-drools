@@ -37,7 +37,7 @@ public class GetProcessInstanceCommand implements ExecutableCommand<ProcessInsta
     private static final long serialVersionUID = 5890677592835087670L;
     
     @XmlAttribute(required = true)
-    private Long processInstanceId;
+    private String processInstanceId;
     @XmlAttribute
     private boolean readOnly = false;
 
@@ -46,7 +46,7 @@ public class GetProcessInstanceCommand implements ExecutableCommand<ProcessInsta
 
     public GetProcessInstanceCommand() {}
 
-    public GetProcessInstanceCommand(Long processInstanceId) {
+    public GetProcessInstanceCommand(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
@@ -59,12 +59,12 @@ public class GetProcessInstanceCommand implements ExecutableCommand<ProcessInsta
     }
 
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
     @Override
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 

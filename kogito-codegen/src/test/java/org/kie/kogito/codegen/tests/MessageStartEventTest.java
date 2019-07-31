@@ -49,7 +49,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();     
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("customerId");
         assertThat(result.toMap().get("customerId")).isNotNull().isEqualTo("CUS-00998877");
@@ -71,7 +71,7 @@ public class MessageStartEventTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();     
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("customerId");
         assertThat(result.toMap().get("customerId")).isNotNull().isEqualTo("CUS-00998877");

@@ -170,17 +170,17 @@ public class FluentCommandFactoryServiceImpl {
         return this;
     }
 
-    public FluentCommandFactoryServiceImpl newSignalEvent(long processInstanceId, String type, Object event) {
+    public FluentCommandFactoryServiceImpl newSignalEvent(String processInstanceId, String type, Object event) {
         commands.add( factory.newSignalEvent( processInstanceId, type, event ) );
         return this;
     }
 
-    public FluentCommandFactoryServiceImpl newCompleteWorkItem(long workItemId, Map<String, Object> results) {
+    public FluentCommandFactoryServiceImpl newCompleteWorkItem(String workItemId, Map<String, Object> results) {
         commands.add( factory.newCompleteWorkItem( workItemId, results ) );
         return this;
     }
 
-    public FluentCommandFactoryServiceImpl newAbortWorkItem(long workItemId) {
+    public FluentCommandFactoryServiceImpl newAbortWorkItem(String workItemId) {
         commands.add( factory.newAbortWorkItem( workItemId ) );
         return this;
     }

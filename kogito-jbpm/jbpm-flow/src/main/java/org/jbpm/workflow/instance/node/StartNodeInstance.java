@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.Date;
+
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -40,6 +42,7 @@ public class StartNodeInstance extends NodeInstanceImpl {
             throw new IllegalArgumentException(
                 "A StartNode can only be triggered by the process itself!");
         }
+        triggerTime = new Date();
         triggerCompleted();
     }
     

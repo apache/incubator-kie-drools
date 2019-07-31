@@ -21,24 +21,24 @@ import org.kie.kogito.process.WorkItem;
 
 public class BaseWorkItem implements WorkItem {
 
-    private final Long id;
+    private final String id;
     private final String name;
     
     private Map<String, Object> parameters;
 
-    public BaseWorkItem(Long id, String name) {
+    public BaseWorkItem(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public BaseWorkItem(Long id, String name, Map<String, Object> parameters) {
+    public BaseWorkItem(String id, String name, Map<String, Object> parameters) {
         this.id = id;
         this.name = name;
         this.parameters = parameters;
     }
 
     @Override
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

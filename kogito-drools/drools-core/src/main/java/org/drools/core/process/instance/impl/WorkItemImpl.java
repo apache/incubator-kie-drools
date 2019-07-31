@@ -27,21 +27,21 @@ public class WorkItemImpl implements WorkItem, Serializable {
 
     private static final long serialVersionUID = 510l;
     
-    private long id;
+    private String id;
     private String name;
     private int state = 0;
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private Map<String, Object> results = new HashMap<String, Object>();
-    private long processInstanceId;
+    private String processInstanceId;
     private String deploymentId;
-    private long nodeInstanceId;
+    private String nodeInstanceId;
     private long nodeId;
     
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
     
-    public long getId() {
+    public String getId() {
         return id;
     }
     
@@ -95,11 +95,11 @@ public class WorkItemImpl implements WorkItem, Serializable {
         return results;
     }
     
-    public void setProcessInstanceId(long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
     
-    public long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
@@ -111,11 +111,11 @@ public class WorkItemImpl implements WorkItem, Serializable {
         this.deploymentId = deploymentId;
     }
 
-    public long getNodeInstanceId() {
+    public String getNodeInstanceId() {
         return nodeInstanceId;
     }
 
-    public void setNodeInstanceId(long nodeInstanceId) {
+    public void setNodeInstanceId(String nodeInstanceId) {
         this.nodeInstanceId = nodeInstanceId;
     }
 

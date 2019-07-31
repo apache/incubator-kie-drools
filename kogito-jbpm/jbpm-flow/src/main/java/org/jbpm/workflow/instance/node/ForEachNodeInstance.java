@@ -19,6 +19,7 @@ package org.jbpm.workflow.instance.node;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +140,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
         }
 
         public void internalTrigger(org.kie.api.runtime.process.NodeInstance fromm, String type) {
+            triggerTime = new Date();
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
             ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
@@ -178,7 +180,8 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
         public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
-        	Map<String, Object> tempVariables = new HashMap<String, Object>();
+            triggerTime = new Date();
+            Map<String, Object> tempVariables = new HashMap<String, Object>();
             VariableScopeInstance subprocessVariableScopeInstance = null;
             if (getForEachNode().getOutputVariableName() != null) {
                 subprocessVariableScopeInstance = (VariableScopeInstance) getContextInstance(VariableScope.VARIABLE_SCOPE);

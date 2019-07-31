@@ -24,6 +24,13 @@ import org.kie.api.runtime.process.WorkItemNotFoundException;
 
 public interface ProcessInstance<T> {
     
+    int STATE_PENDING   = 0;
+    int STATE_ACTIVE    = 1;
+    int STATE_COMPLETED = 2;
+    int STATE_ABORTED   = 3;
+    int STATE_SUSPENDED = 4;
+    int STATE_ERROR = 4;
+    
     /**
      * Returns process definition associated with this process instance
      * @return process definition of this process instance
@@ -64,14 +71,14 @@ public interface ProcessInstance<T> {
      * @param variables optional variables
      * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
-    void completeWorkItem(long id, Map<String, Object> variables);
+    void completeWorkItem(String id, Map<String, Object> variables);
     
     /**
      * Aborts work item belonging to this process instance
      * @param id id of the work item to complete
      * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
-    void abortWorkItem(long id);
+    void abortWorkItem(String id);
     
     /**
      * Returns work item identified by given id if found
@@ -79,7 +86,7 @@ public interface ProcessInstance<T> {
      * @return work item with its parameters if found
      * @throws WorkItemNotFoundException in case work item with given id does not exist
      */
-    WorkItem workItem(Long workItemId);
+    WorkItem workItem(String workItemId);
     
     /**
      * Returns list of currently active work items.
@@ -91,6 +98,6 @@ public interface ProcessInstance<T> {
      * Returns identifier of this process instance
      * @return id of the process instance
      */
-    long id();
+    String id();
 
 }

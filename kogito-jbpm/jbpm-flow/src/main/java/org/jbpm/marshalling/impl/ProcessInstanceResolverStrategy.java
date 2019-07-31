@@ -23,7 +23,6 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
@@ -66,12 +65,12 @@ public class ProcessInstanceResolverStrategy
 
         connectProcessInstanceToRuntimeAndProcess( processInstance, os );
 
-        os.writeLong( processInstance.getId() );
+        os.writeUTF( processInstance.getId() );
     }
 
     public Object read(ObjectInputStream is) throws IOException,
                                             ClassNotFoundException {
-        long processInstanceId = is.readLong();
+        String processInstanceId = is.readUTF();
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
         ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
         if (processInstance == null) {
@@ -168,7 +167,7 @@ public class ProcessInstanceResolverStrategy
                           Object object) throws IOException {
         ProcessInstance processInstance = (ProcessInstance) object;
         connectProcessInstanceToRuntimeAndProcess( processInstance, os );
-        return PersisterHelper.longToByteArray( processInstance.getId() );
+        return processInstance.getId().getBytes();
     }
 
     public Object unmarshal(String dataType,
@@ -177,7 +176,7 @@ public class ProcessInstanceResolverStrategy
                             byte[] object,
                             ClassLoader classloader) throws IOException,
                                                     ClassNotFoundException {
-        long processInstanceId = PersisterHelper.byteArrayToLong( object );
+        String processInstanceId = new String( object );
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
         // load it as read only to avoid any updates to the data base
         ProcessInstance processInstance = pim.getProcessInstance( processInstanceId, true );

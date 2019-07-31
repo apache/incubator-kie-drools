@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -44,7 +44,6 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
-import org.kie.services.time.manager.TimerInstance;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -71,7 +70,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.kogito.process.impl.AbstractProcessInstance;
+import org.kie.services.time.manager.TimerInstance;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,9 +87,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private static final Logger logger = LoggerFactory.getLogger(WorkflowProcessInstanceImpl.class);
 
 	private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
-
-	private AtomicLong singleNodeInstanceCounter = new AtomicLong(-1);
-
+	
 	private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 	private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
 
@@ -107,6 +104,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private String correlationKey;
 
 	private Date startDate;
+	private Date endDate;
 	
 	private int slaCompliance = SLA_NA;
 	private Date slaDueDate;
@@ -117,11 +115,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void addNodeInstance(final NodeInstance nodeInstance) {
-	    if (nodeInstance.getId() == -1) {
+	    if (nodeInstance.getId() == null) {
             // assign new id only if it does not exist as it might already be set by marshalling
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
-    	    long id = singleNodeInstanceCounter.incrementAndGet();
-    		((NodeInstanceImpl) nodeInstance).setId(id);
+    		((NodeInstanceImpl) nodeInstance).setId(UUID.randomUUID().toString());
 	    }
 		this.nodeInstances.add(nodeInstance);
 	}
@@ -174,18 +171,18 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		return Collections.unmodifiableCollection(result);
 	}
 
-	public NodeInstance getNodeInstance(long nodeInstanceId) {
+	public NodeInstance getNodeInstance(String nodeInstanceId) {
 		for (NodeInstance nodeInstance: nodeInstances) {
-			if (nodeInstance.getId() == nodeInstanceId) {
+			if (nodeInstance.getId().equals(nodeInstanceId)) {
 				return nodeInstance;
 			}
 		}
 		return null;
 	}
 
-	public NodeInstance getNodeInstance(long nodeInstanceId, boolean recursive) {
+	public NodeInstance getNodeInstance(String nodeInstanceId, boolean recursive) {
 		for (NodeInstance nodeInstance: getNodeInstances(recursive)) {
-			if (nodeInstance.getId() == nodeInstanceId) {
+			if (nodeInstance.getId().equals(nodeInstanceId)) {
 				return nodeInstance;
 			}
 		}
@@ -259,18 +256,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			getKnowledgeRuntime().insert(nodeInstance);
 		}
 		return nodeInstance;
-	}
-
-	public long getNodeInstanceCounter() {
-		return singleNodeInstanceCounter.get();
-	}
-
-	public void internalSetNodeInstanceCounter(long nodeInstanceCounter) {
-	    this.singleNodeInstanceCounter = new AtomicLong(nodeInstanceCounter);
-	}
-
-	public AtomicLong internalGetNodeInstanceCounter() {
-		return this.singleNodeInstanceCounter;
 	}
 
 	public WorkflowProcess getWorkflowProcess() {
@@ -350,7 +335,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         // TODO move most of this to ProcessInstanceImpl
         if (state == ProcessInstance.STATE_COMPLETED
                 || state == ProcessInstance.STATE_ABORTED) {
-            
+            this.endDate = new Date();
             if (this.slaCompliance == SLA_PENDING) {
                 if (System.currentTimeMillis() > slaDueDate.getTime()) {
                     // completion of the process instance is after expected SLA due date, mark it accordingly
@@ -863,6 +848,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     
     public Date getStartDate() {
         return startDate;
+    }
+    
+    public Date getEndDate() {
+        return endDate;
     }
     
     public void internalSetStartDate(Date startDate) {

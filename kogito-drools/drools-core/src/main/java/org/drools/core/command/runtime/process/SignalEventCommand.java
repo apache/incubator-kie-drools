@@ -42,7 +42,7 @@ public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInsta
     private static final long serialVersionUID = 2134028686669740220L;
 
     @XmlAttribute(name="process-instance-id")
-    private long processInstanceId = -1;
+    private String processInstanceId;
 
     @XmlElement(name = "correlation-key", required = false)
     @XmlJavaTypeAdapter(value = CorrelationKeyXmlAdapter.class)
@@ -64,7 +64,7 @@ public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInsta
         this.event = event;
     }
 
-    public SignalEventCommand(long processInstanceId,
+    public SignalEventCommand(String processInstanceId,
                               String eventType,
                               Object event) {
         this.processInstanceId = processInstanceId;
@@ -74,12 +74,12 @@ public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInsta
 
 
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
     @Override
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
@@ -110,7 +110,7 @@ public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInsta
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         
-        if (processInstanceId == -1 && correlationKey == null) {
+        if (processInstanceId == null && correlationKey == null) {
             ksession.signalEvent(eventType, event);
         } else {
             ProcessInstance processInstance;
@@ -127,7 +127,7 @@ public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInsta
     }
 
     public String toString() {
-        if (processInstanceId == -1 && correlationKey == null) {
+        if (processInstanceId == null && correlationKey == null) {
             return "ksession.signalEvent(" + eventType + ", " + event + ");"; 
         } else if (correlationKey != null) {
             return "ksession.signalEvent(" + correlationKey + ", " + eventType + ", " + event + ");";

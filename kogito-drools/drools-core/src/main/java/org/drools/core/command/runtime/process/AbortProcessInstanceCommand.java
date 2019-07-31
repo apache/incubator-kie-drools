@@ -35,15 +35,15 @@ public class AbortProcessInstanceCommand implements ExecutableCommand<Void>, Pro
     private static final long serialVersionUID = 2482483392339538998L;
     
     @XmlAttribute
-    private Long processInstanceId;
+    private String processInstanceId;
 
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
     @Override
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 

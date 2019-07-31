@@ -17,6 +17,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -51,6 +52,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             throw new IllegalArgumentException(
                 "A FaultNode only accepts default incoming connections!");
         }
+        triggerTime = new Date();
         String faultName = getFaultName();
         ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(faultName);
         NodeInstanceContainer nodeInstanceContainer =  (NodeInstanceContainer) getNodeInstanceContainer();

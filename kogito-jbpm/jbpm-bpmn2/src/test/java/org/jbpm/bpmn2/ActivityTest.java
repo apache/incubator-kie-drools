@@ -395,7 +395,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         final WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
-        final long pId = processInstance.getId();
+        final String pId = processInstance.getId();
 
         ksession.execute(new ExecutableCommand<Void>() {
 
@@ -411,7 +411,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 assertNotNull(nodeInstance);
                 assertTrue(nodeInstance instanceof WorkItemNodeInstance);
                 String deploymentId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getDeploymentId();
-                long nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceId();
+                String nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceId();
                 long nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
 
                 assertEquals(((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId(), deploymentId);
@@ -513,7 +513,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityMI.bpmn2",
                 "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        final List<Long> subprocessStarted = new ArrayList<Long>();
+        final List<String> subprocessStarted = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
 
             @Override

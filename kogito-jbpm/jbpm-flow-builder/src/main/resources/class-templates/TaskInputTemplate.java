@@ -4,14 +4,14 @@ import java.util.Map;
 
 public class XXXTaskInput {
 
-    private Long _id;
+    private String _id;
     private String _name;
     
-    public void setId(Long id) {
+    public void setId(String id) {
         this._id = id;
     }
     
-    public Long getId() {
+    public String getId() {
         return this._id;
     }
     
@@ -23,7 +23,7 @@ public class XXXTaskInput {
         return this._name;
     }
 
-    public static XXXTaskInput fromMap(Long id, String name,  Map<String, Object> params) {
+    public static XXXTaskInput fromMap(String id, String name,  Map<String, Object> params) {
         
     }
 }

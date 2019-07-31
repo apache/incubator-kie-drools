@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.Date;
+
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -36,6 +38,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
+        triggerTime = new Date();
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
                 "An ActionNode only accepts default incoming connections!");

@@ -103,7 +103,7 @@ public class WorkItemTest extends AbstractBaseTest {
 
         ProcessInstance processInstance = ksession.startProcess( "org.drools.actions",
                                                                   parameters );
-        long processInstanceId = processInstance.getId();
+        String processInstanceId = processInstance.getId();
         assertEquals( ProcessInstance.STATE_ACTIVE,
                            processInstance.getState() );
         ksession.getWorkItemManager().registerWorkItemHandler( workName,

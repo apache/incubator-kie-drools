@@ -63,10 +63,9 @@ public abstract class AbstractProcessInstanceMarshaller implements
             ProcessInstance processInstance) throws IOException {        
         WorkflowProcessInstanceImpl workFlow = (WorkflowProcessInstanceImpl) processInstance;
         ObjectOutputStream stream = context.stream;
-        stream.writeLong(workFlow.getId());
+        stream.writeUTF(workFlow.getId());
         stream.writeUTF(workFlow.getProcessId());
-        stream.writeInt(workFlow.getState());
-        stream.writeLong(workFlow.getNodeInstanceCounter());        
+        stream.writeInt(workFlow.getState());        
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance(SwimlaneContext.SWIMLANE_SCOPE);
         if (swimlaneContextInstance != null) {
@@ -86,7 +85,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 
                     public int compare(NodeInstance o1,
                             NodeInstance o2) {
-                        return (int) (o1.getId() - o2.getId());
+                        return (int) (o1.getId().compareTo(o2.getId()));
                     }
                 });
         for (NodeInstance nodeInstance : nodeInstances) {
@@ -107,7 +106,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         		Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
         		stream.writeInt(groupNodeInstances.size());
         		for (NodeInstance nodeInstance: groupNodeInstances) {
-        			stream.writeLong(nodeInstance.getId());
+        			stream.writeUTF(nodeInstance.getId());
         		}
         	}
         }
@@ -160,7 +159,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
     public Object writeNodeInstance(MarshallerWriteContext context,
             NodeInstance nodeInstance) throws IOException {
         ObjectOutputStream stream = context.stream;
-        stream.writeLong(nodeInstance.getId());
+        stream.writeUTF(nodeInstance.getId());
         stream.writeLong(nodeInstance.getNodeId());
         writeNodeInstanceContent(stream, nodeInstance, context);
         return null;
@@ -183,7 +182,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 	        }
         } else if (nodeInstance instanceof HumanTaskNodeInstance) {
             stream.writeShort(PersisterEnums.HUMAN_TASK_NODE_INSTANCE);
-            stream.writeLong(((HumanTaskNodeInstance) nodeInstance).getWorkItemId());
+            stream.writeUTF(((HumanTaskNodeInstance) nodeInstance).getWorkItemId());
             List<Long> timerInstances =
                 ((HumanTaskNodeInstance) nodeInstance).getTimerInstances();
 	        if (timerInstances != null) {
@@ -196,7 +195,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 	        }
         } else if (nodeInstance instanceof WorkItemNodeInstance) {
             stream.writeShort(PersisterEnums.WORK_ITEM_NODE_INSTANCE);
-            stream.writeLong(((WorkItemNodeInstance) nodeInstance).getWorkItemId());
+            stream.writeUTF(((WorkItemNodeInstance) nodeInstance).getWorkItemId());
             List<Long> timerInstances =
                 ((WorkItemNodeInstance) nodeInstance).getTimerInstances();
 	        if (timerInstances != null) {
@@ -209,7 +208,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 	        }
         } else if (nodeInstance instanceof SubProcessNodeInstance) {
             stream.writeShort(PersisterEnums.SUB_PROCESS_NODE_INSTANCE);
-            stream.writeLong(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
+            stream.writeUTF(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
             List<Long> timerInstances =
                 ((SubProcessNodeInstance) nodeInstance).getTimerInstances();
 	        if (timerInstances != null) {
@@ -308,7 +307,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 
                         public int compare(NodeInstance o1,
                                 NodeInstance o2) {
-                            return (int) (o1.getId() - o2.getId());
+                            return (int) (o1.getId().compareTo(o2.getId()));
                         }
                     });
             for (NodeInstance subNodeInstance : nodeInstances) {
@@ -328,7 +327,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
             		Collection<NodeInstance> groupNodeInstances = exclusiveGroupInstance.getNodeInstances();
             		stream.writeInt(groupNodeInstances.size());
             		for (NodeInstance groupNodeInstance: groupNodeInstances) {
-            			stream.writeLong(groupNodeInstance.getId());
+            			stream.writeUTF(groupNodeInstance.getId());
             		}
             	}
             }
@@ -340,7 +339,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                     new Comparator<NodeInstance>() {
                         public int compare(NodeInstance o1,
                                 NodeInstance o2) {
-                            return (int) (o1.getId() - o2.getId());
+                            return (int) (o1.getId().compareTo(o2.getId()));
                         }
                     });
             for (NodeInstance subNodeInstance : nodeInstances) {
@@ -363,7 +362,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         InternalWorkingMemory wm = context.wm;
 
         WorkflowProcessInstanceImpl processInstance = createProcessInstance();
-        processInstance.setId(stream.readLong());
+        processInstance.setId(stream.readUTF());
         String processId = stream.readUTF();
         processInstance.setProcessId(processId);
         Process process = kBase.getProcess(processId);
@@ -395,7 +394,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
             processInstance.addContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance);
             int nodeInstances = stream.readInt();
             for (int j = 0; j < nodeInstances; j++) {
-                long nodeInstanceId = stream.readLong();
+                String nodeInstanceId = stream.readUTF();
                 NodeInstance nodeInstance = processInstance.getNodeInstance(nodeInstanceId);
                 if (nodeInstance == null) {
                 	throw new IllegalArgumentException("Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId);
@@ -447,7 +446,6 @@ public abstract class AbstractProcessInstanceMarshaller implements
 				}
 			}
 		}
-        processInstance.internalSetNodeInstanceCounter(nodeInstanceCounter);
         if (wm != null) {
             processInstance.reconnect();
         }
@@ -460,7 +458,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
             NodeInstanceContainer nodeInstanceContainer,
             WorkflowProcessInstance processInstance) throws IOException {
         ObjectInputStream stream = context.stream;
-        long id = stream.readLong();
+        String id = stream.readUTF();
         long nodeId = stream.readLong();
         int nodeType = stream.readShort();
         NodeInstanceImpl nodeInstance = readNodeInstanceContent(nodeType,
@@ -501,7 +499,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                     ((org.jbpm.process.instance.ProcessInstance) processInstance).addContextInstance(ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance);
                     int nodeInstances = stream.readInt();
                     for (int j = 0; j < nodeInstances; j++) {
-                        long nodeInstanceId = stream.readLong();
+                        String nodeInstanceId = stream.readUTF();
                         NodeInstance groupNodeInstance = processInstance.getNodeInstance(nodeInstanceId);
                         if (groupNodeInstance == null) {
                         	throw new IllegalArgumentException("Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId);
@@ -543,7 +541,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 break;
             case PersisterEnums.HUMAN_TASK_NODE_INSTANCE:
                 nodeInstance = new HumanTaskNodeInstance();
-                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId(stream.readLong());
+                ((HumanTaskNodeInstance) nodeInstance).internalSetWorkItemId(stream.readUTF());
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
                     List<Long> timerInstances = new ArrayList<Long>();
@@ -555,7 +553,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 break;
             case PersisterEnums.WORK_ITEM_NODE_INSTANCE:
                 nodeInstance = new WorkItemNodeInstance();
-                ((WorkItemNodeInstance) nodeInstance).internalSetWorkItemId(stream.readLong());
+                ((WorkItemNodeInstance) nodeInstance).internalSetWorkItemId(stream.readUTF());
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
                     List<Long> timerInstances = new ArrayList<Long>();
@@ -567,7 +565,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                 break;
             case PersisterEnums.SUB_PROCESS_NODE_INSTANCE:
                 nodeInstance = new SubProcessNodeInstance();
-                ((SubProcessNodeInstance) nodeInstance).internalSetProcessInstanceId(stream.readLong());
+                ((SubProcessNodeInstance) nodeInstance).internalSetProcessInstanceId(stream.readUTF());
                 nbTimerInstances = stream.readInt();
                 if (nbTimerInstances > 0) {
                     List<Long> timerInstances = new ArrayList<Long>();

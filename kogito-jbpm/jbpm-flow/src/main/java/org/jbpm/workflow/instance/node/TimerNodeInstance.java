@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.Date;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.Timer;
@@ -54,6 +56,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
             throw new IllegalArgumentException(
                 "A TimerNode only accepts default incoming connections!");
         }
+        triggerTime = new Date();
         InternalKnowledgeRuntime kruntime =  getProcessInstance().getKnowledgeRuntime();
         timerInstance = createTimerInstance(kruntime);
         if (getTimerInstances() == null) {

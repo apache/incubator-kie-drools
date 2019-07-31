@@ -36,25 +36,25 @@ public class UpdateProcessCommand implements ExecutableCommand<Void>, ProcessIns
 	private static final long serialVersionUID = 6L;
 
 	@XmlElement
-	@XmlSchemaType(name="long")
-	private Long processInstanceId;
+	@XmlSchemaType(name="string")
+	private String processInstanceId;
 	
 	@XmlElement
 	@XmlSchemaType(name="string")
     private String processXml;
     
-    public UpdateProcessCommand(Long processInstanceId, String processXml) {
+    public UpdateProcessCommand(String processInstanceId, String processXml) {
     	this.processInstanceId = processInstanceId;
     	this.processXml = processXml;
     }
 
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
 		return processInstanceId;
 	}
 
     @Override
-	public void setProcessInstanceId(Long processInstanceId) {
+	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
 

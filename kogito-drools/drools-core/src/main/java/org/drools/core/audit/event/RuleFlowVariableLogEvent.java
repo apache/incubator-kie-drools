@@ -34,7 +34,7 @@ public class RuleFlowVariableLogEvent extends RuleFlowLogEvent {
                                     final String variableInstanceId,
                                     final String processId,
                                     final String processName,
-                                    final long processInstanceId,
+                                    final String processInstanceId,
                                     final String objectToString) {
         super( type, processId, processName, processInstanceId );
         this.variableId = variableId;

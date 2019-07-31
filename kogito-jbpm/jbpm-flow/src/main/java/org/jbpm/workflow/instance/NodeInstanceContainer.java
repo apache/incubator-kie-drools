@@ -50,6 +50,6 @@ public interface NodeInstanceContainer extends org.kie.api.runtime.process.NodeI
     
     int getCurrentLevel();
     
-    NodeInstance getNodeInstance(long nodeInstanceId, boolean recursive);
+    NodeInstance getNodeInstance(String nodeInstanceId, boolean recursive);
 
 }

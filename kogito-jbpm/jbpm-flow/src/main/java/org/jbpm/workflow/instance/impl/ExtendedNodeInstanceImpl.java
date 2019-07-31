@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.instance.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.kie.api.runtime.process.NodeInstance;
@@ -32,6 +33,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 	}
 	
 	public void internalTrigger(NodeInstance from, String type) {
+	    triggerTime = new Date();
 		triggerEvent(ExtendedNodeImpl.EVENT_NODE_ENTER);
 	}
 	

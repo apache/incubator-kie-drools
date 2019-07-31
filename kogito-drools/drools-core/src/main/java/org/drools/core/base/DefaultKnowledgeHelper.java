@@ -528,14 +528,14 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         if (ProcessContext.class.equals(contextClass)) {
             String ruleflowGroupName = getMatch().getRule().getRuleFlowGroup();
             if (ruleflowGroupName != null) {
-                Map<Long, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
+                Map<String, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
                 if (!nodeInstances.isEmpty()) {
                     if (nodeInstances.size() > 1) {
                         // TODO
                         throw new UnsupportedOperationException(
                             "Not supporting multiple node instances for the same ruleflow group");
                     }
-                    Map.Entry<Long, String> entry = nodeInstances.entrySet().iterator().next();
+                    Map.Entry<String, String> entry = nodeInstances.entrySet().iterator().next();
                     ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
                     org.drools.core.spi.ProcessContext context = new org.drools.core.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
                     context.setProcessInstance(processInstance);
@@ -544,7 +544,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                     NodeInstanceContainer container = (WorkflowProcessInstance) processInstance;
                     for (int i = 0; i < nodeInstanceIds.length; i++) {
                         for (NodeInstance subNodeInstance: container.getNodeInstances()) {
-                            if (subNodeInstance.getId() == Long.parseLong(nodeInstanceIds[i])) {
+                            if (subNodeInstance.getId().equals(nodeInstanceIds[i])) {
                                 if (i == nodeInstanceIds.length - 1) {
                                     context.setNodeInstance(subNodeInstance);
                                     break;

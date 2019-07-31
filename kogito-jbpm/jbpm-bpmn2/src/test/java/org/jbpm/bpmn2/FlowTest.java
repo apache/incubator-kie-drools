@@ -1325,7 +1325,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -1520,11 +1520,11 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     private static class GetProcessVariableCommand implements ExecutableCommand<Object> {
 
-        private long processInstanceId;
+        private String processInstanceId;
         private String variableName;
         
         
-        public GetProcessVariableCommand(long processInstanceId, String variableName) {
+        public GetProcessVariableCommand(String processInstanceId, String variableName) {
             this.processInstanceId = processInstanceId;
             this.variableName = variableName;
         }

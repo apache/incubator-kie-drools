@@ -44,7 +44,7 @@ public class SignallingTaskHandlerDecorator extends AbstractExceptionHandlingTas
     
     private String workItemExceptionParameterName = "jbpm.workitem.exception";
     
-    final private Map<Long, Integer> processInstanceExceptionMap = new HashMap<Long, Integer>();
+    final private Map<String, Integer> processInstanceExceptionMap = new HashMap<String, Integer>();
     private int exceptionCountLimit = 1;
     
     /**
@@ -107,7 +107,7 @@ public class SignallingTaskHandlerDecorator extends AbstractExceptionHandlingTas
         }
     }
 
-    private int getAndIncreaseExceptionCount(Long processInstanceId) { 
+    private int getAndIncreaseExceptionCount(String processInstanceId) { 
         Integer count = processInstanceExceptionMap.get(processInstanceId);
         if( count == null ) {
             count = 0;

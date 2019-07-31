@@ -36,7 +36,7 @@ public class TimerInstance implements Serializable{
     private JobHandle jobHandle;
     private Date activated;
     private Date lastTriggered;
-    private long processInstanceId;
+    private String processInstanceId;
     private int repeatLimit = -1;
     private long sessionId;
     private String cronExpression;
@@ -97,11 +97,11 @@ public class TimerInstance implements Serializable{
     	return lastTriggered;
     }
 
-	public long getProcessInstanceId() {
+	public String getProcessInstanceId() {
 		return processInstanceId;
 	}
 
-	public void setProcessInstanceId(long processInstanceId) {
+	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
 

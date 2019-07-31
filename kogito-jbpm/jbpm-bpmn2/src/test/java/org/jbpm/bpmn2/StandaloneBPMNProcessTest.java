@@ -703,7 +703,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() { 
             
             public void beforeProcessStarted(ProcessStartedEvent event) {
@@ -721,7 +721,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     public void testSignalStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -744,7 +744,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     public void testMessageStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());

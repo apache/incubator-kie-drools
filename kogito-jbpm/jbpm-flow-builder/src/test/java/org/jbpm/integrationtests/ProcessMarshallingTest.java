@@ -352,8 +352,8 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
 
         assertEquals(2, session.getProcessInstances().size());
         assertTrue(handler1.getWorkItem() != null);
-        long workItemId = handler2.getWorkItem().getId(); 
-        assertTrue(workItemId != -1);
+        String workItemId = handler2.getWorkItem().getId(); 
+        assertTrue(workItemId != null);
         
         session = getSerialisedStatefulKnowledgeSession(session);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler2);

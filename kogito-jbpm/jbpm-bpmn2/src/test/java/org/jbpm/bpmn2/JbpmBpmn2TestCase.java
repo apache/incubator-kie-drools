@@ -326,7 +326,7 @@ public abstract class JbpmBpmn2TestCase {
                    "Process instance has not been finished.");
     }
 
-    public void assertNodeActive(long processInstanceId, KieSession ksession,
+    public void assertNodeActive(String processInstanceId, KieSession ksession,
             String... name) {
         List<String> names = new ArrayList<String>();
         for (String n : name) {
@@ -359,7 +359,7 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertNodeTriggered(long processInstanceId, String... nodeNames) {
+    public void assertNodeTriggered(String processInstanceId, String... nodeNames) {
         List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
         if (!names.isEmpty()) {
             String s = names.get(0);
@@ -370,7 +370,7 @@ public abstract class JbpmBpmn2TestCase {
         }
     }
 
-    public void assertNotNodeTriggered(long processInstanceId,
+    public void assertNotNodeTriggered(String processInstanceId,
             String... nodeNames) {
         List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
         assertTrue(Arrays.equals(names.toArray(), nodeNames));
@@ -411,7 +411,7 @@ public abstract class JbpmBpmn2TestCase {
         return processInstance.getState() == state;         
     }
 
-    private List<String> getNotTriggeredNodes(long processInstanceId,
+    private List<String> getNotTriggeredNodes(String processInstanceId,
             String... nodeNames) {
         List<String> names = new ArrayList<String>();
         for (String nodeName : nodeNames) {
@@ -602,16 +602,16 @@ public abstract class JbpmBpmn2TestCase {
                 vars);
     }
     
-    protected void assertProcessInstanceCompleted(long processInstanceId, KieSession ksession) {
+    protected void assertProcessInstanceCompleted(String processInstanceId, KieSession ksession) {
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
         assertNull(processInstance, "Process instance has not completed.");
     }
 
-    protected void assertProcessInstanceAborted(long processInstanceId, KieSession ksession) {
+    protected void assertProcessInstanceAborted(String processInstanceId, KieSession ksession) {
         assertNull(ksession.getProcessInstance(processInstanceId));
     }
 
-    protected void assertProcessInstanceActive(long processInstanceId, KieSession ksession) {
+    protected void assertProcessInstanceActive(String processInstanceId, KieSession ksession) {
         assertNotNull(ksession.getProcessInstance(processInstanceId));
     }
 

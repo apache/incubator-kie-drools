@@ -5,5 +5,5 @@ import java.util.Optional;
 import org.kie.api.runtime.process.EventListener;
 
 public interface EventListenerResolver {
-    Optional<EventListener> find(long id);
+    Optional<EventListener> find(String id);
 }

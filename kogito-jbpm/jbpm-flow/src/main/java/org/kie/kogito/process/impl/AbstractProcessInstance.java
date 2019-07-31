@@ -47,7 +47,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     private org.kie.api.runtime.process.ProcessInstance legacyProcessInstance;
     
     private Integer status;
-    private Long id;
+    private String id;
     
     private Supplier<org.kie.api.runtime.process.ProcessInstance> reloadSupplier;
     
@@ -62,12 +62,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         String processId = process.legacyProcess().getId();
         this.legacyProcessInstance = rt.createProcessInstance(processId, map);
         this.id = legacyProcessInstance.getId();
-        this.status = org.kie.api.runtime.process.ProcessInstance.STATE_PENDING;
+        this.status = ProcessInstance.STATE_PENDING;
     }
     
     // for marshaller/persistence only
     public void internalSetProcessInstance(org.kie.api.runtime.process.ProcessInstance legacyProcessInstance) {
-        if (this.legacyProcessInstance != null && this.status != org.kie.api.runtime.process.ProcessInstance.STATE_PENDING) {
+        if (this.legacyProcessInstance != null && this.status != ProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to override process instance that already exists");
         }
         this.legacyProcessInstance = legacyProcessInstance;
@@ -99,10 +99,10 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     public void start() {
-        if (this.status != org.kie.api.runtime.process.ProcessInstance.STATE_PENDING) {
+        if (this.status != ProcessInstance.STATE_PENDING) {
             throw new IllegalStateException("Impossible to start process instance that already was started");
         }
-        this.status = org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
+        this.status = ProcessInstance.STATE_ACTIVE;
         ((WorkflowProcessInstance)legacyProcessInstance).addEventListener("processInstanceCompleted:"+this.id, completionEventListener, false);
         
         
@@ -120,7 +120,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         if (legacyProcessInstance() == null) {
             return;
         }
-        long pid = legacyProcessInstance().getId();
+        String pid = legacyProcessInstance().getId();
         unbind(variables, legacyProcessInstance().getVariables());        
         this.rt.abortProcessInstance(pid);
         addToUnitOfWork((pi) -> ((MutableProcessInstances<T>)process.instances()).remove(pi.id()));
@@ -148,7 +148,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public long id() {
+    public String id() {
         return this.id;
     }
     
@@ -164,10 +164,10 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public WorkItem workItem(Long workItemId) {
+    public WorkItem workItem(String workItemId) {
         WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) ((WorkflowProcessInstance)legacyProcessInstance()).getNodeInstances()
                 .stream()
-                .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId() == workItemId)
+                .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(workItemId))
                 .findFirst()
                 .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId));
         return new BaseWorkItem(workItemInstance.getWorkItem().getId(), (String)workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()), workItemInstance.getWorkItem().getParameters());
@@ -184,20 +184,20 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public void completeWorkItem(long id, Map<String, Object> variables) {
+    public void completeWorkItem(String id, Map<String, Object> variables) {
         this.rt.getWorkItemManager().completeWorkItem(id, variables);
         removeOnFinish();
     }
     
     @Override
-    public void abortWorkItem(long id) {
+    public void abortWorkItem(String id) {
         this.rt.getWorkItemManager().abortWorkItem(id);
         removeOnFinish();
     }
     
     protected void removeOnFinish() {
 
-        if (legacyProcessInstance.getState() != org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE) {            
+        if (legacyProcessInstance.getState() != ProcessInstance.STATE_ACTIVE) {            
             ((WorkflowProcessInstance)legacyProcessInstance).removeEventListener("processInstanceCompleted:"+legacyProcessInstance.getId(), completionEventListener, false);
 
             this.status = legacyProcessInstance.getState();

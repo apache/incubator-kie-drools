@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.process.instance.WorkItem;
@@ -32,12 +32,9 @@ import org.kie.api.runtime.process.WorkItemNotFoundException;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.signal.SignalManager;
 
-public class LightWorkItemManager implements WorkItemManager{
-
-    private static final long serialVersionUID = 510l;
-
-    private AtomicLong workItemCounter = new AtomicLong(0);
-    private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
+public class LightWorkItemManager implements WorkItemManager {
+ 
+    private Map<String, WorkItem> workItems = new ConcurrentHashMap<String, WorkItem>();
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
 
     private final ProcessInstanceManager processInstanceManager;
@@ -49,7 +46,7 @@ public class LightWorkItemManager implements WorkItemManager{
     }
 
     public void internalExecuteWorkItem(WorkItem workItem) {
-        ((WorkItemImpl) workItem).setId(workItemCounter.incrementAndGet());
+        ((WorkItemImpl) workItem).setId(UUID.randomUUID().toString());
         internalAddWorkItem(workItem);
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
@@ -59,14 +56,10 @@ public class LightWorkItemManager implements WorkItemManager{
     }    
 
     public void internalAddWorkItem(WorkItem workItem) {
-        workItems.put(workItem.getId(), workItem);
-        // fix to reset workItemCounter after deserialization
-        if (workItem.getId() > workItemCounter.get()) {
-            workItemCounter.set(workItem.getId());
-        }
+        workItems.put(workItem.getId(), workItem);  
     }
 
-    public void internalAbortWorkItem(long id) {
+    public void internalAbortWorkItem(String id) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
@@ -86,12 +79,12 @@ public class LightWorkItemManager implements WorkItemManager{
     	return this.workItemHandlers.get(name);
     }
 
-    public void retryWorkItem(long workItemId) {
+    public void retryWorkItem(String workItemId) {
     	WorkItem workItem = workItems.get(workItemId);
     	retryWorkItem(workItem);
     }
 
-    public void retryWorkItemWithParams(long workItemId,Map<String,Object> map) {
+    public void retryWorkItemWithParams(String workItemId,Map<String,Object> map) {
         WorkItem workItem = workItems.get(workItemId);
         
         if ( workItem != null ) {
@@ -115,11 +108,11 @@ public class LightWorkItemManager implements WorkItemManager{
         return new HashSet<WorkItem>(workItems.values());
     }
 
-    public WorkItem getWorkItem(long id) {
+    public WorkItem getWorkItem(String id) {
         return workItems.get(id);
     }
 
-    public void completeWorkItem(long id, Map<String, Object> results) {
+    public void completeWorkItem(String id, Map<String, Object> results) {
         WorkItem workItem = workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
@@ -136,7 +129,7 @@ public class LightWorkItemManager implements WorkItemManager{
         }
     }
 
-    public void abortWorkItem(long id) {
+    public void abortWorkItem(String id) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(id);
         // work item may have been aborted
         if (workItem != null) {
@@ -162,7 +155,7 @@ public class LightWorkItemManager implements WorkItemManager{
         this.signalManager.signalEvent(type, event);
     } 
     
-    public void signalEvent(String type, Object event, long processInstanceId) { 
+    public void signalEvent(String type, Object event, String processInstanceId) { 
         this.signalManager.signalEvent(processInstanceId, type, event);
     }
 
@@ -178,7 +171,7 @@ public class LightWorkItemManager implements WorkItemManager{
     }
     
     @Override
-    public void retryWorkItem( Long workItemID, Map<String, Object> params ) {
+    public void retryWorkItem( String workItemID, Map<String, Object> params ) {
        if(params==null || params.isEmpty()){
            retryWorkItem(workItemID);
        }else{

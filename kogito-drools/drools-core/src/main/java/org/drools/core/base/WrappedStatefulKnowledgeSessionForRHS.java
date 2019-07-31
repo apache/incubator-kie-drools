@@ -153,7 +153,7 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.update(factHandle);
 	}
 
-	public void abortProcessInstance(long id) {
+	public void abortProcessInstance(String id) {
 		delegate.abortProcessInstance(id);
 	}
 
@@ -161,7 +161,7 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.signalEvent(type, event);
 	}
 
-	public void signalEvent(String type, Object event, long processInstanceId) {
+	public void signalEvent(String type, Object event, String processInstanceId) {
 		delegate.signalEvent(type, event, processInstanceId);
 	}
 
@@ -231,7 +231,7 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		return delegate.createProcessInstance(processId, parameters);
 	}
 
-	public ProcessInstance startProcessInstance(long processInstanceId) {
+	public ProcessInstance startProcessInstance(String processInstanceId) {
 		return delegate.startProcessInstance(processInstanceId);
 	}
 
@@ -741,11 +741,11 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		return delegate.getProcessInstances();
 	}
 
-	public ProcessInstance getProcessInstance(long id) {
+	public ProcessInstance getProcessInstance(String id) {
 		return delegate.getProcessInstance(id);
 	}
 
-	public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+	public ProcessInstance getProcessInstance(String id, boolean readOnly) {
 		return delegate.getProcessInstance(id, readOnly);
 	}
 

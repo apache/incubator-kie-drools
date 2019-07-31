@@ -42,7 +42,7 @@ public interface NodeInstance {
      *
      * @return the id of the node instance
      */
-    long getId();
+    String getId();
 
     /**
      * The id of the node this node instance refers to.  The node

@@ -71,7 +71,7 @@ public interface InternalAgenda
      * The given processInstanceId and nodeInstanceId define the process context
      * in which this <code>RuleFlowGroup</code> is used.
      */
-    void activateRuleFlowGroup(String name, long processInstanceId, String nodeInstanceId);
+    void activateRuleFlowGroup(String name, String processInstanceId, String nodeInstanceId);
 
     /**
      * Deactivates the <code>RuleFlowGroup</code> with the given name.
@@ -170,7 +170,7 @@ public interface InternalAgenda
      */
     boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
-                                            long processInstanceId);
+                                            String processInstanceId);
 
     void setWorkingMemory(final InternalWorkingMemory workingMemory);
 
@@ -280,7 +280,7 @@ public interface InternalAgenda
 
     void addItemToActivationGroup(AgendaItem item);
 
-    boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
+    boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, String processInstanceId);
 
     void registerExpiration(PropagationContext expirationContext);
 

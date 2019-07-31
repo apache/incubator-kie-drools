@@ -189,7 +189,7 @@ public class DynamicUtils {
         throw new IllegalArgumentException("Could not find node instance " + uniqueId);
     }
 
-    public static long addDynamicSubProcess(
+    public static String addDynamicSubProcess(
             final DynamicNodeInstance dynamicContext,
             KieRuntime ksession,
             final String processId,
@@ -202,7 +202,7 @@ public class DynamicUtils {
                                             parameters);
     }
 
-    public static long addDynamicSubProcess(
+    public static String addDynamicSubProcess(
             final org.kie.api.runtime.process.ProcessInstance processInstance,
             KieRuntime ksession,
             final String processId,
@@ -214,7 +214,7 @@ public class DynamicUtils {
                                             parameters);
     }
 
-    public static long internalAddDynamicSubProcess(
+    public static String internalAddDynamicSubProcess(
             final WorkflowProcessInstance processInstance,
             final DynamicNodeInstance dynamicContext,
             KieRuntime ksession,
@@ -233,10 +233,10 @@ public class DynamicUtils {
                                      subProcessNodeInstance);
         } else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
             ExecutableRunner commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
-            return commandService.execute(new ExecutableCommand<Long>() {
+            return commandService.execute(new ExecutableCommand<String>() {
                 private static final long serialVersionUID = 5L;
 
-                public Long execute(Context context) {
+                public String execute(Context context) {
                     StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup(KieSession.class);
                     WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstance.getId());
                     subProcessNodeInstance.setProcessInstance(realProcessInstance);
@@ -259,7 +259,7 @@ public class DynamicUtils {
         }
     }
 
-    private static long executeSubProcess(StatefulKnowledgeSessionImpl ksession,
+    private static String executeSubProcess(StatefulKnowledgeSessionImpl ksession,
                                           String processId,
                                           Map<String, Object> parameters,
                                           ProcessInstance processInstance,

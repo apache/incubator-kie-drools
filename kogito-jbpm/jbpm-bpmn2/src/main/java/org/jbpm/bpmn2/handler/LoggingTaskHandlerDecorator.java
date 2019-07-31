@@ -275,8 +275,8 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
         private final Date timeThrown;
         private final boolean onExecute;
 
-        private final long processInstanceId;
-        private final long workItemId;
+        private final String processInstanceId;
+        private final String workItemId;
         private final String workItemName;
         private final Map<String, Object> workItemParameters;
 
@@ -304,11 +304,11 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
             return onExecute;
         }
 
-        public long getProcessInstanceId() {
+        public String getProcessInstanceId() {
             return processInstanceId;
         }
 
-        public long getWorkItemId() {
+        public String getWorkItemId() {
             return workItemId;
         }
 

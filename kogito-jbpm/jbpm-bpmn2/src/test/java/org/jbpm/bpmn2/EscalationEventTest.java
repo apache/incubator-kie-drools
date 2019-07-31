@@ -65,7 +65,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessEscalation() throws Exception {
         KieBase kbase = createKnowledgeBase("escalation/BPMN2-EventSubprocessEscalation.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override

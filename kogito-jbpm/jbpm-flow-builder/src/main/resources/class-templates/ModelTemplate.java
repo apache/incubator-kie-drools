@@ -5,13 +5,13 @@ import java.util.HashMap;
 
 public class XXXModel implements org.kie.kogito.Model {
     
-    private Long id;
+    private String id;
     
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
     
-    public Long getId() {
+    public String getId() {
         return this.id;
     }
     
@@ -25,7 +25,7 @@ public class XXXModel implements org.kie.kogito.Model {
         fromMap(null, params);
     }
 
-    public void fromMap(Long id, Map<String, Object> params) {
+    public void fromMap(String id, Map<String, Object> params) {
         
     }
 }

@@ -86,11 +86,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 .setId( workFlow.getId() )
                 .setProcessId( workFlow.getProcessId() )
                 .setState( workFlow.getState() )
-                .setNodeInstanceCounter( workFlow.getNodeInstanceCounter() )
-                .setProcessType( workFlow.getProcess().getType() )
-                .setParentProcessInstanceId(workFlow.getParentProcessInstanceId())
+                .setProcessType( workFlow.getProcess().getType() )                
                 .setSignalCompletion(workFlow.isSignalCompletion())
-                .setSlaCompliance(workFlow.getSlaCompliance());
+                .setSlaCompliance(workFlow.getSlaCompliance())
+                .setStartDate(workFlow.getStartDate().getTime());
         if (workFlow.getProcessXml() != null) {
             _instance.setProcessXml( workFlow.getProcessXml());
         }
@@ -110,6 +109,12 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workFlow.getSlaTimerId() != null) {
             _instance.setSlaTimerId(workFlow.getSlaTimerId());
         }
+        if (workFlow.getParentProcessInstanceId() != null) {
+            _instance.setParentProcessInstanceId(workFlow.getParentProcessInstanceId());
+        }
+        if (workFlow.getRootProcessInstanceId() != null) {
+            _instance.setRootProcessInstanceId(workFlow.getRootProcessInstanceId());
+        }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         if ( swimlaneContextInstance != null ) {
@@ -128,7 +133,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
 
                               public int compare(NodeInstance o1,
                                                  NodeInstance o2) {
-                                  return (int) (o1.getId() - o2.getId());
+                                  return (int) (o1.getId().compareTo(o2.getId()));
                               }
                           } );
         for ( NodeInstance nodeInstance : nodeInstances ) {
@@ -193,7 +198,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 .setId( nodeInstance.getId() )
                 .setNodeId( nodeInstance.getNodeId())
                 .setLevel(((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getLevel())
-                .setSlaCompliance(((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getSlaCompliance());
+                .setSlaCompliance(((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getSlaCompliance())
+                .setTriggerDate(((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getTriggerTime().getTime());
                         
         if (((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getSlaDueDate() != null) {
             _node.setSlaDueDate(((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getSlaDueDate().getTime());
@@ -249,7 +255,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     _task.addTimerInstanceId( id );
                 }
             }
-            _task.setErrorHandlingProcessInstanceId(((HumanTaskNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId());
+            if (((WorkItemNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId() != null) {
+                _task.setErrorHandlingProcessInstanceId(((HumanTaskNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId());
+            }
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.HUMAN_TASK_NODE )
                     .setHumanTask( _task.build() );
@@ -265,7 +273,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     _wi.addTimerInstanceId( id );
                 }
             }
-            _wi.setErrorHandlingProcessInstanceId(((WorkItemNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId());
+            if (((WorkItemNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId() != null) {
+                _wi.setErrorHandlingProcessInstanceId(((WorkItemNodeInstance) nodeInstance).getExceptionHandlingProcessInstanceId());
+            }
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.WORK_ITEM_NODE )
                     .setWorkItem( _wi.build() );
@@ -356,7 +366,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                               new Comparator<NodeInstance>() {
                                   public int compare(NodeInstance o1,
                                                      NodeInstance o2) {
-                                      return (int) (o1.getId() - o2.getId());
+                                      return (int) (o1.getId().compareTo(o2.getId()));
                                   }
                               } );
             for ( NodeInstance subNodeInstance : nodeInstances ) {
@@ -461,7 +471,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                               new Comparator<NodeInstance>() {
                                   public int compare(NodeInstance o1,
                                                      NodeInstance o2) {
-                                      return (int) (o1.getId() - o2.getId());
+                                      return (int) (o1.getId().compareTo(o2.getId()));
                                   }
                               } );
             for ( NodeInstance subNodeInstance : nodeInstances ) {
@@ -547,9 +557,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     workItem.setParameter( _variable.getName(),
                                            value );
                 } catch ( ClassNotFoundException e ) {
-                    System.out.println("Error reading work item parameter " + _variable.getName() + " " + _variable.getDataType());
                     throw new IllegalArgumentException(e);
-//                    throw new IllegalArgumentException( "Could not reload parameter " + _variable.getName() + " for work item " + _workItem );
                 }
             }
         }
@@ -599,16 +607,15 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setSignalCompletion(_instance.getSignalCompletion());
         processInstance.setDeploymentId(_instance.getDeploymentId());
         processInstance.setCorrelationKey(_instance.getCorrelationKey());
+        processInstance.internalSetStartDate(new Date(_instance.getStartDate()));
         processInstance.internalSetSlaCompliance(_instance.getSlaCompliance());
         if (_instance.getSlaDueDate() > 0) {
             processInstance.internalSetSlaDueDate(new Date(_instance.getSlaDueDate()));
         }
         processInstance.internalSetSlaTimerId(_instance.getSlaTimerId());
         
-        long nodeInstanceCounter = _instance.getNodeInstanceCounter();
         processInstance.setKnowledgeRuntime( context.wm != null ? context.wm.getKnowledgeRuntime() : null);
         
-        processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
         for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 
             processInstance.addCompletedNodeId(completedNodeId);
         }
@@ -631,7 +638,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         for ( JBPMMessages.ProcessInstance.ExclusiveGroupInstance _excl : _instance.getExclusiveGroupList() ) {
             ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
             processInstance.addContextInstance( ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance );
-            for ( Long nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
+            for ( String nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
                 NodeInstance nodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
                 if ( nodeInstance == null ) {
                     throw new IllegalArgumentException( "Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId );
@@ -681,6 +688,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         nodeInstance.setNodeInstanceContainer( nodeInstanceContainer );
         nodeInstance.setProcessInstance( (org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance );
         nodeInstance.setLevel(_node.getLevel()==0?1:_node.getLevel());
+        nodeInstance.internalSetTriggerTime(new Date(_node.getTriggerDate()));
         nodeInstance.internalSetSlaCompliance(_node.getSlaCompliance());
         if (_node.getSlaDueDate() > 0) {
             nodeInstance.internalSetSlaDueDate(new Date(_node.getSlaDueDate()));
@@ -720,7 +728,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 for ( JBPMMessages.ProcessInstance.ExclusiveGroupInstance _excl : _node.getContent().getComposite().getExclusiveGroupList() ) {
                     ExclusiveGroupInstance exclusiveGroupInstance = new ExclusiveGroupInstance();
                     ((CompositeContextNodeInstance) nodeInstance).addContextInstance( ExclusiveGroup.EXCLUSIVE_GROUP, exclusiveGroupInstance );
-                    for ( Long nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
+                    for ( String nodeInstanceId : _excl.getGroupNodeInstanceIdList() ) {
                         NodeInstance groupNodeInstance = ((org.jbpm.workflow.instance.NodeInstanceContainer)processInstance).getNodeInstance( nodeInstanceId, true );
                         if ( groupNodeInstance == null ) {
                             throw new IllegalArgumentException( "Could not find node instance when deserializing exclusive group instance: " + nodeInstanceId );

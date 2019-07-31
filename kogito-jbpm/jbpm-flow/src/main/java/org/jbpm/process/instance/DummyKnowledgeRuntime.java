@@ -218,7 +218,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
     }
 
     @Override
-    public ProcessInstance startProcessInstance(long processInstanceId) {
+    public ProcessInstance startProcessInstance(String processInstanceId) {
         return null;
     }
 
@@ -228,7 +228,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
     }
 
     @Override
-    public void signalEvent(String type, Object event, long processInstanceId) {
+    public void signalEvent(String type, Object event, String processInstanceId) {
 
     }
 
@@ -238,17 +238,17 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime {
     }
 
     @Override
-    public ProcessInstance getProcessInstance(long processInstanceId) {
+    public ProcessInstance getProcessInstance(String processInstanceId) {
         return null;
     }
 
     @Override
-    public ProcessInstance getProcessInstance(long processInstanceId, boolean readonly) {
+    public ProcessInstance getProcessInstance(String processInstanceId, boolean readonly) {
         return null;
     }
 
     @Override
-    public void abortProcessInstance(long processInstanceId) {
+    public void abortProcessInstance(String processInstanceId) {
 
     }
 

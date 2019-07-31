@@ -16,6 +16,10 @@
 
 package org.jbpm.bpmn2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +45,6 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -65,12 +68,6 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.services.time.manager.TimerInstance;
 import org.kie.services.time.manager.TimerManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -587,7 +584,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     public void runTestEventSubprocessSignal(String processFile, String [] completedNodes) throws Exception {
         KieBase kbase = createKnowledgeBase(processFile);
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -631,7 +628,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessSignalWithStateNode() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessSignalWithStateNode.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -694,7 +691,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessSignalInterrupting() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessSignalInterrupting.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -730,7 +727,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessMessage() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessMessage.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -827,7 +824,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessConditional() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessConditional.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -928,13 +925,12 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull();
         assertThat(workItem instanceof org.drools.core.process.instance.WorkItem).isTrue();
 
-        long nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
+        String nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
         long nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
 
         assertThat(nodeId).isNotNull();
         assertThat(nodeId > 0).isTrue();
         assertThat(nodeInstanceId).isNotNull();
-        assertThat(nodeInstanceId > 0).isTrue();
     }
 
     @Test
@@ -952,14 +948,13 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull();
         assertThat(workItem instanceof org.drools.core.process.instance.WorkItem).isTrue();
 
-        long nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
+        String nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
         long nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
         String deploymentId = ((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId();
 
         assertThat(nodeId).isNotNull();
         assertThat(nodeId > 0).isTrue();
         assertThat(nodeInstanceId).isNotNull();
-        assertThat(nodeInstanceId > 0).isTrue();
         assertThat(deploymentId).isNull();
 
         // now set deployment id as part of ksession's env
@@ -979,7 +974,6 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertThat(nodeId).isNotNull();
         assertThat(nodeId > 0).isTrue();
         assertThat(nodeInstanceId).isNotNull();
-        assertThat(nodeInstanceId > 0).isTrue();
         assertThat(deploymentId).isNotNull();
         assertThat(deploymentId).isEqualTo("testDeploymentId");
     }
@@ -1401,7 +1395,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createProcessInstance(
                         "IntermediateCatchEventConditionFilterByProcessInstance",
                         params1);
-        long pi1id = pi1.getId();
+        String pi1id = pi1.getId();
 
         ksession.insert(pi1);
         FactHandle personHandle1 = ksession.insert(person1);
@@ -1417,7 +1411,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 .createProcessInstance(
                         "IntermediateCatchEventConditionFilterByProcessInstance",
                         params2);
-        long pi2id = pi2.getId();
+        String pi2id = pi2.getId();
 
         ksession.insert(pi2);
         FactHandle personHandle2 = ksession.insert(person2);
@@ -1476,7 +1470,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceActive(processInstance);
 
 
-        final long piId = processInstance.getId();
+        final String piId = processInstance.getId();
         ksession.execute(new ExecutableCommand<Void>() {
 
             public Void execute(Context context) {
@@ -2626,7 +2620,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
-        final List<Long> instances = new ArrayList<>();
+        final List<String> instances = new ArrayList<>();
         
         ksession.addEventListener(new DefaultProcessEventListener() {
 
@@ -2646,7 +2640,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // remove the parent process instance
         instances.remove(processInstance.getId());
         
-        for (Long id : instances) {
+        for (String id : instances) {
             ProcessInstance child = ksession.getProcessInstance(id);
             assertProcessInstanceActive(child);
         }
@@ -2659,7 +2653,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceFinished(processInstance, ksession);
         
-        for (Long id : instances) {
+        for (String id : instances) {
             assertNull(ksession.getProcessInstance(id), "Child process instance has not been finished.");
         }
     }
@@ -2671,7 +2665,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
-        final List<Long> instances = new ArrayList<>();
+        final List<String> instances = new ArrayList<>();
         
         ksession.addEventListener(new DefaultProcessEventListener() {
 
@@ -2691,15 +2685,15 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // remove the parent process instance
         instances.remove(processInstance.getId());
         
-        for (Long id : instances) {
+        for (String id : instances) {
             ProcessInstance child = ksession.getProcessInstance(id);
             assertProcessInstanceActive(child);
         }
         
         // change one child process instance variable (fatherId) to something else then original fatherId
-        Long changeProcessInstanceId = instances.remove(0);
+        String changeProcessInstanceId = instances.remove(0);
         Map<String, Object> updatedVariables = new HashMap<>();
-        updatedVariables.put("fatherId", 999L);
+        updatedVariables.put("fatherId", "999");
         ksession.execute(new SetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
         
         // now complete user task to signal all child instances to stop
@@ -2710,7 +2704,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceFinished(processInstance, ksession);
         
-        for (Long id : instances) {
+        for (String id : instances) {
             assertNull(ksession.getProcessInstance(id), "Child process instance has not been finished.");
         }
         
@@ -2729,7 +2723,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
-        final List<Long> instances = new ArrayList<>();
+        final List<String> instances = new ArrayList<>();
         
         ksession.addEventListener(new DefaultProcessEventListener() {
 
@@ -2749,15 +2743,15 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         // remove the parent process instance
         instances.remove(processInstance.getId());
         
-        for (Long id : instances) {
+        for (String id : instances) {
             ProcessInstance child = ksession.getProcessInstance(id);
             assertProcessInstanceActive(child);
         }
         
         // change one child process instance variable (fatherId) to something else then original fatherId
-        Long changeProcessInstanceId = instances.remove(0);
+        String changeProcessInstanceId = instances.remove(0);
         Map<String, Object> updatedVariables = new HashMap<>();
-        updatedVariables.put("fatherId", 999L);
+        updatedVariables.put("fatherId", "999");
         ksession.execute(new SetProcessInstanceVariablesCommand(changeProcessInstanceId, updatedVariables));
         
         // now complete user task to signal all child instances to stop
@@ -2768,7 +2762,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceFinished(processInstance, ksession);
         
-        for (Long id : instances) {
+        for (String id : instances) {
             assertNull(ksession.getProcessInstance(id), "Child process instance has not been finished.");
         }
         

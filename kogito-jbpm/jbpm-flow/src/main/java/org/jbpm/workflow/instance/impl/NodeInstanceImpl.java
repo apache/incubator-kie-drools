@@ -63,7 +63,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 	private static final long serialVersionUID = 510l;
 	protected static final Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
 	
-	private long id = -1;
+	private String id;
     private long nodeId;
     private WorkflowProcessInstance processInstance;
     private org.jbpm.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
@@ -74,14 +74,15 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     protected Date slaDueDate;
     protected long slaTimerId = -1;
     protected Date triggerTime;
+    protected Date leaveTime;
     
     protected transient Map<String, Object> dynamicParameters;
 
-    public void setId(final long id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
-    public long getId() {
+    public String getId() {
         return this.id;
     }
 
@@ -142,6 +143,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     public void cancel() {
+        leaveTime = new Date();
         boolean hidden = false;
         Node node = getNode();
     	if (node != null && node.getMetaData().get("hidden") != null) {
@@ -231,7 +233,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         }
     }
     
-    protected void triggerCompleted(String type, boolean remove) {        
+    protected void triggerCompleted(String type, boolean remove) {  
+        leaveTime = new Date();
         Node node = getNode();
         if (node != null) {
 	    	String uniqueId = (String) node.getMetaData().get("UniqueId");
@@ -379,7 +382,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     protected void triggerNodeInstance(org.jbpm.workflow.instance.NodeInstance nodeInstance, String type, boolean fireEvents) {
-        triggerTime = new Date();
+        
         boolean hidden = false;
     	if (getNode().getMetaData().get("hidden") != null) {
     		hidden = true;
@@ -578,5 +581,13 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     
     public Date getTriggerTime() {
         return triggerTime;
+    }
+    
+    public void internalSetTriggerTime(Date triggerTime) {
+        this.triggerTime = triggerTime;
+    }
+    
+    public Date getLeaveTime() {
+        return leaveTime;
     }
 }

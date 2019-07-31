@@ -19,19 +19,19 @@ public class ProcessInstanceNotFoundExteption extends RuntimeException {
 
     private static final long serialVersionUID = 8031225233775014572L;
 
-    private Long processInstanceId;
+    private String processInstanceId;
     
-    public ProcessInstanceNotFoundExteption(Long processInstanceId) {
+    public ProcessInstanceNotFoundExteption(String processInstanceId) {
         super("Process instance with id " + processInstanceId + " not found");
         this.processInstanceId = processInstanceId;
     }
 
-    public ProcessInstanceNotFoundExteption(Long processInstanceId, Throwable cause) {
+    public ProcessInstanceNotFoundExteption(String processInstanceId, Throwable cause) {
         super("Process instance with id " + processInstanceId + " not found", cause);
         this.processInstanceId = processInstanceId;
     }
 
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 

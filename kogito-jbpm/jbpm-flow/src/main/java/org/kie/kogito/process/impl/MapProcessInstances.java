@@ -24,10 +24,10 @@ import org.kie.kogito.process.ProcessInstance;
 
 class MapProcessInstances<T> implements MutableProcessInstances<T> {
 
-    private final ConcurrentHashMap<Long, ProcessInstance<T>> instances = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ProcessInstance<T>> instances = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<? extends ProcessInstance<T>> findById(long id) {
+    public Optional<? extends ProcessInstance<T>> findById(String id) {
         return Optional.ofNullable(instances.get(id));
     }
 
@@ -37,14 +37,14 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
     }
 
     @Override
-    public void update(long id, ProcessInstance<T> instance) {
+    public void update(String id, ProcessInstance<T> instance) {
         if (isActive(instance)) {
             instances.put(id, instance);
         }
     }
 
     @Override
-    public void remove(long id) {
+    public void remove(String id) {
         instances.remove(id);
     }
 }

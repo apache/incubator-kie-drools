@@ -35,7 +35,7 @@ import org.kie.internal.command.RegistryContext;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ReTryWorkItemCommand implements ExecutableCommand<Void> {
     @XmlAttribute(name="id", required=true)
-    private long workItemId;
+    private String workItemId;
     
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     private Map<String, Object> params = new HashMap<String, Object>();
@@ -44,16 +44,16 @@ public class ReTryWorkItemCommand implements ExecutableCommand<Void> {
         
     }
 
-    public ReTryWorkItemCommand(long workItemId ,Map<String,Object> params) {
+    public ReTryWorkItemCommand(String workItemId ,Map<String,Object> params) {
         this.workItemId = workItemId;
         this.params = params;
     }
 
-    public long getWorkItemId() {
+    public String getWorkItemId() {
         return workItemId;
     }
 
-    public void setWorkItemId(long workItemId) {
+    public void setWorkItemId(String workItemId) {
         this.workItemId = workItemId;
     }
 

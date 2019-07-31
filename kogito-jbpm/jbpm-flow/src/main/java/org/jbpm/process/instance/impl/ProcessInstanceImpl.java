@@ -48,7 +48,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
 	private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceImpl.class);
 	private static final long serialVersionUID = 510l;
 	
-	private long id;
+	private String id;
     private String processId;
     private transient Process process;
     private String processXml;
@@ -58,14 +58,15 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private transient InternalKnowledgeRuntime kruntime;
     private Map<String, Object> metaData = new HashMap<String, Object>();
     private String outcome;
-    private long parentProcessInstanceId = -1;
+    private String parentProcessInstanceId;
+    private String rootProcessInstanceId;
     private String description;
 
-    public void setId(final long id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
-    public long getId() {
+    public String getId() {
         return this.id;
     }
 
@@ -277,12 +278,20 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         return outcome;
     }
 
-    public long getParentProcessInstanceId() {
+    public String getParentProcessInstanceId() {
         return parentProcessInstanceId;
     }
 
-    public void setParentProcessInstanceId(long parentProcessInstanceId) {
+    public void setParentProcessInstanceId(String parentProcessInstanceId) {
         this.parentProcessInstanceId = parentProcessInstanceId;
+    }
+    
+    public String getRootProcessInstanceId() {
+        return rootProcessInstanceId;
+    }
+
+    public void setRootProcessInstanceId(String rootProcessInstanceId) {
+        this.rootProcessInstanceId = rootProcessInstanceId;
     }
     
     public String getDescription() {

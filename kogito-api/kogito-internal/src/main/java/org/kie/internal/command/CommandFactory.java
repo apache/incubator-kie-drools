@@ -292,7 +292,7 @@ public class CommandFactory {
                                                            event );
     }
 
-    public static Command newSignalEvent(long processInstanceId,
+    public static Command newSignalEvent(String processInstanceId,
                                          String type,
                                          Object event) {
         return getCommandFactoryProvider().newSignalEvent( processInstanceId,
@@ -306,13 +306,13 @@ public class CommandFactory {
                                                                               workItemName );
     }
 
-    public static Command newCompleteWorkItem(long workItemId,
+    public static Command newCompleteWorkItem(String workItemId,
                                               Map<String, Object> results) {
         return getCommandFactoryProvider().newCompleteWorkItem( workItemId,
                                                                 results );
     }
 
-    public static Command newAbortWorkItem(long workItemId) {
+    public static Command newAbortWorkItem(String workItemId) {
         return getCommandFactoryProvider().newAbortWorkItem( workItemId );
     }
 

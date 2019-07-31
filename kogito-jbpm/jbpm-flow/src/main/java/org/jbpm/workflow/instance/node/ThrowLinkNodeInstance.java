@@ -17,6 +17,9 @@
 package org.jbpm.workflow.instance.node;
 
 import org.kie.api.runtime.process.NodeInstance;
+
+import java.util.Date;
+
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 
 public class ThrowLinkNodeInstance extends NodeInstanceImpl {
@@ -25,7 +28,8 @@ public class ThrowLinkNodeInstance extends NodeInstanceImpl {
 
 	@Override
 	public void internalTrigger(NodeInstance from, String type) {
-		this.triggerCompleted();
+	    triggerTime = new Date();
+	    this.triggerCompleted();
 	}
 
 	public void triggerCompleted() {

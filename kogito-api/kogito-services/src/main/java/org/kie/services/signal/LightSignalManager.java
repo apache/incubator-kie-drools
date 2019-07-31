@@ -81,7 +81,7 @@ public class LightSignalManager implements SignalManager {
 
 	}
 
-	public void signalEvent(long processInstanceId, String type, Object event) {
+	public void signalEvent(String processInstanceId, String type, Object event) {
 		instanceResolver.find(processInstanceId)
 				.ifPresent(signalable -> signalable.signalEvent(type, event));
 	}

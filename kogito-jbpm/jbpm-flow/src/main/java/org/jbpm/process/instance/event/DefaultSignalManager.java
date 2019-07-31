@@ -87,7 +87,7 @@ public class DefaultSignalManager implements SignalManager {
 			}
 		}
 	}
-	public void signalEvent(long processInstanceId, String type, Object event) {
+	public void signalEvent(String processInstanceId, String type, Object event) {
 		ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
 		if (processInstance != null) {
 		    processInstance.signalEvent(type, event);
@@ -96,11 +96,11 @@ public class DefaultSignalManager implements SignalManager {
 	
 	public static class SignalProcessInstanceAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
 
-		private long processInstanceId;
+		private String processInstanceId;
 		private String type;
 		private Object event;
 		
-		public SignalProcessInstanceAction(long processInstanceId, String type, Object event) {
+		public SignalProcessInstanceAction(String processInstanceId, String type, Object event) {
 			this.processInstanceId = processInstanceId;
 			this.type = type;
 			this.event = event;
@@ -108,7 +108,7 @@ public class DefaultSignalManager implements SignalManager {
 		}
 		
 		public SignalProcessInstanceAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
-			processInstanceId = context.readLong();
+			processInstanceId = context.readUTF();
 			type = context.readUTF();
 			if (context.readBoolean()) {
 				event = context.readObject();
@@ -131,7 +131,7 @@ public class DefaultSignalManager implements SignalManager {
 
 		public void write(MarshallerWriteContext context) throws IOException {
 			context.writeInt( WorkingMemoryAction.SignalProcessInstanceAction );
-			context.writeLong(processInstanceId);
+			context.writeUTF(processInstanceId);
 			context.writeUTF(type);
 			context.writeBoolean(event != null);
 			if (event != null) {
@@ -140,7 +140,7 @@ public class DefaultSignalManager implements SignalManager {
 		}
 
 		public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-			processInstanceId = in.readLong();
+			processInstanceId = in.readUTF();
 			type = in.readUTF();
 			if (in.readBoolean()) {
 				event = in.readObject();
@@ -148,7 +148,7 @@ public class DefaultSignalManager implements SignalManager {
 		}
 
 		public void writeExternal(ObjectOutput out) throws IOException {
-			out.writeLong(processInstanceId);
+			out.writeUTF(processInstanceId);
 			out.writeUTF(type);
 			out.writeBoolean(event != null);
 			if (event != null) {

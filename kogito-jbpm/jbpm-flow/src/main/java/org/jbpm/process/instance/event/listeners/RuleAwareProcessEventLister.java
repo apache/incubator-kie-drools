@@ -38,7 +38,7 @@ import org.kie.api.runtime.rule.FactHandle;
  */
 public class RuleAwareProcessEventLister implements ProcessEventListener {
     
-    private ConcurrentHashMap<Long, FactHandle> store = new ConcurrentHashMap<Long, FactHandle>();
+    private ConcurrentHashMap<String, FactHandle> store = new ConcurrentHashMap<String, FactHandle>();
 
     public void beforeProcessStarted(ProcessStartedEvent event) {
         
@@ -93,7 +93,7 @@ public class RuleAwareProcessEventLister implements ProcessEventListener {
         }
     }
 
-    protected FactHandle getProcessInstanceFactHandle(final Long processInstanceId, KieRuntime kruntime) {
+    protected FactHandle getProcessInstanceFactHandle(final String processInstanceId, KieRuntime kruntime) {
         
         if (store.containsKey(processInstanceId)) {
             return store.get(processInstanceId);

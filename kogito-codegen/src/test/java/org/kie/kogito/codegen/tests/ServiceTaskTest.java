@@ -47,7 +47,7 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("s");
         assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Hello john!");
@@ -69,7 +69,7 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("s");
         assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Goodbye Hello john!!");
@@ -91,7 +91,7 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKeys("s");
         assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Hello Hello john!!");
@@ -119,7 +119,7 @@ public class ServiceTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(3).containsKeys("list", "s", "listOut");
         assertThat((List<String>)result.toMap().get("listOut")).isNotNull().hasSize(2).contains("Hello first!", "Hello second!");

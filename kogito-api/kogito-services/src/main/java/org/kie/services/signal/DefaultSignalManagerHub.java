@@ -41,7 +41,7 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
     }
 
     @Override
-    public void publishTargeting(long id, String type, Object signalData) {
+    public void publishTargeting(String id, String type, Object signalData) {
         signalManagers.getOrDefault(type, Collections.emptyList())
             .forEach(e -> e.signalEvent(id, type, signalData));
     }

@@ -18,19 +18,19 @@ package org.kie.api.runtime.process;
 public class WorkItemNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 4684154420113683086L;
-    private Long workItemId;
+    private String workItemId;
 
     public WorkItemNotFoundException(String message,
-                                     Long workItemId) {
+                                     String workItemId) {
         super(message);
         this.workItemId = workItemId;
     }
 
-    public Long getWorkItemId() {
+    public String getWorkItemId() {
         return workItemId;
     }
 
-    public void setWorkItemId(Long workItemId) {
+    public void setWorkItemId(String workItemId) {
         this.workItemId = workItemId;
     }
 

@@ -33,8 +33,8 @@ public class OldOutputMarshallerMethods {
     // Changed with JBRULES-3257
     public static void writeWorkItem_v1(MarshallerWriteContext context, WorkItem workItem) throws IOException {
         ObjectOutputStream stream = context.stream;
-        stream.writeLong( workItem.getId() );
-        stream.writeLong( workItem.getProcessInstanceId() );
+        stream.writeUTF( workItem.getId() );
+        stream.writeUTF( workItem.getProcessInstanceId() );
         stream.writeUTF( workItem.getName() );
         stream.writeInt( workItem.getState() );
 

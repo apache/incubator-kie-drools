@@ -56,7 +56,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testConditionalStart() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ConditionalStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        final List<Long> startedInstances = new ArrayList<>();
+        final List<String> startedInstances = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
 
             @Override
@@ -85,7 +85,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStartCycleLegacy.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -108,7 +108,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -137,7 +137,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -156,7 +156,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStartISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -175,7 +175,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStartDuration.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -197,7 +197,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStartCron.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -238,7 +238,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     public void testSignalStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -262,7 +262,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
         kContainer.getKieBase();
 
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 logger.info("{}", event.getProcessInstance().getId());
@@ -319,7 +319,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -340,7 +340,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -351,7 +351,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list.size()).isEqualTo(1);
         WorkItem workItem = workItemHandler.getWorkItem();
-        long processInstanceId = ((WorkItemImpl) workItem)
+        String processInstanceId = ((WorkItemImpl) workItem)
                 .getProcessInstanceId();
 
         ProcessInstance processInstance = ksession
@@ -373,7 +373,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -384,7 +384,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list.size()).isEqualTo(1);
         WorkItem workItem = workItemHandler.getWorkItem();
-        long processInstanceId = ((WorkItemImpl) workItem)
+        String processInstanceId = ((WorkItemImpl) workItem)
                 .getProcessInstanceId();
 
         ProcessInstance processInstance = ksession
@@ -409,7 +409,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -424,7 +424,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         List<WorkItem> workItems = workItemHandler.getWorkItems();
 
         for (WorkItem workItem : workItems) {
-            long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
+            String processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
 
             ProcessInstance processInstance = ksession
                     .getProcessInstance(processInstanceId);
@@ -445,7 +445,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
 
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
@@ -456,7 +456,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         assertThat(list.size()).isEqualTo(1);
         WorkItem workItem = workItemHandler.getWorkItem();
-        long processInstanceId = ((WorkItemImpl) workItem)
+        String processInstanceId = ((WorkItemImpl) workItem)
                 .getProcessInstanceId();
 
         ProcessInstance processInstance = ksession
@@ -481,7 +481,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
-        final List<Long> list = new ArrayList<Long>();
+        final List<String> list = new ArrayList<>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());

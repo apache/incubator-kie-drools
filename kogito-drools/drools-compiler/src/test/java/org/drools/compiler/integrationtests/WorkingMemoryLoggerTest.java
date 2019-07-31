@@ -15,6 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.assertj.core.api.Fail.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +27,6 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.core.WorkingMemory;
-import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.ActivationLogEvent;
 import org.drools.core.audit.event.LogEvent;
@@ -40,10 +43,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.utils.KieHelper;
 
-import static org.assertj.core.api.Fail.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
 
     @Test
@@ -52,7 +51,6 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
 
         for (int i = 0; i < 10000; i++) {
             final KieSession session = createKnowledgeSession(kbase);
-            final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger((WorkingMemory) session);
             session.fireAllRules();
             session.dispose();
         }
@@ -133,8 +131,6 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        final WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( (WorkingMemory) ksession );
-
         ksession.insert(new AnyType(1, "Standard"));
         ksession.insert(new AnyType(1, "Extended"));
         ksession.insert(new AnyType(1, "test"));
@@ -178,8 +174,8 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
     static public class EmtpyNodeInstance implements NodeInstance {
 
         @Override
-        public long getId() {
-            return 0;
+        public String getId() {
+            return "0";
         }
 
         @Override
@@ -231,8 +227,8 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
         }
 
         @Override
-        public long getId() {
-            return 1;
+        public String getId() {
+            return "1";
         }
 
 
@@ -248,10 +244,14 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
         }
 
         @Override
-        public long getParentProcessInstanceId() {
-            return -1;
+        public String getParentProcessInstanceId() {
+            return "0";
         }
-
+        
+        @Override
+        public String getRootProcessInstanceId() {
+            return "0";
+        }
 
         @Override
         public void signalEvent(String type, Object event) {
@@ -268,7 +268,7 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
         }
 
         @Override
-        public NodeInstance getNodeInstance(long nodeInstanceId) {
+        public NodeInstance getNodeInstance(String nodeInstanceId) {
             return null;
         }
 

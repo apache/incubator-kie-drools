@@ -52,21 +52,21 @@ public class UserTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE); 
         
         List<WorkItem> workItems = processInstance.workItems();
         assertEquals(1, workItems.size());
         assertEquals("FirstTask", workItems.get(0).getName());
         
         processInstance.completeWorkItem(workItems.get(0).getId(), null);
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         workItems = processInstance.workItems();
         assertEquals(1, workItems.size());
         assertEquals("SecondTask", workItems.get(0).getName());
         
         processInstance.completeWorkItem(workItems.get(0).getId(), null);
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
     
     

@@ -35,9 +35,9 @@ public class ProcessMarshallerWriteContext extends MarshallerWriteContext {
     public static final int STATE_ACTIVE = 1;
     public static final int STATE_COMPLETED = 2;
 
-    private Long processInstanceId;
-    private Long taskId;
-    private Long workItemId;
+    private String processInstanceId;
+    private String taskId;
+    private String workItemId;
     private int state;
     
 
@@ -50,27 +50,27 @@ public class ProcessMarshallerWriteContext extends MarshallerWriteContext {
         super(stream, kBase, wm, sinks, resolverStrategyFactory, env);
     }
     
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
     
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
     
-    public Long getTaskId() {
+    public String getTaskId() {
         return taskId;
     }
     
-    public void setTaskId(Long taskId) {
+    public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
     
-    public Long getWorkItemId() {
+    public String getWorkItemId() {
         return workItemId;
     }
     
-    public void setWorkItemId(Long workItemId) {
+    public void setWorkItemId(String workItemId) {
         this.workItemId = workItemId;
     }
     

@@ -30,7 +30,7 @@ import org.kie.api.definition.process.Process;
  */
 public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInstance, ContextInstanceContainer, ContextableInstance {
 
-    void setId(long id);
+    void setId(String id);
 
     void setProcess(Process process);
 
@@ -52,7 +52,9 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     
     String getOutcome();
     
-    void setParentProcessInstanceId(long parentId);
+    void setParentProcessInstanceId(String parentId);
+    
+    void setRootProcessInstanceId(String parentId);
     
     Map<String, Object> getMetaData();
 

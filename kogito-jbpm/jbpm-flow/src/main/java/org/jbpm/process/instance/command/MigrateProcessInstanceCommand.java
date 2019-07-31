@@ -45,8 +45,8 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, P
     private static final long serialVersionUID = 6L;
 
     @XmlElement
-    @XmlSchemaType(name="long")
-	private Long processInstanceId;
+    @XmlSchemaType(name="string")
+	private String processInstanceId;
 	
     @XmlElement
     @XmlSchemaType(name="string")
@@ -55,24 +55,24 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, P
     @XmlElement
     private Map<String, Long> nodeMapping;
 
-    public MigrateProcessInstanceCommand(Long processInstanceId, String processId) {
+    public MigrateProcessInstanceCommand(String processInstanceId, String processId) {
     	this.processInstanceId = processInstanceId;
     	this.processId = processId;
     }
     
-    public MigrateProcessInstanceCommand(Long processInstanceId, String processId, Map<String, Long> nodeMapping) {
+    public MigrateProcessInstanceCommand(String processInstanceId, String processId, Map<String, Long> nodeMapping) {
     	this.processInstanceId = processInstanceId;
     	this.processId = processId;
     	this.nodeMapping = nodeMapping;
     }
    
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
 		return processInstanceId;
 	}
 
     @Override
-	public void setProcessInstanceId(Long processInstanceId) {
+	public void setProcessInstanceId(String processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
 

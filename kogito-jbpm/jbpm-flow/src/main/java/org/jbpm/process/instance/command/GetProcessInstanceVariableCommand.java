@@ -35,20 +35,20 @@ public class GetProcessInstanceVariableCommand implements ExecutableCommand<Obje
     private static final long serialVersionUID = 6L;
 	
     @XmlAttribute(required=true)
-    @XmlSchemaType(name="long")
-    private Long processInstanceId;
+    @XmlSchemaType(name="string")
+    private String processInstanceId;
 
     @XmlAttribute(required=true)
     @XmlSchemaType(name="string")
     private String variableId;
 
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
     @Override
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 

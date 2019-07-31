@@ -156,7 +156,7 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         params.put("x", "");
         ProcessInstance processInstance = ksession.startProcess("CompensateParallelOrdered", params);
         List<WorkItem> workItems = workItemHandler.getWorkItems();
-        List<Long> workItemIds = new ArrayList<Long>();
+        List<String> workItemIds = new ArrayList<>();
         for( WorkItem workItem : workItems ) { 
            if( "Thr".equals(workItem.getParameter("NodeName")) )  {
                workItemIds.add(workItem.getId());
@@ -172,7 +172,7 @@ public class CompensationTest extends JbpmBpmn2TestCase {
                workItemIds.add(workItem.getId());
            }
         }
-        for( Long id : workItemIds ) { 
+        for( String id : workItemIds ) { 
             ksession.getWorkItemManager().completeWorkItem(id, null);
         }
         

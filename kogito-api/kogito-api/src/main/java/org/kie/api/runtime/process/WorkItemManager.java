@@ -34,7 +34,7 @@ public interface WorkItemManager {
      * @param id the id of the work item that has been completed
      * @param results the results related to this work item, or <code>null</code> if there are no results
      */
-    void completeWorkItem(long id,
+    void completeWorkItem(String id,
                           Map<String, Object> results);
 
     /**
@@ -43,7 +43,7 @@ public interface WorkItemManager {
      *
      * @param id the id of the work item that should be aborted
      */
-    void abortWorkItem(long id);
+    void abortWorkItem(String id);
 
     /**
      * Register the given handler for all work items of the given

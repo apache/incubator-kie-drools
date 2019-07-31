@@ -83,28 +83,28 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
 
-    private long workItemId = -1;
+    private String workItemId;
     private transient WorkItem workItem;
     
-    private long exceptionHandlingProcessInstanceId = -1;
+    private String exceptionHandlingProcessInstanceId;
 
     protected WorkItemNode getWorkItemNode() {
         return (WorkItemNode) getNode();
     }
 
     public WorkItem getWorkItem() {
-        if (workItem == null && workItemId >= 0) {
+        if (workItem == null && workItemId != null) {
             workItem = ((WorkItemManager) ((ProcessInstance) getProcessInstance())
                                                                                   .getKnowledgeRuntime().getWorkItemManager()).getWorkItem(workItemId);
         }
         return workItem;
     }
 
-    public long getWorkItemId() {
+    public String getWorkItemId() {
         return workItemId;
     }
 
-    public void internalSetWorkItemId(long workItemId) {
+    public void internalSetWorkItemId(String workItemId) {
         this.workItemId = workItemId;
     }
 
@@ -354,14 +354,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             workItem.getState() != WorkItem.ABORTED) {
             try {
                 ((WorkItemManager) ((ProcessInstance) getProcessInstance())
-                                                                           .getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItemId);
+                                                                           .getKnowledgeRuntime().getWorkItemManager()).internalAbortWorkItem(workItem.getId());
             } catch (WorkItemHandlerNotFoundException wihnfe) {
                 getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
                 throw wihnfe;
             }
         }
         
-        if (exceptionHandlingProcessInstanceId > -1) {
+        if (exceptionHandlingProcessInstanceId != null) {
             ProcessInstance processInstance = null;
             KieRuntime kruntime = getKieRuntimeForSubprocess();
         
@@ -409,7 +409,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public String[] getEventTypes() {
-        if (exceptionHandlingProcessInstanceId > -1) {
+        if (exceptionHandlingProcessInstanceId != null) {
             return new String[] {"workItemCompleted", "processInstanceCompleted:" + exceptionHandlingProcessInstanceId };
         } else {
             return new String[]{"workItemCompleted"};
@@ -417,14 +417,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public void workItemAborted(WorkItem workItem) {
-        if (workItemId == workItem.getId() || (workItemId == -1 && getWorkItem().getId() == workItem.getId())) {
+        if (workItem.getId().equals(workItemId) || (workItemId == null && getWorkItem().getId().equals(workItem.getId()))) {
             removeEventListeners();
             triggerCompleted(workItem);
         }
     }
 
     public void workItemCompleted(WorkItem workItem) {
-        if (workItemId == workItem.getId() || (workItemId == -1 && getWorkItem().getId() == workItem.getId())) {
+        if (workItem.getId().equals(workItemId) || (workItemId == null && getWorkItem().getId().equals(workItem.getId()))) {
             removeEventListeners();
             triggerCompleted(workItem);
         }
@@ -623,7 +623,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
 
     public void addExceptionProcessListener() {
-        if (exceptionHandlingProcessInstanceId > -1) {
+        if (exceptionHandlingProcessInstanceId != null) {
             getProcessInstance().addEventListener("processInstanceCompleted:" + exceptionHandlingProcessInstanceId, this, true);
         }
     }
@@ -633,11 +633,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         getProcessInstance().removeEventListener("processInstanceCompleted:" + exceptionHandlingProcessInstanceId, this, true);
     }
     
-    public long getExceptionHandlingProcessInstanceId() {
+    public String getExceptionHandlingProcessInstanceId() {
         return exceptionHandlingProcessInstanceId;
     }
     
-    public void internalSetProcessInstanceId(long processInstanceId) {
+    public void internalSetProcessInstanceId(String processInstanceId) {
         this.exceptionHandlingProcessInstanceId = processInstanceId;
     }
     

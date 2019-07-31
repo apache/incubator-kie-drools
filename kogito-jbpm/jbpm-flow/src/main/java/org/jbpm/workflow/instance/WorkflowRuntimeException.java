@@ -35,9 +35,9 @@ public class WorkflowRuntimeException extends RuntimeException {
     /** Generated serial version uid */
     private static final long serialVersionUID = 8210449548783940188L;
 
-    private long processInstanceId;
+    private String processInstanceId;
     private String processId;
-    private long nodeInstanceId;
+    private String nodeInstanceId;
     private long nodeId;
     private String nodeName;
     private String deploymentId;
@@ -85,14 +85,14 @@ public class WorkflowRuntimeException extends RuntimeException {
     /**
      * @return the processInstanceId
      */
-    public long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
     /**
      * @param processInstanceId the processInstanceId to set
      */
-    public void setProcessInstanceId(long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
@@ -113,14 +113,14 @@ public class WorkflowRuntimeException extends RuntimeException {
     /**
      * @return the nodeInstanceId
      */
-    public long getNodeInstanceId() {
+    public String getNodeInstanceId() {
         return nodeInstanceId;
     }
 
     /**
      * @param nodeInstanceId the nodeInstanceId to set
      */
-    public void setNodeInstanceId(long nodeInstanceId) {
+    public void setNodeInstanceId(String nodeInstanceId) {
         this.nodeInstanceId = nodeInstanceId;
     }
 

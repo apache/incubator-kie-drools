@@ -35,7 +35,7 @@ import org.kie.internal.command.RegistryContext;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
+public class GetWorkItemIdsCommand implements ExecutableCommand<List<String>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 1471981530823361925L;
@@ -51,10 +51,10 @@ public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
         this.outIdentifier = outIdentifier;
     }
 
-    public List<Long> execute(Context context) {
+    public List<String> execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         Set<WorkItem> workItems = ((WorkItemManager) ksession.getWorkItemManager()).getWorkItems();
-        List<Long> workItemIds = new ArrayList<Long>(workItems.size());
+        List<String> workItemIds = new ArrayList<String>(workItems.size());
         for(WorkItem workItem : workItems ) { 
             workItemIds.add(workItem.getId());
         }

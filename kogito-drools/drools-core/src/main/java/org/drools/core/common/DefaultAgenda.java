@@ -366,7 +366,7 @@ public class DefaultAgenda
                                (InternalAgendaGroup) agendaGroup );
     }
 
-    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId) {
+    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, String processInstanceId) {
         return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, processInstanceId);
     }
 
@@ -599,17 +599,17 @@ public class DefaultAgenda
 
     public void activateRuleFlowGroup(final String name) {
         InternalRuleFlowGroup group =  (InternalRuleFlowGroup) getRuleFlowGroup( name );
-        activateRuleFlowGroup( group, -1, null );
+        activateRuleFlowGroup( group, null, null );
     }
 
     public void activateRuleFlowGroup(final String name,
-                                      long processInstanceId,
+                                      String processInstanceId,
                                       String nodeInstanceId) {
         InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup( name );
         activateRuleFlowGroup( ruleFlowGroup, processInstanceId, nodeInstanceId );
     }
 
-    public void activateRuleFlowGroup(final InternalRuleFlowGroup group, long processInstanceId, String nodeInstanceId) {
+    public void activateRuleFlowGroup(final InternalRuleFlowGroup group, String processInstanceId, String nodeInstanceId) {
         this.workingMemory.getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( group, this.workingMemory );
         group.setActive( true );
         group.hasRuleFlowListener(true);
@@ -916,7 +916,7 @@ public class DefaultAgenda
 
     public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
-                                            long processInstanceId) {
+                                            String processInstanceId) {
         propagationList.flush();
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
@@ -948,7 +948,7 @@ public class DefaultAgenda
     }
 
     private boolean checkProcessInstance(Activation activation,
-                                         long processInstanceId) {
+                                         String processInstanceId) {
         final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() )
@@ -956,7 +956,7 @@ public class DefaultAgenda
                 Object value = declaration.getValue( workingMemory,
                                                      activation.getTuple().get( declaration ).getObject() );
                 if ( value instanceof ProcessInstance ) {
-                    return ((ProcessInstance) value).getId() == processInstanceId;
+                    return ((ProcessInstance) value).getId().equals(processInstanceId);
                 }
             }
         }

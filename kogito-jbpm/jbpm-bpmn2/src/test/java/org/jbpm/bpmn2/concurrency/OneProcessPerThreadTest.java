@@ -54,7 +54,7 @@ public class OneProcessPerThreadTest {
     
     @Test
     public void testMultiThreadProcessInstanceWorkItem() throws Exception {
-    	final ConcurrentHashMap<Long, Long> workItems = new ConcurrentHashMap<Long, Long>();
+    	final ConcurrentHashMap<String, Long> workItems = new ConcurrentHashMap<String, Long>();
     	
         try {
             final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

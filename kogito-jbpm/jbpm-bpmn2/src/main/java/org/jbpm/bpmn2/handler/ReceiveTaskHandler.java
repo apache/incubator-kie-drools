@@ -25,7 +25,7 @@ import org.kie.api.runtime.process.*;
 public class ReceiveTaskHandler implements WorkItemHandler {
     
     // TODO: use correlation instead of message id
-    private Map<String, Long> waiting = new HashMap<String, Long>();
+    private Map<String, String> waiting = new HashMap<String, String>();
     private ProcessRuntime ksession;
     
     public ReceiveTaskHandler(KieSession ksession) {
@@ -42,7 +42,7 @@ public class ReceiveTaskHandler implements WorkItemHandler {
     }
     
     public void messageReceived(String messageId, Object message) {
-        Long workItemId = waiting.get(messageId);
+        String workItemId = waiting.get(messageId);
         if (workItemId == null) {
             return;
         }

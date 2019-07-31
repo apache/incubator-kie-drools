@@ -63,7 +63,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
 
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
 
-    private long processInstanceId;
+    private String processInstanceId;
 
     protected SubProcessNode getSubProcessNode() {
         return (SubProcessNode) getNode();
@@ -92,6 +92,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
         ((ProcessInstanceImpl) legacyProcessInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
         ((ProcessInstanceImpl) legacyProcessInstance).setParentProcessInstanceId(getProcessInstance().getId());
+        ((ProcessInstanceImpl) legacyProcessInstance).setRootProcessInstanceId(getProcessInstance().getRootProcessInstanceId() == null ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
         ((ProcessInstanceImpl) legacyProcessInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
         
         processInstance.start();
@@ -123,11 +124,11 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         }
     }
 
-    public long getProcessInstanceId() {
+    public String getProcessInstanceId() {
     	return processInstanceId;
     }
 
-    public void internalSetProcessInstanceId(long processInstanceId) {
+    public void internalSetProcessInstanceId(String processInstanceId) {
     	this.processInstanceId = processInstanceId;
     }
 

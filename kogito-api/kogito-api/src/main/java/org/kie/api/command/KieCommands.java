@@ -99,7 +99,7 @@ public interface KieCommands {
     Command newSignalEvent(String type,
                            Object event);
 
-    Command newSignalEvent(long processInstanceId,
+    Command newSignalEvent(String processInstanceId,
                            String type,
                            Object event);
 
@@ -116,9 +116,9 @@ public interface KieCommands {
 
     Command newRegisterWorkItemHandlerCommand(WorkItemHandler handler, String workItemName);
 
-    Command newAbortWorkItem(long workItemId);
+    Command newAbortWorkItem(String workItemId);
 
-    Command newCompleteWorkItem(long workItemId,
+    Command newCompleteWorkItem(String workItemId,
                                 Map<String, Object> results);
 
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm);

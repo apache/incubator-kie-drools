@@ -169,7 +169,7 @@ public class ResourceGenerator {
                         .addSingleMemberAnnotation("Path", new StringLiteralExpr("/{id}/" + entry.getKey()))
                         .addSingleMemberAnnotation("Produces", "MediaType.APPLICATION_JSON");
                 
-                signalMethod.addAndGetParameter("Long", "id").addSingleMemberAnnotation("PathParam", new StringLiteralExpr("id"));
+                signalMethod.addAndGetParameter("String", "id").addSingleMemberAnnotation("PathParam", new StringLiteralExpr("id"));
                 
                 if (entry.getValue() != null) {
                     signalMethod.addSingleMemberAnnotation("Consumes", "MediaType.APPLICATION_JSON");                    

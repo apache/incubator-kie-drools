@@ -74,7 +74,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
 
-    private long processInstanceId;
+    private String processInstanceId;
 
     protected SubProcessNode getSubProcessNode() {
         return (SubProcessNode) getNode();
@@ -204,6 +204,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
 	    	((ProcessInstanceImpl) processInstance).setParentProcessInstanceId(getProcessInstance().getId());
+	    	((ProcessInstanceImpl) processInstance).setRootProcessInstanceId(getProcessInstance().getRootProcessInstanceId() == null ? getProcessInstance().getId() : getProcessInstance().getRootProcessInstanceId());
 	    	((ProcessInstanceImpl) processInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
 
 	    	kruntime.startProcessInstance(processInstance.getId());
@@ -233,11 +234,11 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         }
     }
 
-    public long getProcessInstanceId() {
+    public String getProcessInstanceId() {
     	return processInstanceId;
     }
 
-    public void internalSetProcessInstanceId(long processInstanceId) {
+    public void internalSetProcessInstanceId(String processInstanceId) {
     	this.processInstanceId = processInstanceId;
     }
 

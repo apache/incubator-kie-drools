@@ -16,6 +16,11 @@
 
 package org.jbpm.bpmn2;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,25 +37,16 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ErrorEventTest extends JbpmBpmn2TestCase {
 
@@ -81,7 +77,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessError() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessError.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -117,7 +113,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessErrorThrowOnTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessError.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -160,7 +156,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessErrorWithErrorCode() throws Exception {
         KieBase kbase = createKnowledgeBase("subprocess/EventSubprocessErrorHandlingWithErrorCode.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
@@ -188,7 +184,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testEventSubprocessErrorWithOutErrorCode() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/EventSubprocessErrorHandlingWithOutErrorCode.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
+        final List<String> executednodes = new ArrayList<>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override

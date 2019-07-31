@@ -69,7 +69,7 @@ public class ProtobufProcessMarshaller
                           new Comparator<org.kie.api.runtime.process.ProcessInstance>() {
                               public int compare(org.kie.api.runtime.process.ProcessInstance o1,
                                                  org.kie.api.runtime.process.ProcessInstance o2) {
-                                  return (int) (o1.getId() - o2.getId());
+                                  return (int) (o1.getId().compareTo(o2.getId()));
                               }
                           } );
 
@@ -101,7 +101,7 @@ public class ProtobufProcessMarshaller
                           new Comparator<WorkItem>() {
                               public int compare(WorkItem o1,
                                                  WorkItem o2) {
-                                  return (int) (o2.getId() - o1.getId());
+                                  return (int) (o2.getId().compareTo(o1.getId()));
                               }
                           } );
         for ( WorkItem workItem : workItems ) {

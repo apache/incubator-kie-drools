@@ -61,6 +61,7 @@ public class EndNodeInstanceTest extends AbstractBaseTest {
         process.addNode( endNode );
                 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();   
+        processInstance.setId("1223");
         processInstance.setState( ProcessInstance.STATE_ACTIVE );
         processInstance.setProcess( process );
         processInstance.setKnowledgeRuntime( (InternalKnowledgeRuntime) ksession );

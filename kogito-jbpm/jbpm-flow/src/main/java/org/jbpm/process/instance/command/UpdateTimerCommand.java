@@ -50,8 +50,8 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
     private static final Logger logger = LoggerFactory.getLogger(UpdateTimerCommand.class);
 
     @XmlElement
-    @XmlSchemaType(name = "long")
-    protected long processInstanceId;
+    @XmlSchemaType(name = "string")
+    protected String processInstanceId;
     
     @XmlElement
     @XmlSchemaType(name = "long")
@@ -73,15 +73,15 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
     @XmlSchemaType(name = "int")
     protected int repeatLimit;
 
-    public UpdateTimerCommand(long processInstanceId, String timerName, long delay) {
+    public UpdateTimerCommand(String processInstanceId, String timerName, long delay) {
         this(processInstanceId, timerName, delay, 0, 0);
     }
 
-    public UpdateTimerCommand(long processInstanceId, String timerName, long period, int repeatLimit) {
+    public UpdateTimerCommand(String processInstanceId, String timerName, long period, int repeatLimit) {
         this(processInstanceId, timerName, 0, period, repeatLimit);
     }
 
-    public UpdateTimerCommand(long processInstanceId, String timerName, long delay, long period, int repeatLimit) {
+    public UpdateTimerCommand(String processInstanceId, String timerName, long delay, long period, int repeatLimit) {
         this.processInstanceId = processInstanceId;
         this.timerName = timerName;
         this.timerId = -1;
@@ -90,15 +90,15 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
         this.repeatLimit = repeatLimit;
     }
     
-    public UpdateTimerCommand(long processInstanceId, long timerId, long delay) {
+    public UpdateTimerCommand(String processInstanceId, long timerId, long delay) {
         this(processInstanceId, timerId, delay, 0, 0);
     }
 
-    public UpdateTimerCommand(long processInstanceId, long timerId, long period, int repeatLimit) {
+    public UpdateTimerCommand(String processInstanceId, long timerId, long period, int repeatLimit) {
         this(processInstanceId, timerId, 0, period, repeatLimit);
     }
 
-    public UpdateTimerCommand(long processInstanceId, long timerId, long delay, long period, int repeatLimit) {
+    public UpdateTimerCommand(String processInstanceId, long timerId, long delay, long period, int repeatLimit) {
         this.processInstanceId = processInstanceId;
         this.timerId = timerId;
         this.delay = delay;
@@ -156,12 +156,12 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
     }
 
     @Override
-    public void setProcessInstanceId(Long procInstId) {
+    public void setProcessInstanceId(String procInstId) {
         this.processInstanceId = procInstId;
     }
 
     @Override
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 

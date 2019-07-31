@@ -35,7 +35,7 @@ import org.kie.api.runtime.process.NodeInstance;
 
 public class WorkflowProcessInstanceUpgrader {
 
-    public static void upgradeProcessInstance( KieRuntime kruntime, long processInstanceId, String processId,
+    public static void upgradeProcessInstance( KieRuntime kruntime, String processInstanceId, String processId,
             Map<String, Long> nodeMapping) {
         if (nodeMapping == null) {
             nodeMapping = new HashMap<String, Long>();
@@ -76,7 +76,7 @@ public class WorkflowProcessInstanceUpgrader {
      */
     public static void upgradeProcessInstanceByNodeNames(
             KieRuntime kruntime,
-            Long fromProcessId,
+            String fromProcessId,
             String toProcessId,
             Map<String, String> nodeNamesMapping) {
 

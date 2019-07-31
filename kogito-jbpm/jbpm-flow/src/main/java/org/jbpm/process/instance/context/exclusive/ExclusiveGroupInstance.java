@@ -28,7 +28,7 @@ public class ExclusiveGroupInstance extends AbstractContextInstance {
 
     private static final long serialVersionUID = 510l;
     
-    private Map<Long, NodeInstance> nodeInstances = new HashMap<Long, NodeInstance>();
+    private Map<String, NodeInstance> nodeInstances = new HashMap<String, NodeInstance>();
     
     public String getContextType() {
         return ExclusiveGroup.EXCLUSIVE_GROUP;

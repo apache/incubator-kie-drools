@@ -20,21 +20,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
-import org.kie.internal.process.CorrelationKey;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.ProcessInstanceManager;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.process.CorrelationKey;
 
 public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
-    private Map<Long, ProcessInstance> processInstances = new ConcurrentHashMap<Long, ProcessInstance>();
+    private Map<String, ProcessInstance> processInstances = new ConcurrentHashMap<String, ProcessInstance>();
     private Map<CorrelationKey, ProcessInstance> processInstancesByCorrelationKey = new ConcurrentHashMap<CorrelationKey, ProcessInstance>();
-    private AtomicLong processCounter = new AtomicLong(0);
+    
 
     public void addProcessInstance(ProcessInstance processInstance, CorrelationKey correlationKey) {
-        ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(processCounter.incrementAndGet());
+        ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(UUID.randomUUID().toString());
         internalAddProcessInstance(processInstance);
  
         if (correlationKey != null) {  
@@ -53,11 +53,11 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
         return Collections.unmodifiableCollection(processInstances.values());
     }
 
-    public ProcessInstance getProcessInstance(long id) {
+    public ProcessInstance getProcessInstance(String id) {
         return (ProcessInstance) processInstances.get(id);
     }
 
-    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+    public ProcessInstance getProcessInstance(String id, boolean readOnly) {
         return (ProcessInstance) processInstances.get(id);
     }
 
@@ -85,9 +85,5 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     @Override
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
         return processInstancesByCorrelationKey.get(correlationKey);
-    }
-    
-    public void setProcessCounter(AtomicLong processCounter) {
-        this.processCounter = processCounter;
     }
 }

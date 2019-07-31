@@ -556,7 +556,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                     ((InternalFactHandle) factHandle).getObject());
     }
 
-    public void abortProcessInstance(long id) {
+    public void abortProcessInstance(String id) {
         this.getProcessRuntime().abortProcessInstance(id);
     }
 
@@ -567,7 +567,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void signalEvent(String type,
                             Object event,
-                            long processInstanceId) {
+                            String processInstanceId) {
         this.getProcessRuntime().signalEvent( type, event, processInstanceId );
     }
 
@@ -1866,7 +1866,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getProcessRuntime().createProcessInstance( processId, parameters );
     }
 
-    public ProcessInstance startProcessInstance(long processInstanceId) {
+    public ProcessInstance startProcessInstance(String processInstanceId) {
         return getProcessRuntime().startProcessInstance( processInstanceId );
     }
 
@@ -1874,7 +1874,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getProcessRuntime().getProcessInstances();
     }
 
-    public ProcessInstance getProcessInstance(long processInstanceId) {
+    public ProcessInstance getProcessInstance(String processInstanceId) {
         return getProcessRuntime().getProcessInstance( processInstanceId );
     }
 
@@ -1897,7 +1897,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return getProcessRuntime().getProcessInstance( correlationKey );
     }
 
-    public ProcessInstance getProcessInstance(long processInstanceId, boolean readOnly) {
+    public ProcessInstance getProcessInstance(String processInstanceId, boolean readOnly) {
         return getProcessRuntime().getProcessInstance( processInstanceId, readOnly);
     }
 
@@ -2171,7 +2171,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         @Override
-        public ProcessInstance startProcessInstance( long processInstanceId ) {
+        public ProcessInstance startProcessInstance( String processInstanceId ) {
             throw new UnsupportedOperationException( );
         }
 
@@ -2181,7 +2181,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         @Override
-        public void signalEvent( String type, Object event, long processInstanceId ) {
+        public void signalEvent( String type, Object event, String processInstanceId ) {
             throw new UnsupportedOperationException( );
         }
 
@@ -2191,17 +2191,17 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         @Override
-        public ProcessInstance getProcessInstance( long processInstanceId ) {
+        public ProcessInstance getProcessInstance( String processInstanceId ) {
             throw new UnsupportedOperationException( );
         }
 
         @Override
-        public ProcessInstance getProcessInstance( long processInstanceId, boolean readonly ) {
+        public ProcessInstance getProcessInstance( String processInstanceId, boolean readonly ) {
             throw new UnsupportedOperationException( );
         }
 
         @Override
-        public void abortProcessInstance( long processInstanceId ) {
+        public void abortProcessInstance( String processInstanceId ) {
             throw new UnsupportedOperationException( );
         }
 

@@ -49,7 +49,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
         assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
@@ -73,7 +73,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
         assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
@@ -102,7 +102,7 @@ public class CallActivityTaskTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED); 
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED); 
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(4).containsKeys("x", "y", "list", "listOut");
         assertThat((List<?>)result.toMap().get("listOut")).isNotNull().hasSize(2);

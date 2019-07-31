@@ -28,27 +28,27 @@ public class RelativeUpdateTimerCommand extends UpdateTimerCommand {
 
     private static final long serialVersionUID = -8252686458877022330L;
 
-    public RelativeUpdateTimerCommand(long processInstanceId, String timerName, long delay) {
+    public RelativeUpdateTimerCommand(String processInstanceId, String timerName, long delay) {
         this(processInstanceId, timerName, delay, 0, 0);
     }
 
-    public RelativeUpdateTimerCommand(long processInstanceId, String timerName, long period, int repeatLimit) {
+    public RelativeUpdateTimerCommand(String processInstanceId, String timerName, long period, int repeatLimit) {
         this(processInstanceId, timerName, 0, period, repeatLimit);
     }
 
-    public RelativeUpdateTimerCommand(long processInstanceId, String timerName, long delay, long period, int repeatLimit) {
+    public RelativeUpdateTimerCommand(String processInstanceId, String timerName, long delay, long period, int repeatLimit) {
         super(processInstanceId, timerName, delay, period, repeatLimit);
     }
 
-    public RelativeUpdateTimerCommand(long processInstanceId, long timerId, long period, int repeatLimit) {
+    public RelativeUpdateTimerCommand(String processInstanceId, long timerId, long period, int repeatLimit) {
         super(processInstanceId, timerId, period, repeatLimit);
     }
 
-    public RelativeUpdateTimerCommand(long processInstanceId, long timerId, long delay, long period, int repeatLimit) {
+    public RelativeUpdateTimerCommand(String processInstanceId, long timerId, long delay, long period, int repeatLimit) {
         super(processInstanceId, timerId, delay, period, repeatLimit);
     }
 
-    public RelativeUpdateTimerCommand(long processInstanceId, long timerId, long delay) {
+    public RelativeUpdateTimerCommand(String processInstanceId, long timerId, long delay) {
         super(processInstanceId, timerId, delay);
     }
 

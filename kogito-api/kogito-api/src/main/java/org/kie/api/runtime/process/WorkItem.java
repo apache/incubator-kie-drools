@@ -52,7 +52,7 @@ public interface WorkItem {
      * The unique id of this work item
      * @return the id of this work item
      */
-    long getId();
+    String getId();
 
     /**
      * The name of the work item.  This represents the type
@@ -111,6 +111,6 @@ public interface WorkItem {
      *
      * @return the id of the related process instance
      */
-    long getProcessInstanceId();
+    String getProcessInstanceId();
 
 }

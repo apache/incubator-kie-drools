@@ -151,7 +151,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         return createProcessInstance(processId, null, parameters);
     }
 
-    public ProcessInstance startProcessInstance(long processInstanceId, String trigger) {
+    public ProcessInstance startProcessInstance(String processInstanceId, String trigger) {
         try {
             runtimeContext.startOperation();
 
@@ -166,7 +166,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         }
     }
 
-    public ProcessInstance startProcessInstance(long processInstanceId) {
+    public ProcessInstance startProcessInstance(String processInstanceId) {
         return startProcessInstance(processInstanceId, null);
     }
 
@@ -232,11 +232,11 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         return processInstanceManager.getProcessInstances();
     }
 
-    public ProcessInstance getProcessInstance(long id) {
+    public ProcessInstance getProcessInstance(String id) {
         return getProcessInstance(id, false);
     }
 
-    public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+    public ProcessInstance getProcessInstance(String id, boolean readOnly) {
         return processInstanceManager.getProcessInstance(id, readOnly);
     }
 
@@ -447,7 +447,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         }
     }
 
-    public void abortProcessInstance(long processInstanceId) {
+    public void abortProcessInstance(String processInstanceId) {
         ProcessInstance processInstance = getProcessInstance(processInstanceId);
         if (processInstance == null) {
             throw new IllegalArgumentException("Could not find process instance for id " + processInstanceId);
@@ -468,7 +468,7 @@ public class LightProcessRuntime implements InternalProcessRuntime {
         signalManager.signalEvent(type, event);
     }
 
-    public void signalEvent(String type, Object event, long processInstanceId) {
+    public void signalEvent(String type, Object event, String processInstanceId) {
         signalManager.signalEvent(processInstanceId, type, event);
     }
 

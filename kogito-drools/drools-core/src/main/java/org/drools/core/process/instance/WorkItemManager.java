@@ -25,20 +25,20 @@ public interface WorkItemManager extends org.kie.api.runtime.process.WorkItemMan
 
     void internalAddWorkItem(WorkItem workItem);
 
-    void internalAbortWorkItem(long id);
+    void internalAbortWorkItem(String id);
     
     Set<WorkItem> getWorkItems();
 
-    WorkItem getWorkItem(long id);
+    WorkItem getWorkItem(String id);
 
     void clear();
     
     public void signalEvent(String type, Object event);
     
-    public void signalEvent(String type, Object event, long processInstanceId);
+    public void signalEvent(String type, Object event, String processInstanceId);
 
     void dispose();
     
-    void retryWorkItem( Long workItemID, Map<String, Object> params ) ;
+    void retryWorkItem( String workItemID, Map<String, Object> params ) ;
 
 }

@@ -45,17 +45,17 @@ public class SignalEventTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         List<WorkItem> workItems = processInstance.workItems();
         assertThat(workItems).hasSize(1);
         
         processInstance.completeWorkItem(workItems.get(0).getId(), null);
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         processInstance.send(Sig.of("MyMessage", "test"));
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKey("x");
@@ -77,11 +77,11 @@ public class SignalEventTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
    
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         processInstance.send(Sig.of("MySignal", "test"));
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("x");
@@ -106,7 +106,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         // since unit of work is not ended yet there are no instance added
         assertThat(p.instances().values()).hasSize(0);
@@ -120,7 +120,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         assertThat(workItems).hasSize(1);
         
         processInstance.completeWorkItem(workItems.get(0).getId(), null);
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         
         uow.end();
         
@@ -128,7 +128,7 @@ public class SignalEventTest extends AbstractCodegenTest {
         uow.start();
         processInstance.send(Sig.of("MyMessage", "test"));
         
-        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         
         Model result = (Model)processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKey("x");

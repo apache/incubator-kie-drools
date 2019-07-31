@@ -101,7 +101,7 @@ public class PrometheusProcessEventListener extends DefaultProcessEventListener 
         numberOfProcessInstancesCompleted.labels(identifier, processInstance.getProcessId(), valueOf(processInstance.getState())).inc();
 
         if (processInstance.getStartDate() != null) {
-            final double duration = millisToSeconds(System.currentTimeMillis() - processInstance.getStartDate().getTime());
+            final double duration = millisToSeconds(processInstance.getEndDate().getTime() - processInstance.getStartDate().getTime());
             processInstancesDuration.labels(identifier, processInstance.getProcessId()).observe(duration);
             LOGGER.debug("Process Instance duration: {}s", duration);
         }
@@ -115,7 +115,7 @@ public class PrometheusProcessEventListener extends DefaultProcessEventListener 
             WorkItemNodeInstance wi = (WorkItemNodeInstance) nodeInstance;
             if (wi.getTriggerTime() != null) {
                 final String name = (String)wi.getWorkItem().getParameters().getOrDefault("TaskName", wi.getWorkItem().getName());
-                final double duration = millisToSeconds(System.currentTimeMillis() - wi.getTriggerTime().getTime());
+                final double duration = millisToSeconds(wi.getLeaveTime().getTime() - wi.getTriggerTime().getTime());
                 workItemsDuration.labels(name).observe(duration);
                 LOGGER.debug("Work Item {}, duration: {}s", name, duration);
             }

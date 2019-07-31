@@ -136,8 +136,8 @@ public class InputMarshaller {
         ObjectInputStream stream = context.stream;
 
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setId( stream.readLong() );
-        workItem.setProcessInstanceId( stream.readLong() );
+        workItem.setId( stream.readUTF() );
+        workItem.setProcessInstanceId( stream.readUTF() );
         workItem.setName( stream.readUTF() );
         workItem.setState( stream.readInt() );
 

@@ -19,7 +19,7 @@ import java.util.Map;
 
 public interface WorkItem {
 
-    Long getId();
+    String getId();
 
     String getName();
     

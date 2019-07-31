@@ -49,7 +49,7 @@ public class TimerManagerMarshallers {
 
             TimerService ts = inCtx.wm.getTimerService();
 
-            long processInstanceId = ptimer.getTimer().getProcessInstanceId();
+            String processInstanceId = ptimer.getTimer().getProcessInstanceId();
 
             Trigger trigger = ProtobufInputMarshaller.readTrigger(inCtx, ptimer.getTrigger());
 

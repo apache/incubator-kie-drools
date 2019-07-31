@@ -22,7 +22,7 @@ public interface SignalManager {
 	
 	void signalEvent(String type, Object event);
 	
-	void signalEvent(long id, String type, Object event);
+	void signalEvent(String id, String type, Object event);
 	
 	void addEventListener(String type, EventListener eventListener);
 	

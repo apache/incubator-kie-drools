@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.time.SessionClock;
 import org.kie.services.time.Job;
 import org.kie.services.time.JobContext;
 import org.kie.services.time.JobHandle;
@@ -30,10 +32,6 @@ import org.kie.services.time.TimerService;
 import org.kie.services.time.Trigger;
 import org.kie.services.time.impl.CronTrigger;
 import org.kie.services.time.impl.IntervalTrigger;
-//import org.jbpm.process.instance.ProcessInstance;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.time.SessionClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +91,7 @@ public class TimerManager {
             runtime.startOperation();
 
             timer.setId(++timerId);
-            timer.setProcessInstanceId(-1l);
+            timer.setProcessInstanceId(null);
             timer.setSessionId(runtime.getIdentifier());
             timer.setActivated(new Date());
 
@@ -203,7 +201,7 @@ public class TimerManager {
 
             ProcessJobContext ctx = (ProcessJobContext) c;
 
-            Long processInstanceId = ctx.getProcessInstanceId();
+            String processInstanceId = ctx.getProcessInstanceId();
             TimerManagerRuntime runtime = ctx.getKnowledgeRuntime();
             try {
                 runtime.startOperation();
@@ -287,7 +285,7 @@ public class TimerManager {
     public static class ProcessJobContext implements JobContext {
         private static final long serialVersionUID = 476843895176221627L;
 
-        private Long processInstanceId;
+        private String processInstanceId;
         private transient TimerManagerRuntime runtime;
         private TimerInstance timer;
         private Trigger trigger;
@@ -297,7 +295,7 @@ public class TimerManager {
         
         private boolean newTimer;
 
-        public ProcessJobContext(final TimerInstance timer, final Trigger trigger, final Long processInstanceId,
+        public ProcessJobContext(final TimerInstance timer, final Trigger trigger, final String processInstanceId,
                 final TimerManagerRuntime runtime) {
             this.timer = timer;
             this.trigger = trigger;
@@ -307,7 +305,7 @@ public class TimerManager {
             this.newTimer = true;
         }
         
-        public ProcessJobContext(final TimerInstance timer, final Trigger trigger, final Long processInstanceId,
+        public ProcessJobContext(final TimerInstance timer, final Trigger trigger, final String processInstanceId,
                                  final TimerManagerRuntime runtime, boolean newTimer) {
             this.timer = timer;
             this.trigger = trigger;
@@ -317,7 +315,7 @@ public class TimerManager {
             this.newTimer = newTimer;
         }
 
-        public Long getProcessInstanceId() {
+        public String getProcessInstanceId() {
             return processInstanceId;
         }
 

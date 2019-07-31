@@ -20,6 +20,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class MockNodeInstance extends NodeInstanceImpl {
             throw new IllegalArgumentException(
                 "Trigger type is null!");
         }
+        triggerTime = new Date();
         List<NodeInstance> list = triggers.get(type);
         if (list == null) {
             list = new ArrayList<NodeInstance>();

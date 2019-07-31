@@ -115,15 +115,15 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bais);
-        long serializedProcessInstanceId = ois.readLong();
-        assertTrue(processInstance.getId() == serializedProcessInstanceId,
+        String serializedProcessInstanceId = ois.readUTF();
+        assertTrue(processInstance.getId().equals(serializedProcessInstanceId),
                    "Expected " + processInstance.getId() + ", not " + serializedProcessInstanceId);
 
         // Test other strategy stuff
         ProcessInstanceManager pim = ProcessInstanceResolverStrategy.retrieveProcessInstanceManager(writerContext);
         assertNotNull(pim);
         assertNotNull(ProcessInstanceResolverStrategy.retrieveKnowledgeRuntime(writerContext));
-        assertTrue(processInstance == pim.getProcessInstance(serializedProcessInstanceId));
+        assertTrue(processInstance.equals(pim.getProcessInstance(serializedProcessInstanceId)));
         
         // Test strategy.read
         bais = new ByteArrayInputStream(bytes);
@@ -141,10 +141,10 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         assertTrue(processInstance == procInstObject);
     }
 
-    private int calculateNumBytesForLong(Long longVal) throws Exception {
+    private int calculateNumBytesForLong(String longVal) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeLong(longVal);
+        oos.writeUTF(longVal);
         baos.close();
         oos.close();
         return baos.toByteArray().length;

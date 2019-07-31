@@ -37,12 +37,12 @@ extend org.drools.core.marshalling.ProcessData {
 message ProcessInstance {
     optional string process_type = 1;
 
-    optional int64 id = 2;
+    optional string id = 2;
     optional string process_id = 3;
     optional int32 state = 4;
     optional int64 node_instance_counter = 5;
     optional string process_xml = 11;
-    optional int64 parent_process_instance_id = 12;
+    optional string parent_process_instance_id = 12;
     optional string description = 15;
     optional bool signal_completion = 16 [default = true];
     optional string deploymentId = 17;
@@ -50,6 +50,8 @@ message ProcessInstance {
     optional int64 sla_timer_id = 19;
     optional int64 sla_due_date = 20;
     optional int32 sla_compliance = 21;
+    optional string root_process_instance_id = 22;
+    optional int64 start_date = 23;
 
     repeated SwimlaneContextInstance swimlane_context = 6;
     repeated NodeInstance node_instance = 7;
@@ -64,17 +66,18 @@ message ProcessInstance {
     }
 
     message NodeInstance {
-        optional int64 id = 1;
+        optional string id = 1;
         optional int64 node_id = 2;
         optional NodeInstanceContent content = 4;
         optional int32 level = 5;
         optional int64 sla_timer_id = 6;
         optional int64 sla_due_date = 7;
         optional int32 sla_compliance = 8;
+        optional int64 trigger_date = 9;
     }
 
     message ExclusiveGroupInstance {
-        repeated int64 group_node_instance_id = 1;
+        repeated string group_node_instance_id = 1;
     }
 
     message NodeInstanceContent {
@@ -103,19 +106,19 @@ message ProcessInstance {
             }
         }
         message HumanTaskNode {
-            optional int64 work_item_id = 1;
+            optional string work_item_id = 1;
             repeated int64 timer_instance_id = 2;
-            optional int64 error_handling_process_instance_id = 3;
+            optional string error_handling_process_instance_id = 3;
             optional WorkItem workitem = 4;
         }
         message WorkItemNode {
-            optional int64 work_item_id = 1;
+            optional string work_item_id = 1;
             repeated int64 timer_instance_id = 2;
-            optional int64 error_handling_process_instance_id = 3;
+            optional string error_handling_process_instance_id = 3;
             optional WorkItem workitem = 4;
         }
         message SubProcessNode {
-            optional int64 process_instance_id = 1;
+            optional string process_instance_id = 1;
             repeated int64 timer_instance_id = 2;
         }
         message MilestoneNode { repeated int64 timer_instance_id = 1; }
@@ -178,15 +181,15 @@ extend org.drools.core.marshalling.Timers.Timer {
 }
 
 message WorkItem {
-    optional int64 id = 1;
-    optional int64 process_instances_id = 2;
+    optional string id = 1;
+    optional string process_instances_id = 2;
     optional string name = 3;
     optional int32 state = 4;
 
     repeated Variable variable = 5;
 
     optional string deployment_id = 6;
-    optional int64 node_instance_id = 7;
+    optional string node_instance_id = 7;
     optional int64 node_id = 8;
 }
 
@@ -199,7 +202,7 @@ message ProcessTimer {
         optional int64 timer_id = 2;
         optional int64 delay = 3;
         optional int64 period = 4;
-        optional int64 process_instance_id = 5;
+        optional string process_instance_id = 5;
         optional int64 activated_time = 6;
         optional int64 last_triggered = 7;
         optional int32 DEPRECATED_sessionId = 8;
