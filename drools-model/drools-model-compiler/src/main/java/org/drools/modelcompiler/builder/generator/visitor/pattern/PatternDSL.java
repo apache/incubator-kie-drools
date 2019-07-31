@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.expr.BinaryExpr;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
@@ -35,6 +36,7 @@ import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getPatternListenedProperties;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public abstract class PatternDSL implements DSLNode {
 
@@ -124,14 +126,13 @@ public abstract class PatternDSL implements DSLNode {
             DrlxParseResult drlxParseResult = constraintParser.drlxParse(patternType, patternIdentifier, constraintExpression, isPositional);
 
             String expression = constraintExpression.getExpression();
-            if (drlxParseResult.isSuccess() && (( DrlxParseSuccess ) drlxParseResult).isRequiresSplit()) {
-                int splitPos = expression.indexOf( "&&" );
-                String expr1 = expression.substring( 0, splitPos ).trim();
-                String expr2 = expr1.substring( 0, firstNonIdentifierPos( expr1 ) ) + " " + expression.substring( splitPos+2 ).trim();
-
+            if (drlxParseResult.isSuccess() && (( DrlxParseSuccess ) drlxParseResult).isRequiresSplit() && (( DrlxParseSuccess ) drlxParseResult).getExpr().isBinaryExpr()) {
+                BinaryExpr expr = ((DrlxParseSuccess) drlxParseResult).getExpr().asBinaryExpr();
+                String expr1 = printConstraint(expr.asBinaryExpr().getLeft());
                 DrlxParseResult drlxParseResult1 = constraintParser.drlxParse(patternType, patternIdentifier, expr1, isPositional);
                 patternConstraintParseResults.add(new PatternConstraintParseResult(expr1, patternIdentifier, drlxParseResult1));
 
+                String expr2 = printConstraint(expr.asBinaryExpr().getRight());
                 DrlxParseResult drlxParseResult2 = constraintParser.drlxParse(patternType, patternIdentifier, expr2, isPositional);
                 patternConstraintParseResults.add(new PatternConstraintParseResult(expr2, patternIdentifier, drlxParseResult2));
             } else {

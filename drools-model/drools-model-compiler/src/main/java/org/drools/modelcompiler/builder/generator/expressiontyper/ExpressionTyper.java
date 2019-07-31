@@ -98,7 +98,7 @@ public class ExpressionTyper {
     private final List<Expression> prefixExpressions;
 
     private static final Logger logger          = LoggerFactory.getLogger(ExpressionTyper.class);
-
+    private static final String UNDERSCORE_THIS = "_this";
 
     public ExpressionTyper(RuleContext ruleContext, Class<?> patternType, String bindingId, boolean isPositional) {
         this(ruleContext, patternType, bindingId, isPositional, new ExpressionTyperContext());
@@ -176,15 +176,15 @@ public class ExpressionTyper {
         } else if (drlxExpr instanceof LiteralExpr) {
             return of(new TypedExpression(drlxExpr, getLiteralExpressionType( ( LiteralExpr ) drlxExpr )));
 
-        } else if (drlxExpr instanceof ThisExpr) {
-            return of(new TypedExpression(new NameExpr(THIS_PLACEHOLDER), patternType));
+        } else if (drlxExpr instanceof ThisExpr || (drlxExpr instanceof NameExpr && UNDERSCORE_THIS.equals(printConstraint(drlxExpr)))) {
+            return of(new TypedExpression(new NameExpr(UNDERSCORE_THIS), patternType));
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
             toTypedExpressionRec(castExpr.getExpression());
             return of(new TypedExpression(castExpr, getClassFromContext(ruleContext.getTypeResolver(), castExpr.getType().asString())));
 
-        } else if (drlxExpr instanceof DrlNameExpr || drlxExpr instanceof NameExpr) {
+        } else if (drlxExpr instanceof NameExpr) {
             return nameExpr(printConstraint(drlxExpr), typeCursor);
         } else if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr
                 || drlxExpr instanceof NullSafeFieldAccessExpr || drlxExpr instanceof  NullSafeMethodCallExpr) {
@@ -294,7 +294,7 @@ public class ExpressionTyper {
         TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
         if (expression != null) {
             context.addReactOnProperties(name);
-            Expression plusThis = prepend(new NameExpr(THIS_PLACEHOLDER), expression.getExpression());
+            Expression plusThis = prepend(new NameExpr(UNDERSCORE_THIS), expression.getExpression());
             return of(new TypedExpression(plusThis, expression.getType(), name));
         }
 
