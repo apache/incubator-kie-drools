@@ -21,7 +21,7 @@
                 </semantic:inputExpression>
                 <!-- omit copy-paste of inputValues as the type 'results' is a collection. -->
             </semantic:input>
-            <semantic:output id="_8367f449-62ec-4980-8dc3-caff0356678c" triso:allowNull="true"/>
+            <semantic:output id="_8367f449-62ec-4980-8dc3-caff0356678c" triso:allowNull="true" />
             <semantic:annotation name="Description"/>
             <semantic:rule id="_15525282-9fd6-4ef9-a4d6-13f930dd674e">
                 <semantic:inputEntry id="_d49da001-52fb-40d2-8e7a-61a6a264b1cf">
@@ -29,6 +29,35 @@
                 </semantic:inputEntry>
                 <semantic:outputEntry id="_d74245fc-c04a-4586-bbc8-8e8e0fc1157b">
                     <semantic:text>"Contains r1"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+    <semantic:decision id="_138e8c68-685a-4241-a82b-a9b9d9a1db6b" name="D5">
+        <semantic:variable name="D5" id="_52bf6943-cb88-435c-8bdc-436826c08117" typeRef="results"/>
+        <semantic:informationRequirement id="_288e0927-651a-4d01-94ee-60e29ca40618">
+            <semantic:requiredInput href="#_8a4ecfe7-4ad7-4e5f-a420-8e4587843ba4"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_5944340c-947d-49e2-8890-ce3fea94d9dd" hitPolicy="UNIQUE" outputLabel="D5" typeRef="results" triso:expressionId="_befa441f-be57-478f-b1d6-3a5b9d717e17">
+            <semantic:input id="_b16f06ff-bcec-49f3-be67-045390959f05">
+                <semantic:inputExpression typeRef="results">
+                    <semantic:text>test</semantic:text>
+                </semantic:inputExpression>
+                <!-- omit copy-paste of inputValues as the type 'results' is a collection. -->
+            </semantic:input>
+            <semantic:output id="_108babeb-2d5d-41a0-ba52-7e64e5dfeb50" triso:allowNull="true">
+                <!-- omit copy-paste of inputValues as the type 'results' is a collection. -->
+            </semantic:output>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_673630df-574d-4470-a37f-5ea721f592ef">
+                <semantic:inputEntry id="_f421c08e-4f17-4695-bfce-e03ec6d2df25">
+                    <semantic:text>list contains(?, "r1")</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_91ad3430-1509-41d1-9c60-cb1a93d59dd4">
+                    <semantic:text>["r1", "r2"]</semantic:text>
                 </semantic:outputEntry>
                 <semantic:annotationEntry>
                     <semantic:text/>

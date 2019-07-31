@@ -2538,7 +2538,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("D4"), is("Contains r1"));
-
+        assertThat((List<?>) result.get("D5"), contains(is("r1"), is("r2")));
     }
 }
 

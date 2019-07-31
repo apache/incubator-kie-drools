@@ -572,9 +572,7 @@ public class DMNEvaluatorCompiler {
                 QName resolvedInputExpressionTypeRef = DMNCompilerImpl.getNamespaceAndName(ic.getInputExpression(), model.getImportAliasesForNS(), inputExpressionTypeRef, model.getNamespace());
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolvedInputExpressionTypeRef.getNamespaceURI(), resolvedInputExpressionTypeRef.getLocalPart());
                 inputType = typeRef;
-                if (!inputType.isCollection()) {
-                    inputValues = typeRef.getAllowedValuesFEEL();
-                }
+                inputValues = typeRef.getAllowedValuesFEEL();
             }
             CompiledExpression compiledInput = ctx.getFeelHelper().compileFeelExpression(
                     ctx,
@@ -585,7 +583,7 @@ public class DMNEvaluatorCompiler {
                     inputExpressionText,
                     dtName,
                     index );
-            inputs.add( new DTInputClause(inputExpressionText, inputValuesText, inputValues, compiledInput ) );
+            inputs.add(new DTInputClause(inputExpressionText, inputValuesText, inputValues, compiledInput, inputType.isCollection()));
             inputTypes.add(inputType);
         }
         java.util.List<DTOutputClause> outputs = new ArrayList<>();

@@ -216,7 +216,14 @@ public class DecisionTableImpl implements DecisionTable {
             // if a list of values is defined, check the the parameter matches the value
             if ( input.getInputValues() != null && ! input.getInputValues().isEmpty() ) {
                 final Object parameter = params[i];
-                boolean satisfies = input.getInputValues().stream().map( ut -> ut.apply( ctx, parameter ) ).filter( Boolean::booleanValue ).findAny().orElse( false );
+                boolean satisfies = true;
+                if (input.isCollection() && parameter instanceof Collection) {
+                    for (Object parameterItem : (Collection<?>) parameter) {
+                        satisfies &= input.getInputValues().stream().map(ut -> ut.apply(ctx, parameterItem)).filter(x -> x != null && x).findAny().orElse(false);
+                    }
+                } else {
+                    satisfies = input.getInputValues().stream().map(ut -> ut.apply(ctx, parameter)).filter(x -> x != null && x).findAny().orElse(false);
+                }
 
                 if ( !satisfies ) {
                     String values = input.getInputValuesText();
