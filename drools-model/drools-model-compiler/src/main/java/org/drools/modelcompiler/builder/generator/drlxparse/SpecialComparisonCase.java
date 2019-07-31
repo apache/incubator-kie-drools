@@ -31,7 +31,7 @@ abstract class SpecialComparisonCase {
         return "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
     }
 
-    abstract MethodCallExpr createCompareMethod(BinaryExpr.Operator operator);
+    abstract ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator);
 
     static SpecialComparisonCase specialComparisonFactory(TypedExpression left, TypedExpression right) {
         if (left.getType() == String.class && right.getType() == String.class) {
@@ -57,6 +57,14 @@ abstract class SpecialComparisonCase {
             return Optional.empty();
         }
     }
+
+    public TypedExpression getLeft() {
+        return left;
+    }
+
+    public TypedExpression getRight() {
+        return right;
+    }
 }
 
 class StringAsNumber extends SpecialComparisonCase {
@@ -66,12 +74,12 @@ class StringAsNumber extends SpecialComparisonCase {
     }
 
     @Override
-    public MethodCallExpr createCompareMethod(BinaryExpr.Operator operator) {
+    public ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator) {
         String methodName = getMethodName(operator) + "StringsAsNumbers";
         MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
         compareMethod.addArgument(uncastExpr(left.getExpression()));
         compareMethod.addArgument(uncastExpr(right.getExpression()));
-        return compareMethod;
+        return new ConstraintParser.SpecialComparisonResult(compareMethod, left, right);
     }
 }
 
@@ -82,12 +90,12 @@ class NumberComparisonWithoutCast extends SpecialComparisonCase {
     }
 
     @Override
-    public MethodCallExpr createCompareMethod(BinaryExpr.Operator operator) {
+    public ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator) {
         String methodName = getMethodName(operator) + "Numbers";
         MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
         compareMethod.addArgument(uncastExpr(left.getExpression()));
         compareMethod.addArgument(uncastExpr(right.getExpression()));
-        return compareMethod;
+        return new ConstraintParser.SpecialComparisonResult(compareMethod, left, right);
     }
 }
 
@@ -103,18 +111,30 @@ class NumberComparisonWithCast extends SpecialComparisonCase {
     }
 
     @Override
-    public MethodCallExpr createCompareMethod(BinaryExpr.Operator operator) {
+    public ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator) {
         String methodName = getMethodName(operator) + "Numbers";
         MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
 
         ClassOrInterfaceType numberClass = toClassOrInterfaceType(Number.class);
 
-        compareMethod.addArgument(leftTypeCast.<Expression>map(t -> new CastExpr(numberClass, left.getExpression()))
-                                          .orElse(left.getExpression()));
-        compareMethod.addArgument(rightTypeCast.<Expression>map(t -> new CastExpr(numberClass, right.getExpression()))
+        if(leftTypeCast.isPresent()) {
+            CastExpr castExpr = new CastExpr(numberClass, left.getExpression());
+            compareMethod.addArgument(castExpr);
+            this.left = right.cloneWithNewExpression(castExpr);
+        } else {
+            compareMethod.addArgument(left.getExpression());
+        }
 
-                                          .orElse(right.getExpression()));
-        return compareMethod;
+
+        if(rightTypeCast.isPresent()) {
+            CastExpr castExpr = new CastExpr(numberClass, right.getExpression());
+            this.right = right.cloneWithNewExpression(castExpr);
+            compareMethod.addArgument(castExpr);
+        } else {
+            compareMethod.addArgument(right.getExpression());
+        }
+
+        return new ConstraintParser.SpecialComparisonResult(compareMethod, this.left, this.right);
     }
 }
 
@@ -125,11 +145,11 @@ class PlainEvaluation extends SpecialComparisonCase {
     }
 
     @Override
-    public MethodCallExpr createCompareMethod(BinaryExpr.Operator operator) {
+    public ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator) {
         String methodName = getMethodName(operator);
         MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
         compareMethod.addArgument(uncastExpr(left.getExpression()));
         compareMethod.addArgument(uncastExpr(right.getExpression()));
-        return compareMethod;
+        return new ConstraintParser.SpecialComparisonResult(compareMethod, left, right);
     }
 }

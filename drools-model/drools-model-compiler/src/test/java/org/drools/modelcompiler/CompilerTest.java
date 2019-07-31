@@ -1890,7 +1890,6 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
-    @Ignore
     public void testMapAbbreviatedComparison() {
         final String drl1 =
                 "import java.util.Map;\n" +
