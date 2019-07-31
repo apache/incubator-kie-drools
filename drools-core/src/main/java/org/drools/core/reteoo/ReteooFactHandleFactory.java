@@ -24,10 +24,8 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
-import org.kie.api.runtime.rule.EntryPoint;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory implements Serializable {
 
@@ -37,7 +35,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
         super();
     }
 
-    public ReteooFactHandleFactory(int id,
+    public ReteooFactHandleFactory(long id,
                                    long counter) {
         super( id,
                counter );
@@ -46,7 +44,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
     /* (non-Javadoc)
      * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public InternalFactHandle newFactHandle( final int id,
+    public InternalFactHandle newFactHandle( final long id,
                                              final Object object,
                                              final long recency,
                                              final ObjectTypeConf conf,
@@ -89,7 +87,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
         return new ReteooFactHandleFactory();
     }
 
-    public FactHandleFactory newInstance(int id,
+    public FactHandleFactory newInstance(long id,
                                          long counter) {
         return new ReteooFactHandleFactory( id,
                                             counter );

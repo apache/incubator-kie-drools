@@ -607,7 +607,7 @@ public class ObjectTypeNode extends ObjectSource
             // ExpireJob, no state
             ExpireJobContext ejobCtx = (ExpireJobContext) jobCtx;
             WorkingMemoryReteExpireAction expireAction = ejobCtx.getExpireAction();
-            outputCtx.writeInt( expireAction.getFactHandle().getId() );
+            outputCtx.writeLong( expireAction.getFactHandle().getId() );
 
             DefaultJobHandle jobHandle = (DefaultJobHandle) ejobCtx.getJobHandle();
             PointInTimeTrigger trigger = (PointInTimeTrigger) jobHandle.getTimerJobInstance().getTrigger();

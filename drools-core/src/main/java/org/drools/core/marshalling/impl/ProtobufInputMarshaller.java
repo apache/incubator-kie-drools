@@ -16,6 +16,20 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.ActivationsFilter;
@@ -63,20 +77,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An input marshaller that uses protobuf. 
@@ -369,7 +369,7 @@ public class ProtobufInputMarshaller {
     private static void readInitialFactHandle(MarshallerReaderContext context,
                                               RuleData _session,
                                               List<PropagationContext> pctxs) {
-        int ifhId = context.wm.getInitialFactHandle().getId();
+        long ifhId = context.wm.getInitialFactHandle().getId();
         context.handles.put( ifhId,
                              context.wm.getInitialFactHandle() );
 
@@ -617,8 +617,8 @@ public class ProtobufInputMarshaller {
                                      pctxs );
             }
 
-            for ( Integer factHandleId : _key.getOtherHandleList() ) {
-                handle = (InternalFactHandle) context.handles.get( factHandleId.intValue() );
+            for ( Long factHandleId : _key.getOtherHandleList() ) {
+                handle = (InternalFactHandle) context.handles.get( factHandleId );
                 key.addFactHandle( handle );
                 handle.setEqualityKey( key );
             }
@@ -851,11 +851,11 @@ public class ProtobufInputMarshaller {
 
         private final String pkgName;
         private final String ruleName;
-        private final int[]  tuple;
+        private final long[]  tuple;
 
         public ActivationKey(String pkgName,
                              String ruleName,
-                             int[] tuple) {
+                             long[] tuple) {
             this.pkgName = pkgName;
             this.ruleName = ruleName;
             this.tuple = tuple;
@@ -889,9 +889,9 @@ public class ProtobufInputMarshaller {
     }
 
     public static class TupleKey {
-        private final int[] tuple;
+        private final long[] tuple;
 
-        public TupleKey(int[] tuple) {
+        public TupleKey(long[] tuple) {
             super();
             this.tuple = tuple;
         }

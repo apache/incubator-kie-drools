@@ -294,7 +294,7 @@ public class SlidingTimeWindow
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
             EventFactHandle handle = slCtx.peek();
-            outputCtx.writeInt( handle.getId() );
+            outputCtx.writeLong( handle.getId() );
 
 //            BetaNode node = (BetaNode) handle.getTupleSink();
 //            outputCtx.writeInt( node.getId() );
@@ -348,7 +348,7 @@ public class SlidingTimeWindow
 
         public void deserialize(MarshallerReaderContext inCtx,
                                 Timer _timer) throws ClassNotFoundException {
-            int i = _timer.getBehavior().getHandleId();
+            long i = _timer.getBehavior().getHandleId();
             // this should probably be doing something...
 
 //            updateNextExpiration( ( RightTuple) stwCtx.queue.peek(),

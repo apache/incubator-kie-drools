@@ -16,6 +16,13 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -35,13 +42,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
-import java.util.HashMap;
-import java.util.Map;
-
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext                                           stream;
     public final InternalKnowledgeBase                                             kBase;
@@ -49,7 +49,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public KnowledgeRuntime                                                        kruntime;
     public final Map<Integer, BaseNode>                                            sinks;
 
-    public Map<Integer, InternalFactHandle>                                        handles;
+    public Map<Long, InternalFactHandle>                                           handles;
 
     public final Map<RightTupleKey, RightTuple>                                    rightTuples;
     public final Map<Integer, LeftTuple>                                           terminalTupleMap;
@@ -107,7 +107,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
         this.readersByInt = timerReaders;
 
-        this.handles = new HashMap<Integer, InternalFactHandle>();
+        this.handles = new HashMap<Long, InternalFactHandle>();
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
         this.filter = new PBActivationsFilter();

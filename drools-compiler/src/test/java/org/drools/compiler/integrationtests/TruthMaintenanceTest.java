@@ -15,6 +15,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CheeseEqual;
 import org.drools.compiler.CommonTestMethodBase;
@@ -55,12 +61,6 @@ import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.mockito.Mockito.mock;
@@ -1256,7 +1256,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
     public InternalFactHandle getFactHandle(FactHandle factHandle,
                                             StatefulKnowledgeSessionImpl session) {
-        Map<Integer, FactHandle> handles = new HashMap<Integer, FactHandle>();
+        Map<Long, FactHandle> handles = new HashMap<Long, FactHandle>();
         for ( FactHandle fh : session.getFactHandles() ) {
             handles.put( ((InternalFactHandle) fh).getId(),
                          fh );
@@ -1266,7 +1266,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
     public InternalFactHandle getFactHandle(FactHandle factHandle,
                                             KieSession ksession) {
-        Map<Integer, FactHandle> handles = new HashMap<Integer, FactHandle>();
+        Map<Long, FactHandle> handles = new HashMap<Long, FactHandle>();
         for ( FactHandle fh : ksession.getFactHandles() ) {
             handles.put( ((InternalFactHandle) fh).getId(),
                          fh );

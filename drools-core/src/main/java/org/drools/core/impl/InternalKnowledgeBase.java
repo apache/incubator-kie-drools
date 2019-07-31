@@ -15,6 +15,11 @@
 
 package org.drools.core.impl;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -23,7 +28,12 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftTupleNode;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
@@ -35,11 +45,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 public interface InternalKnowledgeBase extends KnowledgeBase {
 
@@ -64,7 +69,7 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     FactHandleFactory newFactHandleFactory();
 
-    FactHandleFactory newFactHandleFactory(int id, long counter) throws IOException;
+    FactHandleFactory newFactHandleFactory(long id, long counter) throws IOException;
 
     Map<String, Class<?>> getGlobals();
 

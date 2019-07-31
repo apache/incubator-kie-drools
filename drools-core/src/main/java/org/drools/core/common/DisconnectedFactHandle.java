@@ -15,6 +15,19 @@
 
 package org.drools.core.common;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.factmodel.traits.TraitFactory;
@@ -25,19 +38,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.rule.FactHandle;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlSeeAlso({ArrayElements.class})
@@ -47,8 +47,8 @@ public class DisconnectedFactHandle
         Externalizable {
 
     @XmlElement
-    @XmlSchemaType(name="int")
-    private int    id;
+    @XmlSchemaType(name="long")
+    private long    id;
 
     @XmlElement
     @XmlSchemaType(name="int")
@@ -81,7 +81,7 @@ public class DisconnectedFactHandle
     public DisconnectedFactHandle() {
     }
 
-    public DisconnectedFactHandle(int id,
+    public DisconnectedFactHandle(long id,
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
@@ -101,7 +101,7 @@ public class DisconnectedFactHandle
         this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
 
-    public DisconnectedFactHandle(int id,
+    public DisconnectedFactHandle(long id,
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
@@ -174,7 +174,7 @@ public class DisconnectedFactHandle
         return false;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 

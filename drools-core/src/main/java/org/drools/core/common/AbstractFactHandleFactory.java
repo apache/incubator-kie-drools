@@ -16,18 +16,17 @@
 
 package org.drools.core.common;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.FactHandleFactory;
-
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractFactHandleFactory
     implements
     FactHandleFactory  {
 
     /** The fact id. */
-    private AtomicInteger              id;
+    private AtomicLong                 id;
 
     /** The number of facts created - used for recency. */
     private AtomicLong                 counter;
@@ -35,12 +34,12 @@ public abstract class AbstractFactHandleFactory
     public AbstractFactHandleFactory() {
         // starts at 0. So first assigned is 1.
         // 0 is hard coded to Initialfact
-        this.id = new AtomicInteger(0);
+        this.id = new AtomicLong(0);
         this.counter = new AtomicLong(0);
     }
     
-    public AbstractFactHandleFactory(int id, long counter) {
-        this.id = new AtomicInteger( id );
+    public AbstractFactHandleFactory(long id, long counter) {
+        this.id = new AtomicLong( id );
         this.counter = new AtomicLong( counter );
     }
 
@@ -61,7 +60,7 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public final InternalFactHandle newFactHandle(int id,
+    public final InternalFactHandle newFactHandle(long id,
                                                   Object object,
                                                   ObjectTypeConf conf,
                                                   InternalWorkingMemory workingMemory,
@@ -77,7 +76,7 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public abstract InternalFactHandle newFactHandle(int id,
+    public abstract InternalFactHandle newFactHandle(long id,
                                                      Object object,
                                                      long recency,
                                                      ObjectTypeConf conf,
@@ -97,7 +96,7 @@ public abstract class AbstractFactHandleFactory
      */
     public abstract FactHandleFactory newInstance();
     
-    public AtomicInteger getAtomicId() {
+    public AtomicLong getAtomicId() {
         return this.id;
     }
     
@@ -105,7 +104,7 @@ public abstract class AbstractFactHandleFactory
         return this.counter;
     }    
     
-    public int getId() {
+    public long getId() {
         return this.id.get();
     }
 
@@ -113,8 +112,8 @@ public abstract class AbstractFactHandleFactory
         return this.counter.get();
     }
     
-    public void clear(int id, long counter) {
-        this.id = new AtomicInteger( id );
+    public void clear(long id, long counter) {
+        this.id = new AtomicLong( id );
         this.counter = new AtomicLong( counter );
     }
 

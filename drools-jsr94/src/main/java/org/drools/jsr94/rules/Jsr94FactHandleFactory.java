@@ -31,7 +31,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
     private static final long serialVersionUID = 510l;
 
-    public final InternalFactHandle newFactHandle( final int id,
+    public final InternalFactHandle newFactHandle( final long id,
                                                    final Object object,
                                                    final long recency,
                                                    final ObjectTypeConf conf,
@@ -74,7 +74,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
         return Jsr94FactHandle.class;
     }
 
-    public FactHandleFactory newInstance(int id,
+    public FactHandleFactory newInstance(long id,
                                          long counter) {
         // TODO Auto-generated method stub
         return null;

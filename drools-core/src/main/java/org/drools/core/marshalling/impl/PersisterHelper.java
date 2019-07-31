@@ -124,14 +124,14 @@ public class PersisterHelper {
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final ProtobufMessages.Tuple _tuple) {
-        int[] tuple = createTupleArray( _tuple );
+        long[] tuple = createTupleArray( _tuple );
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
                                                                             final Tuple leftTuple) {
-        int[] tuple = createTupleArray( leftTuple );
+        long[] tuple = createTupleArray( leftTuple );
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
@@ -146,8 +146,8 @@ public class PersisterHelper {
         return _tuple.build();
     }
     
-    public static int[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
-        int[] tuple = new int[_tuple.getHandleIdCount()];
+    public static long[] createTupleArray(final ProtobufMessages.Tuple _tuple) {
+        long[] tuple = new long[_tuple.getHandleIdCount()];
         for ( int i = 0; i < tuple.length; i++ ) {
             // needs to reverse the tuple elements 
             tuple[i] = _tuple.getHandleId( tuple.length - i - 1 );
@@ -155,9 +155,9 @@ public class PersisterHelper {
         return tuple;
     }
 
-    public static int[] createTupleArray(final Tuple leftTuple) {
+    public static long[] createTupleArray(final Tuple leftTuple) {
         if( leftTuple != null ) {
-            int[] tuple = new int[leftTuple.size()];
+            long[] tuple = new long[leftTuple.size()];
             // tuple iterations happens backwards
             int i = tuple.length;
             for( Tuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
@@ -169,7 +169,7 @@ public class PersisterHelper {
             }
             return tuple;
         } else {
-            return new int[0];
+            return new long[0];
         }
     }
 

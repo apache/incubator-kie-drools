@@ -16,13 +16,12 @@
 
 package org.drools.core.spi;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.reteoo.ObjectTypeConf;
-
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
@@ -38,7 +37,7 @@ public interface FactHandleFactory {
                                      InternalWorkingMemory workingMemory,
                                      InternalWorkingMemoryEntryPoint wmEntryPoint );
     
-    InternalFactHandle newFactHandle(int id,
+    InternalFactHandle newFactHandle(long id,
                                      Object object,
                                      long recency,
                                      ObjectTypeConf conf,
@@ -60,17 +59,17 @@ public interface FactHandleFactory {
      */
     FactHandleFactory newInstance();
     
-    FactHandleFactory newInstance(int id, long counter);
+    FactHandleFactory newInstance(long id, long counter);
 
     Class<?> getFactHandleType();
 
-    int getId();
+    long getId();
 
     long getRecency();
     
-    AtomicInteger getAtomicId();
+    AtomicLong getAtomicId();
     
     AtomicLong getAtomicRecency();
     
-    void clear(int id, long counter);
+    void clear(long id, long counter);
 }

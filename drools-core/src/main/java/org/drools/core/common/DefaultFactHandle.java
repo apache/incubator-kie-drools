@@ -50,7 +50,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     static final String     FACT_FORMAT_VERSION = "0";
 
-    private int                     id;
+    private long                    id;
     private long                    recency;
     private Object                  object;
     private EqualityKey             key;
@@ -82,7 +82,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public DefaultFactHandle() {
     }
 
-    public DefaultFactHandle(final int id,
+    public DefaultFactHandle(final long id,
             final Object object) {
         // this is only used by tests, left as legacy as so many test rely on it.
         this( id,
@@ -98,14 +98,14 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
      * @param id
      *            Handle id.
      */
-    public DefaultFactHandle(final int id,
+    public DefaultFactHandle(final long id,
                              final Object object,
                              final long recency,
                              final InternalWorkingMemoryEntryPoint wmEntryPoint) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, false );
     }
 
-    public DefaultFactHandle(final int id,
+    public DefaultFactHandle(final long id,
                              final Object object,
                              final long recency,
                              final InternalWorkingMemoryEntryPoint wmEntryPoint,
@@ -113,7 +113,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, isTraitOrTraitable );
     }
 
-    public DefaultFactHandle(final int id,
+    public DefaultFactHandle(final long id,
                              final int identityHashCode,
                              final Object object,
                              final long recency,
@@ -127,7 +127,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
 
-    public DefaultFactHandle(int id,
+    public DefaultFactHandle(long id,
             String wmEntryPointId,
             int identityHashCode,
             int objectHashCode,
@@ -227,7 +227,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
      * @see Object
      */
     public int hashCode() {
-        return this.id;
+        return (int)(id ^ (id >>> 32));
     }
 
     /**
@@ -279,7 +279,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.recency = recency;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 

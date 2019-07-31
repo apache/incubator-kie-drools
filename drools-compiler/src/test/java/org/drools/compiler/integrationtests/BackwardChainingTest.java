@@ -15,6 +15,17 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -56,17 +67,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.kie.api.runtime.rule.Variable.v;
@@ -2695,7 +2695,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
     public InternalFactHandle getFactHandle(FactHandle factHandle,
                                             StatefulKnowledgeSession ksession) {
-        Map<Integer, FactHandle> handles = new HashMap<Integer, FactHandle>();
+        Map<Long, FactHandle> handles = new HashMap<Long, FactHandle>();
         for ( FactHandle fh : ksession.getFactHandles() ) {
             handles.put( ((InternalFactHandle) fh).getId(),
                          fh );

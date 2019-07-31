@@ -16,6 +16,14 @@
 
 package org.drools.core.base.accumulators;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
@@ -28,14 +36,6 @@ import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * An MVEL accumulator function executor implementation
@@ -90,7 +90,7 @@ public class MVELAccumulatorFunctionExecutor
         MVELAccumulatorFunctionContext context = new MVELAccumulatorFunctionContext();
         context.context = this.function.createContext();
         if ( this.function.supportsReverse() ) {
-            context.reverseSupport = new HashMap<Integer, Object>();
+            context.reverseSupport = new HashMap<Long, Object>();
         }
         return context;
     }
@@ -173,7 +173,7 @@ public class MVELAccumulatorFunctionExecutor
         implements
         Externalizable {
         public Serializable               context;
-        public Map<Integer, Object> reverseSupport;
+        public Map<Long, Object> reverseSupport;
 
         public MVELAccumulatorFunctionContext() {
         }
@@ -182,7 +182,7 @@ public class MVELAccumulatorFunctionExecutor
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             context = (Serializable) in.readObject();
-            reverseSupport = (Map<Integer, Object>) in.readObject();
+            reverseSupport = (Map<Long, Object>) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {

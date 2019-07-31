@@ -1127,7 +1127,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         initInitialFact(kBase, null);
     }
 
-    public void reset(int handleId,
+    public void reset(long handleId,
                       long handleCounter,
                       long propagationCounter) {
         propagationList.reset();

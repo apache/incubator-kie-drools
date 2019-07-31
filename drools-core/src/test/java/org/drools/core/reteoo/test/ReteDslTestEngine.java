@@ -16,6 +16,18 @@
 
 package org.drools.core.reteoo.test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.AssertionFailedError;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
@@ -93,18 +105,6 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.StoppedByUserException;
 import org.mvel2.MVEL;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class ReteDslTestEngine {
 
@@ -974,7 +974,7 @@ public class ReteDslTestEngine {
             // Handles have to be compared in the inverse order.
             for ( int i = (h1.length - 1); i >= 0; i-- ) {
 
-                int diff = h1[i].getId() - h2[i].getId();
+                int diff = compareLong(h1[i].getId(), h2[i].getId());
 
                 // Will continue comparing handles until
                 // a difference is found.
@@ -982,6 +982,10 @@ public class ReteDslTestEngine {
             }
 
             return 0;
+        }
+
+        public static int compareLong(long x, long y) {
+            return (x < y) ? -1 : ((x == y) ? 0 : 1);
         }
     }
 

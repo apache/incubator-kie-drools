@@ -25,7 +25,7 @@ import org.kie.api.runtime.rule.FactHandle;
 public interface InternalFactHandle
     extends
     FactHandle, Cloneable {
-    int getId();
+    long getId();
 
     long getRecency();
 
