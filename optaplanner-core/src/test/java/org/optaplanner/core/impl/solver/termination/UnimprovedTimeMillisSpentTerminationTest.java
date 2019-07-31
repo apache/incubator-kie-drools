@@ -31,9 +31,9 @@ import static org.mockito.Mockito.when;
 public class UnimprovedTimeMillisSpentTerminationTest {
 
     @Test
-    public void forZeroUnimprovedTimeMillis_exceptionIsThrown() {
+    public void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new UnimprovedTimeMillisSpentTermination(0L))
+                .isThrownBy(() -> new UnimprovedTimeMillisSpentTermination(-1L))
                 .withMessageContaining("cannot be negative");
     }
 

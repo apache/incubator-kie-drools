@@ -34,7 +34,7 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
 
     protected UnimprovedTimeMillisSpentTermination(long unimprovedTimeMillisSpentLimit, Clock clock) {
         this.unimprovedTimeMillisSpentLimit = unimprovedTimeMillisSpentLimit;
-        if (unimprovedTimeMillisSpentLimit <= 0L) {
+        if (unimprovedTimeMillisSpentLimit < 0L) {
             throw new IllegalArgumentException("The unimprovedTimeMillisSpentLimit (" + unimprovedTimeMillisSpentLimit
                                                        + ") cannot be negative.");
         }
@@ -104,5 +104,4 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
     public String toString() {
         return "UnimprovedTimeMillisSpent(" + unimprovedTimeMillisSpentLimit + ")";
     }
-
 }

@@ -38,9 +38,11 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
     private static final long START_TIME_MILLIS = 0L;
 
     @Test
-    public void forZeroUnimprovedTimeMillis_exceptionIsThrown() {
+    public void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new UnimprovedTimeMillisSpentTermination(0L))
+                .isThrownBy(() -> new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+                        -1L,
+                        SimpleScore.of(0)))
                 .withMessageContaining("cannot be negative");
     }
 
@@ -51,9 +53,10 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
         AbstractStepScope<?> stepScope = mock(LocalSearchStepScope.class);
         Clock clock = mock(Clock.class);
 
-        Termination termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(1000L,
-                                                                                                   SimpleScore.of(7),
-                                                                                                   clock);
+        Termination termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+                1000L,
+                SimpleScore.of(7),
+                clock);
         doReturn(solverScope).when(phaseScope).getSolverScope();
         doReturn(phaseScope).when(stepScope).getPhaseScope();
 
@@ -103,9 +106,10 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
         AbstractStepScope<?> stepScope = mock(LocalSearchStepScope.class);
         Clock clock = mock(Clock.class);
 
-        Termination termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(1000L,
-                                                                                                   SimpleScore.of(7),
-                                                                                                   clock);
+        Termination termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+                1000L,
+                SimpleScore.of(7),
+                clock);
         doReturn(solverScope).when(phaseScope).getSolverScope();
         doReturn(phaseScope).when(stepScope).getPhaseScope();
 

@@ -39,17 +39,19 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
     private long solverSafeTimeMillis = -1L;
     private long phaseSafeTimeMillis = -1L;
 
-    public UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(long unimprovedTimeMillisSpentLimit,
-                                                                        Score unimprovedScoreDifferenceThreshold) {
+    public UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+            long unimprovedTimeMillisSpentLimit,
+            Score unimprovedScoreDifferenceThreshold) {
         this(unimprovedTimeMillisSpentLimit, unimprovedScoreDifferenceThreshold, Clock.systemUTC());
     }
 
-    protected UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(long unimprovedTimeMillisSpentLimit,
-                                                                           Score unimprovedScoreDifferenceThreshold,
-                                                                           Clock clock) {
+    protected UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+            long unimprovedTimeMillisSpentLimit,
+            Score unimprovedScoreDifferenceThreshold,
+            Clock clock) {
         this.unimprovedTimeMillisSpentLimit = unimprovedTimeMillisSpentLimit;
         this.unimprovedScoreDifferenceThreshold = unimprovedScoreDifferenceThreshold;
-        if (unimprovedTimeMillisSpentLimit <= 0L) {
+        if (unimprovedTimeMillisSpentLimit < 0L) {
             throw new IllegalArgumentException("The unimprovedTimeMillisSpentLimit (" + unimprovedTimeMillisSpentLimit
                                                        + ") cannot be negative.");
         }
@@ -95,10 +97,9 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination extend
             for (Iterator<Pair<Long, Score>> it = bestScoreImprovementHistoryQueue.iterator(); it.hasNext(); ) {
                 Pair<Long, Score> bestScoreImprovement = it.next();
                 Score scoreDifference = bestScore.subtract(bestScoreImprovement.getValue());
-                final boolean timeLimitNotYetReached =
+                boolean timeLimitNotYetReached =
                         bestScoreImprovement.getKey() + unimprovedTimeMillisSpentLimit >= bestSolutionTimeMillis;
-                final boolean scoreImprovedOverThreshold =
-                        scoreDifference.compareTo(unimprovedScoreDifferenceThreshold) >= 0;
+                boolean scoreImprovedOverThreshold = scoreDifference.compareTo(unimprovedScoreDifferenceThreshold) >= 0;
                 if (scoreImprovedOverThreshold && timeLimitNotYetReached) {
                     it.remove();
                     long safeTimeMillis = bestSolutionTimeMillis + unimprovedTimeMillisSpentLimit;
