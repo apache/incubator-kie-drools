@@ -31,6 +31,7 @@ import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Adult;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Man;
+import org.drools.modelcompiler.domain.MyFunctions;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
@@ -1887,5 +1888,25 @@ public class CompilerTest extends BaseModelTest {
 
         assertEquals("Mario is very old", result.getValue());
 
+    }
+
+    @Test
+    public void testMatchesClassFunctionWithArg() throws Exception {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import static " + MyFunctions.class.getCanonicalName() + ".*;\n" +
+                "rule R when\n" +
+                "    $a : Person( name matches testMatch(likes) )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person john = new Person("John");
+        john.setLikes("^J.*n$");
+
+        ksession.insert( john );
+
+        assertEquals(1, ksession.fireAllRules());
     }
 }
