@@ -592,6 +592,11 @@ There is no need to add `null` in a collection used by a ``ValueRangeProvider``.
 Using a nullable planning variable implies that your score calculation is responsible for punishing (or even rewarding) variables with a null value.
 ====
 
+[WARNING]
+====
+Currently <<chainedPlanningVariable, chained>> planning variables are not compatible with `nullable`.
+====
+
 <<repeatedPlanning,Repeated planning>> (especially <<realTimePlanning,real-time planning>>) does not mix well with a nullable planning variable.
 Every time the Solver starts or a problem fact change is made,
 the <<constructionHeuristics,Construction Heuristics>> will try to initialize all the `null` variables again, which can be a huge waste of time.
