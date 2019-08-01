@@ -65,8 +65,8 @@ public class ProcessInstanceMarshaller {
         
         org.kie.api.runtime.process.ProcessInstance legacyProcessInstance = ((AbstractProcessInstance<?>) processInstance).internalGetProcessInstance();
         
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        
             ProcessMarshallerWriteContext context = new ProcessMarshallerWriteContext( baos,
                                                                                    null,
                                                                                    null,
@@ -105,9 +105,9 @@ public class ProcessInstanceMarshaller {
     }
     
     public ProcessInstance<?> unmarshallProcessInstance(byte[] data, Process<?> process, AbstractProcessInstance<?> processInstance) {
-        try {
-            org.kie.api.runtime.process.ProcessInstance legacyProcessInstance = null;
-            ByteArrayInputStream bais = new ByteArrayInputStream( data );
+        
+        org.kie.api.runtime.process.ProcessInstance legacyProcessInstance = null;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream( data )) {
             MarshallerReaderContext context = new MarshallerReaderContext( bais,
                                                                            Collections.singletonMap(process.id(), ((AbstractProcess<?>)process).legacyProcess()),
                                                                            null,
@@ -125,8 +125,6 @@ public class ProcessInstanceMarshaller {
             context.close();
 
             processInstance.internalSetProcessInstance(legacyProcessInstance);
-            
-            
             
             return processInstance;
         } catch (Exception e) {

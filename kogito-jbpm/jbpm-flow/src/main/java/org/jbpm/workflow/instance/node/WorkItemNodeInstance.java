@@ -638,7 +638,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
     
     public void internalSetProcessInstanceId(String processInstanceId) {
-        this.exceptionHandlingProcessInstanceId = processInstanceId;
+        if (processInstanceId != null && !processInstanceId.isEmpty()) {
+            this.exceptionHandlingProcessInstanceId = processInstanceId;
+        }
     }
     
     protected KieRuntime getKieRuntimeForSubprocess() {

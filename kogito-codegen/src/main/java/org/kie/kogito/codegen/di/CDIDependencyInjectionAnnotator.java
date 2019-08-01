@@ -84,12 +84,15 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     
     @Override
     public MethodDeclaration withProcessInitMethod(MethodCallExpr produceMethod) {
-        return new MethodDeclaration()
+        MethodDeclaration method = new MethodDeclaration()
                 .addModifier(Keyword.PUBLIC)
                 .setName("init")
                 .setType(void.class)
-                .addAnnotation("javax.annotation.PostConstruct")
                 .setBody(new BlockStmt().addStatement(produceMethod));
+        
+        method.addAndGetParameter("io.quarkus.runtime.StartupEvent", "event").addAnnotation("javax.enterprise.event.Observes");
+        
+        return method;
     }
 
     @Override

@@ -199,53 +199,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
         org.kie.kogito.process.ProcessInstance<?> pi = ((org.kie.kogito.process.ProcessInstance<?>)processInstance.getMetaData().get("KogitoProcessInstance"));
         if (pi != null) {
             subProcessFactory.unbind(context, pi.variables());
-        }
-        
-        VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
-	        processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
-        SubProcessNode subProcessNode = getSubProcessNode();
-        if (subProcessNode != null) {
-		    for (Iterator<DataAssociation> iterator= subProcessNode.getOutAssociations().iterator(); iterator.hasNext(); ) {
-		    	DataAssociation mapping = iterator.next();
-		    	if (mapping.getTransformation() != null) {
-                	Transformation transformation = mapping.getTransformation();
-                	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-                	if (transformer != null) {
-                		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), subProcessVariableScopeInstance.getVariables());
-                		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                        resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getTarget());
-                        if (variableScopeInstance != null && parameterValue != null) {
-
-                            variableScopeInstance.setVariable(mapping.getTarget(), parameterValue);
-                        } else {
-                            logger.warn("Could not find variable scope for variable {}", mapping.getTarget());
-                            logger.warn("Continuing without setting variable.");
-                        }
-                	}
-                } else {
-			        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-			            resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getTarget());
-			        if (variableScopeInstance != null) {
-			        	Object value = subProcessVariableScopeInstance.getVariable(mapping.getSources().get(0));
-			        	if (value == null) {
-			        		try {
-			            		value = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new VariableScopeResolverFactory(subProcessVariableScopeInstance));
-			            	} catch (Throwable t) {
-			            		// do nothing
-			            	}
-			        	}
-			            variableScopeInstance.setVariable(mapping.getTarget(), value);
-			        } else {
-			            logger.error("Could not find variable scope for variable {}", mapping.getTarget());
-			            logger.error("when trying to complete SubProcess node {}", getSubProcessNode().getName());
-			            logger.error("Continuing without setting variable.");
-			        }
-                }
-		    }
-        } else {
-            // handle dynamic sub processes without data output mapping            
-            mapDynamicOutputData(subProcessVariableScopeInstance.getVariables());
-        }
+        }        
     }
 
     public String getNodeName() {

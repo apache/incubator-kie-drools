@@ -58,7 +58,7 @@ public class CacheProcessInstances implements MutableProcessInstances {
     @Override
     public Collection<? extends ProcessInstance> values() {
         return (Collection<? extends ProcessInstance>) cache.values()
-                .stream()
+                .parallelStream()
                 .map(data -> marshaller.unmarshallProcessInstance(data, process))
                 .collect(Collectors.toList());
     }

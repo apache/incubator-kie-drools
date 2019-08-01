@@ -54,7 +54,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
         this.services = services;
         this.instances = new MapProcessInstances<>();   
         
-        registerListeners();
     }
 
     
@@ -86,6 +85,8 @@ public abstract class AbstractProcess<T extends Model> implements Process<T> {
     
     @SuppressWarnings("unchecked")
     public Process<T> configure() {
+
+        registerListeners();
         if (isProcessFactorySet()) {
             this.instances = (MutableProcessInstances<T>) processInstancesFactory.createProcessInstances(this);
         }

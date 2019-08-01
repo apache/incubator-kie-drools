@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.infinispan.protostream.BaseMarshaller;
 import org.infinispan.protostream.FileDescriptorSource;
 import org.infinispan.protostream.MessageMarshaller;
 import org.infinispan.protostream.ProtobufUtil;
@@ -64,21 +65,23 @@ public class ProtoStreamObjectMarshallingStrategy implements ObjectMarshallingSt
 
     @Override
     public byte[] marshal(Context context, ObjectOutputStream os, Object object) throws IOException {
-        byte[] bytes = ProtobufUtil.toByteArray(serializationContext, object);
-        return bytes;
+        return ProtobufUtil.toByteArray(serializationContext, object);
                 
     }
 
     @Override
     public Object unmarshal(String dataType, Context context, ObjectInputStream is, byte[] object, ClassLoader classloader) throws IOException, ClassNotFoundException {
         
-        Object value = ProtobufUtil.fromByteArray(serializationContext, object, serializationContext.getMarshaller(dataType).getJavaClass());
-        return value;
+        return ProtobufUtil.fromByteArray(serializationContext, object, serializationContext.getMarshaller(dataType).getJavaClass());
     }
 
     @Override
     public String getType(Class<?> clazz) {
-        return serializationContext.getMarshaller(clazz).getTypeName();
+        BaseMarshaller<?> marshaller = serializationContext.getMarshaller(clazz);
+        if (marshaller == null) {
+            throw new IllegalStateException("No marshaller found for class " + clazz.getCanonicalName());
+        }
+        return marshaller.getTypeName();
     }
     
     public void registerMarshaller(MessageMarshaller<?>... marshallers) {

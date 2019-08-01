@@ -85,13 +85,13 @@ public interface ProcessInstance
 
     /**
      * Returns parent process instance id if this process instance has a parent
-     * @return the unique id of parent process instance, -1 if this process instance doesn't have a parent
+     * @return the unique id of parent process instance, null if this process instance doesn't have a parent
      */
     String getParentProcessInstanceId();
     
     /**
      * Returns root process instance id if this process instance has a root process instance
-     * @return the unique id of root process instance, -1 if this process instance doesn't have a root or is a root itself
+     * @return the unique id of root process instance, null if this process instance doesn't have a root or is a root itself
      */
     String getRootProcessInstanceId();
     

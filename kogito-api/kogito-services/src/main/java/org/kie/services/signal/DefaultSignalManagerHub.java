@@ -16,9 +16,9 @@
 package org.kie.services.signal;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.signal.SignalManager;
@@ -27,22 +27,27 @@ import org.kie.kogito.signal.SignalManagerHub;
 
 public class DefaultSignalManagerHub implements SignalManagerHub {
     
-    private ConcurrentHashMap<String, List<SignalManager>> signalManagers = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Set<SignalManager>> signalManagers = new ConcurrentHashMap<>();
 
     @Override
     public void publish(String type, Object signalData) {
-        signalManagers.getOrDefault(type, Collections.emptyList())
-        .forEach(e -> e.signalEvent(type, signalData));
+        Set<SignalManager> list = signalManagers.getOrDefault(type, Collections.emptySet());
+        for (SignalManager sm : list) {
+            sm.signalEvent(type, signalData);
+        }
         
         if (signalData instanceof ProcessInstance) {
-            signalManagers.getOrDefault(((ProcessInstance) signalData).getProcessId(), Collections.emptyList())
-            .forEach(e -> e.signalEvent(type, signalData));
+            list = signalManagers.getOrDefault(((ProcessInstance) signalData).getProcessId(), Collections.emptySet());
+            
+            for (SignalManager sm : list) {
+                sm.signalEvent(type, signalData);
+            }
         }
     }
 
     @Override
     public void publishTargeting(String id, String type, Object signalData) {
-        signalManagers.getOrDefault(type, Collections.emptyList())
+        signalManagers.getOrDefault(type, Collections.emptySet())
             .forEach(e -> e.signalEvent(id, type, signalData));
     }
 
@@ -50,7 +55,7 @@ public class DefaultSignalManagerHub implements SignalManagerHub {
     public void subscribe(String type, SignalManager signalManager) {
         this.signalManagers.compute(type, (k, v) -> {
             if (v == null) {
-                v = new CopyOnWriteArrayList<>();
+                v = new CopyOnWriteArraySet<>();
             }
             v.add(signalManager);
             return v;
