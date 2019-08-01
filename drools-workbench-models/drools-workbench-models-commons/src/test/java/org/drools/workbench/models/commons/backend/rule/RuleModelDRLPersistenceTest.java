@@ -1922,6 +1922,33 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
     }
 
     @Test
+    public void testInOperatorStringCommaAndBracketInsidePrototype() {
+
+        final RuleModel model = new RuleModel();
+        model.name = "in";
+
+        final FactPattern pattern = new FactPattern("Car");
+        final SingleFieldConstraint constraint = new SingleFieldConstraint();
+        constraint.setFieldType(DataType.TYPE_STRING);
+        constraint.setFieldName("color");
+        constraint.setOperator("in");
+        constraint.setValue("(red), (blue)");
+        constraint.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        pattern.addConstraint(constraint);
+
+        model.addLhsItem(pattern);
+
+        final String expected = "rule \"in\" \n"
+                + "dialect \"mvel\" \n"
+                + "when \n"
+                + "     Car(color in ( \"(red)\", \"(blue)\" ) ) \n"
+                + " then \n"
+                + "end";
+
+        checkMarshalling(expected, model);
+    }
+
+    @Test
     public void testInOperatorNumber() {
 
         RuleModel m = new RuleModel();
