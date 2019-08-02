@@ -17,6 +17,8 @@ import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintPar
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.operatorToName;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.uncastExpr;
 
+// TODO need to add a specific case for map.
+// Also it would be better to move every coercion case here
 abstract class SpecialComparisonCase {
 
     TypedExpression left;
