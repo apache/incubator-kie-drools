@@ -25,7 +25,9 @@ public interface BavetTuple {
     Object[] getFacts();
 
     default String getFactsString() {
-        return String.join(", ", Arrays.stream(getFacts()).map(Object::toString).toArray(CharSequence[]::new));
+        return String.join(", ", Arrays.stream(getFacts())
+                .map(o -> (o == null) ? null : o.toString())
+                .toArray(CharSequence[]::new));
     }
 
 }
