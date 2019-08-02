@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-public interface BavetJoinBridgeNode extends BavetNode {
+public interface BavetNode {
+
+    int getNodeOrder();
 
 }

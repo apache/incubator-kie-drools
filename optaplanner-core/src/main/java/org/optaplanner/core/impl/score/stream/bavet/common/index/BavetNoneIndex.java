@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
 
-public class BavetNoneIndex<A, Tuple_ extends BavetJoinBridgeUniTuple<A>> extends BavetIndex<A, Tuple_> {
+public class BavetNoneIndex<Tuple_ extends BavetJoinBridgeTuple> extends BavetIndex<Tuple_> {
 
     private final Set<Tuple_> tupleSet = new HashSet<>();
 
@@ -30,7 +30,7 @@ public class BavetNoneIndex<A, Tuple_ extends BavetJoinBridgeUniTuple<A>> extend
     public void remove(Tuple_ tuple) {
         boolean removed = tupleSet.remove(tuple);
         if (!removed) {
-            throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactA()
+            throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactsString()
                     + ")'s tuple cannot be removed in the index from the tupleSet (" + tupleSet + ").");
         }
         tuple.setIndexProperties(null);
@@ -40,7 +40,7 @@ public class BavetNoneIndex<A, Tuple_ extends BavetJoinBridgeUniTuple<A>> extend
     public void put(Object[] indexProperties, Tuple_ tuple) {
         boolean added = tupleSet.add(tuple);
         if (!added) {
-            throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactA()
+            throw new IllegalStateException("Impossible state: the fact (" + tuple.getFactsString()
                     + ") with indexProperties (" + Arrays.toString(indexProperties)
                     + ") was already added in the index to the tupleSet (" + tupleSet + ").");
         }

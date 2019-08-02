@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.score.stream.bavet.common.index;
 
 import java.util.Set;
 
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
 
-public abstract class BavetIndex<A, Tuple_ extends BavetJoinBridgeUniTuple<A>> {
+public abstract class BavetIndex<Tuple_ extends BavetJoinBridgeTuple> {
 
     public abstract void remove(Tuple_ tuple);
 

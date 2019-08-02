@@ -40,7 +40,7 @@ public final class BavetGroupByBridgeUniTuple<A, GroupKey_, ResultContainer_, Re
 
     @Override
     public String toString() {
-        return "GroupByBridge(" + getFactA() + ") with " + (childTuple == null ? 0 : 1) + " children";
+        return "GroupByBridge(" + getFactsString() + ") with " + (childTuple == null ? 0 : 1) + " children";
     }
 
     // ************************************************************************

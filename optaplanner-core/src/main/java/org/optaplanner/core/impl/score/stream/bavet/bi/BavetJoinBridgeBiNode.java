@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.uni;
+package org.optaplanner.core.impl.score.stream.bavet.bi;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
-import org.optaplanner.core.impl.score.stream.bavet.bi.BavetJoinBiNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeNode;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetTupleState;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndex;
+import org.optaplanner.core.impl.score.stream.bavet.tri.BavetJoinTriNode;
 
-public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
+public final class BavetJoinBridgeBiNode<A, B> extends BavetAbstractBiNode<A, B>
         implements BavetJoinBridgeNode {
 
-    private final BavetAbstractUniNode<A> parentNode;
-    private final Function<A, Object[]> mapping;
-    /** Calls {@link BavetJoinBiNode#refreshChildTuplesLeft(BavetJoinBridgeUniTuple)}, right or tri/quad/... variants. */
-    private Consumer<BavetJoinBridgeUniTuple<A>> childTupleRefresher;
+    private final BavetAbstractBiNode<A, B> parentNode;
+    private final BiFunction<A, B, Object[]> mapping;
+    /** Calls {@link BavetJoinTriNode#refreshChildTuplesLeft(BavetJoinBridgeBiTuple)}, right or tri/quad/... variants. */
+    private Consumer<BavetJoinBridgeBiTuple<A, B>> childTupleRefresher;
 
-    private final BavetIndex<BavetJoinBridgeUniTuple<A>> index;
+    private final BavetIndex<BavetJoinBridgeBiTuple<A, B>> index;
 
-    public BavetJoinBridgeUniNode(BavetConstraintSession session, int nodeOrder, BavetAbstractUniNode<A> parentNode,
-            Function<A, Object[]> mapping, BavetIndex<BavetJoinBridgeUniTuple<A>> index) {
+    public BavetJoinBridgeBiNode(BavetConstraintSession session, int nodeOrder, BavetAbstractBiNode<A, B> parentNode,
+            BiFunction<A, B, Object[]> mapping, BavetIndex<BavetJoinBridgeBiTuple<A, B>> index) {
         super(session, nodeOrder);
         this.parentNode = parentNode;
         this.mapping = mapping;
@@ -44,18 +44,19 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
     }
 
     @Override
-    public BavetJoinBridgeUniTuple<A> createTuple(BavetAbstractUniTuple<A> parentTuple) {
-        return new BavetJoinBridgeUniTuple<>(this, parentTuple);
+    public BavetJoinBridgeBiTuple<A, B> createTuple(BavetAbstractBiTuple<A, B> parentTuple) {
+        return new BavetJoinBridgeBiTuple<>(this, parentTuple);
     }
 
-    public void refresh(BavetJoinBridgeUniTuple<A> tuple) {
+    public void refresh(BavetJoinBridgeBiTuple<A, B> tuple) {
         A a = tuple.getFactA();
+        B b = tuple.getFactB();
         if (tuple.getState() != BavetTupleState.CREATING) {
             // Clean up index
             index.remove(tuple);
         }
         if (tuple.isActive()) {
-            Object[] indexProperties = mapping.apply(a);
+            Object[] indexProperties = mapping.apply(a, b);
             index.put(indexProperties, tuple);
         }
         childTupleRefresher.accept(tuple);
@@ -71,11 +72,11 @@ public final class BavetJoinBridgeUniNode<A> extends BavetAbstractUniNode<A>
     // Getters/setters
     // ************************************************************************
 
-    public BavetIndex<BavetJoinBridgeUniTuple<A>> getIndex() {
+    public BavetIndex<BavetJoinBridgeBiTuple<A, B>> getIndex() {
         return index;
     }
 
-    public void setChildTupleRefresher(Consumer<BavetJoinBridgeUniTuple<A>> childTupleRefresher) {
+    public void setChildTupleRefresher(Consumer<BavetJoinBridgeBiTuple<A, B>> childTupleRefresher) {
         this.childTupleRefresher = childTupleRefresher;
     }
 

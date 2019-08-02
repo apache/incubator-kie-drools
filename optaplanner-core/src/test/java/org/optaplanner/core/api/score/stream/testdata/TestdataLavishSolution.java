@@ -59,6 +59,7 @@ public class TestdataLavishSolution extends TestdataObject {
             valueList.add(value);
         }
         solution.setValueList(valueList);
+        solution.setExtraList(new ArrayList<>());
         List<TestdataLavishEntityGroup> entityGroupList = new ArrayList<>(entityGroupListSize);
         for (int i = 0; i < entityGroupListSize; i++) {
             TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("Generated EntityGroup " + i);
@@ -81,6 +82,8 @@ public class TestdataLavishSolution extends TestdataObject {
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
     private List<TestdataLavishValue> valueList;
+    @ProblemFactCollectionProperty
+    private List<TestdataLavishExtra> extraList;
     @ProblemFactCollectionProperty
     private List<TestdataLavishEntityGroup> entityGroupList;
     @PlanningEntityCollectionProperty
@@ -130,6 +133,14 @@ public class TestdataLavishSolution extends TestdataObject {
 
     public void setValueList(List<TestdataLavishValue> valueList) {
         this.valueList = valueList;
+    }
+
+    public List<TestdataLavishExtra> getExtraList() {
+        return extraList;
+    }
+
+    public void setExtraList(List<TestdataLavishExtra> extraList) {
+        this.extraList = extraList;
     }
 
     public List<TestdataLavishEntityGroup> getEntityGroupList() {

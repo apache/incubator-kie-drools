@@ -16,27 +16,25 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
 
-public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
-        implements BavetJoinTuple {
+public final class BavetJoinBridgeBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
+        implements BavetJoinBridgeTuple {
 
-    private final BavetJoinBiNode<A, B> node;
-    private final BavetJoinBridgeUniTuple<A> aTuple;
-    private final BavetJoinBridgeUniTuple<B> bTuple;
+    protected final BavetAbstractBiTuple<A, B> parentTuple;
+    private final BavetJoinBridgeBiNode<A, B> node;
 
-    protected List<BavetAbstractBiTuple<A, B>> childTupleList = null;
+    protected Set<BavetJoinTuple> childTupleSet = new LinkedHashSet<>(); // TODO capacity
+    private Object[] indexProperties;
 
-    public BavetJoinBiTuple(BavetJoinBiNode<A, B> node,
-            BavetJoinBridgeUniTuple<A> aTuple, BavetJoinBridgeUniTuple<B> bTuple) {
+    public BavetJoinBridgeBiTuple(BavetJoinBridgeBiNode<A, B> node,
+            BavetAbstractBiTuple<A, B> parentTuple) {
+        this.parentTuple = parentTuple;
         this.node = node;
-        this.aTuple = aTuple;
-        this.bTuple = bTuple;
-        childTupleList = new ArrayList<>();
     }
 
     @Override
@@ -46,7 +44,7 @@ public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
 
     @Override
     public String toString() {
-        return "Join(" + getFactsString() + ")";
+        return "JoinBridge(" + getFactsString() + ") with " + childTupleSet.size() + " children";
     }
 
     // ************************************************************************
@@ -54,30 +52,32 @@ public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
     // ************************************************************************
 
     @Override
-    public BavetJoinBiNode<A, B> getNode() {
+    public BavetJoinBridgeBiNode<A, B> getNode() {
         return node;
+    }
+
+    public Set<BavetJoinTuple> getChildTupleSet() {
+        return childTupleSet;
     }
 
     @Override
     public A getFactA() {
-        return aTuple.getFactA();
+        return parentTuple.getFactA();
     }
 
     @Override
     public B getFactB() {
-        return bTuple.getFactA();
+        return parentTuple.getFactB();
     }
 
-    public BavetJoinBridgeUniTuple<A> getATuple() {
-        return aTuple;
+    @Override
+    public Object[] getIndexProperties() {
+        return indexProperties;
     }
 
-    public BavetJoinBridgeUniTuple<B> getBTuple() {
-        return bTuple;
-    }
-
-    public List<BavetAbstractBiTuple<A, B>> getChildTupleList() {
-        return childTupleList;
+    @Override
+    public void setIndexProperties(Object[] indexProperties) {
+        this.indexProperties = indexProperties;
     }
 
 }

@@ -42,7 +42,7 @@ public final class BavetScoringBiTuple<A, B> extends BavetAbstractBiTuple<A, B> 
 
     @Override
     public String toString() {
-        return "Scoring(" + getFactA() + ")";
+        return "Scoring(" + getFactsString() + ")";
     }
 
     // ************************************************************************

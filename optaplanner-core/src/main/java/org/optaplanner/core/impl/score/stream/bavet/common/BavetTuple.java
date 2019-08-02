@@ -16,6 +16,16 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-public interface BavetJoinBridgeNode extends BavetNode {
+import java.util.Arrays;
+
+public interface BavetTuple {
+
+    BavetNode getNode();
+
+    Object[] getFacts();
+
+    default String getFactsString() {
+        return String.join(", ", Arrays.stream(getFacts()).map(Object::toString).toArray(CharSequence[]::new));
+    }
 
 }

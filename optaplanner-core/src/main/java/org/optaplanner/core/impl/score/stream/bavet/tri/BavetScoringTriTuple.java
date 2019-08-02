@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.uni;
+package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.inliner.UndoScoreImpacter;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetScoringTuple;
 
-public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> implements BavetScoringTuple {
+public final class BavetScoringTriTuple<A, B, C> extends BavetAbstractTriTuple<A, B, C> implements BavetScoringTuple {
 
-    private final BavetScoringUniNode<A> node;
-    private final BavetAbstractUniTuple<A> parentTuple;
+    private final BavetScoringTriNode<A, B, C> node;
+    private final BavetAbstractTriTuple<A, B, C> parentTuple;
 
     private UndoScoreImpacter undoScoreImpacter = null;
     /** Always null if {@link BavetConstraintSession#constraintMatchEnabled} is false. */
     private Score<?> matchScore = null;
 
-    public BavetScoringUniTuple(BavetScoringUniNode<A> node, BavetAbstractUniTuple<A> parentTuple) {
+    public BavetScoringTriTuple(BavetScoringTriNode<A, B, C> node, BavetAbstractTriTuple<A, B, C> parentTuple) {
         this.node = node;
         this.parentTuple = parentTuple;
     }
@@ -50,13 +50,23 @@ public final class BavetScoringUniTuple<A> extends BavetAbstractUniTuple<A> impl
     // ************************************************************************
 
     @Override
-    public BavetScoringUniNode<A> getNode() {
+    public BavetScoringTriNode<A, B, C> getNode() {
         return node;
     }
 
     @Override
     public A getFactA() {
         return parentTuple.getFactA();
+    }
+
+    @Override
+    public B getFactB() {
+        return parentTuple.getFactB();
+    }
+
+    @Override
+    public C getFactC() {
+        return parentTuple.getFactC();
     }
 
     @Override

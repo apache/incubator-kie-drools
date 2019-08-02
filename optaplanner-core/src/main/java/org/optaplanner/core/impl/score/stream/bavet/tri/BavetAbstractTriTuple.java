@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.bi;
+package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 
-public abstract class BavetAbstractBiTuple<A, B> extends BavetAbstractTuple {
+public abstract class BavetAbstractTriTuple<A, B, C> extends BavetAbstractTuple {
 
     @Override
     public Object[] getFacts() {
-        return new Object[] {getFactA(), getFactB()};
+        return new Object[] {getFactA(), getFactB(), getFactC()};
     }
 
     // ************************************************************************
@@ -31,5 +31,6 @@ public abstract class BavetAbstractBiTuple<A, B> extends BavetAbstractTuple {
 
     public abstract A getFactA();
     public abstract B getFactB();
+    public abstract C getFactC();
 
 }

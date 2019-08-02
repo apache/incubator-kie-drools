@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.bi;
+package org.optaplanner.core.impl.score.stream.bavet.tri;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinTuple;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
+public final class BavetFilterTriTuple<A, B, C> extends BavetAbstractTriTuple<A, B, C> {
 
-public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
-        implements BavetJoinTuple {
+    private final BavetFilterTriNode<A, B, C> node;
+    private final BavetAbstractTriTuple<A, B, C> parentTuple;
 
-    private final BavetJoinBiNode<A, B> node;
-    private final BavetJoinBridgeUniTuple<A> aTuple;
-    private final BavetJoinBridgeUniTuple<B> bTuple;
+    protected List<BavetAbstractTriTuple<A, B, C>> childTupleList = null;
 
-    protected List<BavetAbstractBiTuple<A, B>> childTupleList = null;
-
-    public BavetJoinBiTuple(BavetJoinBiNode<A, B> node,
-            BavetJoinBridgeUniTuple<A> aTuple, BavetJoinBridgeUniTuple<B> bTuple) {
+    public BavetFilterTriTuple(BavetFilterTriNode<A, B, C> node, BavetAbstractTriTuple<A, B, C> parentTuple) {
         this.node = node;
-        this.aTuple = aTuple;
-        this.bTuple = bTuple;
+        this.parentTuple = parentTuple;
         childTupleList = new ArrayList<>();
     }
 
@@ -46,7 +39,7 @@ public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
 
     @Override
     public String toString() {
-        return "Join(" + getFactsString() + ")";
+        return "Filter(" + getFactsString() + ") with " + childTupleList.size()  + " children";
     }
 
     // ************************************************************************
@@ -54,29 +47,26 @@ public final class BavetJoinBiTuple<A, B> extends BavetAbstractBiTuple<A, B>
     // ************************************************************************
 
     @Override
-    public BavetJoinBiNode<A, B> getNode() {
+    public BavetFilterTriNode<A, B, C> getNode() {
         return node;
     }
 
     @Override
     public A getFactA() {
-        return aTuple.getFactA();
+        return parentTuple.getFactA();
     }
 
     @Override
     public B getFactB() {
-        return bTuple.getFactA();
+        return parentTuple.getFactB();
     }
 
-    public BavetJoinBridgeUniTuple<A> getATuple() {
-        return aTuple;
+    @Override
+    public C getFactC() {
+        return parentTuple.getFactC();
     }
 
-    public BavetJoinBridgeUniTuple<B> getBTuple() {
-        return bTuple;
-    }
-
-    public List<BavetAbstractBiTuple<A, B>> getChildTupleList() {
+    public List<BavetAbstractTriTuple<A, B, C>> getChildTupleList() {
         return childTupleList;
     }
 

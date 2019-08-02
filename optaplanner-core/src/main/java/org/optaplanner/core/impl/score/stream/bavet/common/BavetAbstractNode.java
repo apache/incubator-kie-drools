@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.stream.bavet.common;
 
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 
-public class BavetAbstractNode {
+public class BavetAbstractNode implements BavetNode {
 
     protected final BavetConstraintSession session;
     protected final int nodeOrder;
@@ -32,6 +32,7 @@ public class BavetAbstractNode {
     // Getters/setters
     // ************************************************************************
 
+    @Override
     public int getNodeOrder() {
         return nodeOrder;
     }

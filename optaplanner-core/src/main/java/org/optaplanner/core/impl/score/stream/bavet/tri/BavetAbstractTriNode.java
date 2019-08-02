@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.bi;
+package org.optaplanner.core.impl.score.stream.bavet.tri;
 
-import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractNode;
 
-public abstract class BavetAbstractBiTuple<A, B> extends BavetAbstractTuple {
+public abstract class BavetAbstractTriNode<A, B, C> extends BavetAbstractNode {
 
-    @Override
-    public Object[] getFacts() {
-        return new Object[] {getFactA(), getFactB()};
+    public BavetAbstractTriNode(BavetConstraintSession session, int nodeOrder) {
+        super(session, nodeOrder);
     }
+
+    public void addChildNode(BavetAbstractTriNode<A, B, C> childNode) {
+        throw new IllegalStateException("Impossible state: the ConstraintStream for this node (" + this
+                + ") cannot handle a childNode (" + childNode + ").");
+    }
+
+    public abstract BavetAbstractTriTuple<A, B, C> createTuple(BavetAbstractTriTuple<A, B, C> parentTuple);
 
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public abstract A getFactA();
-    public abstract B getFactB();
 
 }

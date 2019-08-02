@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-public interface BavetJoinBridgeTuple {
+public interface BavetJoinBridgeTuple extends BavetTuple {
+
+    Object[] getIndexProperties();
+    void setIndexProperties(Object[] indexProperties);
 
 }

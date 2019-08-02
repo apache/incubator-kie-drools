@@ -70,7 +70,7 @@ public final class BavetGroupedBiTuple<GroupKey_, ResultContainer_, Result_> ext
 
     @Override
     public String toString() {
-        return "Grouped(" + getFactA() + ", " + getFactB() + ")";
+        return "Grouped(" + getFactsString() + ")";
     }
 
     // ************************************************************************

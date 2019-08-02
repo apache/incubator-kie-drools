@@ -17,14 +17,14 @@
 package org.optaplanner.core.impl.score.stream.bavet.common.index;
 
 import org.optaplanner.core.api.score.stream.common.JoinerType;
-import org.optaplanner.core.impl.score.stream.bavet.uni.BavetJoinBridgeUniTuple;
-import org.optaplanner.core.impl.score.stream.bi.AbstractBiJoiner;
+import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinBridgeTuple;
+import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
 public class BavetIndexFactory {
 
     private final JoinerType[] joinerTypes;
 
-    public <B, A> BavetIndexFactory(AbstractBiJoiner<A, B> joiner) {
+    public BavetIndexFactory(AbstractJoiner joiner) {
         joinerTypes = joiner.getJoinerTypes();
         for (int i = 0; i < joinerTypes.length; i++) {
             if (joinerTypes[i] != JoinerType.EQUAL_TO && i != (joinerTypes.length - 1)) {
@@ -39,7 +39,7 @@ public class BavetIndexFactory {
         }
     }
 
-    public <A, Tuple_ extends BavetJoinBridgeUniTuple<A>> BavetIndex<A, Tuple_> buildIndex(boolean isLeftBridge) {
+    public <Tuple_ extends BavetJoinBridgeTuple> BavetIndex<Tuple_> buildIndex(boolean isLeftBridge) {
         if (joinerTypes.length == 0) {
             return new BavetNoneIndex<>();
         }

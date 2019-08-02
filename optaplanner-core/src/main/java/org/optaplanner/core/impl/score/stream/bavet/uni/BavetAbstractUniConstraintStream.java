@@ -52,10 +52,18 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // Stream builder methods
     // ************************************************************************
 
+    public void addChildStream(BavetAbstractUniConstraintStream<Solution_, A> childStream) {
+        childStreamList.add(childStream);
+    }
+
+    // ************************************************************************
+    // Filter
+    // ************************************************************************
+
     @Override
     public BavetAbstractUniConstraintStream<Solution_, A> filter(Predicate<A> predicate) {
         BavetFilterUniConstraintStream<Solution_, A> stream = new BavetFilterUniConstraintStream<>(constraint, predicate);
-        childStreamList.add(stream);
+        addChildStream(stream);
         return stream;
     }
 
@@ -71,9 +79,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     + ") are not build from the same " + ConstraintFactory.class.getSimpleName() + ".");
         }
         BavetAbstractUniConstraintStream<Solution_, B> other = (BavetAbstractUniConstraintStream<Solution_, B>) otherStream;
-        if (constraint != other.constraint) {
+        if (constraint != other.getConstraint()) {
             throw new IllegalStateException("The streams (" + this + ", " + other
-                    + ") are build from different constraints (" + constraint + ", " + other.constraint
+                    + ") are build from different constraints (" + constraint + ", " + other.getConstraint()
                     + ").");
         }
         if (!(joiner instanceof AbstractBiJoiner)) {
@@ -84,10 +92,10 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         BavetJoinBiConstraintStream<Solution_, A, B> biStream = new BavetJoinBiConstraintStream<>(constraint);
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge = new BavetJoinBridgeUniConstraintStream<>(
                 constraint, biStream, true, castedJoiner.getLeftCombinedMapping(), indexFactory);
-        childStreamList.add(leftBridge);
+        addChildStream(leftBridge);
         BavetJoinBridgeUniConstraintStream<Solution_, B> rightBridge = new BavetJoinBridgeUniConstraintStream<>(
                 constraint, biStream, false, castedJoiner.getRightCombinedMapping(), indexFactory);
-        other.childStreamList.add(rightBridge);
+        other.addChildStream(rightBridge);
         return biStream;
     }
 
@@ -112,7 +120,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                 = new BavetGroupedBiConstraintStream<>(constraint, collector.finisher());
         BavetGroupByBridgeUniConstraintStream<Solution_, A, GroupKey_, ResultContainer_, Result_> bridge
                 = new BavetGroupByBridgeUniConstraintStream<>(constraint, biStream, groupKeyMapping, collector);
-        childStreamList.add(bridge);
+        addChildStream(bridge);
         return biStream;
     }
 
@@ -129,46 +137,42 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     public void penalize() {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false));
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, false));
     }
 
     @Override
     public void penalize(ToIntFunction<A> matchWeigher) {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
     }
 
     @Override
     public void penalizeLong(ToLongFunction<A> matchWeigher) {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
     }
 
     @Override
     public void penalizeBigDecimal(Function<A, BigDecimal> matchWeigher) {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, false, matchWeigher));
     }
 
     @Override
     public void reward() {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true));
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, true));
     }
 
     @Override
     public void reward(ToIntFunction<A> matchWeigher) {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
     }
 
     @Override
     public void rewardLong(ToLongFunction<A> matchWeigher) {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
     }
 
     @Override
     public void rewardBigDecimal(Function<A, BigDecimal> matchWeigher) {
-        addScoringUniConstraintStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
-    }
-
-    private void addScoringUniConstraintStream(BavetScoringUniConstraintStream<Solution_, A> stream) {
-        childStreamList.add(stream);
+        addChildStream(new BavetScoringUniConstraintStream<>(constraint, true, matchWeigher));
     }
 
     // ************************************************************************

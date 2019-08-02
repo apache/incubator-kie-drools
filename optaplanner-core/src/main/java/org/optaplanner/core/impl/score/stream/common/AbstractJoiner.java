@@ -21,6 +21,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.optaplanner.core.api.score.stream.common.JoinerType;
+
 public abstract class AbstractJoiner {
 
     protected static <A, J extends AbstractJoiner> Function<A, Object[]> buildCombinedMappingUni(
@@ -90,5 +92,7 @@ public abstract class AbstractJoiner {
                     .toArray();
         }
     }
+
+    public abstract JoinerType[] getJoinerTypes();
 
 }

@@ -64,6 +64,7 @@ public abstract class AbstractConstraintStreamTest {
 
     protected void assertScore(InnerScoreDirector<TestdataLavishSolution> scoreDirector,
             AssertableMatch... assertableMatches) {
+        scoreDirector.triggerVariableListeners();
         SimpleScore score = (SimpleScore) scoreDirector.calculateScore();
         int scoreTotal = Arrays.stream(assertableMatches)
                 .mapToInt(assertableMatch -> assertableMatch.score)

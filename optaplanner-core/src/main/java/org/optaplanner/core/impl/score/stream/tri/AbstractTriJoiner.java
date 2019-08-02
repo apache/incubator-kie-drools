@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.optaplanner.core.api.score.stream.common.JoinerType;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
@@ -50,8 +49,6 @@ public abstract class AbstractTriJoiner<A, B, C> extends AbstractJoiner implemen
     }
 
     public abstract BiFunction<A, B, Object[]> getLeftCombinedMapping();
-
-    public abstract JoinerType[] getJoinerTypes();
 
     public abstract Function<C, Object[]> getRightCombinedMapping();
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.stream.bavet.uni;
+package org.optaplanner.core.impl.score.stream.bavet.bi;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
@@ -26,18 +26,18 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetJoinConstraintSt
 import org.optaplanner.core.impl.score.stream.bavet.common.BavetNodeBuildPolicy;
 import org.optaplanner.core.impl.score.stream.bavet.common.index.BavetIndexFactory;
 
-public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
-        extends BavetAbstractUniConstraintStream<Solution_, A>
+public final class BavetJoinBridgeBiConstraintStream<Solution_, A, B>
+        extends BavetAbstractBiConstraintStream<Solution_, A, B>
         implements BavetJoinBridgeConstraintStream<Solution_> {
 
     private final BavetJoinConstraintStream<Solution_> joinStream;
     private final boolean isLeftBridge;
-    private final Function<A, Object[]> mapping;
+    private final BiFunction<A, B, Object[]> mapping;
     private final BavetIndexFactory indexFactory;
 
-    public BavetJoinBridgeUniConstraintStream(BavetConstraint<Solution_> bavetConstraint,
+    public BavetJoinBridgeBiConstraintStream(BavetConstraint<Solution_> bavetConstraint,
             BavetJoinConstraintStream<Solution_> joinStream, boolean isLeftBridge,
-            Function<A, Object[]> mapping, BavetIndexFactory indexFactory) {
+            BiFunction<A, B, Object[]> mapping, BavetIndexFactory indexFactory) {
         super(bavetConstraint);
         this.joinStream = joinStream;
         this.isLeftBridge = isLeftBridge;
@@ -50,20 +50,21 @@ public final class BavetJoinBridgeUniConstraintStream<Solution_, A>
     // ************************************************************************
 
     @Override
-    protected BavetJoinBridgeUniNode<A> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
-            Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> parentNode) {
-        BavetJoinBridgeUniNode<A> node = new BavetJoinBridgeUniNode<>(buildPolicy.getSession(),
+    protected BavetJoinBridgeBiNode<A, B> createNode(BavetNodeBuildPolicy<Solution_> buildPolicy,
+            Score<?> constraintWeight, int nodeOrder, BavetAbstractBiNode<A, B> parentNode) {
+        BavetJoinBridgeBiNode<A, B> node = new BavetJoinBridgeBiNode<>(buildPolicy.getSession(),
                 nodeOrder, parentNode, mapping, indexFactory.buildIndex(isLeftBridge));
         return node;
     }
 
     @Override
-    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight, int nodeOrder, BavetAbstractUniNode<A> uncastedNode) {
+    protected void createChildNodeChains(BavetNodeBuildPolicy<Solution_> buildPolicy, Score<?> constraintWeight,
+            int nodeOrder, BavetAbstractBiNode<A, B> uncastedNode) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a join bridge.");
         }
-        BavetJoinBridgeUniNode<A> node = (BavetJoinBridgeUniNode<A>) uncastedNode;
+        BavetJoinBridgeBiNode<A, B> node = (BavetJoinBridgeBiNode<A, B>) uncastedNode;
         BavetJoinBridgeNode otherBridgeNode = buildPolicy.getJoinConstraintStreamToJoinBridgeNodeMap().get(joinStream);
         if (otherBridgeNode == null) {
             buildPolicy.getJoinConstraintStreamToJoinBridgeNodeMap().put(joinStream, node);

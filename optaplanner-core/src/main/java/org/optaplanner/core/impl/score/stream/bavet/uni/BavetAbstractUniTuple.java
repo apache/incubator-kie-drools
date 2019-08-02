@@ -20,6 +20,11 @@ import org.optaplanner.core.impl.score.stream.bavet.common.BavetAbstractTuple;
 
 public abstract class BavetAbstractUniTuple<A> extends BavetAbstractTuple {
 
+    @Override
+    public Object[] getFacts() {
+        return new Object[] {getFactA()};
+    }
+
     // ************************************************************************
     // Getters/setters
     // ************************************************************************

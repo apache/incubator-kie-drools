@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.stream.bavet.common;
 
-public abstract class BavetAbstractTuple {
+public abstract class BavetAbstractTuple implements BavetTuple {
 
     protected BavetTupleState state = BavetTupleState.NEW;
 
@@ -51,8 +51,6 @@ public abstract class BavetAbstractTuple {
     // ************************************************************************
     // Getters/setters
     // ************************************************************************
-
-    public abstract BavetAbstractNode getNode();
 
     public int getNodeOrder() {
         return getNode().getNodeOrder();

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.score.stream.bavet.common;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-public interface BavetScoringNode {
+public interface BavetScoringNode extends BavetNode {
 
     /**
      * @return never null

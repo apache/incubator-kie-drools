@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
-import org.optaplanner.core.api.score.stream.common.JoinerType;
 import org.optaplanner.core.impl.score.stream.common.AbstractJoiner;
 
 public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements BiJoiner<A, B> {
@@ -49,8 +48,6 @@ public abstract class AbstractBiJoiner<A, B> extends AbstractJoiner implements B
     }
 
     public abstract Function<A, Object[]> getLeftCombinedMapping();
-
-    public abstract JoinerType[] getJoinerTypes();
 
     public abstract Function<B, Object[]> getRightCombinedMapping();
 
