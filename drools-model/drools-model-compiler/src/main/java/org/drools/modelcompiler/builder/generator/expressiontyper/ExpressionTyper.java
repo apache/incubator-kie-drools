@@ -238,7 +238,7 @@ public class ExpressionTyper {
                 });
                 return typedExpression;
             } else {
-                String name = printConstraint((DrlNameExpr) drlxExpr.asArrayAccessExpr().getName());
+                String name = printConstraint(drlxExpr.asArrayAccessExpr().getName());
                 final Optional<TypedExpression> nameExpr = nameExpr(name, typeCursor);
                 Expression indexExpr = toTypedExpressionFromMethodCallOrField( arrayAccessExpr.getIndex() )
                         .getTypedExpression()
@@ -285,7 +285,7 @@ public class ExpressionTyper {
     private Optional<TypedExpression> createMapAccessExpression(Expression index, Expression scope) {
         MethodCallExpr mapAccessExpr = new MethodCallExpr(scope, "get" );
         mapAccessExpr.addArgument(index);
-        TypedExpression typedExpression = new TypedExpression(mapAccessExpr, Object.class);
+        TypedExpression typedExpression = new TypedExpression(mapAccessExpr, Map.class);
         return of(typedExpression);
     }
 

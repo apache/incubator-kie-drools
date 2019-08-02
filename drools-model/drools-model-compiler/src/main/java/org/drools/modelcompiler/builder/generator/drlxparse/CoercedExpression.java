@@ -106,7 +106,8 @@ public class CoercedExpression {
                 && !rightClass.isPrimitive()
                 && !Number.class.isAssignableFrom(rightClass)
                 && !Boolean.class.isAssignableFrom(rightClass)
-                && !String.class.isAssignableFrom(rightClass);
+                && !String.class.isAssignableFrom(rightClass)
+                && !(Map.class.isAssignableFrom(leftClass) || Map.class.isAssignableFrom(rightClass));
 
     }
 
