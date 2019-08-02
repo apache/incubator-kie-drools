@@ -54,20 +54,18 @@ public class CoercedExpression {
 
     public CoercedExpressionResult coerce() {
         final TypedExpression coercedRight;
-        final Expression rightExpression = right.getExpression();
 
         final Class<?> leftClass = left.getRawClass();
         final Class<?> rightClass = right.getRawClass();
 
+        if (cannotCoerce()) {
+            throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
+        }
+
+        final Expression rightExpression = right.getExpression();
+
         final boolean leftIsPrimitive = leftClass.isPrimitive();
         final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
-
-        if (leftIsPrimitive && canCoerceLiteralNumberExpr) {
-            if (!rightClass.isPrimitive() && !Number.class.isAssignableFrom(rightClass) &&
-                    !Boolean.class.isAssignableFrom(rightClass) && !String.class.isAssignableFrom(rightClass)) {
-                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
-            }
-        }
 
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
@@ -94,6 +92,22 @@ public class CoercedExpression {
         }
 
         return new CoercedExpressionResult(coercedLeft, coercedRight);
+    }
+
+    private boolean cannotCoerce() {
+        final Class<?> leftClass = left.getRawClass();
+        final Class<?> rightClass = right.getRawClass();
+
+        final boolean leftIsPrimitive = leftClass.isPrimitive();
+        final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
+
+        return leftIsPrimitive
+                && canCoerceLiteralNumberExpr
+                && !rightClass.isPrimitive()
+                && !Number.class.isAssignableFrom(rightClass)
+                && !Boolean.class.isAssignableFrom(rightClass)
+                && !String.class.isAssignableFrom(rightClass);
+
     }
 
     private TypedExpression castToClass(Class<?> clazz) {
