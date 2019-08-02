@@ -399,7 +399,7 @@ nameRef
 
 nameRefOtherToken
     : { helper.followUp( _input.LT(1), _localctx==null ) }?
-        ~(LPAREN|RPAREN|LBRACK|RBRACK|LBRACE|RBRACE|LT|GT|EQUAL|BANG|DIV|MUL|COMMA)
+        ~(LPAREN|RPAREN|LBRACK|RBRACK|LBRACE|RBRACE|LT|GT|EQUAL|BANG|COMMA)
     ;
 
 /********************************

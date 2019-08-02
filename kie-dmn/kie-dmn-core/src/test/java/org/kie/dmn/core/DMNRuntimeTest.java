@@ -2550,5 +2550,25 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("D4"), is("Contains r1"));
         assertThat((List<?>) result.get("D5"), contains(is("r1"), is("r2")));
     }
+
+    @Test
+    public void testInputDataWithSlash() {
+        // DROOLS-4390 DMN correct FEEL grammar exclusion
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Slash.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_efb0df9e-cd3a-4bda-b731-e6b184a6cd73", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("A/B", "A");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision Table"), is("A"));
+        assertThat(result.get("Litteral Expression"), is("A"));
+    }
 }
 
