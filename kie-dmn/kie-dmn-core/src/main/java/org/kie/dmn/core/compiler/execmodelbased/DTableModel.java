@@ -17,6 +17,7 @@
 package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
@@ -81,7 +83,7 @@ public class DTableModel {
         this.tableName = CodegenStringUtil.escapeIdentifier( tableName );
         this.hitPolicy = fromString(dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : ""));
         this.columns = dt.getInput().stream()
-                .map( DColumnModel::new ).collect( toList() );
+                         .map(c -> new DColumnModel(c, model)).collect(toList());
         this.outputs = dt.getOutput().stream()
                 .map( DOutputModel::new ).collect( toList() );
         this.rows = dt.getRule().stream().map( DRowModel::new ).collect( toList() );
@@ -290,15 +292,25 @@ public class DTableModel {
         private final InputClause inputClause;
         private final String name;
         private final Type type;
+        private final DMNType dmnType;
 
         private List<UnaryTest> inputTests;
         protected CompiledFEELExpression compiledInputClause;
 
-        DColumnModel(InputClause inputClause) {
+        DColumnModel(InputClause inputClause, DMNModelImpl model) {
             this.inputClause = inputClause;
             LiteralExpression expr = inputClause.getInputExpression();
             this.name = expr.getText();
             this.type = determineTypeFromName( expr.getTypeRef() != null ? expr.getTypeRef().getLocalPart() : null );
+            if (expr.getTypeRef() != null) {
+                String exprTypeRefNS = expr.getTypeRef().getNamespaceURI();
+                if (exprTypeRefNS == null || exprTypeRefNS.isEmpty()) {
+                    exprTypeRefNS = model.getNamespace();
+                }
+                this.dmnType = model.getTypeRegistry().resolveType(exprTypeRefNS, expr.getTypeRef().getLocalPart());
+            } else {
+                this.dmnType = null;
+            }
         }
 
         public String getName() {
@@ -311,7 +323,14 @@ public class DTableModel {
 
         public FEELEvent validate( EvaluationContext ctx, Object parameter ) {
             if (inputTests != null) {
-                boolean satisfies = inputTests.stream().map( ut -> ut.apply( ctx, parameter ) ).filter( Boolean::booleanValue ).findAny().orElse( false );
+                boolean satisfies = true;
+                if (dmnType != null && dmnType.isCollection() && parameter instanceof Collection) {
+                    for (Object parameterItem : (Collection<?>) parameter) {
+                        satisfies &= inputTests.stream().map(ut -> ut.apply(ctx, parameterItem)).filter(x -> x != null && x).findAny().orElse(false);
+                    }
+                } else {
+                    satisfies = inputTests.stream().map(ut -> ut.apply(ctx, parameter)).filter(x -> x != null && x).findAny().orElse(false);
+                }
                 if ( !satisfies ) {
                     String values = getInputValuesText( inputClause );
                     return new InvalidInputEvent( FEELEvent.Severity.ERROR,
