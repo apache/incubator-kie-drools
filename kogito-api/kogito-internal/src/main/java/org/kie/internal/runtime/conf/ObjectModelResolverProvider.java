@@ -24,7 +24,7 @@ import java.util.ServiceLoader;
  * Provides all available implementations of <code>ObjectModelResolver</code>
  *
  */
-public class ObjectModelResolverProvider {
+public final class ObjectModelResolverProvider {
 
     private static ServiceLoader<ObjectModelResolver> serviceLoader = ServiceLoader.load(ObjectModelResolver.class);
     private static List<ObjectModelResolver> resolvers;
@@ -33,19 +33,14 @@ public class ObjectModelResolverProvider {
      * Returns all found resolvers
      * @return
      */
-    public static List<ObjectModelResolver> getResolvers() {
+    public static synchronized List<ObjectModelResolver> getResolvers() {
         if (resolvers == null) {
-            synchronized (serviceLoader) {
-                if (resolvers == null) {
-                    List<ObjectModelResolver> foundResolvers = new ArrayList<ObjectModelResolver>();
-                    for (ObjectModelResolver resolver : serviceLoader) {
-                        foundResolvers.add(resolver);
-                    }
-                    resolvers = foundResolvers;
-                }
+            List<ObjectModelResolver> foundResolvers = new ArrayList<>();
+            for (ObjectModelResolver resolver : serviceLoader) {
+                foundResolvers.add(resolver);
             }
+            resolvers = foundResolvers;
         }
-
         return resolvers;
     }
 
@@ -65,5 +60,9 @@ public class ObjectModelResolverProvider {
         }
 
         return null;
+    }
+
+    private ObjectModelResolverProvider() {
+        // Not allowed.
     }
 }

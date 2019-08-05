@@ -15,8 +15,6 @@
 
 package org.kie.kogito.codegen.process;
 
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.SemanticModules;
@@ -56,7 +56,7 @@ import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.xml.sax.SAXException;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 /**
  * Entry point to process code generation
@@ -73,11 +73,13 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public static ProcessCodegen ofPath(Path path) throws IOException {
         Path srcPath = Paths.get(path.toString());
-        List<File> files = Files.walk(srcPath)
-                .filter(p -> p.toString().endsWith(".bpmn") || p.toString().endsWith(".bpmn2"))
-                .map(Path::toFile)
-                .collect(Collectors.toList());
-        return ofFiles(files);
+        try (Stream<Path> filesStream = Files.walk(srcPath)) {
+            List<File> files = filesStream
+                    .filter(p -> p.toString().endsWith(".bpmn") || p.toString().endsWith(".bpmn2"))
+                    .map(Path::toFile)
+                    .collect(Collectors.toList());
+            return ofFiles(files);
+        }
     }
 
     public static ProcessCodegen ofFiles(Collection<File> processFiles) throws IOException {

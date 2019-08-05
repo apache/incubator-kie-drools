@@ -19,10 +19,12 @@ package org.kie.dmn.kogito.rest.quarkus;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -52,14 +54,14 @@ public class DMNKogitoQuarkus {
         KnowledgeBaseImpl knowledgeBase = new KnowledgeBaseImpl("", new RuleBaseConfiguration());
         Map<String, InternalKnowledgePackage> pkgs = knowledgeBase.getPackagesMap();
         DMNCompilerImpl compilerImpl = new DMNCompilerImpl();
-        try {
-            List<java.nio.file.Path> files = Files.walk(Paths.get("."))
+        try (Stream<Path> fileStream = Files.walk(Paths.get("."))) {
+            List<java.nio.file.Path> files = fileStream
                                                   .filter(path -> Files.isRegularFile(path) && path.toString().endsWith(".dmn"))
                                                   .peek(x -> LOG.debug("Adding DMN model {} to runtime", x))
                                                   .collect(Collectors.toList());
             for (java.nio.file.Path file : files) {
                 DMNModel m = compilerImpl.compile(new FileReader(file.toFile()));
-                InternalKnowledgePackage pkg = pkgs.computeIfAbsent(m.getNamespace(), ns -> new KnowledgePackageImpl(ns));
+                InternalKnowledgePackage pkg = pkgs.computeIfAbsent(m.getNamespace(), KnowledgePackageImpl::new);
                 ResourceTypePackageRegistry rpkg = pkg.getResourceTypePackages();
                 DMNPackageImpl dmnpkg = rpkg.computeIfAbsent(ResourceType.DMN, rtp -> new DMNPackageImpl(m.getNamespace()));
                 dmnpkg.addModel(m.getName(), m);// TODO add profiles? and check dups over namespace/name

@@ -76,27 +76,17 @@ public class ServiceTaskHandler implements WorkItemHandler {
             }
             Method method = c.getMethod(operation, classes);
             Object result = method.invoke(instance, params);
-            Map<String, Object> results = new HashMap<String, Object>();
+            Map<String, Object> results = new HashMap<>();
             results.put(resultVarName, result);
             manager.completeWorkItem(workItem.getId(), results);
-        } catch (ClassNotFoundException cnfe) {
+        } catch (Throwable cnfe) {
             handleException(cnfe, service, interfaceImplementationRef, operation, parameterType, parameter);
-        } catch (InstantiationException ie) {
-            handleException(ie, service, interfaceImplementationRef, operation, parameterType, parameter);
-        } catch (IllegalAccessException iae) {
-            handleException(iae, service, interfaceImplementationRef, operation, parameterType, parameter);
-        } catch (NoSuchMethodException nsme) {
-            handleException(nsme, service, interfaceImplementationRef, operation, parameterType, parameter);
-        } catch (InvocationTargetException ite) {
-            handleException(ite, service, interfaceImplementationRef, operation, parameterType, parameter);
-        } catch( Throwable cause ) { 
-            handleException(cause, service, interfaceImplementationRef, operation, parameterType, parameter);
         }
     }
 
     private void handleException(Throwable cause, String service, String interfaceImplementationRef, String operation, String paramType, Object param) { 
         logger.debug("Handling exception {} inside service {} or {} and operation {} with param type {} and value {}",
-                cause.getMessage(), service, operation, paramType, param);
+                cause.getMessage(), service, interfaceImplementationRef, operation, paramType, param);
         WorkItemHandlerRuntimeException wihRe;
         if( cause instanceof InvocationTargetException ) { 
             Throwable realCause = cause.getCause();

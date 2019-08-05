@@ -32,7 +32,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         Memory {
 
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
-    protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
+    protected static final boolean ID_LOG_TRACE_ENABLED = log.isTraceEnabled();
 
     private          long              linkedSegmentMask;
     private          long              allLinkedMaskTest;
@@ -90,12 +90,12 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void linkSegment(long mask, InternalWorkingMemory wm) {
         linkedSegmentMask |= mask;
-        if (isLogTraceEnabled) {
+        if (ID_LOG_TRACE_ENABLED) {
             if (NodeTypeEnums.isTerminalNode(getPathEndNode())) {
                 TerminalNode rtn = (TerminalNode) getPathEndNode();
                 log.trace("  LinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, rtn.getRule().getName());
             } else {
-                log.trace("  LinkSegment smask={} rmask={} name={}", mask, "RiaNode");
+                log.trace("  LinkSegment smask={} name={}", mask, "RiaNode");
             }
         }
         if (isRuleLinked()) {
@@ -123,7 +123,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void doLinkRule(InternalAgenda agenda) {
         TerminalNode rtn = ensureAgendaItemCreated(agenda);
-        if (isLogTraceEnabled) {
+        if (ID_LOG_TRACE_ENABLED) {
             log.trace(" LinkRule name={}", rtn.getRule().getName());
         }
 
@@ -136,13 +136,13 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void doUnlinkRule(InternalAgenda agenda) {
         TerminalNode rtn = ensureAgendaItemCreated(agenda);
-        if (isLogTraceEnabled) {
+        if (ID_LOG_TRACE_ENABLED) {
             log.trace("    UnlinkRule name={}", rtn.getRule().getName());
         }
 
         agendaItem.getRuleExecutor().setDirty(true);
         if ( !agendaItem.isQueued() ) {
-            if ( isLogTraceEnabled ) {
+            if (ID_LOG_TRACE_ENABLED) {
                 log.trace("Queue RuleAgendaItem {}", agendaItem);
             }
             InternalAgendaGroup ag = agendaItem.getAgendaGroup();
@@ -161,7 +161,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         }
 
         if ( !agendaItem.isQueued() ) {
-            if ( isLogTraceEnabled ) {
+            if (ID_LOG_TRACE_ENABLED) {
                 log.trace("Queue RuleAgendaItem {}", agendaItem);
             }
             InternalAgendaGroup ag = agendaItem.getAgendaGroup();
@@ -178,7 +178,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     public void unlinkedSegment(long mask, InternalWorkingMemory wm) {
         boolean linkedRule =  isRuleLinked();
         linkedSegmentMask ^= mask;
-        if (isLogTraceEnabled) {
+        if (ID_LOG_TRACE_ENABLED) {
             log.trace("  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, this);
         }
         if (linkedRule && !isRuleLinked()) {

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.io.UncheckedIOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -97,7 +98,7 @@ public class RuleImpl implements Externalizable,
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
     private Map<String, Declaration> declarations;
-    private Map<String, String[]>    requiredDeclarations = new HashMap<String, String[]>();
+    private Map<String, String[]>    requiredDeclarations = new HashMap<>();
 
     private GroupElement lhsRoot;
 
@@ -105,7 +106,7 @@ public class RuleImpl implements Externalizable,
 
     private String                   agendaGroup = AgendaGroup.MAIN;
 
-    private Map<String, Object>      metaAttributes = new HashMap<String, Object>();
+    private Map<String, Object>      metaAttributes = new HashMap<>();
 
     /** Consequence. */
     private Consequence consequence;
@@ -234,7 +235,7 @@ public class RuleImpl implements Externalizable,
 
     public void addUsedQuery(QueryImpl query) {
         if (usedQueries == null) {
-            usedQueries = new ArrayList<QueryImpl>();
+            usedQueries = new ArrayList<>();
         }
         usedQueries.add(query);
     }
@@ -246,7 +247,7 @@ public class RuleImpl implements Externalizable,
      */
     public List<QueryImpl> getDependingQueries() {
         if (dependingQueries == null) {
-            dependingQueries = usedQueries == null ? Collections.<QueryImpl>emptyList() : collectDependingQueries(new LinkedList<QueryImpl>());
+            dependingQueries = usedQueries == null ? Collections.<QueryImpl>emptyList() : collectDependingQueries(new LinkedList<>());
         }
         return dependingQueries;
     }
@@ -311,10 +312,6 @@ public class RuleImpl implements Externalizable,
      *         <code>false</code>.
      */
     public boolean isValid() {
-        //if ( this.patterns.size() == 0 ) {
-        //    return false;
-        //}
-
         return !(this.consequence == null || !isSemanticallyValid());
     }
 
@@ -492,8 +489,8 @@ public class RuleImpl implements Externalizable,
     }
 
     public String[] getRequiredDeclarationsForConsequence(String consequenceName) {
-        String[] declarations = requiredDeclarations.get(consequenceName);
-        return declarations != null ? declarations : new String[0];
+        String[] declarationsForConsequence = requiredDeclarations.get(consequenceName);
+        return declarationsForConsequence != null ? declarationsForConsequence : new String[0];
     }
 
     public void setRequiredDeclarationsForConsequence(String consequenceName, String[] requiredDeclarations) {
@@ -595,8 +592,7 @@ public class RuleImpl implements Externalizable,
      * @return
      * @throws org.drools.core.rule.InvalidPatternException
      */
-    public GroupElement[] getTransformedLhs( LogicTransformer transformer, Map<String, Class<?>> globals ) throws InvalidPatternException {
-        //Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
+    public GroupElement[] getTransformedLhs( LogicTransformer transformer, Map<String, Class<?>> globals ) {
         return transformer.transform( getExtendedLhs( this,
                                                       null ),
                                       globals );
@@ -648,13 +644,13 @@ public class RuleImpl implements Externalizable,
     }
 
     public Consequence getNamedConsequence(String consequenceName)  {
-        Consequence consequence = namedConsequences != null ? namedConsequences.get(consequenceName) : null;
-        return consequence == null && parent != null ? parent.getNamedConsequence(consequenceName) : consequence;
+        Consequence namedConsequence = namedConsequences != null ? namedConsequences.get(consequenceName) : null;
+        return namedConsequence == null && parent != null ? parent.getNamedConsequence(consequenceName) : namedConsequence;
     }
 
     public void addNamedConsequence(String name, Consequence consequence) {
         if ( this.namedConsequences == null ) {
-            this.namedConsequences = new HashMap<String, Consequence>();
+            this.namedConsequences = new HashMap<>();
         }
         this.namedConsequences.put(name, consequence);
     }
@@ -821,7 +817,7 @@ public class RuleImpl implements Externalizable,
 
     public void addChild(RuleImpl child) {
         if (children == null) {
-            children = new ArrayList<RuleImpl>();
+            children = new ArrayList<>();
         }
         children.add(child);
     }
@@ -909,12 +905,8 @@ public class RuleImpl implements Externalizable,
         public int getValue(final KnowledgeHelper khelper,
                             final org.kie.api.definition.rule.Rule rule,
                             final WorkingMemory workingMemory) {
-            return AccessController.doPrivileged(new PrivilegedAction<Integer>() {
-                @Override
-                public Integer run() {
-                    return delegate.getValue(khelper, rule, workingMemory);
-                }
-            }, KiePolicyHelper.getAccessContext());
+            return AccessController.doPrivileged(
+                    (PrivilegedAction<Integer>) () -> delegate.getValue(khelper, rule, workingMemory), KiePolicyHelper.getAccessContext());
         }
 
         @Override
@@ -942,32 +934,19 @@ public class RuleImpl implements Externalizable,
                                 final Declaration[] declrs,
                                 final RuleImpl rule,
                                 final WorkingMemory workingMemory) {
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return delegate.getValue(tuple, declrs, rule, workingMemory);
-                }
-            }, KiePolicyHelper.getAccessContext());
+            return AccessController.doPrivileged(
+                    (PrivilegedAction<Boolean>) () -> delegate.getValue(tuple, declrs, rule, workingMemory), KiePolicyHelper.getAccessContext());
         }
     }
 
     public static String getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
-        java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource );
-        try {
+        try (java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource )) {
             byte[] data = readBytesFromInputStream( is );
             org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer(methodName);
             new org.mvel2.asm.ClassReader( data ).accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
             return visit.getText();
         } catch ( java.io.IOException e ) {
-            throw new RuntimeException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ");
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException( e );
-                }
-            }
+            throw new UncheckedIOException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ", e);
         }
     }
 }

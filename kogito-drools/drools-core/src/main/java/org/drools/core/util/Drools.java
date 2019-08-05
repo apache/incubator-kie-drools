@@ -17,13 +17,14 @@ package org.drools.core.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Drools {
+public final class Drools {
 
-    private static Pattern VERSION_PAT = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)([\\.-](.*))?");
+    private static final Pattern VERSION_PAT = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)([\\.-](.*))?");
 
     private static String droolsFullVersion;
     private static int droolsMajorVersion;
@@ -37,23 +38,12 @@ public class Drools {
     static {
         droolsFullVersion = Drools.class.getPackage().getImplementationVersion();
         if (droolsFullVersion == null || droolsFullVersion.equals("0.0")) {
-            InputStream is = null;
-            try {
-                is = Drools.class.getClassLoader().getResourceAsStream("drools.versions.properties");
+            try (InputStream is = Drools.class.getClassLoader().getResourceAsStream("drools.versions.properties")) {
                 Properties properties = new Properties();
                 properties.load(is);
                 droolsFullVersion = properties.get("drools.version").toString();
-                is.close();
             } catch ( IOException e ) {
-                throw new RuntimeException(e);
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                throw new UncheckedIOException(e);
             }
         }
 
@@ -114,5 +104,9 @@ public class Drools {
 
     public static boolean isJndiAvailable() {
         return jndiAvailable;
+    }
+
+    private Drools() {
+        // It is forbidden to create instances of util classes.
     }
 }

@@ -85,64 +85,63 @@ public class ProcessClassesMojo extends AbstractKieMojo {
             URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);            
     
             // need to define parent classloader which knows all dependencies of the plugin
-            URLClassLoader cl = new URLClassLoader(urlsForClassLoader, Thread.currentThread().getContextClassLoader());
-            
-            ConfigurationBuilder builder = new ConfigurationBuilder();
-            builder.addUrls(cl.getURLs());
-            builder.addClassLoader(cl);
+            try (URLClassLoader cl = new URLClassLoader(urlsForClassLoader, Thread.currentThread().getContextClassLoader())) {
+                ConfigurationBuilder builder = new ConfigurationBuilder();
+                builder.addUrls(cl.getURLs());
+                builder.addClassLoader(cl);
 
-            Reflections reflections = new Reflections(builder);            
-            Set<Class<? extends Model>> modelClasses = reflections.getSubTypesOf(Model.class);          
-            
-            String appPackageName = project.getGroupId();
-            
-            // safe guard to not generate application classes that would clash with interfaces
-            if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
-                appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
-            }
-            // collect constructor parameters so the generated class can create constructor with injection
-            List<String> parameters = new ArrayList<>();
-            Set<Class<? extends ProcessInstancesFactory>> classes = reflections.getSubTypesOf(ProcessInstancesFactory.class);
-            if (!classes.isEmpty()) {
-            
-                Class<? extends ProcessInstancesFactory> c = classes.iterator().next();
-                for (Type t : c.getConstructors()[0].getGenericParameterTypes()) {
-                    parameters.add(t.getTypeName());
+                Reflections reflections = new Reflections(builder);
+                Set<Class<? extends Model>> modelClasses = reflections.getSubTypesOf(Model.class);
+
+                String appPackageName = project.getGroupId();
+
+                // safe guard to not generate application classes that would clash with interfaces
+                if (appPackageName.equals(ApplicationGenerator.DEFAULT_GROUP_ID)) {
+                    appPackageName = ApplicationGenerator.DEFAULT_PACKAGE_NAME;
+                }
+                // collect constructor parameters so the generated class can create constructor with injection
+                List<String> parameters = new ArrayList<>();
+                Set<Class<? extends ProcessInstancesFactory>> classes = reflections.getSubTypesOf(ProcessInstancesFactory.class);
+                if (!classes.isEmpty()) {
+
+                    Class<? extends ProcessInstancesFactory> c = classes.iterator().next();
+                    for (Type t : c.getConstructors()[0].getGenericParameterTypes()) {
+                        parameters.add(t.getTypeName());
+                    }
+                }
+
+                PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory, modelClasses, !parameters.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
+                persistenceGenerator.setPackageName(appPackageName);
+                persistenceGenerator.setDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project));
+                Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
+
+
+
+                MemoryFileSystem srcMfs = new MemoryFileSystem();
+                MemoryFileSystem trgMfs = new MemoryFileSystem();
+
+                String[] sources = new String[generatedFiles.size()];
+                int index = 0;
+                for (GeneratedFile entry : generatedFiles) {
+                    String fileName = entry.relativePath();
+                    sources[index++] = fileName;
+                    srcMfs.write(fileName, entry.contents());
+                }
+
+
+                if (sources.length > 0) {
+
+                    CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, cl, settings);
+                    if (result.getErrors().length > 0) {
+                        throw new MojoFailureException(Arrays.toString(result.getErrors()));
+                    }
+
+                    for (String fileName : trgMfs.getFileNames()) {
+                        byte[] data = trgMfs.getBytes(fileName);
+                        writeFile(fileName, data);
+                    }
                 }
             }
-            
-            PersistenceGenerator persistenceGenerator = new PersistenceGenerator(targetDirectory, modelClasses, !parameters.isEmpty(), new ReflectionProtoGenerator(), cl, parameters);
-            persistenceGenerator.setPackageName(appPackageName);
-            persistenceGenerator.setDependencyInjection(discoverDependencyInjectionAnnotator(dependencyInjection, project));
-            Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
-            
-            
-            
-            MemoryFileSystem srcMfs = new MemoryFileSystem();
-            MemoryFileSystem trgMfs = new MemoryFileSystem();
-
-            String[] sources = new String[generatedFiles.size()];
-            int index = 0;
-            for (GeneratedFile entry : generatedFiles) {
-                String fileName = entry.relativePath();
-                sources[index++] = fileName;
-                srcMfs.write(fileName, entry.contents());   
-            }
-            
-            
-            if (sources.length > 0) {
-
-                CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, cl, settings);
-                if (result.getErrors().length > 0) {
-                    throw new MojoFailureException(Arrays.toString(result.getErrors()));
-                }
-                
-                for (String fileName : trgMfs.getFileNames()) {
-                    byte[] data = trgMfs.getBytes(fileName);
-                    writeFile(fileName, data);
-                }
-            }
-            
         } catch (Exception e) {
             throw new MojoExecutionException("Error during processing model classes", e);
         }
@@ -150,7 +149,7 @@ public class ProcessClassesMojo extends AbstractKieMojo {
     
     private Path writeFile(String fileName, byte[] data) throws IOException {
         Path path = Paths.get(targetDirectory.getAbsolutePath(), "classes", fileName);
-        if (!Files.exists(path.getParent())) {
+        if (!path.getParent().toFile().exists()) {
             Files.createDirectories(path.getParent());
         }
         Files.write(path, data);

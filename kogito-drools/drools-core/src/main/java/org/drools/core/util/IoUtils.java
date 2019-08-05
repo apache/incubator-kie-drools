@@ -27,10 +27,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,9 +40,9 @@ import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class IoUtils {
+public final class IoUtils {
 
-    public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+    public static final Charset UTF8_CHARSET = StandardCharsets.UTF_8;
 
     public static int findPort() {
         for( int i = 1024; i < 65535; i++) {
@@ -53,50 +55,27 @@ public class IoUtils {
     
     public static boolean validPort(int port) {
 
-        ServerSocket ss = null;
-        DatagramSocket ds = null;
-        try {
-            ss = new ServerSocket(port);
+        try (ServerSocket ss = new ServerSocket(port);
+             DatagramSocket ds = new DatagramSocket(port)) {
             ss.setReuseAddress(true);
-            ds = new DatagramSocket(port);
             ds.setReuseAddress(true);
             return true;
         } catch (IOException e) {
-        } finally {
-            if (ds != null) {
-                ds.close();
-            }
-
-            if (ss != null) {
-                try {
-                    ss.close();
-                } catch (IOException e) {
-                    /* should not be thrown */
-                }
-            }
         }
 
         return false;
     }
 
     public static String readFileAsString(File file) {
-        StringBuffer sb = new StringBuffer();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF8_CHARSET));
+        try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF8_CHARSET))) {
+            StringBuffer sb = new StringBuffer();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
             }
+            return sb.toString();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) { }
-            }
+            throw new UncheckedIOException(e);
         }
-        return sb.toString();
     }
 
     public static void copyFile(File sourceFile, File destFile) {
@@ -106,29 +85,14 @@ public class IoUtils {
         try {
             destFile.createNewFile();
         } catch (IOException ioe) {
-            throw new RuntimeException("Unable to create file " + destFile.getAbsolutePath(), ioe);
+            throw new UncheckedIOException("Unable to create file " + destFile.getAbsolutePath(), ioe);
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
+        try (FileChannel source = new FileInputStream(sourceFile).getChannel();
+             FileChannel destination = new FileOutputStream(destFile).getChannel()) {
             destination.transferFrom(source, 0, source.size());
         } catch (IOException ioe) {
-            throw new RuntimeException("Unable to copy " + sourceFile.getAbsolutePath() + " to " + destFile.getAbsolutePath(), ioe);
-        } finally {
-            if(source != null) {
-                try {
-                    source.close();
-                } catch (IOException e) { }
-            }
-            if(destination != null) {
-                try {
-                    destination.close();
-                } catch (IOException e) { }
-            }
+            throw new UncheckedIOException("Unable to copy " + sourceFile.getAbsolutePath() + " to " + destFile.getAbsolutePath(), ioe);
         }
     }
 
@@ -155,7 +119,7 @@ public class IoUtils {
     }
 
     public static List<String> recursiveListFile(File folder, String prefix, Predicate<File> filter) {
-        List<String> files = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
         for (File child : safeListFiles(folder)) {
             filesInFolder(files, child, prefix, filter);
         }
@@ -199,13 +163,13 @@ public class IoUtils {
     public static byte[] readBytesFromInputStream(InputStream input, boolean closeInput) throws IOException {
         try {
             byte[] buffer = createBytesBuffer( input );
-            ByteArrayOutputStream output = new ByteArrayOutputStream( buffer.length );
-
-            int n = 0;
-            while ( -1 != ( n = input.read( buffer ) ) ) {
-                output.write( buffer, 0, n );
+            try (ByteArrayOutputStream output = new ByteArrayOutputStream( buffer.length )) {
+                int n = 0;
+                while ( -1 != ( n = input.read( buffer ) ) ) {
+                    output.write( buffer, 0, n );
+                }
+                return output.toByteArray();
             }
-            return output.toByteArray();
         } finally {
             try {
                 if ( closeInput ) {
@@ -226,42 +190,22 @@ public class IoUtils {
             return null;
         }
 
-        ZipFile zipFile = null;
-        byte[] bytes = null;
-        try {
-            zipFile = new ZipFile( file );
-            bytes = IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ), true );
-        } finally {
-            if ( zipFile != null ) {
-                zipFile.close();
-            }
+        try (ZipFile zipFile = new ZipFile( file )) {
+            return IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ), true );
         }
-        return bytes;
-
     }
 
     public static byte[] readBytes(File f) throws IOException {
         byte[] buf = new byte[1024];
 
-        BufferedInputStream bais = null;
-        ByteArrayOutputStream baos = null;
-        try {
-            bais = new BufferedInputStream( new FileInputStream( f ) );
-            baos = new ByteArrayOutputStream();
+        try (BufferedInputStream bais = new BufferedInputStream(new FileInputStream(f));
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             int len;
-            while ( (len = bais.read( buf )) > 0 ) {
-                baos.write( buf, 0, len );
+            while ((len = bais.read(buf)) > 0) {
+                baos.write(buf, 0, len);
             }
-        } finally {
-            if (  baos != null ) {
-                baos.close();
-            }
-            if ( bais != null ) {
-                bais.close();
-            }
+            return baos.toByteArray();
         }
-
-        return baos.toByteArray();
     }
 
     public static void write(File f,
@@ -305,22 +249,11 @@ public class IoUtils {
     public static void writeBytes(File f, byte[] data) throws IOException {
         byte[] buf = new byte[1024];
 
-        BufferedOutputStream bos = null;
-        ByteArrayInputStream bais = null;
-
-        try {
-            bos = new BufferedOutputStream( new FileOutputStream(f) );
-            bais = new ByteArrayInputStream( data );
+        try (BufferedOutputStream bos = new BufferedOutputStream( new FileOutputStream(f) );
+             ByteArrayInputStream bais = new ByteArrayInputStream( data )) {
             int len;
             while ( (len = bais.read( buf )) > 0 ) {
                 bos.write( buf, 0, len );
-            }
-        } finally {
-            if (  bos != null ) {
-                bos.close();
-            }
-            if ( bais != null ) {
-                bais.close();
             }
         }
     }
@@ -350,5 +283,9 @@ public class IoUtils {
         } else {
             return urlPath.substring( colonIndex + 1 );
         }
+    }
+
+    private IoUtils() {
+        // It is forbidden to create instances of util classes.
     }
 }

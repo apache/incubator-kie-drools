@@ -77,42 +77,42 @@ public class UrlResource extends BaseResource
 
     }
 
-    public UrlResource(URL url) {
+    public UrlResource(final URL url) {
         this.url = getCleanedUrl(url,
                 url.toString());
         setSourcePath(this.url.getPath());
         setResourceType(ResourceType.determineResourceType(this.url.getPath()));
     }
 
-    public UrlResource(URL url, String encoding) {
+    public UrlResource(final URL url, final String encoding) {
         this(url);
         this.encoding = encoding;
     }
 
-    public UrlResource(String path) {
+    public UrlResource(final String path) {
         try {
             this.url = getCleanedUrl(new URL(path),
                     path);
             setSourcePath(this.url.getPath());
             setResourceType(ResourceType.determineResourceType(this.url.getPath()));
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new IllegalArgumentException("'" + path + "' path is malformed",
                     e);
         }
     }
 
-    public UrlResource(String path, String encoding) {
+    public UrlResource(final String path, final String encoding) {
         this(path);
         this.encoding = encoding;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
+    public void writeExternal(final ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject(this.url);
         out.writeObject(this.encoding);
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
+    public void readExternal(final ObjectInput in) throws IOException,
             ClassNotFoundException {
         super.readExternal( in );
         this.url = (URL) in.readObject();
@@ -127,7 +127,7 @@ public class UrlResource extends BaseResource
         return basicAuthentication;
     }
 
-    public void setBasicAuthentication(String basicAuthentication) {
+    public void setBasicAuthentication(final String basicAuthentication) {
         this.basicAuthentication = basicAuthentication;
     }
 
@@ -135,7 +135,7 @@ public class UrlResource extends BaseResource
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -143,7 +143,7 @@ public class UrlResource extends BaseResource
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -158,23 +158,20 @@ public class UrlResource extends BaseResource
     public InputStream getInputStream() throws IOException {
         try {
             long lastMod = grabLastMod();
-            if (lastMod == 0) {
-                //we will try the cache...
-                if (cacheFileExists())
-                    return fromCache();
+            if (lastMod == 0 && cacheFileExists()) {
+                return fromCache();
             }
-            if (lastMod > 0 && lastMod > lastRead) {
-                if (CACHE_DIR != null && (url.getProtocol().equals("http") || url.getProtocol().equals("https"))) {
-                    //lets grab a copy and cache it in case we need it in future...
-                    cacheStream();
-                    lastMod = getCacheFile().lastModified();
-                    this.lastRead = lastMod;
-                    return fromCache();
-                }
+            if ((lastMod > 0 && lastMod > lastRead)
+                    && (CACHE_DIR != null && (url.getProtocol().equals("http") || url.getProtocol().equals("https")))) {
+                //lets grab a copy and cache it in case we need it in future...
+                cacheStream();
+                lastMod = getCacheFile().lastModified();
+                this.lastRead = lastMod;
+                return fromCache();
             }
             this.lastRead = lastMod;
             return grabStream();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             if (cacheFileExists()) {
                 return fromCache();
             } else {
@@ -187,15 +184,15 @@ public class UrlResource extends BaseResource
         return CACHE_DIR != null && getCacheFile().exists();
     }
 
-    private InputStream fromCache() throws FileNotFoundException, UnsupportedEncodingException {
-        File fi = getCacheFile();
+    private InputStream fromCache() throws FileNotFoundException {
+        final File fi = getCacheFile();
         return new FileInputStream(fi);
     }
 
     private File getCacheFile() {
         try {
             return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -203,7 +200,7 @@ public class UrlResource extends BaseResource
     private File getTemproralCacheFile() {
         try {
             return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8") + "_tmp");
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -213,52 +210,45 @@ public class UrlResource extends BaseResource
      */
     private void cacheStream() {
         try {
-            File fi = getTemproralCacheFile();
-            if (fi.exists()) {
-                if (!fi.delete()) {
-                    throw new IllegalStateException("Cannot delete file " + fi.getAbsolutePath() + "!");
+            final File fi = getTemproralCacheFile();
+            if (fi.exists() && !fi.delete()) {
+                throw new IllegalStateException("Cannot delete file " + fi.getAbsolutePath() + "!");
+            }
+            try (final FileOutputStream fout = new FileOutputStream(fi);
+                 final InputStream in = grabStream();) {
+                final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+                int n;
+                while (-1 != (n = in.read(buffer))) {
+                    fout.write(buffer, 0, n);
                 }
+                fout.flush();
             }
-            FileOutputStream fout = new FileOutputStream(fi);
-            InputStream in = grabStream();
-            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-            int n;
-            while (-1 != (n = in.read(buffer))) {
-                fout.write(buffer, 0, n);
-            }
-            fout.flush();
-            fout.close();
-            in.close();
             
-            File cacheFile = getCacheFile();
+            final File cacheFile = getCacheFile();
             if (!fi.renameTo(cacheFile)) {
                 throw new IllegalStateException("Cannot rename file \"" + fi.getAbsolutePath() + "\" to \"" + cacheFile.getAbsolutePath() + "\"!");
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
 
-    private URLConnection openURLConnection(URL url) throws IOException {
-        URLConnection con = url.openConnection();
+    private URLConnection openURLConnection(final URL url) throws IOException {
+        final URLConnection con = url.openConnection();
         con.setConnectTimeout(TIMEOUT);
         con.setReadTimeout(TIMEOUT);
         return con;
     }
 
     private InputStream grabStream() throws IOException {
-        URLConnection con = openURLConnection(this.url);
+        final URLConnection con = openURLConnection(this.url);
         con.setUseCaches(false);
 
-        if (con instanceof HttpURLConnection) {
-            if ("enabled".equalsIgnoreCase(basicAuthentication)) {
-                String userpassword = username + ":" + password;
-                byte[] authEncBytes = Base64.getEncoder().encode( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
-
-                ((HttpURLConnection) con).setRequestProperty("Authorization",
-                        "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
-            }
-
+        if ((con instanceof HttpURLConnection) && ("enabled".equalsIgnoreCase(basicAuthentication))) {
+            final String userpassword = username + ":" + password;
+            final byte[] authEncBytes = Base64.getEncoder().encode(userpassword.getBytes(IoUtils.UTF8_CHARSET));
+            con.setRequestProperty("Authorization",
+                                   "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
         }
 
         return con.getInputStream();
@@ -278,11 +268,11 @@ public class UrlResource extends BaseResource
      * @param originalPath the original URL path
      * @return the cleaned URL
      */
-    private URL getCleanedUrl(URL originalUrl,
-            String originalPath) {
+    private URL getCleanedUrl(final URL originalUrl,
+                              final String originalPath) {
         try {
             return new URL(StringUtils.cleanPath(originalPath));
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             // Cleaned URL path cannot be converted to URL
             // -> take original URL.
             return originalUrl;
@@ -300,21 +290,21 @@ public class UrlResource extends BaseResource
     public File getFile() throws IOException {
         try {
             return new File(StringUtils.toURI(url.toString()).getSchemeSpecificPart());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Unable to get File for url " + this.url, e);
         }
     }
 
     public long getLastModified() {
         try {
-            long lm = grabLastMod();
+            final long lm = grabLastMod();
             //try the cache.
             if (lm == 0 && cacheFileExists()) {
                 //OK we will return it from the local cached copy, as remote one isn't available..
                 return getCacheFile().lastModified();
             }
             return lm;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             //try the cache...
             if (cacheFileExists()) {
                 //OK we will return it from the local cached copy, as remote one isn't available..
@@ -330,15 +320,15 @@ public class UrlResource extends BaseResource
         // use File if possible, as http rounds milliseconds on some machines, this fine level of granularity is only really an issue for testing
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504473
         if ("file".equals(url.getProtocol())) {
-            File file = getFile();
+            final File file = getFile();
             return file.lastModified();
         } else {
-            URLConnection conn = openURLConnection(getURL());
+            final URLConnection conn = openURLConnection(getURL());
             if (conn instanceof HttpURLConnection) {
                 ((HttpURLConnection) conn).setRequestMethod("HEAD");
                 if ("enabled".equalsIgnoreCase(basicAuthentication)) {
-                    String userpassword = username + ":" + password;
-                    byte[] authEncBytes = Base64.getEncoder().encode( userpassword.getBytes(IoUtils.UTF8_CHARSET) );
+                    final String userpassword = username + ":" + password;
+                    final byte[] authEncBytes = Base64.getEncoder().encode(userpassword.getBytes(IoUtils.UTF8_CHARSET) );
 
                     ((HttpURLConnection) conn).setRequestProperty("Authorization",
                             "Basic " + new String(authEncBytes, IoUtils.UTF8_CHARSET));
@@ -348,7 +338,7 @@ public class UrlResource extends BaseResource
             if (date == 0) {
                 try {
                     date = Long.parseLong(conn.getHeaderField("lastModified"));
-                } catch (Exception e) { /* well, we tried ... */
+                } catch (final Exception e) { /* well, we tried ... */
                 }
             }
             return date;
@@ -361,15 +351,15 @@ public class UrlResource extends BaseResource
 
     public boolean isDirectory() {
         try {
-            URL url = getURL();
+            final URL thisUrl = getURL();
 
-            if ("file".equals(url.getProtocol())) {
+            if ("file".equals(thisUrl.getProtocol())) {
 
-                File file = new File(StringUtils.toURI(url.toString()).getSchemeSpecificPart());
+                final File file = new File(StringUtils.toURI(thisUrl.toString()).getSchemeSpecificPart());
 
                 return file.isDirectory();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // swallow as returned false
         }
 
@@ -378,20 +368,20 @@ public class UrlResource extends BaseResource
 
     public Collection<Resource> listResources() {
         try {
-            URL url = getURL();
+            final URL thisUrl = getURL();
 
-            if ("file".equals(url.getProtocol())) {
-                File dir = getFile();
+            if ("file".equals(thisUrl.getProtocol())) {
+                final File dir = getFile();
 
-                List<Resource> resources = new ArrayList<Resource>();
+                final List<Resource> resources = new ArrayList<>();
 
-                for (File file : dir.listFiles()) {
+                for (final File file : dir.listFiles()) {
                     resources.add(new FileSystemResource(file));
                 }
 
                 return resources;
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // swallow as we'll throw an exception anyway
         }
         throw new RuntimeException("This Resource cannot be listed, or is not a directory");
@@ -400,7 +390,8 @@ public class UrlResource extends BaseResource
     /**
      * This implementation compares the underlying URL references.
      */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
@@ -410,16 +401,18 @@ public class UrlResource extends BaseResource
     /**
      * This implementation returns the hash code of the underlying URL reference.
      */
+    @Override
     public int hashCode() {
         return this.url.hashCode();
     }
 
+    @Override
     public String toString() {
         return "UrlResource[path=" + this.url.toString() + "]";
     }
 
     private static File getCacheDir() {
-        String root = System.getProperty(DROOLS_RESOURCE_URLCACHE, "NONE");
+        final String root = System.getProperty(DROOLS_RESOURCE_URLCACHE, "NONE");
         if (root.equals("NONE")) {
             return null;
         } else {
@@ -430,7 +423,7 @@ public class UrlResource extends BaseResource
     private static int initTimeout() {
         try {
             return Integer.parseInt(System.getProperty( DROOLS_RESOURCE_URLTIMEOUT ));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return DEFAULT_TIMEOUT;
         }
     }

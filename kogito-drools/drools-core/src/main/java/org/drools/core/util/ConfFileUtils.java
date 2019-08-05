@@ -20,12 +20,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-public class ConfFileUtils {
-   
+public final class ConfFileUtils {
+
     /**
      * Return the URL for a given conf file
      * @param confName
@@ -106,9 +107,9 @@ public class ConfFileUtils {
         URL url = null;
         if ( fileName != null ) {
             File file = new File( fileName );
-            if ( file != null && file.exists() ) {
+            if ( file.exists() ) {
                 try {
-                    url = file.toURL();
+                    url = file.toURI().toURL();
                 } catch ( MalformedURLException e ) {
                     throw new IllegalArgumentException( "file.toURL() failed for '" + file + "'" );
                 }
@@ -123,18 +124,14 @@ public class ConfFileUtils {
             return null;
         }
         
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader( url.openStream(), IoUtils.UTF8_CHARSET));
-            String line = null;
-        
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader( url.openStream(), IoUtils.UTF8_CHARSET))) {
+            String line;
             while ( ( line = reader.readLine() ) != null ) { // while loop begins here
                 builder.append( line );
                 builder.append( "\n" );
             }
-            
-            reader.close();
         } catch ( IOException e ) {
-            throw new RuntimeException( "Unable to read " + url.toExternalForm() );
+            throw new UncheckedIOException("Unable to read " + url.toExternalForm(), e);
         }
         return builder.toString();
     }
@@ -161,5 +158,8 @@ public class ConfFileUtils {
         
         return properties;
     }
-                   
+
+    private ConfFileUtils() {
+        // It is forbidden to create instances of util classes.
+    }
 }
