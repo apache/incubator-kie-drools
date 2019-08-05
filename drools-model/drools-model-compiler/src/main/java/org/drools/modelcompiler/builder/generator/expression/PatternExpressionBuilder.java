@@ -17,16 +17,18 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.UnknownType;
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
+import org.drools.mvel.parser.ast.expr.DrlNameExpr;
+
+import static java.util.Optional.of;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
-import static java.util.Optional.of;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
@@ -137,8 +139,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             TypedExpression right = drlxParseResult.getRight();
 
             LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
-            indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), "_this"));
-            boolean leftContainsThis = left.getExpression().toString().contains("_this");
+            indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
+            boolean leftContainsThis = left.getExpression().toString().contains(THIS_PLACEHOLDER);
             indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
             MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaNode() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
@@ -165,8 +167,8 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         FieldAccessExpr indexedBy_constraintType = new FieldAccessExpr(new NameExpr("org.drools.model.Index.ConstraintType"), decodeConstraintType.toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
         LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
-        indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), "_this"));
-        boolean leftContainsThis = left.getExpression().toString().contains("_this");
+        indexedBy_leftOperandExtractor.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
+        boolean leftContainsThis = left.getExpression().toString().contains(THIS_PLACEHOLDER);
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
         MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);

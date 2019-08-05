@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.junit.Assert.*;
 
 public class ExpressionTyperTest {
@@ -55,10 +56,10 @@ public class ExpressionTyperTest {
         assertEquals("$mark.getAge()", toTypedExpression("$mark.age", null, aPersonDecl("$mark")).getExpression().toString());
         assertEquals("$p.getName()", toTypedExpression("$p.name", null, aPersonDecl("$p")).getExpression().toString());
 
-        assertEquals("_this.getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
+        assertEquals(THIS_PLACEHOLDER + ".getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
 
-        assertEquals("_this.method(5, 9, \"x\")", toTypedExpression("method(5,9,\"x\")", Overloaded.class).getExpression().toString());
-        assertEquals("_this.getAddress().getCity().length()", toTypedExpression("address.getCity().length", Person.class).getExpression().toString());
+        assertEquals(THIS_PLACEHOLDER + ".method(5, 9, \"x\")", toTypedExpression("method(5,9,\"x\")", Overloaded.class).getExpression().toString());
+        assertEquals(THIS_PLACEHOLDER + ".getAddress().getCity().length()", toTypedExpression("address.getCity().length", Person.class).getExpression().toString());
     }
 
     @Test
@@ -106,7 +107,7 @@ public class ExpressionTyperTest {
 
     @Test
     public void testBooleanComparison() {
-        final TypedExpression expected = typedResult("_this.getAge() == 18", int.class);
+        final TypedExpression expected = typedResult(THIS_PLACEHOLDER + ".getAge() == 18", int.class);
         final TypedExpression actual = toTypedExpression("age == 18", Person.class);
         assertEquals(expected, actual);
     }
@@ -130,18 +131,18 @@ public class ExpressionTyperTest {
 
     @Test
     public void arrayAccessExpr() {
-        final TypedExpression expected = typedResult("_this.getItems().get(1)", Object.class);
+        final TypedExpression expected = typedResult(THIS_PLACEHOLDER + ".getItems().get(1)", Object.class);
         final TypedExpression actual = toTypedExpression("items[1]", Person.class);
         assertEquals(expected, actual);
 
-        final TypedExpression expected2 = typedResult("_this.getItems().get(((Integer)1))", Object.class);
+        final TypedExpression expected2 = typedResult(THIS_PLACEHOLDER + ".getItems().get(((Integer)1))", Object.class);
         final TypedExpression actual2 = toTypedExpression("items[(Integer)1]", Person.class);
         assertEquals(expected2, actual2);
     }
 
     @Test
     public void mapAccessExpr() {
-        final TypedExpression expected3 = typedResult("_this.get(\"type\")", Object.class);
+        final TypedExpression expected3 = typedResult(THIS_PLACEHOLDER + ".get(\"type\")", Object.class);
         final TypedExpression actual3 = toTypedExpression("this[\"type\"]", Map.class);
         assertEquals(expected3, actual3);
     }
@@ -184,7 +185,7 @@ public class ExpressionTyperTest {
 
     @Test
     public void testAssignment2() {
-        assertEquals("_this.getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
+        assertEquals(THIS_PLACEHOLDER + ".getName().length()", toTypedExpression("name.length", Person.class).getExpression().toString());
 
     }
 

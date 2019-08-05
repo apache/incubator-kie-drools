@@ -23,6 +23,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
@@ -77,7 +78,7 @@ public class OOPathExprGenerator {
                 bindingId = context.getOOPathId(fieldType, chunkKey);
             }
             final Expression accessorLambda = generateLambdaWithoutParameters(Collections.emptySortedSet(),
-                                                                              prepend(new NameExpr("_this"), callExpr.getExpression()));
+                                                                              prepend(new NameExpr(THIS_PLACEHOLDER), callExpr.getExpression()));
 
             final MethodCallExpr reactiveFrom = new MethodCallExpr(null, REACTIVE_FROM_CALL);
             reactiveFrom.addArgument(context.getVarExpr(previousBind));
