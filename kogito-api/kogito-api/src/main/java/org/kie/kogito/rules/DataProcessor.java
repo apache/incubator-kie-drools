@@ -18,15 +18,15 @@ package org.kie.kogito.rules;
 
 import org.kie.api.runtime.rule.FactHandle;
 
-public interface DataProcessor {
+public interface DataProcessor<T> {
 
-    default void insert(Object object) {
+    default void insert(T object) {
         insert( null, object );
     }
 
-    FactHandle insert( DataHandle handle, Object object);
+    FactHandle insert( DataHandle handle, T object);
 
-    void update(DataHandle handle, Object object);
+    void update(DataHandle handle, T object);
 
     void delete(DataHandle handle);
 }

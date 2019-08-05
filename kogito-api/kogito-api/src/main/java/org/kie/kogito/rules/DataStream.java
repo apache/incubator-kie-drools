@@ -21,5 +21,5 @@ import org.kie.kogito.rules.impl.DataStreamDeserializer;
 
 @JsonbTypeDeserializer(DataStreamDeserializer.class)
 public interface DataStream<T> extends DataSource<T> {
-    void append( T... ts );
+    void append( T value );
 }

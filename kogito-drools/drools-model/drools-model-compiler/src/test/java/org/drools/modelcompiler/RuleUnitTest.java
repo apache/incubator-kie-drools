@@ -22,6 +22,7 @@ import org.drools.modelcompiler.ruleunit.AdultUnitInstance;
 import org.junit.Test;
 import org.kie.kogito.rules.DataSource;
 import org.drools.core.ruleunit.impl.ListDataStream;
+import org.kie.kogito.rules.DataStream;
 
 import static java.util.Arrays.asList;
 
@@ -45,7 +46,7 @@ public class RuleUnitTest extends BaseModelTest {
             "    results.add($p.getName());" +
             "end ";
 
-        DataSource<Person> persons = new ListDataStream<>(
+        DataSource<Person> persons = ListDataStream.create(
                 new Person( "Mario", 45 ),
                 new Person( "Marilena", 47 ),
                 new Person( "Sofia", 7 ) );

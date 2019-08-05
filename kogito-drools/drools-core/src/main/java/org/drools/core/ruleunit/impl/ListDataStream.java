@@ -24,23 +24,27 @@ import org.kie.kogito.rules.DataProcessor;
 import org.kie.kogito.rules.DataStream;
 
 public class ListDataStream<T> implements DataStream<T> {
+
     private final ArrayList<T> values = new ArrayList<>();
     private final List<DataProcessor> subscribers = new ArrayList<>();
 
-    public ListDataStream( T... ts ) {
-        append( ts );
-    }
-
-    @Override
-    public void append( T... ts ) {
+    @SafeVarargs
+    public static <T> ListDataStream<T> create(T... ts) {
+        ListDataStream<T> stream = new ListDataStream<>();
         for (T t : ts) {
-            values.add( t );
-            subscribers.forEach(s -> s.insert(t));
+            stream.append(t);
         }
+        return stream;
     }
 
     @Override
-    public void subscribe( DataProcessor subscriber) {
+    public void append(T t) {
+        values.add(t);
+        subscribers.forEach(s -> s.insert(t));
+    }
+
+    @Override
+    public void subscribe(DataProcessor subscriber) {
         subscribers.add(subscriber);
         values.forEach(subscriber::insert);
     }

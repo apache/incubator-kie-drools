@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.kogito.rules.DataSource;
 import org.drools.core.ruleunit.impl.ListDataStream;
+import org.kie.kogito.rules.DataStream;
 
 import static java.util.Arrays.asList;
 
@@ -65,7 +66,7 @@ public class RuleUnitExecModelTest {
         Model model = new ModelImpl().addRule( rule ).addGlobal( var_results );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
 
-        DataSource<Person> persons = new ListDataStream<>(
+        DataSource<Person> persons = ListDataStream.create(
                 new Person( "Mario", 43 ),
                 new Person( "Marilena", 44 ),
                 new Person( "Sofia", 5 ) );

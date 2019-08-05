@@ -19,7 +19,7 @@ package org.kie.kogito.rules;
 import org.kie.api.internal.utils.ServiceRegistry;
 
 public interface DataSource<T> extends Iterable<T> {
-    void subscribe(DataProcessor subscriber);
+    void subscribe(DataProcessor<T> subscriber);
 
     interface Factory {
         <T> DataStream<T> createStream();
