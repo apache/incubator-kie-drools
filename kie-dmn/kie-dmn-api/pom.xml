@@ -58,4 +58,15 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Excluding the entire module from coverage statistics. API modules like this one contain only interfaces
+             and enums, thus nothing JaCoCo can measure. -->
+        <sonar.coverage.exclusions>**/*.java</sonar.coverage.exclusions>
+      </properties>
+    </profile>
+  </profiles>
 </project>

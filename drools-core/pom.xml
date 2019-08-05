@@ -232,6 +232,13 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Generated classes should not show up in Sonar. -->
+        <sonar.exclusions>**/ProtobufMessages.java</sonar.exclusions>
+      </properties>
+    </profile>
   </profiles>
 
   <build>

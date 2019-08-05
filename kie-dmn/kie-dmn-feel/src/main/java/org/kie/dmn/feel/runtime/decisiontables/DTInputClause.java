@@ -12,8 +12,9 @@ public class DTInputClause {
     private final CompiledExpression compiledInput;
     private final String inputValuesText;
     private final List<UnaryTest> inputValues;
+    private final boolean isCollection;
 
-    public DTInputClause(String inputExpression, String inputValuesText, List<UnaryTest> inputValues, CompiledExpression compiledInput) {
+    public DTInputClause(String inputExpression, String inputValuesText, List<UnaryTest> inputValues, CompiledExpression compiledInput, boolean isCollection) {
         super();
         this.inputExpression = inputExpression;
         this.inputValuesText = inputValuesText;
@@ -23,6 +24,7 @@ public class DTInputClause {
             this.inputValues = Collections.emptyList();
         }
         this.compiledInput = compiledInput;
+        this.isCollection = isCollection;
     }
    
     public String getInputExpression() {
@@ -40,4 +42,9 @@ public class DTInputClause {
     public CompiledExpression getCompiledInput() {
         return compiledInput;
     }
+
+    public boolean isCollection() {
+        return isCollection;
+    }
+
 }
