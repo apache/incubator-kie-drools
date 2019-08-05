@@ -23,7 +23,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
@@ -47,7 +49,9 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -69,18 +73,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DMNScenarioRunnerHelperTest {
 
-    @Mock
-    protected Map<String, Object> requestContextMock;
-
-    @Mock
-    protected DMNResult dmnResultMock;
-
-    @Mock
-    protected DMNDecisionResult dmnDecisionResultMock;
-
-    @Mock
-    protected DMNModel dmnModelMock;
-
     private static final String NAME = "NAME";
     private static final String FEEL_EXPRESSION_NAME = "\"" + NAME + "\"";
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(10);
@@ -88,7 +80,14 @@ public class DMNScenarioRunnerHelperTest {
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(classLoader);
     private static final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper();
-
+    @Mock
+    protected Map<String, Object> requestContextMock;
+    @Mock
+    protected DMNResult dmnResultMock;
+    @Mock
+    protected DMNDecisionResult dmnDecisionResultMock;
+    @Mock
+    protected DMNModel dmnModelMock;
     private Simulation simulation;
     private FactIdentifier personFactIdentifier;
     private ExpressionIdentifier firstNameGivenExpressionIdentifier;
@@ -233,7 +232,15 @@ public class DMNScenarioRunnerHelperTest {
         List<DMNDecisionResult> decisionResults = new ArrayList<>();
         decisionResults.add(createDecisionResultMock("decision2", true));
         decisionResults.add(createDecisionResultMock("decision3", false));
+        Map<Integer, Message.Level> randomlyGeneratedLevelMap = new HashMap<>();
+        List<DMNMessage> messages = IntStream.range(0, 5).mapToObj(index -> {
+            Message.Level level = Message.Level.values()[new Random().nextInt(Message.Level.values().length)];
+            randomlyGeneratedLevelMap.put(index, level);
+            return createDMNMessageMock("dmnMessage-" + index, level);
+        }).collect(Collectors.toList());
+
         when(dmnResultMock.getDecisionResults()).thenReturn(decisionResults);
+        when(dmnResultMock.getMessages()).thenReturn(messages);
 
         ScenarioWithIndex scenarioWithIndex = new ScenarioWithIndex(1, scenario1);
         ScenarioResultMetadata scenarioResultMetadata = runnerHelper.extractResultMetadata(requestContextMock, scenarioWithIndex);
@@ -244,6 +251,13 @@ public class DMNScenarioRunnerHelperTest {
         assertEquals(1, scenarioResultMetadata.getExecuted().size());
         assertTrue(scenarioResultMetadata.getExecuted().contains("decision2"));
         assertFalse(scenarioResultMetadata.getExecuted().contains("decision3"));
+        final Map<String, String> auditMessagesMap = scenarioResultMetadata.getAuditMessagesMap();
+        assertFalse(auditMessagesMap.isEmpty());
+        IntStream.range(0, 5).forEach(index -> {
+            String key = "dmnMessage-" + index;
+            assertTrue(auditMessagesMap.containsKey(key));
+            assertEquals(randomlyGeneratedLevelMap.get(index).name(), auditMessagesMap.get(key));
+        });
     }
 
     @Test
@@ -312,5 +326,12 @@ public class DMNScenarioRunnerHelperTest {
                 .thenReturn(success ? DecisionEvaluationStatus.SUCCEEDED :
                                     DecisionEvaluationStatus.FAILED);
         return decisionResultMock;
+    }
+
+    private DMNMessage createDMNMessageMock(String text, Message.Level level) {
+        DMNMessage dmnMessageMock = mock(DMNMessage.class);
+        when(dmnMessageMock.getText()).thenReturn(text);
+        when(dmnMessageMock.getLevel()).thenReturn(level);
+        return dmnMessageMock;
     }
 }

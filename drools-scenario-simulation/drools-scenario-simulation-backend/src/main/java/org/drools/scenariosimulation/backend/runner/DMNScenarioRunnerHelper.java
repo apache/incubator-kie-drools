@@ -38,6 +38,7 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -71,6 +72,9 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
 
         ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
+        for (DMNMessage message : dmnResult.getMessages()) {
+            scenarioResultMetadata.addAuditMessage(message.getText(), message.getLevel().name());
+        }
 
         for (DecisionNode decision : dmnModel.getDecisions()) {
             scenarioResultMetadata.addAvailable(decision.getName());

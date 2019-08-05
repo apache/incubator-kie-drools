@@ -32,6 +32,11 @@ public class ScenarioResultMetadata {
 
     protected final Map<String, Integer> executed = new HashMap<>();
 
+    /**
+     * Map of the messages to print in the CSV report: <b>key</b> is the message, <b>value</b> is the severity level
+     */
+    protected final Map<String, String> auditMessagesMap = new HashMap<>();
+
     protected final ScenarioWithIndex scenarioWithIndex;
 
     public ScenarioResultMetadata(ScenarioWithIndex scenarioWithIndex) {
@@ -54,6 +59,15 @@ public class ScenarioResultMetadata {
         executed.putAll(elements);
     }
 
+    /**
+     * Add an <b>audit</b> message to <code>auditMessagesMap</code>: <b>key</b> is the message, <b>value</b> is the severity level
+     * @param message
+     * @param severity
+     */
+    public void addAuditMessage(String message, String severity) {
+        auditMessagesMap.put(message, severity);
+    }
+
     public Set<String> getAvailable() {
         return unmodifiableSet(available);
     }
@@ -64,6 +78,14 @@ public class ScenarioResultMetadata {
 
     public Map<String, Integer> getExecutedWithCounter() {
         return unmodifiableMap(executed);
+    }
+
+    /**
+     * Return an <b>unmodifiable</b> representation of <code>auditMessagesMap</code>
+     * @return
+     */
+    public Map<String, String> getAuditMessagesMap() {
+        return unmodifiableMap(auditMessagesMap);
     }
 
     public ScenarioWithIndex getScenarioWithIndex() {
