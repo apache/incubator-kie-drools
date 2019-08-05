@@ -17,12 +17,14 @@
 package org.kie.dmn.core.pmml;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.Interval;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Value;
 import org.kie.dmn.api.core.DMNType;
@@ -83,11 +85,31 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 }
                 List<FEELProfile> helperFEELProfiles = cc.getFeelProfiles();
                 DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
-                List<UnaryTest> av = null;
+                List<UnaryTest> av = new ArrayList<>();
                 if (df.getValues() != null && !df.getValues().isEmpty() && ft != BuiltInType.UNKNOWN) {
                     final BuiltInType feelType = ft;
                     String lov = df.getValues().stream().map(Value::getValue).map(o -> feelType == BuiltInType.STRING ? "\"" + o.toString() + "\"" : o.toString()).collect(Collectors.joining(","));
                     av = feel.evaluateUnaryTests(lov, Collections.emptyMap());
+                } else if (df.getIntervals() != null && !df.getIntervals().isEmpty() && ft != BuiltInType.UNKNOWN) {
+                    for (Interval interval : df.getIntervals()) {
+                        String utString = null;
+                        switch (interval.getClosure()) {
+                            case CLOSED_CLOSED:
+                                utString = new StringBuilder("[").append(interval.getLeftMargin()).append("..").append(interval.getRightMargin()).append("]").toString();
+                                break;
+                            case CLOSED_OPEN:
+                                utString = new StringBuilder("[").append(interval.getLeftMargin()).append("..").append(interval.getRightMargin()).append(")").toString();
+                                break;
+                            case OPEN_CLOSED:
+                                utString = new StringBuilder("(").append(interval.getLeftMargin()).append("..").append(interval.getRightMargin()).append("]").toString();
+                                break;
+                            case OPEN_OPEN:
+                                utString = new StringBuilder("(").append(interval.getLeftMargin()).append("..").append(interval.getRightMargin()).append(")").toString();
+                                break;
+                        }
+                        List<UnaryTest> ut = feel.evaluateUnaryTests(utString, Collections.emptyMap());
+                        av.addAll(ut);
+                    }
                 }
                 DMNType type = new SimpleTypeImpl(i.getNamespace(), dfName, null, false, av, null, ft);
                 model.getTypeRegistry().registerType(type);
