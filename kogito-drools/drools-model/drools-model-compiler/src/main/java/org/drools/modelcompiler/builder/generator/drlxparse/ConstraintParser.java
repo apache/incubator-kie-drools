@@ -8,17 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
-import org.drools.core.util.DateUtils;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.drools.mvel.parser.ast.expr.OOPathExpr;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
-import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
-import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
@@ -38,7 +29,6 @@ import org.drools.core.util.DateUtils;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
@@ -55,15 +45,13 @@ import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
-import static org.drools.core.util.StringUtils.lcFirst;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
 import static org.drools.core.util.StringUtils.lcFirst;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isPrimitiveExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -194,7 +182,7 @@ public class ConstraintParser {
                 .map(ThisExpr.class::cast)
                 .collect( Collectors.toList());
         for (ThisExpr t : rewriteThisExprs) {
-            methodCallExpr.replace(t, new NameExpr("_this"));
+            methodCallExpr.replace(t, new NameExpr(THIS_PLACEHOLDER));
         }
 
         Class<?> returnType = DrlxParseUtil.getClassFromContext(context.getTypeResolver(), functionCall.get().getType().asString());
@@ -202,7 +190,7 @@ public class ConstraintParser {
         List<String> usedDeclarations = new ArrayList<>();
         for (Expression arg : arguments) {
             String argString = printConstraint(arg);
-            if (arg instanceof DrlNameExpr && !argString.equals("_this")) {
+            if (arg instanceof DrlNameExpr && !argString.equals(THIS_PLACEHOLDER)) {
                 usedDeclarations.add(argString);
             } else if (arg instanceof CastExpr ) {
                 String s = printConstraint(((CastExpr) arg).getExpression());
@@ -220,7 +208,7 @@ public class ConstraintParser {
         if (converted == null) {
             return new DrlxParseFail();
         }
-        Expression withThis = DrlxParseUtil.prepend(new NameExpr("_this"), converted.getExpression());
+        Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
 
         if (hasBind) {
             return new SingleDrlxParseSuccess(patternType, exprId, bindingId, null, converted.getType() )
@@ -236,7 +224,7 @@ public class ConstraintParser {
 
     private DrlxParseResult parseFieldAccessExpr( FieldAccessExpr fieldCallExpr, Class<?> patternType, String bindingId, String exprId ) {
         TypedExpression converted = DrlxParseUtil.toMethodCallWithClassCheck(context, fieldCallExpr, bindingId, patternType, context.getTypeResolver());
-        Expression withThis = DrlxParseUtil.prepend(new NameExpr("_this"), converted.getExpression());
+        Expression withThis = DrlxParseUtil.prepend(new NameExpr(THIS_PLACEHOLDER), converted.getExpression());
         return new SingleDrlxParseSuccess(patternType, exprId, bindingId, withThis, converted.getType()).setLeft(converted );
     }
 

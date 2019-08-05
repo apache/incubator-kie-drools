@@ -67,6 +67,9 @@ import org.slf4j.LoggerFactory;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.mvel.parser.MvelParser.parseType;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -174,7 +177,7 @@ public class ExpressionTyper {
             return of(new TypedExpression(drlxExpr, getLiteralExpressionType( ( LiteralExpr ) drlxExpr )));
 
         } else if (drlxExpr instanceof ThisExpr) {
-            return of(new TypedExpression(new NameExpr("_this"), patternType));
+            return of(new TypedExpression(new NameExpr(THIS_PLACEHOLDER), patternType));
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
@@ -227,7 +230,7 @@ public class ExpressionTyper {
         } else if (drlxExpr instanceof ArrayAccessExpr) {
             final ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr)drlxExpr;
             if (Map.class.isAssignableFrom( typeCursor )) {
-                return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr("_this") : arrayAccessExpr.getName());
+                return createMapAccessExpression(arrayAccessExpr.getIndex(), arrayAccessExpr.getName() instanceof ThisExpr ? new NameExpr(THIS_PLACEHOLDER) : arrayAccessExpr.getName());
             } else if (arrayAccessExpr.getName() instanceof FieldAccessExpr ) {
                 Optional<TypedExpression> typedExpression = toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
                 typedExpression.map(te -> {
@@ -289,7 +292,7 @@ public class ExpressionTyper {
         TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
         if (expression != null) {
             context.addReactOnProperties(name);
-            Expression plusThis = prepend(new NameExpr("_this"), expression.getExpression());
+            Expression plusThis = prepend(new NameExpr(THIS_PLACEHOLDER), expression.getExpression());
             return of(new TypedExpression(plusThis, expression.getType(), name));
         }
 
@@ -477,7 +480,7 @@ public class ExpressionTyper {
 
     private Optional<TypedExpressionCursor> processFirstNode(Expression drlxExpr, List<Node> childNodes, Node firstNode, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor) {
         final Optional<TypedExpressionCursor> result;
-        if (firstNode instanceof ThisExpr || (firstNode instanceof DrlNameExpr && printConstraint(firstNode).equals(bindingId))) {
+        if (isThisExpression(firstNode) || (firstNode instanceof DrlNameExpr && printConstraint(firstNode).equals(bindingId))) {
             result = of(thisExpr(drlxExpr, childNodes, isInLineCast, originalTypeCursor));
 
         } else if (firstNode instanceof DrlNameExpr) {
@@ -501,7 +504,7 @@ public class ExpressionTyper {
                 context.addUsedDeclarations( scopeDecl.get().getBindingId() );
             } else {
                 type = originalTypeCursor;
-                scope = new NameExpr( "_this" );
+                scope = new NameExpr( THIS_PLACEHOLDER );
             }
 
             result = of(methodCallExpr((MethodCallExpr) firstNode, type, scope));
@@ -535,7 +538,7 @@ public class ExpressionTyper {
                 context.addUsedDeclarations( scopeDecl.get().getBindingId() );
             } else {
                 type = originalTypeCursor;
-                scope = new NameExpr( "_this" );
+                scope = new NameExpr( THIS_PLACEHOLDER );
             }
 
             result = arrayAccessExpr((ArrayAccessExpr) firstNode, type, scope);
@@ -740,7 +743,7 @@ public class ExpressionTyper {
         Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName);
         if (firstAccessor != null) {
             context.addReactOnProperties(firstName);
-            teCursor = new TypedExpressionCursor(new MethodCallExpr(new NameExpr("_this"), firstAccessor.getName()), firstAccessor.getGenericReturnType());
+            teCursor = new TypedExpressionCursor(new MethodCallExpr(new NameExpr(THIS_PLACEHOLDER), firstAccessor.getName()), firstAccessor.getGenericReturnType());
         } else {
             throw new UnsupportedOperationException("firstNode I don't know about");
             // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?
@@ -794,14 +797,14 @@ public class ExpressionTyper {
             }
 
             java.lang.reflect.Type typeOfFirstAccessor = isInLineCast ? typeCursor : firstAccessor.getGenericReturnType();
-            NameExpr thisAccessor = new NameExpr("_this");
+            NameExpr thisAccessor = new NameExpr(THIS_PLACEHOLDER);
             NameExpr scope = backReference.map(d -> new NameExpr(d.getBindingId())).orElse(thisAccessor);
             return of(new TypedExpressionCursor(new MethodCallExpr(scope, firstAccessor.getName()), typeOfFirstAccessor));
         }
 
         Field field = DrlxParseUtil.getField( classCursor, firstName );
         if ( field != null ) {
-            NameExpr scope = new NameExpr( Modifier.isStatic( field.getModifiers() ) ? classCursor.getCanonicalName() : "_this" );
+            NameExpr scope = new NameExpr( Modifier.isStatic( field.getModifiers() ) ? classCursor.getCanonicalName() : THIS_PLACEHOLDER );
             return of( new TypedExpressionCursor( new FieldAccessExpr( scope, field.getName() ), field.getType() ) );
         }
 
@@ -827,7 +830,7 @@ public class ExpressionTyper {
                 context.addReactOnProperties( getFieldName(drlxExpr, fieldName ) );
             }
         }
-        teCursor = new TypedExpressionCursor(new NameExpr("_this"), originalTypeCursor);
+        teCursor = new TypedExpressionCursor(new NameExpr(THIS_PLACEHOLDER), originalTypeCursor);
         return teCursor;
     }
 

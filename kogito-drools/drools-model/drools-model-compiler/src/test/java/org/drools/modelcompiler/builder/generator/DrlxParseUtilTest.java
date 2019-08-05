@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.function.Function;
 
-import org.drools.core.addon.ClassTypeResolver;
-import org.drools.core.addon.TypeResolver;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
@@ -18,6 +16,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.core.addon.ClassTypeResolver;
+import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.util.ClassUtil;
@@ -25,9 +25,9 @@ import org.junit.Test;
 
 import static java.util.Optional.of;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseExpression;
 import static org.junit.Assert.assertEquals;
 
 public class DrlxParseUtilTest {
@@ -36,11 +36,11 @@ public class DrlxParseUtilTest {
     public void prependTest() {
 
         final Expression expr = StaticJavaParser.parseExpression("getAddressName().startsWith(\"M\")");
-        final NameExpr nameExpr = new NameExpr("_this");
+        final NameExpr nameExpr = new NameExpr(THIS_PLACEHOLDER);
 
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
 
-        assertEquals("_this.getAddressName().startsWith(\"M\")", concatenated.toString());
+        assertEquals(THIS_PLACEHOLDER + ".getAddressName().startsWith(\"M\")", concatenated.toString());
     }
 
     @Test(expected = UnsupportedOperationException.class)
