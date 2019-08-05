@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,6 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -651,7 +651,7 @@ public class ExpressionTyper {
         }
 
         java.lang.reflect.Type genericReturnType = m.getGenericReturnType();
-        if (genericReturnType instanceof TypeVariableImpl) {
+        if (genericReturnType instanceof TypeVariable) {
             return new TypedExpressionCursor(methodCallExpr, originalTypeCursor);
         } else {
             return new TypedExpressionCursor(methodCallExpr, genericReturnType);
