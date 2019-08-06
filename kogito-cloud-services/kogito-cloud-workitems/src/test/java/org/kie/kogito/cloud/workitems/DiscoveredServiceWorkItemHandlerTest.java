@@ -93,7 +93,7 @@ public class DiscoveredServiceWorkItemHandlerTest {
 
         public TestDiscoveredServiceWorkItemHandler(String service, String endpoint) {
             super();
-            this.serviceEndpoints.put(service, new ServiceInfo(endpoint, null));
+            this.addServices(service, new ServiceInfo(endpoint, null));
         }
         
         @Override

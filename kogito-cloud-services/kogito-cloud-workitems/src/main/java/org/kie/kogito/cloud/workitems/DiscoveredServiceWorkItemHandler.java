@@ -17,6 +17,7 @@ package org.kie.kogito.cloud.workitems;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,45 +50,103 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
     protected static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     protected static final List<String> INTERNAL_FIELDS = Arrays.asList("TaskName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Model", "Namespace");
 
-    protected Map<String, ServiceInfo> serviceEndpoints = new ConcurrentHashMap<>();
+    private Map<String, ServiceInfo> serviceEndpoints;
 
     private OkHttpClient http;
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper;
     private ServiceDiscovery serviceDiscovery;
+    private KogitoKubeClient kubeClient;
 
     public DiscoveredServiceWorkItemHandler() {
         this(null);
     }
 
     protected DiscoveredServiceWorkItemHandler(final KogitoKubeClient kubeClient) {
+        LOGGER.debug("New instance of discovered service work item with kubeclient: {}", kubeClient);
+        mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
-
-        http = buildHttpClient();
-
-        if (kubeClient == null) {
-            serviceDiscovery = this.buildServiceDiscovery(new DefaultKogitoKubeClient());
-        } else {
-            serviceDiscovery = this.buildServiceDiscovery(kubeClient);
-        }
+        /*
+         *  Delaying buildServiceDiscovery and buildHttpClient to avoid problems with okhttp3 dependency during GraalVM native builds. 
+         *  OKHttp3 references SSLContextFactory in static fields, which lead to errors. See: https://quarkus.io/guides/writing-native-applications-tips#delaying-class-initialization
+         *  We're trying to not use static fields that depends on unknown and uncontrolled dependencies to avoid errors like this.
+         *  That's why we're just holding the kube reference in the constructor, thus lazy building the HTTP objects. 
+         */ 
+        this.kubeClient = kubeClient;
+        this.serviceEndpoints = new ConcurrentHashMap<>();
     }
-
+    
     /**
      * Returns the {@link ServiceDiscovery} reference that will be used during the endpoint discovery.
      * @return
      */
+    protected ServiceDiscovery buildServiceDiscovery() {
+        if (kubeClient == null) {
+            LOGGER.debug("Kubernetes client configuration is null, using default values");
+            kubeClient = new DefaultKogitoKubeClient();
+        }
+        if (serviceDiscovery == null) {
+            LOGGER.debug("Creating and caching a new reference of ServiceDiscoveryFactory");
+            serviceDiscovery = new ServiceDiscoveryFactory(kubeClient).build();
+        }
+        return serviceDiscovery;
+    }
+    
+    /**
+     * Build a {@link ServiceDiscovery} reference with the custom {@link KogitoKubeClient}.
+     * @see #buildServiceDiscovery()
+     * @param kubeClient
+     * @return
+     */
     protected ServiceDiscovery buildServiceDiscovery(KogitoKubeClient kubeClient) {
-        return ServiceDiscoveryFactory.build(kubeClient);
+        this.kubeClient = kubeClient;
+        return this.buildServiceDiscovery();
     }
 
     protected OkHttpClient buildHttpClient() {
-        return new OkHttpClient.Builder()
-                                         .connectTimeout(60, TimeUnit.SECONDS)
-                                         .writeTimeout(60, TimeUnit.SECONDS)
-                                         .readTimeout(60, TimeUnit.SECONDS)
-                                         .build();
+        if (http == null) {
+            LOGGER.debug("Creating and caching a new reference of OkHttpClient");
+            http = new OkHttpClient.Builder()
+                                             .connectTimeout(60, TimeUnit.SECONDS)
+                                             .writeTimeout(60, TimeUnit.SECONDS)
+                                             .readTimeout(60, TimeUnit.SECONDS)
+                                             .build();
+        }
+        return http;
+    }
+    
+    /**
+     * Removes a service from the registry
+     *  
+     * @param serviceName
+     * @return true if removed successfully
+     */
+    protected boolean removeService(String serviceName) {
+        return this.serviceEndpoints.remove(serviceName) != null;
     }
 
+    /**
+     * Add a new service into the internal registry
+     * 
+     * @param serviceName
+     * @param service
+     */
+    protected void addServices(String serviceName, ServiceInfo service) {
+        if(service != null) {
+            LOGGER.debug("Adding a new service '{}' to the registry: {}", serviceName, service);
+            this.serviceEndpoints.put(serviceName, service);
+        }
+    }
+    
+    /**
+     * Retrieves a immutable list of services added to this reference. 
+     * 
+     * @return
+     */
+    protected Map<String, ServiceInfo> getServices() {
+        return Collections.unmodifiableMap(this.serviceEndpoints);
+    }
+    
     /**
      * Looks up service's endpoint (cluster ip + port) using label selector - meaning returns services that have given label.
      * Services are looked up only in given namespace. 
@@ -95,7 +154,8 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
      * @return valid endpoint (in URL form) if found or runtime exception in case of no services found
      */
     protected ServiceInfo findEndpoint(String namespace, String service) {
-        return serviceDiscovery.findEndpoint(namespace, service).orElseThrow(() -> new RuntimeException("No endpoint found for service " + service));
+        LOGGER.debug("Looking for services. Services discovered so far {}", this.serviceEndpoints);
+        return this.buildServiceDiscovery().findEndpoint(namespace, service).orElseThrow(() -> new RuntimeException("No endpoint found for service " + service));
     }
 
     /**
@@ -139,7 +199,7 @@ public abstract class DiscoveredServiceWorkItemHandler implements WorkItemHandle
                 break;
         }
 
-        try (Response response = http.newCall(request).execute()) {
+        try (Response response = this.buildHttpClient().newCall(request).execute()) {
 
             Map<String, Object> results = produceResultsFromResponse(response);
 

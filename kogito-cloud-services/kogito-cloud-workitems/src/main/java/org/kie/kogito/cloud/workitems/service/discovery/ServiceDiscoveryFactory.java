@@ -23,24 +23,30 @@ public final class ServiceDiscoveryFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceDiscoveryFactory.class);
 
-    private static ServiceDiscoveryFactory factory;
     private KogitoKubeClient kubeClient;
     private boolean istioEnv;
     private String istioGatewayUrl;
 
-    private ServiceDiscoveryFactory(final KogitoKubeClient kubeClient) {
+    /**
+     * Creates a new {@link ServiceDiscovery} reference for service discovery across a Kubernetes cluster
+     * @param kubeClient the {@link KogitoKubeClient} reference. If null, a new {@link DefaultKogitoKubeClient} will be created for you during the {@link ServiceDiscovery} {@link #build()}
+     */
+    public ServiceDiscoveryFactory(final KogitoKubeClient kubeClient) {
         this.kubeClient = kubeClient;
         this.discoverIstioGatewayUrl();
     }
 
-    public static ServiceDiscovery build() {
-        return build(new DefaultKogitoKubeClient());
-    }
-
-    public static ServiceDiscovery build(final KogitoKubeClient kubeClient) {
-        factory = new ServiceDiscoveryFactory(kubeClient);
-        if (factory.isIstioEnv()) {
-            return new IstioServiceDiscovery(kubeClient, factory.getIstioGatewayUrl());
+    /**
+     * Creates the {@link ServiceDiscovery} reference based on {@link KogitoKubeClient} for this instance
+     * @return
+     */
+    public ServiceDiscovery build() {
+        if(kubeClient == null) {
+            this.kubeClient = new DefaultKogitoKubeClient();
+        }
+        
+        if (this.isIstioEnv()) {
+            return new IstioServiceDiscovery(kubeClient, this.getIstioGatewayUrl());
         } else {
             return new KubernetesServiceDiscovery(kubeClient);
         }
@@ -65,7 +71,7 @@ public final class ServiceDiscoveryFactory {
                                        .asMap()
                                        .get(BaseServiceDiscovery.KEY_CLUSTER_IP);
             if (clusterIp == null || clusterIp.isEmpty()) {
-                LOGGER.info("Not in Istio environment");
+                LOGGER.debug("Not in Istio environment");
                 this.istioEnv = false;
                 this.istioGatewayUrl = null;
             } else {
@@ -78,12 +84,12 @@ public final class ServiceDiscoveryFactory {
                                            .append(BaseServiceDiscovery.DEFAULT_PORT)
                                            .append("/")
                                            .toString();
-                LOGGER.info("Discovered Istio Gateway URL {}. Will use Istio as default service discovery mechanism", this.istioGatewayUrl);
+                LOGGER.debug("Discovered Istio Gateway URL {}. Will use Istio as default service discovery mechanism", this.istioGatewayUrl);
             }
         } catch (Exception ex) {
             this.istioEnv = false;
             this.istioGatewayUrl = null;
-            LOGGER.warn("Failed to look up for Istio Gateway URL: '{}'. Enable debug logging to view the full stack trace. Failing back to standard Service API.", ex.getMessage());
+            LOGGER.debug("Failed to look up for Istio Gateway URL: '{}'. Enable debug logging to view the full stack trace. Failing back to standard Service API.", ex.getMessage());
             LOGGER.debug("Error while trying to fetch for Istio Gateway URL", ex);
         }
     }

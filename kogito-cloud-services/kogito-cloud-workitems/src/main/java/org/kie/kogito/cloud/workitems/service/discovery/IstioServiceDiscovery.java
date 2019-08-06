@@ -37,7 +37,6 @@ public class IstioServiceDiscovery extends BaseServiceDiscovery {
      */
     private static final String KEY_URL = "url";
     private static final String PROTOCOL_REGEX = "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)";
-    private static final String SLASH_REGEX = "\\/$";
 
     private final String istioGatewayUrl;
 
