@@ -148,6 +148,20 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testBigDecimal() {
+        test("{ " +
+                     "    BigDecimal sum = 0;\n" +
+                     "    BigDecimal money = 10;\n" +
+                     "    sum += money;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigDecimal sum = java.math.BigDecimal.valueOf(0);\n" +
+                     "    java.math.BigDecimal money = java.math.BigDecimal.valueOf(0);\n" +
+                     "    sum = sum.add(money);\n" +
+                     "}");
+    }
+
+    @Test
     public void testModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
