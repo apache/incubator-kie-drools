@@ -152,12 +152,12 @@ public class MvelCompilerTest implements CompilerTest {
         test("{ " +
                      "    BigDecimal sum = 0;\n" +
                      "    BigDecimal money = 10;\n" +
-                     "    sum += money;\n" +
+//                     "    sum += money;\n" +
                      "}",
              "{ " +
                      "    java.math.BigDecimal sum = java.math.BigDecimal.valueOf(0);\n" +
-                     "    java.math.BigDecimal money = java.math.BigDecimal.valueOf(0);\n" +
-                     "    sum = sum.add(money);\n" +
+                     "    java.math.BigDecimal money = java.math.BigDecimal.valueOf(10);\n" +
+//                     "    sum = sum.add(money);\n" +
                      "}");
     }
 

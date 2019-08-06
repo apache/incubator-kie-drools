@@ -193,8 +193,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, LHSPhase.Con
     }
 
     private Class<?> getRHSorLHSType(VariableDeclarator n) {
-        return (Class<?>) rhs.flatMap(TypedExpression::getType)
-                .orElseGet(() -> mvelCompilerContext.resolveType(((NodeWithType) n).getType().asString()));
+        return mvelCompilerContext.resolveType(((NodeWithType) n).getType().asString());
     }
 }
 

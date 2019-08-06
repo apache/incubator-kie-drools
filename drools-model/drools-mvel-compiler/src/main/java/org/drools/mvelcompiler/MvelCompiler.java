@@ -18,6 +18,7 @@ import org.drools.mvel.parser.ast.expr.WithStatement;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -92,7 +93,11 @@ public class MvelCompiler {
             Optional<Type> lastExpressionType;
             TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
             TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
-            Statement expression = (Statement) lhs.toJavaExpression();
+
+            Optional<TypedExpression> postProcessedRHS = new PostProcessRHSPhase().invoke(rhs, lhs);
+            TypedExpression postProcessedLHS = postProcessedRHS.map(ppr -> new LHSPhase(mvelCompilerContext, of(ppr)).invoke(s)).orElse(lhs);
+
+            Statement expression = (Statement) postProcessedLHS.toJavaExpression();
             statements.add(expression);
             lastExpressionType = ofNullable(rhs).flatMap(TypedExpression::getType);
             return lastExpressionType;
