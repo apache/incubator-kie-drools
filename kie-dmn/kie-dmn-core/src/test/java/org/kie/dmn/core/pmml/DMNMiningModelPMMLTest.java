@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -31,7 +30,6 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore
 public class DMNMiningModelPMMLTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNMiningModelPMMLTest.class);
@@ -42,11 +40,11 @@ public class DMNMiningModelPMMLTest {
                                                                                        DMNMiningModelPMMLTest.class,
                                                                                        "test_mining_model_summed.pmml");
 
-        evaluateMiningModelDecision(runtime, 0., 0,0);
+        evaluateMiningModelDecision(runtime, 10, 10, 10, 2070);
     }
 
     private BigDecimal evaluateMiningModelDecision(final DMNRuntime runtime, final double input1, final double input2,
-                                                   final double input3) {
+                                                   final double input3, final double expectedResult) {
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_0E8EC382-BB89-4877-8D37-A59B64285F05", "MiningModelDMN");
         Assertions.assertThat(dmnModel).isNotNull();
         Assertions.assertThat(dmnModel.hasErrors()).isFalse();
@@ -65,7 +63,8 @@ public class DMNMiningModelPMMLTest {
         Assertions.assertThat(resultContext.get("Decision")).isInstanceOf(Map.class);
         final Map<String, Object> decisions = (Map<String, Object>) resultContext.get("Decision");
         final BigDecimal result = (BigDecimal) decisions.get("result");
-
+        Assertions.assertThat(result.doubleValue()).isEqualTo(expectedResult);
+        
         return result;
     }
 }
