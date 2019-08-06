@@ -266,4 +266,23 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertEquals(1, list.size());
         assertEquals("Mario", list.get(0));
     }
+
+    @Test
+    public void testMatchesWithFunction() {
+        // DROOLS-4382
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "function String addStar(String s) { return s + \"*\"; }\n" +
+                "rule R when\n" +
+                "    Person(name matches addStar(likes))" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("Mark", 40);
+        p.setLikes( "M." );
+        ksession.insert(p);
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

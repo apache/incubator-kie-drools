@@ -51,6 +51,7 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
@@ -81,9 +82,10 @@ import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+
+import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
 import static org.drools.modelcompiler.util.ClassUtil.findMethod;
@@ -91,7 +93,13 @@ import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 
 public class DrlxParseUtil {
 
+    public static final String THIS_PLACEHOLDER = "_this";
+
     private static final Map<String, Method> accessorsCache = new HashMap<>();
+
+    public static boolean isThisExpression( Node expr ) {
+        return expr instanceof ThisExpr || (expr instanceof NameExpr && ((NameExpr)expr).getName().getIdentifier().equals(THIS_PLACEHOLDER));
+    }
 
     public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
         switch (operator) {
@@ -136,13 +144,13 @@ public class DrlxParseUtil {
             }
         }
         if (clazz.isArray() && name.equals( "length" )) {
-            FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( "_this" ), name );
+            FieldAccessExpr expr = new FieldAccessExpr( scope != null ? scope : new NameExpr( THIS_PLACEHOLDER ), name );
             return new TypedExpression( expr, int.class );
         }
         try {
             Field field = clazz.getField( name );
             if (scope == null) {
-                scope = new NameExpr(Modifier.isStatic( field.getModifiers() ) ? clazz.getCanonicalName() : "_this");
+                scope = new NameExpr(Modifier.isStatic( field.getModifiers() ) ? clazz.getCanonicalName() : THIS_PLACEHOLDER);
             }
             FieldAccessExpr expr = new FieldAccessExpr( scope, name );
             return new TypedExpression( expr, field.getType() );
@@ -466,7 +474,7 @@ public class DrlxParseUtil {
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters( true );
         if (!skipFirstParamAsThis) {
-            lambdaExpr.addParameter(new Parameter(new UnknownType(), "_this"));
+            lambdaExpr.addParameter(new Parameter(new UnknownType(), THIS_PLACEHOLDER));
         }
         usedDeclarations.stream().map( s -> new Parameter( new UnknownType(), s ) ).forEach( lambdaExpr::addParameter );
         lambdaExpr.setBody( new ExpressionStmt(expr) );
