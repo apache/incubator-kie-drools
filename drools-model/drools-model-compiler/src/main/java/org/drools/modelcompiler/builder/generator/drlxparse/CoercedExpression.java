@@ -97,7 +97,7 @@ public class CoercedExpression {
     }
 
     private boolean shouldCoerceBToMap() {
-        return Map.class.isAssignableFrom(right.getRawClass()) && !Map.class.isAssignableFrom(left.getRawClass());
+        return isNotBinaryExpression(right) && Map.class.isAssignableFrom(right.getRawClass());
     }
 
     private boolean cannotCoerce() {
