@@ -23,9 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
@@ -49,7 +47,6 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -61,6 +58,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -232,12 +230,7 @@ public class DMNScenarioRunnerHelperTest {
         List<DMNDecisionResult> decisionResults = new ArrayList<>();
         decisionResults.add(createDecisionResultMock("decision2", true));
         decisionResults.add(createDecisionResultMock("decision3", false));
-        Map<Integer, Message.Level> randomlyGeneratedLevelMap = new HashMap<>();
-        List<DMNMessage> messages = IntStream.range(0, 5).mapToObj(index -> {
-            Message.Level level = Message.Level.values()[new Random().nextInt(Message.Level.values().length)];
-            randomlyGeneratedLevelMap.put(index, level);
-            return createDMNMessageMock("dmnMessage-" + index, level);
-        }).collect(Collectors.toList());
+        List<DMNMessage> messages = getRandomlyGeneratedDMNMessageList();
 
         when(dmnResultMock.getDecisionResults()).thenReturn(decisionResults);
         when(dmnResultMock.getMessages()).thenReturn(messages);
@@ -253,10 +246,10 @@ public class DMNScenarioRunnerHelperTest {
         assertFalse(scenarioResultMetadata.getExecuted().contains("decision3"));
         final Map<String, String> auditMessagesMap = scenarioResultMetadata.getAuditMessagesMap();
         assertFalse(auditMessagesMap.isEmpty());
-        IntStream.range(0, 5).forEach(index -> {
-            String key = "dmnMessage-" + index;
-            assertTrue(auditMessagesMap.containsKey(key));
-            assertEquals(randomlyGeneratedLevelMap.get(index).name(), auditMessagesMap.get(key));
+        assertEquals(messages.size(), auditMessagesMap.size());
+        messages.forEach(message -> {
+            assertTrue(auditMessagesMap.containsKey(message.getText()));
+            assertEquals(message.getLevel().name(), auditMessagesMap.get(message.getText()));
         });
     }
 
@@ -326,12 +319,5 @@ public class DMNScenarioRunnerHelperTest {
                 .thenReturn(success ? DecisionEvaluationStatus.SUCCEEDED :
                                     DecisionEvaluationStatus.FAILED);
         return decisionResultMock;
-    }
-
-    private DMNMessage createDMNMessageMock(String text, Message.Level level) {
-        DMNMessage dmnMessageMock = mock(DMNMessage.class);
-        when(dmnMessageMock.getText()).thenReturn(text);
-        when(dmnMessageMock.getLevel()).thenReturn(level);
-        return dmnMessageMock;
     }
 }

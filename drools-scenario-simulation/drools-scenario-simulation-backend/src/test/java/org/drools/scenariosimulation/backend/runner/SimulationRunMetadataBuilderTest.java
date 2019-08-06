@@ -15,12 +15,19 @@
  */
 package org.drools.scenariosimulation.backend.runner;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResultMetadata;
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNMessage;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.drools.scenariosimulation.backend.TestUtils.getRandomlyGeneratedDMNMessageList;
 import static org.junit.Assert.assertEquals;
 
 public class SimulationRunMetadataBuilderTest {
@@ -28,6 +35,8 @@ public class SimulationRunMetadataBuilderTest {
     @Test
     public void build() {
         ScenarioWithIndex scenarioWithIndex1 = new ScenarioWithIndex(1, new Scenario());
+        List<DMNMessage> messages = getRandomlyGeneratedDMNMessageList();
+
         ScenarioResultMetadata result1 = new ScenarioResultMetadata(scenarioWithIndex1);
         result1.addExecuted("d1");
         result1.addExecuted("d2");
@@ -42,6 +51,11 @@ public class SimulationRunMetadataBuilderTest {
         result2.addAvailable("d2");
         result2.addAvailable("d3");
 
+        messages.forEach(message -> {
+            result1.addAuditMessage(message.getText(), message.getLevel().name());
+            result2.addAuditMessage(message.getText(), message.getLevel().name());
+        });
+
         SimulationRunMetadataBuilder builder = SimulationRunMetadataBuilder.create();
         builder.addScenarioResultMetadata(result1);
         builder.addScenarioResultMetadata(result2);
@@ -53,5 +67,13 @@ public class SimulationRunMetadataBuilderTest {
         assertEquals(2, build.getOutputCounter().get("d1"), 0.1);
         assertEquals(1, build.getOutputCounter().get("d2"), 0.1);
         assertEquals(2, build.getScenarioCounter().get(scenarioWithIndex1).size(), 0.1);
+        assertEquals(2, build.getAuditMessagesMap().size());
+        build.getAuditMessagesMap().values().forEach(auditMessageMap -> {
+            assertEquals(messages.size(), auditMessageMap.size());
+            messages.forEach(message -> {
+                assertTrue(auditMessageMap.containsKey(message.getText()));
+                assertEquals(message.getLevel().name(), auditMessageMap.get(message.getText()));
+            });
+        });
     }
 }

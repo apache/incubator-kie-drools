@@ -18,6 +18,8 @@ package org.drools.scenariosimulation.api.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.unmodifiableMap;
+
 /**
  * Aggregation of all metadata information about a simulation run
  */
@@ -31,6 +33,11 @@ public class SimulationRunMetadata {
 
     protected Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter = new HashMap<>();
 
+    /**
+     * Map of the messages to print in the CSV report: inside the <b>value</b> Map, <b>key</b> is the message, <b>value</b> is the severity level
+     */
+    protected final Map<ScenarioWithIndex, Map<String, String>> auditMessagesMap = new HashMap<>();
+
     public SimulationRunMetadata() {
         // CDI
     }
@@ -38,9 +45,11 @@ public class SimulationRunMetadata {
     public SimulationRunMetadata(int available,
                                  int executed,
                                  Map<String, Integer> outputCounter,
-                                 Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter) {
+                                 Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounter,
+                                 Map<ScenarioWithIndex, Map<String, String>> auditMessages) {
         this.available = available;
         this.executed = executed;
+        this.auditMessagesMap.putAll(auditMessages);
         this.outputCounter.putAll(outputCounter);
         this.scenarioCounter.putAll(scenarioCounter);
         this.coveragePercentage = (double) executed / available;
@@ -64,5 +73,13 @@ public class SimulationRunMetadata {
 
     public Map<ScenarioWithIndex, Map<String, Integer>> getScenarioCounter() {
         return scenarioCounter;
+    }
+
+    /**
+     * Return an <b>unmodifiable</b> representation of <code>auditMessagesMap</code>
+     * @return
+     */
+    public Map<ScenarioWithIndex, Map<String, String>> getAuditMessagesMap() {
+        return unmodifiableMap(auditMessagesMap);
     }
 }
