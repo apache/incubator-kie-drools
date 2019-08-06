@@ -253,7 +253,7 @@ public abstract class AbstractExpressionBuilder {
 
         // Use Number.class if they're both Numbers but different in order to use best possible type in the index
         Optional<Class<?>> numberType = leftType.flatMap(l -> rightType.map(r -> {
-            if (Number.class.isAssignableFrom(l) && Number.class.isAssignableFrom(r) && !l.equals(r)) {
+            if ((Number.class.isAssignableFrom(l) && Number.class.isAssignableFrom(r)) && !l.equals(r)) {
                 return Number.class;
             } else {
                 return l;

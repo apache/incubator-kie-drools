@@ -25,8 +25,11 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CA
 
 class FlowDSLPattern extends PatternDSL {
 
+    private final boolean allConstraintsPositional;
+
     public FlowDSLPattern(RuleContext context, PackageModel packageModel, PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType, boolean allConstraintsPositional) {
-        super(context, packageModel, pattern, constraintDescrs, allConstraintsPositional, patternType);
+        super(context, packageModel, pattern, constraintDescrs, patternType);
+        this.allConstraintsPositional = allConstraintsPositional;
     }
 
     @Override

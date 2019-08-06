@@ -1,5 +1,20 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
+import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.core.util.DateUtils;
+import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.*;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
+import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
+import org.drools.mvel.parser.ast.expr.*;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -8,52 +23,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.BinaryExpr;
-import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.LiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.ThisExpr;
-import com.github.javaparser.ast.expr.UnaryExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
-import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import org.drools.core.util.DateUtils;
-import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
-import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
-import org.drools.modelcompiler.builder.generator.ModelGenerator;
-import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.TypedExpression;
-import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyperContext;
-import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
-import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
-import org.drools.mvel.parser.ast.expr.DrlNameExpr;
-import org.drools.mvel.parser.ast.expr.DrlxExpression;
-import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
-import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
-import org.drools.mvel.parser.ast.expr.OOPathExpr;
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
-
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
+import static com.github.javaparser.ast.expr.BinaryExpr.Operator.*;
 import static org.drools.core.util.StringUtils.lcFirst;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class ConstraintParser {
@@ -329,13 +304,16 @@ public class ConstraintParser {
         switch (operator) {
             case EQUALS:
             case NOT_EQUALS:
-                combo = getEqualityExpression(left, right, operator);
+                combo = getEqualityExpression(left, right, operator).expression;
                 break;
             default:
                 if (left.getExpression() == null || right.getExpression() == null) {
                     return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
                 }
-                combo = handleSpecialComparisonCases(operator, left, right);
+                SpecialComparisonResult specialComparisonResult = handleSpecialComparisonCases(operator, left, right);
+                combo = specialComparisonResult.expression;
+                left = specialComparisonResult.coercedLeft;
+                right = specialComparisonResult.coercedRight;
         }
 
         for(Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
@@ -379,7 +357,7 @@ public class ConstraintParser {
         return printConstraint(expr);
     }
 
-    private static Expression getEqualityExpression( TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
+    private static SpecialComparisonResult getEqualityExpression(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator ) {
         if((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && !isAnyOperandNullLiteral( left, right )) {
             return compareBigDecimal(operator, left, right);
         }
@@ -392,14 +370,15 @@ public class ConstraintParser {
         // Avoid casts, by using an helper method we leverage autoboxing and equals
         methodCallExpr.addArgument(uncastExpr(left.getExpression()));
         methodCallExpr.addArgument(uncastExpr(right.getExpression()));
-        return operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT );
+        Expression expression = operator == BinaryExpr.Operator.EQUALS ? methodCallExpr : new UnaryExpr(methodCallExpr, UnaryExpr.Operator.LOGICAL_COMPLEMENT);
+        return new SpecialComparisonResult(expression, left, right);
     }
 
-    private static Boolean isNumber(TypedExpression left) {
+    static Boolean isNumber(TypedExpression left) {
         return left.getBoxedType().map(ConstraintParser::isNumericType).orElse(false);
     }
 
-    private static Expression uncastExpr(Expression e) {
+    static Expression uncastExpr(Expression e) {
         if(e == null) { // Not sure why a null should be here - check QueryTest.testPositionalRecursiveQuery
             return null;
         }
@@ -410,37 +389,32 @@ public class ConstraintParser {
         }
     }
 
-    private static Expression handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
+    private static SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && (isComparisonOperator(operator))) {
             return compareBigDecimal(operator, left, right);
         }
 
         if ( isComparisonOperator( operator ) ) {
-            String methodName = getComparisonMethodName(operator, left, right);
-            if (methodName != null) {
-                MethodCallExpr compareMethod = new MethodCallExpr( null, methodName );
-                compareMethod.addArgument(uncastExpr(left.getExpression()));
-                compareMethod.addArgument(uncastExpr(right.getExpression()));
-                return compareMethod;
-            }
+            SpecialComparisonCase methodName = specialComparisonFactory(left, right);
+            return methodName.createCompareMethod(operator);
         }
 
-        return new BinaryExpr( left.getExpression(), right.getExpression(), operator );
+        return new SpecialComparisonResult(new BinaryExpr( left.getExpression(), right.getExpression(), operator ), left, right);
     }
 
-    private static String getComparisonMethodName(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
-        String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
-        if (left.getType() == String.class && right.getType() == String.class) {
-            return methodName + "StringsAsNumbers";
-        } else if (isNumber(left) || isNumber(right)) {
-            return methodName + "Numbers";
-        } else if (Comparable.class.isAssignableFrom(left.getRawClass()) && Comparable.class.isAssignableFrom(right.getRawClass())) {
-            return methodName;
+    static class SpecialComparisonResult {
+        Expression expression;
+        TypedExpression coercedLeft;
+        TypedExpression coercedRight;
+
+        SpecialComparisonResult(Expression expression, TypedExpression coercedLeft, TypedExpression coercedRight) {
+            this.expression = expression;
+            this.coercedLeft = coercedLeft;
+            this.coercedRight = coercedRight;
         }
-        return null;
     }
 
-    private static String operatorToName(BinaryExpr.Operator operator) {
+    static String operatorToName(BinaryExpr.Operator operator) {
         switch (operator.asString()) {
             case "==" : return "equals";
             case "!=" : return "notEquals";
@@ -468,12 +442,12 @@ public class ConstraintParser {
         return left.getExpression() instanceof NullLiteralExpr || right.getExpression() instanceof NullLiteralExpr;
     }
 
-    private static Expression compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
+    private static SpecialComparisonResult compareBigDecimal(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
         String methodName = "org.drools.modelcompiler.util.EvaluationUtil." + operatorToName(operator);
         MethodCallExpr compareMethod = new MethodCallExpr( null, methodName );
         compareMethod.addArgument( toBigDecimalExpression( left ) );
         compareMethod.addArgument( toBigDecimalExpression( right ) );
-        return compareMethod;
+        return new SpecialComparisonResult(compareMethod, left, right);
     }
 
     private static Expression toBigDecimalExpression( TypedExpression typedExpression ) {
