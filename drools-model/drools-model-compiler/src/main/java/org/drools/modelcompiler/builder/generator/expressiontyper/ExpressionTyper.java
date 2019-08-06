@@ -65,10 +65,9 @@ import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaParent;
@@ -99,7 +98,6 @@ public class ExpressionTyper {
     private final List<Expression> prefixExpressions;
 
     private static final Logger logger          = LoggerFactory.getLogger(ExpressionTyper.class);
-    private static final String UNDERSCORE_THIS = "_this";
 
     public ExpressionTyper(RuleContext ruleContext, Class<?> patternType, String bindingId, boolean isPositional) {
         this(ruleContext, patternType, bindingId, isPositional, new ExpressionTyperContext());
@@ -177,8 +175,8 @@ public class ExpressionTyper {
         } else if (drlxExpr instanceof LiteralExpr) {
             return of(new TypedExpression(drlxExpr, getLiteralExpressionType( ( LiteralExpr ) drlxExpr )));
 
-        } else if (drlxExpr instanceof ThisExpr || (drlxExpr instanceof NameExpr && UNDERSCORE_THIS.equals(printConstraint(drlxExpr)))) {
-            return of(new TypedExpression(new NameExpr(UNDERSCORE_THIS), patternType));
+        } else if (drlxExpr instanceof ThisExpr || (drlxExpr instanceof NameExpr && THIS_PLACEHOLDER.equals(printConstraint(drlxExpr)))) {
+            return of(new TypedExpression(new NameExpr(THIS_PLACEHOLDER), patternType));
 
         } else if (drlxExpr instanceof CastExpr) {
             CastExpr castExpr = (CastExpr)drlxExpr;
@@ -295,7 +293,7 @@ public class ExpressionTyper {
         TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
         if (expression != null) {
             context.addReactOnProperties(name);
-            Expression plusThis = prepend(new NameExpr(UNDERSCORE_THIS), expression.getExpression());
+            Expression plusThis = prepend(new NameExpr(THIS_PLACEHOLDER), expression.getExpression());
             return of(new TypedExpression(plusThis, expression.getType(), name));
         }
 
