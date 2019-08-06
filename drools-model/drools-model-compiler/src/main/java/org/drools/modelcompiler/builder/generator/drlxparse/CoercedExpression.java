@@ -74,8 +74,6 @@ public class CoercedExpression {
             coercedRight = coerceToString(right);
         } else if (isNotBinaryExpression(right) && canBeNarrowed(leftClass, rightClass) && right.isNumberLiteral()) {
             coercedRight = castToClass(leftClass);
-        } else if (isNotBinaryExpression(right) && left.getType().equals(Object.class) && right.getType() != Object.class) {
-            coercedRight = castToClass(Object.class);
         } else if (leftClass == long.class && rightClass == int.class) {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
@@ -142,7 +140,7 @@ public class CoercedExpression {
         return new TypedExpression( methodCallExpr, Date.class );
     }
 
-    public static boolean canCoerceLiteralNumberExpr(Class<?> type) {
+    private static boolean canCoerceLiteralNumberExpr(Class<?> type) {
         return LITERAL_NUMBER_CLASSES.contains(type);
     }
 

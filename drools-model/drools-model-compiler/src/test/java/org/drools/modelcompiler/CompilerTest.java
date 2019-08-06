@@ -1944,4 +1944,21 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( john );
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testBigDecimalIntCoercion() {
+        String str = "import " + Result.class.getCanonicalName() + ";\n" +
+                "rule \"rule1\"\n" +
+                "when\n" +
+                "    $r : Result( value <= 20 )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession1 = getKieSession(str);
+
+        Result fact = new Result();
+        fact.setValue( new BigDecimal(10) );
+        ksession1.insert( fact );
+        assertEquals( 1, ksession1.fireAllRules() );
+    }
 }
