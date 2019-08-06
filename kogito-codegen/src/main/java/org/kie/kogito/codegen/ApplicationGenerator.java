@@ -30,9 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Config;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.metadata.ImageMetaData;
+import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.slf4j.Logger;
@@ -124,11 +126,23 @@ public class ApplicationGenerator {
         unitOfWorkManagerField.getVariable(0).setInitializer(new ObjectCreationExpr(null, 
                                                                                     new ClassOrInterfaceType(null, DefaultUnitOfWorkManager.class.getCanonicalName()), 
                                                                                     NodeList.nodeList(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, CollectingUnitOfWorkFactory.class.getCanonicalName()), NodeList.nodeList()))));
+        VariableDeclarator eventPublishersDeclarator;
+        FieldDeclaration eventPublishersFieldDeclaration = new FieldDeclaration();
         
-        
+        cls.addMember(eventPublishersFieldDeclaration);
         if (useInjection()) {  
             annotator.withSingletonComponent(cls);
+            
+            cls.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("setup")).get().addAnnotation("javax.annotation.PostConstruct");
+            
+            annotator.withOptionalInjection(eventPublishersFieldDeclaration);
+            eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
+        } else {
+            eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(List.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");
         }
+        
+        eventPublishersFieldDeclaration.addVariable(eventPublishersDeclarator);
+        
 
         if (hasRuleUnits) {
             // static {

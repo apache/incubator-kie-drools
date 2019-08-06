@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -212,6 +213,20 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
         public void setVariable(String variableName, Object value) {
         }
 
+        @Override
+        public Date getTriggerTime() {
+            return null;
+        }
+
+        @Override
+        public Date getLeaveTime() {
+            return null;
+        }
+
+        @Override
+        public String getNodeDefinitionId() {
+            return null;
+        }
     }
 
     static class EmtpyWorkflowProcessInstance implements WorkflowProcessInstance {
@@ -283,6 +298,16 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
 
         @Override
         public Map<String, Object> getVariables() {
+            return null;
+        }
+
+        @Override
+        public Date getStartDate() {
+            return null;
+        }
+
+        @Override
+        public Date getEndDate() {
             return null;
         }
 

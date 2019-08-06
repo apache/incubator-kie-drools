@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.process;
 
+import java.util.Date;
+
 /**
  * A workflow process instance represents one specific instance of a
  * workflow process that is currently executing.  It is an extension
@@ -40,6 +42,23 @@ public interface WorkflowProcessInstance
      */
     Object getVariable(String name);
 
+    /**
+     * Sets process variable with given value under given name
+     * @param name name of the variable
+     * @param value value of the variable
+     */
     void setVariable(String name, Object value);
+    
+    /**
+     * Returns start date of this process instance
+     * @return actual start date
+     */
+    Date getStartDate();
+    
+    /**
+     * Returns end date (either completed or aborted) of this process instance
+     * @return actual end date
+     */
+    Date getEndDate();
 
 }

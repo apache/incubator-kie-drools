@@ -42,6 +42,9 @@ public class EventNodeVisitor extends AbstractVisitor {
             variable = variableScope.findVariable(eventNode.getVariableName());
         }
         metadata.getSignals().put(eventNode.getType(), variable != null ? variable.getType().getStringType() : null);
+
+        visitMetaData(eventNode.getMetaData(), body, "eventNode" + node.getId());
+        
         addFactoryMethodWithArgs(body, "eventNode" + node.getId(), "done");
         
     }

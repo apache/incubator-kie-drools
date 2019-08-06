@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.process;
 
+import java.util.Date;
+
 import org.kie.api.definition.process.Node;
 
 /**
@@ -52,6 +54,15 @@ public interface NodeInstance {
      * @return the id of the node this node instance refers to
      */
     long getNodeId();
+    
+    /**
+     * The id of the node definition this node instance refers to.  The node
+     * represents the definition that this node instance was based
+     * on.
+     *
+     * @return the definition id of the node this node instance refers to
+     */
+    String getNodeDefinitionId();
 
     /**
      * Return the node this node instance refers to.  The node
@@ -84,8 +95,30 @@ public interface NodeInstance {
      */
     NodeInstanceContainer getNodeInstanceContainer();
 
+    /**
+     * Returns variable associated with this node instance under given name
+     * @param variableName name of the variable
+     * @return variable value if present otherwise null
+     */
     Object getVariable(String variableName);
 
+    /**
+     * Sets variable with given name and value
+     * @param variableName name of the variable
+     * @param value value of the variable
+     */
     void setVariable(String variableName, Object value);
+    
+    /**
+     * Returns the time when this node instance was triggered
+     * @return actual trigger time
+     */
+    Date getTriggerTime();
+    
+    /**
+     * Returns the time when this node instance was left, might be null if node instance is still active
+     * @return actual leave time
+     */
+    Date getLeaveTime();
 
 }

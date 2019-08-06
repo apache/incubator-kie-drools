@@ -72,6 +72,8 @@ public class RuleSetNodeVisitor extends AbstractVisitor {
         for (Entry<String, String> entry : ruleSetNode.getOutMappings().entrySet()) {
             addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "outMapping", new StringLiteralExpr(entry.getKey()), new StringLiteralExpr(entry.getValue()));
         }
+
+        visitMetaData(ruleSetNode.getMetaData(), body, "ruleSetNode" + node.getId());
         
         addFactoryMethodWithArgs(body, "ruleSetNode" + node.getId(), "done");
         

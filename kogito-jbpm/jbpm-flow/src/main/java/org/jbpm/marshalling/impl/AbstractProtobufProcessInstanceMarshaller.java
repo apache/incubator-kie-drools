@@ -604,6 +604,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setDescription(_instance.getDescription());
         processInstance.setState( _instance.getState() );
         processInstance.setParentProcessInstanceId(_instance.getParentProcessInstanceId());
+        processInstance.setRootProcessInstanceId(_instance.getRootProcessInstanceId());
         processInstance.setSignalCompletion(_instance.getSignalCompletion());
         processInstance.setDeploymentId(_instance.getDeploymentId());
         processInstance.setCorrelationKey(_instance.getCorrelationKey());

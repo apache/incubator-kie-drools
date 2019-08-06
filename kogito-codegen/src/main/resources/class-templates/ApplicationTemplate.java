@@ -16,4 +16,14 @@ public class Application implements org.kie.kogito.Application {
     public UnitOfWorkManager unitOfWorkManager() {
         return unitOfWorkManager;
     }
+    
+    public void setup() {
+        System.out.println("Starting up Kogito application...." + eventPublishers);
+        
+        if (eventPublishers != null) {
+            eventPublishers.forEach(publisher -> 
+            unitOfWorkManager().eventManager().addPublisher(publisher));
+            
+        }
+    }
 }

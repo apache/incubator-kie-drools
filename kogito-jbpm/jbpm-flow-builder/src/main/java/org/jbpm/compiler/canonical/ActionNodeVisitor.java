@@ -52,6 +52,9 @@ public class ActionNodeVisitor extends AbstractVisitor {
         actionBody.addStatement(new NameExpr(actionNode.getAction().toString()));
         
         addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "action", lambda);
+
+        visitMetaData(actionNode.getMetaData(), body, "actionNode" + node.getId());
+        
         addFactoryMethodWithArgs(body, "actionNode" + node.getId(), "done");
     }
 }

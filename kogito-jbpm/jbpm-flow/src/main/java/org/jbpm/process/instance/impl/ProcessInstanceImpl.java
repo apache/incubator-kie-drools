@@ -238,8 +238,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     protected abstract void internalStart(String trigger);
     
     public void disconnect() {
-        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalRemoveProcessInstance(this);
-        process = null;
+        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager().internalRemoveProcessInstance(this);        
         kruntime = null;
     }
     

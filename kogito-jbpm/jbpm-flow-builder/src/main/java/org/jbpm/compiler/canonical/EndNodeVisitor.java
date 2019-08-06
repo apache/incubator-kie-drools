@@ -73,6 +73,8 @@ public class EndNodeVisitor extends AbstractVisitor {
             
             addFactoryMethodWithArgs(body, "endNode" + node.getId(), "action", lambda);
         }
+
+        visitMetaData(endNode.getMetaData(), body, "endNode" + node.getId());
         
         addFactoryMethodWithArgs(body, "endNode" + node.getId(), "done");
     }

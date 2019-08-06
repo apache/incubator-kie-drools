@@ -99,6 +99,10 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	return node == null ? "" : node.getName();
     }
     
+    public String getNodeDefinitionId() {
+        return (String)getNode().getMetaData().get("UniqueId");
+    }
+
     public int getLevel() {
         return this.level;
     }

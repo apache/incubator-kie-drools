@@ -107,7 +107,9 @@ public class ReflectionProtoGenerator implements ProtoGenerator<Class<?>> {
 
             String processId = generatedData.reference();
             Collection classes = Collections.singleton(modelClazz);
-            Proto modelProto = generate(modelClazz.getPackage().getName(), classes, "import \"kogito-index.proto\";");
+            Proto modelProto = generate(modelClazz.getPackage().getName(), classes, "import \"kogito-index.proto\";", 
+                                        "import \"kogito-types.proto\";", 
+                                        "option kogito_model = \"" + generatedData.name() +"\";");
             Path protoFilePath = Paths.get(targetDirectory, "classes", "/persistence/" + processId + ".proto");
 
             Files.createDirectories(protoFilePath.getParent());

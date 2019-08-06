@@ -19,6 +19,8 @@ package org.kie.kogito.services.uow;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.kie.kogito.event.EventBatch;
+import org.kie.kogito.event.EventManager;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.WorkUnit;
 
@@ -31,8 +33,15 @@ import org.kie.kogito.uow.WorkUnit;
  */
 public class CollectingUnitOfWork implements UnitOfWork {
     
-    private Set<WorkUnit> collectedWork;
+    private Set<WorkUnit<?>> collectedWork;
     private boolean done;
+    
+    private final EventManager eventManager;
+    
+   
+    public CollectingUnitOfWork(EventManager eventManager) {
+        this.eventManager = eventManager;
+    }
 
     @Override
     public void start() {
@@ -45,14 +54,21 @@ public class CollectingUnitOfWork implements UnitOfWork {
     @Override
     public void end() {
         checkStarted();
-        collectedWork.forEach(work -> work.perform());
+        EventBatch batch = eventManager.newBatch();
+        for (WorkUnit<?> work : collectedWork) {
+            batch.append(work.data());
+            work.perform();
+        }
+        eventManager.publish(batch);
         done();
     }
 
     @Override
     public void abort() {
-        checkStarted();
-        collectedWork.forEach(work -> work.abort());
+        checkStarted();                
+        for (WorkUnit<?> work : collectedWork) {            
+            work.abort();
+        }
         done();
     }
 

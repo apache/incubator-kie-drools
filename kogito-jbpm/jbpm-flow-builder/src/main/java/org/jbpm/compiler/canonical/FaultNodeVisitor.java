@@ -39,6 +39,9 @@ public class FaultNodeVisitor extends AbstractVisitor {
         if (faultNode.getFaultName() != null) {
             addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "setFaultName", new StringLiteralExpr(faultNode.getFaultName()));
         }
+
+        visitMetaData(faultNode.getMetaData(), body, "faultNode" + node.getId());
+        
         addFactoryMethodWithArgs(body, "faultNode" + node.getId(), "done");
         
     }

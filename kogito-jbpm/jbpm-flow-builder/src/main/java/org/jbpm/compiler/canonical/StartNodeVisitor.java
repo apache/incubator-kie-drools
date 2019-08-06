@@ -35,6 +35,9 @@ public class StartNodeVisitor extends AbstractVisitor {
         
         addFactoryMethodWithArgsWithAssignment(factoryField, body, StartNodeFactory.class, "startNode" + node.getId(), "startNode", new LongLiteralExpr(startNode.getId()));
         addFactoryMethodWithArgs(body, "startNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(startNode.getName(), "Start")));
+        
+        visitMetaData(startNode.getMetaData(), body, "startNode" + node.getId());
+        
         addFactoryMethodWithArgs(body, "startNode" + node.getId(), "done");
         
         if (startNode.getTriggers() != null && !startNode.getTriggers().isEmpty()) {

@@ -16,6 +16,8 @@
 
 package org.kie.kogito.uow;
 
+import org.kie.kogito.event.EventManager;
+
 /**
  * Manager that controls and give access to UnitOfWork.
  * 
@@ -39,4 +41,10 @@ public interface UnitOfWorkManager {
      * @return new, not started unit of work
      */
     UnitOfWork newUnitOfWork();
+    
+    /**
+     * Returns instance of the event manager configured for this unit of work manager
+     * @return event manager instance
+     */
+    EventManager eventManager();
 }

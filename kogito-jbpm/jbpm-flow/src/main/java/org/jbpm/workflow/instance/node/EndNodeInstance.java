@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.Date;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
@@ -42,6 +44,7 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
             throw new IllegalArgumentException(
                 "An EndNode only accepts default incoming connections!");
         }
+        leaveTime = new Date();
         boolean hidden = false;
         if (getNode().getMetaData().get("hidden") != null) {
             hidden = true;

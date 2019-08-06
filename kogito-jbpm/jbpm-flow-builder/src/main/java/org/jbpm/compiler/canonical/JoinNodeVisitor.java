@@ -32,8 +32,11 @@ public class JoinNodeVisitor extends AbstractVisitor {
     public void visitNode(String factoryField, Node node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         Join joinNode = (Join) node;
         addFactoryMethodWithArgsWithAssignment(factoryField, body, JoinFactory.class, "joinNode" + node.getId(), "joinNode", new LongLiteralExpr(joinNode.getId()));
-        addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(joinNode.getName(), "Split")));
+        addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "name", new StringLiteralExpr(getOrDefault(joinNode.getName(), "Join")));
         addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "type", new IntegerLiteralExpr(joinNode.getType()));
+
+        visitMetaData(joinNode.getMetaData(), body, "joinNode" + node.getId());
+        
         addFactoryMethodWithArgs(body, "joinNode" + node.getId(), "done");
     }
 }

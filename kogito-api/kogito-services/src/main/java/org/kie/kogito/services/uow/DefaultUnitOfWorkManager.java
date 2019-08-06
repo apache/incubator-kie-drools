@@ -16,6 +16,8 @@
 
 package org.kie.kogito.services.uow;
 
+import org.kie.kogito.event.EventManager;
+import org.kie.kogito.services.event.impl.BaseEventManager;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkFactory;
 import org.kie.kogito.uow.UnitOfWorkManager;
@@ -33,6 +35,7 @@ public class DefaultUnitOfWorkManager implements UnitOfWorkManager {
     // factory used to create unit of work 
     private UnitOfWorkFactory factory;
     
+    private EventManager eventManager = new BaseEventManager();
 
     public DefaultUnitOfWorkManager(UnitOfWorkFactory factory) {
         super();
@@ -58,7 +61,7 @@ public class DefaultUnitOfWorkManager implements UnitOfWorkManager {
     @Override
     public UnitOfWork newUnitOfWork() {
         
-        return new ManagedUnitOfWork(factory.create(), this::associate, this::dissociate, this::dissociate);
+        return new ManagedUnitOfWork(factory.create(eventManager), this::associate, this::dissociate, this::dissociate);
     }
     
     protected void associate(UnitOfWork unit) {
@@ -67,5 +70,10 @@ public class DefaultUnitOfWorkManager implements UnitOfWorkManager {
 
     protected void dissociate(UnitOfWork unit) {
         currentUnitOfWork.set(null);
+    }
+
+    @Override
+    public EventManager eventManager() {
+        return eventManager;
     }
 }
