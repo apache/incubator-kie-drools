@@ -84,7 +84,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             JsonNode jsonNode = element.getValue();
             // if is a simple value just return the parsed result
             if (numberOfFields == 1 && "value".equals(key)) {
-                return internalLiteralEvaluation(jsonNode.textValue(), genericClasses.get(0));
+                return internalLiteralEvaluation(jsonNode.textValue(), genericClasses.isEmpty() ? className : genericClasses.get(0));
             }
 
             if (jsonNode.isArray()) {
