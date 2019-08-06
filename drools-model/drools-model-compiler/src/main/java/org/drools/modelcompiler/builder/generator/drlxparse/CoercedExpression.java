@@ -80,6 +80,8 @@ public class CoercedExpression {
             coercedRight = right.cloneWithNewExpression(new CastExpr(PrimitiveType.longType(), right.getExpression()));
         } else if (leftClass == Date.class && rightClass == String.class) {
             coercedRight = coerceToDate(right);
+        } else if(shouldCoerceBToMap()) {
+            coercedRight = castToClass(toNonPrimitiveType(leftClass));
         } else {
             coercedRight = right;
         }
@@ -92,6 +94,10 @@ public class CoercedExpression {
         }
 
         return new CoercedExpressionResult(coercedLeft, coercedRight);
+    }
+
+    private boolean shouldCoerceBToMap() {
+        return Map.class.isAssignableFrom(right.getRawClass()) && !Map.class.isAssignableFrom(left.getRawClass());
     }
 
     private boolean cannotCoerce() {

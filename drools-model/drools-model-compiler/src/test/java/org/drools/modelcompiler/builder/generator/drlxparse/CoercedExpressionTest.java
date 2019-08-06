@@ -1,5 +1,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.util.Map;
+
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
@@ -108,6 +110,14 @@ public class CoercedExpressionTest {
         final TypedExpression right = expr("40", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
         assertEquals(expr("(short)40", int.class), coerce.getCoercedRight());
+    }
+
+    @Test
+    public void castMaps() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAge()", Integer.class);
+        final TypedExpression right = expr("$m.get(\"age\")", java.util.Map.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right).coerce();
+        assertEquals(expr("(java.lang.Integer)$m.get(\"age\")", Map.class), coerce.getCoercedRight());
     }
 
     @Test
