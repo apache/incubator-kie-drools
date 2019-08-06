@@ -27,6 +27,7 @@ import org.kie.soup.commons.xstream.XStreamUtils;
 
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.cleanUpUnusedNodes;
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.configureXStreamMappings;
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
@@ -135,6 +136,21 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
 
             // Marshall the model with the "new" xstream configuration, that does not write "reference" attributes
             return updateVersion(xmlPersistence.marshal(model), "1.5", "1.6");
+        };
+    }
+
+    @Override
+    public Function<String, String> from1_6to1_7() {
+        return rawXml -> {
+            ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
+            if (rawXml == null || rawXml.trim().equals("")) {
+                return xmlPersistence.marshal(new ScenarioSimulationModel());
+            }
+            ScenarioSimulationModel model = xmlPersistence.unmarshal(rawXml, false);
+            for (FactMapping factMapping : model.getSimulation().getSimulationDescriptor().getUnmodifiableFactMappings()) {
+                factMapping.setColumnWidth(getColumnWidth(factMapping.getExpressionIdentifier().getName()));
+            }
+            return updateVersion(xmlPersistence.marshal(model), "1.6", "1.7");
         };
     }
 

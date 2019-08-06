@@ -83,6 +83,23 @@ public class ScenarioSimulationXMLPersistence {
         return input.replaceAll(toRemove, "");
     }
 
+    public static double getColumnWidth(String expressionIdentifierName) {
+        ExpressionIdentifier.NAME expressionName = ExpressionIdentifier.NAME.Other;
+        try {
+            expressionName = ExpressionIdentifier.NAME.valueOf(expressionIdentifierName);
+        } catch (IllegalArgumentException e) {
+            // ColumnId not recognized
+        }
+        switch (expressionName) {
+            case Index:
+                return 70;
+            case Description:
+                return 300;
+            default:
+                return 114;
+        }
+    }
+
     public String marshal(final ScenarioSimulationModel sc) {
         return xt.toXML(sc);
     }
@@ -122,6 +139,8 @@ public class ScenarioSimulationXMLPersistence {
                 migrator = migrator.andThen(getMigrationStrategy().from1_4to1_5());
             case "1.5":
                 migrator = migrator.andThen(getMigrationStrategy().from1_5to1_6());
+            case "1.6":
+                migrator = migrator.andThen(getMigrationStrategy().from1_6to1_7());
                 supported = true;
                 break;
             default:

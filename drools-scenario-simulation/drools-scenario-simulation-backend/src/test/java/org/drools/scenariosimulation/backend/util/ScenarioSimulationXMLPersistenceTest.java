@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 
 import static org.drools.scenariosimulation.backend.TestUtils.getFileContent;
+import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.getColumnWidth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -141,6 +142,24 @@ public class ScenarioSimulationXMLPersistenceTest {
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.5\">"));
         assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
         assertFalse(migrated.contains("reference="));
+    }
+
+    @Test
+    public void migrateIfNecessary_1_6_to_1_7() throws Exception {
+        String toMigrate = getFileContent("scesim-1-6-dmn.scesim");
+        assertFalse(toMigrate.contains("columnWidth"));
+        String migrated = instance.migrateIfNecessary(toMigrate);
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.6\">"));
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
+        try {
+            ScenarioSimulationModel unmarshalled = instance.unmarshal(migrated, false);
+            for (FactMapping factMapping : unmarshalled.getSimulation().getSimulationDescriptor().getUnmodifiableFactMappings()) {
+                assertTrue(factMapping.getColumnWidth() != null);
+                assertTrue(factMapping.getColumnWidth() == getColumnWidth(factMapping.getExpressionIdentifier().getName()));
+            }
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test
