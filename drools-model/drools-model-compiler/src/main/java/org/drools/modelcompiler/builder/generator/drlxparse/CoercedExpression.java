@@ -148,7 +148,7 @@ public class CoercedExpression {
         boolean aIsString = a.getType() == String.class;
         boolean bIsNotString = b.getType() != String.class;
         boolean bIsNotNull = !(b.getExpression() instanceof NullLiteralExpr);
-        boolean bIsNotSerializable = !(b.getType() == Serializable.class);
+        boolean bIsNotSerializable = b.getType() != Serializable.class;
         boolean bExpressionExists = b.getExpression() != null;
         return bExpressionExists && isNotBinaryExpression(b) && aIsString && (bIsNotString && bIsNotNull && bIsNotSerializable);
     }
@@ -167,7 +167,7 @@ public class CoercedExpression {
         if (type == double.class) {
             return new DoubleLiteralExpr(expr.getValue().endsWith("d") ? expr.getValue() : expr.getValue() + "d");
         }
-        throw new RuntimeException("Unknown literal: " + expr);
+        throw new CoercedExpressionException(new InvalidExpressionErrorResult("Unknown literal: " + expr));
     }
 
     private boolean canBeNarrowed(Class<?> leftType, Class<?> rightType) {
@@ -184,7 +184,7 @@ public class CoercedExpression {
             this.coercedRight = coercedRight;
         }
 
-        public TypedExpression getCoercedLeft() {
+        TypedExpression getCoercedLeft() {
             return coercedLeft;
         }
 
@@ -193,15 +193,15 @@ public class CoercedExpression {
         }
     }
 
-    public static class CoercedExpressionException extends RuntimeException {
+    static class CoercedExpressionException extends RuntimeException {
 
-        private final InvalidExpressionErrorResult invalidExpressionErrorResult;
+        private final transient InvalidExpressionErrorResult invalidExpressionErrorResult;
 
-        public CoercedExpressionException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
+        CoercedExpressionException(InvalidExpressionErrorResult invalidExpressionErrorResult) {
             this.invalidExpressionErrorResult = invalidExpressionErrorResult;
         }
 
-        public InvalidExpressionErrorResult getInvalidExpressionErrorResult() {
+        InvalidExpressionErrorResult getInvalidExpressionErrorResult() {
             return invalidExpressionErrorResult;
         }
     }
