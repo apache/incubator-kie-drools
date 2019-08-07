@@ -1784,7 +1784,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             factHandle.forEachLeftTuple( ObjectTypeNode::expireLeftTuple );
             factHandle.forEachRightTuple( rt -> {
-                rt.setExpired( true );
+                rt.setExpired(workingMemory, context);
                 ObjectTypeNode.expireRightTuple(rt);
             } );
 
@@ -1842,7 +1842,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
             linkedTuples.forEachLeftTuple( partition, ObjectTypeNode::expireLeftTuple );
             linkedTuples.forEachRightTuple( partition, rt -> {
-                rt.setExpired( true );
+                rt.setExpired(wm, context);
                 ObjectTypeNode.expireRightTuple(rt);
             });
 
