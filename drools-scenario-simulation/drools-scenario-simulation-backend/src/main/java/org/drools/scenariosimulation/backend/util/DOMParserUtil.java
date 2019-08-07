@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -94,6 +95,7 @@ public class DOMParserUtil {
     public static Document getDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder dBuilder = factory.newDocumentBuilder();
         InputStream inputStream = new ByteArrayInputStream(xml.getBytes());
         return dBuilder.parse(inputStream);
@@ -101,7 +103,9 @@ public class DOMParserUtil {
 
     public static String getString(Document toRead) throws Exception {
         DOMSource domSource = new DOMSource(toRead);
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        TransformerFactory factory = TransformerFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        Transformer transformer = factory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         StringWriter sw = new StringWriter();
