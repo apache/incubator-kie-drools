@@ -61,7 +61,6 @@ public class ScenarioSimulationXMLPersistenceTest {
             assertFalse(migrated.contains("EXPECTED"));
         } catch (Exception e) {
             fail(e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -77,7 +76,6 @@ public class ScenarioSimulationXMLPersistenceTest {
             assertTrue(migrated.contains("<type>RULE</type>"));
         } catch (Exception e) {
             fail(e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -94,7 +92,6 @@ public class ScenarioSimulationXMLPersistenceTest {
             }
         } catch (Exception e) {
             fail(e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -126,7 +123,6 @@ public class ScenarioSimulationXMLPersistenceTest {
             instance.internalUnmarshal(migrated);
         } catch (Exception e) {
             fail(e.getMessage());
-            e.printStackTrace();
         }
     }
 

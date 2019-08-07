@@ -16,7 +16,6 @@
 
 package org.drools.scenariosimulation.backend.util;
 
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,7 +79,7 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public static String cleanUpUnusedNodes(String input) throws Exception {
-        return SAXParserUtil.cleanupNodes(input, "Scenario", "simulationDescriptor");
+        return DOMParserUtil.cleanupNodes(input, "Scenario", "simulationDescriptor");
     }
 
     public String marshal(final ScenarioSimulationModel sc) {

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.scenariosimulation.backend.util;
 
 import java.util.Arrays;
@@ -16,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SAXParserUtilTest {
+public class DOMParserUtilTest {
 
     private static final String XML = "<Main>" +
             "<testnode>testnodecontent</testnode>" +
@@ -33,9 +48,9 @@ public class SAXParserUtilTest {
     @Test
     public void cleanupNodes() {
         try {
-            String retrieved = SAXParserUtil.cleanupNodes(XML, "child", "testnode");
+            String retrieved = DOMParserUtil.cleanupNodes(XML, "child", "testnode");
             assertNotNull(retrieved);
-            Map<Node, List<Node>> childrenNodes = SAXParserUtil.getChildrenNodes(retrieved, "Main", "testnode");
+            Map<Node, List<Node>> childrenNodes = DOMParserUtil.getChildrenNodes(retrieved, "Main", "testnode");
             assertNotNull(childrenNodes);
             assertEquals(1, childrenNodes.size());
             Node keyNode = childrenNodes.keySet().iterator().next();
@@ -44,7 +59,7 @@ public class SAXParserUtilTest {
             assertTrue(valueNodes != null && valueNodes.size() == 1);
             assertEquals("testnode", valueNodes.get(0).getNodeName());
 
-            childrenNodes = SAXParserUtil.getChildrenNodes(retrieved, "child", "othernode");
+            childrenNodes = DOMParserUtil.getChildrenNodes(retrieved, "child", "othernode");
             assertEquals(2, childrenNodes.size());
             childrenNodes.forEach((childKeyNode, childValueNodes) -> {
                 assertNotNull(childKeyNode);
@@ -53,7 +68,7 @@ public class SAXParserUtilTest {
                 assertEquals("othernode", childValueNodes.get(0).getNodeName());
             });
 
-            childrenNodes = SAXParserUtil.getChildrenNodes(retrieved, "child", "testnode");
+            childrenNodes = DOMParserUtil.getChildrenNodes(retrieved, "child", "testnode");
             childrenNodes.forEach((childKeyNode, childValueNodes) -> {
                 assertNotNull(childKeyNode);
                 assertEquals("child", childKeyNode.getNodeName());
@@ -67,7 +82,7 @@ public class SAXParserUtilTest {
     @Test
     public void getChildrenNodes() {
         try {
-            Map<Node, List<Node>> retrieved = SAXParserUtil.getChildrenNodes(XML, "Main", "testnode");
+            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodes(XML, "Main", "testnode");
             assertNotNull(retrieved);
             assertEquals(1, retrieved.size());
             Node keyNode = retrieved.keySet().iterator().next();
@@ -76,7 +91,7 @@ public class SAXParserUtilTest {
             List<Node> valueNodes = retrieved.get(keyNode);
             assertTrue(valueNodes != null && valueNodes.size() == 1);
             assertEquals("testnode", valueNodes.get(0).getNodeName());
-            retrieved = SAXParserUtil.getChildrenNodes(XML, "Main", "child");
+            retrieved = DOMParserUtil.getChildrenNodes(XML, "Main", "child");
             assertNotNull(retrieved);
             assertEquals(1, retrieved.size());
             keyNode = retrieved.keySet().iterator().next();
@@ -87,7 +102,7 @@ public class SAXParserUtilTest {
             valueNodes.forEach(childNode -> assertEquals("child", childNode.getNodeName()));
             List<String> nodeToTest = Arrays.asList("testnode", "othernode");
             for (String childNodeName : nodeToTest) {
-                retrieved = SAXParserUtil.getChildrenNodes(XML, "child", childNodeName);
+                retrieved = DOMParserUtil.getChildrenNodes(XML, "child", childNodeName);
                 assertNotNull(retrieved);
                 assertEquals(2, retrieved.size());
                 retrieved.forEach((childKeyNode, childValueNodes) -> {
@@ -105,7 +120,7 @@ public class SAXParserUtilTest {
     @Test
     public void getDocument() {
         try {
-            Document retrieved = SAXParserUtil.getDocument(XML);
+            Document retrieved = DOMParserUtil.getDocument(XML);
             assertNotNull(retrieved);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -119,7 +134,7 @@ public class SAXParserUtilTest {
             DocumentBuilder builder = dbf.newDocumentBuilder();
             Document document = builder.newDocument();
             document.appendChild(document.createElement("CREATED"));
-            String retrieved = SAXParserUtil.getString(document);
+            String retrieved = DOMParserUtil.getString(document);
             assertNotNull(retrieved);
             assertTrue(retrieved.contains("CREATED"));
         } catch (Exception e) {
