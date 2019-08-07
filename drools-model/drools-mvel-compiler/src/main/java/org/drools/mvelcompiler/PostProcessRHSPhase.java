@@ -46,7 +46,7 @@ public class PostProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpr
     private Optional<TypedExpression> asBigDecimalValueOf(IntegerLiteralExpr n) {
         Optional<TypedExpression> bigDecimal = Optional.of(new SimpleNameTExpr(BigDecimal.class.getCanonicalName(), null));
         List<TypedExpression> arguments = Collections.singletonList(new IntegerLiteralExpressionT(new IntegerLiteralExpr(n.asInt())));
-        MethodCallExprT valueOf = new MethodCallExprT(n, "valueOf", bigDecimal, arguments, Optional.of(BigDecimal.class));
+        MethodCallExprT valueOf = new MethodCallExprT("valueOf", bigDecimal, arguments, Optional.of(BigDecimal.class));
         return Optional.of(valueOf);
     }
 }
