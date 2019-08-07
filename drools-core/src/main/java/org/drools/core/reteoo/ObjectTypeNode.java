@@ -362,7 +362,7 @@ public class ObjectTypeNode extends ObjectSource
 
     public static void expireLeftTuple(LeftTuple leftTuple) {
         if (!leftTuple.isExpired()) {
-            leftTuple.setExpired( true );
+            leftTuple.setExpired();
             for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
                 expireLeftTuple(child);
             }

@@ -40,4 +40,6 @@ public interface RightTuple extends Tuple {
     InternalFactHandle getFactHandleForEvaluation();
 
     void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory );
+
+    void setExpired( InternalWorkingMemory workingMemory, PropagationContext pctx );
 }
