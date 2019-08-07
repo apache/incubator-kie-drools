@@ -174,6 +174,11 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void setExpired( InternalWorkingMemory workingMemory, PropagationContext pctx ) {
+        super.setExpired();
+    }
+
     public void moveStagingFromRightToLeft() {
         stagedTypeOnRight = getStagedType();
         clearStaged();

@@ -35,6 +35,8 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     private TupleMemory           tempRightTupleMemory;
     private LeftTuple             tempBlocked;
 
+    private boolean             retracted;
+
     public RightTupleImpl() { }
     
     public RightTupleImpl(InternalFactHandle handle) {
@@ -267,7 +269,20 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
 
     @Override
     public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
-        getTupleSink().retractRightTuple( this, context, workingMemory );
+        if (!retracted) {
+            getTupleSink().retractRightTuple( this, context, workingMemory );
+            retracted = true;
+        }
+    }
+
+    @Override
+    public void setExpired( InternalWorkingMemory workingMemory, PropagationContext pctx ) {
+        super.setExpired();
+        // events expired at firing time should have a chance to produce a join (DROOLS-1329)
+        // but shouldn't participate to an accumulate (DROOLS-4393)
+        if (getTupleSink().getType() == NodeTypeEnums.AccumulateNode) {
+            retractTuple( pctx, workingMemory );
+        }
     }
 
     public InternalFactHandle getFactHandleForEvaluation() {

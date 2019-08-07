@@ -66,4 +66,5 @@ public interface LeftTuple extends Tuple {
         return Collections.emptyList();
     }
 
+    void setExpired();
 }
