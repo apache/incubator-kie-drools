@@ -62,7 +62,7 @@ public class ScenarioJunitActivatorTest {
     private Simulation simulationLocal;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         simulationLocal = new Simulation();
         simulationLocal.getSimulationDescriptor().setSkipFromBuild(true);
         when(xmlReaderMock.unmarshal(any())).thenReturn(scenarioSimulationModelMock);

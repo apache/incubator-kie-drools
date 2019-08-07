@@ -34,7 +34,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     protected MigrationStrategy migrationInstance = new InMemoryMigrationStrategy();
 
     @Test
-    public void noFQCNUsed() throws Exception {
+    public void noFQCNUsed() {
         final ScenarioSimulationModel simulationModel = new ScenarioSimulationModel();
         simulationModel.getImports().addImport(new Import("org.test.Test"));
 
@@ -45,102 +45,118 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void versionAttributeExists() throws Exception {
+    public void versionAttributeExists() {
         final String xml = instance.marshal(new ScenarioSimulationModel());
         assertTrue(xml.startsWith("<ScenarioSimulationModel version=\"" + ScenarioSimulationXMLPersistence.getCurrentVersion() + "\">"));
     }
 
     @Test
-    public void migrateIfNecessary_1_0_to_1_1() throws Exception {
-        String toMigrate = getFileContent("scesim-1-0.scesim");
-        String migrated = instance.migrateIfNecessary(toMigrate);
-        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.0\">"));
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.0\">"));
-        assertTrue(migrated.contains("EXPECT"));
-        assertFalse(migrated.contains("EXPECTED"));
-    }
-
-    @Test
-    public void migrateIfNecessary_1_1_to_1_2() throws Exception {
-        String toMigrate = getFileContent("scesim-1-1.scesim");
-        String migrated = migrationInstance.from1_1to1_2().apply(toMigrate);
-        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.1\">"));
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
-        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
-        assertTrue(migrated.contains("dmoSession></dmoSession>"));
-        assertTrue(migrated.contains("<type>RULE</type>"));
-    }
-
-    @Test
-    public void migrateIfNecessary_1_2_to_1_3() throws Exception {
-        String toMigrate = getFileContent("scesim-1-2.scesim");
-        String migrated = instance.migrateIfNecessary(toMigrate);
-        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.2\">"));
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
+    public void migrateIfNecessary_1_0_to_1_1() {
         try {
+            String toMigrate = getFileContent("scesim-1-0.scesim");
+            String migrated = instance.migrateIfNecessary(toMigrate);
+            assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.0\">"));
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.0\">"));
+            assertTrue(migrated.contains("EXPECT"));
+            assertFalse(migrated.contains("EXPECTED"));
+        } catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void migrateIfNecessary_1_1_to_1_2() {
+        try {
+            String toMigrate = getFileContent("scesim-1-1.scesim");
+            String migrated = migrationInstance.from1_1to1_2().apply(toMigrate);
+            assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.1\">"));
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
+            assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
+            assertTrue(migrated.contains("dmoSession></dmoSession>"));
+            assertTrue(migrated.contains("<type>RULE</type>"));
+        } catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void migrateIfNecessary_1_2_to_1_3() {
+        try {
+            String toMigrate = getFileContent("scesim-1-2.scesim");
+            String migrated = instance.migrateIfNecessary(toMigrate);
+            assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.2\">"));
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
             ScenarioSimulationModel unmarshalled = instance.unmarshal(migrated, false);
             for (FactMapping factMapping : unmarshalled.getSimulation().getSimulationDescriptor().getUnmodifiableFactMappings()) {
                 assertTrue(factMapping.getExpressionElements().size() >= 1);
             }
         } catch (Exception e) {
             fail(e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Test
-    public void migrateIfNecessary_1_3_to_1_4() throws Exception {
-        String toMigrate = getFileContent("scesim-1-3-rule.scesim");
-        String migrated = migrationInstance.from1_3to1_4().apply(toMigrate);
-        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.3\">"));
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
-        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
-        assertTrue(migrated.contains("<fileName></fileName>"));
-        assertTrue(migrated.contains("<kieSession>default</kieSession>"));
-        assertTrue(migrated.contains("<kieBase>default</kieBase>"));
-        assertTrue(migrated.contains("<ruleFlowGroup>default</ruleFlowGroup>"));
-        assertTrue(migrated.contains("<dmoSession>default</dmoSession>"));
-        assertTrue(migrated.contains("<skipFromBuild>false</skipFromBuild>"));
-        assertTrue(migrated.contains("<type>RULE</type>"));
+    public void migrateIfNecessary_1_3_to_1_4() {
         try {
+            String toMigrate = getFileContent("scesim-1-3-rule.scesim");
+            String migrated = migrationInstance.from1_3to1_4().apply(toMigrate);
+            assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.3\">"));
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
+            assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
+            assertTrue(migrated.contains("<fileName></fileName>"));
+            assertTrue(migrated.contains("<kieSession>default</kieSession>"));
+            assertTrue(migrated.contains("<kieBase>default</kieBase>"));
+            assertTrue(migrated.contains("<ruleFlowGroup>default</ruleFlowGroup>"));
+            assertTrue(migrated.contains("<dmoSession>default</dmoSession>"));
+            assertTrue(migrated.contains("<skipFromBuild>false</skipFromBuild>"));
+            assertTrue(migrated.contains("<type>RULE</type>"));
+            instance.internalUnmarshal(migrated);
+            toMigrate = getFileContent("scesim-1-3-dmn.scesim");
+            migrated = migrationInstance.from1_3to1_4().apply(toMigrate);
+            assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.3\">"));
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
+            assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
+            assertTrue(migrated.contains("<dmnNamespace></dmnNamespace>"));
+            assertTrue(migrated.contains("<dmnName></dmnName>"));
+            assertTrue(migrated.contains("<skipFromBuild>false</skipFromBuild>"));
+            assertTrue(migrated.contains("<type>DMN</type>"));
             instance.internalUnmarshal(migrated);
         } catch (Exception e) {
             fail(e.getMessage());
+            e.printStackTrace();
         }
-        toMigrate = getFileContent("scesim-1-3-dmn.scesim");
-        migrated = migrationInstance.from1_3to1_4().apply(toMigrate);
-        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.3\">"));
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
-        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
-        assertTrue(migrated.contains("<dmnNamespace></dmnNamespace>"));
-        assertTrue(migrated.contains("<dmnName></dmnName>"));
-        assertTrue(migrated.contains("<skipFromBuild>false</skipFromBuild>"));
-        assertTrue(migrated.contains("<type>DMN</type>"));
+    }
+
+    @Test
+    public void migrateIfNecessary_1_4_to_1_5() {
         try {
-            instance.internalUnmarshal(migrated);
+            String toMigrate = getFileContent("scesim-1-3-rule.scesim");
+            assertTrue(toMigrate.contains("dmoSession"));
+            String migrated = instance.migrateIfNecessary(toMigrate);
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
+            assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
+            assertFalse(migrated.contains("dmoSession"));
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
 
     @Test
-    public void migrateIfNecessary_1_4_to_1_5() throws Exception {
-        String toMigrate = getFileContent("scesim-1-3-rule.scesim");
-        assertTrue(toMigrate.contains("dmoSession"));
-        String migrated = instance.migrateIfNecessary(toMigrate);
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.3\">"));
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.4\">"));
-        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
-        assertFalse(migrated.contains("dmoSession"));
-    }
-
-    @Test
-    public void migrateIfNecessary_1_5_to_1_6() throws Exception {
-        String toMigrate = getFileContent("scesim-1-5-dmn.scesim");
-        assertTrue(toMigrate.contains("reference="));
-        String migrated = instance.migrateIfNecessary(toMigrate);
-        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.5\">"));
-        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
-        assertFalse(migrated.contains("reference="));
+    public void migrateIfNecessary_1_5_to_1_6() {
+        try {
+            String toMigrate = getFileContent("scesim-1-5-dmn.scesim");
+            assertTrue(toMigrate.contains("reference="));
+            String migrated = instance.migrateIfNecessary(toMigrate);
+            assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.5\">"));
+            assertTrue(migrated.contains("<ScenarioSimulationModel version=\"" + currentVersion + "\">"));
+            assertFalse(migrated.contains("reference="));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test
@@ -150,8 +166,12 @@ public class ScenarioSimulationXMLPersistenceTest {
                 .hasMessage("Version 9999999999.99999999999 of the file is not supported. Current version is " + ScenarioSimulationXMLPersistence.getCurrentVersion());
 
         String noMigrationNeeded = "<ScenarioSimulationModel version=\"" + ScenarioSimulationXMLPersistence.getCurrentVersion() + "\">";
-        String afterMigration = instance.migrateIfNecessary(noMigrationNeeded);
-        assertEquals(noMigrationNeeded, afterMigration);
+        try {
+            String afterMigration = instance.migrateIfNecessary(noMigrationNeeded);
+            assertEquals(noMigrationNeeded, afterMigration);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test

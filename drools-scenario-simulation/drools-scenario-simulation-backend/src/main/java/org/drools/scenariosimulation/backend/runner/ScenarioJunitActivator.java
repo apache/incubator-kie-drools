@@ -79,6 +79,8 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
             return new SimulationWithFileName(getXmlReader().unmarshal(rawFile).getSimulation(), path);
         } catch (FileNotFoundException e) {
             throw new ScenarioException("File not found, this should not happen: " + path, e);
+        } catch (Exception e) {
+            throw new ScenarioException("Issue on parsing file: " + path, e);
         }
     }
 

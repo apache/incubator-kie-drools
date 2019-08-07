@@ -16,13 +16,12 @@
 
 package org.drools.scenariosimulation.backend.util;
 
-import java.util.function.Function;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.backend.interfaces.ThrowingFunction;
 import org.kie.soup.commons.xstream.XStreamUtils;
 
 import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence.cleanUpUnusedNodes;
@@ -31,13 +30,13 @@ import static org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPe
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
     @Override
-    public Function<String, String> from1_0to1_1() {
+    public ThrowingFunction<String, String> from1_0to1_1() {
         return rawXml -> updateVersion(rawXml, "1.0", "1.1")
                 .replaceAll("EXPECTED", "EXPECT");
     }
 
     @Override
-    public Function<String, String> from1_1to1_2() {
+    public ThrowingFunction<String, String> from1_1to1_2() {
         return rawXml -> {
             String updatedVersion = updateVersion(rawXml, "1.1", "1.2");
             if ((updatedVersion.contains("<dmoSession>") || (updatedVersion.contains("<dmnFilePath>")) && (updatedVersion.contains("<type>")))) {
@@ -49,7 +48,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     }
 
     @Override
-    public Function<String, String> from1_2to1_3() {
+    public ThrowingFunction<String, String> from1_2to1_3() {
         return rawXml -> {
             ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
             ScenarioSimulationModel model = xmlPersistence.unmarshal(rawXml, false);
@@ -61,7 +60,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     }
 
     @Override
-    public Function<String, String> from1_3to1_4() {
+    public ThrowingFunction<String, String> from1_3to1_4() {
         return rawXml -> {
             if (rawXml.contains("<type>")) {
                 StringBuilder replacementBuilder = new StringBuilder();
@@ -108,7 +107,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     }
 
     @Override
-    public Function<String, String> from1_4to1_5() {
+    public ThrowingFunction<String, String> from1_4to1_5() {
         return rawXml -> {
             ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
             ScenarioSimulationModel model = xmlPersistence.unmarshal(rawXml, false);
@@ -121,7 +120,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
     }
 
     @Override
-    public Function<String, String> from1_5to1_6() {
+    public ThrowingFunction<String, String> from1_5to1_6() {
         return rawXml -> {
             // We need to do those things here because to parse "old" xmls we need a differently configured Xstream
             ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
