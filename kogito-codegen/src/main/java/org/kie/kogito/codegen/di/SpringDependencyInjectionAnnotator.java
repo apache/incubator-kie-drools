@@ -126,8 +126,7 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
 
     @Override
     public Expression optionalInstanceExists(String fieldName) {
-        MethodCallExpr condition = new MethodCallExpr(new NameExpr(fieldName), "isPresent");
-        return condition;
+        return new MethodCallExpr(new NameExpr(fieldName), "isPresent");
     }
 
 }

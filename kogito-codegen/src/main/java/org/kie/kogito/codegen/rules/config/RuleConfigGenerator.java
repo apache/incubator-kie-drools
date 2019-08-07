@@ -37,6 +37,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class RuleConfigGenerator {
 
+    private static final String DEFAULT_RULE_EVENT_LISTENER_CONFIG = "defaultRuleEventListenerConfig";
+    
     private List<BodyDeclaration<?>> members = new ArrayList<>();
     
     private DependencyInjectionAnnotator annotator;
@@ -49,7 +51,7 @@ public class RuleConfigGenerator {
         } else {
             return new ObjectCreationExpr()
                 .setType(StaticRuleConfig.class.getCanonicalName())
-                .addArgument(new NameExpr("defaultRuleEventListenerConfig"));
+                .addArgument(new NameExpr(DEFAULT_RULE_EVENT_LISTENER_CONFIG));
         }
     }
     
@@ -59,7 +61,7 @@ public class RuleConfigGenerator {
                 .setStatic(true)
                 .setModifiers(Keyword.PRIVATE)
                 .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, RuleEventListenerConfig.class.getCanonicalName()), 
-                                                    "defaultRuleEventListenerConfig",
+                                                    DEFAULT_RULE_EVENT_LISTENER_CONFIG,
                                                     new ObjectCreationExpr(null, new ClassOrInterfaceType(null, DefaultRuleEventListenerConfig.class.getCanonicalName()), NodeList.nodeList())));
         members.add(defaultRelcFieldDeclaration);
         
@@ -69,7 +71,7 @@ public class RuleConfigGenerator {
             annotator.withInjection(relcFieldDeclaration);
             
             members.add(relcFieldDeclaration);
-            members.add(CodegenUtils.extractOptionalInjection(RuleEventListenerConfig.class.getCanonicalName(), "ruleEventListenerConfig", "defaultRuleEventListenerConfig", annotator));            
+            members.add(CodegenUtils.extractOptionalInjection(RuleEventListenerConfig.class.getCanonicalName(), "ruleEventListenerConfig", DEFAULT_RULE_EVENT_LISTENER_CONFIG, annotator));            
         }
         
         return members;

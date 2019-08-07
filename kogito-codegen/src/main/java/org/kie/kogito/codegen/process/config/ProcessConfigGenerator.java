@@ -41,17 +41,14 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class ProcessConfigGenerator {
+    
+    private static final String DEFAULT_WORKITEM_HANDLER_CONFIG = "defaultWorkItemHandlerConfig";
+    private static final String DEFAULT_PROCESS_EVENT_LISTENER_CONFIG = "defaultProcessEventListenerConfig";
+    private static final String DEFAULT_UNIT_OF_WORK_MANAGER = "defaultUnitOfWorkManager";
 
     private DependencyInjectionAnnotator annotator;
     
     private List<BodyDeclaration<?>> members = new ArrayList<>();
-
-    public ProcessConfigGenerator withWorkItemConfig(String cfg) {
-        return this;
-    }
-    public ProcessConfigGenerator withProcessEventListenerConfig(String cfg) {
-        return this;
-    }
 
     public ObjectCreationExpr newInstance() {
         if (annotator!= null) {
@@ -63,9 +60,9 @@ public class ProcessConfigGenerator {
         } else {
             return new ObjectCreationExpr()
                 .setType(StaticProcessConfig.class.getCanonicalName())
-                .addArgument(new NameExpr("defaultWorkItemHandlerConfig"))
-                .addArgument(new NameExpr("defaultProcessEventListenerConfig"))
-                .addArgument(new NameExpr("defaultUnitOfWorkManager"));
+                .addArgument(new NameExpr(DEFAULT_WORKITEM_HANDLER_CONFIG))
+                .addArgument(new NameExpr(DEFAULT_PROCESS_EVENT_LISTENER_CONFIG))
+                .addArgument(new NameExpr(DEFAULT_UNIT_OF_WORK_MANAGER));
         }
     }
     
@@ -74,21 +71,21 @@ public class ProcessConfigGenerator {
         FieldDeclaration defaultPelcFieldDeclaration = new FieldDeclaration()
                 .setModifiers(Keyword.PRIVATE)
                 .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, ProcessEventListenerConfig.class.getCanonicalName()), 
-                                                    "defaultProcessEventListenerConfig",
+                                                    DEFAULT_PROCESS_EVENT_LISTENER_CONFIG,
                                                     new ObjectCreationExpr(null, new ClassOrInterfaceType(null, DefaultProcessEventListenerConfig.class.getCanonicalName()), NodeList.nodeList())));
         members.add(defaultPelcFieldDeclaration);
         
         FieldDeclaration defaultWihcFieldDeclaration = new FieldDeclaration()
                 .setModifiers(Keyword.PRIVATE)
                 .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, WorkItemHandlerConfig.class.getCanonicalName()), 
-                                                    "defaultWorkItemHandlerConfig",
+                                                    DEFAULT_WORKITEM_HANDLER_CONFIG,
                                                     new ObjectCreationExpr(null, new ClassOrInterfaceType(null, DefaultWorkItemHandlerConfig.class.getCanonicalName()), NodeList.nodeList())));
         members.add(defaultWihcFieldDeclaration);
         
         FieldDeclaration defaultUowFieldDeclaration = new FieldDeclaration()
                 .setModifiers(Keyword.PRIVATE)
                 .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, UnitOfWorkManager.class.getCanonicalName()), 
-                                                    "defaultUnitOfWorkManager",
+                                                    DEFAULT_UNIT_OF_WORK_MANAGER,
                                                     new ObjectCreationExpr(null, new ClassOrInterfaceType(null, DefaultUnitOfWorkManager.class.getCanonicalName()), 
                                                                            NodeList.nodeList(new ObjectCreationExpr(null, new ClassOrInterfaceType(null, CollectingUnitOfWorkFactory.class.getCanonicalName()), NodeList.nodeList())))));
         members.add(defaultUowFieldDeclaration);
@@ -111,9 +108,9 @@ public class ProcessConfigGenerator {
             annotator.withInjection(uowmFieldDeclaration);
             
             members.add(uowmFieldDeclaration);
-            members.add(CodegenUtils.extractOptionalInjection(WorkItemHandlerConfig.class.getCanonicalName(), "workItemHandlerConfig", "defaultWorkItemHandlerConfig", annotator));
-            members.add(CodegenUtils.extractOptionalInjection(ProcessEventListenerConfig.class.getCanonicalName(), "processEventListenerConfig", "defaultProcessEventListenerConfig", annotator));
-            members.add(CodegenUtils.extractOptionalInjection(UnitOfWorkManager.class.getCanonicalName(), "unitOfWorkManager", "defaultUnitOfWorkManager", annotator));
+            members.add(CodegenUtils.extractOptionalInjection(WorkItemHandlerConfig.class.getCanonicalName(), "workItemHandlerConfig", DEFAULT_WORKITEM_HANDLER_CONFIG, annotator));
+            members.add(CodegenUtils.extractOptionalInjection(ProcessEventListenerConfig.class.getCanonicalName(), "processEventListenerConfig", DEFAULT_PROCESS_EVENT_LISTENER_CONFIG, annotator));
+            members.add(CodegenUtils.extractOptionalInjection(UnitOfWorkManager.class.getCanonicalName(), "unitOfWorkManager", DEFAULT_UNIT_OF_WORK_MANAGER, annotator));
         }
         
         return members;

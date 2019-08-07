@@ -34,7 +34,6 @@ import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 import org.kie.kogito.codegen.rules.IncrementalRuleCodegen;
-import org.kie.kogito.codegen.rules.RuleCodegen;
 import org.kie.kogito.maven.plugin.util.MojoUtil;
 
 @Mojo(name = "generateModel",
@@ -43,8 +42,6 @@ import org.kie.kogito.maven.plugin.util.MojoUtil;
         defaultPhase = LifecyclePhase.COMPILE)
 public class GenerateModelMojo extends AbstractKieMojo {
 
-    private static final String MAIN_JAVA_DIRECTORY = "main/java";
-    private static final String JAVA_FILE_SUFFIX = ".java";
 
     public static final List<String> DROOLS_EXTENSIONS = Arrays.asList(".drl", ".xls", ".xlsx", ".csv");
 
@@ -199,33 +196,6 @@ public class GenerateModelMojo extends AbstractKieMojo {
                             Files.readAllBytes(moduleXmlPath)));
         }
         return new KieModuleModelImpl();
-    }
-
-    private String customWorkItemConfigExists(String appPackageName) {
-        String sourceDir = Paths.get(projectDir.getPath(), "src").toString();
-        String workItemHandlerConfigClass = ProcessCodegen.defaultWorkItemHandlerConfigClass(appPackageName);
-        Path p = Paths.get(sourceDir,
-                           MAIN_JAVA_DIRECTORY,
-                           workItemHandlerConfigClass.replace('.', '/') + JAVA_FILE_SUFFIX);
-        return p.toFile().exists() ? workItemHandlerConfigClass : null;
-    }
-
-    private String customProcessListenerConfigExists(String appPackageName) {
-        String sourceDir = Paths.get(projectDir.getPath(), "src").toString();
-        String processEventListenerClass = ProcessCodegen.defaultProcessListenerConfigClass(appPackageName);
-        Path p = Paths.get(sourceDir,
-                           MAIN_JAVA_DIRECTORY,
-                           processEventListenerClass.replace('.', '/') + JAVA_FILE_SUFFIX);
-        return p.toFile().exists() ? processEventListenerClass : null;
-    }
-
-    private String customRuleEventListenerConfigExists(String appPackageName) {
-        String sourceDir = Paths.get(projectDir.getPath(), "src").toString();
-        String ruleEventListenerConfiglass = RuleCodegen.defaultRuleEventListenerConfigClass(appPackageName);
-        Path p = Paths.get(sourceDir,
-                           MAIN_JAVA_DIRECTORY,
-                           ruleEventListenerConfiglass.replace('.', '/') + JAVA_FILE_SUFFIX);
-        return p.toFile().exists() ? ruleEventListenerConfiglass : null;
     }
 
     private void writeGeneratedFile(GeneratedFile f) throws IOException {

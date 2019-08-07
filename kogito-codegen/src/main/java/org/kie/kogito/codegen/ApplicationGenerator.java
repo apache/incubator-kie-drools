@@ -125,7 +125,9 @@ public class ApplicationGenerator {
         if (useInjection()) {  
             annotator.withSingletonComponent(cls);
             
-            cls.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("setup")).get().addAnnotation("javax.annotation.PostConstruct");
+            cls.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("setup")).
+            orElseThrow(() -> new RuntimeException("setup method template not found"))
+            .addAnnotation("javax.annotation.PostConstruct");
             
             annotator.withOptionalInjection(eventPublishersFieldDeclaration);
             eventPublishersDeclarator = new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.multiInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, EventPublisher.class.getCanonicalName()))), "eventPublishers");

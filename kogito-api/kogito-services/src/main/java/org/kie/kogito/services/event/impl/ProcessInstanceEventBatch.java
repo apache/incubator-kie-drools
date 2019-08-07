@@ -36,7 +36,7 @@ import org.kie.kogito.services.event.ProcessInstanceDataEvent;
 
 public class ProcessInstanceEventBatch implements EventBatch {
     
-    private List<ProcessEvent> rawEvents = new ArrayList<ProcessEvent>();
+    private List<ProcessEvent> rawEvents = new ArrayList<>();
 
     @Override
     public void append(Object rawEvent) {
@@ -50,7 +50,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
         Map<String, ProcessInstanceEventBody> processInstances = new HashMap<>();
         
         for (ProcessEvent event : rawEvents) {
-            ProcessInstanceEventBody body = processInstances.computeIfAbsent(event.getProcessInstance().getId(), (key) -> create(event));
+            ProcessInstanceEventBody body = processInstances.computeIfAbsent(event.getProcessInstance().getId(), key -> create(event));
             
             if (event instanceof ProcessNodeTriggeredEvent) {
                 

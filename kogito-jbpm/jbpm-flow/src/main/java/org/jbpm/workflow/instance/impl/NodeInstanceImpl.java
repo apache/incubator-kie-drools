@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.NodeInstance, Serializable {
 
+    private static final String UNIQUE_ID_KEY = "UniqueId";
 	private static final long serialVersionUID = 510l;
 	protected static final Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
 	
@@ -100,7 +101,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     public String getNodeDefinitionId() {
-        return (String)getNode().getMetaData().get("UniqueId");
+        return (String)getNode().getMetaData().get(UNIQUE_ID_KEY);
     }
 
     public int getLevel() {
@@ -178,7 +179,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 	    	Collection<Connection> incoming = getNode().getIncomingConnections(type);
 	    	for (Connection conn : incoming) {
 	    	    if (conn.getFrom().getId() == from.getNodeId()) {
-	    	        this.metaData.put("IncomingConnection", conn.getMetaData().get("UniqueId"));
+	    	        this.metaData.put("IncomingConnection", conn.getMetaData().get(UNIQUE_ID_KEY));
 	    	        break;
 	    	    }
 	    	}
@@ -241,7 +242,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         leaveTime = new Date();
         Node node = getNode();
         if (node != null) {
-	    	String uniqueId = (String) node.getMetaData().get("UniqueId");
+	    	String uniqueId = (String) node.getMetaData().get(UNIQUE_ID_KEY);
 	    	if( uniqueId == null ) { 
 	    	    uniqueId = ((NodeImpl) node).getUniqueId();
 	    	}
@@ -401,7 +402,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         Collection<Connection> outgoing = getNode().getOutgoingConnections(type);
         for (Connection conn : outgoing) {
             if (conn.getTo().getId() == nodeInstance.getNodeId()) {
-                this.metaData.put("OutgoingConnection", conn.getMetaData().get("UniqueId"));
+                this.metaData.put("OutgoingConnection", conn.getMetaData().get(UNIQUE_ID_KEY));
                 break;
             }
         }

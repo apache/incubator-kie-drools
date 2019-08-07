@@ -23,11 +23,11 @@ import java.util.Set;
 
 public class ProcessInstanceEventBody {
     
-    public final static String ID_META_DATA = "kogito.processinstance.id";
-    public final static String PARENT_ID_META_DATA = "kogito.processinstance.parentInstanceId";
-    public final static String ROOT_ID_META_DATA = "kogito.processinstance.rootInstanceId";
-    public final static String PROCESS_ID_META_DATA = "kogito.processinstance.processId";
-    public final static String STATE_META_DATA = "kogito.processinstance.state";
+    public static final String ID_META_DATA = "kogito.processinstance.id";
+    public static final String PARENT_ID_META_DATA = "kogito.processinstance.parentInstanceId";
+    public static final String ROOT_ID_META_DATA = "kogito.processinstance.rootInstanceId";
+    public static final String PROCESS_ID_META_DATA = "kogito.processinstance.processId";
+    public static final String STATE_META_DATA = "kogito.processinstance.state";
 
     private String id;
     private String parentInstanceId;

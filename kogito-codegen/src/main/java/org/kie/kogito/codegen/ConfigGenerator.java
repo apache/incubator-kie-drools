@@ -94,7 +94,7 @@ public class ConfigGenerator {
         CompilationUnit compilationUnit =
                 parse(this.getClass().getResourceAsStream(RESOURCE))
                         .setPackageDeclaration(packageName);
-        ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
+        ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new RuntimeException("ApplicationConfig template class not found"));
         
         if (processConfig != null) {
             for (BodyDeclaration<?> member : processConfig.members()) {
