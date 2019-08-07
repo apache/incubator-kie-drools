@@ -16,18 +16,32 @@
 
 package org.drools.core.base;
 
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 
 /**
  * Filters activations based on an exact match of a rule name.
  */
+@XmlRootElement(name="rule-name-equals-agenda-filter")
+@XmlAccessorType(XmlAccessType.NONE)
 public class RuleNameEqualsAgendaFilter
     implements
-    AgendaFilter {
-    private final String  name;
+    AgendaFilter, Serializable {
 
-    private final boolean accept;
+    @XmlAttribute
+    private String  name;
+
+    @XmlAttribute
+    private boolean accept;
+
+    public RuleNameEqualsAgendaFilter() {
+    }
 
     public RuleNameEqualsAgendaFilter(final String name) {
         this( name,
