@@ -70,11 +70,7 @@ public class RuleNameMatchesAgendaFilter
     }
 
     public boolean accept( Match activation ) {
-        Matcher matcher = pattern.matcher( activation.getRule().getName() );
-        if ( matcher.matches() ) {
-            return this.accept;
-        } else {
-            return !this.accept;
-        }
+        Matcher matcher = getPattern().matcher( activation.getRule().getName() );
+        return !this.accept ^ matcher.matches();
     }
 }
