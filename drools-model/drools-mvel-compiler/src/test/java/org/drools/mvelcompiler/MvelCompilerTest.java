@@ -161,7 +161,7 @@ public class MvelCompilerTest implements CompilerTest {
                      "    java.math.BigDecimal sum = java.math.BigDecimal.valueOf(0);\n" +
                      "    java.math.BigDecimal money = java.math.BigDecimal.valueOf(10);\n" +
                      "    sum = sum.add(money);\n" +
-                     "    sum = sum.remove(money);\n" +
+                     "    sum = sum.subtract(money);\n" +
                      "}");
     }
 

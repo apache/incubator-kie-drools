@@ -70,7 +70,7 @@ public abstract class BigDecimalConversion {
 
         @Override
         public TypedExpression convertPlusEqualsOperatorBigDecimal(TypedExpression target) {
-            return new MethodCallExprT("remove", of(target), singletonList(rhs), of(BigDecimal.class));
+            return new MethodCallExprT("subtract", of(target), singletonList(rhs), of(BigDecimal.class));
         }
     }
 
