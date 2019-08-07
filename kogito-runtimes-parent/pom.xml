@@ -16,6 +16,14 @@
   <name>Kogito Runtimes</name>
   <description>Kogito Runtimes</description>
 
+  <properties>
+    <!--
+      JaCoCo coverage data file location. Using a single file for appending in the project's root directory makes it
+      possible to measure cross-module test coverage -->
+    <!--suppress UnresolvedMavenProperty -->
+    <jacoco.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.exec.file>
+  </properties>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom
       has not been build locally. -->
@@ -55,7 +63,6 @@
     <profile>
       <id>run-code-coverage</id>
       <properties>
-        <jacoco.exec.file>${project.build.directory}/jacoco.exec</jacoco.exec.file>
         <jacoco.excludes>*Lexer:org.kie.kogito.codegen.data.*</jacoco.excludes>
         <jacoco.agent.line>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${version.org.jacoco.agent}/org.jacoco.agent-${version.org.jacoco.agent}-runtime.jar=destfile=${jacoco.exec.file},append=true,excludes=${jacoco.excludes}</jacoco.agent.line>
         <surefire.argLine>
@@ -99,48 +106,14 @@
     <profile>
       <id>sonarcloud-analysis</id>
       <properties>
-        <!--suppress UnresolvedMavenProperty -->
-        <jacoco.master.exec.file>${maven.multiModuleProjectDirectory}/target/jacoco.exec</jacoco.master.exec.file>
-        <sonar.jacoco.reportPaths>${jacoco.master.exec.file}</sonar.jacoco.reportPaths>
+        <sonar.jacoco.reportPaths>${jacoco.exec.file}</sonar.jacoco.reportPaths>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>kiegroup</sonar.organization>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
       </properties>
       <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.jacoco</groupId>
-              <artifactId>jacoco-maven-plugin</artifactId>
-              <configuration>
-                <fileSets>
-                  <fileSet>
-                    <directory>${project.build.directory}</directory>
-                    <includes>
-                      <include>*.exec</include>
-                    </includes>
-                  </fileSet>
-                </fileSets>
-                <destFile>${jacoco.master.exec.file}</destFile>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
         <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>report</goal>
-                  <goal>merge</goal>
-                </goals>
-                <phase>generate-resources</phase>
-              </execution>
-            </executions>
-          </plugin>
           <plugin>
             <groupId>org.sonarsource.scanner.maven</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
