@@ -167,7 +167,7 @@
         </factMappingValues>
         <simulationDescriptor>
           <factMappings/>
-          <type>RULE</type>
+          <type>DMN</type>
           <skipFromBuild>false</skipFromBuild>
         </simulationDescriptor>
       </Scenario>
