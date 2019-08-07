@@ -23,10 +23,9 @@ import java.util.stream.Collectors;
 
 import org.kie.kogito.Model;
 import org.kie.kogito.codegen.AbstractApplicationSection;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
-import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -54,9 +53,7 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
     private final List<BodyDeclaration<?>> factoryMethods;
 
     private DependencyInjectionAnnotator annotator;
-    private String workItemConfigClass = DefaultWorkItemHandlerConfig.class.getCanonicalName();
-    private String processEventListenerConfigClass = DefaultProcessEventListenerConfig.class.getCanonicalName();
-
+    
     private NodeList<BodyDeclaration<?>> applicationDeclarations;
     private MethodDeclaration byProcessIdMethodDeclaration;
     private MethodDeclaration processesMethodDeclaration;
@@ -129,28 +126,15 @@ public class ProcessesContainerGenerator extends AbstractApplicationSection {
         return this;
     }
 
-    public void setWorkItemHandlerClass(String className) {
-        this.workItemConfigClass = className;
-    }
-
-    public void setProcessEventListenerConfigClass(String processEventListenerConfigClass) {
-        this.processEventListenerConfigClass = processEventListenerConfigClass;
-    }
-
-    public String workItemConfigClass() {
-        return workItemConfigClass;
-    }
-
-    public String processEventListenerConfigClass() {
-        return processEventListenerConfigClass;
-    }
-
     public ClassOrInterfaceDeclaration classDeclaration() {
         byProcessIdMethodDeclaration.getBody().get().addStatement(new ReturnStmt(new NullLiteralExpr()));
 
         NodeList<Expression> processIds = NodeList.nodeList(processes.stream().map(p -> new StringLiteralExpr(p.processId())).collect(Collectors.toList()));
         processesMethodDeclaration.getBody().get().addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(Arrays.class.getCanonicalName()), "asList", processIds)));
 
-        return super.classDeclaration().setMembers(applicationDeclarations);
+        ClassOrInterfaceDeclaration cls = super.classDeclaration().setMembers(applicationDeclarations);
+        cls.getMembers().sort(new BodyDeclarationComparator());
+        
+        return cls;
     }
 }

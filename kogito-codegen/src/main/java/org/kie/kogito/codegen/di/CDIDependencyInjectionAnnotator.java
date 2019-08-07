@@ -18,6 +18,10 @@ package org.kie.kogito.codegen.di;
 
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr.Operator;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -83,12 +87,16 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     }
     
     @Override
-    public MethodDeclaration withProcessInitMethod(MethodCallExpr produceMethod) {
+    public MethodDeclaration withInitMethod(Expression... expression) {
+        BlockStmt body = new BlockStmt();
+        for (Expression exp : expression) {
+            body.addStatement(exp);
+        }
         MethodDeclaration method = new MethodDeclaration()
                 .addModifier(Keyword.PUBLIC)
                 .setName("init")
                 .setType(void.class)
-                .setBody(new BlockStmt().addStatement(produceMethod));
+                .setBody(body);
         
         method.addAndGetParameter("io.quarkus.runtime.StartupEvent", "event").addAnnotation("javax.enterprise.event.Observes");
         
@@ -96,10 +104,21 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     }
 
     @Override
+    public Expression optionalInstanceExists(String fieldName) {
+        MethodCallExpr condition = new MethodCallExpr(new NameExpr(fieldName), "isUnsatisfied");
+        return new BinaryExpr(condition, new BooleanLiteralExpr(false), BinaryExpr.Operator.EQUALS);
+    }
+    
+    @Override
     public String multiInstanceInjectionType() {
         return "javax.enterprise.inject.Instance";
     }
 
+    @Override
+    public String optionalInstanceInjectionType() {
+        return "javax.enterprise.inject.Instance";
+    }
+    
     @Override
     public String applicationComponentType() {
         return "javax.enterprise.context.ApplicationScoped";

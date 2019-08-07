@@ -28,6 +28,7 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.kogito.Model;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.GeneratorContext;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.ProcessInstancesFactory;
@@ -331,13 +332,20 @@ public class ProcessGenerator {
                                                               "process")))
                                  .addStatement(
                                          new AssignExpr(new FieldAccessExpr(new ThisExpr(), "app"), new NameExpr("app"), AssignExpr.Operator.ASSIGN)));
+        
         ConstructorDeclaration emptyConstructorDeclaration = new ConstructorDeclaration()
                 .setName(targetTypeName)
-                .addModifier(Modifier.Keyword.PUBLIC)
+                .addModifier(Modifier.Keyword.PUBLIC);
+        
+        if (useInjection()) {
+            annotator.withInjection(constructorDeclaration);
+        } else {
+        
+            emptyConstructorDeclaration
                 .setBody(new BlockStmt()
                                  .addStatement(
                                          new MethodCallExpr(null, "this").addArgument(new ObjectCreationExpr().setType(appCanonicalName))));
-
+        }
         
         MethodDeclaration createModelMethod = new MethodDeclaration()
                 .addModifier(Keyword.PUBLIC)
@@ -393,7 +401,7 @@ public class ProcessGenerator {
         
         if (useInjection()) {
                         
-            MethodDeclaration initMethod = annotator.withProcessInitMethod(new MethodCallExpr(new ThisExpr(), "configure"));
+            MethodDeclaration initMethod = annotator.withInitMethod(new MethodCallExpr(new ThisExpr(), "configure"));
             
             cls.addMember(initMethod);
         }
@@ -455,7 +463,7 @@ public class ProcessGenerator {
                 }
             }
         }
-        
+        cls.getMembers().sort(new BodyDeclarationComparator());
         return cls;
     }
 

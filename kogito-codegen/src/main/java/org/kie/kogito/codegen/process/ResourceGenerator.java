@@ -27,6 +27,7 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.Sig;
@@ -230,7 +231,7 @@ public class ResourceGenerator {
                 template.remove(createResourceMethod.get());
             }
         }
-
+        template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }
 

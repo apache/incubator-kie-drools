@@ -73,7 +73,7 @@ public class ApplicationGeneratorTest {
     @Test
     public void compilationUnit() {
         final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
-        assertCompilationUnit(appGenerator.compilationUnit(), false, 4);
+        assertCompilationUnit(appGenerator.compilationUnit(), false, 3);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ApplicationGeneratorTest {
         final ApplicationGenerator initialAppGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
         final ApplicationGenerator appGenerator = initialAppGenerator.withDependencyInjection(new CDIDependencyInjectionAnnotator());
         assertThat(appGenerator).isSameAs(initialAppGenerator);
-        assertCompilationUnit(appGenerator.compilationUnit(), true, 4);
+        assertCompilationUnit(appGenerator.compilationUnit(), true, 3);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class ApplicationGeneratorTest {
         appGenerator.addFactoryMethods(Collections.singleton(methodDeclaration));
 
         final CompilationUnit compilationUnit = appGenerator.compilationUnit();
-        assertCompilationUnit(compilationUnit, false, 5);
+        assertCompilationUnit(compilationUnit, false, 4);
 
         final TypeDeclaration mainAppClass = compilationUnit.getTypes().get(0);
         assertThat(mainAppClass.getMembers())
@@ -107,7 +107,7 @@ public class ApplicationGeneratorTest {
     public void generate() {
         final ApplicationGenerator appGenerator = new ApplicationGenerator(PACKAGE_NAME, new File("target"));
         final Collection<GeneratedFile> generatedFiles = appGenerator.generate();
-        assertGeneratedFiles(generatedFiles, appGenerator.compilationUnit().toString().getBytes(StandardCharsets.UTF_8), 1);
+        assertGeneratedFiles(generatedFiles, appGenerator.compilationUnit().toString().getBytes(StandardCharsets.UTF_8), 2);
     }
 
     @Test
@@ -155,9 +155,9 @@ public class ApplicationGeneratorTest {
 
         final Collection<GeneratedFile> generatedFiles = appGenerator.generate();
         final CompilationUnit compilationUnit = appGenerator.compilationUnit();
-        assertGeneratedFiles(generatedFiles, compilationUnit.toString().getBytes(StandardCharsets.UTF_8), 2);
+        assertGeneratedFiles(generatedFiles, compilationUnit.toString().getBytes(StandardCharsets.UTF_8), 3);
 
-        assertCompilationUnit(compilationUnit, false, 7);
+        assertCompilationUnit(compilationUnit, false, 6);
         final TypeDeclaration mainAppClass = compilationUnit.getTypes().get(0);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.factoryMethod()).hasSize(1);
         assertThat(mainAppClass.getMembers()).filteredOn(member -> member == appSection.classDeclaration()).hasSize(1);
@@ -239,7 +239,7 @@ public class ApplicationGeneratorTest {
                 .filteredOn(member -> member instanceof FieldDeclaration
                         && ((FieldDeclaration) member).getVariable(0).getName().toString().equals("config")
                         && ((FieldDeclaration) member).isStatic())
-                .hasSize(1);
+                .hasSize(0);
 
         assertThat(mainAppClass.getMember(0)).isInstanceOfAny(MethodDeclaration.class, FieldDeclaration.class);
         assertThat(mainAppClass.getMember(1)).isInstanceOfAny(MethodDeclaration.class, FieldDeclaration.class);
@@ -253,7 +253,7 @@ public class ApplicationGeneratorTest {
 
         for (GeneratedFile generatedFile : generatedFiles) {
             assertThat(generatedFile).isNotNull();
-            assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.RULE);
+            assertThat(generatedFile.getType()).isIn(GeneratedFile.Type.APPLICATION, GeneratedFile.Type.RULE, GeneratedFile.Type.CLASS);
             if (generatedFile.getType() == GeneratedFile.Type.APPLICATION) {
                 assertThat(generatedFile.relativePath()).isEqualTo(EXPECTED_APPLICATION_NAME.replace(".", "/") + ".java");
                 assertThat(generatedFile.contents()).isEqualTo(expectedApplicationContent);

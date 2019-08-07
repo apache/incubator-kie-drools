@@ -17,11 +17,13 @@
 package org.kie.kogito.codegen.di;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
@@ -91,6 +93,11 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     public String multiInstanceInjectionType() {
         return List.class.getCanonicalName();
     }
+    
+    @Override
+    public String optionalInstanceInjectionType() {
+        return Optional.class.getCanonicalName();
+    }
 
     @Override
     public String applicationComponentType() {
@@ -103,13 +110,24 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     }
 
     @Override
-    public MethodDeclaration withProcessInitMethod(MethodCallExpr produceMethod) {
+    public MethodDeclaration withInitMethod(Expression... expression) {
+        BlockStmt body = new BlockStmt();
+        for (Expression exp : expression) {
+            body.addStatement(exp);
+        }
         return new MethodDeclaration()
                 .addModifier(Keyword.PUBLIC)
                 .setName("init")
                 .setType(void.class)
                 .addAnnotation("javax.annotation.PostConstruct")
-                .setBody(new BlockStmt().addStatement(produceMethod));
+                .setBody(body);
+    }
+    
+
+    @Override
+    public Expression optionalInstanceExists(String fieldName) {
+        MethodCallExpr condition = new MethodCallExpr(new NameExpr(fieldName), "isPresent");
+        return condition;
     }
 
 }

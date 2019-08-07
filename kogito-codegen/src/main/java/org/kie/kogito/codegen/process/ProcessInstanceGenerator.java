@@ -31,6 +31,7 @@ import com.github.javaparser.ast.type.VoidType;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.kie.api.runtime.process.ProcessRuntime;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 
 public class ProcessInstanceGenerator {
@@ -84,7 +85,7 @@ public class ProcessInstanceGenerator {
                 .addMember(constructorDecl())
                 .addMember(bind())
                 .addMember(unbind());
-
+        classDecl.getMembers().sort(new BodyDeclarationComparator());
         return classDecl;
     }
 

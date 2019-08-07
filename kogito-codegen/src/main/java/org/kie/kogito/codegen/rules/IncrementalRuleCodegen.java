@@ -56,6 +56,7 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.kogito.codegen.AbstractGenerator;
 import org.kie.kogito.codegen.ApplicationGenerator;
 import org.kie.kogito.codegen.ApplicationSection;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.ConfigGenerator;
 import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
@@ -121,7 +122,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     };
     private String packageName;
     private final Collection<Resource> resources;
-    private String ruleEventListenersConfigClass;
     private RuleUnitContainerGenerator moduleGenerator;
     private final Map<String, String> labels;
 
@@ -164,9 +164,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     public List<GeneratedFile> generate() {
-        if (ruleEventListenersConfigClass != null) {
-            moduleGenerator.setRuleEventListenersConfigClass(ruleEventListenersConfigClass);
-        }
 
         ReleaseIdImpl dummyReleaseId = new ReleaseIdImpl("dummy:dummy:0.0.0");
 
@@ -199,6 +196,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             String folderName = pkgName.replace('.', '/');
 
             for (ClassOrInterfaceDeclaration generatedPojo : pkgModel.getGeneratedPOJOsSource()) {
+                generatedPojo.getMembers().sort(new BodyDeclarationComparator());
                 final String source = JavaParserCompiler.toPojoSource(
                         pkgModel.getName(),
                         pkgModel.getImports(),
@@ -342,16 +340,11 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-        cfg.withRuleConfig(new RuleConfigGenerator().ruleEventListenersConfig(moduleGenerator.ruleEventListenersConfigClass()));
+        cfg.withRuleConfig(new RuleConfigGenerator());
     }
 
     public void setDependencyInjection(boolean di) {
         this.dependencyInjection = di;
-    }
-
-    public IncrementalRuleCodegen withRuleEventListenersConfig(String ruleEventListenersConfigClass) {
-        this.ruleEventListenersConfigClass = ruleEventListenersConfigClass;
-        return this;
     }
 
     public IncrementalRuleCodegen withKModule(KieModuleModel model) {

@@ -38,6 +38,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.QueryModel;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
@@ -91,7 +92,7 @@ public class QueryEndpointSourceClass implements FileGenerator {
         String returnType = getReturnType(clazz);
         generateConstructors( clazz );
         generateQueryMethod( clazz, returnType );
-
+        clazz.getMembers().sort(new BodyDeclarationComparator());
         return cu.toString();
     }
 

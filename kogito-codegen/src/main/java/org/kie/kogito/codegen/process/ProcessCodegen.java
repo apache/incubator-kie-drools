@@ -114,9 +114,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
 
     private String packageName;
-    private String applicationCanonicalName;
-    private String workItemHandlerConfigClass = null;
-    private String processEventListenerConfigClass = null;    
+    private String applicationCanonicalName; 
     private DependencyInjectionAnnotator annotator;
     
     private ProcessesContainerGenerator moduleGenerator;
@@ -160,16 +158,6 @@ public class ProcessCodegen extends AbstractGenerator {
 
     public ProcessesContainerGenerator moduleGenerator() {
         return moduleGenerator;
-    }
-
-    public ProcessCodegen withWorkItemHandlerConfig(String workItemHandlerConfigClass) {
-        this.workItemHandlerConfigClass = workItemHandlerConfigClass;
-        return this;
-    }
-
-    public ProcessCodegen withProcessEventListenerConfig(String customProcessListenerConfigExists) {
-        this.processEventListenerConfigClass = customProcessListenerConfigExists;
-        return this;
     }
 
     public ProcessCodegen withPersistence(boolean persistence) {
@@ -342,14 +330,6 @@ public class ProcessCodegen extends AbstractGenerator {
             storeFile(Type.PROCESS_INSTANCE, pi.generatedFilePath(), pi.generate());
         }
 
-        if (workItemHandlerConfigClass != null) {
-            moduleGenerator.setWorkItemHandlerClass(workItemHandlerConfigClass);
-        }
-
-        if (processEventListenerConfigClass != null) {
-            moduleGenerator.setProcessEventListenerConfigClass(processEventListenerConfigClass);
-        }
-
         for (ProcessExecutableModelGenerator legacyProcessGenerator : processExecutableModelGenerators) {
             if (legacyProcessGenerator.isPublic()) {
                 publicProcesses.add(legacyProcessGenerator.extractedProcessId());
@@ -362,12 +342,9 @@ public class ProcessCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-        // fixme: we need to pass on whether this is a drools-only project
         if (!processes.isEmpty()) {
             cfg.withProcessConfig(
-                    new ProcessConfigGenerator()
-                            .withWorkItemConfig(moduleGenerator.workItemConfigClass())
-                            .withProcessEventListenerConfig(moduleGenerator.processEventListenerConfigClass()));
+                    new ProcessConfigGenerator());
         }
     }
 

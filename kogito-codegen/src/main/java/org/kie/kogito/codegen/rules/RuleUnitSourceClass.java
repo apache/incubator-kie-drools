@@ -30,6 +30,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.QueryModel;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.rules.RuleUnit;
@@ -164,7 +165,7 @@ public class RuleUnitSourceClass implements FileGenerator {
         MethodDeclaration methodDeclaration = createInstanceMethod(ruleUnitInstanceFQCN);
         cls.addExtendedType(abstractRuleUnitType(canonicalName))
                 .addMember(methodDeclaration);
-
+        cls.getMembers().sort(new BodyDeclarationComparator());
         return cls;
     }
 

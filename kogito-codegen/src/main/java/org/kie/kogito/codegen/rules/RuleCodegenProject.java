@@ -33,6 +33,7 @@ import org.drools.modelcompiler.builder.ModelBuilderImpl;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.model.KieBaseModel;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import static com.github.javaparser.StaticJavaParser.parse;
@@ -111,6 +112,7 @@ public class RuleCodegenProject extends CanonicalModelCodeGenerationKieProject i
                     template.findAll(FieldDeclaration.class).stream().filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder")).forEach(fd -> annotator.withInjection(fd));;
                     
                     template.findAll( StringLiteralExpr.class ).forEach( s -> s.setString( s.getValue().replace( "$SessionName$", sessionName ) ) );
+                    template.getMembers().sort(new BodyDeclarationComparator());
                     trgMfs.write(
                             "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
                             log( cu.toString() ).getBytes( StandardCharsets.UTF_8 ) );

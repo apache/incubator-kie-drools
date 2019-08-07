@@ -12,6 +12,8 @@ import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.FileGenerator;
 import org.kie.kogito.rules.impl.RuleUnitRegistry;
 
@@ -45,9 +47,9 @@ public class RuleUnitsRegisterClass implements FileGenerator {
         ClassOrInterfaceDeclaration clazz = cu.addClass( RULE_UNIT_REGISTER_CLASS, Modifier.Keyword.PUBLIC );
         BlockStmt staticBlock = clazz.addStaticInitializer();
         unitsMap.forEach( (k, v) -> staticBlock.addStatement( new MethodCallExpr( "register",
-                new ClassExpr( new ClassOrInterfaceType( k.getCanonicalName() ) ),
+                new ClassExpr( new ClassOrInterfaceType(null, k.getCanonicalName() ) ),
                 new MethodReferenceExpr( new NameExpr( v ), null, "new" ) ) ) );
-
+        clazz.getMembers().sort(new BodyDeclarationComparator());
         return log( cu.toString() );
     }
 }

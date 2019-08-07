@@ -9,6 +9,7 @@ import static org.kie.kogito.codegen.process.CodegenUtils.isProcessField;
 import org.drools.core.util.StringUtils;
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -106,7 +107,7 @@ public class MessageConsumerGenerator {
             template.findAll(FieldDeclaration.class,
                              fd -> isApplicationField(fd)).forEach(fd -> initializeApplicationField(fd, template));
         }
-        
+        template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();
     }
     

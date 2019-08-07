@@ -15,20 +15,20 @@
 
 package org.kie.kogito.codegen;
 
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.StaticConfig;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.Assertions.*;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 
 public class ConfigGeneratorTest {
 
     @Test
     public void withProcessConfig() {
-        final ConfigGenerator generator = new ConfigGenerator();
+        final ConfigGenerator generator = new ConfigGenerator("org.kie.kogito.test");
         final ProcessConfigGenerator processConfigGenerator = Mockito.mock(ProcessConfigGenerator.class);
         final ConfigGenerator returnedConfigGenerator = generator.withProcessConfig(processConfigGenerator);
         assertThat(returnedConfigGenerator).isNotNull();
@@ -37,7 +37,7 @@ public class ConfigGeneratorTest {
 
     @Test
     public void withProcessConfigNull() {
-        final ConfigGenerator generator = new ConfigGenerator();
+        final ConfigGenerator generator = new ConfigGenerator("org.kie.kogito.test");
         final ConfigGenerator returnedConfigGenerator = generator.withProcessConfig(null);
         assertThat(returnedConfigGenerator).isNotNull();
         assertThat(returnedConfigGenerator).isSameAs(generator);
@@ -55,15 +55,14 @@ public class ConfigGeneratorTest {
         newInstanceTest(processConfigGenerator, ObjectCreationExpr.class);
     }
 
-    private void newInstanceTest(final ProcessConfigGenerator processConfigGenerator, final Class expectedArgumentType) {
-        ObjectCreationExpr expression = new ConfigGenerator().withProcessConfig(processConfigGenerator).newInstance();
+    private void newInstanceTest(final ProcessConfigGenerator processConfigGenerator, final Class<?> expectedArgumentType) {
+        ObjectCreationExpr expression = new ConfigGenerator("org.kie.kogito.test").withProcessConfig(processConfigGenerator).newInstance();
         assertThat(expression).isNotNull();
 
         assertThat(expression.getType()).isNotNull();
-        assertThat(expression.getType().asString()).isEqualTo(StaticConfig.class.getCanonicalName());
+        assertThat(expression.getType().asString()).isEqualTo("org.kie.kogito.test.ApplicationConfig");
 
         assertThat(expression.getArguments()).isNotNull();
-        assertThat(expression.getArguments()).hasSize(2);
-        assertThat(expression.getArgument(0)).isInstanceOf(expectedArgumentType);
+        assertThat(expression.getArguments()).hasSize(0);
     }
 }

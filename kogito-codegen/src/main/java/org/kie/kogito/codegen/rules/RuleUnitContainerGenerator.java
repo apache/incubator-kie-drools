@@ -18,6 +18,14 @@ package org.kie.kogito.codegen.rules;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.modelcompiler.builder.CanonicalModelKieProject;
+import org.kie.kogito.codegen.AbstractApplicationSection;
+import org.kie.kogito.codegen.BodyDeclarationComparator;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.rules.KieRuntimeBuilder;
+import org.kie.kogito.rules.RuleUnit;
+import org.kie.kogito.rules.RuleUnits;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -32,13 +40,6 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.core.config.DefaultRuleEventListenerConfig;
-import org.drools.modelcompiler.builder.CanonicalModelKieProject;
-import org.kie.kogito.codegen.AbstractApplicationSection;
-import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
-import org.kie.kogito.rules.KieRuntimeBuilder;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnits;
 
 public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
@@ -49,8 +50,6 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     private String targetTypeName;
     private DependencyInjectionAnnotator annotator;
     private List<BodyDeclaration<?>> factoryMethods = new ArrayList<>();
-
-    private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
 
     public RuleUnitContainerGenerator(String packageName) {
         super("RuleUnits", "ruleUnits", RuleUnits.class);
@@ -84,7 +83,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
                 compilationUnit.addClass(targetTypeName);
 
         factoryMethods.forEach(cls::addMember);
-
+        cls.getMembers().sort(new BodyDeclarationComparator());
         return compilationUnit;
     }
 
@@ -126,8 +125,12 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
         declarations.addAll(factoryMethods);
 
-        return super.classDeclaration()
+        ClassOrInterfaceDeclaration cls = super.classDeclaration()
                 .setMembers(declarations);
+        
+        cls.getMembers().sort(new BodyDeclarationComparator());
+        
+        return cls;
     }
 
     public static ClassOrInterfaceType ruleUnitType(String canonicalName) {
@@ -142,13 +145,5 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
 
     public List<RuleUnitSourceClass> getRuleUnits() {
         return ruleUnits;
-    }
-
-    public void setRuleEventListenersConfigClass(String ruleEventListenersConfigClass) {
-        this.ruleEventListenersConfigClass = ruleEventListenersConfigClass;
-    }
-
-    public String ruleEventListenersConfigClass() {
-        return ruleEventListenersConfigClass;
     }
 }

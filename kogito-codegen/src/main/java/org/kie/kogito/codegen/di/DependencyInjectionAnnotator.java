@@ -16,6 +16,7 @@
 package org.kie.kogito.codegen.di;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 
@@ -97,13 +98,21 @@ public interface DependencyInjectionAnnotator {
     
     void withMessageProducer(MethodCallExpr produceMethod, String channel, String event);
     
-    MethodDeclaration withProcessInitMethod(MethodCallExpr produceMethod);
+    MethodDeclaration withInitMethod(Expression... expression);
+    
+    Expression optionalInstanceExists(String fieldName);
     
     /**
      * Returns type that allows to inject multiple instances of the same type
      * @return fully qualified class name
      */
     String multiInstanceInjectionType();
+    
+    /**
+     * Returns type that allows to inject optional instances of the same type
+     * @return fully qualified class name
+     */
+    String optionalInstanceInjectionType();
     
     /**
      * Returns type that allows to mark instance as application component e.g. ApplicationScoped, Component

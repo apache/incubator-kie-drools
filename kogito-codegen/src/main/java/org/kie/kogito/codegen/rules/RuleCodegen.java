@@ -73,8 +73,6 @@ public class RuleCodegen extends AbstractGenerator {
 
     private DependencyInjectionAnnotator annotator;
     
-    private String ruleEventListenersConfigClass = null;
-
     public RuleCodegen( KieBuilderImpl kieBuilder, boolean oneClassPerRule, Collection<File> files ) {
         this.kieBuilder = kieBuilder;
         this.oneClassPerRule = oneClassPerRule;
@@ -104,10 +102,7 @@ public class RuleCodegen extends AbstractGenerator {
     }
 
     public List<GeneratedFile> generate() {
-        if (ruleEventListenersConfigClass != null) {
-            moduleGenerator.setRuleEventListenersConfigClass(ruleEventListenersConfigClass);
-        }
-        
+  
         kieBuilder.buildAll(
                 (km, cl) ->
                         new RuleCodegenProject(km, cl, annotator)                                
@@ -135,17 +130,11 @@ public class RuleCodegen extends AbstractGenerator {
 
     @Override
     public void updateConfig(ConfigGenerator cfg) {
-        // no config yet
-        cfg.withRuleConfig(new RuleConfigGenerator().ruleEventListenersConfig(moduleGenerator.ruleEventListenersConfigClass()));
+        cfg.withRuleConfig(new RuleConfigGenerator());
     }
 
     public RuleUnitContainerGenerator moduleGenerator() {
         return moduleGenerator;
-    }
-    
-    public RuleCodegen withRuleEventListenersConfig(String ruleEventListenersConfigClass) {
-        this.ruleEventListenersConfigClass = ruleEventListenersConfigClass;
-        return this;
     }
 
     public void setDependencyInjection(DependencyInjectionAnnotator annotator) {

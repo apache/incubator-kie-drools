@@ -38,7 +38,7 @@ public class ModelClassGenerator {
 
     public ModelMetaData generate() {
         // create model class for all variables
-        modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
+        modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);        
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
         return modelMetaData;
     }

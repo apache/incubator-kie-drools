@@ -179,17 +179,12 @@ public class GenerateModelMojo extends AbstractKieMojo {
                     .withClassLoader(MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
                                                                        project,
                                                                        outputDirectory,
-                                                                       null))
-                    .withRuleEventListenersConfig(customRuleEventListenerConfigExists(appPackageName));
+                                                                       null));
         }
 
         if (generateProcesses) {
             
-            appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))
-                    .withWorkItemHandlerConfig(
-                            customWorkItemConfigExists(appPackageName))
-                    .withProcessEventListenerConfig(
-                            customProcessListenerConfigExists(appPackageName))
+            appGen.withGenerator(ProcessCodegen.ofPath(kieSourcesDirectory.toPath()))                    
                     .withPersistence(usePersistence);            
         }
 

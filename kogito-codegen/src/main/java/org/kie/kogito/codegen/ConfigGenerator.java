@@ -15,33 +15,70 @@
 
 package org.kie.kogito.codegen;
 
+import static com.github.javaparser.StaticJavaParser.parse;
+
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class ConfigGenerator {
+    
+    private static final String RESOURCE = "/class-templates/config/ApplicationConfigTemplate.java";
 
+    private DependencyInjectionAnnotator annotator;
     private ProcessConfigGenerator processConfig;
     private RuleConfigGenerator ruleConfig;
+    
+    private String packageName;
+    private final String sourceFilePath;
+    private final String targetTypeName;
+    private final String targetCanonicalName;
+    
+    public ConfigGenerator(String packageName) {
+        this.packageName = packageName;
+        this.targetTypeName = "ApplicationConfig";
+        this.targetCanonicalName = this.packageName + "." + targetTypeName;
+        this.sourceFilePath = targetCanonicalName.replace('.', '/') + ".java";
+    }
 
     public ConfigGenerator withProcessConfig(ProcessConfigGenerator cfg) {
         this.processConfig = cfg;
+        if (this.processConfig != null) {
+            this.processConfig.withDependencyInjection(annotator);
+        }
         return this;
     }
     
     public ConfigGenerator withRuleConfig(RuleConfigGenerator cfg) {
         this.ruleConfig = cfg;
+        if (this.ruleConfig != null) {
+            this.ruleConfig.withDependencyInjection(annotator);
+        }
+        return this;
+    }
+    
+    public ConfigGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
         return this;
     }
 
     public ObjectCreationExpr newInstance() {
         return new ObjectCreationExpr()
-                .setType(org.kie.kogito.StaticConfig.class.getCanonicalName())
-                .addArgument(/* first arg is process config */ processConfig())
-                .addArgument(/* second arg is rule config */ ruleConfig());
+                .setType(targetCanonicalName);
 
     }
 
@@ -51,5 +88,51 @@ public class ConfigGenerator {
     
     private Expression ruleConfig() {
         return ruleConfig == null ? new NullLiteralExpr() : ruleConfig.newInstance();
+    }
+    
+    public CompilationUnit compilationUnit() {
+        CompilationUnit compilationUnit =
+                parse(this.getClass().getResourceAsStream(RESOURCE))
+                        .setPackageDeclaration(packageName);
+        ClassOrInterfaceDeclaration cls = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get();
+        
+        if (processConfig != null) {
+            for (BodyDeclaration<?> member : processConfig.members()) {
+                cls.addMember(member);
+            }
+        }
+        
+        if (ruleConfig != null) {
+            for (BodyDeclaration<?> member : ruleConfig.members()) {
+                cls.addMember(member);
+            }
+        }
+
+        MethodDeclaration initMethod = new MethodDeclaration()
+            .addModifier(Keyword.PUBLIC)
+            .setName("init")
+            .setType(void.class)
+            .setBody(new BlockStmt()
+                     .addStatement(new AssignExpr(new NameExpr("processConfig"), processConfig(), AssignExpr.Operator.ASSIGN))
+                     .addStatement(new AssignExpr(new NameExpr("ruleConfig"), ruleConfig(), AssignExpr.Operator.ASSIGN)));
+            
+        if (useInjection()) {
+            annotator.withSingletonComponent(cls);
+            initMethod.addAnnotation("javax.annotation.PostConstruct");
+        } else {
+            cls.addConstructor(Keyword.PUBLIC).setBody(new BlockStmt().addStatement(new MethodCallExpr(new ThisExpr(), "init")));
+        }
+        cls.addMember(initMethod);
+        
+        cls.getMembers().sort(new BodyDeclarationComparator());
+        return compilationUnit;
+    }
+    
+    protected boolean useInjection() {
+        return this.annotator != null;
+    }
+    
+    public String generatedFilePath() {
+        return sourceFilePath;
     }
 }

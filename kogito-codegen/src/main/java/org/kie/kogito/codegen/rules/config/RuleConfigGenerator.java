@@ -15,26 +15,68 @@
 
 package org.kie.kogito.codegen.rules.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.drools.core.config.StaticRuleConfig;
+import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
+import org.kie.kogito.codegen.process.CodegenUtils;
+import org.kie.kogito.rules.RuleEventListenerConfig;
 
+import com.github.javaparser.ast.Modifier.Keyword;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class RuleConfigGenerator {
-    private String ruleEventListenersConfigClass = DefaultRuleEventListenerConfig.class.getCanonicalName();
-    
-    public RuleConfigGenerator ruleEventListenersConfig(String cfg) {
-        if (cfg == null) {
-            throw new IllegalArgumentException("Specified rule listeners config class is undefined (null)!");
-        }
-        this.ruleEventListenersConfigClass = cfg;
-        return this;
-    }
 
+    private List<BodyDeclaration<?>> members = new ArrayList<>();
+    
+    private DependencyInjectionAnnotator annotator;
 
     public ObjectCreationExpr newInstance() {
-        return new ObjectCreationExpr()
+        if (annotator!= null) {
+            return new ObjectCreationExpr()
+                    .setType(StaticRuleConfig.class.getCanonicalName())
+                    .addArgument(new MethodCallExpr("extract_ruleEventListenerConfig"));
+        } else {
+            return new ObjectCreationExpr()
                 .setType(StaticRuleConfig.class.getCanonicalName())
-                .addArgument(new ObjectCreationExpr().setType(ruleEventListenersConfigClass));
+                .addArgument(new NameExpr("defaultRuleEventListenerConfig"));
+        }
+    }
+    
+    public List<BodyDeclaration<?>> members() {
+        
+        FieldDeclaration defaultRelcFieldDeclaration = new FieldDeclaration()
+                .setStatic(true)
+                .setModifiers(Keyword.PRIVATE)
+                .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, RuleEventListenerConfig.class.getCanonicalName()), 
+                                                    "defaultRuleEventListenerConfig",
+                                                    new ObjectCreationExpr(null, new ClassOrInterfaceType(null, DefaultRuleEventListenerConfig.class.getCanonicalName()), NodeList.nodeList())));
+        members.add(defaultRelcFieldDeclaration);
+        
+        if (annotator != null) {
+            FieldDeclaration relcFieldDeclaration = new FieldDeclaration()
+                    .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, new SimpleName(annotator.optionalInstanceInjectionType()), NodeList.nodeList(new ClassOrInterfaceType(null, RuleEventListenerConfig.class.getCanonicalName()))), "ruleEventListenerConfig"));
+            annotator.withInjection(relcFieldDeclaration);
+            
+            members.add(relcFieldDeclaration);
+            members.add(CodegenUtils.extractOptionalInjection(RuleEventListenerConfig.class.getCanonicalName(), "ruleEventListenerConfig", "defaultRuleEventListenerConfig", annotator));            
+        }
+        
+        return members;
+    }
+    
+    public RuleConfigGenerator withDependencyInjection(DependencyInjectionAnnotator annotator) {
+        this.annotator = annotator;
+        return this;
     }
 }
