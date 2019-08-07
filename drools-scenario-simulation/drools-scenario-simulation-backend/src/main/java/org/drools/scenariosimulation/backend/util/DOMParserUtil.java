@@ -44,6 +44,9 @@ import org.xml.sax.SAXException;
  */
 public class DOMParserUtil {
 
+    private DOMParserUtil() {
+    }
+
     /**
      * This method remove the <b>nodeToRemoveName</b> <code>Node</code>s from all the <b>containerTagName</b> Elements found inside the given <b>fullXml</b>
      * @param fullXml
