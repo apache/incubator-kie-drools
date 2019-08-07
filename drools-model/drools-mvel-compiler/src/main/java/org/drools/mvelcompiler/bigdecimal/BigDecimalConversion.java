@@ -1,6 +1,8 @@
 package org.drools.mvelcompiler.bigdecimal;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import com.github.javaparser.ast.expr.AssignExpr;
 import org.drools.mvelcompiler.ast.AssignExprT;
@@ -17,7 +19,19 @@ public abstract class BigDecimalConversion {
         this.rhs = rhs;
     }
 
-    public static BigDecimalConversion shouldConvertPlusEqualsOperatorBigDecimal(AssignExpr n, TypedExpression rhs, Class<?> rhsType) {
+    public static BigDecimalConversion shouldConvertPlusEqualsOperatorBigDecimal(AssignExpr n, Optional<TypedExpression> optRHS) {
+        if(!optRHS.isPresent() || (!optRHS.get().getType().isPresent())) {
+            return new DoNotConvert(null);
+        }
+
+        TypedExpression rhs = optRHS.get();
+        Optional<Type> optRHSType = rhs.getType();
+        if(!optRHSType.isPresent()) {
+            return new DoNotConvert(null);
+        }
+
+        Type rhsType = optRHSType.get();
+
         boolean isBigDecimal = BigDecimal.class.equals(rhsType);
         if(isBigDecimal) {
             if(AssignExpr.Operator.PLUS.equals(n.getOperator())) {
@@ -28,7 +42,7 @@ public abstract class BigDecimalConversion {
                 return new DoNotConvert(rhs);
             }
         }
-        return new DoNotConvert(rhs);
+        return new DoNotConvert(null);
     }
 
     public abstract boolean shouldConvert();
