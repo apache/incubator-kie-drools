@@ -64,6 +64,8 @@ public class AccumulateInline {
 
     private final List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
     private final List<String> contextFieldNames = new ArrayList<>();
+    private Set<String> usedExtDeclrs = new HashSet<>();
+
     private MvelCompiler mvelCompiler;
 
     AccumulateInline(RuleContext context,
@@ -133,7 +135,7 @@ public class AccumulateInline {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
-        Set<String> usedExtDeclrs = parseInitBlock();
+        parseInitBlock();
 
         boolean useLegacyAccumulate = false;
         Type singleAccumulateType = null;
@@ -153,7 +155,7 @@ public class AccumulateInline {
                             .getBoxedType();
         } else {
             allNamesInActionBlock.removeIf( name -> !externalDeclrs.contains( name ) );
-            usedExtDeclrs.addAll( allNamesInActionBlock );
+            usedExtDeclrs.addAll(allNamesInActionBlock );
             useLegacyAccumulate = true;
         }
 
@@ -170,7 +172,7 @@ public class AccumulateInline {
                 optReverseMethod = Optional.of(reverseMethod);
             } else {
                 allNamesInActionBlock.removeIf( name -> !externalDeclrs.contains( name ) );
-                usedExtDeclrs.addAll( allNamesInActionBlock );
+                usedExtDeclrs.addAll(allNamesInActionBlock );
                 useLegacyAccumulate = true;
             }
         }
@@ -253,12 +255,10 @@ public class AccumulateInline {
         templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration) m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
     }
 
-    private Set<String> parseInitBlock() {
+    private void parseInitBlock() {
         MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
         ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
         BlockStmt initBlock = initCodeCompilationResult.statementResults();
-
-        Set<String> externalDeclrs = new HashSet<>();
 
         for (Statement stmt : initBlock.getStatements()) {
             final BlockStmt initMethodBody = initMethod.getBody().orElseThrow(() -> new IllegalStateException("Method declaration doesn't contain body!"));
@@ -270,7 +270,7 @@ public class AccumulateInline {
                     templateContextClass.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
                     createInitializer(variableName, vd.getInitializer()).ifPresent(statement -> {
                                                                                        initMethodBody.addStatement(statement);
-                                                                                       statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration ).forEach(externalDeclrs::add );
+                                                                                       statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration ).forEach(usedExtDeclrs::add );
                                                                                    }
                     );
                     accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString()) ));
@@ -307,8 +307,6 @@ public class AccumulateInline {
                 }
             }
         }
-
-        return externalDeclrs;
     }
 
 
