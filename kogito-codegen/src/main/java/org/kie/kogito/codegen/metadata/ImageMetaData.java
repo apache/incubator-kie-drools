@@ -21,6 +21,8 @@ import java.util.Map;
 
 public class ImageMetaData {
 
+    public final static String LABEL_PREFIX = "org.kie/";
+
     private List<Map<String, String>> labels;
 
     public ImageMetaData() {}

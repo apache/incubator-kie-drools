@@ -38,6 +38,7 @@ import org.kie.kogito.rules.impl.AbstractRuleUnit;
 import static java.util.stream.Collectors.toList;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
 public class RuleUnitSourceClass implements FileGenerator {
 
@@ -85,6 +86,14 @@ public class RuleUnitSourceClass implements FileGenerator {
 
     public String targetTypeName() {
         return targetTypeName;
+    }
+
+    public String typeName() {
+        return typeName;
+    }
+
+    public String label() {
+        return LABEL_PREFIX + typeName();
     }
 
     @Override

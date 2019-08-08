@@ -22,9 +22,9 @@ import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.kie.api.definition.process.WorkflowProcess;
 
-public class ProcessExecutableModelGenerator {
+import static org.kie.kogito.codegen.metadata.ImageMetaData.LABEL_PREFIX;
 
-    protected final static String LABEL_PREFIX = "org.kie/";
+public class ProcessExecutableModelGenerator {
 
     private final WorkflowProcess workFlowProcess;
     private final ProcessToExecModelGenerator execModelGenerator;

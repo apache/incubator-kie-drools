@@ -38,6 +38,10 @@ import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
+/**
+ * @deprecated use {@link IncrementalRuleCodegen}
+ */
+@Deprecated
 public class RuleCodegen extends AbstractGenerator {
 
     private String packageName;

@@ -123,6 +123,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     private final Collection<Resource> resources;
     private String ruleEventListenersConfigClass;
     private RuleUnitContainerGenerator moduleGenerator;
+    private final Map<String, String> labels;
 
     private boolean dependencyInjection;
     private DependencyInjectionAnnotator annotator;
@@ -144,6 +145,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         this.kieModuleModel = new KieModuleModelImpl();
         setDefaultsforEmptyKieModule(kieModuleModel);
         this.contextClassLoader = getClass().getClassLoader();
+        this.labels = new HashMap<>();
     }
 
     @Override
@@ -268,6 +270,9 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             generatedFiles.add( new RuleUnitsRegisterClass(unitsMap).generateFile(GeneratedFile.Type.RULE) );
 
             for (RuleUnitSourceClass ruleUnit : moduleGenerator.getRuleUnits()) {
+                // add the label id of the rule unit with value set to `rules` as resource type
+                labels.put(ruleUnit.label(), "rules");
+
                 generatedFiles.add( ruleUnit.generateFile(GeneratedFile.Type.RULE) );
 
                 RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance(contextClassLoader);
@@ -328,6 +333,11 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
     private String pojoName(String folderName, String nameAsString) {
         return folderName + "/" + nameAsString + ".java";
+    }
+
+    @Override
+    public Map<String, String> getLabels() {
+        return labels;
     }
 
     @Override
