@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,7 +56,8 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
         this.pmmlInfo = pmmlInfo;
         helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
                                                                 ResourceFactory.newUrlResource(document),
-                                                                null);
+                                                                null,
+                                                                pmmlInfo.getModels().stream().anyMatch(m -> m.name.equals(model) && m.className.equals("MiningModel")));
         helper.addPossiblePackageName(pmmlInfo.getHeader().getHeaderExtensions().get("modelPackage"));
         helper.initModel();
     }
@@ -74,17 +76,18 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
 
         Map<String, Object> resultVariables = resultHolder.getResultVariables();
         Map<String, Object> result = new HashMap<>();
-        for (Object r : resultVariables.values()) {
+        for (Entry<String, Object> kv : resultVariables.entrySet()) {
+            Object r = kv.getValue();
             if (r instanceof PMML4Field) {
                 PMML4Field pmml4Field = (PMML4Field) r;
-                final String pmml4FieldName = pmml4Field.getName();
-                if (pmml4FieldName != null && !pmml4FieldName.isEmpty()) {
-                    String name = pmml4FieldName;
+                final String resultName = kv.getKey();
+                if (resultName != null && !resultName.isEmpty()) {
+                    String name = resultName;
                     Optional<String> outputFieldNameFromInfo = pmmlInfo.getModels()
                                                                        .stream()
                                                                        .filter(m -> model.equals(m.getName()))
                                                                        .flatMap(m -> m.getOutputFieldNames().stream())
-                                                                       .filter(ofn -> ofn.equalsIgnoreCase(pmml4FieldName))
+                                                                       .filter(ofn -> ofn.equalsIgnoreCase(resultName))
                                                                        .findFirst();
                     if (outputFieldNameFromInfo.isPresent()) {
                         name = outputFieldNameFromInfo.get();

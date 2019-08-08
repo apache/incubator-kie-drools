@@ -78,7 +78,7 @@ public class PMMLInfo<M extends PMMLModelInfo> {
         if (pm.getOutput() != null && pm.getOutput().getOutputFields() != null) {
             pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
         }
-        return new PMMLModelInfo(pm.getModelName(), inputFields, targetFields, outputFields);
+        return new PMMLModelInfo(pm.getModelName(), pm.getClass().getSimpleName(), inputFields, targetFields, outputFields);
     }
 
     public Collection<M> getModels() {
