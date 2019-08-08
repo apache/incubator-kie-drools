@@ -55,10 +55,18 @@ public class AccumulateInline {
 
     protected final RuleContext context;
     protected final PackageModel packageModel;
+    private AccumulateDescr accumulateDescr;
+    private PatternDescr basePattern;
+    private PatternDescr inputDescr;
 
-    public AccumulateInline(RuleContext context, PackageModel packageModel) {
+    AccumulateInline(RuleContext context,
+                            PackageModel packageModel,
+                            AccumulateDescr descr,
+                            PatternDescr basePattern) {
         this.context = context;
         this.packageModel = packageModel;
+        this.accumulateDescr = descr;
+        this.basePattern = basePattern;
     }
 
     // TODO: Move to class template
@@ -100,17 +108,16 @@ public class AccumulateInline {
                     "    }\n" +
                     "}";
 
+
     /**
      * By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding in the accumulate code/expressions.
      */
-    public void visitAccInlineCustomCode(AccumulateDescr descr,
-                                         MethodCallExpr accumulateDSL,
-                                         PatternDescr basePattern,
-                                         PatternDescr inputDescr,
-                                         Set<String> externalDeclrs) {
+    void visitAccInlineCustomCode(PatternDescr inputDescr, MethodCallExpr accumulateDSL, Set<String> externalDeclrs) {
+        this.inputDescr = inputDescr;
+
         context.pushExprPointer(accumulateDSL::addArgument);
 
-        String targetClassName = StringUtil.toId(context.getRuleDescr().getName()) + "Accumulate" + descr.getLine();
+        String targetClassName = StringUtil.toId(context.getRuleDescr().getName()) + "Accumulate" + accumulateDescr.getLine();
         String code = ACCUMULATE_INLINE_FUNCTION.replaceAll("AccumulateInlineFunction", targetClassName);
 
         CompilationUnit templateCU = StaticJavaParser.parse(code);
@@ -126,19 +133,18 @@ public class AccumulateInline {
             mvelCompilerContext.addDeclaration(ds.getBindingId(),ds.getDeclarationClass());
         }
 
-        MvelCompiler mvelCompiler = new MvelCompiler(mvelCompilerContext);
-        ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(descr.getInitCode()));
-
-        BlockStmt initBlock = initCodeCompilationResult.statementResults();
-
         List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
+        MvelCompiler mvelCompiler = new MvelCompiler(mvelCompilerContext);
+
+        ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
+        BlockStmt initBlock = initCodeCompilationResult.statementResults();
         Set<String> usedExtDeclrs = parseInitBlock(context, templateContextClass, contextFieldNames, initMethod, initBlock, accumulateDeclarations );
 
         boolean useLegacyAccumulate = false;
         Type singleAccumulateType = null;
         MethodDeclaration accumulateMethod = templateClass.getMethodsByName("accumulate").get(0);
 
-        ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(descr.getActionCode()));
+        ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getActionCode()));
 
         BlockStmt actionBlock = actionBlockCompilationResult.statementResults();
 
@@ -157,11 +163,11 @@ public class AccumulateInline {
         }
 
         Optional<MethodDeclaration> optReverseMethod = Optional.empty();
-        ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(descr.getReverseCode()));
+        ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getReverseCode()));
 
         BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
 
-        if(descr.getReverseCode() != null) {
+        if(accumulateDescr.getReverseCode() != null) {
             Collection<String> allNamesInReverseBlock = collectNamesInBlock(reverseBlock, context);
             if (allNamesInReverseBlock.size() == 1) {
                 MethodDeclaration reverseMethod = templateClass.getMethodsByName("reverse").get(0);
@@ -175,7 +181,7 @@ public class AccumulateInline {
         }
 
         if ( useLegacyAccumulate || !usedExtDeclrs.isEmpty() ) {
-            new LegacyAccumulate(context, descr, basePattern, usedExtDeclrs).build();
+            new LegacyAccumulate(context, accumulateDescr, this.basePattern, usedExtDeclrs).build();
             return;
         }
 
@@ -188,7 +194,7 @@ public class AccumulateInline {
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
         MethodDeclaration resultMethod = templateClass.getMethodsByName("getResult").get(0);
         Type returnExpressionType = StaticJavaParser.parseType("java.lang.Object");
-        Expression returnExpression = StaticJavaParser.parseExpression(descr.getResultCode());
+        Expression returnExpression = StaticJavaParser.parseExpression(accumulateDescr.getResultCode());
         if (returnExpression instanceof NameExpr) {
             returnExpression = new EnclosedExpr(returnExpression);
         }
@@ -230,9 +236,9 @@ public class AccumulateInline {
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
         functionDSL.addArgument( new MethodReferenceExpr(new NameExpr(targetClassName ), new NodeList<>(), "new") );
-        functionDSL.addArgument( context.getVarExpr(inputDescr.getIdentifier()) );
+        functionDSL.addArgument(context.getVarExpr(this.inputDescr.getIdentifier()) );
 
-        final String bindingId = basePattern.getIdentifier();
+        final String bindingId = this.basePattern.getIdentifier();
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
         asDSL.addArgument( context.getVarExpr( bindingId ) );
         accumulateDSL.addArgument(asDSL);
