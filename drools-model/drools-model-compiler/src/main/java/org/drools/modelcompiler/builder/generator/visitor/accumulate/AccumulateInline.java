@@ -62,6 +62,10 @@ public class AccumulateInline {
     private ClassOrInterfaceDeclaration templateContextClass;
     private String targetClassName;
 
+    private final List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
+    private final List<String> contextFieldNames = new ArrayList<>();
+    private MvelCompiler mvelCompiler;
+
     AccumulateInline(RuleContext context,
                             PackageModel packageModel,
                             AccumulateDescr descr,
@@ -70,6 +74,14 @@ public class AccumulateInline {
         this.packageModel = packageModel;
         this.accumulateDescr = descr;
         this.basePattern = basePattern;
+
+        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
+
+        for(DeclarationSpec ds : context.getAllDeclarations()) {
+            mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());
+        }
+
+        mvelCompiler = new MvelCompiler(mvelCompilerContext);
     }
 
     // TODO: Move to class template
@@ -121,21 +133,7 @@ public class AccumulateInline {
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
-        List<String> contextFieldNames = new ArrayList<>();
-
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
-
-        for(DeclarationSpec ds : context.getAllDeclarations()) {
-            mvelCompilerContext.addDeclaration(ds.getBindingId(),ds.getDeclarationClass());
-        }
-
-        List<DeclarationSpec> accumulateDeclarations = new ArrayList<>();
-        MvelCompiler mvelCompiler = new MvelCompiler(mvelCompilerContext);
-
-        ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
-        BlockStmt initBlock = initCodeCompilationResult.statementResults();
-        MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
-        Set<String> usedExtDeclrs = parseInitBlock(context, templateContextClass, contextFieldNames, initMethod, initBlock, accumulateDeclarations );
+        Set<String> usedExtDeclrs = parseInitBlock();
 
         boolean useLegacyAccumulate = false;
         Type singleAccumulateType = null;
@@ -255,7 +253,11 @@ public class AccumulateInline {
         templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration) m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
     }
 
-    private Set<String> parseInitBlock(RuleContext context2, ClassOrInterfaceDeclaration templateContextClass, List<String> contextFieldNames, MethodDeclaration initMethod, BlockStmt initBlock, List<DeclarationSpec> accumulateDeclarations) {
+    private Set<String> parseInitBlock() {
+        MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
+        ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
+        BlockStmt initBlock = initCodeCompilationResult.statementResults();
+
         Set<String> externalDeclrs = new HashSet<>();
 
         for (Statement stmt : initBlock.getStatements()) {
@@ -268,10 +270,10 @@ public class AccumulateInline {
                     templateContextClass.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
                     createInitializer(variableName, vd.getInitializer()).ifPresent(statement -> {
                                                                                        initMethodBody.addStatement(statement);
-                                                                                       statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context2::hasDeclaration ).forEach(externalDeclrs::add );
+                                                                                       statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration ).forEach(externalDeclrs::add );
                                                                                    }
                     );
-                    accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), vd.getType().asString()) ));
+                    accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString()) ));
                 }
             } else {
                 if(stmt.isExpressionStmt()) {
@@ -285,7 +287,7 @@ public class AccumulateInline {
                             final String variableName = assignExpr.getTarget().toString();
                             final Expression initCreationExpression = assignExpr.getValue();
 
-                            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context2.getTypeResolver());
+                            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
                             ParsingResult compile = new MvelCompiler(mvelCompilerContext).compile(addCurlyBracesToBlock(printConstraint(stmt)));
 
                             final Type type =
@@ -296,7 +298,7 @@ public class AccumulateInline {
                             templateContextClass.addField(type, variableName, Modifier.publicModifier().getKeyword());
                             final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initCreationExpression));
                             initializer.ifPresent(initMethodBody::addStatement);
-                            accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context2.getTypeResolver(), type.asString())));
+                            accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), type.asString())));
                         }
 
                     }
