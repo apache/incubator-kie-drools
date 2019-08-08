@@ -31,9 +31,10 @@ import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
-import org.drools.scenariosimulation.backend.interfaces.ThrowingFunction;
+import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Import;
+import org.w3c.dom.Document;
 
 public class ScenarioSimulationXMLPersistence {
 
@@ -105,7 +106,7 @@ public class ScenarioSimulationXMLPersistence {
 
     public String migrateIfNecessary(String rawXml) throws Exception {
         String fileVersion = extractVersion(rawXml);
-        ThrowingFunction<String, String> migrator = getMigrationStrategy().start();
+        ThrowingConsumer<Document> migrator = getMigrationStrategy().start();
         boolean supported;
         switch (fileVersion) {
             case "1.0":
@@ -132,7 +133,9 @@ public class ScenarioSimulationXMLPersistence {
                                                        .append(currentVersion).toString());
         }
         migrator = migrator.andThen(getMigrationStrategy().end());
-        return migrator.apply(rawXml);
+        Document document = DOMParserUtil.getDocument(rawXml);
+        migrator.accept(document);
+        return DOMParserUtil.getString(document);
     }
 
     public String extractVersion(String rawXml) {
