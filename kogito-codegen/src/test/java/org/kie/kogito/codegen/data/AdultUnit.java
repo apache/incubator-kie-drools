@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,10 @@ public class AdultUnit implements RuleUnitMemory {
 
     public int getAdultAge() {
         return adultAge;
+    }
+
+    public void setAdultAge( int adultAge ) {
+        this.adultAge = adultAge;
     }
 
     public Results getResults() {

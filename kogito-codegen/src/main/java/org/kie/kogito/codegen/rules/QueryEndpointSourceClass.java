@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ public class QueryEndpointSourceClass implements FileGenerator {
 
     private void generateQueryMethod( ClassOrInterfaceDeclaration clazz, String returnType ) {
         MethodDeclaration queryMethod = clazz.getMethodsByName( "executeQuery" ).get(0);
-        queryMethod.getParameter( 0 ).setType(ruleUnit);
+        queryMethod.getParameter( 0 ).setType(ruleUnit.getCanonicalName() + "DTO");
 
         setGeneric(queryMethod.getType(), returnType);
 

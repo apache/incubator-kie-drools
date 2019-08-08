@@ -15,12 +15,6 @@
 
 package org.kie.kogito.codegen.rules;
 
-import static com.github.javaparser.StaticJavaParser.parse;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
-import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
-import static org.kie.kogito.codegen.ApplicationGenerator.log;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -37,6 +31,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.printer.PrettyPrinter;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -62,11 +61,11 @@ import org.kie.kogito.codegen.GeneratedFile;
 import org.kie.kogito.codegen.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.rules.config.RuleConfigGenerator;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.printer.PrettyPrinter;
+import static com.github.javaparser.StaticJavaParser.parse;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.modelcompiler.builder.JavaParserCompiler.getPrettyPrinter;
+import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
+import static org.kie.kogito.codegen.ApplicationGenerator.log;
 
 public class IncrementalRuleCodegen extends AbstractGenerator {
 
@@ -274,8 +273,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
                 RuleUnitInstanceSourceClass ruleUnitInstance = ruleUnit.instance(contextClassLoader);
                 generatedFiles.add( ruleUnitInstance.generateFile(GeneratedFile.Type.RULE) );
 
-                for (QueryEndpointSourceClass query : ruleUnit.queries()) {
-                    generatedFiles.add( query.generateFile(GeneratedFile.Type.QUERY) );
+                List<QueryEndpointSourceClass> queries = ruleUnit.queries();
+                if (!queries.isEmpty()) {
+                    generatedFiles.add( new RuleUnitDTOSourceClass( ruleUnit.getRuleUnitClass() ).generateFile(GeneratedFile.Type.RULE) );
+                    for (QueryEndpointSourceClass query : queries) {
+                        generatedFiles.add( query.generateFile( GeneratedFile.Type.QUERY ) );
+                    }
                 }
             }
         } else if (annotator != null && !hotReloadMode) {

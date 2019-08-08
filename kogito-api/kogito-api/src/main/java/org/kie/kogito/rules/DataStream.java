@@ -16,10 +16,6 @@
 
 package org.kie.kogito.rules;
 
-import javax.json.bind.annotation.JsonbTypeDeserializer;
-import org.kie.kogito.rules.impl.DataStreamDeserializer;
-
-@JsonbTypeDeserializer(DataStreamDeserializer.class)
 public interface DataStream<T> extends DataSource<T> {
     void append( T value );
 }

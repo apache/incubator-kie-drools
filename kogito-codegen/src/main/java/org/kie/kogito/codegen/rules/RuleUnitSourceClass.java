@@ -168,4 +168,8 @@ public class RuleUnitSourceClass implements FileGenerator {
         this.queries = queries;
         return this;
     }
+
+    public Class<?> getRuleUnitClass() {
+        return ruleUnit;
+    }
 }

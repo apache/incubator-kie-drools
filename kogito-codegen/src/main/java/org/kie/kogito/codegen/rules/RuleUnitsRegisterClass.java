@@ -23,7 +23,7 @@ public class RuleUnitsRegisterClass implements FileGenerator {
     static final String RULE_UNIT_REGISTER_CLASS = "RuleUnitRegister";
     public static final String RULE_UNIT_REGISTER_FQN = RULE_UNIT_REGISTER_PACKAGE + "." + RULE_UNIT_REGISTER_CLASS;
     static final String RULE_UNIT_REGISTER_RESOURCE_CLASS = RULE_UNIT_REGISTER_FQN.replace('.', '/') + ".class";
-    static final String RULE_UNIT_REGISTER_SOURCE = "src/main/java/" + RULE_UNIT_REGISTER_FQN.replace('.', '/') + ".java";
+    static final String RULE_UNIT_REGISTER_SOURCE = RULE_UNIT_REGISTER_FQN.replace('.', '/') + ".java";
 
     private final Map<Class<?>, String> unitsMap;
 
