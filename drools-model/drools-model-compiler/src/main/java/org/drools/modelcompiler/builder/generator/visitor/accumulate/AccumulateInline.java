@@ -49,7 +49,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNa
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class AccumulateInline {
 
@@ -287,11 +286,8 @@ public class AccumulateInline {
                             final String variableName = assignExpr.getTarget().toString();
                             final Expression initCreationExpression = assignExpr.getValue();
 
-                            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
-                            ParsingResult compile = new MvelCompiler(mvelCompilerContext).compile(addCurlyBracesToBlock(printConstraint(stmt)));
-
                             final Type type =
-                                    compile.lastExpressionType()
+                                    initCodeCompilationResult.lastExpressionType()
                                             .map(t -> DrlxParseUtil.classToReferenceType((Class<?>) t))
                                             .orElseThrow(() -> new RuntimeException("Unknown type: " + initCreationExpression));
 
