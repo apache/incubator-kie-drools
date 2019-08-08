@@ -90,8 +90,6 @@ public abstract class AccumulateVisitor {
         }
 
         if (!descr.getFunctions().isEmpty()) {
-            boolean inputPatternHasConstraints = (input instanceof PatternDescr) && (!((PatternDescr) input).getConstraint().getDescrs().isEmpty());
-
             final List<String> allBindings = descr
                     .getFunctions()
                     .stream()
