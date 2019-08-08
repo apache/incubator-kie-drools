@@ -24,6 +24,7 @@ import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
 
 import function org.kie.dmn.core.compiler.DMNCompilerImpl.getNamespaceAndName;
 import function java.util.Collections.emptyMap;
@@ -60,11 +61,12 @@ when
   Definitions($ns : namespace)
   $o: Expression( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
-       (not (and Import($importName : name, $importedNS : namespace )
+       (not (and Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, $importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
             )
        )
+       (not Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.PMML, $typeRef.getLocalPart() str[startsWith] ( name + "." ) ) )
   )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
@@ -75,11 +77,12 @@ when
   Definitions($ns : namespace)
   $o: InformationItem( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
-       (not (and Import($importName : name, $importedNS : namespace )
+       (not (and Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, $importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
             )
        )
+       (not Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.PMML, $typeRef.getLocalPart() str[startsWith] ( name + "." ) ) )
   )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
@@ -90,11 +93,12 @@ when
   Definitions($ns : namespace)
   $o: ItemDefinition( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
-       (not (and Import($importName : name, $importedNS : namespace )
+       (not (and Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, $importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
             )
        )
+       (not Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.PMML, $typeRef.getLocalPart() str[startsWith] ( name + "." ) ) )
   )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );
@@ -105,11 +109,12 @@ when
   Definitions($ns : namespace)
   $o: OutputClause( typeRef != null, getNamespaceAndName(this, emptyMap(), typeRef, $ns).namespaceURI != getURIFEEL(), $typeRef : typeRef )
   (and (not ItemDefinition( name == $typeRef.getLocalPart() ) )
-       (not (and Import($importName : name, $importedNS : namespace )
+       (not (and Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.DMN, $importName : name, $importedNS : namespace )
                  $importDef : Definitions( namespace == $importedNS ) from entry-point "DMNImports"
                  ItemDefinition( $typeRef.getLocalPart() == $importName + "." + name ) from $importDef.itemDefinition
             )
        )
+       (not Import( ImportDMNResolverUtil.whichImportType(this) == ImportDMNResolverUtil.ImportType.PMML, $typeRef.getLocalPart() str[startsWith] ( name + "." ) ) )
   )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRDElement().getIdentifierString() );

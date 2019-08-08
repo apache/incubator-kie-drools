@@ -191,4 +191,13 @@ public class ValidatorImportTest extends AbstractValidatorTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("aaa").getResult(), is(new BigDecimal(2)));
     }
+
+    @Test
+    public void testImportPMML() throws IOException {
+        // DROOLS-4187 kie-dmn-validation: Incorrect import detection
+        final List<DMNMessage> messages = validator.validateUsing(Validation.VALIDATE_MODEL)
+                                                   .theseModels(getFile("import/Invoke_Iris.dmn"));
+        assertThat(ValidatorUtil.formatMessages(messages), messages.size(), is(0));
+
+    }
 }
