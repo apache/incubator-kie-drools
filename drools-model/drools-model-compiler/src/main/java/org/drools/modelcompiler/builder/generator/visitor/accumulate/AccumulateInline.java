@@ -57,7 +57,10 @@ public class AccumulateInline {
     protected final PackageModel packageModel;
     private AccumulateDescr accumulateDescr;
     private PatternDescr basePattern;
-    private PatternDescr inputDescr;
+
+    private ClassOrInterfaceDeclaration templateClass;
+    private ClassOrInterfaceDeclaration templateContextClass;
+    private String targetClassName;
 
     AccumulateInline(RuleContext context,
                             PackageModel packageModel,
@@ -112,20 +115,13 @@ public class AccumulateInline {
     /**
      * By design this legacy accumulate (with inline custome code) visitor supports only with 1-and-only binding in the accumulate code/expressions.
      */
-    void visitAccInlineCustomCode(PatternDescr inputDescr, MethodCallExpr accumulateDSL, Set<String> externalDeclrs) {
-        this.inputDescr = inputDescr;
+    void visitAccInlineCustomCode(MethodCallExpr accumulateDSL, Set<String> externalDeclrs, String identifier) {
+
+        initInlineAccumulateTemplate();
 
         context.pushExprPointer(accumulateDSL::addArgument);
 
-        String targetClassName = StringUtil.toId(context.getRuleDescr().getName()) + "Accumulate" + accumulateDescr.getLine();
-        String code = ACCUMULATE_INLINE_FUNCTION.replaceAll("AccumulateInlineFunction", targetClassName);
-
-        CompilationUnit templateCU = StaticJavaParser.parse(code);
-        ClassOrInterfaceDeclaration templateClass = templateCU.getClassByName(targetClassName).orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
-        ClassOrInterfaceDeclaration templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration) m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
-
         List<String> contextFieldNames = new ArrayList<>();
-        MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
 
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
@@ -138,6 +134,7 @@ public class AccumulateInline {
 
         ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
         BlockStmt initBlock = initCodeCompilationResult.statementResults();
+        MethodDeclaration initMethod = templateClass.getMethodsByName("init").get(0);
         Set<String> usedExtDeclrs = parseInitBlock(context, templateContextClass, contextFieldNames, initMethod, initBlock, accumulateDeclarations );
 
         boolean useLegacyAccumulate = false;
@@ -236,7 +233,7 @@ public class AccumulateInline {
 
         final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
         functionDSL.addArgument( new MethodReferenceExpr(new NameExpr(targetClassName ), new NodeList<>(), "new") );
-        functionDSL.addArgument(context.getVarExpr(this.inputDescr.getIdentifier()) );
+        functionDSL.addArgument(context.getVarExpr(identifier) );
 
         final String bindingId = this.basePattern.getIdentifier();
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
@@ -244,6 +241,18 @@ public class AccumulateInline {
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
+    }
+
+    private void initInlineAccumulateTemplate() {
+        targetClassName = StringUtil.toId(context.getRuleDescr().getName()) + "Accumulate" + accumulateDescr.getLine();
+        String code = ACCUMULATE_INLINE_FUNCTION.replaceAll("AccumulateInlineFunction", targetClassName);
+
+        CompilationUnit templateCU = StaticJavaParser.parse(code);
+        templateClass = templateCU.getClassByName(targetClassName).orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
+
+
+        // TODO change this
+        templateContextClass = templateClass.getMembers().stream().filter(m -> m instanceof ClassOrInterfaceDeclaration && ((ClassOrInterfaceDeclaration) m).getNameAsString().equals("ContextData")).map(ClassOrInterfaceDeclaration.class::cast).findFirst().orElseThrow(() -> new RuntimeException("Template did not contain expected type definition."));
     }
 
     private Set<String> parseInitBlock(RuleContext context2, ClassOrInterfaceDeclaration templateContextClass, List<String> contextFieldNames, MethodDeclaration initMethod, BlockStmt initBlock, List<DeclarationSpec> accumulateDeclarations) {
@@ -311,7 +320,7 @@ public class AccumulateInline {
         return Optional.empty();
     }
 
-    void writeAccumulateMethod(List<String> contextFieldNames, Type singleAccumulateType, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
+    private void writeAccumulateMethod(List<String> contextFieldNames, Type singleAccumulateType, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
         for (Statement stmt : actionBlock.getStatements()) {
             final ExpressionStmt convertedExpressionStatement = new ExpressionStmt();
             for (ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class)) {

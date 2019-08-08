@@ -111,13 +111,18 @@ public abstract class AccumulateVisitor {
             // LEGACY: Accumulate with inline custom code
             AccumulateInline accumulateInline = new AccumulateInline(context, packageModel, descr, basePattern);
             if (input instanceof PatternDescr) {
-                accumulateInline.visitAccInlineCustomCode((PatternDescr) input, accumulateDSL, externalDeclrs);
+                accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) input).getIdentifier());
             } else if (input instanceof AndDescr) {
                 BlockStmt actionBlock = parseBlockAddSemicolon(descr.getActionCode());
                 Collection<String> allNamesInActionBlock = collectNamesInBlock(actionBlock, context);
 
-                final Optional<BaseDescr> bindingUsedInAccumulate = ((AndDescr) input).getDescrs().stream().filter(b -> allNamesInActionBlock.contains(((PatternDescr) b).getIdentifier())).findFirst();
-                bindingUsedInAccumulate.ifPresent(b -> accumulateInline.visitAccInlineCustomCode((PatternDescr) b, accumulateDSL, externalDeclrs));
+                final Optional<BaseDescr> bindingUsedInAccumulate =
+                        ((AndDescr) input).getDescrs()
+                                .stream()
+                                .filter(b -> allNamesInActionBlock.contains(((PatternDescr) b).getIdentifier()))
+                                .findFirst();
+
+                bindingUsedInAccumulate.ifPresent(b -> accumulateInline.visitAccInlineCustomCode(accumulateDSL, externalDeclrs, ((PatternDescr) b).getIdentifier()));
             } else {
                 throw new UnsupportedOperationException("I was expecting input to be of type PatternDescr. " + input);
             }
