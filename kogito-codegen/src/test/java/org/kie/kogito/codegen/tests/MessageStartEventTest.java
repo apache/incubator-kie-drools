@@ -95,6 +95,18 @@ public class MessageStartEventTest extends AbstractCodegenTest {
     }
     
     @Test
+    public void testRESTApiForMessageEndEvent() throws Exception {
+        
+        Application app = generateCodeProcessesOnly("messagestartevent/MessageEndEvent.bpmn2");        
+        assertThat(app).isNotNull();
+        
+        Class<?> resourceClazz = Class.forName("org.kie.kogito.test.MessageStartEventResource", true, testClassLoader());
+        assertNotNull(resourceClazz);        
+        Method[] methods = resourceClazz.getMethods();
+        assertThat(methods).haveAtLeast(1, new Condition<Method>(m -> m.getName().startsWith("createResource"), "Must have method with name 'createResource'"));          
+    }
+    
+    @Test
     public void testMessageProducerForMessageEndEvent() throws Exception {
         
         Application app = generateCodeProcessesOnly("messagestartevent/MessageStartAndEndEvent.bpmn2");        

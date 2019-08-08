@@ -41,7 +41,7 @@ public class UserTaskModelMetaData {
     private static final String TASK_INTPUT_CLASS_SUFFIX = "TaskInput";
     private static final String TASK_OUTTPUT_CLASS_SUFFIX = "TaskOutput";
     
-    protected static final List<String> INTERNAL_FIELDS = Arrays.asList("TaskName", "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content");
+    protected static final List<String> INTERNAL_FIELDS = Arrays.asList("TaskName", "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale");
 
     private final String packageName;
 
@@ -259,8 +259,8 @@ public class UserTaskModelMetaData {
 
             // toMap method body
             MethodCallExpr putVariable = new MethodCallExpr(new NameExpr("params"), "put");
-            putVariable.addArgument(new StringLiteralExpr(variable.getName()));
-            putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), variable.getName()));
+            putVariable.addArgument(new StringLiteralExpr(entry.getKey()));
+            putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), entry.getKey()));
             toMapBody.addStatement(putVariable);
         }
 

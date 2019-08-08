@@ -48,6 +48,8 @@ public class ProcessMetaData {
     
     private List<TriggerMetaData> triggers = new ArrayList<>();
     
+    private boolean startable;
+ 
     private Map<String, CompilationUnit> generatedHandlers = new HashMap<>();
     private Set<CompilationUnit> generatedListeners = new HashSet<>();
 
@@ -166,6 +168,14 @@ public class ProcessMetaData {
     
     public void setTriggers(List<TriggerMetaData> triggers) {
         this.triggers = triggers;
+    }
+    
+    public boolean isStartable() {
+        return startable;
+    }
+    
+    public void setStartable(boolean startable) {
+        this.startable = startable;
     }
 
     @Override

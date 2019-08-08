@@ -72,6 +72,7 @@ public class ResourceGenerator {
     private final String appCanonicalName;
     private DependencyInjectionAnnotator annotator;
     
+    private boolean startable;
     private List<UserTaskModelMetaData> userTasks;
     private Map<String, String> signals;
     private List<TriggerMetaData> triggers;
@@ -109,8 +110,9 @@ public class ResourceGenerator {
         return this;
     }
     
-    public ResourceGenerator withTriggers(List<TriggerMetaData> triggers) {
+    public ResourceGenerator withTriggers(List<TriggerMetaData> triggers, boolean startable) {
         this.triggers = triggers;
+        this.startable = startable;
         return this;
     }
 
@@ -225,7 +227,7 @@ public class ResourceGenerator {
         }
         
         // if triggers are not empty remove createResource method as there is another trigger to start process instances
-        if (triggers != null && !triggers.isEmpty()) {
+        if (!startable) {
             Optional<MethodDeclaration> createResourceMethod = template.findFirst(MethodDeclaration.class).filter(md -> md.getNameAsString().equals("createResource_" + processName));
             if (createResourceMethod.isPresent()) {
                 template.remove(createResourceMethod.get());
