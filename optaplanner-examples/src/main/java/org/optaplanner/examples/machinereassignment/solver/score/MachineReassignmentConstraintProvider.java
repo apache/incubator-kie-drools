@@ -32,16 +32,16 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
 
     @Override
     public void defineConstraints(ConstraintFactory constraintFactory) {
-        maximumCapacity(constraintFactory);
+        maximumCapacity(constraintFactory); // TODO Doesn't work
         serviceConflict(constraintFactory);
         serviceLocationSpread(constraintFactory);
         serviceDependency(constraintFactory);
-        transientUsage(constraintFactory);
+        transientUsage(constraintFactory); // TODO Doesn't work
 
-        loadCost(constraintFactory);
-        balanceCost(constraintFactory);
+        loadCost(constraintFactory); // TODO Doesn't work
+        balanceCost(constraintFactory); // TODO Doesn't work
         processMoveCost(constraintFactory);
-        serviceMoveCost(constraintFactory);
+        serviceMoveCost(constraintFactory); // TODO Doesn't work
         machineMoveCost(constraintFactory);
     }
 
