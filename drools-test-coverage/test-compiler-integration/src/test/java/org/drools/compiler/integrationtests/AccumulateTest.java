@@ -211,7 +211,7 @@ public class AccumulateTest {
         }
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testAccumulateModifyMVEL() {
 
         final String drl = "package org.drools.compiler.test;\n" +
