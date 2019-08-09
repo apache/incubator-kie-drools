@@ -63,7 +63,7 @@ public abstract class AccumulateVisitor {
     protected final PackageModel packageModel;
 
     private final ModelGeneratorVisitor modelGeneratorVisitor;
-    protected AbstractExpressionBuilder expressionBuilder; // TODO this is never assigned?
+    protected AbstractExpressionBuilder expressionBuilder;
 
     AccumulateVisitor(RuleContext context, ModelGeneratorVisitor modelGeneratorVisitor, PackageModel packageModel) {
         this.context = context;
