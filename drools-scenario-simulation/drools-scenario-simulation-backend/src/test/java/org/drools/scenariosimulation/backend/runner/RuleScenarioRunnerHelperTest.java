@@ -362,5 +362,13 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         assertEquals(2, scenarioResultMetadata.getExecuted().size());
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule1"));
         assertEquals((Integer) 2, scenarioResultMetadata.getExecutedWithCounter().get("rule2"));
+
+        final Map<String, String> auditMessagesMap = scenarioResultMetadata.getAuditMessagesMap();
+        assertEquals(4, auditMessagesMap.size());
+        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule1", 1)));
+        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule1", 2)));
+        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule2", 1)));
+        assertTrue(auditMessagesMap.containsKey(CoverageAgendaListener.generateAuditMessage("rule2", 2)));
+        auditMessagesMap.values().forEach(severity -> assertEquals("INFO", severity));
     }
 }

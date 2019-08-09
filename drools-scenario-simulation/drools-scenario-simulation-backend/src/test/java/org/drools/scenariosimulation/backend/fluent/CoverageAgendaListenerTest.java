@@ -15,19 +15,21 @@
  */
 package org.drools.scenariosimulation.backend.fluent;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
 
     @Test
     public void beforeMatchFired() {
-        Map<String, Integer> rulesToNumberOfTimes = new HashMap<>();
+        Map<String, Integer> rulesToNumberOfTimes = new LinkedHashMap<>();
         rulesToNumberOfTimes.put("rule1", 2);
         rulesToNumberOfTimes.put("rule2", 2);
         rulesToNumberOfTimes.put("rule3", 1);
@@ -39,5 +41,13 @@ public class CoverageAgendaListenerTest extends AbstractRuleCoverageTest {
         assertEquals((Integer) 2, ruleExecuted.get("rule2"));
         assertEquals((Integer) 1, ruleExecuted.get("rule3"));
         assertNull(ruleExecuted.get("rule4"));
+
+        List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
+        assertEquals(auditMessages.get(0), coverageAgendaListener.generateAuditMessage("rule1", 1));
+        assertEquals(auditMessages.get(1), coverageAgendaListener.generateAuditMessage("rule1", 2));
+        assertEquals(auditMessages.get(2), coverageAgendaListener.generateAuditMessage("rule2", 1));
+        assertEquals(auditMessages.get(3), coverageAgendaListener.generateAuditMessage("rule2", 2));
+        assertEquals(auditMessages.get(4), coverageAgendaListener.generateAuditMessage("rule3", 1));
+        assertTrue(auditMessages.size() == 5);
     }
 }

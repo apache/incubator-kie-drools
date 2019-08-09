@@ -90,6 +90,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
     protected ScenarioResultMetadata extractResultMetadata(Map<String, Object> requestContext, ScenarioWithIndex scenarioWithIndex) {
         CoverageAgendaListener coverageAgendaListener = (CoverageAgendaListener) requestContext.get(COVERAGE_LISTENER);
         Map<String, Integer> ruleExecuted = coverageAgendaListener.getRuleExecuted();
+        List<String> auditMessages = coverageAgendaListener.getAuditsMessages();
 
         Set<String> availableRules = (Set<String>) requestContext.get(RULES_AVAILABLE);
 
@@ -97,6 +98,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
         scenarioResultMetadata.addAllAvailable(availableRules);
         scenarioResultMetadata.addAllExecuted(ruleExecuted);
+        auditMessages.forEach(msg -> scenarioResultMetadata.addAuditMessage(msg, "INFO"));
 
         return scenarioResultMetadata;
     }
@@ -114,7 +116,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                     .filter(elem -> Objects.equals(elem.getFactIdentifier(), factIdentifier)).collect(toList());
 
             // check if this fact has something to check
-            if (assertionOnFact.size() < 1) {
+            if (assertionOnFact.isEmpty()) {
                 continue;
             }
 

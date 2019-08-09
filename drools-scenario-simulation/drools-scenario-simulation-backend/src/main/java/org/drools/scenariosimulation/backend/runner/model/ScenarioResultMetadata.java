@@ -18,9 +18,9 @@ package org.drools.scenariosimulation.backend.runner.model;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 
@@ -36,7 +36,7 @@ public class ScenarioResultMetadata {
     /**
      * Map of the messages to print in the CSV report: <b>key</b> is the message, <b>value</b> is the severity level
      */
-    protected final Map<String, String> auditMessagesMap = new TreeMap<>();
+    protected final Map<String, String> auditMessagesMap = new LinkedHashMap<>();
 
     protected final ScenarioWithIndex scenarioWithIndex;
 
