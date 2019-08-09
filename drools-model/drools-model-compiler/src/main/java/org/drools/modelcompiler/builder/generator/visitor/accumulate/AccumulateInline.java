@@ -66,7 +66,7 @@ public class AccumulateInline {
     private final List<String> contextFieldNames = new ArrayList<>();
     private Set<String> usedExternalDeclarations = new HashSet<>();
 
-    public Set<String> getUsedExternalDeclarations() {
+    Set<String> getUsedExternalDeclarations() {
         return usedExternalDeclarations;
     }
 
