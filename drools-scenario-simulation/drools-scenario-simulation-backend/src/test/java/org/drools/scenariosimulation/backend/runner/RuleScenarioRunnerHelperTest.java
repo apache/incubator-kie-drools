@@ -198,7 +198,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenario1Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), scenario1Outputs, input1, expressionEvaluator);
 
         assertEquals(1, scenario1Results.size());
-        assertEquals(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus(), FactMappingValueStatus.SUCCESS);
+        assertEquals(FactMappingValueStatus.SUCCESS, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
 
         List<ScenarioGiven> scenario2Inputs = runnerHelper.extractGivenValues(simulation.getSimulationDescriptor(),
                                                                               scenario2.getUnmodifiableFactMappingValues(),
@@ -214,7 +214,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         List<ScenarioResult> scenario2Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), scenario2Outputs, input2, expressionEvaluator);
 
         assertEquals(1, scenario2Results.size());
-        assertEquals(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus(), FactMappingValueStatus.SUCCESS);
+        assertEquals(FactMappingValueStatus.SUCCESS, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
 
         List<ScenarioExpect> newFact = Collections.singletonList(new ScenarioExpect(personFactIdentifier, Collections.emptyList(), true));
         List<ScenarioResult> scenario2NoResults = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), newFact, input2, expressionEvaluator);
@@ -226,7 +226,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         ScenarioGiven newInput = new ScenarioGiven(personFactIdentifier, person);
 
         List<ScenarioResult> scenario3Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), scenario1Outputs, newInput, expressionEvaluator);
-        assertEquals(scenario1Outputs.get(0).getExpectedResult().get(0).getStatus(), FactMappingValueStatus.FAILED_WITH_ERROR);
+        assertEquals(FactMappingValueStatus.FAILED_WITH_ERROR, scenario1Outputs.get(0).getExpectedResult().get(0).getStatus());
 
         assertEquals(1, scenario3Results.size());
         assertEquals(person.getFirstName(), scenario3Results.get(0).getResultValue().get());
@@ -315,7 +315,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
         } catch (ScenarioException ignored) {
 
         }
-        assertEquals(factMappingValue.getStatus(), FactMappingValueStatus.FAILED_WITH_EXCEPTION);
+        assertEquals(FactMappingValueStatus.FAILED_WITH_EXCEPTION, factMappingValue.getStatus());
     }
 
     @Test

@@ -116,7 +116,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
                     .filter(elem -> Objects.equals(elem.getFactIdentifier(), factIdentifier)).collect(toList());
 
             // check if this fact has something to check
-            if (assertionOnFact.size() < 1) {
+            if (assertionOnFact.isEmpty()) {
                 continue;
             }
 
