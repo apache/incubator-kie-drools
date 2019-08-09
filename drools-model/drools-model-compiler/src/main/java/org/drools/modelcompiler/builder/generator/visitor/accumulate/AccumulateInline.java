@@ -250,29 +250,6 @@ public class AccumulateInline {
                     );
                     accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString())));
                 }
-            } else if (stmt.isExpressionStmt()) {
-                final Expression statementExpression = stmt.asExpressionStmt().getExpression();
-                if (statementExpression.isAssignExpr()) {
-                    final AssignExpr assignExpr = statementExpression.asAssignExpr();
-                    final String targetName = assignExpr.getTarget().asNameExpr().toString();
-                    if (!contextFieldNames.contains(targetName)) {
-                        contextFieldNames.add(targetName);
-                        final String variableName = assignExpr.getTarget().toString();
-                        final Expression initCreationExpression = assignExpr.getValue();
-
-                        final Type type =
-                                initCodeCompilationResult.lastExpressionType()
-                                        .map(t -> DrlxParseUtil.classToReferenceType((Class<?>) t))
-                                        .orElseThrow(() -> new RuntimeException("Unknown type: " + initCreationExpression));
-
-                        contextData.addField(type, variableName, Modifier.publicModifier().getKeyword());
-                        final Optional<Statement> initializer = createInitializer(variableName, Optional.of(initCreationExpression));
-                        initializer.ifPresent(initMethodBody::addStatement);
-                        accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), type.asString())));
-                    }
-                } else {
-                    initMethodBody.addStatement(stmt); // add as-is.
-                }
             }
         }
     }

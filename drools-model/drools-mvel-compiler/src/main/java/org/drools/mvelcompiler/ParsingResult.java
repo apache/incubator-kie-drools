@@ -1,9 +1,7 @@
 package org.drools.mvelcompiler;
 
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.NodeList;
@@ -16,7 +14,6 @@ public class ParsingResult {
 
     private List<Statement> statements;
     private Set<String> usedBindings = new HashSet<>();
-    private Optional<Type> lastExpressionType;
 
     public ParsingResult(List<Statement> statements) {
         this.statements = statements;
@@ -37,15 +34,6 @@ public class ParsingResult {
 
     public Set<String> getUsedBindings() {
         return usedBindings;
-    }
-
-    public ParsingResult setLastExpressionType(Optional<Type> lastExpressionType) {
-        this.lastExpressionType = lastExpressionType;
-        return this;
-    }
-
-    public Optional<Type> lastExpressionType() {
-        return lastExpressionType;
     }
 
     @Override

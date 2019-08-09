@@ -1,6 +1,5 @@
 package org.drools.mvelcompiler;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,14 +51,12 @@ public class MvelCompiler {
         allUsedBindings.addAll(withUsedBindings);
 
         List<Statement> statements = new ArrayList<>();
-        Optional<Type> lastExpressionType = Optional.empty();
         for (Statement s : mvelExpression.getStatements()) {
-            lastExpressionType = processWithMvelCompiler(statements, s);
+            processWithMvelCompiler(statements, s);
         }
 
         return new ParsingResult(statements)
-                .setUsedBindings(allUsedBindings)
-                .setLastExpressionType(lastExpressionType); // Used in the inline accumulate definition
+                .setUsedBindings(allUsedBindings);
     }
 
     private Stream<String> transformStatementWithPreprocessing(Statement s) {
@@ -73,7 +70,7 @@ public class MvelCompiler {
         return invoke.getUsedBindings().stream();
     }
 
-    private Optional<Type> processWithMvelCompiler(List<Statement> statements, Statement s) {
+    private void processWithMvelCompiler(List<Statement> statements, Statement s) {
         if (s.isBlockStmt()) {
             BlockStmt body = s.asBlockStmt();
             for (Statement children : body.getStatements()) {
@@ -90,7 +87,6 @@ public class MvelCompiler {
             statements.add(new IfStmt(ifStmt.getCondition(), new BlockStmt(thenStmts), new BlockStmt(elseStmts)));
 
         } else {
-            Optional<Type> lastExpressionType;
             TypedExpression rhs = new RHSPhase(mvelCompilerContext).invoke(s);
             TypedExpression lhs = new LHSPhase(mvelCompilerContext, ofNullable(rhs)).invoke(s);
 
@@ -99,9 +95,6 @@ public class MvelCompiler {
 
             Statement expression = (Statement) postProcessedLHS.toJavaExpression();
             statements.add(expression);
-            lastExpressionType = ofNullable(rhs).flatMap(TypedExpression::getType);
-            return lastExpressionType;
         }
-        return Optional.empty();
     }
 }
