@@ -122,7 +122,6 @@ public class AccumulateInline {
             throw new UnsupportedInlineAccumulate();
         }
 
-        Optional<MethodDeclaration> optReverseMethod = Optional.empty();
         ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getReverseCode()));
 
         BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
@@ -132,12 +131,30 @@ public class AccumulateInline {
             if (allNamesInReverseBlock.size() == 1) {
                 MethodDeclaration reverseMethod = accumulateInlineClass.getMethodsByName("reverse").get(0);
                 reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
-                optReverseMethod = Optional.of(reverseMethod);
+                writeAccumulateMethod(contextFieldNames, singleAccumulateType, reverseMethod, reverseBlock);
+
+                MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
+                supportsReverseMethod
+                        .getBody()
+                        .orElseThrow(InvalidInlineTemplateException::new)
+                        .addStatement(parseStatement("return true;"));
             } else {
                 allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
                 usedExternalDeclarations.addAll(allNamesInActionBlock);
                 throw new UnsupportedInlineAccumulate();
             }
+        } else {
+            MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
+            supportsReverseMethod
+                    .getBody()
+                    .orElseThrow(InvalidInlineTemplateException::new)
+                    .addStatement(parseStatement("return false;"));
+
+            MethodDeclaration reverseMethod = accumulateInlineClass.getMethodsByName("reverse").get(0);
+            reverseMethod
+                    .getBody()
+                    .orElseThrow(InvalidInlineTemplateException::new)
+                    .addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
         }
 
         if (!usedExternalDeclarations.isEmpty()) {
@@ -158,6 +175,8 @@ public class AccumulateInline {
             returnExpression = new EnclosedExpr(returnExpression);
         }
         rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, returnExpression);
+
+
         resultMethod
                 .getBody()
                 .orElseThrow(InvalidInlineTemplateException::new)
@@ -168,27 +187,6 @@ public class AccumulateInline {
                 .orElseThrow(InvalidInlineTemplateException::new)
                 .addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
 
-        if (optReverseMethod.isPresent()) {
-            MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
-            supportsReverseMethod
-                    .getBody()
-                    .orElseThrow(InvalidInlineTemplateException::new)
-                    .addStatement(parseStatement("return true;"));
-
-            writeAccumulateMethod(contextFieldNames, singleAccumulateType, optReverseMethod.get(), reverseBlock);
-        } else {
-            MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
-            supportsReverseMethod
-                    .getBody()
-                    .orElseThrow(InvalidInlineTemplateException::new)
-                    .addStatement(parseStatement("return false;"));
-
-            MethodDeclaration reverseMethod = accumulateInlineClass.getMethodsByName("reverse").get(0);
-            reverseMethod
-                    .getBody()
-                    .orElseThrow(InvalidInlineTemplateException::new)
-                    .addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
-        }
 
         // add resulting accumulator class into the package model
         this.packageModel.addGeneratedPOJO(accumulateInlineClass);
@@ -245,8 +243,7 @@ public class AccumulateInline {
                     contextFieldNames.add(variableName);
                     contextData.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
                     Optional<Expression> optInitializer = vd.getInitializer();
-                    optInitializer.ifPresent(initialzier -> {
-                        Expression initializer = optInitializer.get();
+                    optInitializer.ifPresent(initializer -> {
                         Expression target = new FieldAccessExpr(getDataNameExpr(), variableName);
                         Statement initStmt = new ExpressionStmt(new AssignExpr(target, initializer, AssignExpr.Operator.ASSIGN));
                         initMethodBody.addStatement(initStmt);
