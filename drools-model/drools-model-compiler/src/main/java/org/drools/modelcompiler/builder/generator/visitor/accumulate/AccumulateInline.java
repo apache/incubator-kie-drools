@@ -49,7 +49,6 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNa
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
-import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class AccumulateInline {
 
@@ -118,103 +117,6 @@ public class AccumulateInline {
         context.popExprPointer();
     }
 
-    private void addAccumulateClassInitializationToMethod(MethodCallExpr accumulateDSL, String identifier) {
-        this.packageModel.addGeneratedPOJO(accumulateInlineClass);
-
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
-        functionDSL.addArgument(new MethodReferenceExpr(new NameExpr(accumulateInlineClassName), new NodeList<>(), "new"));
-        functionDSL.addArgument(context.getVarExpr(identifier));
-
-        final String bindingId = this.basePattern.getIdentifier();
-        final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
-        asDSL.addArgument(context.getVarExpr(bindingId));
-        accumulateDSL.addArgument(asDSL);
-    }
-
-    private void parseResultMethod() {
-        // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
-        MethodDeclaration resultMethod = accumulateInlineClass.getMethodsByName("getResult").get(0);
-        Type returnExpressionType = StaticJavaParser.parseType("java.lang.Object");
-        Expression returnExpression = StaticJavaParser.parseExpression(accumulateDescr.getResultCode());
-        if (returnExpression instanceof NameExpr) {
-            returnExpression = new EnclosedExpr(returnExpression);
-        }
-        rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, returnExpression);
-
-        resultMethod
-                .getBody()
-                .orElseThrow(InvalidInlineTemplateException::new)
-                .addStatement(new ReturnStmt(returnExpression));
-        MethodDeclaration getResultTypeMethod = accumulateInlineClass.getMethodsByName("getResultType").get(0);
-        getResultTypeMethod
-                .getBody()
-                .orElseThrow(InvalidInlineTemplateException::new)
-                .addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
-    }
-
-    private void parseReverseBlock(Set<String> externalDeclarations, Collection<String> allNamesInActionBlock) {
-        ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getReverseCode()));
-
-        BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
-
-        if (accumulateDescr.getReverseCode() != null) {
-            Collection<String> allNamesInReverseBlock = collectNamesInBlock(reverseBlock, context);
-            if (allNamesInReverseBlock.size() == 1) {
-                MethodDeclaration reverseMethod = accumulateInlineClass.getMethodsByName("reverse").get(0);
-                reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
-                writeAccumulateMethod(contextFieldNames, reverseMethod, reverseBlock);
-
-                MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
-                supportsReverseMethod
-                        .getBody()
-                        .orElseThrow(InvalidInlineTemplateException::new)
-                        .addStatement(parseStatement("return true;"));
-            } else {
-                allNamesInActionBlock.removeIf(name -> !externalDeclarations.contains(name));
-                usedExternalDeclarations.addAll(allNamesInActionBlock);
-                throw new UnsupportedInlineAccumulate();
-            }
-        } else {
-            MethodDeclaration supportsReverseMethod = accumulateInlineClass.getMethodsByName("supportsReverse").get(0);
-            supportsReverseMethod
-                    .getBody()
-                    .orElseThrow(InvalidInlineTemplateException::new)
-                    .addStatement(parseStatement("return false;"));
-
-            MethodDeclaration reverseMethod = accumulateInlineClass.getMethodsByName("reverse").get(0);
-            reverseMethod
-                    .getBody()
-                    .orElseThrow(InvalidInlineTemplateException::new)
-                    .addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
-        }
-    }
-
-    private Collection<String> parseAccumulateMethod(Set<String> externalDeclarations) {
-        MethodDeclaration accumulateMethod = accumulateInlineClass.getMethodsByName("accumulate").get(0);
-
-        ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getActionCode()));
-
-        BlockStmt actionBlock = actionBlockCompilationResult.statementResults();
-
-        Collection<String> allNamesInActionBlock = collectNamesInBlock(actionBlock, context);
-        if (allNamesInActionBlock.size() == 1) {
-            String nameExpr = allNamesInActionBlock.iterator().next();
-            accumulateMethod.getParameter(1).setName(nameExpr);
-            singleAccumulateType =
-                    context.getDeclarationById(nameExpr)
-                            .orElseThrow(() -> new IllegalStateException("Cannot find declaration by name " + nameExpr + "!"))
-                            .getBoxedType();
-
-            writeAccumulateMethod(contextFieldNames, accumulateMethod, actionBlock);
-
-        } else {
-            allNamesInActionBlock.removeIf(name -> !externalDeclarations.contains(name));
-            usedExternalDeclarations.addAll(allNamesInActionBlock);
-            throw new UnsupportedInlineAccumulate();
-        }
-        return allNamesInActionBlock;
-    }
-
     private void initInlineAccumulateTemplate() {
         accumulateInlineClassName = StringUtil.toId(context.getRuleDescr().getName()) + "Accumulate" + accumulateDescr.getLine();
 
@@ -242,7 +144,7 @@ public class AccumulateInline {
     }
 
     private void parseInitBlock() {
-        MethodDeclaration initMethod = accumulateInlineClass.getMethodsByName("init").get(0);
+        MethodDeclaration initMethod = getMethodFromTemplateClass("init");
         ParsingResult initCodeCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getInitCode()));
         BlockStmt initBlock = initCodeCompilationResult.statementResults();
 
@@ -274,20 +176,117 @@ public class AccumulateInline {
                 final Expression expressionUntyped = eStmt.getExpression();
                 final String parameterName = accumulateMethod.getParameter(1).getNameAsString();
 
-                ParsingResult compile = mvelCompiler.compile(addCurlyBracesToBlock(printConstraint(expressionUntyped)));
-                // Mvel Compiler return results as a BlockStmt
-                final Expression expression = compile.statementResults().getStatements().removeFirst().asExpressionStmt().getExpression();
-
-                forceCastForName(parameterName, singleAccumulateType, expression);
-                rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, expression);
-                convertedExpressionStatement.setExpression(expression);
+                forceCastForName(parameterName, singleAccumulateType, expressionUntyped);
+                rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, expressionUntyped);
+                convertedExpressionStatement.setExpression(expressionUntyped);
             }
             accumulateMethod.getBody().orElseThrow(InvalidInlineTemplateException::new)
                     .addStatement(convertedExpressionStatement);
         }
     }
 
+    private Collection<String> parseAccumulateMethod(Set<String> externalDeclarations) {
+        MethodDeclaration accumulateMethod = getMethodFromTemplateClass("accumulate");
+
+        ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getActionCode()));
+
+        BlockStmt actionBlock = actionBlockCompilationResult.statementResults();
+
+        Collection<String> allNamesInActionBlock = collectNamesInBlock(actionBlock, context);
+        if (allNamesInActionBlock.size() == 1) {
+            String nameExpr = allNamesInActionBlock.iterator().next();
+            accumulateMethod.getParameter(1).setName(nameExpr);
+            singleAccumulateType =
+                    context.getDeclarationById(nameExpr)
+                            .orElseThrow(() -> new IllegalStateException("Cannot find declaration by name " + nameExpr + "!"))
+                            .getBoxedType();
+
+            writeAccumulateMethod(contextFieldNames, accumulateMethod, actionBlock);
+
+        } else {
+            allNamesInActionBlock.removeIf(name -> !externalDeclarations.contains(name));
+            usedExternalDeclarations.addAll(allNamesInActionBlock);
+            throw new UnsupportedInlineAccumulate();
+        }
+        return allNamesInActionBlock;
+    }
+
+    private void parseReverseBlock(Set<String> externalDeclarations, Collection<String> allNamesInActionBlock) {
+        ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getReverseCode()));
+
+        BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
+
+        if (accumulateDescr.getReverseCode() != null) {
+            Collection<String> allNamesInReverseBlock = collectNamesInBlock(reverseBlock, context);
+            if (allNamesInReverseBlock.size() == 1) {
+                MethodDeclaration reverseMethod = getMethodFromTemplateClass("reverse");
+                reverseMethod.getParameter(1).setName(allNamesInReverseBlock.iterator().next());
+                writeAccumulateMethod(contextFieldNames, reverseMethod, reverseBlock);
+
+                MethodDeclaration supportsReverseMethod = getMethodFromTemplateClass("supportsReverse");
+                supportsReverseMethod
+                        .getBody()
+                        .orElseThrow(InvalidInlineTemplateException::new)
+                        .addStatement(parseStatement("return true;"));
+            } else {
+                allNamesInActionBlock.removeIf(name -> !externalDeclarations.contains(name));
+                usedExternalDeclarations.addAll(allNamesInActionBlock);
+                throw new UnsupportedInlineAccumulate();
+            }
+        } else {
+            MethodDeclaration supportsReverseMethod = getMethodFromTemplateClass("supportsReverse");
+            supportsReverseMethod
+                    .getBody()
+                    .orElseThrow(InvalidInlineTemplateException::new)
+                    .addStatement(parseStatement("return false;"));
+
+            MethodDeclaration reverseMethod = getMethodFromTemplateClass("reverse");
+            reverseMethod
+                    .getBody()
+                    .orElseThrow(InvalidInlineTemplateException::new)
+                    .addStatement(parseStatement("throw new UnsupportedOperationException(\"This function does not support reverse.\");"));
+        }
+    }
+
+    private void parseResultMethod() {
+        // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
+        MethodDeclaration resultMethod = getMethodFromTemplateClass("getResult");
+        Type returnExpressionType = StaticJavaParser.parseType("java.lang.Object");
+        Expression returnExpression = StaticJavaParser.parseExpression(accumulateDescr.getResultCode());
+        if (returnExpression instanceof NameExpr) {
+            returnExpression = new EnclosedExpr(returnExpression);
+        }
+        rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, returnExpression);
+
+        resultMethod
+                .getBody()
+                .orElseThrow(InvalidInlineTemplateException::new)
+                .addStatement(new ReturnStmt(returnExpression));
+        MethodDeclaration getResultTypeMethod = getMethodFromTemplateClass("getResultType");
+        getResultTypeMethod
+                .getBody()
+                .orElseThrow(InvalidInlineTemplateException::new)
+                .addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
+    }
+
+    private void addAccumulateClassInitializationToMethod(MethodCallExpr accumulateDSL, String identifier) {
+        this.packageModel.addGeneratedPOJO(accumulateInlineClass);
+
+        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
+        functionDSL.addArgument(new MethodReferenceExpr(new NameExpr(accumulateInlineClassName), new NodeList<>(), "new"));
+        functionDSL.addArgument(context.getVarExpr(identifier));
+
+        final String bindingId = this.basePattern.getIdentifier();
+        final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
+        asDSL.addArgument(context.getVarExpr(bindingId));
+        accumulateDSL.addArgument(asDSL);
+    }
+
     private NameExpr getDataNameExpr() {
         return new NameExpr("data");
+    }
+
+    private MethodDeclaration getMethodFromTemplateClass(String init) {
+        return accumulateInlineClass.getMethodsByName(init).get(0);
     }
 }
