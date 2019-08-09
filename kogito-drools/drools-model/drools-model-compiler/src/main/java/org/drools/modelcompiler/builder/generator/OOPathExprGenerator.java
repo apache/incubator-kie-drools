@@ -21,6 +21,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.expression.AbstractExpressionBuilder;
+import org.kie.kogito.rules.DataSource;
 
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
@@ -65,7 +66,7 @@ public class OOPathExprGenerator {
                     ? DrlxParseUtil.getClassFromContext(context.getTypeResolver(), chunk.getInlineCast().toString())
                     : callExpr.getRawClass();
 
-            if (Iterable.class.isAssignableFrom(fieldType)) {
+            if (DataSource.class.isAssignableFrom(fieldType) || Iterable.class.isAssignableFrom(fieldType)) {
                 fieldType = extractGenericType(previousClass, ((MethodCallExpr) callExpr.getExpression()).getName().toString());
             }
 

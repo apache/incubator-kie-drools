@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.EntryPointId;
+import org.kie.kogito.rules.DataSource;
 import org.kie.kogito.rules.RuleUnit;
 import org.kie.kogito.rules.RuleUnitMemory;
 
@@ -119,14 +120,19 @@ public class RuleUnitDescription {
         if (returnClass.isArray()) {
             return returnClass.getComponentType();
         }
-
-        if (Iterable.class.isAssignableFrom( returnClass )) {
-            Type returnType = m.getGenericReturnType();
-            return  returnType instanceof ParameterizedType ?
-                    (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
-                    Object.class;
+        if (DataSource.class.isAssignableFrom( returnClass )) {
+            return getParametricType(m);
         }
-
+        if (Iterable.class.isAssignableFrom( returnClass )) {
+            return getParametricType(m);
+        }
         return returnClass;
+    }
+
+    private Class<?> getParametricType(Method m) {
+        Type returnType = m.getGenericReturnType();
+        return  returnType instanceof ParameterizedType ?
+                (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
+                Object.class;
     }
 }

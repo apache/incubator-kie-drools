@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 
 import org.kie.api.definition.type.Modifies;
 import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.kogito.rules.DataSource;
 
 public abstract class ClassUtils {
     private static final ProtectionDomain  PROTECTION_DOMAIN;
@@ -575,6 +576,10 @@ public abstract class ClassUtils {
 
     public static boolean isIterable(Class<?> clazz) {
         return Iterable.class.isAssignableFrom( clazz ) || clazz.isArray();
+    }
+
+    public static boolean isDataSource(Class<?> clazz) {
+        return DataSource.class.isAssignableFrom( clazz );
     }
     
     public static boolean isFinal(Class<?> clazz) {

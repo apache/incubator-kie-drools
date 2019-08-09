@@ -50,6 +50,7 @@ import org.drools.core.util.bitmask.BitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reflective.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.reflective.util.ClassUtils.isDataSource;
 import static org.drools.reflective.util.ClassUtils.isFinal;
 import static org.drools.reflective.util.ClassUtils.isInterface;
 import static org.drools.reflective.util.ClassUtils.isIterable;
@@ -609,6 +610,7 @@ public class Pattern
     public static boolean isCompatibleWithFromReturnType( Class<?> patternType, Class<?> returnType ) {
         return isCompatibleWithAccumulateReturnType( patternType, returnType ) ||
                 isIterable( returnType ) ||
+                isDataSource( returnType ) ||
                 ( patternType != null &&
                         ( returnType.isAssignableFrom( patternType ) ||
                                 ( !isFinal( returnType ) && isInterface(patternType))

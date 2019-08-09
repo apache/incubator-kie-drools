@@ -49,8 +49,4 @@ public class ListDataStream<T> implements DataStream<T> {
         values.forEach(subscriber::insert);
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return values.iterator();
-    }
 }

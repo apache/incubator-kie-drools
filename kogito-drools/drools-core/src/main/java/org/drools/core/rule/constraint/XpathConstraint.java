@@ -52,6 +52,7 @@ import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.ClassUtils;
+import org.kie.kogito.rules.DataSource;
 
 public class XpathConstraint extends MutableTypeConstraint {
 
@@ -370,6 +371,9 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         private Class<?> getItemClass(Method accessor) {
             Class<?> lastReturnedClass = accessor.getReturnType();
+            if (DataSource.class.isAssignableFrom(lastReturnedClass)) {
+                return getParametricType(accessor);
+            }
             if (Iterable.class.isAssignableFrom(lastReturnedClass)) {
                 return getParametricType(accessor);
             }

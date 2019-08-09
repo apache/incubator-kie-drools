@@ -71,11 +71,6 @@ public class ListDataStore<T> implements InternalDataStore<T> {
         } );
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return store.values().iterator();
-    }
-
     private void internalInsert( DataHandle dh, DataProcessor s, T t ) {
         FactHandle fh = s.insert( dh, t );
         (( InternalFactHandle ) fh).setDataStore( this );
