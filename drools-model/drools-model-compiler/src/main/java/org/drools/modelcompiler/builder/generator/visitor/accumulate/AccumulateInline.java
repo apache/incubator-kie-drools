@@ -37,8 +37,6 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
-import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
-import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.drools.modelcompiler.util.StringUtil;
 import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.ParsingResult;
@@ -51,6 +49,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNa
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
+import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 public class AccumulateInline {
 
@@ -156,7 +155,7 @@ public class AccumulateInline {
         if (returnExpression instanceof NameExpr) {
             returnExpression = new EnclosedExpr(returnExpression);
         }
-        rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, returnExpression);
+        rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, returnExpression);
         resultMethod
                 .getBody()
                 .orElseThrow(InvalidInlineTemplateException::new)
@@ -257,7 +256,7 @@ public class AccumulateInline {
     private Optional<Statement> createInitializer(String variableName, Optional<Expression> optInitializer) {
         if (optInitializer.isPresent()) {
             Expression initializer = optInitializer.get();
-            Expression target = new FieldAccessExpr(new NameExpr("data"), variableName);
+            Expression target = new FieldAccessExpr(getDataNameExpr(), variableName);
             Statement initStmt = new ExpressionStmt(new AssignExpr(target, initializer, AssignExpr.Operator.ASSIGN));
             return Optional.of(initStmt);
         }
@@ -271,21 +270,20 @@ public class AccumulateInline {
                 final Expression expressionUntyped = eStmt.getExpression();
                 final String parameterName = accumulateMethod.getParameter(1).getNameAsString();
 
-                final ExpressionTyper expressionTyper = new ExpressionTyper(context, Object.class, "", false);
-                final TypedExpressionResult typedExpression = expressionTyper.toTypedExpression(expressionUntyped);
-
-                final Expression expression =
-                        typedExpression
-                                .getTypedExpression()
-                                .orElseThrow(InvalidInlineTemplateException::new)
-                                .getExpression();
+                ParsingResult compile = mvelCompiler.compile(addCurlyBracesToBlock(printConstraint(expressionUntyped)));
+                // Mvel Compiler return results as a BlockStmt
+                final Expression expression = compile.statementResults().getStatements().removeFirst().asExpressionStmt().getExpression();
 
                 forceCastForName(parameterName, singleAccumulateType, expression);
-                rescopeNamesToNewScope(new NameExpr("data"), contextFieldNames, expression);
+                rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, expression);
                 convertedExpressionStatement.setExpression(expression);
             }
             accumulateMethod.getBody().orElseThrow(InvalidInlineTemplateException::new)
                     .addStatement(convertedExpressionStatement);
         }
+    }
+
+    private NameExpr getDataNameExpr() {
+        return new NameExpr("data");
     }
 }
