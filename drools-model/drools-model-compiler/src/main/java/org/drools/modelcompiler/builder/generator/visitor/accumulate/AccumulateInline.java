@@ -242,25 +242,18 @@ public class AccumulateInline {
                     final String variableName = vd.getNameAsString();
                     contextFieldNames.add(variableName);
                     contextData.addField(vd.getType(), variableName, Modifier.publicModifier().getKeyword());
-                    createInitializer(variableName, vd.getInitializer()).ifPresent(statement -> {
-                                                                                       initMethodBody.addStatement(statement);
-                                                                                       statement.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExtDeclrs::add);
-                                                                                   }
-                    );
+                    Optional<Expression> optInitializer = vd.getInitializer();
+                    optInitializer.ifPresent(initialzier -> {
+                        Expression initializer = optInitializer.get();
+                        Expression target = new FieldAccessExpr(getDataNameExpr(), variableName);
+                        Statement initStmt = new ExpressionStmt(new AssignExpr(target, initializer, AssignExpr.Operator.ASSIGN));
+                        initMethodBody.addStatement(initStmt);
+                        initStmt.findAll(NameExpr.class).stream().map(Node::toString).filter(context::hasDeclaration).forEach(usedExtDeclrs::add);
+                    });
                     accumulateDeclarations.add(new DeclarationSpec(variableName, DrlxParseUtil.getClassFromContext(context.getTypeResolver(), vd.getType().asString())));
                 }
             }
         }
-    }
-
-    private Optional<Statement> createInitializer(String variableName, Optional<Expression> optInitializer) {
-        if (optInitializer.isPresent()) {
-            Expression initializer = optInitializer.get();
-            Expression target = new FieldAccessExpr(getDataNameExpr(), variableName);
-            Statement initStmt = new ExpressionStmt(new AssignExpr(target, initializer, AssignExpr.Operator.ASSIGN));
-            return Optional.of(initStmt);
-        }
-        return Optional.empty();
     }
 
     private void writeAccumulateMethod(List<String> contextFieldNames, Type singleAccumulateType, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
