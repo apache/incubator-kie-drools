@@ -152,7 +152,7 @@ public class AccumulateInline {
                 .addStatement(new ReturnStmt(new ClassExpr(returnExpressionType)));
     }
 
-    private void parseReverseBlock(Set<String> externalDeclrs, Collection<String> allNamesInActionBlock) {
+    private void parseReverseBlock(Set<String> externalDeclarations, Collection<String> allNamesInActionBlock) {
         ParsingResult reverseBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getReverseCode()));
 
         BlockStmt reverseBlock = reverseBlockCompilationResult.statementResults();
@@ -170,7 +170,7 @@ public class AccumulateInline {
                         .orElseThrow(InvalidInlineTemplateException::new)
                         .addStatement(parseStatement("return true;"));
             } else {
-                allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
+                allNamesInActionBlock.removeIf(name -> !externalDeclarations.contains(name));
                 usedExternalDeclarations.addAll(allNamesInActionBlock);
                 throw new UnsupportedInlineAccumulate();
             }
@@ -189,7 +189,7 @@ public class AccumulateInline {
         }
     }
 
-    private Collection<String> parseAccumulateMethod(Set<String> externalDeclrs) {
+    private Collection<String> parseAccumulateMethod(Set<String> externalDeclarations) {
         MethodDeclaration accumulateMethod = accumulateInlineClass.getMethodsByName("accumulate").get(0);
 
         ParsingResult actionBlockCompilationResult = mvelCompiler.compile(addCurlyBracesToBlock(accumulateDescr.getActionCode()));
@@ -208,7 +208,7 @@ public class AccumulateInline {
             writeAccumulateMethod(contextFieldNames, accumulateMethod, actionBlock);
 
         } else {
-            allNamesInActionBlock.removeIf(name -> !externalDeclrs.contains(name));
+            allNamesInActionBlock.removeIf(name -> !externalDeclarations.contains(name));
             usedExternalDeclarations.addAll(allNamesInActionBlock);
             throw new UnsupportedInlineAccumulate();
         }
