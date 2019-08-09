@@ -30,7 +30,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class ScenarioSimulationXMLPersistenceTest {
 
@@ -56,160 +55,133 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void migrateIfNecessary_1_0_to_1_1() {
-        try {
-            String toMigrate = getFileContent("scesim-1-0.scesim");
-            Document document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_0to1_1().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, "expressionIdentifier", "type");
-            assertNotNull(retrieved);
-            assertEquals(1, retrieved.size());
-            retrieved.forEach((node, typeNodes) -> {
-                assertEquals(1, typeNodes.size());
-                assertEquals("EXPECT", typeNodes.get(0).getTextContent());
-            });
-            commonCheckDocument(document, "1.1");
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    public void migrateIfNecessary_1_0_to_1_1() throws Exception {
+        String toMigrate = getFileContent("scesim-1-0.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_0to1_1().accept(document);
+        Map<Node, List<Node>> retrieved = DOMParserUtil.getChildrenNodesMap(document, "expressionIdentifier", "type");
+        assertNotNull(retrieved);
+        assertEquals(1, retrieved.size());
+        retrieved.forEach((node, typeNodes) -> {
+            assertEquals(1, typeNodes.size());
+            assertEquals("EXPECT", typeNodes.get(0).getTextContent());
+        });
+        commonCheck(toMigrate, document, "1.1");
     }
 
     @Test
-    public void migrateIfNecessary_1_1_to_1_2() {
-        try {
-            String toMigrate = getFileContent("scesim-1-1.scesim");
-            Document document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_1to1_2().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
-            assertNotNull(retrieved);
-            assertEquals(1, retrieved.size());
-            assertEquals(1, retrieved.values().iterator().next().size());
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
-            commonVerifySingleNodeSingleChild(retrieved, "RULE");
-            commonCheckDocument(document, "1.2");
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    public void migrateIfNecessary_1_1_to_1_2() throws Exception {
+        String toMigrate = getFileContent("scesim-1-1.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_1to1_2().accept(document);
+        Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
+        assertNotNull(retrieved);
+        assertEquals(1, retrieved.size());
+        assertEquals(1, retrieved.values().iterator().next().size());
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        commonVerifySingleNodeSingleChild(retrieved, "RULE");
+        commonCheck(toMigrate, document, "1.2");
     }
 
     @Test
-    public void migrateIfNecessary_1_2_to_1_3() {
-        try {
-            String toMigrate = getFileContent("scesim-1-2.scesim");
-            Document document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_2to1_3().accept(document);
-            List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
-            assertNotNull(factMappingsNodes);
-            assertEquals(1, factMappingsNodes.size());
-            List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), "FactMapping");
-            for (Node factMappingNode : factMappingNodes) {
-                List<Node> expressionElementsNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "expressionElements");
-                assertEquals(1, expressionElementsNodes.size());
-                List<Node> stepNodes = DOMParserUtil.getNestedChildrenNodesList(expressionElementsNodes.get(0), "ExpressionElement", "step");
-                assertEquals(1, stepNodes.size());
-            }
-            commonCheckDocument(document, "1.3");
-        } catch (Exception e) {
-            fail(e.getMessage());
+    public void migrateIfNecessary_1_2_to_1_3() throws Exception {
+        String toMigrate = getFileContent("scesim-1-2.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_2to1_3().accept(document);
+        List<Node> factMappingsNodes = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "factMappings");
+        assertNotNull(factMappingsNodes);
+        assertEquals(1, factMappingsNodes.size());
+        List<Node> factMappingNodes = DOMParserUtil.getChildrenNodesList(factMappingsNodes.get(0), "FactMapping");
+        for (Node factMappingNode : factMappingNodes) {
+            List<Node> expressionElementsNodes = DOMParserUtil.getChildrenNodesList(factMappingNode, "expressionElements");
+            assertEquals(1, expressionElementsNodes.size());
+            List<Node> stepNodes = DOMParserUtil.getNestedChildrenNodesList(expressionElementsNodes.get(0), "ExpressionElement", "step");
+            assertEquals(1, stepNodes.size());
         }
+        commonCheck(toMigrate, document, "1.3");
     }
 
     @Test
-    public void migrateIfNecessary_1_3_to_1_4() {
-        try {
-            String toMigrate = getFileContent("scesim-1-3-rule.scesim");
-            Document document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_3to1_4().accept(document);
-            Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "fileName");
-            commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieSession");
-            commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieBase");
-            commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "ruleFlowGroup");
-            commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
-            commonVerifySingleNodeSingleChild(retrieved, "default");
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
-            commonVerifySingleNodeSingleChild(retrieved, "false");
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
-            commonVerifySingleNodeSingleChild(retrieved, "RULE");
-            commonCheckDocument(document, "1.4");
+    public void migrateIfNecessary_1_3_to_1_4() throws Exception {
+        String toMigrate = getFileContent("scesim-1-3-rule.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_3to1_4().accept(document);
+        Map<Node, List<Node>> retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "fileName");
+        commonVerifySingleNodeSingleChild(retrieved, null);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieSession");
+        commonVerifySingleNodeSingleChild(retrieved, "default");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "kieBase");
+        commonVerifySingleNodeSingleChild(retrieved, "default");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "ruleFlowGroup");
+        commonVerifySingleNodeSingleChild(retrieved, "default");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmoSession");
+        commonVerifySingleNodeSingleChild(retrieved, "default");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
+        commonVerifySingleNodeSingleChild(retrieved, "false");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        commonVerifySingleNodeSingleChild(retrieved, "RULE");
+        commonCheck(toMigrate, document, "1.4");
 
-            toMigrate = getFileContent("scesim-1-3-dmn_1.scesim");
-            document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_3to1_4().accept(document);
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
-            commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
-            commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
-            commonVerifySingleNodeSingleChild(retrieved, "false");
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
-            commonVerifySingleNodeSingleChild(retrieved, "DMN");
-            commonCheckDocument(document, "1.4");
+        toMigrate = getFileContent("scesim-1-3-dmn_1.scesim");
+        document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_3to1_4().accept(document);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
+        commonVerifySingleNodeSingleChild(retrieved, null);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
+        commonVerifySingleNodeSingleChild(retrieved, null);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
+        commonVerifySingleNodeSingleChild(retrieved, "false");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        commonVerifySingleNodeSingleChild(retrieved, "DMN");
+        commonCheck(toMigrate, document, "1.4");
 
-            toMigrate = getFileContent("scesim-1-3-dmn_2.scesim");
-            document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_3to1_4().accept(document);
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
-            commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
-            commonVerifySingleNodeSingleChild(retrieved, null);
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
-            commonVerifySingleNodeSingleChild(retrieved, "false");
-            retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
-            commonVerifySingleNodeSingleChild(retrieved, "DMN");
-            commonCheckDocument(document, "1.4");
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+        toMigrate = getFileContent("scesim-1-3-dmn_2.scesim");
+        document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_3to1_4().accept(document);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnNamespace");
+        commonVerifySingleNodeSingleChild(retrieved, null);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "dmnName");
+        commonVerifySingleNodeSingleChild(retrieved, null);
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "skipFromBuild");
+        commonVerifySingleNodeSingleChild(retrieved, "false");
+        retrieved = DOMParserUtil.getNestedChildrenNodesMap(document, "simulation", "simulationDescriptor", "type");
+        commonVerifySingleNodeSingleChild(retrieved, "DMN");
+        commonCheck(toMigrate, document, "1.4");
     }
 
     @Test
-    public void migrateIfNecessary_1_4_to_1_5() {
-        try {
-            String toMigrate = getFileContent("scesim-1-4-rule.scesim");
-            Document document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_4to1_5().accept(document);
-            List<Node> retrieved = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "dmoSession");
-            assertNotNull(retrieved);
-            assertTrue(retrieved.isEmpty());
-            commonCheckDocument(document, "1.5");
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    public void migrateIfNecessary_1_4_to_1_5() throws Exception {
+        String toMigrate = getFileContent("scesim-1-4-rule.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_4to1_5().accept(document);
+        List<Node> retrieved = DOMParserUtil.getNestedChildrenNodesList(document, "simulation", "simulationDescriptor", "dmoSession");
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isEmpty());
+        commonCheck(toMigrate, document, "1.5");
     }
 
     @Test
-    public void migrateIfNecessary_1_5_to_1_6() {
-        try {
-            String toMigrate = getFileContent("scesim-1-5-dmn.scesim");
-            Document document = DOMParserUtil.getDocument(toMigrate);
-            migrationInstance.from1_5to1_6().accept(document);
-            Map<Node, String> retrieved = DOMParserUtil.getAttributeValues(document, "reference");
-            assertNotNull(retrieved);
-            assertTrue(retrieved.isEmpty());
-            commonCheckDocument(document, "1.6");
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+    public void migrateIfNecessary_1_5_to_1_6() throws Exception {
+        String toMigrate = getFileContent("scesim-1-5-dmn.scesim");
+        Document document = DOMParserUtil.getDocument(toMigrate);
+        migrationInstance.from1_5to1_6().accept(document);
+        Map<Node, String> retrieved = DOMParserUtil.getAttributeValues(document, "reference");
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isEmpty());
+        commonCheck(toMigrate, document, "1.6");
     }
 
     @Test
-    public void migrateIfNecessary() {
+    public void migrateIfNecessary() throws Exception {
         Assertions.assertThatThrownBy(() -> instance.migrateIfNecessary("<ScenarioSimulationModel version=\"9999999999.99999999999\" />"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Version 9999999999.99999999999 of the file is not supported. Current version is " + ScenarioSimulationXMLPersistence.getCurrentVersion());
 
         String noMigrationNeeded = "<ScenarioSimulationModel version=\"" + currentVersion + "\" />";
-        try {
-            String afterMigration = instance.migrateIfNecessary(noMigrationNeeded);
-            Document document = DOMParserUtil.getDocument(afterMigration);
-            commonCheckVersion(document, "1.6");
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
+        String afterMigration = instance.migrateIfNecessary(noMigrationNeeded);
+        Document document = DOMParserUtil.getDocument(afterMigration);
+        commonCheckVersion(document, "1.6");
     }
 
     @Test
@@ -250,9 +222,10 @@ public class ScenarioSimulationXMLPersistenceTest {
         }
     }
 
-    private void commonCheckDocument(Document document, String expectedVersion) throws Exception {
+    private void commonCheck(String toMigrate, Document document, String expectedVersion) throws Exception {
         commonCheckVersion(document, expectedVersion);
         commonCheckScenarioSimulationModel(document);
+        instance.migrateIfNecessary(toMigrate);
     }
 
     private void commonCheckVersion(Document document, String expectedVersion) {

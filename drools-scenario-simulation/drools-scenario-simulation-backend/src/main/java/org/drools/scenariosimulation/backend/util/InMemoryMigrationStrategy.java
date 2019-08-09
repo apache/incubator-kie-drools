@@ -86,7 +86,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             if (!typeNodes.isEmpty()) {
                 Node typeNode = typeNodes.get(0);
                 Node simulationDescriptorNode = typeNode.getParentNode();
-                switch (typeNodes.get(0).getTextContent()) {
+                switch (typeNode.getTextContent()) {
                     case "RULE":
                         if (DOMParserUtil.getChildrenNodesList(simulationDescriptorNode, "kieSession").isEmpty()) {
                             DOMParserUtil.createNodeAtPosition(simulationDescriptorNode, "kieSession", "default", null);
@@ -149,47 +149,26 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
                 replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, "factIdentifier");
                 replaceReference(simulationFactMappingNodeList, scenarioFactMappingValue, "expressionIdentifier");
             });
-
-            // TODO
-//            // We need to do those things here because to parse "old" xmls we need a differently configured Xstream
-//            ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
-//            if (rawXml == null || rawXml.trim().equals("")) {
-//                return xmlPersistence.marshal(new ScenarioSimulationModel());
-//            }
-//            String input = cleanUpUnusedNodes(rawXml);
-//            // Unmarshall the 1.5 format with "older" xstream configuration, that read "reference" attributes
-//            Object o = getLocalXStream().fromXML(input);
-//            ScenarioSimulationModel model = (ScenarioSimulationModel) o;
-
             updateVersion(document, "1.6");
         };
     }
 
     private void replaceReference(List<Node> simulationFactMappingNodeList, Node containerNode, String referredNodeName) {
-        Node referringNode = DOMParserUtil.getChildrenNodesList(containerNode, referredNodeName).get(0);
-        String referenceAttribute = DOMParserUtil.getAttributeValue(referringNode, "reference");
-        if (referenceAttribute != null) {
-            String referredIndex = "1";
-            if (referenceAttribute.contains("[") && referenceAttribute.contains("]")) {
-                referredIndex = referenceAttribute.substring(referenceAttribute.indexOf("[") + 1, referenceAttribute.indexOf("]"));
+        final List<Node> referredNodesList = DOMParserUtil.getChildrenNodesList(containerNode, referredNodeName);
+        if (!referredNodesList.isEmpty()) {
+            Node referringNode = referredNodesList.get(0);
+            String referenceAttribute = DOMParserUtil.getAttributeValue(referringNode, "reference");
+            if (referenceAttribute != null) {
+                String referredIndex = "1";
+                if (referenceAttribute.contains("[") && referenceAttribute.contains("]")) {
+                    referredIndex = referenceAttribute.substring(referenceAttribute.indexOf("[") + 1, referenceAttribute.indexOf("]"));
+                }
+                int index = Integer.parseInt(referredIndex) - 1;
+                Node referredFactMapping = simulationFactMappingNodeList.get(index);
+                Node referredNode = DOMParserUtil.getChildrenNodesList(referredFactMapping, referredNodeName).get(0);
+                Node clonedNode = referredNode.cloneNode(true);
+                containerNode.replaceChild(clonedNode, referringNode);
             }
-            int index = Integer.parseInt(referredIndex) - 1;
-            Node referredFactMapping = simulationFactMappingNodeList.get(index);
-            Node referredNode = DOMParserUtil.getChildrenNodesList(referredFactMapping, referredNodeName).get(0);
-            Node clonedNode = referredNode.cloneNode(true);
-            containerNode.replaceChild(clonedNode, referringNode);
         }
     }
-
-//    /**
-//     * Returns the <code>XStream</code> configured for scesim version <= 1.5
-//     * @return
-//     */
-//    private XStream getLocalXStream() {
-//        // We need this local instance to instantiate XStream with older settings
-//        XStream toReturn = XStreamUtils.createTrustingXStream(new DomDriver());
-//        toReturn.autodetectAnnotations(true);
-//        configureXStreamMappings(toReturn);
-//        return toReturn;
-//    }
 }
